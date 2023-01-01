@@ -364,9 +364,9 @@ class ProductsController extends Controller
         $offer = Offer::where('created_by_id',$login_id)->where('status',1)->get();
         $specification = Specification::where('category_sub_id', $category_sub)->where('status',1)->get();
         $specifi = Specification::where('status',1)->get();
-        $productdetails = ProductsDetails::where('products_id', $id)->where('status',1)->get();        
-        $productspecs = ProductSpecs::where('products_id', $id)->where('status',1)->get();
-        $productsAttri = productsAttri::where('products_id', $id)->where('status',1)->get();
+        $productdetails = ProductsDetails::where('products_id', $id)->get();        
+        $productspecs = ProductSpecs::where('products_id', $id)->get();
+        $productsAttri = productsAttri::where('products_id', $id)->get();
 
         // $category_data = Categorymain::join('master_specification', 'master_specification.id', '=', 'products_specs.id')
         // ->get();
