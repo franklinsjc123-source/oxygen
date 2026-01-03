@@ -82,7 +82,7 @@
 
                             <div class="cart-action mb-6">
                                 <a href="{{url('/')}}" class="btn btn-dark btn-rounded btn-icon-left btn-shopping mr-auto"><i class="w-icon-long-arrow-left"></i>Continue Shopping</a>
-                              <a href="{{url('/Checkout')}}" class="btn btn-dark btn-rounded btn-shopping">
+                              <a href="{{url('/checkoutPage')}}" class="btn btn-dark btn-rounded btn-shopping">
                                         Proceed to checkout<i class="w-icon-long-arrow-right"></i></a></div>
 
                             
