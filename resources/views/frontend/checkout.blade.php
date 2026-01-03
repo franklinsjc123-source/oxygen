@@ -5,16 +5,13 @@
 	     <div class="">
 	         <ul class="breadcrumb">
 	             <li class="">
-	                 <a href="#">Shopping Cart</a>
-	             </li>
+	                 <a href="{{ url('shopping-cart') }}">Shopping Cart</a>
+				 </li>
 	             <li class="current">
 	                 <i class="delimiter"></i>
-	                 <a href="#">Checkout</a>
+	                 <a href="{{ url('checkoutPage') }}">Checkout</a>
 	             </li>
-	             <li class="disable">
-	                 <i class="delimiter"></i>
-	                 <a href="#">Order Complete</a>
-	             </li>
+	             
 	         </ul>
 	     </div>
 	 </div>
@@ -26,37 +23,12 @@
 		<!-- Start of PageContent -->
 		<div class="page-content">
 			<div class="container">
-				<div class="login-toggle">
-					Returning customer? <a href="#"
+				<div style="cursor:pointer" >
+					Returning customer? <a  onclick="showLoginPopup()" 
 						class="show-login font-weight-bold text-uppercase text-dark">Login</a>
 				</div>
-				<form class="login-content">
-					<p>If you have shopped with us before, please enter your details below. 
-						If you are a new customer, please proceed to the Billing section.</p>
-					<div class="row">
-						<div class="col-xs-6">
-							<div class="form-group">
-								<label>Username or email *</label>
-								<input type="text" class="form-control form-control-md" name="name"
-									required>
-							</div>
-						</div>
-						<div class="col-xs-6">
-							<div class="form-group">
-								<label>Password *</label>
-								<input type="text" class="form-control form-control-md" name="password"
-									required>
-							</div>
-						</div>
-					</div>
-					<div class="form-group checkbox">
-						<input type="checkbox" class="custom-checkbox" id="remember" name="remember">
-						<label for="remember" class="mb-0 lh-2">Remember me</label>
-						<a href="#" class="ml-3">Last your password?</a>
-					</div>
-					<button class="btn btn-rounded btn-login">Login</button>
-				</form>
-				<div class="coupon-toggle">
+			
+				<div class="coupon-toggle mt-3">
 					Have a coupon? <a href="#"
 						class="show-coupon font-weight-bold text-uppercase text-dark">Enter your
 						code</a>
