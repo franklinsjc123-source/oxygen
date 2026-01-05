@@ -40,7 +40,8 @@
 						<button type="submit" class="btn button btn-rounded btn-coupon mb-2" name="apply_coupon" value="Apply coupon">Apply Coupon</button>
 					</div>
 				</div>
-				<form class="form checkout-form" action="#" method="post">
+				<form class="form checkout-form" action="{{ route('checkout_store') }}" method="post">
+					@csrf
 					<div class="row mb-9">
 						<div class="col-lg-7 pr-lg-4 mb-4">
 							<h3 class="title billing-title text-uppercase ls-10 pt-1 pb-3 mb-0">
@@ -50,14 +51,14 @@
 								<div class="col-xs-6">
 									<div class="form-group">
 										<label>First name *</label>
-										<input type="text" class="form-control form-control-md" name="firstname"
+										<input type="text" class="form-control form-control-md" name="billing_first_name"
 											required>
 									</div>
 								</div>
 								<div class="col-xs-6">
 									<div class="form-group">
 										<label>Last name *</label>
-										<input type="text" class="form-control form-control-md" name="lastname"
+										<input type="text" class="form-control form-control-md" name="billing_last_name"
 											required>
 									</div>
 								</div>
@@ -69,7 +70,7 @@
 							<div class="form-group">
 								<label>Country / Region *</label>
 								<div class="select-box">
-									<select name="country" class="form-control form-control-md">
+									<select name="billing_country" class="form-control form-control-md">
 										<option value="default" selected="selected">United States
 											(US)
 										</option>
@@ -83,7 +84,7 @@
 							<div class="form-group">
 								<label>Street address *</label>
 								<input type="text" placeholder="House number and street name"
-									class="form-control form-control-md mb-2" name="street-address-1" required>
+									class="form-control form-control-md mb-2" name="billing_address" required>
 								<input type="text" placeholder="Apartment, suite, unit, etc. (optional)"
 									class="form-control form-control-md" name="street-address-2" required>
 							</div>
@@ -91,18 +92,18 @@
 								<div class="col-md-6">
 									<div class="form-group">
 										<label>Town / City *</label>
-										<input type="text" class="form-control form-control-md" name="town" required>
+										<input type="text" class="form-control form-control-md" name="billing_city" required>
 									</div>
 									<div class="form-group">
 										<label>ZIP *</label>
-										<input type="text" class="form-control form-control-md" name="zip" required>
+										<input type="text" class="form-control form-control-md" name="billing_postcode" required>
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label>State *</label>
 										<div class="select-box">
-											<select name="country" class="form-control form-control-md">
+											<select name="billing_state" class="form-control form-control-md">
 												<option value="default" selected="selected">California</option>
 												<option value="uk">United Kingdom (UK)</option>
 												<option value="us">United States</option>
@@ -113,13 +114,13 @@
 									</div>
 									<div class="form-group">
 										<label>Phone *</label>
-										<input type="text" class="form-control form-control-md" name="phone" required>
+										<input type="text" class="form-control form-control-md" name="billing_phone" required>
 									</div>
 								</div>
 							</div>
 							<div class="form-group mb-7">
 								<label>Email address *</label>
-								<input type="email" class="form-control form-control-md" name="email" required>
+								<input type="email" class="form-control form-control-md" name="billing_email" required>
 							</div>
 							<div class="form-group checkbox-toggle pb-2">
 								<input type="checkbox" class="custom-checkbox" id="shipping-toggle"

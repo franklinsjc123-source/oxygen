@@ -13,7 +13,7 @@ use App\Models\Products\ProductsDetails;
 use App\Models\Products\ProductSpecs;
 use App\Models\Vendor;
 use App\Models\Offer\Offer;
-
+use Illuminate\Support\Str;
 use App\Models\vendor\vendorcreate;
 use Darryldecode\Cart\Facades\CartFacade as Cart;
 use Illuminate\Http\Request;
@@ -21,8 +21,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\City;
 use App\Models\Ecom_Customer_info;
 use App\Models\Ecom_Customer_Shipping;
-
-
+use App\Models\Order\Orders;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use App\Models\PinCode\PinCode;
 use App\Models\wishlist;
@@ -851,13 +851,117 @@ class FrontendController extends Controller
 
     public function checkoutPage(Request $request)
     {
-
         $count   = Cart::getContent()->count();
         $records = Cart::getContent();
         $total   = Cart::getTotal();
         return view('frontend.checkout', compact('count', 'records', 'total'));
     }
 
+    public function checkout_store(Request $request)
+    {
+        $request->validate([
+            'billing_first_name' => 'required',
+            'billing_last_name'  => 'required',
+            'billing_phone'      => 'required',
+            'billing_email'      => 'required|email',
+            'billing_address'    => 'required',
+            'billing_city'       => 'required',
+            'billing_state'      => 'required',
+            'billing_country'    => 'required',
+            'billing_postcode'   => 'required',
+        ]);
+
+        /* ===============================
+        USER / CUSTOMER LOGIC
+        =============================== */
+
+        if (auth()->check()) {
+
+            // Logged in user
+            $userId = auth()->id();
+
+        } else {
+
+            // Check customer already exists by mobile or email
+            $customer = Ecom_Customer_info::where('customer_mobileno', $request->billing_phone)
+                ->orWhere('customer_email', $request->billing_email)
+                ->first();
+
+            if (!$customer) {
+
+                $customerCode = 'OXY-C' . str_pad(Ecom_Customer_info::max('id') + 1, 5, '0', STR_PAD_LEFT);
+
+                $customer = Ecom_Customer_info::create([
+                    'customer_id'        => $customerCode,
+                    'customer_firstname' => $request->billing_first_name,
+                    'customer_lastname'  => $request->billing_last_name,
+                    'customer_email'     => $request->billing_email,
+                    'customer_mobileno'  => $request->billing_phone,
+                    'customer_password'  => base64_encode('welcome@123'), // default password
+                    'customer_address'   => $request->billing_address,
+                    'customer_address1'  => $request->billing_address,
+                    'customer_city'      => $request->billing_city,
+                    'customer_state'     => $request->billing_state,
+                    'customer_pincode'   => $request->billing_postcode,
+                    'customer_type'      => 'Customer',
+                ]);
+            }
+
+            // Use customer table ID or customer_id
+            $userId = $customer->customer_id; // OR $customer->id
+        }
+
+        /* ===============================
+        SHIPPING LOGIC
+        =============================== */
+
+        if ($request->has('ship_to_different')) {
+            $shipping_address = $request->shipping_address;
+            $shipping_city    = $request->shipping_city;
+            $shipping_state   = $request->shipping_state;
+            $shipping_country = $request->shipping_country;
+            $shipping_postcode= $request->shipping_postcode;
+        } else {
+            $shipping_address = $request->billing_address;
+            $shipping_city    = $request->billing_city;
+            $shipping_state   = $request->billing_state;
+            $shipping_country = $request->billing_country;
+            $shipping_postcode= $request->billing_postcode;
+        }
+
+        /* ===============================
+        ORDER INSERT
+        =============================== */
+
+        Orders::create([
+            'User_id'        => $userId,
+            'orders_id'      => 'ORD-' . strtoupper(Str::random(8)),
+
+            'firstname'      => $request->billing_first_name,
+            'lastname'       => $request->billing_last_name,
+            'phone'          => $request->billing_phone,
+            'email'          => $request->billing_email,
+
+            'address'        => $shipping_address,
+            'town'           => $shipping_city,
+            'state'          => $shipping_state,
+            'country'        => $shipping_country,
+            'postelcode'     => $shipping_postcode,
+
+            'value'          => 100,
+            'shipping'       => $request->shipping_method ?? 'free',
+            'total'          => 100,
+            'grandtotal'     => 100,
+
+            'order_status'   => 'Pending',
+            'payment_status' => 'Pending',
+            'order_notes'    => $request->order_notes,
+            'order_date'     => now(),
+            'status'         => 1,
+        ]);
+
+        return redirect()->back()->with('success', 'Order placed successfully!');
+    }
 
 
     public function getFilterProducts(Request $request)
