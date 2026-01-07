@@ -65,7 +65,6 @@
                                      </div>
                                      <button class="swiper-button-next"></button>
                                      <button class="swiper-button-prev"></button>
-                                     <a href="#" class="product-gallery-btn product-image-full"><i class="w-icon-zoom"></i></a>
                                  </div>
                                  <div class="product-thumbs-wrap swiper-container" data-swiper-options="{
                                             'navigation': {
@@ -161,7 +160,7 @@
                                  </div>
                                   
 
-                               
+                                 
 
                                  <div class="social-links-wrapper">
                                      <div class="social-links">
