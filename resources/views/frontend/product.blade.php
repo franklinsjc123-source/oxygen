@@ -158,11 +158,8 @@
                                          <?php }
                                             } ?>
                                      </div>
-                                     <a href="#" class="product-variation-clean">Clean All </a>
                                  </div>
-                                    <div class="product-variation-price" >
-                                                        <span id="sellingAmount"></span>
-                                                    </div>
+                                  
 
                                  <div class="fix-bottom product-sticky-content sticky-content">
                                      <div class="product-form container">
