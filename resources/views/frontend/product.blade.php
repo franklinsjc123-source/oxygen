@@ -115,9 +115,23 @@
 
                                  <hr class="product-divider">
 
-                                 <div class="product-price">
-                                     <ins class="new-price"> ₹<?php echo $prouctsList['selling_price'] ?> ₹<strike id="strikeamt"><?php echo $prouctsList['retail_price'] ?></strike></ins>
-                                 </div>
+                                    <div class="product-pa-wrapper">
+                                        <div class="product-price">
+                                            ₹{{ $prouctsList['selling_price'] }} 
+                                        </div>
+                                        <div  class="product-price-discount" >
+                                                ₹{{ $prouctsList['retail_price'] }} 
+                                        </div>
+                                        <?php 
+                                        $discount_percentage = (($prouctsList['retail_price'] - $prouctsList['selling_price']) / $prouctsList['retail_price']) * 100;
+                                            $discount_rounded = round($discount_percentage / 10) * 10;
+                                        ?>
+
+                                        <div  class="product-offer-percentage" >
+                                                {{ $discount_rounded }}% Off
+                                        </div>
+                                    </div>
+
 
                                  <div class="ratings-container">
                                      <div class="ratings-full">

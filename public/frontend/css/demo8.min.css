@@ -6793,6 +6793,7 @@ body .product-popup {
   bottom: 1.5rem;
 }
 .product .product-price {
+  font-family: sans-serif;
   display: block;
   text-overflow: ellipsis;
   overflow: hidden;
