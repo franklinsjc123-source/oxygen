@@ -100,15 +100,21 @@
                                      <div class="product-meta">
                                          <div class="product-categories">
                                              Shop Name:
-                                             <span class="product-category"><a href="#"><?php echo $prouctsList['shop_name'] ?></a></span>
+                                             <span class="product-category"><a href="#"><?php echo $vendor_details['shop_name'] ?></a></span>
                                          </div>
                                          <div class="product-categories">
-                                             Category:
-                                             <span class="product-category"><a href="#"><?php echo $prouctsList['category_name'] ?></a></span>
+                                             Location:
+                                            <span class="product-category">
+                                                <a href="#">
+                                                    {{ $vendor_details->address }},
+                                                    {{ $vendor_details->city }},
+                                                    {{ $vendor_details->state }} - {{ $vendor_details->pincode }}
+                                                </a>
+                                            </span>
                                          </div>
                                          <div class="product-categories">
-                                             Sub Category:
-                                             <span class="product-category"><a href="#"><?php echo $prouctsList['category_main_name'] ?></a></span>
+                                             Phone no:
+                                             <span class="product-category"><a href="#"><?php echo $vendor_details['mobile_number1'] ?></a></span>
                                          </div>
                                      </div>
                                  </div>
