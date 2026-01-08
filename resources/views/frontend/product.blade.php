@@ -100,24 +100,44 @@
                                      <div class="product-meta">
                                          <div class="product-categories">
                                              Shop Name:
-                                             <span class="product-category"><a href="#"><?php echo $prouctsList['shop_name'] ?></a></span>
+                                             <span class="product-category"><a href="#"><?php echo $vendor_details['shop_name'] ?></a></span>
                                          </div>
                                          <div class="product-categories">
-                                             Category:
-                                             <span class="product-category"><a href="#"><?php echo $prouctsList['category_name'] ?></a></span>
+                                             Location:
+                                            <span class="product-category">
+                                                <a href="#">
+                                                    {{ $vendor_details->address }},
+                                                    {{ $vendor_details->city }},
+                                                    {{ $vendor_details->state }} - {{ $vendor_details->pincode }}
+                                                </a>
+                                            </span>
                                          </div>
                                          <div class="product-categories">
-                                             Sub Category:
-                                             <span class="product-category"><a href="#"><?php echo $prouctsList['category_main_name'] ?></a></span>
+                                             Phone no:
+                                             <span class="product-category"><a href="#"><?php echo $vendor_details['mobile_number1'] ?></a></span>
                                          </div>
                                      </div>
                                  </div>
 
                                  <hr class="product-divider">
 
-                                 <div class="product-price">
-                                     <ins class="new-price"> ₹<?php echo $prouctsList['selling_price'] ?> ₹<strike id="strikeamt"><?php echo $prouctsList['retail_price'] ?></strike></ins>
-                                 </div>
+                                    <div class="product-pa-wrapper">
+                                        <div class="product-price">
+                                            ₹{{ $prouctsList['selling_price'] }} 
+                                        </div>
+                                        <div  class="product-price-discount" >
+                                                ₹{{ $prouctsList['retail_price'] }} 
+                                        </div>
+                                        <?php 
+                                        $discount_percentage = (($prouctsList['retail_price'] - $prouctsList['selling_price']) / $prouctsList['retail_price']) * 100;
+                                            $discount_rounded = round($discount_percentage / 10) * 10;
+                                        ?>
+
+                                        <div  class="product-offer-percentage" >
+                                                {{ $discount_rounded }}% Off
+                                        </div>
+                                    </div>
+
 
                                  <div class="ratings-container">
                                      <div class="ratings-full">

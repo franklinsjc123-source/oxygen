@@ -49,7 +49,6 @@ class FrontendController extends Controller
 
     public function myAccount()
     {
-
         $customer_id = Session::get('customer_id');
         if ($customer_id) {
             $customer = Ecom_Customer_info::where('customer_id', $customer_id)->first();
@@ -61,7 +60,7 @@ class FrontendController extends Controller
                 ->where('ecom_wishlist.customer_id', '=', $customer_id)
                 ->get();
             $wishCount = count($wishlist);
-
+            
 
             return view('frontend/my_account', compact('customer', 'wishlist', 'wishCount', 'shipping_address'));
         } else {

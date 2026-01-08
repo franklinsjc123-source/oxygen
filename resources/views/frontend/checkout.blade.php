@@ -63,10 +63,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="form-group">
-								<label>Company name (optional)</label>
-								<input type="text" class="form-control form-control-md" name="company-name">
-							</div>
+						
 							<div class="form-group">
 								<label>Country / Region *</label>
 								<div class="select-box">
@@ -144,10 +141,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="form-group">
-									<label>Company name (optional)</label>
-									<input type="text" class="form-control form-control-md" name="company-name">
-								</div>
+								
 								<div class="form-group">
 									<label>Country / Region *</label>
 									<div class="select-box">
