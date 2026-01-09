@@ -93,14 +93,16 @@
                              <div class="product-details" data-sticky-options="{'minWidth': 767}">
                                  <h1 class="product-title"><?php echo $prouctsList['product_name'] ?></h1>
                                  <div class="product-bm-wrapper">
+                                    <a href="{{ url('vendorDetails'). '/'.$getProduct['id'] }}">
                                      <figure class="brand">
                                          <img src="<?php echo asset('assets/images/vendor/profile/' . $prouctsList['profile_image']) ?>" alt="Brand"
                                              width="60" height="50" />
                                      </figure>
+                                      </a>
                                      <div class="product-meta">
                                          <div class="product-categories">
                                              Shop Name:
-                                             <span class="product-category"><a href="#"><?php echo $vendor_details['shop_name'] ?></a></span>
+                                             <span class="product-category"><a href="{{ url('vendorDetails'). '/'.$getProduct['id'] }}"><?php echo $vendor_details['shop_name'] ?></a></span>
                                          </div>
                                          <div class="product-categories">
                                              Location:
