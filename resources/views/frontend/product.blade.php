@@ -203,6 +203,12 @@
                                          <a href="#"
                                              class="btn-product-icon btn-wishlist w-icon-heart"><span></span></a>
                                      </div>
+                                        <div class="product-form">
+                                            <a href="<?= url('/productVar/' . $prouctsList['id']) ?>" class="btn btn-primary ">
+                                                <i class="w-icon-cart"></i>
+                                                <span>Add to Cart</span>
+                                            </a>
+                                        </div>
                                  </div>
                              </div>
                          </div>

@@ -10386,6 +10386,7 @@ body .product-popup {
 }
 
 .product-price {
+
   -webkit-box-align: baseline;
   -ms-flex-align: baseline;
   align-items: baseline;
@@ -21964,3 +21965,4 @@ aside .sp-sidebar-banner span {
     border: 2px solid #28a745;
     box-shadow: 0 0 8px rgba(40, 167, 69, 0.4);
 }
+
