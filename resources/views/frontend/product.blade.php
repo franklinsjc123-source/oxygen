@@ -965,7 +965,7 @@
                                 }">
                                 <div class="swiper-wrapper row cols-lg-3 cols-md-4 cols-sm-3 cols-2">
                                   @foreach ($vendorProducts as $product)
-                                    <div class="swiper-slide product">
+                                    <div class=" col-md-4 swiper-slide product">
                                         <figure class="product-media">
                                             <a href="{{ url('/productVar/'.$product->id) }}">
                                                 <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product"
@@ -1034,8 +1034,8 @@
                                     }
                                 }">
                                 <div class="swiper-wrapper row cols-lg-3 cols-md-4 cols-sm-3 cols-2">
-                                    @foreach ($vendorProducts as $product)
-                                        <div class="swiper-slide product">
+                                    @foreach ($relatedProducts as $product)
+                                        <div class="col-md-4 swiper-slide product">
                                             <figure class="product-media">
                                                 <a href="{{ url('productVar').'/'.$product->id }}">
                                                     <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product"/>

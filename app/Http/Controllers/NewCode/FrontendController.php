@@ -477,11 +477,42 @@ class FrontendController extends Controller
                 'category_sub.category_sub_name'
             )
             ->inRandomOrder()  
-            ->limit('3')
+            ->limit('4')
             ->get();
 
             return  $products;
     }
+
+
+
+    public function relatedProducts($category_sub){
+
+          $products = DB::table('products')
+            ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
+            ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
+            ->select(
+                'products.id',
+                'products.product_name',
+                'products.product_image',
+                'category_sub.category_sub_name',
+                DB::raw('MIN(products_details.retail_price) as retail_price'),
+                DB::raw('MIN(products_details.selling_price) as selling_price')
+            )
+            ->where('products.category_sub', $category_sub)
+            ->where('products.status', 1)
+            ->groupBy(
+                'products.id',
+                'products.product_name',
+                'products.product_image',
+                'category_sub.category_sub_name'
+            )
+            ->inRandomOrder()  
+            ->limit('4')
+            ->get();
+
+            return  $products;
+    }
+
 
     public function productVar($id = '')
     {
@@ -495,9 +526,10 @@ class FrontendController extends Controller
 
         $vendor_name = Vendor::where('id', $getProduct->vendor_id)->value('shop_name');
         $vendorProducts   = $this->vendorProducts($getProduct->vendor_id);
+        $relatedProducts   = $this->relatedProducts($getProduct->category_sub);
 
         $vendor_details = vendorcreate::where('id', $getProduct->created_by)->first();
-        return view('frontend/product', compact('id', 'getProduct','vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs','vendorProducts'));
+        return view('frontend/product', compact('id', 'getProduct','vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs','vendorProducts','relatedProducts'));
     }
 
     public function quickView($id)
