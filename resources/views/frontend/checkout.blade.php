@@ -51,14 +51,14 @@
 								<div class="col-xs-6">
 									<div class="form-group">
 										<label>First name *</label>
-										<input type="text" class="form-control form-control-md" name="billing_first_name"
+										<input type="text" class="form-control form-control-md" name="billing_first_name" value="{{ $customer->customer_firstname ?? '' }}"
 											required>
 									</div>
 								</div>
 								<div class="col-xs-6">
 									<div class="form-group">
 										<label>Last name *</label>
-										<input type="text" class="form-control form-control-md" name="billing_last_name"
+										<input type="text" class="form-control form-control-md" name="billing_last_name" value="{{ $customer->customer_lastname ?? '' }}"
 											required>
 									</div>
 								</div>
@@ -75,25 +75,26 @@
 										<option value="us">United States</option>
 										<option value="fr">France</option>
 										<option value="aus">Australia</option>
+										<option value="ind">India</option>
 									</select>
 								</div>
 							</div>
 							<div class="form-group">
 								<label>Street address *</label>
 								<input type="text" placeholder="House number and street name"
-									class="form-control form-control-md mb-2" name="billing_address" required>
+									class="form-control form-control-md mb-2" name="billing_address" value="{{ $customer->customer_address ?? '' }}" required>
 								<input type="text" placeholder="Apartment, suite, unit, etc. (optional)"
-									class="form-control form-control-md" name="street-address-2" required>
+									class="form-control form-control-md" name="street-address-2" value="{{ $customer->customer_address1 ?? '' }}" required>
 							</div>
 							<div class="row gutter-sm">
 								<div class="col-md-6">
 									<div class="form-group">
 										<label>Town / City *</label>
-										<input type="text" class="form-control form-control-md" name="billing_city" required>
+										<input type="text" class="form-control form-control-md" name="billing_city" value="{{ $customer->customer_city ?? '' }}" required>
 									</div>
 									<div class="form-group">
 										<label>ZIP *</label>
-										<input type="text" class="form-control form-control-md" name="billing_postcode" required>
+										<input type="text" class="form-control form-control-md" name="billing_postcode" value="{{ $customer->customer_pincode ?? '' }}" required>
 									</div>
 								</div>
 								<div class="col-md-6">
@@ -101,23 +102,24 @@
 										<label>State *</label>
 										<div class="select-box">
 											<select name="billing_state" class="form-control form-control-md">
-												<option value="default" selected="selected">California</option>
+												<option value="default" selected="selected">Tamilnadu</option>
 												<option value="uk">United Kingdom (UK)</option>
 												<option value="us">United States</option>
 												<option value="fr">France</option>
 												<option value="aus">Australia</option>
+												
 											</select>
 										</div>
 									</div>
 									<div class="form-group">
 										<label>Phone *</label>
-										<input type="text" class="form-control form-control-md" name="billing_phone" required>
+										<input type="text" class="form-control form-control-md" name="billing_phone" value="{{ $customer->customer_mobileno ?? '' }}" required>
 									</div>
 								</div>
 							</div>
 							<div class="form-group mb-7">
 								<label>Email address *</label>
-								<input type="email" class="form-control form-control-md" name="billing_email" required>
+								<input type="email" class="form-control form-control-md" name="billing_email" value="{{ $customer->customer_email ?? '' }}" required>
 							</div>
 							<div class="form-group checkbox-toggle pb-2">
 								<input type="checkbox" class="custom-checkbox" id="shipping-toggle"
@@ -129,14 +131,14 @@
 									<div class="col-xs-6">
 										<div class="form-group">
 											<label>First name *</label>
-											<input type="text" class="form-control form-control-md" name="firstname"
+											<input type="text" class="form-control form-control-md" name="shipping_firstname"
 												required>
 										</div>
 									</div>
 									<div class="col-xs-6">
 										<div class="form-group">
 											<label>Last name *</label>
-											<input type="text" class="form-control form-control-md" name="lastname"
+											<input type="text" class="form-control form-control-md" name="shipping_lastname"
 												required>
 										</div>
 									</div>
@@ -145,7 +147,7 @@
 								<div class="form-group">
 									<label>Country / Region *</label>
 									<div class="select-box">
-										<select name="country" class="form-control form-control-md">
+										<select name="shipping_country" class="form-control form-control-md">
 											<option value="default" selected="selected">United States
 												(US)
 											</option>
@@ -153,31 +155,41 @@
 											<option value="us">United States</option>
 											<option value="fr">France</option>
 											<option value="aus">Australia</option>
+											<option value="ind">India</option>
 										</select>
 									</div>
 								</div>
 								<div class="form-group">
 									<label>Street address *</label>
 									<input type="text" placeholder="House number and street name"
-										class="form-control form-control-md mb-2" name="street-address-1" required>
+										class="form-control form-control-md mb-2" name="shipping_address" required>
 									<input type="text" placeholder="Apartment, suite, unit, etc. (optional)"
-										class="form-control form-control-md" name="street-address-2" required>
+										class="form-control form-control-md" name="shipping_address1" required>
 								</div>
 								<div class="row gutter-sm">
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>Town / City *</label>
-											<input type="text" class="form-control form-control-md" name="town" required>
+											<input type="text" class="form-control form-control-md" name="shipping_city" required>
 										</div>
 										<div class="form-group">
 											<label>Postcode *</label>
-											<input type="text" class="form-control form-control-md" name="postcode" required>
+											<input type="text" class="form-control form-control-md" name="shipping_postcode" required>
 										</div>
 									</div>
 									<div class="col-md-6">
 										<div class="form-group">
-											<label>Country (optional)</label>
-											<input type="text" class="form-control form-control-md" name="zip" required>
+											<label>State *</label>
+											<div class="select-box">
+												<select name="shipping_state" class="form-control form-control-md">
+													<option value="default" selected="selected">Tamilnadu</option>
+													<option value="uk">United Kingdom (UK)</option>
+													<option value="us">United States</option>
+													<option value="fr">France</option>
+													<option value="aus">Australia</option>
+												
+												</select>
+											</div>
 										</div>
 									</div>
 								</div>
