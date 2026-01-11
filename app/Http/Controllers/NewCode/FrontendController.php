@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use App\Models\PinCode\PinCode;
 use App\Models\wishlist;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class FrontendController extends Controller
 {
@@ -1167,6 +1168,58 @@ class FrontendController extends Controller
         return redirect()->back()->with('success', 'Order placed successfully!');
     }
 
+    public function downloadInvoice()
+    {
+        $data = [
+            'seller' => [
+                'name' => 'Le Delite',
+                'address' => 'New Rajender Nagar, Delhi - 110060',
+                'pan' => 'AKUPA3250C',
+                'gst' => '07AKUPA3250C1ZI'
+            ],
+            'invoice' => [
+                'order_no' => '406-4816552-3160328',
+                'invoice_no' => 'IN-23578',
+                'order_date' => '06-12-2025',
+                'invoice_date' => '06-12-2025'
+            ],
+            'billing' => [
+                'name' => 'Martin',
+                'address' => 'Arunachalam Enclave, Vijay Nagar',
+                'city' => 'Chennai',
+                'pincode' => '600048',
+                'state_code' => '33'
+            ],
+            'shipping' => [
+                'name' => 'Martin',
+                'address' => 'Arunachalam Enclave, Vijay Nagar',
+                'city' => 'Chennai',
+                'pincode' => '600048',
+                'state_code' => '33'
+            ],
+            'items' => [
+                [
+                    'name' => 'Unicorn Gift Combo Set',
+                    'hsn' => '9505',
+                    'price' => 334.75,
+                    'qty' => 1,
+                    'net' => 334.75,
+                    'tax_rate' => 18,
+                    'tax_type' => 'IGST',
+                    'tax_amt' => 60.25,
+                    'total' => 395.00,
+                ]
+            ],
+            'summary' => [
+                'tax' => 60.25,
+                'grand' => 395.00,
+                'words' => 'Three Hundred Ninety Five Only'
+            ]
+        ];
+
+        $pdf = Pdf::loadView('invoice', $data);
+        return $pdf->download('invoice.pdf');
+    }
 
 
     public function getFilterProducts(Request $request)

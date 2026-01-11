@@ -224,10 +224,9 @@
                                                 </td>
 
                                                 <td class="order-action">
-                                                    <a href="{{ url('order-details/'.$order->id) }}"
-                                                    class="btn btn-outline btn-default btn-block btn-sm btn-rounded">
-                                                    View
-                                                    </a>
+                                                    <a href="{{ url('invoice-pdf/'.$order->id) }}" target="_blank"
+                                                        class="btn btn-outline btn-default btn-block btn-sm btn-rounded">
+                                                        View</a>
                                                 </td>
                                             </tr>
                                         @endforeach
