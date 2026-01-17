@@ -20,6 +20,7 @@ use Darryldecode\Cart\Facades\CartFacade as Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\City;
+use App\Models\Rating;
 use App\Models\Ecom_Customer_info;
 use App\Models\Ecom_Customer_Shipping;
 use App\Models\Order\Orders;
@@ -693,7 +694,38 @@ class FrontendController extends Controller
         $relatedProducts   = $this->relatedProducts($getProduct->category_sub);
 
         $vendor_details = vendorcreate::where('id', $getProduct->created_by)->first();
-        return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts', 'relatedProducts'));
+
+        $prouctdata = Products::find($id);
+            $canRate = false;
+
+            if (session()->has('customer_id')) {  
+                $customer_id = session('customer_id');
+
+                $order = DB::table('ordersproducts')
+                    ->join('orders', 'orders.id', '=', 'ordersproducts.order_id')
+                    ->where('orders.User_id', $customer_id)   // customer
+                    ->where('ordersproducts.product_id', $id) // product
+                    ->where('ordersproducts.order_status', 'Delivered')
+                    ->first();
+
+                if ($order) { 
+                    $canRate = true;
+                }
+            }
+
+        $avg = Rating::where('products_id',$prouctdata['id'])->avg('star_rating');
+        $percent = $avg > 0 ? ($avg / 5) * 100 : 0;
+
+        $reviewCount = Rating::where('products_id', $prouctdata['id'])->count();
+
+        $myRating = null;
+        if (session()->has('customer_id')) {
+            $myRating = Rating::where('products_id', $prouctdata['id'])
+                ->where('customer_id', session('customer_id'))
+                ->first();
+        }
+
+        return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts', 'relatedProducts', 'percent', 'reviewCount', 'canRate', 'myRating'));
     }
 
     public function quickView($id)
@@ -1554,4 +1586,34 @@ class FrontendController extends Controller
         $wishCount = count($wishlist);
         return response()->json(['msg' => 'Success', 'wishcount' => $wishCount], 200);
     }
+
+    public function storeRating(Request $request)
+        {  
+            if(!session()->has('customer_id')){
+                return back()->with('error','Login first');
+            }
+
+            $request->validate([
+                'product_id'=>'required',
+                'star_rating'=>'required|between:1,5',
+                'comment'=>'required'
+            ]);
+
+            Rating::updateOrCreate(
+                [
+                    'products_id' => $request->product_id,
+                    'customer_id' => session('customer_id'),
+                ],
+                [
+                    'customer_name' => 'test',
+                    'star_rating'   => $request->star_rating,
+                    'comments'      => $request->comment,
+                    'status'        => 1
+                ]
+            );
+
+            return back()->with('success','Rating submitted');
+        }
+
+        
 }
