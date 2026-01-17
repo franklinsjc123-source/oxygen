@@ -286,7 +286,7 @@
 
         <div class="title-link-wrapper mb-3">
              <h2 class="title mb-0 pt-2 pb-2">Mens Products</h2>
-             <a href="shop-boxed-banner.html" class="mb-0">More Products<i
+             <a href="{{ url('mainCategoryShop').'/'.'1' }}" class="mb-0">More Products<i
                      class="w-icon-long-arrow-right"></i></a>
          </div>
          <div class="row grid banner-product-wrapper mb-6">
@@ -342,7 +342,7 @@
 
           <div class="title-link-wrapper mb-3">
              <h2 class="title mb-0 pt-2 pb-2">Womens Products</h2>
-             <a href="shop-boxed-banner.html" class="mb-0">More Products<i
+             <a href="{{ url('mainCategoryShop').'/'.'3' }}" class="mb-0">More Products<i
                      class="w-icon-long-arrow-right"></i></a>
          </div>
          <div class="row grid banner-product-wrapper mb-6">
@@ -399,7 +399,7 @@
 
           <div class="title-link-wrapper mb-3">
              <h2 class="title mb-0 pt-2 pb-2">kids Products</h2>
-             <a href="shop-boxed-banner.html" class="mb-0">More Products<i
+             <a href="{{ url('mainCategoryShop').'/'.'2' }}" class="mb-0">More Products<i
                      class="w-icon-long-arrow-right"></i></a>
          </div>
          <div class="row grid banner-product-wrapper mb-6">
@@ -733,7 +733,7 @@
                         'disableOnInteraction': false
                     },
                     'loop': true,
-                    'spaceBetween': 20,
+                    'spaceBetween': 40,
                     'slidesPerView': 2,
                     'breakpoints': {
                         '576': {
@@ -746,7 +746,7 @@
                             'slidesPerView': 6
                         },
                         '1200': {
-                            'slidesPerView': 8
+                            'slidesPerView': 7
                         }
                     }
                 }">
@@ -787,7 +787,7 @@
                         'disableOnInteraction': false
                     },
                     'loop': true,
-                    'spaceBetween': 20,
+                    'spaceBetween': 40,
                     'slidesPerView': 2,
                     'breakpoints': {
                         '576': {
@@ -797,10 +797,10 @@
                             'slidesPerView': 4
                         },
                         '992': {
-                            'slidesPerView': 6
+                            'slidesPerView': 5
                         },
                         '1200': {
-                            'slidesPerView': 8
+                            'slidesPerView': 7
                         }
                     }
                 }">
@@ -816,7 +816,7 @@
                             <figure>
                                 <img src="{{ asset('frontend/images/00' .$imgNo  . '.jpg') }}"  
                                     
-                                    style="width:150px;height:150px;object-fit:cover;border-radius:50%;">
+                                    style="width:150px;height:auto;object-fit:cover;border-radius:50%;">
                                 
                                 <figcaption style="margin-top: 8px; font-weight: 600;">
                                     {{ $row->area }}
@@ -834,4 +834,5 @@
      <!-- End of Container -->
  </main>
  <!-- End of Main -->
+ 
  @endsection

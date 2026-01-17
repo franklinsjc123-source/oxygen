@@ -6789,6 +6789,10 @@ body .product-popup {
   color: #020101;
   transition: box-shadow 0.3s, opacity 0.3s;
 }
+
+.product:hover {
+  color: #020101;
+}
 .product:hover .product-action,
 .product:hover .product-action-horizontal,
 .product:hover .product-action-vertical {
@@ -7365,6 +7369,13 @@ body .product-popup {
 }
 .product .product-pa-wrapper .product-price {
   margin-bottom: 0;
+  color : #000;
+}
+
+
+.product .product-pa-wrapper .product-price:hover {
+  margin-bottom: 0;
+  color : #000 !important;
 }
 .product .product-pa-wrapper .product-action {
   bottom: -1rem;
