@@ -62,10 +62,10 @@ class FrontendController extends Controller
                 ->where('ecom_wishlist.customer_id', '=', $customer_id)
                 ->get();
             $wishCount = count($wishlist);
-            
-             $orderdata = Orders::where('User_id', $customer_id)
-                        ->orderBy('id', 'desc')
-                        ->get();
+
+            $orderdata = Orders::where('User_id', $customer_id)
+                ->orderBy('id', 'desc')
+                ->get();
 
             return view('frontend/my_account', compact('customer', 'wishlist', 'wishCount', 'shipping_address', 'orderdata'));
         } else {
@@ -95,15 +95,15 @@ class FrontendController extends Controller
         $dbPassword = base64_decode(base64_decode($customer->customer_password));
 
         if ($request->current_password !== $dbPassword) {
-           return redirect('/myAccount#account-details')->with('error', 'Old password is incorrect.');
+            return redirect('/myAccount#account-details')->with('error', 'Old password is incorrect.');
         }
 
 
         if ($request->new_password !== $request->confirm_password) {
-           return redirect('/myAccount#account-details')->with('error', 'New password and confirm password not matched .');
+            return redirect('/myAccount#account-details')->with('error', 'New password and confirm password not matched .');
         }
 
-       Ecom_Customer_info::where('customer_id', $customer_id)->update(
+        Ecom_Customer_info::where('customer_id', $customer_id)->update(
             ['customer_password' => base64_encode(base64_encode($request->new_password))]
         );
 
@@ -414,29 +414,186 @@ class FrontendController extends Controller
         }
     }
 
+
+
+
+    public function getMensProduct()
+    {
+        $productsData = Products::from('products as p')
+            ->leftJoin('category as c', 'c.id', '=', 'p.category')
+            ->leftJoin('category_sub as cs', 'cs.id', '=', 'p.category_sub')
+            ->leftJoin('category_main as cm', 'cm.id', '=', 'p.category_main')
+            ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
+            ->limit(12)
+            ->where('cm.id', 1);
+
+        $productsData = $productsData->select(
+            'p.id',
+            'p.vendor_id',
+            'p.product_name',
+            'p.product_image',
+            'p.description',
+            'p.specification',
+            'pd.selling_price',
+            'pd.retail_price',
+            'c.category_name',
+            'cs.category_sub_name',
+            'cm.category_main_name',
+            'vp.shop_name',
+            'vp.profile_image',
+            'pd.attributevalue2 as size',
+            'pd.attributevalue1 as color',
+            'pd.product_detail_image'
+        )->get();
+        $resultArr = [];
+        foreach ($productsData as $val) {
+            $productId = $val->id;
+            if (! isset($resultArr[$productId])) {
+                $resultArr[$productId] = [
+                    'id'                 => $val->id,
+                    'vendor_id'          => $val->vendor_id,
+                    'product_name'       => $val->product_name,
+                    'product_image'      => $val->product_image,
+                    'description'        => $val->description,
+                    'specification'      => $val->specification,
+                    'selling_price'      => $val->selling_price,
+                    'retail_price'       => $val->retail_price,
+                    'category_name'      => $val->category_name,
+                    'category_sub_name'  => $val->category_sub_name,
+                    'category_main_name' => $val->category_main_name,
+                    'shop_name'          => $val->shop_name,
+                    'profile_image'      => $val->profile_image,
+                ];
+            }
+        }
+
+        return $resultArr;
+    }
+
+
+
+    public function getWomensProduct()
+    {
+        $productsData = Products::from('products as p')
+            ->leftJoin('category as c', 'c.id', '=', 'p.category')
+            ->leftJoin('category_sub as cs', 'cs.id', '=', 'p.category_sub')
+            ->leftJoin('category_main as cm', 'cm.id', '=', 'p.category_main')
+            ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
+            ->limit(12)
+            ->where('cm.id', 3);
+
+        $productsData = $productsData->select(
+            'p.id',
+            'p.vendor_id',
+            'p.product_name',
+            'p.product_image',
+            'p.description',
+            'p.specification',
+            'pd.selling_price',
+            'pd.retail_price',
+            'c.category_name',
+            'cs.category_sub_name',
+            'cm.category_main_name',
+            'vp.shop_name',
+            'vp.profile_image',
+            'pd.attributevalue2 as size',
+            'pd.attributevalue1 as color',
+            'pd.product_detail_image'
+        )->get();
+        $resultArr = [];
+        foreach ($productsData as $val) {
+            $productId = $val->id;
+            if (! isset($resultArr[$productId])) {
+                $resultArr[$productId] = [
+                    'id'                 => $val->id,
+                    'vendor_id'          => $val->vendor_id,
+                    'product_name'       => $val->product_name,
+                    'product_image'      => $val->product_image,
+                    'description'        => $val->description,
+                    'specification'      => $val->specification,
+                    'selling_price'      => $val->selling_price,
+                    'retail_price'       => $val->retail_price,
+                    'category_name'      => $val->category_name,
+                    'category_sub_name'  => $val->category_sub_name,
+                    'category_main_name' => $val->category_main_name,
+                    'shop_name'          => $val->shop_name,
+                    'profile_image'      => $val->profile_image,
+                ];
+            }
+        }
+
+        return $resultArr;
+    }
+
+
+    public function getKidsProduct()
+    {
+        $productsData = Products::from('products as p')
+            ->leftJoin('category as c', 'c.id', '=', 'p.category')
+            ->leftJoin('category_sub as cs', 'cs.id', '=', 'p.category_sub')
+            ->leftJoin('category_main as cm', 'cm.id', '=', 'p.category_main')
+            ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
+            ->limit(12)
+            ->where('cm.id', 2);
+
+        $productsData = $productsData->select(
+            'p.id',
+            'p.vendor_id',
+            'p.product_name',
+            'p.product_image',
+            'p.description',
+            'p.specification',
+            'pd.selling_price',
+            'pd.retail_price',
+            'c.category_name',
+            'cs.category_sub_name',
+            'cm.category_main_name',
+            'vp.shop_name',
+            'vp.profile_image',
+            'pd.attributevalue2 as size',
+            'pd.attributevalue1 as color',
+            'pd.product_detail_image'
+        )->get();
+        $resultArr = [];
+        foreach ($productsData as $val) {
+            $productId = $val->id;
+            if (! isset($resultArr[$productId])) {
+                $resultArr[$productId] = [
+                    'id'                 => $val->id,
+                    'vendor_id'          => $val->vendor_id,
+                    'product_name'       => $val->product_name,
+                    'product_image'      => $val->product_image,
+                    'description'        => $val->description,
+                    'specification'      => $val->specification,
+                    'selling_price'      => $val->selling_price,
+                    'retail_price'       => $val->retail_price,
+                    'category_name'      => $val->category_name,
+                    'category_sub_name'  => $val->category_sub_name,
+                    'category_main_name' => $val->category_main_name,
+                    'shop_name'          => $val->shop_name,
+                    'profile_image'      => $val->profile_image,
+                ];
+            }
+        }
+
+        return $resultArr;
+    }
+
     public function demoEight()
     {
-
-
-
-
-
-
-
 
         // dd($pincode);
 
         $mainslider = mainslider::where('status', 1)->get();
 
-        $topCategories = CategoryMain::select('category_main.id', 'category_main.category_main_name', 'category_main.category_main_image', DB::raw('COUNT(products.id) as product_count'))
-            ->leftJoin('products', 'category_main.id', '=', 'products.category_main')
-            ->where('category_main.status', 1)
-            ->groupBy('category_main.id', 'category_main.category_main_name', 'category_main.category_main_image') // Include the columns needed for grouping
-            ->orderByDesc('product_count')
-            ->limit(12)
-            ->get();
 
-        $prouctsList = $this->getSpecificProduct('');
+        $topRatedProducts = $this->getSpecificProduct('');
+        $mensProducts = $this->getMensProduct();
+        $womensProducts = $this->getWomensProduct();
+        $kidsProducts = $this->getKidsProduct();
 
         $vendorcreate = vendorcreate::get();
 
@@ -456,13 +613,14 @@ class FrontendController extends Controller
         }
 
 
-        return view('frontend/demo_eight', compact('mainslider', 'topCategories', 'prouctsList', 'vendorcreate', 'locations'));
+        return view('frontend/demo_eight', compact('mainslider', 'topRatedProducts', 'mensProducts', 'womensProducts', 'kidsProducts', 'vendorcreate', 'locations'));
     }
 
 
-    public function vendorProducts($vendor_id){
+    public function vendorProducts($vendor_id)
+    {
 
-          $products = DB::table('products')
+        $products = DB::table('products')
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
             ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
             ->select(
@@ -481,18 +639,19 @@ class FrontendController extends Controller
                 'products.product_image',
                 'category_sub.category_sub_name'
             )
-            ->inRandomOrder()  
+            ->inRandomOrder()
             ->limit('4')
             ->get();
 
-            return  $products;
+        return  $products;
     }
 
 
 
-    public function relatedProducts($category_sub){
+    public function relatedProducts($category_sub)
+    {
 
-          $products = DB::table('products')
+        $products = DB::table('products')
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
             ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
             ->select(
@@ -511,11 +670,11 @@ class FrontendController extends Controller
                 'products.product_image',
                 'category_sub.category_sub_name'
             )
-            ->inRandomOrder()  
+            ->inRandomOrder()
             ->limit('4')
             ->get();
 
-            return  $products;
+        return  $products;
     }
 
 
@@ -534,7 +693,7 @@ class FrontendController extends Controller
         $relatedProducts   = $this->relatedProducts($getProduct->category_sub);
 
         $vendor_details = vendorcreate::where('id', $getProduct->created_by)->first();
-        return view('frontend/product', compact('id', 'getProduct','vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs','vendorProducts','relatedProducts'));
+        return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts', 'relatedProducts'));
     }
 
     public function quickView($id)
@@ -920,11 +1079,11 @@ class FrontendController extends Controller
         $records = Cart::getContent();
         $total   = Cart::getTotal();
 
-            $customer = null;
-            $customer_id = Session::get('customer_id');
-            if ($customer_id) {
-                $customer = Ecom_Customer_info::where('customer_id', $customer_id)->first();
-            }  
+        $customer = null;
+        $customer_id = Session::get('customer_id');
+        if ($customer_id) {
+            $customer = Ecom_Customer_info::where('customer_id', $customer_id)->first();
+        }
 
         return view('frontend.checkout', compact('count', 'records', 'total', 'customer'));
     }
@@ -1056,7 +1215,7 @@ class FrontendController extends Controller
         =============================== */
 
         if (auth()->check()) {
-            $userId = auth()->id();  
+            $userId = auth()->id();
             $customer = Ecom_Customer_info::where('id', $userId)->first();
             $customerCode = $customer->customer_id ?? null;
         } else {
@@ -1109,7 +1268,7 @@ class FrontendController extends Controller
         // Insert Shipping
         $shipping = Ecom_Customer_Shipping::create([
             'customer_id'       => $customerCode,
-            'customer_firstname'=> $request->billing_first_name,
+            'customer_firstname' => $request->billing_first_name,
             'customer_email'    => $request->billing_email,
             'customer_mobileno' => $request->billing_phone,
             'customer_address'  => $shipping_address,
@@ -1156,7 +1315,7 @@ class FrontendController extends Controller
                 'product_id'      => $item->id,
                 'product_name'    => $item->name,
                 'product_image'   => $item->attributes->image ?? null,
-                'product_quantity'=> $item->quantity,
+                'product_quantity' => $item->quantity,
                 'product_price'   => $item->price,
                 'total_price'     => $item->price * $item->quantity,
                 'order_status'    => 'Pending',
@@ -1218,7 +1377,7 @@ class FrontendController extends Controller
         ];
 
         $pdf = Pdf::loadView('frontend.invoice', $data);
-      //  return $pdf->download('invoice.pdf');
+        //  return $pdf->download('invoice.pdf');
         return $pdf->stream('invoice.pdf');
     }
 

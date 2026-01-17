@@ -179,49 +179,7 @@
          </div>
          <!-- End of Swiper Container -->
 
-         {{-- <h2 class="title title-center mb-5">Top Offers Of The Month</h2>
-         <div class="swiper-container swiper-theme shadow-swiper pb-10"
-             data-swiper-options="{
-                    'spaceBetween': 20,
-                    'slidesPerView': 2,
-                    'breakpoints': {
-                        '576': {
-                            'slidesPerView': 3
-                        },
-                        '768': {
-                            'slidesPerView': 4
-                        },
-                        '992': {
-                            'slidesPerView': 5
-                        },
-                        '1200': {
-                            'slidesPerView': 6
-                        }
-                    }
-                }">
-             <div class="swiper-wrapper row cols-xl-6 cols-lg-5 cols-md-4 cols-sm-3 cols-2">
-
-                 <?php if (isset($topCategories)) {
-                        foreach ($topCategories as $val) { ?>
-                         <div class="swiper-slide category-wrap">
-                             <div class="category category-classic category-absolute overlay-zoom br-sm">
-                                 <a href="demo8-shop.html">
-                                     <figure class="category-media">
-                                         <img src="<?php echo asset('assets/images/categoryMain/' . $val->category_main_image) ?>" alt="Category" width="213"
-                                             height="213" />
-                                     </figure>
-                                 </a>
-                                 <div class="category-content">
-                                     <h4 class="category-name ls-normal"><?php echo $val->category_main_name ?></h4>
-                                     <a href="<?php echo $val->id ?>" class="btn btn-primary btn-link btn-underline">Shop Now</a>
-                                 </div>
-                             </div>
-                         </div>
-                 <?php }
-                    } ?>
-             </div>
-             <div class="swiper-pagination"></div>
-         </div> --}}
+        
          <!-- End of Swiper -->
 
 
@@ -243,10 +201,10 @@
              <a href="{{ url('vendorDokenGrid') }}" class="mb-0">More Products<i
                      class="w-icon-long-arrow-right"></i></a>
          </div>
-         
+
          <div class="row grid banner-product-wrapper mb-6">
-             <?php if (isset($prouctsList)) {
-                    foreach ($prouctsList as $row) { ?>
+             <?php if (isset($topRatedProducts)) {
+                    foreach ($topRatedProducts as $row) { ?>
                         <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
                             <div class="product product-simple text-center">
                                 <figure class="product-media">
@@ -332,8 +290,8 @@
                      class="w-icon-long-arrow-right"></i></a>
          </div>
          <div class="row grid banner-product-wrapper mb-6">
-             <?php if (isset($prouctsList)) {
-                    foreach ($prouctsList as $row) { ?>
+             <?php if (isset($mensProducts)) {
+                    foreach ($mensProducts as $row) { ?>
                         <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
                             <div class="product product-simple text-center">
                                 <figure class="product-media">
@@ -388,8 +346,8 @@
                      class="w-icon-long-arrow-right"></i></a>
          </div>
          <div class="row grid banner-product-wrapper mb-6">
-             <?php if (isset($prouctsList)) {
-                    foreach ($prouctsList as $row) { ?>
+             <?php if (isset($womensProducts)) {
+                    foreach ($womensProducts as $row) { ?>
                         <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
                             <div class="product product-simple text-center">
                                 <figure class="product-media">
@@ -445,8 +403,8 @@
                      class="w-icon-long-arrow-right"></i></a>
          </div>
          <div class="row grid banner-product-wrapper mb-6">
-             <?php if (isset($prouctsList)) {
-                    foreach ($prouctsList as $row) { ?>
+             <?php if (isset($kidsProducts)) {
+                    foreach ($kidsProducts as $row) { ?>
                         <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
                             <div class="product product-simple text-center">
                                 <figure class="product-media">
