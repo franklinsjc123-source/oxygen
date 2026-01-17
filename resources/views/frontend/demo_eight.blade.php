@@ -733,7 +733,7 @@
                         'disableOnInteraction': false
                     },
                     'loop': true,
-                    'spaceBetween': 40,
+                    'spaceBetween': 50,
                     'slidesPerView': 2,
                     'breakpoints': {
                         '576': {
@@ -787,7 +787,7 @@
                         'disableOnInteraction': false
                     },
                     'loop': true,
-                    'spaceBetween': 40,
+                    'spaceBetween': 50,
                     'slidesPerView': 2,
                     'breakpoints': {
                         '576': {

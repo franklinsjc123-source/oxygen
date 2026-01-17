@@ -86,8 +86,8 @@
 
 @media (max-width: 576px) {
     .swiper-slide-vendor img {
-        min-height: 190px !important;
-        max-height: 190px !important;
+        min-height: 150px !important;
+        max-height: 150px !important;
     }
 }
 
@@ -6791,8 +6791,9 @@ body .product-popup {
 }
 
 .product:hover {
-  color: #020101;
+  color: #020101 !important;
 }
+
 .product:hover .product-action,
 .product:hover .product-action-horizontal,
 .product:hover .product-action-vertical {
@@ -7229,6 +7230,12 @@ body .product-popup {
   letter-spacing: -0.05em;
   line-height: 1.6;
   transition: visibility 0.4s, opacity 0.4s;
+   color: #000;
+}
+
+.product-price:hover {
+
+   color: #000 !important;
 }
 .product-price .old-price {
   font-weight: 400;
@@ -12404,7 +12411,9 @@ body .product-popup {
   overflow: hidden;
 }
 .brands-wrapper {
+  padding : 10px;
   border: 1px solid #eee;
+  background-color: #eee;
 }
 .footer-newsletter {
   padding: 2.9rem 0 2.8rem;

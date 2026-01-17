@@ -1000,12 +1000,35 @@ class FrontendController extends Controller
             ->leftJoin('products as p', 'p.vendor_id', '=', 'vd.id')
             ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers')
             ->select(
-                'vd.*',
+                'vd.id',
+                'vd.shop_name',
+                'vd.owner_name',
+                'vd.mobile_number1',
+                'vd.address',
+                'vd.city',
+                'vd.profile_image',
+                'vd.city',
+                'vd.state',
+                'vd.pincode',
                 DB::raw('GROUP_CONCAT(DISTINCT p.product_name) as products'),
                 DB::raw('GROUP_CONCAT(DISTINCT o.title) as offers'),
                 DB::raw('GROUP_CONCAT(DISTINCT o.id) as offer_ids')
             )
-            ->groupBy('vd.id');
+            ->whereNotNull('o.id')
+            ->groupBy(
+                'vd.id',
+                'vd.shop_name',
+                'vd.owner_name',
+                'vd.mobile_number1',
+                'vd.city',
+                'vd.profile_image',
+                'vd.address',
+                'vd.city',
+                'vd.state',
+                'vd.pincode'
+            );
+
+        $vendorcreate = $query->get();
 
         if ($offer_id) {
             $query->where('o.id', $offer_id);
