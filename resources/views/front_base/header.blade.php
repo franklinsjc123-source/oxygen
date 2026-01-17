@@ -111,15 +111,10 @@
                             <div class="select-box">
                                 <select id="category" name="category">
                                     <option value="">All Categories</option>
-                                    <option value="4">Fashion</option>
-                                    <option value="5">Furniture</option>
-                                    <option value="6">Shoes</option>
-                                    <option value="7">Sports</option>
-                                    <option value="8">Games</option>
-                                    <option value="9">Computers</option>
-                                    <option value="10">Electronics</option>
-                                    <option value="11">Kitchen</option>
-                                    <option value="12">Clothing</option>
+                                       @foreach ($categorymain as $categoriesmain)
+                                            <option value="{{ $categoriesmain->id  }}"> {{ $categoriesmain->category_main_name }}</option>
+                                        @endforeach
+                                   
                                 </select>
                             </div>
                             <input type="text" class="form-control" name="search" id="search"
@@ -225,7 +220,7 @@
                                             </ul>
                                         </li>
                                         @else
-                                      <li><a href="{{ url( 'MainCatergoryproductshow/'.$categoriesmain->id ) }}">{{ $categoriesmain->category_main_name }}</a></li> 
+                                      <li><a href="{{ url( 'mainCategoryShop/'.$categoriesmain->id ) }}">{{ $categoriesmain->category_main_name }}</a></li> 
                                        @endif
                                        @endforeach                                     
                                     </ul>
@@ -330,6 +325,13 @@
                                             
                                         </ul> --}}
                                     </li>
+
+                                      <li><a href="{{ url('mainCategoryShop').'/'.'1' }}">Men</a></li>
+
+                                        <li><a href="{{ url('mainCategoryShop').'/'.'2' }}">Women</a></li>
+
+                                          <li><a href="{{ url('mainCategoryShop').'/'.'3' }}">Kids</a></li>
+                                          <li><a href="{{ url('mainCategoryShop').'/'.'4' }}">Living</a></li>
                                     <li><a href="">Location</a></li>
                                         {{-- <li >
                                         <a href="vendor-dokan-store.html">Offers</a>

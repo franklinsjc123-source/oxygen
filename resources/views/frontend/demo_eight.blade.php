@@ -231,38 +231,14 @@
 
      <!-- End of Grey Section -->
 
-     <div class="container">
-         <div class="row cols-md-2 category-banner-2cols mb-5">
-             <div class="banner banner-fixed mb-4">
-                 <figure class="br-sm">
-                     <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/2-1.jpg" alt="Category Banner" width="680"
-                         height="220" style="background-color: #384744;" />
-                 </figure>
-                 <div class="banner-content y-50">
-                     <h5 class="banner-subtitle text-uppercase text-white font-weight-bold">Natural Process</h5>
-                     <h3 class="banner-title text-capitalize text-white">Cosmetic Makeup<br>Professional</h3>
-                     <a href="demo8-shop.html" class="btn btn-white btn-link btn-slide-right btn-icon-right">
-                         Shop Now<i class="w-icon-long-arrow-right"></i></a>
-                 </div>
-             </div>
-             <!-- End of Banner -->
-             <div class="banner banner-fixed mb-4">
-                 <figure class="br-sm">
-                     <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/2-2.jpg" alt="Category Banner" width="680"
-                         height="220" style="background-color: #e7e7e7;" />
-                 </figure>
-                 <div class="banner-content y-50">
-                     <h5 class="banner-subtitle text-uppercase font-weight-bold">Trending Now</h5>
-                     <h3 class="banner-title text-capitalize">Women’s Lifestyle<br>Collection</h3>
-                     <a href="demo8-shop.html" class="btn btn-dark btn-link btn-slide-right btn-icon-right">
-                         Shop Now<i class="w-icon-long-arrow-right"></i></a>
-                 </div>
-             </div>
-             <!-- End of Banner -->
-         </div>
-         <!-- End of Category Banner 2Cols -->
 
-         <div class="title-link-wrapper mb-3">
+
+
+         <!-- End of Banner Product Wrapper -->
+
+     <div class="container">
+
+                 <div class="title-link-wrapper mb-3">
              <h2 class="title mb-0 pt-2 pb-2">Top Rated Products</h2>
              <a href="shop-boxed-banner.html" class="mb-0">More Products<i
                      class="w-icon-long-arrow-right"></i></a>
@@ -315,7 +291,39 @@
              <?php }
                 } ?>
          </div>
-         <!-- End of Banner Product Wrapper -->
+
+         
+         <div class="row cols-md-2 category-banner-2cols mb-5">
+             <div class="banner banner-fixed mb-4">
+                 <figure class="br-sm">
+                     <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/2-1.jpg" alt="Category Banner" width="680"
+                         height="220" style="background-color: #384744;" />
+                 </figure>
+                 <div class="banner-content y-50">
+                     <h5 class="banner-subtitle text-uppercase text-white font-weight-bold">Natural Process</h5>
+                     <h3 class="banner-title text-capitalize text-white">Cosmetic Makeup<br>Professional</h3>
+                     <a href="demo8-shop.html" class="btn btn-white btn-link btn-slide-right btn-icon-right">
+                         Shop Now<i class="w-icon-long-arrow-right"></i></a>
+                 </div>
+             </div>
+             <!-- End of Banner -->
+             <div class="banner banner-fixed mb-4">
+                 <figure class="br-sm">
+                     <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/2-2.jpg" alt="Category Banner" width="680"
+                         height="220" style="background-color: #e7e7e7;" />
+                 </figure>
+                 <div class="banner-content y-50">
+                     <h5 class="banner-subtitle text-uppercase font-weight-bold">Trending Now</h5>
+                     <h3 class="banner-title text-capitalize">Women’s Lifestyle<br>Collection</h3>
+                     <a href="demo8-shop.html" class="btn btn-dark btn-link btn-slide-right btn-icon-right">
+                         Shop Now<i class="w-icon-long-arrow-right"></i></a>
+                 </div>
+             </div>
+             <!-- End of Banner -->
+         </div>
+         <!-- End of Category Banner 2Cols -->
+
+     
 
 
 
