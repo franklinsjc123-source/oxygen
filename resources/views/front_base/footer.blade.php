@@ -893,6 +893,6 @@ document.querySelector('form.review-form').addEventListener('submit', function (
 
 
 
-   </body>
+</body>
 
-   </html>
+</html>
