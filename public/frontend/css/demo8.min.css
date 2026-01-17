@@ -6310,7 +6310,7 @@ body .product-popup {
 }
 .rating-stars a {
   color: #333;
-  text-indent: -9999px;
+  text-indent: 0 !important;
   letter-spacing: 1px;
   width: 1.4rem;
 }

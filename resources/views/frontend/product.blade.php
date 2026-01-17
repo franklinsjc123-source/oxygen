@@ -142,12 +142,11 @@
 
 
                                  <div class="ratings-container">
-                                     <div class="ratings-full">
-                                         <span class="ratings" style="width: 80%;"></span>
-                                         <span class="tooltiptext tooltip-top"></span>
-                                     </div>
-                                     <a href="#product-tab-reviews" class="rating-reviews">(3 Reviews)</a>
-                                 </div>
+                                    <div class="ratings-full">
+                                        <span class="ratings" style="width: {{ $percent ?? 0 }}%"></span>
+                                    </div>
+                                    <a>({{ $reviewCount }} Reviews)</a>
+                                </div>
 
                                  <div class="product-short-desc">
                                      <ul class="list-type-check list-style-none">
@@ -458,7 +457,7 @@
                                                  Review</h3>
                                              <p class="mb-3">Your email address will not be published. Required
                                                  fields are marked *</p>
-                                             <form action="#" method="POST" class="review-form">
+                                             <!-- <form action="#" method="POST" class="review-form">
                                                  <div class="rating-form">
                                                      <label for="rating">Your Rating Of This Product :</label>
                                                      <span class="rating-stars">
@@ -499,7 +498,38 @@
                                                  </div>
                                                  <button type="submit" class="btn btn-dark">Submit
                                                      Review</button>
-                                             </form>
+                                             </form> -->
+                                             @if(session()->has('customer_id') && $canRate)
+                                                <form action="{{ route('rating.store') }}" method="POST" class="review-form">
+                                                    @csrf
+                                                    <input type="hidden" name="product_id" value="{{ $prouctsList['id'] }}">
+
+                                                    <div class="rating-form">
+                                                        <label>Your Rating Of This Product :</label>
+                                                        <span class="rating-stars" id="user-rating">
+                                                            <a href="#" class="star-1" data-val="1"></a>
+                                                            <a href="#" class="star-2" data-val="2"></a>
+                                                            <a href="#" class="star-3" data-val="3"></a>
+                                                            <a href="#" class="star-4" data-val="4"></a>
+                                                            <a href="#" class="star-5" data-val="5"></a>
+                                                        </span>
+
+                                                        <input type="hidden" name="star_rating" id="rating">
+                                                    </div>
+
+                                                    <textarea name="comment" cols="30" rows="6"
+                                                        placeholder="Write Your Review Here..."
+                                                        class="form-control"
+                                                        required>{{ $myRating->comments ?? '' }}</textarea>
+
+                                                    <button type="submit" class="btn btn-dark">Submit Review</button>
+                                                </form>
+
+                                                @elseif(!session()->has('customer_id'))
+                                                <p>Please login to give rating</p>
+                                                @else
+                                                <p>You can rate only after purchasing this product</p>
+                                                @endif
                                          </div>
                                      </div>
                                  </div>
