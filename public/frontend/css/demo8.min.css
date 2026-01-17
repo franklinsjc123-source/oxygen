@@ -4562,6 +4562,7 @@ blockquote {
 }
 .w-icon-cart:before {
   content: "";
+  color: #fff;
 }
 .w-icon-category:before {
   content: "";
