@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\NewCode;
 
 use App\Http\Controllers\Controller;
+use App\Models\order\ordersproduct;
 use App\Models\Banners\mainslider;
 use App\Models\Category\CategoryMain;
 use App\Models\Category\Category;
@@ -26,6 +27,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use App\Models\PinCode\PinCode;
 use App\Models\wishlist;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class FrontendController extends Controller
 {
@@ -61,8 +63,11 @@ class FrontendController extends Controller
                 ->get();
             $wishCount = count($wishlist);
             
+             $orderdata = Orders::where('User_id', $customer_id)
+                        ->orderBy('id', 'desc')
+                        ->get();
 
-            return view('frontend/my_account', compact('customer', 'wishlist', 'wishCount', 'shipping_address'));
+            return view('frontend/my_account', compact('customer', 'wishlist', 'wishCount', 'shipping_address', 'orderdata'));
         } else {
 
             return redirect('/demoEight');
@@ -914,8 +919,123 @@ class FrontendController extends Controller
         $count   = Cart::getContent()->count();
         $records = Cart::getContent();
         $total   = Cart::getTotal();
-        return view('frontend.checkout', compact('count', 'records', 'total'));
+
+            $customer = null;
+            $customer_id = Session::get('customer_id');
+            if ($customer_id) {
+                $customer = Ecom_Customer_info::where('customer_id', $customer_id)->first();
+            }  
+
+        return view('frontend.checkout', compact('count', 'records', 'total', 'customer'));
     }
+
+    // public function checkout_store(Request $request)
+    // {
+    //     $request->validate([
+    //         'billing_first_name' => 'required',
+    //         'billing_last_name'  => 'required',
+    //         'billing_phone'      => 'required',
+    //         'billing_email'      => 'required|email',
+    //         'billing_address'    => 'required',
+    //         'billing_city'       => 'required',
+    //         'billing_state'      => 'required',
+    //         'billing_country'    => 'required',
+    //         'billing_postcode'   => 'required',
+    //     ]);
+
+    //     /* ===============================
+    //     USER / CUSTOMER LOGIC
+    //     =============================== */
+
+    //     if (auth()->check()) {
+
+    //         // Logged in user
+    //         $userId = auth()->id();
+
+    //     } else {
+
+    //         // Check customer already exists by mobile or email
+    //         $customer = Ecom_Customer_info::where('customer_mobileno', $request->billing_phone)
+    //             ->orWhere('customer_email', $request->billing_email)
+    //             ->first();
+
+    //         if (!$customer) {
+
+    //             $customerCode = 'OXY-C' . str_pad(Ecom_Customer_info::max('id') + 1, 5, '0', STR_PAD_LEFT);
+
+    //             $customer = Ecom_Customer_info::create([
+    //                 'customer_id'        => $customerCode,
+    //                 'customer_firstname' => $request->billing_first_name,
+    //                 'customer_lastname'  => $request->billing_last_name,
+    //                 'customer_email'     => $request->billing_email,
+    //                 'customer_mobileno'  => $request->billing_phone,
+    //                 'customer_password'  => base64_encode('welcome@123'), // default password
+    //                 'customer_address'   => $request->billing_address,
+    //                 'customer_address1'  => $request->billing_address,
+    //                 'customer_city'      => $request->billing_city,
+    //                 'customer_state'     => $request->billing_state,
+    //                 'customer_pincode'   => $request->billing_postcode,
+    //                 'customer_type'      => 'Customer',
+    //             ]);
+    //         }
+
+    //         // Use customer table ID or customer_id
+    //         $userId = $customer->customer_id; // OR $customer->id
+    //     }
+
+    //     /* ===============================
+    //     SHIPPING LOGIC
+    //     =============================== */
+
+    //     if ($request->has('ship_to_different')) {
+    //         $shipping_address = $request->shipping_address;
+    //         $shipping_city    = $request->shipping_city;
+    //         $shipping_state   = $request->shipping_state;
+    //         $shipping_country = $request->shipping_country;
+    //         $shipping_postcode= $request->shipping_postcode;
+
+    //            ...intha edathula.. Ecom_Customer_Shipping:: model insert
+    //     } else {
+    //         $shipping_address = $request->billing_address;
+    //         $shipping_city    = $request->billing_city;
+    //         $shipping_state   = $request->billing_state;
+    //         $shipping_country = $request->billing_country;
+    //         $shipping_postcode= $request->billing_postcode;
+    //     }
+
+    //     /* ===============================
+    //     ORDER INSERT
+    //     =============================== */
+    //         ...intha edathula.. ordersproduct::... ithulayum insert.. ok va
+    //     Orders::create([
+    //         'User_id'        => $userId,
+    //         'orders_id'      => 'ORD-' . strtoupper(Str::random(8)),
+
+    //         'firstname'      => $request->billing_first_name,
+    //         'lastname'       => $request->billing_last_name,
+    //         'phone'          => $request->billing_phone,
+    //         'email'          => $request->billing_email,
+
+    //         'address'        => $shipping_address,
+    //         'town'           => $shipping_city,
+    //         'state'          => $shipping_state,
+    //         'country'        => $shipping_country,
+    //         'postelcode'     => $shipping_postcode,
+
+    //         'value'          => 100,
+    //         'shipping'       => $request->shipping_method ?? 'free',
+    //         'total'          => 100,
+    //         'grandtotal'     => 100,
+
+    //         'order_status'   => 'Pending',
+    //         'payment_status' => 'Pending',
+    //         'order_notes'    => $request->order_notes,
+    //         'order_date'     => now(),
+    //         'status'         => 1,
+    //     ]);
+
+    //     return redirect()->back()->with('success', 'Order placed successfully!');
+    // }
 
     public function checkout_store(Request $request)
     {
@@ -932,23 +1052,20 @@ class FrontendController extends Controller
         ]);
 
         /* ===============================
-        USER / CUSTOMER LOGIC
+        CUSTOMER LOGIC
         =============================== */
 
         if (auth()->check()) {
-
-            // Logged in user
-            $userId = auth()->id();
-
+            $userId = auth()->id();  
+            $customer = Ecom_Customer_info::where('id', $userId)->first();
+            $customerCode = $customer->customer_id ?? null;
         } else {
 
-            // Check customer already exists by mobile or email
             $customer = Ecom_Customer_info::where('customer_mobileno', $request->billing_phone)
                 ->orWhere('customer_email', $request->billing_email)
                 ->first();
 
             if (!$customer) {
-
                 $customerCode = 'OXY-C' . str_pad(Ecom_Customer_info::max('id') + 1, 5, '0', STR_PAD_LEFT);
 
                 $customer = Ecom_Customer_info::create([
@@ -957,7 +1074,7 @@ class FrontendController extends Controller
                     'customer_lastname'  => $request->billing_last_name,
                     'customer_email'     => $request->billing_email,
                     'customer_mobileno'  => $request->billing_phone,
-                    'customer_password'  => base64_encode('welcome@123'), // default password
+                    'customer_password'  => base64_encode('welcome@123'),
                     'customer_address'   => $request->billing_address,
                     'customer_address1'  => $request->billing_address,
                     'customer_city'      => $request->billing_city,
@@ -967,8 +1084,8 @@ class FrontendController extends Controller
                 ]);
             }
 
-            // Use customer table ID or customer_id
-            $userId = $customer->customer_id; // OR $customer->id
+            $customerCode = $customer->customer_id;
+            $userId = $customer->id;
         }
 
         /* ===============================
@@ -976,43 +1093,52 @@ class FrontendController extends Controller
         =============================== */
 
         if ($request->has('ship_to_different')) {
-            $shipping_address = $request->shipping_address;
-            $shipping_city    = $request->shipping_city;
-            $shipping_state   = $request->shipping_state;
-            $shipping_country = $request->shipping_country;
-            $shipping_postcode= $request->shipping_postcode;
+            $shipping_address  = $request->shipping_address;
+            $shipping_city     = $request->shipping_city;
+            $shipping_state    = $request->shipping_state;
+            $shipping_country  = $request->shipping_country;
+            $shipping_postcode = $request->shipping_postcode;
         } else {
-            $shipping_address = $request->billing_address;
-            $shipping_city    = $request->billing_city;
-            $shipping_state   = $request->billing_state;
-            $shipping_country = $request->billing_country;
-            $shipping_postcode= $request->billing_postcode;
+            $shipping_address  = $request->billing_address;
+            $shipping_city     = $request->billing_city;
+            $shipping_state    = $request->billing_state;
+            $shipping_country  = $request->billing_country;
+            $shipping_postcode = $request->billing_postcode;
         }
+
+        // Insert Shipping
+        $shipping = Ecom_Customer_Shipping::create([
+            'customer_id'       => $customerCode,
+            'customer_firstname'=> $request->billing_first_name,
+            'customer_email'    => $request->billing_email,
+            'customer_mobileno' => $request->billing_phone,
+            'customer_address'  => $shipping_address,
+            'customer_city'     => $shipping_city,
+            'customer_state'    => $shipping_state,
+            'customer_pincode'  => $shipping_postcode,
+            'is_default'        => 1,
+        ]);
 
         /* ===============================
         ORDER INSERT
         =============================== */
 
-        Orders::create([
-            'User_id'        => $userId,
+        $order = Orders::create([
+            'User_id'        => $customerCode,
             'orders_id'      => 'ORD-' . strtoupper(Str::random(8)),
-
             'firstname'      => $request->billing_first_name,
             'lastname'       => $request->billing_last_name,
             'phone'          => $request->billing_phone,
             'email'          => $request->billing_email,
-
             'address'        => $shipping_address,
             'town'           => $shipping_city,
             'state'          => $shipping_state,
             'country'        => $shipping_country,
             'postelcode'     => $shipping_postcode,
-
-            'value'          => 100,
+            'value'          => Cart::getTotal(),
             'shipping'       => $request->shipping_method ?? 'free',
-            'total'          => 100,
-            'grandtotal'     => 100,
-
+            'total'          => Cart::getTotal(),
+            'grandtotal'     => Cart::getTotal(),
             'order_status'   => 'Pending',
             'payment_status' => 'Pending',
             'order_notes'    => $request->order_notes,
@@ -1020,7 +1146,79 @@ class FrontendController extends Controller
             'status'         => 1,
         ]);
 
+        /* ===============================
+        ORDER PRODUCTS INSERT
+        =============================== */
+
+        foreach (Cart::getContent() as $item) {
+            ordersproduct::create([
+                'order_id'        => $order->orders_id,
+                'product_id'      => $item->id,
+                'product_name'    => $item->name,
+                'product_image'   => $item->attributes->image ?? null,
+                'product_quantity'=> $item->quantity,
+                'product_price'   => $item->price,
+                'total_price'     => $item->price * $item->quantity,
+                'order_status'    => 'Pending',
+            ]);
+        }
+
+        Cart::clear();
+
         return redirect()->back()->with('success', 'Order placed successfully!');
+    }
+
+    public function downloadInvoice()
+    {
+        $data = [
+            'seller' => [
+                'name' => 'Le Delite',
+                'address' => 'New Rajender Nagar, Delhi - 110060',
+                'pan' => 'AKUPA3250C',
+                'gst' => '07AKUPA3250C1ZI'
+            ],
+            'invoice' => [
+                'order_no' => '406-4816552-3160328',
+                'invoice_no' => 'IN-23578',
+                'order_date' => '06-12-2025',
+                'invoice_date' => '06-12-2025'
+            ],
+            'billing' => [
+                'name' => 'Martin',
+                'address' => 'Arunachalam Enclave, Vijay Nagar',
+                'city' => 'Chennai',
+                'pincode' => '600048',
+                'state_code' => '33'
+            ],
+            'shipping' => [
+                'name' => 'Martin',
+                'address' => 'Arunachalam Enclave, Vijay Nagar',
+                'city' => 'Chennai',
+                'pincode' => '600048',
+                'state_code' => '33'
+            ],
+            'items' => [
+                [
+                    'name' => 'Unicorn Gift Combo Set',
+                    'hsn' => '9505',
+                    'price' => 334.75,
+                    'qty' => 1,
+                    'net' => 334.75,
+                    'tax_rate' => 18,
+                    'tax_type' => 'IGST',
+                    'tax_amt' => 60.25,
+                    'total' => 395.00,
+                ]
+            ],
+            'summary' => [
+                'tax' => 60.25,
+                'grand' => 395.00,
+                'words' => 'Three Hundred Ninety Five Only'
+            ]
+        ];
+
+        $pdf = Pdf::loadView('invoice', $data);
+        return $pdf->download('invoice.pdf');
     }
 
 

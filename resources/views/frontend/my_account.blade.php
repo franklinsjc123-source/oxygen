@@ -204,21 +204,40 @@
                                    </tr>
                                </thead>
                                <tbody>
-                                   <tr>
-                                       <td class="order-id">#2321</td>
-                                       <td class="order-date">August 20, 2021</td>
-                                       <td class="order-status">Processing</td>
-                                       <td class="order-total">
-                                           <span class="order-price">$121.00</span> for
-                                           <span class="order-quantity"> 1</span> item
-                                       </td>
-                                       <td class="order-action">
-                                           <a href="#"
-                                               class="btn btn-outline btn-default btn-block btn-sm btn-rounded">View</a>
-                                       </td>
-                                   </tr>
-                              
-                               </tbody>
+                                    @if($orderdata->count() > 0)
+                                        @foreach($orderdata as $order)
+                                            <tr>
+                                                <td class="order-id">
+                                                    #{{ $order->orders_id }}
+                                                </td>
+
+                                                <td class="order-date">
+                                                    {{ \Carbon\Carbon::parse($order->order_date)->format('d M Y') }}
+                                                </td>
+
+                                                <td class="order-status">
+                                                    {{ $order->order_status }}
+                                                </td>
+
+                                                <td class="order-total">
+                                                    <span class="order-price">₹{{ number_format($order->grandtotal, 2) }}</span>
+                                                </td>
+
+                                                <td class="order-action">
+                                                    <a href="{{ url('invoice-pdf/'.$order->id) }}" target="_blank"
+                                                        class="btn btn-outline btn-default btn-block btn-sm btn-rounded">
+                                                        View</a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="5" class="text-center">
+                                                No orders found
+                                            </td>
+                                        </tr>
+                                    @endif
+                                </tbody>
                            </table>
 
                            <a href="shop-banner-sidebar.html" class="btn btn-dark btn-rounded btn-icon-right">Go

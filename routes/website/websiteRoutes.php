@@ -94,6 +94,7 @@ Route::get('quickView/{id?}',[FrontendController::class,'quickView'])->name('qui
 // Route::get('/categoryShop', [FrontendController::class, 'categoryShop'])->name('categoryShop');
 Route::get('/checkoutPage', [FrontendController::class, 'checkoutPage'])->name('checkoutPage');
 Route::post('/checkout/store', [FrontendController::class, 'checkout_store'])->name('checkout_store');
+Route::get('/invoice-pdf/{id}', [FrontendController::class, 'downloadInvoice'])->name('invoice-pdf');
 
 Route::get('/mainCategoryShop/{id}', [FrontendController::class, 'mainCategoryShop'])->name('mainCategoryShop');
 Route::get('categoryShop/{category_id}/{sub_category_id?}', [FrontendController::class, 'categoryShop'])->name('categoryShop');

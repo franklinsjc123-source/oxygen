@@ -21813,6 +21813,7 @@ aside .sp-sidebar-banner span {
 }
 
 .product-price-discount {
+  font-family: sans-serif !important;
   margin-top: 3px;
   margin-left: 5px;
   font-size: 13px;
