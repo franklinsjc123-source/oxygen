@@ -163,7 +163,7 @@
                         <div class="dropdown cart-dropdown cart-offcanvas mr-0 mr-lg-2">
                             <div class="cart-overlay"></div>
                             <a href="javascript:void(0)" onclick="showSideCart()" class="cart-toggle label-down link">
-                                <i class="w-icon-cart">
+                                <i class="w-icon-cart-header">
                                     <span class="cart-count">0</span>
                                 </i>
                                 <span class="cart-label">Cart</span>

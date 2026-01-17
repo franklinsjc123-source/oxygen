@@ -4563,6 +4563,10 @@ blockquote {
 }
 .w-icon-cart:before {
   content: "";
+}
+
+.w-icon-cart-header:before {
+  content: "";
   color: #fff;
 }
 .w-icon-category:before {

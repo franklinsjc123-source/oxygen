@@ -238,8 +238,96 @@
 
      <div class="container">
 
-                 <div class="title-link-wrapper mb-3">
+        <div class="title-link-wrapper mb-3">
              <h2 class="title mb-0 pt-2 pb-2">Top Rated Products</h2>
+             <a href="{{ url('vendorDokenGrid') }}" class="mb-0">More Products<i
+                     class="w-icon-long-arrow-right"></i></a>
+         </div>
+         
+         <div class="row grid banner-product-wrapper mb-6">
+             <?php if (isset($prouctsList)) {
+                    foreach ($prouctsList as $row) { ?>
+                        <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
+                            <div class="product product-simple text-center">
+                                <figure class="product-media">
+                                    <a href="<?= url('/productVar/'.$row['id']) ?>">
+                                        <img src="<?php echo asset('assets') ?>/images/products/<?= $row['product_image'] ?>" alt="Product" width="260"
+                                            height="291" />
+                                    </a>
+                                    <div class="product-action-vertical">
+                                        <a href="#"   onclick="addwishlist('{{  $row['id'] }}')" class="btn-product-icon btn-wishlist w-icon-heart"
+                                            title="Add to wishlist"></a>                                    
+                                    </div>
+                                    <div class="product-action"> <!--  -->
+                                        <a href="javascript:void(0)" onclick="showQuickView('<?= $row['id'] ?>')" data-id='<?= $row['id'] ?>'  class="btn-product btnquickview" title="Quick View">Quick
+                                            View</a>
+                                    </div>
+                                </figure>
+                                <div class="product-details">
+                                    <div class="sold-by">
+                                        <b><a href="<?= url('/vendorDetails/'.$row['vendor_id']) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
+                                    </div>
+                                    <h4 class="product-name"><a href="<?= url('/productVar/'.$row['id']) ?>"><?= ucwords($row['product_name']) ?></a></h4>
+
+                                </div>
+                                <div class="product-pa-wrapper">
+                                    <div class="product-price">
+                                        ₹{{ $row['selling_price'] }} 
+                                    </div>
+                                    <div  class="product-price-discount" >
+                                            ₹{{ $row['retail_price'] }} 
+                                    </div>
+                                    <?php 
+                                      $discount_percentage = (($row['retail_price'] - $row['selling_price']) / $row['retail_price']) * 100;
+                                        $discount_rounded = round($discount_percentage / 10) * 10;
+                                    ?>
+
+                                    <div  class="product-offer-percentage" >
+                                            {{ $discount_rounded }}% Off
+                                    </div>
+                                </div>
+                                    
+                            </div>
+                        </div>
+             <?php }
+                } ?>
+         </div>
+
+
+         <div class="row cols-md-2 category-banner-2cols mb-5">
+             <div class="banner banner-fixed mb-4">
+                 <figure class="br-sm">
+                     <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/2-1.jpg" alt="Category Banner" width="680"
+                         height="220" style="background-color: #384744;" />
+                 </figure>
+                 <div class="banner-content y-50">
+                     <h5 class="banner-subtitle text-uppercase text-white font-weight-bold">Natural Process</h5>
+                     <h3 class="banner-title text-capitalize text-white">Cosmetic Makeup<br>Professional</h3>
+                     <a href="demo8-shop.html" class="btn btn-white btn-link btn-slide-right btn-icon-right">
+                         Shop Now<i class="w-icon-long-arrow-right"></i></a>
+                 </div>
+             </div>
+             <!-- End of Banner -->
+             <div class="banner banner-fixed mb-4">
+                 <figure class="br-sm">
+                     <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/2-2.jpg" alt="Category Banner" width="680"
+                         height="220" style="background-color: #e7e7e7;" />
+                 </figure>
+                 <div class="banner-content y-50">
+                     <h5 class="banner-subtitle text-uppercase font-weight-bold">Trending Now</h5>
+                     <h3 class="banner-title text-capitalize">Women’s Lifestyle<br>Collection</h3>
+                     <a href="demo8-shop.html" class="btn btn-dark btn-link btn-slide-right btn-icon-right">
+                         Shop Now<i class="w-icon-long-arrow-right"></i></a>
+                 </div>
+             </div>
+             <!-- End of Banner -->
+         </div>
+         <!-- End of Category Banner 2Cols -->
+
+
+
+        <div class="title-link-wrapper mb-3">
+             <h2 class="title mb-0 pt-2 pb-2">Mens Products</h2>
              <a href="shop-boxed-banner.html" class="mb-0">More Products<i
                      class="w-icon-long-arrow-right"></i></a>
          </div>
@@ -292,36 +380,118 @@
                 } ?>
          </div>
 
-         
-         <div class="row cols-md-2 category-banner-2cols mb-5">
-             <div class="banner banner-fixed mb-4">
-                 <figure class="br-sm">
-                     <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/2-1.jpg" alt="Category Banner" width="680"
-                         height="220" style="background-color: #384744;" />
-                 </figure>
-                 <div class="banner-content y-50">
-                     <h5 class="banner-subtitle text-uppercase text-white font-weight-bold">Natural Process</h5>
-                     <h3 class="banner-title text-capitalize text-white">Cosmetic Makeup<br>Professional</h3>
-                     <a href="demo8-shop.html" class="btn btn-white btn-link btn-slide-right btn-icon-right">
-                         Shop Now<i class="w-icon-long-arrow-right"></i></a>
-                 </div>
-             </div>
-             <!-- End of Banner -->
-             <div class="banner banner-fixed mb-4">
-                 <figure class="br-sm">
-                     <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/2-2.jpg" alt="Category Banner" width="680"
-                         height="220" style="background-color: #e7e7e7;" />
-                 </figure>
-                 <div class="banner-content y-50">
-                     <h5 class="banner-subtitle text-uppercase font-weight-bold">Trending Now</h5>
-                     <h3 class="banner-title text-capitalize">Women’s Lifestyle<br>Collection</h3>
-                     <a href="demo8-shop.html" class="btn btn-dark btn-link btn-slide-right btn-icon-right">
-                         Shop Now<i class="w-icon-long-arrow-right"></i></a>
-                 </div>
-             </div>
-             <!-- End of Banner -->
+
+
+          <div class="title-link-wrapper mb-3">
+             <h2 class="title mb-0 pt-2 pb-2">Womens Products</h2>
+             <a href="shop-boxed-banner.html" class="mb-0">More Products<i
+                     class="w-icon-long-arrow-right"></i></a>
          </div>
-         <!-- End of Category Banner 2Cols -->
+         <div class="row grid banner-product-wrapper mb-6">
+             <?php if (isset($prouctsList)) {
+                    foreach ($prouctsList as $row) { ?>
+                        <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
+                            <div class="product product-simple text-center">
+                                <figure class="product-media">
+                                    <a href="<?= url('/productVar/'.$row['id']) ?>">
+                                        <img src="<?php echo asset('assets') ?>/images/products/<?= $row['product_image'] ?>" alt="Product" width="260"
+                                            height="291" />
+                                    </a>
+                                    <div class="product-action-vertical">
+                                        <a href="#"   onclick="addwishlist('{{  $row['id'] }}')" class="btn-product-icon btn-wishlist w-icon-heart"
+                                            title="Add to wishlist"></a>                                    
+                                    </div>
+                                    <div class="product-action"> <!--  -->
+                                        <a href="javascript:void(0)" onclick="showQuickView('<?= $row['id'] ?>')" data-id='<?= $row['id'] ?>'  class="btn-product btnquickview" title="Quick View">Quick
+                                            View</a>
+                                    </div>
+                                </figure>
+                                <div class="product-details">
+                                    <div class="sold-by">
+                                        <b><a href="<?= url('/vendorDetails/'.$row['vendor_id']) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
+                                    </div>
+                                    <h4 class="product-name"><a href="<?= url('/productVar/'.$row['id']) ?>"><?= ucwords($row['product_name']) ?></a></h4>
+
+                                </div>
+                                <div class="product-pa-wrapper">
+                                    <div class="product-price">
+                                        ₹{{ $row['selling_price'] }} 
+                                    </div>
+                                    <div  class="product-price-discount" >
+                                            ₹{{ $row['retail_price'] }} 
+                                    </div>
+                                    <?php 
+                                      $discount_percentage = (($row['retail_price'] - $row['selling_price']) / $row['retail_price']) * 100;
+                                        $discount_rounded = round($discount_percentage / 10) * 10;
+                                    ?>
+
+                                    <div  class="product-offer-percentage" >
+                                            {{ $discount_rounded }}% Off
+                                    </div>
+                                </div>
+                                    
+                            </div>
+                        </div>
+             <?php }
+                } ?>
+         </div>
+
+
+
+
+          <div class="title-link-wrapper mb-3">
+             <h2 class="title mb-0 pt-2 pb-2">kids Products</h2>
+             <a href="shop-boxed-banner.html" class="mb-0">More Products<i
+                     class="w-icon-long-arrow-right"></i></a>
+         </div>
+         <div class="row grid banner-product-wrapper mb-6">
+             <?php if (isset($prouctsList)) {
+                    foreach ($prouctsList as $row) { ?>
+                        <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
+                            <div class="product product-simple text-center">
+                                <figure class="product-media">
+                                    <a href="<?= url('/productVar/'.$row['id']) ?>">
+                                        <img src="<?php echo asset('assets') ?>/images/products/<?= $row['product_image'] ?>" alt="Product" width="260"
+                                            height="291" />
+                                    </a>
+                                    <div class="product-action-vertical">
+                                        <a href="#"   onclick="addwishlist('{{  $row['id'] }}')" class="btn-product-icon btn-wishlist w-icon-heart"
+                                            title="Add to wishlist"></a>                                    
+                                    </div>
+                                    <div class="product-action"> <!--  -->
+                                        <a href="javascript:void(0)" onclick="showQuickView('<?= $row['id'] ?>')" data-id='<?= $row['id'] ?>'  class="btn-product btnquickview" title="Quick View">Quick
+                                            View</a>
+                                    </div>
+                                </figure>
+                                <div class="product-details">
+                                    <div class="sold-by">
+                                        <b><a href="<?= url('/vendorDetails/'.$row['vendor_id']) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
+                                    </div>
+                                    <h4 class="product-name"><a href="<?= url('/productVar/'.$row['id']) ?>"><?= ucwords($row['product_name']) ?></a></h4>
+
+                                </div>
+                                <div class="product-pa-wrapper">
+                                    <div class="product-price">
+                                        ₹{{ $row['selling_price'] }} 
+                                    </div>
+                                    <div  class="product-price-discount" >
+                                            ₹{{ $row['retail_price'] }} 
+                                    </div>
+                                    <?php 
+                                      $discount_percentage = (($row['retail_price'] - $row['selling_price']) / $row['retail_price']) * 100;
+                                        $discount_rounded = round($discount_percentage / 10) * 10;
+                                    ?>
+
+                                    <div  class="product-offer-percentage" >
+                                            {{ $discount_rounded }}% Off
+                                    </div>
+                                </div>
+                                    
+                            </div>
+                        </div>
+             <?php }
+                } ?>
+         </div>
 
      
 
