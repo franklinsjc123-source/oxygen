@@ -3322,9 +3322,10 @@ blockquote {
   color: #fff;
 }
 .btn-dark.btn-outline {
-  color: #333;
-  border-color: #333;
-  background-color: transparent;
+  color: #fff;
+  border-color: #fff;
+  /* background-color: transparent; */
+  background-color: #333;
 }
 .btn-dark.btn-outline:active,
 .btn-dark.btn-outline:focus,
@@ -12037,6 +12038,9 @@ body .product-popup {
 .shop-default-banner .btn {
   padding: 1.22em 2.42em;
   font-size: 1.4em;
+   background-color: #333;
+  
+
 }
 .intro-slide1 .banner-content {
   right: 12%;

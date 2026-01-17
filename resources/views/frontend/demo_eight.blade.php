@@ -22,12 +22,12 @@
                                      <div class="slide-animate" data-animation-options="{
                                         'name': 'fadeInUpShorter', 'duration': '1s'
                                     }">
-                                         <h5 class="banner-subtitle text-uppercase font-weight-bold mb-2"><?php echo $val->title ?></h5>
+                                         {{-- <h5 class="banner-subtitle text-uppercase font-weight-bold mb-2"><?php echo $val->title ?></h5> --}}
                                          <h3 class="banner-title text-capitalize ls-25">
-                                             <span class="text-primary"><?php echo $val->sub_title ?></span><br>
-                                             Fashion Lifestyle<br>Collection
+                                             {{-- <span class="text-primary"><?php echo $val->sub_title ?></span><br> --}}
+                                             {{-- Fashion Lifestyle<br>Collection --}}
                                          </h3>
-                                         <a href="demo8-shop.html"
+                                         <a href="{{ url('vendorDokenGrid')}}"
                                              class="btn btn-dark btn-outline btn-rounded btn-icon-right">
                                              Shop Now<i class="w-icon-long-arrow-right"></i>
                                          </a>
