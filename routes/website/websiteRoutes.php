@@ -114,8 +114,10 @@ Route::post('/set-default-shipping-address', [FrontendController::class, 'setDef
 
 Route::post('/change-customer-password', [FrontendController::class,'changeCustomerPassword'])->name('change-customer-password');
 /** NEW CODE END  */
+Route::get('/', [FrontendController::class, 'demoEight']);
 
-Route::resource('/', HomeController::class, ['names' => 'home']);
+
+// Route::resource('/', HomeController::class, ['names' => 'home']);
 Route::get('home', [HomeController::class, 'index'])->name('home');
 Route::get('index', [HomeController::class, 'menu'])->name('homeindex');
 Route::get('productshow/{id?}', [HomeController::class, 'show'])->name('productallshow');

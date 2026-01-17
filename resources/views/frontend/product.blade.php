@@ -181,6 +181,23 @@
                                      </div>
                                  </div>
 
+                                  <div class="fix-bottom product-sticky-content sticky-content">
+                                     <div class="product-form container">
+                                         <div class="product-qty-form">
+                                             <div class="input-group">
+                                                 <input class="quantity form-control" id="quantity" type="number" min="1"
+                                                     max="100">
+                                                 <button class="quantity-plus w-icon-plus"></button>
+                                                 <button class="quantity-minus w-icon-minus"></button>
+                                             </div>
+                                         </div>
+                                         <button class="btn btn-primary" onclick="addCart('<?= $prouctsList['id'] ?>')">
+                                             <i class="w-icon-cart"></i>
+                                             <span>Add to Cart</span>
+                                         </button>
+                                     </div>
+                                 </div>
+
 
                                  
 
@@ -203,12 +220,7 @@
                                          <a href="#"
                                              class="btn-product-icon btn-wishlist w-icon-heart"><span></span></a>
                                      </div>
-                                        <div class="product-form">
-                                            <a href="<?= url('/productVar/' . $prouctsList['id']) ?>" class="btn btn-primary ">
-                                                <i class="w-icon-cart"></i>
-                                                <span>Add to Cart</span>
-                                            </a>
-                                        </div>
+                                      
                                  </div>
                              </div>
                          </div>
