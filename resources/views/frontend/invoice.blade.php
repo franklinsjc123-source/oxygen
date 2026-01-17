@@ -13,6 +13,11 @@
         th { background:#f2f2f2; }
         .right { text-align:right; }
         .no-border td { border:none; }
+        .noborder,
+        .noborder td,
+        .noborder th {
+            border: none !important; text-align: left;
+        }
     </style>
 </head>
 <body>
@@ -20,40 +25,46 @@
 <h2 style="text-align:center;">Tax Invoice / Bill of Supply</h2>
 <p style="text-align:center;">(Original for Recipient)</p>
 
-<div class="row">
-    <div class="col">
-        <b>Sold By:</b><br>
-        {{ $seller['name'] }}<br>
-        {{ $seller['address'] }}<br>
-        PAN: {{ $seller['pan'] }}<br>
-        GST: {{ $seller['gst'] }}
-    </div>
-    <div class="col">
-        <b>Order Number:</b> {{ $invoice['order_no'] }}<br>
-        <b>Invoice No:</b> {{ $invoice['invoice_no'] }}<br>
-        <b>Order Date:</b> {{ $invoice['order_date'] }}<br>
-        <b>Invoice Date:</b> {{ $invoice['invoice_date'] }}
-    </div>
-</div>
+<table width="100%" class="noborder">
+    <tr>
+        <td width="50%" valign="top">
+            <b>Sold By:</b><br>
+            {{ $seller['name'] }}<br>
+            {{ $seller['address'] }}<br>
+            PAN: {{ $seller['pan'] }}<br>
+            GST: {{ $seller['gst'] }}
+        </td>
+
+        <td width="50%" valign="top" style="text-align:right;">
+            <b>Billing Address:</b><br>
+            {{ $billing['name'] }}<br>
+            {{ $billing['address'] }}<br>
+            {{ $billing['city'] }} - {{ $billing['pincode'] }}<br>
+            State Code: {{ $billing['state_code'] }}
+        </td>
+    </tr>
+</table>
 
 <br>
+<table width="100%" class="noborder">
+    <tr>
+        <td width="50%" valign="top">
+            <b>Order Number:</b> {{ $invoice['order_no'] }}<br>
+            <b>Invoice No:</b> {{ $invoice['invoice_no'] }}<br>
+            <b>Order Date:</b> {{ $invoice['order_date'] }}<br>
+            <b>Invoice Date:</b> {{ $invoice['invoice_date'] }}
+        </td>
 
-<div class="row">
-    <div class="col">
-        <b>Billing Address:</b><br>
-        {{ $billing['name'] }}<br>
-        {{ $billing['address'] }}<br>
-        {{ $billing['city'] }} - {{ $billing['pincode'] }}<br>
-        State Code: {{ $billing['state_code'] }}
-    </div>
-    <div class="col">
-        <b>Shipping Address:</b><br>
-        {{ $shipping['name'] }}<br>
-        {{ $shipping['address'] }}<br>
-        {{ $shipping['city'] }} - {{ $shipping['pincode'] }}<br>
-        State Code: {{ $shipping['state_code'] }}
-    </div>
-</div>
+        <td width="50%" valign="top" style="text-align:right;">
+            <b>Shipping Address:</b><br>
+            {{ $shipping['name'] }}<br>
+            {{ $shipping['address'] }}<br>
+            {{ $shipping['city'] }} - {{ $shipping['pincode'] }}<br>
+            State Code: {{ $shipping['state_code'] }}
+        </td>
+    </tr>
+</table>
+
 
 <table>
     <thead>
@@ -101,8 +112,8 @@
 <p>Whether tax is payable under reverse charge - No</p>
 
 <br><br>
-<p>For {{ $seller['name'] }}</p>
-<p><b>Authorized Signatory</b></p>
+<p style="text-align:right;">For {{ $seller['name'] }}</p>
+<p style="text-align:right;"><b>Authorized Signatory</b></p>
 
 </body>
 </html>

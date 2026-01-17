@@ -213,50 +213,61 @@
                         <!-- End of Sidebar -->
 
                         <div class="main-content">
-                            <div class="store store-banner mb-4">
-                                <figure class="store-media">
-                                    <img src="{{ asset('assets/images/vendor/profile/' . $vendordetails->profile_image) }}" alt="Vendor" width="930" height="446"
-                                        style="background-color: #414960;" />
-                                </figure>
-                                <div class="store-content">
-                                    <figure class="seller-brand">
-                                        <img src="{{ asset('assets/images/vendor/profile/' . $vendordetails->profile_image) }}" alt="Brand" width="80"
-                                            height="80" />
-                                    </figure>
-                                    <h4 class="store-title"> {{ $vendordetails->shop_name }}</h4>
-                                    <ul class="seller-info-list list-style-none mb-6">
+                            <div class="container-fluid store store-banner mb-4">
+                                <div class="rows g-0 align-items-stretch">
+
+                                    <!-- Left 25% : Store Content -->
+                                    <div class="col-md-3 text-white">
+                                    <div class="store-content h-100 p-4">
+                                        <figure class="seller-brand mb-3">
+                                        <img src="{{ asset('assets/images/vendor/profile/' . $vendordetails->profile_image) }}"
+                                            alt="Brand" width="80" height="80" />
+                                        </figure>
+
+                                        <h4 class="store-title">{{ $vendordetails->shop_name }}</h4>
+
+                                        <ul class="seller-info-list list-style-none mb-4">
                                         <li class="store-address">
                                             <i class="w-icon-map-marker"></i>
-                                            {{ $vendordetails->address }} , <br>
-                                        {{-- {{ $vendordetails->address }} , <br> --}}
-                                        {{ $vendordetails->city }}  - {{ $vendordetails->pincode }} ,  <br>
-                                        {{ $vendordetails->state }} . <br>
+                                            {{ $vendordetails->address }}, <br>
+                                            {{ $vendordetails->city }} - {{ $vendordetails->pincode }}, <br>
+                                            {{ $vendordetails->state }}.
                                         </li>
                                         <li class="store-phone">
-                                            <a href="tel:{{ $vendordetails->mobile_number1 }}">
-                                                <i class="w-icon-phone"></i>
-                                                {{ $vendordetails->mobile_number1 }}
+                                            <a href="tel:{{ $vendordetails->mobile_number1 }}" class="text-white">
+                                            <i class="w-icon-phone"></i>
+                                            {{ $vendordetails->mobile_number1 }}
                                             </a>
                                         </li>
-                                        {{-- <li class="store-rating">
-                                            <i class="w-icon-star-full"></i>
-                                            4.33 rating from 3 reviews
-                                        </li> --}}
                                         <li class="store-open">
-                                            <i class="w-icon-cart"></i>
-                                            Store Open
+                                            <i class="w-icon-cart"></i> Store Open
                                         </li>
-                                    </ul>
-                                    <div class="social-icons social-no-color border-thin">
+                                        </ul>
+
+                                        <div class="social-icons social-no-color border-thin">
                                         <a href="#" class="social-icon social-facebook w-icon-facebook"></a>
                                         <a href="#" class="social-icon social-google w-icon-google"></a>
                                         <a href="#" class="social-icon social-twitter w-icon-twitter"></a>
                                         <a href="#" class="social-icon social-pinterest w-icon-pinterest"></a>
                                         <a href="#" class="social-icon social-youtube w-icon-youtube"></a>
                                         <a href="#" class="social-icon social-instagram w-icon-instagram"></a>
+                                        </div>
                                     </div>
+                                    </div>
+
+                                    <!-- Right 75% : Image -->
+                                    <div class="col-md-9">
+                                    
+                                        <img src="{{ asset('assets/images/vendor/profile/' . $vendordetails->profile_image) }}"
+                                            alt="Vendor"
+                                            class="img-fluid w-100 h-100"
+                                            style="object-fit:cover; background-color:#414960;" />
+                                    
+                                    </div>
+
                                 </div>
                             </div>
+
                             <!-- End of Store Banner -->
 
 

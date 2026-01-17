@@ -10286,6 +10286,7 @@ body .product-popup {
   margin: 0 auto;
   min-width: auto;
   max-width: 69.6rem;
+  background-color: white;
 }
 .header-search.hs-expanded .select-box {
   width: 14.6rem;

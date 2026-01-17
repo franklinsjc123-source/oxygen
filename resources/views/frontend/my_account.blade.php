@@ -226,7 +226,8 @@
                                                 <td class="order-action">
                                                     <a href="{{ url('invoice-pdf/'.$order->id) }}" target="_blank"
                                                         class="btn btn-outline btn-default btn-block btn-sm btn-rounded">
-                                                        View</a>
+                                                        View
+                                                    </a>
                                                 </td>
                                             </tr>
                                         @endforeach

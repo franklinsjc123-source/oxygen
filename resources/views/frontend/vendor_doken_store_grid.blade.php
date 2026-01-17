@@ -1,7 +1,43 @@
  @extends('app_template')
  @section('title','Vendor Store Grid')
  @section('content')
+<style>
+    .custom-split{
+  display:flex;
+  height:240px;
+  border-radius:10px;
+   color: white;
+  overflow:hidden;
+  background: rgba(37, 38, 42, 0.9);
+}
 
+/* Left Text Area */
+.custom-split .store-left{
+  width:40%;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+/* Right Image */
+.custom-split .store-right{
+  width:60%;
+}
+
+.custom-split .store-right img{
+  width:100%;
+  height:100%;
+  
+  object-fit:cover;
+  display:block;
+}
+  .store-address-grid {
+    color: #fff5f5ff;
+  }
+
+
+</style>
 
  <!-- Start of Main -->
         <main class="main">
@@ -10,7 +46,7 @@
                 <div class="container">
                     <ul class="breadcrumb mb-6">
                         <li><a href="demo1.html">Home</a></li>
-                        <li><a href="{{ route('vendorDokenGrid') }}">Vendor</a></li>
+                        <li><a href="{{ route('vendorDokenGrid') }}">Shops</a></li>
                        
                     </ul>
                 </div>
@@ -23,7 +59,7 @@
                         <div class="toolbox-left mb-4 mb-md-0">
                             {{-- <a href="#" class="btn btn-primary btn-outline btn-rounded btn-icon-left "><i class="w-icon-category"></i>VENDORS</a> --}}
                             {{-- <label class="d-block">Total Store Showing 6</label> --}}
-                            <h3><label class="d-block">VENDORS</label></h3>
+                            <h3><label class="d-block">SHOPS</label></h3>
                         </div>
                         <div class="toolbox-right">
                             <div class="toolbox-item toolbox-sort select-box mb-0">
@@ -50,36 +86,40 @@
 
                         <div class="store-wrap mb-4">
                             <div class="store store-grid">
-                                <div class="store-header" style="position: relative; overflow: hidden;">
-                                    <figure class="store-banner" style="margin: 0;">
-                                        <img 
-                                            src="{{ asset('assets/images/vendor/profile/' . $vendorcreate->profile_image) }}"
-                                            alt="Vendor"
-                                            style="width: 100%; height: auto; object-fit: cover; display: block;" />
-                                    </figure>
-                                    <div class="banner-overlay"></div>
-                                </div>
-                                <div class="store-content">
-                                    <h4 class="store-title">
-                                        <a href=" {{ url('/vendorDetails/'.$vendorcreate->id) }}">{{ $vendorcreate->shop_name }}</a>
-                                    </h4>
-                                    <div class="ratings-container">
-                                        <div class="ratings-full">
-                                            <span class="ratings" style="width: 100%;"></span>
-                                            <span class="tooltiptext tooltip-top"></span>
-                                        </div>
-                                    </div>
-                                    <div class="store-address-grid">
-                                        <b>
-                                        {{ $vendorcreate->address }} , <br>
-                                        {{-- {{ $vendorcreate->address }} , <br> --}}
-                                        {{ $vendorcreate->city }}  - {{ $vendorcreate->pincode }} ,  <br>
-                                        {{ $vendorcreate->state }} . <br>
-                                        <i class="w-icon-phone"></i> {{ $vendorcreate->mobile_number1 }}
-                                        </b>
-                                    </div>
-                                  
-                                </div>
+                               <div class="store-header custom-split">
+    <div class="store-left">
+        <h4 class="store-title">
+            <a href="{{ url('/vendorDetails/'.$vendorcreate->id) }}">
+                {{ $vendorcreate->shop_name }}
+            </a>
+        </h4>
+
+        <div class="ratings-container">
+            <div class="ratings-full">
+                <span class="ratings" style="width:100%;"></span>
+            </div>
+        </div>
+
+        <div class="store-address-grid">
+            
+                {{ $vendorcreate->address }} , <br>
+                {{ $vendorcreate->city }} - {{ $vendorcreate->pincode }} , <br>
+                {{ $vendorcreate->state }} . <br>
+                <i class="w-icon-phone"></i> {{ $vendorcreate->mobile_number1 }}
+            
+        </div>
+<!-- 
+        <a href="{{ url('/vendorDetails/'.$vendorcreate->id) }}" class="btn btn-dark mt-3">
+            VISIT STORE
+        </a> -->
+    </div>
+
+    <div class="store-right">
+        <img src="{{ asset('assets/images/vendor/profile/' . $vendorcreate->profile_image) }}" alt="">
+    </div>
+</div>
+
+                                
                                 <div class="store-footer">
                                     <figure class="seller-brand">
                                         <img src="{{ asset('assets/images/vendor/profile/' . $vendorcreate->profile_image) }}" alt="Brand" width="80" height="80" />

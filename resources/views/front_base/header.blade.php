@@ -76,7 +76,7 @@
         <h1 class="d-none">Wolmart - Responsive Marketplace HTML Template</h1>
         <!-- Start of Header -->
         <header class="header header-border">
-            <div class="header-top">
+            <!-- <div class="header-top">
                 <div class="container">
                     <div class="header-left">
                         <p class="welcome-msg">Welcome to Oxygen ! </p>
@@ -85,18 +85,18 @@
                        
 
                         
-                        <!-- End of Dropdown Menu -->
-                        {{-- <span class="divider d-lg-show"></span> --}}
+                      
+                         <span class="divider d-lg-show"></span> 
                         <a href="blog.html" class="d-lg-show">Blog</a>
                         <a href="contact-us.html" class="d-lg-show">Contact Us</a>  
-                        {{-- <a href="my-account.html" class="d-lg-show">My Account</a> --}}
-                        {{-- <a href="javascript:void(0)" onclick="showLoginPopup()" class="d-lg-show login sign-in"><i
+                         <a href="my-account.html" class="d-lg-show">My Account</a> 
+                         <a href="javascript:void(0)" onclick="showLoginPopup()" class="d-lg-show login sign-in"><i
                                 class="w-icon-account"></i>Sign In</a>
                         <span class="delimiter d-lg-show">/</span>
-                        <a href="javascript:void(0)" onclick="showLoginPopup()" class="ml-0 d-lg-show login register">Register</a> --}}
+                        <a href="javascript:void(0)" onclick="showLoginPopup()" class="ml-0 d-lg-show login register">Register</a> 
                     </div>
                 </div>
-            </div>
+            </div> -->
             <!-- End of Header Top -->
 
             <div class="header-middle">
@@ -129,14 +129,14 @@
                         </form>
                     </div>
                     <div class="header-right ml-4">
-                        <div class="header-call d-xs-show d-lg-flex align-items-center">
+                        <!-- <div class="header-call d-xs-show d-lg-flex align-items-center">
                             <a href="tel:#" class="w-icon-call"></a>
                             <div class="call-info d-lg-show">
                                 <h4 class="chat font-weight-normal font-size-md text-normal ls-normal text-light mb-0">
                                     <a href="mailto:#" class="text-capitalize">Call</a></h4>
                                 <a href="tel:#" class="phone-number font-weight-bolder ls-50">+91 98845 88797</a>
                             </div>
-                        </div>
+                        </div> -->
 
                         
 
@@ -330,7 +330,7 @@
                                             
                                         </ul> --}}
                                     </li>
-
+                                    <li><a href="">Location</a></li>
                                         {{-- <li >
                                         <a href="vendor-dokan-store.html">Offers</a>
                                         

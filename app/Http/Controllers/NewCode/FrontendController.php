@@ -1217,8 +1217,9 @@ class FrontendController extends Controller
             ]
         ];
 
-        $pdf = Pdf::loadView('invoice', $data);
-        return $pdf->download('invoice.pdf');
+        $pdf = Pdf::loadView('frontend.invoice', $data);
+      //  return $pdf->download('invoice.pdf');
+        return $pdf->stream('invoice.pdf');
     }
 
 

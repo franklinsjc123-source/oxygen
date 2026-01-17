@@ -1,5 +1,5 @@
  @extends('app_template')
- @section('title','Vendor Eight')
+ @section('title','TryNexX')
  @section('content')
  <!-- Start of Main -->
 
@@ -44,7 +44,7 @@
          </div>
          <!-- End of Intro Wrapper -->
 
-         <div class="swiper-container swiper-theme icon-box-wrapper appear-animate br-sm mt-6 mb-10"
+         <div class="swiper-container swiper-theme icon-box-wrapper appear-animate br-sm mt-6"
              data-swiper-options="{
                     'loop': true,
                     'autoplay': {
@@ -108,7 +108,7 @@
          </div>
          <!-- End of Icon Box Wrapper -->
 
-         <div class="swiper-container swiper-theme category-banner-3cols pt-2 pb-10"
+         <div class="swiper-container swiper-theme category-banner-3cols pt-2"
              data-swiper-options="{
                     'spaceBetween': 20,
                     'slidesPerView': 1,
@@ -231,7 +231,7 @@
 
      <!-- End of Grey Section -->
 
-     <div class="container mt-10 pt-2">
+     <div class="container">
          <div class="row cols-md-2 category-banner-2cols mb-5">
              <div class="banner banner-fixed mb-4">
                  <figure class="br-sm">
