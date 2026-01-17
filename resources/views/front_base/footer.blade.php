@@ -848,51 +848,6 @@ function togglePasswordAccount(inputId, icon) {
             $('#firstImg').attr('src', img);
         }
    </script>
+   </body>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    let stars = document.querySelectorAll('#user-rating a');
-    let ratingInput = document.getElementById('rating');
-
-    // ⭐ Auto fill if already rated
-    let existingRating = {{ $myRating->star_rating ?? 0 }};
-
-    if (existingRating > 0) {
-        ratingInput.value = existingRating;
-
-        for (let i = 0; i < existingRating; i++) {
-            stars[i].classList.add('active');
-        }
-    }
-
-    // ✏️ Click to edit rating
-    stars.forEach((star, index) => {
-        star.addEventListener('click', function (e) {
-            e.preventDefault();
-
-            let value = this.dataset.val;
-            ratingInput.value = value;
-
-            stars.forEach(s => s.classList.remove('active'));
-            for (let i = 0; i < value; i++) {
-                stars[i].classList.add('active');
-            }
-        });
-    });
-
-});
-
-document.querySelector('form.review-form').addEventListener('submit', function (e) {
-    if (!document.getElementById('rating').value) {
-        e.preventDefault();
-        swal('Please select a rating','warning');
-    }
-});
-</script>
-
-
-
-</body>
-
-</html>
+   </html>

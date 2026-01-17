@@ -67,7 +67,7 @@
                                         <div class="category category-ellipse">
                                             <figure class="category-media">
                                                 <a href="{{ url( 'categoryShop/'.$sc->category_id.'/'.$sc->id ) }}">
-                                                    <img src="{{  $sc->category_sub_image ? asset('assets/images/category').'/'.$sc->category_sub_image  : ''}}" alt="Categroy"
+                                                    <img src="{{  $sc->category_sub_image ? asset('assets/images/categorySub').'/'.$sc->category_sub_image  : ''}}" alt="Categroy"
                                                     style="background-color: #5C92C0;" />
                                                 </a>
                                             </figure>
