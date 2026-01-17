@@ -122,18 +122,25 @@
                                  </div>
 
                                  <hr class="product-divider">
+                                <?php 
+                                    $retail = $prouctsList['retail_price'] ?? 0;
+                                    $selling = $prouctsList['selling_price'] ?? 0;
 
+                                    if ($retail > 0) {
+                                        $discount_percentage = (($retail - $selling) / $retail) * 100;
+                                        $discount_rounded = round($discount_percentage / 10) * 10;
+                                    } else {
+                                        $discount_rounded = 0;
+                                    }
+                                ?>
                                     <div class="product-pa-wrapper">
                                         <div class="product-price">
-                                            ₹{{ $prouctsList['selling_price'] }} 
+                                            ₹{{ $selling }} 
                                         </div>
                                         <div  class="product-price-discount" >
-                                                ₹{{ $prouctsList['retail_price'] }} 
+                                                ₹{{ $retail }} 
                                         </div>
-                                        <?php 
-                                        $discount_percentage = (($prouctsList['retail_price'] - $prouctsList['selling_price']) / $prouctsList['retail_price']) * 100;
-                                            $discount_rounded = round($discount_percentage / 10) * 10;
-                                        ?>
+                                     
 
                                         <div  class="product-offer-percentage" >
                                                 {{ $discount_rounded }}% Off
@@ -141,13 +148,21 @@
                                     </div>
 
 
-                                 <div class="ratings-container">
+                                 <!-- <div class="ratings-container">
                                      <div class="ratings-full">
                                          <span class="ratings" style="width: 80%;"></span>
                                          <span class="tooltiptext tooltip-top"></span>
                                      </div>
                                      <a href="#product-tab-reviews" class="rating-reviews">(3 Reviews)</a>
-                                 </div>
+                                 </div> -->
+                                 <div class="ratings-container">
+                                    <div class="ratings-full">
+                                        <span class="ratings" style="width: {{ $percent ?? 0 }}%"></span>
+                                    </div>
+                                    <a>({{ $reviewCount }} Reviews)</a>
+                                </div>
+
+                                
 
                                  <div class="product-short-desc">
                                      <ul class="list-type-check list-style-none">
@@ -458,7 +473,7 @@
                                                  Review</h3>
                                              <p class="mb-3">Your email address will not be published. Required
                                                  fields are marked *</p>
-                                             <form action="#" method="POST" class="review-form">
+                                             <!-- <form action="#" method="POST" class="review-form">
                                                  <div class="rating-form">
                                                      <label for="rating">Your Rating Of This Product :</label>
                                                      <span class="rating-stars">
@@ -499,7 +514,38 @@
                                                  </div>
                                                  <button type="submit" class="btn btn-dark">Submit
                                                      Review</button>
-                                             </form>
+                                             </form> -->
+                                             @if(session()->has('customer_id') && $canRate)
+                                                <form action="{{ route('rating.store') }}" method="POST" class="review-form">
+                                                    @csrf
+                                                    <input type="hidden" name="product_id" value="{{ $prouctsList['id'] }}">
+
+                                                    <div class="rating-form">
+                                                        <label>Your Rating Of This Product :</label>
+                                                        <span class="rating-stars" id="user-rating">
+                                                            <a href="#" class="star-1" data-val="1"></a>
+                                                            <a href="#" class="star-2" data-val="2"></a>
+                                                            <a href="#" class="star-3" data-val="3"></a>
+                                                            <a href="#" class="star-4" data-val="4"></a>
+                                                            <a href="#" class="star-5" data-val="5"></a>
+                                                        </span>
+
+                                                        <input type="hidden" name="star_rating" id="rating">
+                                                    </div>
+
+                                                    <textarea name="comment" cols="30" rows="6"
+                                                        placeholder="Write Your Review Here..."
+                                                        class="form-control"
+                                                        required>{{ $myRating->comments ?? '' }}</textarea>
+
+                                                    <button type="submit" class="btn btn-dark">Submit Review</button>
+                                                </form>
+
+                                                @elseif(!session()->has('customer_id'))
+                                                <p>Please login to give rating</p>
+                                                @else
+                                                <p>You can rate only after purchasing this product</p>
+                                                @endif
                                          </div>
                                      </div>
                                  </div>
