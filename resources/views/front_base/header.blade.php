@@ -332,7 +332,7 @@
 
                                           <li><a href="{{ url('mainCategoryShop').'/'.'3' }}">Kids</a></li>
                                           <li><a href="{{ url('mainCategoryShop').'/'.'4' }}">Living</a></li>
-                                    <li><a href="">Location</a></li>
+                                    {{-- <li><a href="">Location</a></li> --}}
                                         {{-- <li >
                                         <a href="vendor-dokan-store.html">Offers</a>
                                         
