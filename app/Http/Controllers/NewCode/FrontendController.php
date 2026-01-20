@@ -1378,6 +1378,7 @@ class FrontendController extends Controller
                 'product_image'   => $item->attributes->image ?? null,
                 'product_quantity' => $item->quantity,
                 'product_price'   => $item->price,
+                'product_size'    => $item->attributes->size ?? null,       
                 'total_price'     => $item->price * $item->quantity,
                 'order_status'    => 'Pending',
             ]);

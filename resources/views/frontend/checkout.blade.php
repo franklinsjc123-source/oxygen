@@ -131,15 +131,13 @@
 									<div class="col-xs-6">
 										<div class="form-group">
 											<label>First name *</label>
-											<input type="text" class="form-control form-control-md" name="shipping_firstname"
-												required>
+											<input type="text" class="form-control form-control-md" name="shipping_firstname" id="shipping_firstname">
 										</div>
 									</div>
 									<div class="col-xs-6">
 										<div class="form-group">
 											<label>Last name *</label>
-											<input type="text" class="form-control form-control-md" name="shipping_lastname"
-												required>
+											<input type="text" class="form-control form-control-md" name="shipping_lastname" id="shipping_lastname">
 										</div>
 									</div>
 								</div>
@@ -147,7 +145,7 @@
 								<div class="form-group">
 									<label>Country / Region *</label>
 									<div class="select-box">
-										<select name="shipping_country" class="form-control form-control-md">
+										<select name="shipping_country" class="form-control form-control-md" id="shipping_country">
 											<option value="default" selected="selected">United States
 												(US)
 											</option>
@@ -161,27 +159,27 @@
 								</div>
 								<div class="form-group">
 									<label>Street address *</label>
-									<input type="text" placeholder="House number and street name"
-										class="form-control form-control-md mb-2" name="shipping_address" required>
-									<input type="text" placeholder="Apartment, suite, unit, etc. (optional)"
-										class="form-control form-control-md" name="shipping_address1" required>
+									<input type="text" placeholder="House number and street name" id="shipping_address"
+										class="form-control form-control-md mb-2" name="shipping_address" >
+									<input type="text" placeholder="Apartment, suite, unit, etc. (optional)" id="shipping_address1"
+										class="form-control form-control-md" name="shipping_address1" >
 								</div>
 								<div class="row gutter-sm">
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>Town / City *</label>
-											<input type="text" class="form-control form-control-md" name="shipping_city" required>
+											<input type="text" class="form-control form-control-md" name="shipping_city" id="shipping_city" >
 										</div>
 										<div class="form-group">
 											<label>Postcode *</label>
-											<input type="text" class="form-control form-control-md" name="shipping_postcode" required>
+											<input type="text" class="form-control form-control-md" name="shipping_postcode" id="shipping_postcode" >
 										</div>
 									</div>
 									<div class="col-md-6">
 										<div class="form-group">
 											<label>State *</label>
 											<div class="select-box">
-												<select name="shipping_state" class="form-control form-control-md">
+												<select name="shipping_state" class="form-control form-control-md" id="shipping_state">
 													<option value="default" selected="selected">Tamilnadu</option>
 													<option value="uk">United Kingdom (UK)</option>
 													<option value="us">United States</option>
@@ -215,24 +213,22 @@
 											</tr>
 										</thead>
 										<tbody>
+											@foreach($records as $item)
 											<tr class="bb-no">
-												<td class="product-name">Palm Print Jacket <i
-														class="fas fa-times"></i> <span
-														class="product-quantity">1</span></td>
-												<td class="product-total">$40.00</td>
+												<td class="product-name">
+													{{ $item->name }}
+													<i class="fas fa-times"></i>
+													<span class="product-quantity">{{ $item->quantity }}</span>
+												</td>
+												<td class="product-total">
+													₹{{ number_format($item->price * $item->quantity, 2) }}
+												</td>
 											</tr>
-											<tr class="bb-no">
-												<td class="product-name">Brown Backpack <i class="fas fa-times"></i>
-													<span class="product-quantity">1</span></td>
-												<td class="product-total">$60.00</td>
-											</tr>
+											@endforeach
+
 											<tr class="cart-subtotal bb-no">
-												<td>
-													<b>Subtotal</b>
-												</td>
-												<td>
-													<b>$100.00</b>
-												</td>
+												<td><b>Subtotal</b></td>
+												<td><b>₹{{ number_format($total, 2) }}</b></td>
 											</tr>
 										</tbody>
 										<tfoot>
@@ -276,7 +272,7 @@
 													<b>Total</b>
 												</th>
 												<td>
-													<b>$100.00</b>
+													<b>₹{{ number_format($total, 2) }}</b>
 												</td>
 											</tr>
 										</tfoot>
@@ -348,6 +344,38 @@
 		</div>
 		<!-- End of PageContent -->
 	</main>
+
+
+<script>
+
+const toggle = document.getElementById('shipping-toggle');
+const shippingFields = [
+  'shipping_firstname',
+  'shipping_lastname',
+  'shipping_address',
+  'shipping_address1',
+  'shipping_city',
+  'shipping_postcode',
+  'shipping_state'
+];
+
+function updateShippingRequired() {
+  shippingFields.forEach(id => {
+    const el = document.getElementById(id);
+    if (toggle.checked) {
+      el.setAttribute('required','required');
+    } else {
+      el.removeAttribute('required');
+    }
+  });
+}
+
+toggle.addEventListener('change', updateShippingRequired);
+
+// page load-la first time check
+updateShippingRequired();
+</script>
+
 
 
 	 @endsection
