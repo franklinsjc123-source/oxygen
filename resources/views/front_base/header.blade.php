@@ -328,9 +328,9 @@
 
                                       <li>   <a href="{{ url('mainCategoryShop').'/'.'1' }}"><i class="w-icon-tshirt"></i> Men</a></li>
 
-                                        <li><a href="{{ url('mainCategoryShop').'/'.'2' }}"><i class="w-icon-tshirt2"></i>  Women</a></li>
+                                        <li><a href="{{ url('mainCategoryShop').'/'.'3' }}"><i class="w-icon-tshirt2"></i>  Women</a></li>
 
-                                          <li><a href="{{ url('mainCategoryShop').'/'.'3' }}"> <i class="w-icon-basketball"></i> Kids</a></li>
+                                          <li><a href="{{ url('mainCategoryShop').'/'.'2' }}"> <i class="w-icon-basketball"></i> Kids</a></li>
                                           <li><a href="{{ url('mainCategoryShop').'/'.'4' }}"> <i class="w-icon-shopify"></i>  Living</a></li>
                                     {{-- <li><a href="">Location</a></li> --}}
                                         {{-- <li >
