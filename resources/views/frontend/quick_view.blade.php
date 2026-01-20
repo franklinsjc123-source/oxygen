@@ -98,13 +98,12 @@
                      </div>
                  </div>
 
-                 <div class="ratings-container">
-                     <div class="ratings-full">
-                         <span class="ratings" style="width: 80%;"></span>
-                         <span class="tooltiptext tooltip-top"></span>
-                     </div>
-                     <a href="#" class="rating-reviews">(3 Reviews)</a>
-                 </div>
+                    <div class="ratings-container">
+                        <div class="ratings-full">
+                            <span class="ratings" style="width: {{ $percent ?? 0 }}%"></span>
+                        </div>
+                        <a>({{ $reviewCount }} Reviews)</a>
+                    </div>
 
                  <div class="product-short-desc">
                      <!-- <ul class="list-type-check list-style-none">

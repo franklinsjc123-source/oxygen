@@ -732,7 +732,13 @@ class FrontendController extends Controller
     {
         $prouctsList = $this->getSpecificProduct($id);
         $imageList   = $this->getProductImageList($id);
-        return view('frontend/quick_view', compact('id', 'prouctsList', 'imageList'));
+
+        $avg = Rating::where('products_id',$id)->avg('star_rating');
+        $percent = $avg > 0 ? ($avg / 5) * 100 : 0;
+
+        $reviewCount = Rating::where('products_id', $id)->count();
+
+        return view('frontend/quick_view', compact('id', 'prouctsList', 'imageList', 'percent', 'reviewCount'));
     }
 
     public function customCart(Request $request)
