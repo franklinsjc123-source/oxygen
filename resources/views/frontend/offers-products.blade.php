@@ -10,7 +10,7 @@
                 <div class="container">
                     <ul class="breadcrumb bb-no">
 
-                        <li><a href="{{ url('demoEight')}}">Home</a></li>
+                        <li><a href="{{ url('home')}}">Home</a></li>
                         <li><a href="{{ url( 'offers' ) }}"> Offers </a> </li>
 
                         <?php if($offer_id !=''){  ?>

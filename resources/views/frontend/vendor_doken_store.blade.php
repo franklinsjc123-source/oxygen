@@ -10,7 +10,7 @@
             <nav class="breadcrumb-nav">
                 <div class="container">
                     <ul class="breadcrumb bb-no">
-                        <li><a href="{{ route('demoEight') }}">Home</a></li>
+                        <li><a href="{{ route('home') }}">Home</a></li>
                         <li><a href="{{ route('vendorDokenGrid') }}">Shops</a></li>
                         <li><a href="{{ route('vendorDetails', $vendordetails->id) }}">{{  $vendordetails->shop_name  }}</a></li>
                   

@@ -12,7 +12,7 @@
     <nav class="breadcrumb-nav mb-10">
         <div class="container">
             <ul class="breadcrumb">
-                <li><a href="{{ route('demoEight') }}">Home</a></li>
+                <li><a href="{{ route('home') }}">Home</a></li>
                 <li>Wishlist</li>
             </ul>
         </div>
@@ -80,7 +80,7 @@
                                 @endif
                                 <tr class="cart_item wrap-buttons">
                                     <td class="wrap-btn-control" colspan="4">
-                                        <a href="{{ url('/demoEight') }}" class="btn back-to-shop">Back to Shop</a>
+                                        <a href="{{ url('/home') }}" class="btn back-to-shop">Back to Shop</a>
                                     </td>
                                 </tr>
                 </tbody>

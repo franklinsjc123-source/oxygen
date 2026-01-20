@@ -41,7 +41,7 @@ class FrontendController extends Controller
     public function customer_logout()
     {
         Session::forget('customer_id');
-        return redirect('/demoEight');
+        return redirect('/home');
     }
 
 
@@ -75,7 +75,7 @@ class FrontendController extends Controller
             return view('frontend/my_account', compact('customer', 'wishlist', 'wishCount', 'shipping_address', 'orderdata'));
         } else {
 
-            return redirect('/demoEight');
+            return redirect('/home');
         }
     }
 
@@ -587,7 +587,7 @@ class FrontendController extends Controller
         return $resultArr;
     }
 
-    public function demoEight()
+    public function home()
     {
 
         // dd($pincode);

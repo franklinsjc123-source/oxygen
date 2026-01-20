@@ -107,7 +107,7 @@
 
    <!-- Start of Sticky Footer -->
    <div class="sticky-footer sticky-content fix-bottom">
-       <a  href="{{ url('demoEight') }}" class="sticky-link active">
+       <a  href="{{ url('home') }}" class="sticky-link active">
            <i class="w-icon-home"></i>
            <p>Home</p>
        </a>
@@ -191,7 +191,7 @@
            <div class="tab-content">
                <div class="tab-pane active" id="main-menu">
                    <ul class="mobile-menu">
-                       <li><a href="{{ url('demoEight') }}">Home</a></li>
+                       <li><a href="{{ url('home') }}">Home</a></li>
                        <li><a href="{{ url('vendorDokenGrid') }}" >Shops</a></li>
                     
                    </ul>
