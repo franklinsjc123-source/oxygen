@@ -228,7 +228,7 @@
                                 </figure>
                                 <div class="product-details">
                                     <div class="sold-by">
-                                        <b><a href="<?= url('/vendorDetails/'.$row['vendor_id']) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
+                                        <b><a href="<?= url('/shop-details/'.$row['vendor_id']) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
                                     </div>
                                     <h4 class="product-name"><a href="<?= url('/productVar/'.$row['id']) ?>"><?= ucwords($row['product_name']) ?></a></h4>
 
@@ -315,7 +315,7 @@
                                 </figure>
                                 <div class="product-details">
                                     <div class="sold-by">
-                                        <b><a href="<?= url('/vendorDetails/'.$row['vendor_id']) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
+                                        <b><a href="<?= url('/shop-details/'.$row['vendor_id']) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
                                     </div>
                                     <h4 class="product-name"><a href="<?= url('/productVar/'.$row['id']) ?>"><?= ucwords($row['product_name']) ?></a></h4>
 
@@ -371,7 +371,7 @@
                                 </figure>
                                 <div class="product-details">
                                     <div class="sold-by">
-                                        <b><a href="<?= url('/vendorDetails/'.$row['vendor_id']) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
+                                        <b><a href="<?= url('/shop-details/'.$row['vendor_id']) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
                                     </div>
                                     <h4 class="product-name"><a href="<?= url('/productVar/'.$row['id']) ?>"><?= ucwords($row['product_name']) ?></a></h4>
 
@@ -428,7 +428,7 @@
                                 </figure>
                                 <div class="product-details">
                                     <div class="sold-by">
-                                        <b><a href="<?= url('/vendorDetails/'.$row['vendor_id']) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
+                                        <b><a href="<?= url('/shop-details/'.$row['vendor_id']) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
                                     </div>
                                     <h4 class="product-name"><a href="<?= url('/productVar/'.$row['id']) ?>"><?= ucwords($row['product_name']) ?></a></h4>
 
@@ -593,7 +593,7 @@
                 
                 <div class="swiper-slide swiper-slide-vendor">
                         <figure>
-                        <a href="<?= url('/vendorDetails/'.$row['id']) ?>" >
+                        <a href="<?= url('/shop-details/'.$row['id']) ?>" >
                             <img style="border-radius: 50%; object-fit: cover; margin-top: 20px;" src="{{ asset('assets/images/vendor/profile/' . $row->profile_image) }}" alt="Brand" />
                         </a>
 

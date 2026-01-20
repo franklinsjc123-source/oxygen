@@ -85,7 +85,7 @@ Route::post('/updateQty', [IndexController::class, 'updateQty'])->name('updateQt
 Route::post('/customCart', [FrontendController::class, 'customCart'])->name('customCart');
 Route::get('shops',[FrontendController::class,'shops'])->name('shops');
 Route::get('vendorDokenStore',[FrontendController::class,'vendorDokenStore'])->name('vendorDokenStore');
-Route::get('vendorDetails/{id}', [FrontendController::class, 'vendorDetails'])->name('vendorDetails');
+Route::get('shop-details/{id}', [FrontendController::class, 'vendorDetails'])->name('shop-details');
 Route::get('home',[FrontendController::class,'home'])->name('home');
 Route::get('productVar/{id?}',[FrontendController::class,'productVar'])->name('productVar');
 Route::get('getSpecificProduct/{id?}',[FrontendController::class,'getProduct'])->name('getSpecificProduct');

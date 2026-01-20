@@ -12,7 +12,7 @@
                     <ul class="breadcrumb bb-no">
                         <li><a href="{{ route('home') }}">Home</a></li>
                         <li><a href="{{ route('shops') }}">Shops</a></li>
-                        <li><a href="{{ route('vendorDetails', $vendordetails->id) }}">{{  $vendordetails->shop_name  }}</a></li>
+                        <li><a href="{{ route('shop-details', $vendordetails->id) }}">{{  $vendordetails->shop_name  }}</a></li>
                   
                     </ul>
                 </div>

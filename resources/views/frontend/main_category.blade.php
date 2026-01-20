@@ -193,7 +193,7 @@
                                                 </figure>
                                                 <div class="product-details">
                                                     <div class="product-cat">
-                                                        <a href="<?= url('/vendorDetails/'.$products['vendor_id']) ?>">{{ $products['shop_name']  }}</a>
+                                                        <a href="<?= url('/shop-details/'.$products['vendor_id']) ?>">{{ $products['shop_name']  }}</a>
                                                     </div>
                                                     <h3 class="product-name">
                                                         <a href="<?= url('/productVar/'.$products['id'] )  ?>">{{ $products['product_name']  }}</a>

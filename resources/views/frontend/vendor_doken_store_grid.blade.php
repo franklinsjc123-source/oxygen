@@ -61,7 +61,7 @@
                             {{-- <label class="d-block">Total Store Showing 6</label> --}}
                             <h3><label class="d-block">SHOPS</label></h3>
                         </div>
-                        <div class="toolbox-right">
+                        {{-- <div class="toolbox-right">
                             <div class="toolbox-item toolbox-sort select-box mb-0">
                                 <label class="font-weight-normal">Sort by:</label>
                                 <select name="orderby" class="form-control">
@@ -71,7 +71,7 @@
                                 </select>
                             </div>
                    
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="vendor-search-wrapper">
                         <form class="vendor-search-form">
@@ -89,7 +89,7 @@
                                <div class="store-header custom-split">
     <div class="store-left">
         <h4 class="store-title">
-            <a href="{{ url('/vendorDetails/'.$vendorcreate->id) }}">
+            <a href="{{ url('/shop-details/'.$vendorcreate->id) }}">
                 {{ $vendorcreate->shop_name }}
             </a>
         </h4>
@@ -109,7 +109,7 @@
             
         </div>
 <!-- 
-        <a href="{{ url('/vendorDetails/'.$vendorcreate->id) }}" class="btn btn-dark mt-3">
+        <a href="{{ url('/shop-details/'.$vendorcreate->id) }}" class="btn btn-dark mt-3">
             VISIT STORE
         </a> -->
     </div>
@@ -124,7 +124,7 @@
                                     <figure class="seller-brand">
                                         <img src="{{ asset('assets/images/vendor/profile/' . $vendorcreate->profile_image) }}" alt="Brand" width="80" height="80" />
                                     </figure>
-                                    <a href=" {{ url('/vendorDetails/'.$vendorcreate->id) }}" class="btn btn-dark btn-link btn-underline btn-icon-right btn-visit">
+                                    <a href=" {{ url('/shop-details/'.$vendorcreate->id) }}" class="btn btn-dark btn-link btn-underline btn-icon-right btn-visit">
                                        <b>Visit Store</b> <i class="w-icon-long-arrow-right"></i></a>
                                 </div>
                             </div>

@@ -93,7 +93,7 @@
                              <div class="product-details" data-sticky-options="{'minWidth': 767}">
                                  <h1 class="product-title"><?php echo $prouctsList['product_name'] ?></h1>
                                  <div class="product-bm-wrapper">
-                                    <a href="{{ url('vendorDetails'). '/'.$getProduct['id'] }}">
+                                    <a href="{{ url('shop-details'). '/'.$getProduct['id'] }}">
                                      <figure class="brand">
                                          <img src="<?php echo asset('assets/images/vendor/profile/' . $prouctsList['profile_image']) ?>" alt="Brand"
                                              width="60" height="50" />
@@ -102,7 +102,7 @@
                                      <div class="product-meta">
                                          <div class="product-categories">
                                              Shop Name:
-                                             <span class="product-category"><a href="{{ url('vendorDetails'). '/'.$getProduct['id'] }}"><?php echo $vendor_details['shop_name'] ?></a></span>
+                                             <span class="product-category"><a href="{{ url('shop-details'). '/'.$getProduct['id'] }}"><?php echo $vendor_details['shop_name'] ?></a></span>
                                          </div>
                                          <div class="product-categories">
                                              Location:
@@ -987,7 +987,7 @@
                      <section class="vendor-product-section">
                          <div class="title-link-wrapper mb-4">
                              <h4 class="title text-left">More Products From This Vendor</h4>
-                             <a href="{{ url('vendorDetails'). '/'.$getProduct['id'] }}" class="btn btn-dark btn-link btn-slide-right btn-icon-right">More
+                             <a href="{{ url('shop-details'). '/'.$getProduct['id'] }}" class="btn btn-dark btn-link btn-slide-right btn-icon-right">More
                                  Products<i class="w-icon-long-arrow-right"></i></a>
                          </div>
                          <div class="swiper-container swiper-theme" data-swiper-options="{
