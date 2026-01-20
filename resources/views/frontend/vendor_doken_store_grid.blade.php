@@ -45,7 +45,7 @@
             <nav class="breadcrumb-nav">
                 <div class="container">
                     <ul class="breadcrumb mb-6">
-                        <li><a href="demo1.html">Home</a></li>
+                        <li><a href="{{ route('home') }}">Home</a></li>
                         <li><a href="{{ route('shops') }}">Shops</a></li>
                        
                     </ul>
