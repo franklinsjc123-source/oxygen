@@ -102,7 +102,8 @@
                                      <div class="product-meta">
                                          <div class="product-categories">
                                              Shop Name:
-                                             <span class="product-category"><a href="{{ url('shop-details'). '/'.$getProduct['id'] }}"><?php echo $vendor_details['shop_name'] ?></a></span>
+                                             <span class="product-category"><a href="{{ url('shop-details'). '/'.$getProduct['id'] }}">
+                                                <?php echo $vendor_details['shop_name'] ?></a></span>
                                          </div>
                                          <div class="product-categories">
                                              Location:
@@ -233,7 +234,7 @@
                                  <a href="#product-tab-specification" class="nav-link">Specification</a>
                              </li>
                              <li class="nav-item">
-                                 <a href="#product-tab-vendor" class="nav-link">Vendor Info</a>
+                                 <a href="#product-tab-vendor" class="nav-link">Shop Info</a>
                              </li>
                              <li class="nav-item">
                                  <a href="#product-tab-reviews" class="nav-link">Customer Reviews (3)</a>
@@ -308,7 +309,7 @@
                                                     </figure>-->
                                         <div>
                                             <div class="vendor-name"><a
-                                                    href="#">{{ $vendor_details->owner_name }}</a>
+                                                    href="{{ url('shop-details').'/'.$vendor_details->id }}" >{{ $vendor_details->owner_name }}</a>
                                             </div>
                                             <div class="ratings-container">
                                                 <div class="ratings-full">
@@ -341,12 +342,12 @@
                                             <a href="#tel:">{{ $vendor_details->mobile_number2 }}</a>
                                         </li>
                                     </ul>
-                                    <a href="vendor-dokan-store.html"
-                                        class="btn btn-dark btn-link btn-underline btn-icon-right">Visit
-                                        Store<i class="w-icon-long-arrow-right"></i></a>
-                                    <p class="mb-5">
-                                        {{ $vendor_details->description }}
-                                    </p>
+                                    
+                                          <a href="{{ url('shop-details').'/'.$vendor_details->id }}"
+                                        class="btn btn-dark btn-link btn-underline btn-icon-right"><h3> Visit Store <i class="w-icon-long-arrow-right"></i> </h3></a>
+                                    
+                                  
+                                  
                                 </div>
                             </div>
                             @else

@@ -136,16 +136,23 @@
                         
 
                 <?php  if(session('customer_id')){ ?>
+
+                     <a   href="{{ route('myAccount') }}"   class="compare label-down link d-xs-show" >
+                                <i class="w-icon-account"  style="font-size:28px;"></i>
+                                <span class="compare-label d-lg-show mt-1">Account</span>
+                            </a>
+
+                     <a class="wishlist label-down link d-xs-show" href="{{ route('myWishlist') }}">
+                            <i class="w-icon-wallet2"></i>
+                            <span class="wishlist-label d-lg-show mt-1">Wallet</span>
+                        </a>
                     
                     <a class="wishlist label-down link d-xs-show" href="{{ route('myWishlist') }}">
                             <i class="w-icon-heart"></i>
                             <span class="wishlist-label d-lg-show mt-1">Wishlist</span>
                         </a>
 
-                      <a   href="{{ route('myAccount') }}"   class="compare label-down link d-xs-show" >
-                                <i class="w-icon-account"  style="font-size:28px;"></i>
-                                <span class="compare-label d-lg-show mt-1">Account</span>
-                            </a>
+                     
 
 
                <?php  }else{ ?>

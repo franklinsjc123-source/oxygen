@@ -20369,7 +20369,7 @@ body .product-popup {
 }
 
 #product-tab-vendor .vendor-banner img {
-  min-height: 29.5rem;
+  max-height: 29.5rem;
   width: 100%;
 }
 #product-tab-vendor .vendor-user {
