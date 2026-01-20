@@ -221,7 +221,7 @@
                                         <a href="#"   onclick="addwishlist('{{  $row['id'] }}')" class="btn-product-icon btn-wishlist w-icon-heart"
                                             title="Add to wishlist"></a>                                    
                                     </div>
-                                    <div class="product-action"> <!--  -->
+                                    <div class="product-action"> 
                                         <a href="javascript:void(0)" onclick="showQuickView('<?= $row['id'] ?>')" data-id='<?= $row['id'] ?>'  class="btn-product btnquickview" title="Quick View">Quick
                                             View</a>
                                     </div>
@@ -234,7 +234,7 @@
 
                                 </div>
                                 <div class="product-pa-wrapper">
-                                    <div class="product-price">
+                                    <div class="product-price-home">
                                         ₹{{ $row['selling_price'] }} 
                                     </div>
                                     <div  class="product-price-discount" >

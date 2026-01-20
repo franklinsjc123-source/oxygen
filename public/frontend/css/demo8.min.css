@@ -6810,6 +6810,8 @@ body .product-popup {
   overflow: hidden;
   white-space: nowrap;
 }
+
+
 .product-media {
   position: relative;
   margin-bottom: 0;
@@ -7233,6 +7235,17 @@ body .product-popup {
    color: #000;
 }
 
+
+
+.product-price-home {
+  align-items: baseline;
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 1.6;
+   color: #000;
+}
+
 .product-price:hover {
 
    color: #000 !important;
@@ -7375,6 +7388,12 @@ body .product-popup {
   display: inline-flex;
 }
 .product .product-pa-wrapper .product-price {
+  margin-bottom: 0;
+  color : #000;
+}
+
+
+.product .product-pa-wrapper .product-price-home {
   margin-bottom: 0;
   color : #000;
 }
