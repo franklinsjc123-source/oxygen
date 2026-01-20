@@ -142,15 +142,15 @@
                                 <span class="compare-label d-lg-show mt-1">Account</span>
                             </a>
 
-                     <a class="wishlist label-down link d-xs-show" href="{{ route('myWishlist') }}">
+                     <a class="wishlist label-down link d-xs-show" href="{{ route('myWallet') }}">
                             <i class="w-icon-wallet2"></i>
-                            <span class="wishlist-label d-lg-show mt-1">Wallet</span>
+                            <span class="wishlist-label d-lg-show mt-1">Wallet </span>
                         </a>
                     
                     <a class="wishlist label-down link d-xs-show" href="{{ route('myWishlist') }}">
                             <i class="w-icon-heart"></i>
                             <span class="wishlist-label d-lg-show mt-1">Wishlist</span>
-                        </a>
+                    </a>
 
                      
 

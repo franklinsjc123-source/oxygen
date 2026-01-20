@@ -102,6 +102,7 @@ Route::get('/mainCategoryShop/{id}', [FrontendController::class, 'mainCategorySh
 Route::get('categoryShop/{category_id}/{sub_category_id?}', [FrontendController::class, 'categoryShop'])->name('categoryShop');
 Route::get('get-filter-product/', [FrontendController::class, 'getFilterProducts'])->name('get-filter-product');
 Route::get('/myAccount', [FrontendController::class, 'myAccount'])->name('myAccount');
+Route::get('/myWallet', [FrontendController::class, 'myWallet'])->name('myWallet');
 Route::get('/myWishlist', [FrontendController::class, 'myWishlist'])->name('myWishlist');
 Route::get('/add-wishlist', [FrontendController::class,'addWishlist'])->name('add-wishlist');
 Route::get('/offers', [FrontendController::class, 'offers'])->name('offers');

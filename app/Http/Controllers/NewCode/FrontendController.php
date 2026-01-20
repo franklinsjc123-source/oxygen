@@ -702,7 +702,7 @@ class FrontendController extends Controller
         $prouctdata = Products::find($id);
         $canRate = false;
 
-        if (session()->has('customer_id')) {  
+        if (session()->has('customer_id')) {
             $customer_id = session('customer_id');
 
             $order = DB::table('ecom_order_product')
@@ -712,12 +712,12 @@ class FrontendController extends Controller
                 ->where('ecom_order_product.order_status', 'Delivered')
                 ->first();
 
-            if ($order) { 
+            if ($order) {
                 $canRate = true;
             }
         }
 
-        $avg = Rating::where('products_id',$prouctdata['id'])->avg('star_rating');
+        $avg = Rating::where('products_id', $prouctdata['id'])->avg('star_rating');
         $percent = $avg > 0 ? ($avg / 5) * 100 : 0;
 
         $reviewCount = Rating::where('products_id', $prouctdata['id'])->count();
@@ -737,7 +737,7 @@ class FrontendController extends Controller
         $prouctsList = $this->getSpecificProduct($id);
         $imageList   = $this->getProductImageList($id);
 
-        $avg = Rating::where('products_id',$id)->avg('star_rating');
+        $avg = Rating::where('products_id', $id)->avg('star_rating');
         $percent = $avg > 0 ? ($avg / 5) * 100 : 0;
 
         $reviewCount = Rating::where('products_id', $id)->count();
@@ -1400,85 +1400,85 @@ class FrontendController extends Controller
         return redirect()->back()->with('success', 'Order placed successfully!');
     }
 
-   public function downloadInvoice($id)
-{ 
-    $order = Ecom_Orders::where('id', $id)->firstOrFail();
+    public function downloadInvoice($id)
+    {
+        $order = Ecom_Orders::where('id', $id)->firstOrFail();
 
-    // customer_id is string like OXY-C00001
-    $customer = Ecom_Customer_info::where('customer_id', $order->customer_id)->first();
+        // customer_id is string like OXY-C00001
+        $customer = Ecom_Customer_info::where('customer_id', $order->customer_id)->first();
 
-    // order_id is like OXY-O0001
-    $items = Ecom_Order_product::where('order_id', $order->order_id)->get();
+        // order_id is like OXY-O0001
+        $items = Ecom_Order_product::where('order_id', $order->order_id)->get();
 
-    $mappedItems = $items->map(function($item){
-        $net = $item->product_price * $item->product_quantity;
+        $mappedItems = $items->map(function ($item) {
+            $net = $item->product_price * $item->product_quantity;
 
-        $taxRate = 18; // or from GST table if needed
-        $taxAmt = ($net * $taxRate) / 100;
-        $total = $net + $taxAmt;
+            $taxRate = 18; // or from GST table if needed
+            $taxAmt = ($net * $taxRate) / 100;
+            $total = $net + $taxAmt;
 
-        return [
-            'name'     => $item->product_name,
-            'hsn'      => $item->product_gstin ?? '-',
-            'price'    => $item->product_price,
-            'qty'      => $item->product_quantity,
-            'net'      => $net,
-            'tax_rate' => $taxRate,
-            'tax_type' => 'IGST',
-            'tax_amt'  => $taxAmt,
-            'total'    => $total,
+            return [
+                'name'     => $item->product_name,
+                'hsn'      => $item->product_gstin ?? '-',
+                'price'    => $item->product_price,
+                'qty'      => $item->product_quantity,
+                'net'      => $net,
+                'tax_rate' => $taxRate,
+                'tax_type' => 'IGST',
+                'tax_amt'  => $taxAmt,
+                'total'    => $total,
+            ];
+        });
+
+        $totalTax   = $mappedItems->sum('tax_amt');
+        $grandTotal = $mappedItems->sum('total');
+
+        $fmt = new NumberFormatter("en", NumberFormatter::SPELLOUT);
+        $inWords = ucwords($fmt->format($grandTotal)) . " Only";
+
+        $data = [
+            'seller' => [
+                'name' => 'Le Delite',
+                'address' => 'New Rajender Nagar, Delhi - 110060',
+                'pan' => 'AKUPA3250C',
+                'gst' => '07AKUPA3250C1ZI'
+            ],
+
+            'invoice' => [
+                'order_no'     => $order->order_id,
+                'invoice_no'   => $order->order_id,
+                'order_date'   => \Carbon\Carbon::parse($order->order_date)->format('d-m-Y'),
+                'invoice_date' => now()->format('d-m-Y'),
+            ],
+
+            'billing' => [
+                'name'       => ($customer ? $customer->customer_firstname . ' ' . $customer->customer_lastname : ''),
+                'address'    => $order->customer_address,
+                'city'       => $order->customer_city,
+                'pincode'    => $order->customer_pincode,
+                'state_code' => $order->customer_state,
+            ],
+
+            'shipping' => [
+                'name'       => $order->customer_firstname . ' ' . $order->customer_lastname,
+                'address'    => $order->customer_address1,
+                'city'       => $order->customer_city,
+                'pincode'    => $order->customer_pincode,
+                'state_code' => $order->customer_state,
+            ],
+
+            'items' => $mappedItems,
+
+            'summary' => [
+                'tax'   => $totalTax,
+                'grand' => $grandTotal,
+                'words' => $inWords,
+            ],
         ];
-    });
 
-    $totalTax   = $mappedItems->sum('tax_amt');
-    $grandTotal = $mappedItems->sum('total');
-
-    $fmt = new NumberFormatter("en", NumberFormatter::SPELLOUT);    
-    $inWords = ucwords($fmt->format($grandTotal)) . " Only";
-
-    $data = [
-        'seller' => [
-            'name' => 'Le Delite',
-            'address' => 'New Rajender Nagar, Delhi - 110060',
-            'pan' => 'AKUPA3250C',
-            'gst' => '07AKUPA3250C1ZI'
-        ],
-
-        'invoice' => [
-            'order_no'     => $order->order_id,
-            'invoice_no'   => $order->order_id,
-            'order_date'   => \Carbon\Carbon::parse($order->order_date)->format('d-m-Y'),
-            'invoice_date' => now()->format('d-m-Y'),
-        ],
-
-        'billing' => [
-            'name'       => ($customer ? $customer->customer_firstname.' '.$customer->customer_lastname : ''),
-            'address'    => $order->customer_address,
-            'city'       => $order->customer_city,
-            'pincode'    => $order->customer_pincode,
-            'state_code' => $order->customer_state,
-        ],
-
-        'shipping' => [
-            'name'       => $order->customer_firstname.' '.$order->customer_lastname,
-            'address'    => $order->customer_address1,
-            'city'       => $order->customer_city,
-            'pincode'    => $order->customer_pincode,
-            'state_code' => $order->customer_state,
-        ],
-
-        'items' => $mappedItems,
-
-        'summary' => [
-            'tax'   => $totalTax,
-            'grand' => $grandTotal,
-            'words' => $inWords,
-        ],
-    ];
-
-    $pdf = Pdf::loadView('frontend.invoice', $data);
-    return $pdf->stream('invoice.pdf');
-}
+        $pdf = Pdf::loadView('frontend.invoice', $data);
+        return $pdf->stream('invoice.pdf');
+    }
 
 
 
@@ -1586,6 +1586,13 @@ class FrontendController extends Controller
 
 
 
+    public function myWallet(Request $request)
+    {
+        $customer_id = Session::get('customer_id');
+
+        return view('frontend.wallet');
+    }
+
     public function myWishlist(Request $request)
     {
         $customer_id = Session::get('customer_id');
@@ -1633,32 +1640,30 @@ class FrontendController extends Controller
     }
 
     public function storeRating(Request $request)
-        {  
-            if(!session()->has('customer_id')){
-                return back()->with('error','Login first');
-            }
-
-            $request->validate([
-                'product_id'=>'required',
-                'star_rating'=>'required|between:1,5',
-                'comment'=>'required'
-            ]);
-
-            Rating::updateOrCreate(
-                [
-                    'products_id' => $request->product_id,
-                    'customer_id' => session('customer_id'),
-                ],
-                [
-                    'customer_name' => 'test',
-                    'star_rating'   => $request->star_rating,
-                    'comments'      => $request->comment,
-                    'status'        => 1
-                ]
-            );
-
-            return back()->with('success','Rating submitted');
+    {
+        if (!session()->has('customer_id')) {
+            return back()->with('error', 'Login first');
         }
 
-        
+        $request->validate([
+            'product_id' => 'required',
+            'star_rating' => 'required|between:1,5',
+            'comment' => 'required'
+        ]);
+
+        Rating::updateOrCreate(
+            [
+                'products_id' => $request->product_id,
+                'customer_id' => session('customer_id'),
+            ],
+            [
+                'customer_name' => 'test',
+                'star_rating'   => $request->star_rating,
+                'comments'      => $request->comment,
+                'status'        => 1
+            ]
+        );
+
+        return back()->with('success', 'Rating submitted');
+    }
 }
