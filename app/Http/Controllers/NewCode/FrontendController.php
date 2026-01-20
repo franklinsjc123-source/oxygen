@@ -45,7 +45,7 @@ class FrontendController extends Controller
     }
 
 
-    public function vendorDokenGrid()
+    public function shops()
     {
 
         $vendorcreate = vendorcreate::get();

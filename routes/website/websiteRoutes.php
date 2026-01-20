@@ -83,7 +83,7 @@ Route::get('/shopping-cart', [FrontendController::class, 'showCarts'])->name('sh
 Route::get('/getItemCart', [IndexController::class, 'getItemCart'])->name('getItemCart');
 Route::post('/updateQty', [IndexController::class, 'updateQty'])->name('updateQty');
 Route::post('/customCart', [FrontendController::class, 'customCart'])->name('customCart');
-Route::get('vendorDokenGrid',[FrontendController::class,'vendorDokenGrid'])->name('vendorDokenGrid');
+Route::get('shops',[FrontendController::class,'shops'])->name('shops');
 Route::get('vendorDokenStore',[FrontendController::class,'vendorDokenStore'])->name('vendorDokenStore');
 Route::get('vendorDetails/{id}', [FrontendController::class, 'vendorDetails'])->name('vendorDetails');
 Route::get('home',[FrontendController::class,'home'])->name('home');

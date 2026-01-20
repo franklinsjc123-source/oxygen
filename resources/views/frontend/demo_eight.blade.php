@@ -28,7 +28,7 @@
                                                 {{-- <span class="text-primary"><?php echo $val->sub_title ?></span><br> --}}
                                                 {{-- Fashion Lifestyle<br>Collection --}}
                                             </h3>
-                                            <a href="{{ url('vendorDokenGrid')}}"
+                                            <a href="{{ url('shops')}}"
                                                 class="btn btn-dark btn-outline btn-rounded btn-icon-right">
                                                 Shop Now<i class="w-icon-long-arrow-right"></i>
                                             </a>
@@ -203,7 +203,7 @@
 
         <div class="title-link-wrapper mb-3">
              <h2 class="title mb-0 pt-2 pb-2">Top Rated Products</h2>
-             <a href="{{ url('vendorDokenGrid') }}" class="mb-0">More Products<i
+             <a href="{{ url('shops') }}" class="mb-0">More Products<i
                      class="w-icon-long-arrow-right"></i></a>
          </div>
 

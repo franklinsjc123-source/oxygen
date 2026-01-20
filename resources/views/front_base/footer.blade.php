@@ -111,7 +111,7 @@
            <i class="w-icon-home"></i>
            <p>Home</p>
        </a>
-       <a href="{{ url('vendorDokenGrid') }}" class="sticky-link">
+       <a href="{{ url('shops') }}" class="sticky-link">
            <i class="w-icon-category"></i>
            <p>Shop</p>
        </a>
@@ -192,7 +192,7 @@
                <div class="tab-pane active" id="main-menu">
                    <ul class="mobile-menu">
                        <li><a href="{{ url('home') }}">Home</a></li>
-                       <li><a href="{{ url('vendorDokenGrid') }}" >Shops</a></li>
+                       <li><a href="{{ url('shops') }}" >Shops</a></li>
                     
                    </ul>
                </div>

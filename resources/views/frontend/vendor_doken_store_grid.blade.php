@@ -46,7 +46,7 @@
                 <div class="container">
                     <ul class="breadcrumb mb-6">
                         <li><a href="demo1.html">Home</a></li>
-                        <li><a href="{{ route('vendorDokenGrid') }}">Shops</a></li>
+                        <li><a href="{{ route('shops') }}">Shops</a></li>
                        
                     </ul>
                 </div>

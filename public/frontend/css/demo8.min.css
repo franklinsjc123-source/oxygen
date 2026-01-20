@@ -439,7 +439,7 @@ a {
   transition: color 0.3s;
 }
 a:hover {
-  color: #1914fe;
+  color: #0088dd;
 }
 :focus {
   outline: 0;
