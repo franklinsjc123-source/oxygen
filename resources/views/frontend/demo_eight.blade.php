@@ -321,7 +321,7 @@
 
                                 </div>
                                 <div class="product-pa-wrapper">
-                                    <div class="product-price">
+                                    <div class="product-price-home">
                                         ₹{{ $row['selling_price'] }} 
                                     </div>
                                     <div  class="product-price-discount" >
@@ -377,7 +377,7 @@
 
                                 </div>
                                 <div class="product-pa-wrapper">
-                                    <div class="product-price">
+                                    <div class="product-price-home">
                                         ₹{{ $row['selling_price'] }} 
                                     </div>
                                     <div  class="product-price-discount" >
@@ -434,7 +434,7 @@
 
                                 </div>
                                 <div class="product-pa-wrapper">
-                                    <div class="product-price">
+                                    <div class="product-price-home">
                                         ₹{{ $row['selling_price'] }} 
                                     </div>
                                     <div  class="product-price-discount" >
