@@ -24,11 +24,15 @@ use App\Models\Rating;
 use App\Models\Ecom_Customer_info;
 use App\Models\Ecom_Customer_Shipping;
 use App\Models\Order\Orders;
+use App\Models\Ecom_Orders;
+use App\Models\Ecom_Order_product;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use App\Models\PinCode\PinCode;
 use App\Models\wishlist;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
+use NumberFormatter;
 
 class FrontendController extends Controller
 {
@@ -64,7 +68,7 @@ class FrontendController extends Controller
                 ->get();
             $wishCount = count($wishlist);
 
-            $orderdata = Orders::where('User_id', $customer_id)
+            $orderdata = Ecom_orders::where('customer_id', $customer_id)
                 ->orderBy('id', 'desc')
                 ->get();
 
@@ -696,22 +700,22 @@ class FrontendController extends Controller
         $vendor_details = vendorcreate::where('id', $getProduct->created_by)->first();
 
         $prouctdata = Products::find($id);
-            $canRate = false;
+        $canRate = false;
 
-            if (session()->has('customer_id')) {  
-                $customer_id = session('customer_id');
+        if (session()->has('customer_id')) {  
+            $customer_id = session('customer_id');
 
-                $order = DB::table('ordersproducts')
-                    ->join('orders', 'orders.id', '=', 'ordersproducts.order_id')
-                    ->where('orders.User_id', $customer_id)   // customer
-                    ->where('ordersproducts.product_id', $id) // product
-                    ->where('ordersproducts.order_status', 'Delivered')
-                    ->first();
+            $order = DB::table('ecom_order_product')
+                ->join('ecom_order_info', 'ecom_order_info.order_id', '=', 'ecom_order_product.order_id')
+                ->where('ecom_order_info.customer_id', $customer_id)   // customer
+                ->where('ecom_order_product.product_id', $id)          // product
+                ->where('ecom_order_product.order_status', 'Delivered')
+                ->first();
 
-                if ($order) { 
-                    $canRate = true;
-                }
+            if ($order) { 
+                $canRate = true;
             }
+        }
 
         $avg = Rating::where('products_id',$prouctdata['id'])->avg('star_rating');
         $percent = $avg > 0 ? ($avg / 5) * 100 : 0;
@@ -1342,28 +1346,32 @@ class FrontendController extends Controller
         /* ===============================
         ORDER INSERT
         =============================== */
-
-        $order = Orders::create([
-            'User_id'        => $customerCode,
-            'orders_id'      => 'ORD-' . strtoupper(Str::random(8)),
-            'firstname'      => $request->billing_first_name,
-            'lastname'       => $request->billing_last_name,
-            'phone'          => $request->billing_phone,
-            'email'          => $request->billing_email,
-            'address'        => $shipping_address,
-            'town'           => $shipping_city,
-            'state'          => $shipping_state,
-            'country'        => $shipping_country,
-            'postelcode'     => $shipping_postcode,
-            'value'          => Cart::getTotal(),
-            'shipping'       => $request->shipping_method ?? 'free',
-            'total'          => Cart::getTotal(),
-            'grandtotal'     => Cart::getTotal(),
-            'order_status'   => 'Pending',
-            'payment_status' => 'Pending',
-            'order_notes'    => $request->order_notes,
-            'order_date'     => now(),
-            'status'         => 1,
+        $orderCode = 'OXY-O' . str_pad(Ecom_Orders::max('id') + 1, 4, '0', STR_PAD_LEFT);
+        $order = Ecom_Orders::create([
+            'order_id'            => $orderCode,
+            'delivery_type'       => 'Normal',
+            'customer_id'         => $customerCode,
+            'customer_firstname'  => $request->billing_first_name,
+            'customer_lastname'   => $request->billing_last_name,
+            'customer_mobileno'   => $request->billing_phone,
+            'customer_email'      => $request->billing_email,
+            'customer_address'    => $shipping_address,
+            'customer_address1'   => $shipping_address,
+            'customer_city'       => $shipping_city,
+            'customer_state'      => $shipping_state,
+            'customer_pincode'    => $shipping_postcode,
+            'payment_type'        => $request->payment_method ?? 'Cash On Delivery',
+            'total_amount'        => Cart::getTotal(),
+            'discount_amount'     => 0,
+            'shipping_charge'     => 0,
+            'gst_charge'          => 0,
+            'grand_total'         => Cart::getTotal(),
+            'order_status'        => 'Pending',
+            'payment_status'      => 'Pending',
+            'order_notes'         => $request->order_notes,
+            'order_date'          => now(),
+            'created_at'          => now(),
+            'updated_at'          => now(),
         ]);
 
         /* ===============================
@@ -1371,16 +1379,19 @@ class FrontendController extends Controller
         =============================== */
 
         foreach (Cart::getContent() as $item) {
-            ordersproduct::create([
-                'order_id'        => $order->orders_id,
-                'product_id'      => $item->id,
-                'product_name'    => $item->name,
-                'product_image'   => $item->attributes->image ?? null,
+            Ecom_Order_product::create([
+                'order_id'         => $order->order_id,
+                'product_id'       => $item->id,
+                'product_name'     => $item->name,
+                'product_image'    => $item->attributes->image ?? null,
+                'product_gstin'    => $item->attributes->gst ?? 0,
+                'product_size'     => $item->attributes->size ?? null,
                 'product_quantity' => $item->quantity,
-                'product_price'   => $item->price,
-                'product_size'    => $item->attributes->size ?? null,       
-                'total_price'     => $item->price * $item->quantity,
-                'order_status'    => 'Pending',
+                'product_price'    => $item->price,
+                'total_price'      => $item->price * $item->quantity,
+                'order_status'     => 'Pending',
+                'created_at'       => now(),
+                'updated_at'       => now(),
             ]);
         }
 
@@ -1389,59 +1400,86 @@ class FrontendController extends Controller
         return redirect()->back()->with('success', 'Order placed successfully!');
     }
 
-    public function downloadInvoice()
-    {
-        $data = [
-            'seller' => [
-                'name' => 'Le Delite',
-                'address' => 'New Rajender Nagar, Delhi - 110060',
-                'pan' => 'AKUPA3250C',
-                'gst' => '07AKUPA3250C1ZI'
-            ],
-            'invoice' => [
-                'order_no' => '406-4816552-3160328',
-                'invoice_no' => 'IN-23578',
-                'order_date' => '06-12-2025',
-                'invoice_date' => '06-12-2025'
-            ],
-            'billing' => [
-                'name' => 'Martin',
-                'address' => 'Arunachalam Enclave, Vijay Nagar',
-                'city' => 'Chennai',
-                'pincode' => '600048',
-                'state_code' => '33'
-            ],
-            'shipping' => [
-                'name' => 'Martin',
-                'address' => 'Arunachalam Enclave, Vijay Nagar',
-                'city' => 'Chennai',
-                'pincode' => '600048',
-                'state_code' => '33'
-            ],
-            'items' => [
-                [
-                    'name' => 'Unicorn Gift Combo Set',
-                    'hsn' => '9505',
-                    'price' => 334.75,
-                    'qty' => 1,
-                    'net' => 334.75,
-                    'tax_rate' => 18,
-                    'tax_type' => 'IGST',
-                    'tax_amt' => 60.25,
-                    'total' => 395.00,
-                ]
-            ],
-            'summary' => [
-                'tax' => 60.25,
-                'grand' => 395.00,
-                'words' => 'Three Hundred Ninety Five Only'
-            ]
-        ];
+   public function downloadInvoice($id)
+{ 
+    $order = Ecom_Orders::where('id', $id)->firstOrFail();
 
-        $pdf = Pdf::loadView('frontend.invoice', $data);
-        //  return $pdf->download('invoice.pdf');
-        return $pdf->stream('invoice.pdf');
-    }
+    // customer_id is string like OXY-C00001
+    $customer = Ecom_Customer_info::where('customer_id', $order->customer_id)->first();
+
+    // order_id is like OXY-O0001
+    $items = Ecom_Order_product::where('order_id', $order->order_id)->get();
+
+    $mappedItems = $items->map(function($item){
+        $net = $item->product_price * $item->product_quantity;
+
+        $taxRate = 18; // or from GST table if needed
+        $taxAmt = ($net * $taxRate) / 100;
+        $total = $net + $taxAmt;
+
+        return [
+            'name'     => $item->product_name,
+            'hsn'      => $item->product_gstin ?? '-',
+            'price'    => $item->product_price,
+            'qty'      => $item->product_quantity,
+            'net'      => $net,
+            'tax_rate' => $taxRate,
+            'tax_type' => 'IGST',
+            'tax_amt'  => $taxAmt,
+            'total'    => $total,
+        ];
+    });
+
+    $totalTax   = $mappedItems->sum('tax_amt');
+    $grandTotal = $mappedItems->sum('total');
+
+    $fmt = new NumberFormatter("en", NumberFormatter::SPELLOUT);    
+    $inWords = ucwords($fmt->format($grandTotal)) . " Only";
+
+    $data = [
+        'seller' => [
+            'name' => 'Le Delite',
+            'address' => 'New Rajender Nagar, Delhi - 110060',
+            'pan' => 'AKUPA3250C',
+            'gst' => '07AKUPA3250C1ZI'
+        ],
+
+        'invoice' => [
+            'order_no'     => $order->order_id,
+            'invoice_no'   => $order->order_id,
+            'order_date'   => \Carbon\Carbon::parse($order->order_date)->format('d-m-Y'),
+            'invoice_date' => now()->format('d-m-Y'),
+        ],
+
+        'billing' => [
+            'name'       => ($customer ? $customer->customer_firstname.' '.$customer->customer_lastname : ''),
+            'address'    => $order->customer_address,
+            'city'       => $order->customer_city,
+            'pincode'    => $order->customer_pincode,
+            'state_code' => $order->customer_state,
+        ],
+
+        'shipping' => [
+            'name'       => $order->customer_firstname.' '.$order->customer_lastname,
+            'address'    => $order->customer_address1,
+            'city'       => $order->customer_city,
+            'pincode'    => $order->customer_pincode,
+            'state_code' => $order->customer_state,
+        ],
+
+        'items' => $mappedItems,
+
+        'summary' => [
+            'tax'   => $totalTax,
+            'grand' => $grandTotal,
+            'words' => $inWords,
+        ],
+    ];
+
+    $pdf = Pdf::loadView('frontend.invoice', $data);
+    return $pdf->stream('invoice.pdf');
+}
+
 
 
     public function getFilterProducts(Request $request)

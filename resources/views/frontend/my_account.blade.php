@@ -208,7 +208,7 @@
                                         @foreach($orderdata as $order)
                                             <tr>
                                                 <td class="order-id">
-                                                    #{{ $order->orders_id }}
+                                                    #{{ $order->order_id }}
                                                 </td>
 
                                                 <td class="order-date">
@@ -220,7 +220,7 @@
                                                 </td>
 
                                                 <td class="order-total">
-                                                    <span class="order-price">₹{{ number_format($order->grandtotal, 2) }}</span>
+                                                    <span class="order-price">₹{{ number_format($order->grand_total, 2) }}</span>
                                                 </td>
 
                                                 <td class="order-action">
