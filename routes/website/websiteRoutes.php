@@ -86,7 +86,7 @@ Route::post('/customCart', [FrontendController::class, 'customCart'])->name('cus
 Route::get('vendorDokenGrid',[FrontendController::class,'vendorDokenGrid'])->name('vendorDokenGrid');
 Route::get('vendorDokenStore',[FrontendController::class,'vendorDokenStore'])->name('vendorDokenStore');
 Route::get('vendorDetails/{id}', [FrontendController::class, 'vendorDetails'])->name('vendorDetails');
-Route::get('demoEight',[FrontendController::class,'demoEight'])->name('demoEight');
+Route::get('home',[FrontendController::class,'home'])->name('home');
 Route::get('productVar/{id?}',[FrontendController::class,'productVar'])->name('productVar');
 Route::get('getSpecificProduct/{id?}',[FrontendController::class,'getProduct'])->name('getSpecificProduct');
 Route::get('getAllProduct/{id?}',[FrontendController::class,'getSpecificProduct'])->name('getAllProduct');
@@ -116,11 +116,11 @@ Route::post('/set-default-shipping-address', [FrontendController::class, 'setDef
 
 Route::post('/change-customer-password', [FrontendController::class,'changeCustomerPassword'])->name('change-customer-password');
 /** NEW CODE END  */
-Route::get('/', [FrontendController::class, 'demoEight']);
+Route::get('/', [FrontendController::class, 'home']);
 
 
 // Route::resource('/', HomeController::class, ['names' => 'home']);
-Route::get('home', [HomeController::class, 'index'])->name('home');
+// Route::get('home', [HomeController::class, 'index'])->name('home');
 Route::get('index', [HomeController::class, 'menu'])->name('homeindex');
 Route::get('productshow/{id?}', [HomeController::class, 'show'])->name('productallshow');
 // Route::get('productshow/{id?}', [HomeController::class, 'productshow'])->name('productallshow');
