@@ -231,7 +231,7 @@
                             <nav class="main-nav">
                                 <ul class="menu active-underline">
                                     <li>
-                                        <a href="{{ url('demoEight') }}">Home</a>
+                                         <a href="{{ url('demoEight') }}"><i class="w-icon-home"></i>  Home</a>
                                     </li>
                                     {{-- <li>
                                         <a href="shop-banner-sidebar.html">Shop</a>
@@ -298,7 +298,7 @@
                                         </ul>
                                     </li> --}}
                                     <li >
-                                        <a href="{{ url('vendorDokenGrid') }}">Shops</a>
+                                     <a href="{{ url('vendorDokenGrid') }}">    <i class="w-icon-vendor-store"></i>  Shops</a>
                                         {{-- <ul>
                                             <li>
                                                 <a href="vendor-dokan-store-list.html">Store Listing</a>
@@ -326,12 +326,12 @@
                                         </ul> --}}
                                     </li>
 
-                                      <li><a href="{{ url('mainCategoryShop').'/'.'1' }}">Men</a></li>
+                                      <li>   <a href="{{ url('mainCategoryShop').'/'.'1' }}"><i class="w-icon-tshirt"></i> Men</a></li>
 
-                                        <li><a href="{{ url('mainCategoryShop').'/'.'2' }}">Women</a></li>
+                                        <li><a href="{{ url('mainCategoryShop').'/'.'2' }}"><i class="w-icon-tshirt2"></i>  Women</a></li>
 
-                                          <li><a href="{{ url('mainCategoryShop').'/'.'3' }}">Kids</a></li>
-                                          <li><a href="{{ url('mainCategoryShop').'/'.'4' }}">Living</a></li>
+                                          <li><a href="{{ url('mainCategoryShop').'/'.'3' }}"> <i class="w-icon-basketball"></i> Kids</a></li>
+                                          <li><a href="{{ url('mainCategoryShop').'/'.'4' }}"> <i class="w-icon-shopify"></i>  Living</a></li>
                                     {{-- <li><a href="">Location</a></li> --}}
                                         {{-- <li >
                                         <a href="vendor-dokan-store.html">Offers</a>
