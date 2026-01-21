@@ -154,19 +154,18 @@
                                                     <h3 class="product-name">
                                                         <a href="">{{ $products['product_name']  }}</a>
                                                     </h3>
-                                                    <div class="ratings-container">
-                                                        <div class="ratings-full">
-                                                            <span class="ratings" style="width: 100%;"></span>
-                                                            <span class="tooltiptext tooltip-top"></span>
-                                                        </div>
-                                                        <a href="product-default.html" class="rating-reviews">(3 reviews)</a>
-                                                    </div>
+                                                  
                                                     {{-- <div class="product-pa-wrapper">
                                                         <div class="product-price">
                                                             $220.00 - $230.00
                                                         </div>
                                                     </div> --}}
-
+                                                    <div class="ratings-container">
+                                                        <div class="ratings-full">
+                                                            <span class="ratings" style="width: {{ $row['rating_percent'] ?? 0 }}%"></span>
+                                                        </div>
+                                                        <a>({{ $row['review_count'] ?? 0 }} Reviews)</a>
+                                                    </div>
                                                     <div class="product-pa-wrapper">
                                                         <div class="product-price">
                                                             ₹{{ $products['selling_price'] }} 

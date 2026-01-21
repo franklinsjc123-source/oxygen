@@ -1116,6 +1116,16 @@ class FrontendController extends Controller
 
         $prouctsList = $this->getProductByVendorOffers($vendor_id, $offer_id);
 
+        $attachRatings = function (&$products) {
+            foreach ($products as &$product) {
+                $avg = Rating::where('products_id', $product['id'])->avg('star_rating');
+                $product['rating_percent'] = $avg ? ($avg / 5) * 100 : 0;
+                $product['review_count'] = Rating::where('products_id', $product['id'])->count();
+            }
+        };
+
+        $attachRatings($prouctsList);
+
         return view('frontend/offers-products', compact('offer', 'prouctsList', 'offer_id', 'vendor_id', 'offer_name'));
     }
 
