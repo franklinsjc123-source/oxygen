@@ -451,7 +451,7 @@
                                     <h4 class="product-name"><a href="<?= url('/productVar/'.$row['id']) ?>"><?= ucwords($row['product_name']) ?></a></h4>
 
                                 </div>
-                                <div class="ratings-container">
+                                    <div class="ratings-container">
                                         <div class="ratings-full">
                                             <span class="ratings" style="width: {{ $row['rating_percent'] ?? 0 }}%"></span>
                                         </div>
