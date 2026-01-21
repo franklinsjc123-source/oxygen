@@ -587,39 +587,57 @@ class FrontendController extends Controller
         return $resultArr;
     }
 
-    public function home()
-    {
+  public function home()
+{
+    $mainslider = mainslider::where('status', 1)->get();
 
-        // dd($pincode);
+    $topRatedProducts = $this->getSpecificProduct('');
+    $mensProducts = $this->getMensProduct();
+    $womensProducts = $this->getWomensProduct();
+    $kidsProducts = $this->getKidsProduct();
 
-        $mainslider = mainslider::where('status', 1)->get();
-
-
-        $topRatedProducts = $this->getSpecificProduct('');
-        $mensProducts = $this->getMensProduct();
-        $womensProducts = $this->getWomensProduct();
-        $kidsProducts = $this->getKidsProduct();
-
-        $vendorcreate = vendorcreate::get();
-
-        $pincode = session('pincode');
-
-        if ($pincode) {
-            $zonal_id = PinCode::where('name', $pincode)->value('zonal_id');
-
-            $locations = PinCode::where('zonal_id', $zonal_id)
-                ->select('area')
-                ->get();
-        } else {
-            $locations = PinCode::select('area')
-                ->inRandomOrder()
-                ->limit(8)
-                ->get();
+    // Function to attach ratings
+    $attachRatings = function (&$products) {
+        foreach ($products as &$product) {
+            $avg = Rating::where('products_id', $product['id'])->avg('star_rating');
+            $product['rating_percent'] = $avg ? ($avg / 5) * 100 : 0;
+            $product['review_count'] = Rating::where('products_id', $product['id'])->count();
         }
+    };
 
+    $attachRatings($mensProducts);
+    $attachRatings($womensProducts);
+    $attachRatings($kidsProducts);
+    $attachRatings($topRatedProducts);
 
-        return view('frontend/demo_eight', compact('mainslider', 'topRatedProducts', 'mensProducts', 'womensProducts', 'kidsProducts', 'vendorcreate', 'locations'));
+    $vendorcreate = vendorcreate::get();
+
+    $pincode = session('pincode');
+
+    if ($pincode) {
+        $zonal_id = PinCode::where('name', $pincode)->value('zonal_id');
+
+        $locations = PinCode::where('zonal_id', $zonal_id)
+            ->select('area')
+            ->get();
+    } else {
+        $locations = PinCode::select('area')
+            ->inRandomOrder()
+            ->limit(8)
+            ->get();
     }
+
+    return view('frontend/demo_eight', compact(
+        'mainslider',
+        'topRatedProducts',
+        'mensProducts',
+        'womensProducts',
+        'kidsProducts',
+        'vendorcreate',
+        'locations'
+    ));
+}
+
 
 
     public function vendorProducts($vendor_id)
