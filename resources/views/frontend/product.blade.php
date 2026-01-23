@@ -501,7 +501,7 @@
                                                      Review</button>
                                              </form> -->
                                              @if(session()->has('customer_id') && $canRate)
-                                                <form action="{{ route('rating.store') }}" method="POST" class="review-form">
+                                                <form action="{{ route('rating.store') }}" method="POST" class="review-form" enctype="multipart/form-data">
                                                     @csrf
                                                     <input type="hidden" name="product_id" value="{{ $prouctsList['id'] }}">
 
@@ -517,6 +517,12 @@
 
                                                         <input type="hidden" name="star_rating" id="rating">
                                                     </div>
+
+                                                    <input type="file"
+                                                        name="review_images[]"
+                                                        class="form-control mt-2"
+                                                        multiple
+                                                        accept="image/*">
 
                                                     <textarea name="comment" cols="30" rows="6"
                                                         placeholder="Write Your Review Here..."

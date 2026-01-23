@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\City;
 use App\Models\Rating;
+use App\Models\ReviewImage;
 use App\Models\Ecom_Customer_info;
 use App\Models\Ecom_Customer_Shipping;
 use App\Models\Order\Orders;
@@ -703,50 +704,62 @@ class FrontendController extends Controller
 
     public function productVar($id = '')
     {
-        $ratings = Rating::where('products_id', $id)->where('status', 1)->orderBy('id', 'desc')->get();
+        $ratings = Rating::where('products_id', $id)
+            ->where('status', 1)
+            ->orderBy('id', 'desc')
+            ->get();
+
         $prouctsList = $this->getProduct($id);
         $imageList   = $this->getProductImageList($id);
-        $getSpecificProduct =  ProductsDetails::with('product', 'product.CategoryChild')
-            ->where('id', $id)->first();
+
+        $getSpecificProduct = ProductsDetails::with('product', 'product.CategoryChild')
+            ->where('id', $id)
+            ->first();
+
         $getProduct = Products::where('product_id', $getSpecificProduct->products_id)->first();
 
         $ProductSpecs = ProductSpecs::where('products_id', $getSpecificProduct->products_id)->get();
 
         $vendor_name = Vendor::where('id', $getProduct->vendor_id)->value('shop_name');
-        $vendorProducts   = $this->vendorProducts($getProduct->vendor_id);
-        $relatedProducts   = $this->relatedProducts($getProduct->category_sub);
+        $vendorProducts = $this->vendorProducts($getProduct->vendor_id);
+        $relatedProducts = $this->relatedProducts($getProduct->category_sub);
 
         $vendor_details = vendorcreate::where('id', $getProduct->created_by)->first();
 
         $prouctdata = Products::find($id);
+
+        // ⭐ rating logic
         $canRate = false;
+        $myRating = null;
 
         if (session()->has('customer_id')) {
+
             $customer_id = session('customer_id');
 
-            $order = DB::table('ecom_order_product')
+            // delivered order check
+            $hasPurchased = DB::table('ecom_order_product')
                 ->join('ecom_order_info', 'ecom_order_info.order_id', '=', 'ecom_order_product.order_id')
-                ->where('ecom_order_info.customer_id', $customer_id)   // customer
-                ->where('ecom_order_product.product_id', $id)          // product
+                ->where('ecom_order_info.customer_id', $customer_id)
+                ->where('ecom_order_product.product_id', $id)
                 ->where('ecom_order_product.order_status', 'Delivered')
+                ->exists();
+
+            // already rated check
+            $myRating = Rating::where('products_id', $id)
+                ->where('customer_id', $customer_id)
                 ->first();
 
-            if ($order) {
+            // only if purchased AND not rated
+            if ($hasPurchased && !$myRating) {
                 $canRate = true;
             }
         }
 
-        $avg = Rating::where('products_id', $prouctdata['id'])->avg('star_rating');
+        // ⭐ rating summary
+        $avg = Rating::where('products_id', $prouctdata->id)->avg('star_rating');
         $percent = $avg > 0 ? ($avg / 5) * 100 : 0;
 
-        $reviewCount = Rating::where('products_id', $prouctdata['id'])->count();
-
-        $myRating = null;
-        if (session()->has('customer_id')) {
-            $myRating = Rating::where('products_id', $prouctdata['id'])
-                ->where('customer_id', session('customer_id'))
-                ->first();
-        }
+        $reviewCount = Rating::where('products_id', $prouctdata->id)->count();
 
         return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts', 'relatedProducts', 'percent', 'reviewCount', 'canRate', 'myRating', 'ratings'));
     }
@@ -1669,30 +1682,51 @@ class FrontendController extends Controller
     }
 
     public function storeRating(Request $request)
-    {
+    { 
         if (!session()->has('customer_id')) {
             return back()->with('error', 'Login first');
         }
 
-        $request->validate([
-            'product_id' => 'required',
-            'star_rating' => 'required|between:1,5',
-            'comment' => 'required'
+        // $request->validate([
+        //     'product_id'  => 'required',
+        //     'star_rating' => 'required|between:1,5',
+        //     'comment'     => 'required',
+        //     'review_images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048'
+        // ]);
+
+        $customerId = session('customer_id');
+
+        // 🔒 already rated check
+        $alreadyRated = Rating::where('products_id', $request->product_id)
+            ->where('customer_id', $customerId)
+            ->exists();
+
+        if ($alreadyRated) {
+            return back()->with('error', 'You already reviewed this product');
+        }
+
+        $rating = Rating::create([
+            'products_id'   => $request->product_id,
+            'customer_id'   => $customerId,
+            'customer_name' => 'test',
+            'star_rating'   => $request->star_rating,
+            'comments'      => $request->comment,
+            'status'        => 1
         ]);
 
-        Rating::updateOrCreate(
-            [
-                'products_id' => $request->product_id,
-                'customer_id' => session('customer_id'),
-            ],
-            [
-                'customer_name' => 'test',
-                'star_rating'   => $request->star_rating,
-                'comments'      => $request->comment,
-                'status'        => 1
-            ]
-        );
+        // 🖼️ multiple images
+        if ($request->hasFile('review_images')) { 
+            foreach ($request->file('review_images') as $img) {
+                $path = $img->store('review_images', 'public');
 
-        return back()->with('success', 'Rating submitted');
+                ReviewImage::create([
+                    'rating_id' => $rating->id,
+                    'image_path' => $path
+                ]);
+            }
+        }
+
+        return back()->with('success', 'Rating submitted successfully');
     }
+
 }
