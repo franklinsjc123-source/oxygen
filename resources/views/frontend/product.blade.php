@@ -577,7 +577,7 @@
                                                                 <h4 class="comment-author">
                                                                     <a href="#">{{ $rating->customer_name }}</a>
                                                                     <span class="comment-date">
-                                                                        {{ $rating->created_at->format('M d, Y h:i A') }}
+                                                                       {{ date('M d, Y h:i A', strtotime($rating->created_at)) }}
                                                                     </span>
                                                                 </h4>
 
@@ -603,6 +603,23 @@
                                                                             (1)
                                                                         </a>
                                                                 </div>
+                                                                @php
+                                                                    $images = $rating->image_path ? explode(',', $rating->image_path) : [];
+                                                                @endphp
+
+                                                                @if(count($images))
+                                                                <div class="review-image d-flex gap-2 mt-2">
+                                                                    @foreach($images as $img)
+                                                                        <a href="{{ asset('storage/'.$img) }}" target="_blank">
+                                                                            <img src="{{ asset('storage/'.$img) }}"
+                                                                                width="60"
+                                                                                height="60"
+                                                                                class="rounded border">
+                                                                        </a>
+                                                                    @endforeach
+                                                                </div>
+                                                                @endif
+
                                                             </div>
                                                         </div>
                                                     </li>
