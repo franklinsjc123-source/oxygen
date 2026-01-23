@@ -63,6 +63,7 @@
     use App\Models\Category\Category;
     use App\Models\Category\CategorySub;
     use Darryldecode\Cart\Facades\CartFacade as Cart;
+    use Illuminate\Support\Facades\Session;
 
     $categorymain   = CategoryMain::get();
     $category       = Category::get();
@@ -108,15 +109,28 @@
                             <img src="<?= asset('frontend') ?>/images/header-logo.png" alt="logo" width="144" height="45" />
                         </a>
                         <form method="get" action="#" class="header-search hs-expanded hs-round d-none d-md-flex input-wrapper">
-                            <div class="select-box">
-                                <select id="category" name="category">
-                                    <option value="">All Categories</option>
-                                       @foreach ($categorymain as $categoriesmain)
-                                            <option value="{{ $categoriesmain->id  }}"> {{ $categoriesmain->category_main_name }}</option>
-                                        @endforeach
-                                   
-                                </select>
-                            </div>
+                            <?php  
+                            
+                            $pincode_area = Session::get('pincode_area'); 
+                            $post_region = Session::get('post_region');
+
+                            if($pincode_area) {
+                            
+                            ?>
+
+                           <div class="select-box show-location">
+                                    <i class="w-icon-map-marker"></i>
+
+                                    <marquee behavior="scroll" direction="left" scrollamount="3">
+                                        <h6 class="location-text">
+                                            {{ $post_region }}, {{ $pincode_area }}
+                                        </h6>
+                                    </marquee>
+                                </div>
+
+                            <?php   } ?>
+                            
+                           
                             <input type="text" class="form-control" name="search" id="search"
                                 placeholder="Search in..." required />
                             <button class="btn btn-search" type="submit"><i class="w-icon-search"></i>

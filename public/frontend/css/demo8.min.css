@@ -10335,7 +10335,7 @@ body .product-popup {
   width: 14.6rem;
   border: 2px solid #fff;
   border-right: none;
-  color: #666666;
+  /* color: #666666; */
 }
 .header-search.hs-expanded .select-box:after {
   content: "";
@@ -12545,3 +12545,29 @@ body .product-popup {
     font-size: 3.6em;
   }
 }
+
+
+
+.show-location {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+}
+
+.location-icon {
+    font-size: 18px;
+    color: #e63946;
+    flex-shrink: 0;   /* 🔥 IMPORTANT */
+    display: inline-block;
+}
+
+.show-location marquee {
+    flex: 1;
+}
+
+.location-text {
+    margin: 0;
+    white-space: nowrap;
+}
+

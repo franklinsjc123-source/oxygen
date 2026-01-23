@@ -3,7 +3,7 @@
  @section('content')
  <!-- Start of Main -->
 
- 
+
  <main class="main">
 
         <div class=" pb-2">
@@ -146,8 +146,8 @@
                  <!-- End of Category Banner -->
                  <div class="swiper-slide banner banner-fixed category-banner br-sm">
                      <figure>
-                         <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/1-2.jpg" alt="Category Banner" width="447"
-                             height="230" style="background-color: #333" />
+                         <img style="cursor:pointer" src="<?php echo asset('frontend') ?>/images/demos/demo8/category/1-2.jpg" alt="Category Banner" width="447"
+                             height="230" style="background-color: #0088dd" />
                      </figure>
                      <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2">
                          <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">Get 30% Off
@@ -610,6 +610,8 @@
                         }
                     }
                 }">
+
+
                 <div class="swiper-wrapper row cols-xl-8 cols-lg-6 cols-md-4 cols-sm-3 cols-2">
                     
                 <?php if (isset($vendorcreate)) {
@@ -673,9 +675,12 @@
                 @endphp
                     <div class="swiper-slide swiper-slide-vendor text-center">
                         <figure>
+                            <div  style="">
+
+                            </div>
                             <img src="{{ asset('frontend/images/00' .$imgNo  . '.jpg') }}"  
                                 
-                                style="width:150px;height:auto;object-fit:cover;border-radius:50%;">
+                                style="width:150px;height:auto;object-fit:cover;border-radius:50%; ">
                             
                             <figcaption style="margin-top: 8px; font-weight: 600;">
                                 {{ $row->area }}

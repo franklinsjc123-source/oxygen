@@ -57,6 +57,7 @@ class FrontendController extends Controller
     public function myAccount()
     {
         $customer_id = Session::get('customer_id');
+        
         if ($customer_id) {
             $customer = Ecom_Customer_info::where('customer_id', $customer_id)->first();
             $shipping_address = Ecom_Customer_Shipping::where('customer_id', $customer_id)->get();

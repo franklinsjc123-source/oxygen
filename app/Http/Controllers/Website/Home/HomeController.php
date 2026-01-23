@@ -142,7 +142,11 @@ class HomeController extends Controller
 
             // If pincode exists, create session with the pincode
             if ($pincodeRecord) {
+                
                 Session::put('pincode', $pincode);
+                Session::put('pincode_area', $pincodeRecord->area );
+                Session::put('post_region', $pincodeRecord->post_region );
+
                 return response()->json(['status' => 'success', 'message' => 'Pincode is valid and saved in session.']);
             } else {
                 return response()->json(['status' => 'error', 'message' => 'Delivery not Available This area pincode.']);
