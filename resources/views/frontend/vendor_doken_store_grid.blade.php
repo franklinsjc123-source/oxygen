@@ -87,37 +87,37 @@
                         <div class="store-wrap mb-4">
                             <div class="store store-grid">
                                <div class="store-header custom-split">
-    <div class="store-left">
-        <h4 class="store-title">
-            <a href="{{ url('/shop-details/'.$vendorcreate->id) }}">
-                {{ $vendorcreate->shop_name }}
-            </a>
-        </h4>
+                                    <div class="store-left">
+                                        <h4 class="store-title">
+                                            <a href="{{ url('/shop-details/'.$vendorcreate->id) }}">
+                                                {{ $vendorcreate->shop_name }}
+                                            </a>
+                                        </h4>
 
-        <div class="ratings-container">
-            <div class="ratings-full">
-                <span class="ratings" style="width:100%;"></span>
-            </div>
-        </div>
+                                        <div class="ratings-container">
+                                            <div class="ratings-full">
+                                                <span class="ratings" style="width:100%;"></span>
+                                            </div>
+                                        </div>
 
-        <div class="store-address-grid">
-            
-                {{ $vendorcreate->address }} , <br>
-                {{ $vendorcreate->city }} - {{ $vendorcreate->pincode }} , <br>
-                {{ $vendorcreate->state }} . <br>
-                <i class="w-icon-phone"></i> {{ $vendorcreate->mobile_number1 }}
-            
-        </div>
-<!-- 
-        <a href="{{ url('/shop-details/'.$vendorcreate->id) }}" class="btn btn-dark mt-3">
-            VISIT STORE
-        </a> -->
-    </div>
+                                        <div class="store-address-grid">
+                                            
+                                                {{ $vendorcreate->address }} , <br>
+                                                {{ $vendorcreate->city }} - {{ $vendorcreate->pincode }} , <br>
+                                                {{ $vendorcreate->state }} . <br>
+                                                <i class="w-icon-phone"></i> {{ $vendorcreate->mobile_number1 }}
+                                            
+                                        </div>
+                                    <!-- 
+                                        <a href="{{ url('/shop-details/'.$vendorcreate->id) }}" class="btn btn-dark mt-3">
+                                            VISIT STORE
+                                        </a> -->
+                                    </div>
 
-    <div class="store-right">
-        <img src="{{ asset('assets/images/vendor/profile/' . $vendorcreate->profile_image) }}" alt="">
-    </div>
-</div>
+                                    <div class="store-right">
+                                        <img src="{{ asset('assets/images/vendor/profile/' . $vendorcreate->profile_image) }}" alt="">
+                                    </div>
+                                </div>
 
                                 
                                 <div class="store-footer">
