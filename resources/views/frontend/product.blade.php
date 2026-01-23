@@ -558,56 +558,53 @@
                                      <div class="tab-content">
                                          <div class="tab-pane active" id="show-all">
                                              <ul class="comments list-style-none">
-                                                 <li class="comment">
-                                                     <div class="comment-body">
-                                                         <figure class="comment-avatar">
-                                                             <img src="<?php echo asset('assets') ?>/images/agents/1-100x100.png"
-                                                                 alt="Commenter Avatar" width="90" height="90">
-                                                         </figure>
-                                                         <div class="comment-content">
-                                                             <h4 class="comment-author">
-                                                                 <a href="#">John Doe</a>
-                                                                 <span class="comment-date">March 22, 2021 at
-                                                                     1:54 pm</span>
-                                                             </h4>
-                                                             <div class="ratings-container comment-rating">
-                                                                 <div class="ratings-full">
-                                                                     <span class="ratings"
-                                                                         style="width: 60%;"></span>
-                                                                     <span
-                                                                         class="tooltiptext tooltip-top"></span>
-                                                                 </div>
-                                                             </div>
-                                                             <p>pellentesque habitant morbi tristique senectus
-                                                                 et. In dictum non consectetur a erat.
-                                                                 Nunc ultrices eros in cursus turpis massa
-                                                                 tincidunt ante in nibh mauris cursus mattis.
-                                                                 Cras ornare arcu dui vivamus arcu felis bibendum
-                                                                 ut tristique.</p>
-                                                             <div class="comment-action">
-                                                                 <a href="#"
-                                                                     class="btn btn-secondary btn-link btn-underline sm btn-icon-left font-weight-normal text-capitalize">
-                                                                     <i class="far fa-thumbs-up"></i>Helpful (1)
-                                                                 </a>
-                                                                 <a href="#"
-                                                                     class="btn btn-dark btn-link btn-underline sm btn-icon-left font-weight-normal text-capitalize">
-                                                                     <i class="far fa-thumbs-down"></i>Unhelpful
-                                                                     (0)
-                                                                 </a>
-                                                                 <div class="review-image">
-                                                                     <a href="#">
-                                                                         <figure>
-                                                                             <img src="<?php echo asset('assets') ?>/images/products/default/review-img-1.jpg"
-                                                                                 width="60" height="60"
-                                                                                 alt="Attachment image of John Doe's review on Electronics Black Wrist Watch"
-                                                                                 data-zoom-image="<?php echo asset('assets') ?>/images/products/default/review-img-1-800x900.jpg" />
-                                                                         </figure>
-                                                                     </a>
-                                                                 </div>
-                                                             </div>
-                                                         </div>
-                                                     </div>
-                                                 </li>
+                                                  @forelse($ratings as $rating)
+                                                    <li class="comment">
+                                                        <div class="comment-body">
+
+                                                            <!-- <figure class="comment-avatar">
+                                                                <img src="{{ asset('assets/images/agents/1-100x100.png') }}"
+                                                                    alt="Avatar" width="90" height="90">
+                                                            </figure> -->
+
+                                                            <div class="comment-content">
+                                                                <h4 class="comment-author">
+                                                                    <a href="#">{{ $rating->customer_name }}</a>
+                                                                    <span class="comment-date">
+                                                                        {{ $rating->created_at->format('M d, Y h:i A') }}
+                                                                    </span>
+                                                                </h4>
+
+                                                                {{-- Rating stars --}}
+                                                                <div class="ratings-container comment-rating">
+                                                                    <div class="ratings-full">
+                                                                        <span class="ratings"
+                                                                            style="width: {{ ($rating->star_rating / 5) * 100 }}%;"></span>
+                                                                    </div>
+                                                                </div>
+
+                                                                {{-- Comment --}}
+                                                                <p>{{ $rating->comments }}</p>
+
+                                                                <div class="comment-action">
+                                                                        <a href="#"
+                                                                            class="btn btn-secondary btn-link btn-underline sm btn-icon-left font-weight-normal text-capitalize">
+                                                                            <i class="far fa-thumbs-up"></i>Helpful (0)
+                                                                        </a>
+                                                                        <a href="#"
+                                                                            class="btn btn-dark btn-link btn-underline sm btn-icon-left font-weight-normal text-capitalize">
+                                                                            <i class="far fa-thumbs-down"></i>Unhelpful
+                                                                            (1)
+                                                                        </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                @empty
+                                                    <li>
+                                                        <p class="text-muted">No reviews yet.</p>
+                                                    </li>
+                                                @endforelse
                                                  <li class="comment">
                                                      <div class="comment-body">
                                                          <figure class="comment-avatar">

@@ -703,6 +703,7 @@ class FrontendController extends Controller
 
     public function productVar($id = '')
     {
+        $ratings = Rating::where('products_id', $id)->where('status', 1)->orderBy('id', 'desc')->get();
         $prouctsList = $this->getProduct($id);
         $imageList   = $this->getProductImageList($id);
         $getSpecificProduct =  ProductsDetails::with('product', 'product.CategoryChild')
@@ -747,7 +748,7 @@ class FrontendController extends Controller
                 ->first();
         }
 
-        return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts', 'relatedProducts', 'percent', 'reviewCount', 'canRate', 'myRating'));
+        return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts', 'relatedProducts', 'percent', 'reviewCount', 'canRate', 'myRating', 'ratings'));
     }
 
     public function quickView($id)
