@@ -706,12 +706,26 @@ class FrontendController extends Controller
     public function productVar($id = '')
     {
         $ratings = DB::table('ratings')
-            ->leftJoin('review_images', 'ratings.id', '=', 'review_images.rating_id')
-            ->where('ratings.products_id', $id)
-            ->where('ratings.status', 1)
-            ->orderBy('ratings.id', 'desc')
-            ->select('ratings.id as rating_id','ratings.customer_name','ratings.star_rating','ratings.comments','ratings.created_at','review_images.image_path')
-            ->get();
+        ->leftJoin('review_images', 'ratings.id', '=', 'review_images.rating_id')
+        ->where('ratings.products_id', $id)
+        ->where('ratings.status', 1)
+        ->orderBy('ratings.id', 'desc')
+        ->select(
+            'ratings.id as rating_id',
+            'ratings.customer_name',
+            'ratings.star_rating',
+            'ratings.comments',
+            'ratings.created_at',
+            DB::raw('GROUP_CONCAT(review_images.image_path) as images')
+        )
+        ->groupBy(
+            'ratings.id',
+            'ratings.customer_name',
+            'ratings.star_rating',
+            'ratings.comments',
+            'ratings.created_at'
+        )
+        ->get();
 
         $prouctsList = $this->getProduct($id);
         $imageList   = $this->getProductImageList($id);

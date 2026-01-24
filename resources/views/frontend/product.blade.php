@@ -604,7 +604,7 @@
                                                                         </a>
                                                                 </div>
                                                                 @php
-                                                                    $images = $rating->image_path ? explode(',', $rating->image_path) : [];
+                                                                    $images = $rating->images ? explode(',', $rating->images) : [];
                                                                 @endphp
 
                                                                 @if(count($images))
