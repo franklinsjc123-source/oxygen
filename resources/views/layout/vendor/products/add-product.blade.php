@@ -1,4 +1,4 @@
-@extends('layout.auth.master')
+ @extends('layout.auth.master')
 @section('contents')
     @include('paritials.css.product.add-product-css')
     @include('paritials.js.product.add-product-js')
@@ -474,7 +474,7 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group p-1">
-                                            <label class="text-danger">(Image Accepted files : jpg, jpeg, png, web)</label>
+                                            <label style="color:blue">(Upload Format : jpg, jpeg, png, web)</label>
 
                                             <input type="file" id="imageUpload{{ $i }}" name="imageUpload{{ $i }}[]" multiple accept="image/*" onchange="previewImages({{ $i }})">
 
