@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ReviewVote;
 
 class Rating extends Model
 {
@@ -20,4 +21,15 @@ class Rating extends Model
         'status'
     ];
 
+    public function helpfulVotes()
+    {
+        return $this->hasMany(ReviewVote::class, 'rating_id')
+                    ->where('type', 'helpful');
+    }
+
+    public function unhelpfulVotes()
+    {
+        return $this->hasMany(ReviewVote::class, 'rating_id')
+                    ->where('type', 'unhelpful');
+    }
 }

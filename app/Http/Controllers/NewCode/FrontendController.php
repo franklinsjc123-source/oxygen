@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\City;
 use App\Models\Rating;
+use App\Models\ReviewVote;
 use App\Models\ReviewImage;
 use App\Models\Ecom_Customer_info;
 use App\Models\Ecom_Customer_Shipping;
@@ -705,27 +706,20 @@ class FrontendController extends Controller
 
     public function productVar($id = '')
     {
-        $ratings = DB::table('ratings')
-        ->leftJoin('review_images', 'ratings.id', '=', 'review_images.rating_id')
-        ->where('ratings.products_id', $id)
-        ->where('ratings.status', 1)
-        ->orderBy('ratings.id', 'desc')
-        ->select(
-            'ratings.id as rating_id',
-            'ratings.customer_name',
-            'ratings.star_rating',
-            'ratings.comments',
-            'ratings.created_at',
-            DB::raw('GROUP_CONCAT(review_images.image_path) as images')
-        )
-        ->groupBy(
-            'ratings.id',
-            'ratings.customer_name',
-            'ratings.star_rating',
-            'ratings.comments',
-            'ratings.created_at'
-        )
-        ->get();
+        $ratings = Rating::withCount([
+        'helpfulVotes',
+        'unhelpfulVotes'
+    ])
+    ->where('ratings.products_id', $id)
+    ->where('ratings.status', 1)
+    ->orderBy('ratings.id', 'desc')
+    ->select('ratings.*')
+    ->selectSub(function ($q) {
+        $q->from('review_images')
+          ->whereColumn('review_images.rating_id', 'ratings.id')
+          ->selectRaw('GROUP_CONCAT(review_images.image_path)');
+    }, 'images')
+    ->get();
 
         $prouctsList = $this->getProduct($id);
         $imageList   = $this->getProductImageList($id);
@@ -1745,6 +1739,35 @@ class FrontendController extends Controller
         }
 
         return back()->with('success', 'Rating submitted successfully');
+    }
+
+    public function vote(Request $request)
+    {
+        $customer_id = session('customer_id');
+
+        if (!$customer_id) {
+            return response()->json(['error' => 'Login required'], 401);
+        }
+
+        ReviewVote::updateOrCreate(
+            [
+                'rating_id' => $request->rating_id,
+                'customer_id' => $customer_id
+            ],
+            [
+                'type' => $request->type
+            ]
+        );
+
+        $rating = Rating::withCount([
+            'helpfulVotes',
+            'unhelpfulVotes'
+        ])->findOrFail($request->rating_id);
+
+        return response()->json([
+            'helpful' => $rating->helpful_votes_count,
+            'unhelpful' => $rating->unhelpful_votes_count
+        ]);
     }
 
 }

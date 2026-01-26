@@ -593,15 +593,19 @@
                                                                 <p>{{ $rating->comments }}</p>
 
                                                                 <div class="comment-action">
-                                                                        <a href="#"
-                                                                            class="btn btn-secondary btn-link btn-underline sm btn-icon-left font-weight-normal text-capitalize">
-                                                                            <i class="far fa-thumbs-up"></i>Helpful (0)
-                                                                        </a>
-                                                                        <a href="#"
-                                                                            class="btn btn-dark btn-link btn-underline sm btn-icon-left font-weight-normal text-capitalize">
-                                                                            <i class="far fa-thumbs-down"></i>Unhelpful
-                                                                            (1)
-                                                                        </a>
+                                                                    <a href="javascript:void(0)" class="vote-btn btn btn-secondary btn-link sm"
+                                                                    data-id="{{ $rating->id }}"
+                                                                    data-type="helpful">
+                                                                        <i class="far fa-thumbs-up"></i>
+                                                                        Helpful (<span class="helpful-count">{{ $rating->helpfulVotes->count() }}</span>)
+                                                                    </a>
+
+                                                                    <a href="javascript:void(0)" class="vote-btn btn btn-dark btn-link sm"
+                                                                    data-id="{{ $rating->id }}"
+                                                                    data-type="unhelpful">
+                                                                        <i class="far fa-thumbs-down"></i>
+                                                                        Unhelpful (<span class="unhelpful-count">{{ $rating->unhelpfulVotes->count() }}</span>)
+                                                                    </a>
                                                                 </div>
                                                                 @php
                                                                     $images = $rating->images ? explode(',', $rating->images) : [];
@@ -1307,5 +1311,32 @@
              $('.cart-count').html(data.count);
          });
      }
+ </script>
+ <script>
+    
+$('.vote-btn').click(function () {
+    let btn = $(this);
+
+    $.ajax({
+        url: "{{ route('review.vote') }}",
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            rating_id: btn.data('id'),
+            type: btn.data('type')
+        },
+        success: function (res) {
+            btn.closest('.comment-action').find('.helpful-count').text(res.helpful);
+            btn.closest('.comment-action').find('.unhelpful-count').text(res.unhelpful);
+        },
+        error: function (xhr) {
+            if (xhr.status === 401) {
+                alert('Please login to vote');
+                window.location.href = "{{ route('home') }}";
+            }
+        }
+    });
+});
+
  </script>
  @endsection

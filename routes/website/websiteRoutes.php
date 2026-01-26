@@ -91,6 +91,7 @@ Route::get('productVar/{id?}',[FrontendController::class,'productVar'])->name('p
 Route::get('getSpecificProduct/{id?}',[FrontendController::class,'getProduct'])->name('getSpecificProduct');
 Route::get('getAllProduct/{id?}',[FrontendController::class,'getSpecificProduct'])->name('getAllProduct');
 Route::get('quickView/{id?}',[FrontendController::class,'quickView'])->name('quickView');
+Route::post('/review/vote', [FrontendController::class, 'vote'])->name('review.vote');
 // Route::get('/categoryShop', [FrontendController::class, 'categoryShop'])->name('categoryShop');
 Route::get('/checkoutPage', [FrontendController::class, 'checkoutPage'])->name('checkoutPage');
 Route::post('/checkout/store', [FrontendController::class, 'checkout_store'])->name('checkout_store');
