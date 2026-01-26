@@ -217,8 +217,7 @@
                                      </div>
                                      <span class="divider d-xs-show"></span>
                                      <div class="product-link-wrapper d-flex">
-                                         <a href="#"
-                                             class="btn-product-icon btn-wishlist w-icon-heart"><span></span></a>
+                                         <a href="#" class="btn-product-icon btn-wishlist w-icon-heart"><span></span></a>
                                      </div>
                                       
                                  </div>
@@ -1059,7 +1058,7 @@
                                  <div class="icon-box icon-box-side">
                                      <span class="icon-box-icon text-dark">
                                          <i class="w-icon-truck"></i>
-                                     </span>
+                                     </span> 
                                      <div class="icon-box-content">
                                          <h4 class="icon-box-title">Free Shipping & Returns</h4>
                                          <p>For all orders over $99</p>
@@ -1121,16 +1120,17 @@
                                             }">
                                          <div class="swiper-wrapper">
                                              <div class="widget-col swiper-slide">
+                                                @foreach ($vendorProducts as $product)
                                                  <div class="product product-widget">
                                                      <figure class="product-media">
-                                                         <a href="#">
-                                                             <img src="<?php echo asset('assets') ?>/images/shop/13.jpg" alt="Product"
+                                                         <a href="{{ url('/productVar/'.$product->id) }}">
+                                                             <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product"
                                                                  width="100" height="113" />
                                                          </a>
                                                      </figure>
                                                      <div class="product-details">
                                                          <h4 class="product-name">
-                                                             <a href="#">Smart Watch</a>
+                                                             <a href="#">{{ $product->product_name }}</a>
                                                          </h4>
                                                          <div class="ratings-container">
                                                              <div class="ratings-full">
@@ -1138,49 +1138,20 @@
                                                                  <span class="tooltiptext tooltip-top"></span>
                                                              </div>
                                                          </div>
-                                                         <div class="product-price">$80.00 - $90.00</div>
+                                                         <!-- <div class="product-price">$80.00 - $90.00</div> -->
+                                                          <div class="product-pa-wrapper">
+                                                                <div class="product-price">₹{{ $product->selling_price }}</div>
+                                                                <div class="product-price-discount">₹{{ $product->retail_price }}</div>
+                                                                @php
+                                                                    $discount = number_format((($product->retail_price - $product->selling_price) / $product->retail_price) * 100);
+                                                                @endphp
+                                                                <div class="product-offer-percentage">{{ $discount }}% Off</div>
+                                                            </div>
                                                      </div>
                                                  </div>
-                                                 <div class="product product-widget">
-                                                     <figure class="product-media">
-                                                         <a href="#">
-                                                             <img src="<?php echo asset('assets') ?>/images/shop/14.jpg" alt="Product"
-                                                                 width="100" height="113" />
-                                                         </a>
-                                                     </figure>
-                                                     <div class="product-details">
-                                                         <h4 class="product-name">
-                                                             <a href="#">Sky Medical Facility</a>
-                                                         </h4>
-                                                         <div class="ratings-container">
-                                                             <div class="ratings-full">
-                                                                 <span class="ratings" style="width: 80%;"></span>
-                                                                 <span class="tooltiptext tooltip-top"></span>
-                                                             </div>
-                                                         </div>
-                                                         <div class="product-price">$58.00</div>
-                                                     </div>
-                                                 </div>
-                                                 <div class="product product-widget">
-                                                     <figure class="product-media">
-                                                         <a href="#">
-                                                             <img src="<?php echo asset('assets') ?>/images/shop/15.jpg" alt="Product"
-                                                                 width="100" height="113" />
-                                                         </a>
-                                                     </figure>
-                                                     <div class="product-details">
-                                                         <h4 class="product-name">
-                                                             <a href="#">Black Stunt Motor</a>
-                                                         </h4>
-                                                         <div class="ratings-container">
-                                                             <div class="ratings-full">
-                                                                 <span class="ratings" style="width: 60%;"></span>
-                                                                 <span class="tooltiptext tooltip-top"></span>
-                                                             </div>
-                                                         </div>
-                                                         <div class="product-price">$374.00</div>
-                                                     </div>
-                                                 </div>
+                                                @endforeach
+                                               
+                                                
                                              </div>
                                              <div class="widget-col swiper-slide">
                                                  <div class="product product-widget">
