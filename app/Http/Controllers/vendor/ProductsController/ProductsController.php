@@ -203,6 +203,7 @@ class ProductsController extends Controller
     }
         
            $products->login_id   =  $login_id; 
+           $products->vendor_id   =  $login_id; 
            $products->product_id = $next_product_id;
            $products->category = $request->category;
            $products->category_main = $request->category_main;
