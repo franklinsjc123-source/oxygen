@@ -21,9 +21,26 @@
     </style>
 </head>
 <body>
+<table width="100%" class="noborder" style="margin-bottom:15px;">
+    <tr>
+        <!-- Logo -->
+        <td width="25%" valign="middle">
+            <img src="{{ public_path('frontend/images/header-logo.png') }}" width="120" style="
+        width:110px;
+        filter: grayscale(100%) contrast(200%) brightness(40%);
+     ">
+        </td>
 
-<h2 style="text-align:center;">Tax Invoice / Bill of Supply</h2>
-<p style="text-align:center;">(Original for Recipient)</p>
+        <!-- Title -->
+        <td width="50%" valign="middle" style="text-align:center;">
+            <h2 style="margin:0;">Tax Invoice / Bill of Supply</h2>
+            <p style="margin:0;">(Original for Recipient)</p>
+        </td>
+
+        <!-- Empty / optional -->
+        <td width="25%"></td>
+    </tr>
+</table>
 
 <table width="100%" class="noborder">
     <tr>
