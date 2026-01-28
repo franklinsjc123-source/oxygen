@@ -112,18 +112,19 @@
                             <?php  
                             
                             $pincode_area = Session::get('pincode_area'); 
-                            $post_region = Session::get('post_region');
-
+                            $pincode = Session::get('pincode');
+                        
                             if($pincode_area) {
                             
                             ?>
 
-                           <div class="select-box show-location">
-                                    <i class="w-icon-map-marker"></i>
-
+                                <div class="select-box show-location" onclick="showPicodePopup()">
+                            
+                                        <img  class="location-icon" src="<?= asset('frontend') ?>/images/location_icon.svg" alt="location"  />
+                                   
                                     <marquee behavior="scroll" direction="left" scrollamount="3">
                                         <h6 class="location-text">
-                                            {{ $post_region }}, {{ $pincode_area }}
+                                          {{ $pincode_area }} - {{  $pincode }}
                                         </h6>
                                     </marquee>
                                 </div>

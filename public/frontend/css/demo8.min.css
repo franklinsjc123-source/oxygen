@@ -12553,6 +12553,7 @@ body .product-popup {
     align-items: center;
     gap: 8px;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .location-icon {
