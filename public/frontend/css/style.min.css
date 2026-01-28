@@ -21977,3 +21977,9 @@ aside .sp-sidebar-banner span {
     box-shadow: 0 0 8px rgba(40, 167, 69, 0.4);
 }
 
+.location-icon {
+  height: 23px;
+  width: 23px;
+  margin-left: 5px;
+}
+
