@@ -102,12 +102,13 @@ class ProductsController extends Controller
         $attbutesdata=explode(',',$category_sub->category_sub_attributes);        
         $specdata=explode(',',$category_sub->category_sub_specifications);
         $attribute = AttributeGroup::whereIn('id', $attbutesdata)->get();
-        $specification = SpecificationGroup::whereIn('id', $specdata)->get();
-       
-        
-       
-        
         $login_id = session()->get('login_id');
+        $specification = SpecificationGroup::whereIn('id', $specdata)->where('created_byid', $login_id)->get();
+       
+        
+       
+        
+        
        
         //dd($login_id);
         return view('layout.admin.products.add-product')
