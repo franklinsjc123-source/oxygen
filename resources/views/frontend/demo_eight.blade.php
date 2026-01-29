@@ -583,7 +583,31 @@
          <!-- End of Swiper Container -->
 
      </div>
+<style>
+    /* Image base style */
+.vendor-profile-img {
+    width: 80px; /* adjust if needed */
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-top: 20px;
 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover effect – image slight up */
+.swiper-slide-vendor:hover .vendor-profile-img {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+/* Caption spacing */
+.vendor-name {
+    margin-top: 20px;
+    font-weight: 600;
+}
+
+</style>
      <div>
          <h2 class="title text-left mb-5 appear-animate"> Shops</h2>
          <div class="swiper-container swiper-theme  brands-wrapper br-sm mb-9 appear-animate"
@@ -616,20 +640,23 @@
                         foreach ($vendorcreate as $row) { ?>
                            
                          <div class="swiper-slide swiper-slide-vendor">
-                         
-                             <figure>
-                                 <a href="<?= url('/shop-details/' . $row['id']) ?>">
-                                     <img style="border-radius: 50%; object-fit: cover; margin-top: 20px;" src="{{ asset('assets/images/vendor/profile/' . $row->profile_image) }}" alt="Brand" />
-                                 </a>
+                            <figure class="vendor-figure">
+                                <a href="<?= url('/shop-details/' . $row['id']) ?>" class="vendor-img-link">
+                                    <img
+                                        class="vendor-profile-img"
+                                        src="{{ asset('assets/images/vendor/profile/' . $row->profile_image) }}"
+                                        alt="Brand"
+                                    />
+                                </a>
 
-                                 <center>
-                                     <figcaption style="margin-top: 20px; font-weight: 600;">
-                                         {{ $row->shop_name }}
-                                     </figcaption>
-                                 </center>
+                                <center>
+                                    <figcaption class="vendor-name">
+                                        {{ $row->shop_name }}
+                                    </figcaption>
+                                </center>
+                            </figure>
+                        </div>
 
-                             </figure>
-                         </div>
 
                  <?php }
                     } ?>
@@ -674,7 +701,7 @@
                  @endphp
                  <div class="swiper-slide swiper-slide-vendor text-center">
                      <figure>
-                         <img src="{{ asset('frontend/images/00' .$imgNo  . '.jpg') }}"
+                         <img src="{{ asset('frontend/images/00' .$imgNo  . '.jpg') }}" class="vendor-profile-img"
 
                              style="width:150px;height:auto;object-fit:cover;border-radius:50%;">
 
