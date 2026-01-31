@@ -584,30 +584,29 @@
 
      </div>
 <style>
-    /* Image base style */
 .vendor-profile-img {
-    width: 80px; /* adjust if needed */
+    width: 80px;
     height: 80px;
     border-radius: 50%;
     object-fit: cover;
     margin-top: 20px;
 
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
-
-/* Hover effect – image slight up */
+.vendor-figure{
+    border-radius: 50%;
+    background-color: #0088dd;
+    /* width: 8rem;
+    height: 8rem; */
+}
+/* hover */
 .swiper-slide-vendor:hover .vendor-profile-img {
     transform: translateY(-6px);
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
-}
 
-/* Caption spacing */
-.vendor-name {
-    margin-top: 20px;
-    font-weight: 600;
+   
 }
-
 </style>
+
      <div>
          <h2 class="title text-left mb-5 appear-animate"> Shops</h2>
          <div class="swiper-container swiper-theme  brands-wrapper br-sm mb-9 appear-animate"
@@ -642,19 +641,22 @@
                          <div class="swiper-slide swiper-slide-vendor">
                             <figure class="vendor-figure">
                                 <a href="<?= url('/shop-details/' . $row['id']) ?>" class="vendor-img-link">
-                                    <img
-                                        class="vendor-profile-img"
-                                        src="{{ asset('assets/images/vendor/profile/' . $row->profile_image) }}"
-                                        alt="Brand"
-                                    />
+                                    <span class="vendor-img-wrap">
+                                        <img
+                                            class="vendor-profile-img"
+                                            src="{{ asset('assets/images/vendor/profile/' . $row->profile_image) }}"
+                                            alt="Brand"
+                                        />
+                                    </span>
                                 </a>
 
-                                <center>
+                              
+                            </figure>
+                              <center>
                                     <figcaption class="vendor-name">
                                         {{ $row->shop_name }}
                                     </figcaption>
                                 </center>
-                            </figure>
                         </div>
 
 
@@ -694,23 +696,33 @@
              <div class="swiper-wrapper row cols-xl-8 cols-lg-6 cols-md-4 cols-sm-3 cols-2">
 
                  @isset($locations)
-                 @foreach($locations as $key=>$row)
+                    @foreach($locations as $key=>$row)
 
-                 @php
-                 $imgNo = ($key % 9) + 1;
-                 @endphp
-                 <div class="swiper-slide swiper-slide-vendor text-center">
-                     <figure>
-                         <img src="{{ asset('frontend/images/00' .$imgNo  . '.jpg') }}" class="vendor-profile-img"
+                    @php
+                    $imgNo = ($key % 9) + 1;
+                    @endphp
+                     <div class="swiper-slide swiper-slide-vendor">
+                            <figure class="vendor-figure">
+                               
+                                    <span class="vendor-img-wrap">
+                                        <img
+                                            class="vendor-profile-img"
+                                            src="{{ asset('frontend/images/00' .$imgNo  . '.jpg') }}"
+                                            alt="Brand"
+                                        />
+                                    </span>
+                              
 
-                             style="width:150px;height:auto;object-fit:cover;border-radius:50%;">
+                              
+                            </figure>
+                              <center>
+                                    <figcaption class="vendor-name">
+                                       {{ $row->area }}
+                                    </figcaption>
+                                </center>
+                        </div>
 
-                         <figcaption style="margin-top: 8px; font-weight: 600;">
-                             {{ $row->area }}
-                         </figcaption>
-                     </figure>
-                 </div>
-                 @endforeach
+                    @endforeach
                  @endisset
 
              </div>
