@@ -666,7 +666,7 @@ class FrontendController extends Controller
                 'category_sub.category_sub_name'
             )
             ->inRandomOrder()
-            ->limit('4')
+            ->limit('6')
             ->get();
 
         return  $products;
@@ -697,7 +697,7 @@ class FrontendController extends Controller
                 'category_sub.category_sub_name'
             )
             ->inRandomOrder()
-            ->limit('4')
+            ->limit('6')
             ->get();
 
         return  $products;

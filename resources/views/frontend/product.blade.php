@@ -913,140 +913,7 @@
                              </div>
                          </div>
                      </div>
-                     <section class="vendor-product-section">
-                         <div class="title-link-wrapper mb-4">
-                             <h4 class="title text-left">More Products From This Vendor</h4>
-                             <a href="{{ url('shop-details'). '/'.$getProduct['id'] }}" class="btn btn-dark btn-link btn-slide-right btn-icon-right">More
-                                 Products<i class="w-icon-long-arrow-right"></i></a>
-                         </div>
-                         <div class="swiper-container swiper-theme" data-swiper-options="{
-                                    'spaceBetween': 20,
-                                    'slidesPerView': 2,
-                                    'breakpoints': {
-                                        '576': {
-                                            'slidesPerView': 3
-                                        },
-                                        '768': {
-                                            'slidesPerView': 4
-                                        },
-                                        '992': {
-                                            'slidesPerView': 3
-                                        }
-                                    }
-                                }">
-                                <div class="swiper-wrapper row cols-lg-3 cols-md-4 cols-sm-3 cols-2">
-                                  @foreach ($vendorProducts as $product)
-                                    <div class=" col-md-4 swiper-slide product">
-                                        <figure class="product-media">
-                                            <a href="{{ url('/productVar/'.$product->id) }}">
-                                                <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product"
-                                                    width="300" height="338" />
-                                               
-                                            </a>
-                                            <div class="product-action-vertical">
-                                                <a href="#" class="btn-product-icon btn-cart w-icon-cart"
-                                                    title="Add to cart"></a>
-                                                <a href="#" class="btn-product-icon btn-wishlist w-icon-heart"
-                                                    title="Add to wishlist"></a>
-                                              
-                                            </div>
-                                            <div class="product-action">
-                                                <a style="cursor:pointer" onclick="showQuickView('{{ $product->id }}')" data-id="{{ $product->id }}"  class="btn-product btn-quickview" title="Quick View">Quick
-                                                    View</a>
-                                            </div>
-                                        </figure>
-                                        <div class="product-details">
-                                            <div class="product-cat"><a href="shop-banner-sidebar.html">{{  $prouctsList['shop_name'] }}</a>
-                                            </div>
-                                            <h4 class="product-name"><a href="{{ url('productVar').'/'.$product->id }}">{{ $product->product_name }}</a>
-                                            </h4>
-                                            <div class="ratings-container">
-                                                <div class="ratings-full">
-                                                    <span class="ratings" style="width: 100%;"></span>
-                                                    <span class="tooltiptext tooltip-top"></span>
-                                                </div>
-                                                <a href="product-default.html" class="rating-reviews">(3 reviews)</a>
-                                            </div>
-                                              <div class="product-pa-wrapper">
-                                                    <div class="product-price">₹{{ $product->selling_price }}</div>
-                                                    <div class="product-price-discount">₹{{ $product->retail_price }}</div>
-                                                    @php
-                                                        $discount = number_format((($product->retail_price - $product->selling_price) / $product->retail_price) * 100);
-                                                    @endphp
-                                                    <div class="product-offer-percentage">{{ $discount }}% Off</div>
-                                                </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-
-                                
-                                </div>
-                         </div>
-                     </section>
-                     <section class="related-product-section">
-                         <div class="title-link-wrapper mb-4">
-                             <h4 class="title">Related Products</h4>
-                             <a href="#" class="btn btn-dark btn-link btn-slide-right btn-icon-right">More
-                                 Products<i class="w-icon-long-arrow-right"></i></a>
-                         </div>
-                            <div class="swiper-container swiper-theme" data-swiper-options="{
-                                    'spaceBetween': 20,
-                                    'slidesPerView': 2,
-                                    'breakpoints': {
-                                        '576': {
-                                            'slidesPerView': 3
-                                        },
-                                        '768': {
-                                            'slidesPerView': 4
-                                        },
-                                        '992': {
-                                            'slidesPerView': 3
-                                        }
-                                    }
-                                }">
-                                <div class="swiper-wrapper row cols-lg-3 cols-md-4 cols-sm-3 cols-2">
-                                    @foreach ($relatedProducts as $product)
-                                        <div class="col-md-4 swiper-slide product">
-                                            <figure class="product-media">
-                                                <a href="{{ url('productVar').'/'.$product->id }}">
-                                                    <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product"/>
-                                                </a>
-                                                <div class="product-action-vertical">
-                                                    <a href="#" class="btn-product-icon btn-cart w-icon-cart"
-                                                        title="Add to cart"></a>
-                                                    <a href="#" class="btn-product-icon btn-wishlist w-icon-heart"
-                                                        title="Add to wishlist"></a>
-                                                  
-                                                </div>
-                                                <div class="product-action">
-                                                    <a   onclick="showQuickView('{{ $product->id }}')" data-id="{{ $product->id }}" class="btn-product btn-quickview" title="Quick View">Quick
-                                                        View</a>
-                                                </div>
-                                            </figure>
-                                            <div class="product-details">
-                                                <h4 class="product-name"><a href="{{ url('productVar').'/'.$product->id }}">{{ $product->product_name }}</a></h4>
-                                                <div class="ratings-container">
-                                                    <div class="ratings-full">
-                                                        <span class="ratings" style="width: 100%;"></span>
-                                                        <span class="tooltiptext tooltip-top"></span>
-                                                    </div>
-                                                    <a href="product-default.html" class="rating-reviews">(3 reviews)</a>
-                                                </div>
-                                                <div class="product-pa-wrapper">
-                                                        <div class="product-price">₹{{ $product->selling_price }}</div>
-                                                            <div class="product-price-discount">₹{{ $product->retail_price }}</div>
-                                                            @php
-                                                                $discount = number_format((($product->retail_price - $product->selling_price) / $product->retail_price) * 100);
-                                                            @endphp
-                                                            <div class="product-offer-percentage">{{ $discount }}% Off</div>
-                                                        </div>
-                                            </div>
-                                        </div>
-                                    
-                                    @endforeach
-                                </div>
-                            </div>
-                     </section>
+                     
                  </div>
                  <!-- End of Main Content -->
                  <aside class="sidebar product-sidebar sidebar-fixed right-sidebar sticky-sidebar-wrapper">
@@ -1227,6 +1094,141 @@
                  </aside>
                  <!-- End of Sidebar -->
              </div>
+
+             <section class="vendor-product-section">
+                         <div class="title-link-wrapper mb-4">
+                             <h4 class="title text-left">More Products From This Vendor</h4>
+                             <a href="{{ url('shop-details'). '/'.$getProduct['id'] }}" class="btn btn-dark btn-link btn-slide-right btn-icon-right">More
+                                 Products<i class="w-icon-long-arrow-right"></i></a>
+                         </div>
+                         <div class="swiper-container swiper-theme" data-swiper-options="{
+                                    'spaceBetween': 20,
+                                    'slidesPerView': 2,
+                                    'breakpoints': {
+                                        '576': {
+                                            'slidesPerView': 3
+                                        },
+                                        '768': {
+                                            'slidesPerView': 4
+                                        },
+                                        '992': {
+                                            'slidesPerView': 3
+                                        }
+                                    }
+                                }">
+                                <div class="swiper-wrapper row cols-lg-3 cols-md-4 cols-sm-3 cols-2">
+                                  @foreach ($vendorProducts as $product)
+                                    <div class=" col-md-2 swiper-slide product">
+                                        <figure class="product-media">
+                                            <a href="{{ url('/productVar/'.$product->id) }}">
+                                                <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product"
+                                                    width="300" height="338" />
+                                               
+                                            </a>
+                                            <div class="product-action-vertical">
+                                                <a href="#" class="btn-product-icon btn-cart w-icon-cart"
+                                                    title="Add to cart"></a>
+                                                <a href="#" class="btn-product-icon btn-wishlist w-icon-heart"
+                                                    title="Add to wishlist"></a>
+                                              
+                                            </div>
+                                            <div class="product-action">
+                                                <a style="cursor:pointer" onclick="showQuickView('{{ $product->id }}')" data-id="{{ $product->id }}"  class="btn-product btn-quickview" title="Quick View">Quick
+                                                    View</a>
+                                            </div>
+                                        </figure>
+                                        <div class="product-details">
+                                            <div class="product-cat"><a href="shop-banner-sidebar.html">{{  $prouctsList['shop_name'] }}</a>
+                                            </div>
+                                            <h4 class="product-name"><a href="{{ url('productVar').'/'.$product->id }}">{{ $product->product_name }}</a>
+                                            </h4>
+                                            <div class="ratings-container">
+                                                <div class="ratings-full">
+                                                    <span class="ratings" style="width: 100%;"></span>
+                                                    <span class="tooltiptext tooltip-top"></span>
+                                                </div>
+                                                <a href="product-default.html" class="rating-reviews">(3 reviews)</a>
+                                            </div>
+                                              <div class="product-pa-wrapper">
+                                                    <div class="product-price">₹{{ $product->selling_price }}</div>
+                                                    <div class="product-price-discount">₹{{ $product->retail_price }}</div>
+                                                    @php
+                                                        $discount = number_format((($product->retail_price - $product->selling_price) / $product->retail_price) * 100);
+                                                    @endphp
+                                                    <div class="product-offer-percentage">{{ $discount }}% Off</div>
+                                                </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+
+                                
+                                </div>
+                         </div>
+                     </section>
+                     <section class="related-product-section">
+                         <div class="title-link-wrapper mb-4">
+                             <h4 class="title">Related Products</h4>
+                             <a href="#" class="btn btn-dark btn-link btn-slide-right btn-icon-right">More
+                                 Products<i class="w-icon-long-arrow-right"></i></a>
+                         </div>
+                            <div class="swiper-container swiper-theme" data-swiper-options="{
+                                    'spaceBetween': 20,
+                                    'slidesPerView': 2,
+                                    'breakpoints': {
+                                        '576': {
+                                            'slidesPerView': 3
+                                        },
+                                        '768': {
+                                            'slidesPerView': 4
+                                        },
+                                        '992': {
+                                            'slidesPerView': 3
+                                        }
+                                    }
+                                }">
+                                <div class="swiper-wrapper row cols-lg-3 cols-md-4 cols-sm-3 cols-2">
+                                    @foreach ($relatedProducts as $product)
+                                        <div class="col-md-2 swiper-slide product">
+                                            <figure class="product-media">
+                                                <a href="{{ url('productVar').'/'.$product->id }}">
+                                                    <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product"/>
+                                                </a>
+                                                <div class="product-action-vertical">
+                                                    <a href="#" class="btn-product-icon btn-cart w-icon-cart"
+                                                        title="Add to cart"></a>
+                                                    <a href="#" class="btn-product-icon btn-wishlist w-icon-heart"
+                                                        title="Add to wishlist"></a>
+                                                  
+                                                </div>
+                                                <div class="product-action">
+                                                    <a   onclick="showQuickView('{{ $product->id }}')" data-id="{{ $product->id }}" class="btn-product btn-quickview" title="Quick View">Quick
+                                                        View</a>
+                                                </div>
+                                            </figure>
+                                            <div class="product-details">
+                                                <h4 class="product-name"><a href="{{ url('productVar').'/'.$product->id }}">{{ $product->product_name }}</a></h4>
+                                                <div class="ratings-container">
+                                                    <div class="ratings-full">
+                                                        <span class="ratings" style="width: 100%;"></span>
+                                                        <span class="tooltiptext tooltip-top"></span>
+                                                    </div>
+                                                    <a href="product-default.html" class="rating-reviews">(3 reviews)</a>
+                                                </div>
+                                                <div class="product-pa-wrapper">
+                                                        <div class="product-price">₹{{ $product->selling_price }}</div>
+                                                            <div class="product-price-discount">₹{{ $product->retail_price }}</div>
+                                                            @php
+                                                                $discount = number_format((($product->retail_price - $product->selling_price) / $product->retail_price) * 100);
+                                                            @endphp
+                                                            <div class="product-offer-percentage">{{ $discount }}% Off</div>
+                                                        </div>
+                                            </div>
+                                        </div>
+                                    
+                                    @endforeach
+                                </div>
+                            </div>
+                     </section>
          </div>
      </div>
      <!-- End of Page Content -->
