@@ -128,7 +128,7 @@
                                         <div class="product-price">
                                             ₹{{ $prouctsList['selling_price'] }} 
                                         </div>
-                                        <div  class="product-price-discount" >
+                                        <div  class="product-price-discount mt-2" >
                                                 ₹{{ $prouctsList['retail_price'] }} 
                                         </div>
                                         <?php 
@@ -136,7 +136,7 @@
                                             $discount_rounded = round($discount_percentage / 10) * 10;
                                         ?>
 
-                                        <div  class="product-offer-percentage" >
+                                        <div  class="product-offer-percentage  mt-2" >
                                                 {{ $discount_rounded }}% Off
                                         </div>
                                     </div>
@@ -974,7 +974,7 @@
 
                              <div class="widget widget-products">
                                  <div class="title-link-wrapper mb-2">
-                                     <h4 class="title title-link font-weight-bold">More Products</h4>
+                                     <h4 class="title title-link font-weight-bold">Offer Products</h4>
                                  </div>
 
                                  <div class="swiper nav-top">
@@ -1009,11 +1009,11 @@
                                                          <!-- <div class="product-price">$80.00 - $90.00</div> -->
                                                           <div class="product-pa-wrapper">
                                                                 <div class="product-price">₹{{ $product->selling_price }}</div>
-                                                                <div class="product-price-discount">₹{{ $product->retail_price }}</div>
+                                                                <div class="product-price-discount mt-1">₹{{ $product->retail_price }}</div>
                                                                 @php
                                                                     $discount = number_format((($product->retail_price - $product->selling_price) / $product->retail_price) * 100);
                                                                 @endphp
-                                                                <div class="product-offer-percentage">{{ $discount }}% Off</div>
+                                                                <div class="product-offer-percentage mt-1">{{ $discount }}% Off</div>
                                                             </div>
                                                      </div>
                                                  </div>
@@ -1042,46 +1042,7 @@
                                                          <div class="product-price">$278.00</div>
                                                      </div>
                                                  </div>
-                                                 <div class="product product-widget">
-                                                     <figure class="product-media">
-                                                         <a href="#">
-                                                             <img src="<?php echo asset('assets') ?>/images/shop/17.jpg" alt="Product"
-                                                                 width="100" height="113" />
-                                                         </a>
-                                                     </figure>
-                                                     <div class="product-details">
-                                                         <h4 class="product-name">
-                                                             <a href="#">Modern Cooker</a>
-                                                         </h4>
-                                                         <div class="ratings-container">
-                                                             <div class="ratings-full">
-                                                                 <span class="ratings" style="width: 80%;"></span>
-                                                                 <span class="tooltiptext tooltip-top"></span>
-                                                             </div>
-                                                         </div>
-                                                         <div class="product-price">$324.00</div>
-                                                     </div>
-                                                 </div>
-                                                 <div class="product product-widget">
-                                                     <figure class="product-media">
-                                                         <a href="#">
-                                                             <img src="<?php echo asset('assets') ?>/images/shop/18.jpg" alt="Product"
-                                                                 width="100" height="113" />
-                                                         </a>
-                                                     </figure>
-                                                     <div class="product-details">
-                                                         <h4 class="product-name">
-                                                             <a href="#">CT Machine</a>
-                                                         </h4>
-                                                         <div class="ratings-container">
-                                                             <div class="ratings-full">
-                                                                 <span class="ratings" style="width: 100%;"></span>
-                                                                 <span class="tooltiptext tooltip-top"></span>
-                                                             </div>
-                                                         </div>
-                                                         <div class="product-price">$236.00</div>
-                                                     </div>
-                                                 </div>
+                                                 
                                              </div>
                                          </div>
                                          <button class="swiper-button-next"></button>
