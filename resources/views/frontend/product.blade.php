@@ -182,9 +182,9 @@
 
                                  </div>
 
-                                   <div class="fix-bottom product-sticky-content sticky-content">
+                                   <div class="product-sticky-content sticky-content">
                                      <div class="product-form container">
-                                         <div class="product-qty-form">
+                                         <div class="product-qty-form mt-2">
                                              <div class="input-group">
                                                  <input class="quantity form-control" id="quantity" type="number" min="1"
                                                      max="100">
