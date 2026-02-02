@@ -179,9 +179,10 @@
                                          <?php }
                                             } ?>
                                      </div>
+
                                  </div>
 
-                                  {{-- <div class="fix-bottom product-sticky-content sticky-content">
+                                   <div class="fix-bottom product-sticky-content sticky-content">
                                      <div class="product-form container">
                                          <div class="product-qty-form">
                                              <div class="input-group">
@@ -196,7 +197,7 @@
                                              <span>Add to Cart</span>
                                          </button>
                                      </div>
-                                 </div> --}}
+                                 </div> 
 
 
                                  
