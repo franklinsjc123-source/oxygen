@@ -246,11 +246,11 @@
 
    <div class="newsletter-popup mfp-hide">
        <div class="newsletter-content">
-           <h2 class="ls-20">Please Check Pincode</h2>
+           <h2 >Please Check Pincode</h2>
            <form id="pincodeForm" class="">
-               <div class="row mt-3">
+               <div class="row ">
                    <div class="col-md-12">
-                       <div class="form-group mt-1">
+                       <div class="form-group ">
                            <h6> <label for="pincode"></label></h6>
                            <input type="text" style="border-radius: 10px" class="form-control" id="pincode"
                                name="pincode"
