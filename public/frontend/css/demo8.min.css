@@ -5817,7 +5817,7 @@ textarea {
 }
 .newsletter-popup {
   display: flex;
-  max-width: 78rem;
+  max-width: 44rem;
   padding: 8.1rem 4.8rem;
   margin: auto;
   background-position: center;
