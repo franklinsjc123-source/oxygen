@@ -181,7 +181,7 @@
                                      </div>
                                  </div>
 
-                                  {{-- <div class="fix-bottom product-sticky-content sticky-content">
+                                   <div class="fix-bottom product-sticky-content sticky-content">
                                      <div class="product-form container">
                                          <div class="product-qty-form">
                                              <div class="input-group">
@@ -196,7 +196,7 @@
                                              <span>Add to Cart</span>
                                          </button>
                                      </div>
-                                 </div> --}}
+                                 </div> 
 
 
                                  
@@ -236,7 +236,7 @@
                                  <a href="#product-tab-vendor" class="nav-link">Shop Info</a>
                              </li>
                              <li class="nav-item">
-                                 <a href="#product-tab-reviews" class="nav-link">Customer Reviews (3)</a>
+                                 <a href="#product-tab-reviews" class="nav-link">Customer Reviews ({{ $reviewCount }})</a>
                              </li>
                          </ul>
                          <div class="tab-content">
@@ -377,7 +377,7 @@
                                                              <span class="ratings" style="width: 60%;"></span>
                                                              <span class="tooltiptext tooltip-top"></span>
                                                          </div>
-                                                         <a href="#" class="rating-reviews">(3 Reviews)</a>
+                                                         <a href="#" class="rating-reviews">({{ $reviewCount }} Reviews)</a>
                                                      </div>
                                                  </div>
                                              </div>
@@ -912,7 +912,7 @@
                              </div>
                          </div>
                      </div>
-                     <section class="vendor-product-section">
+                     <!-- <section class="vendor-product-section">
                          <div class="title-link-wrapper mb-4">
                              <h4 class="title text-left">More Products From This Vendor</h4>
                              <a href="{{ url('shop-details'). '/'.$getProduct['id'] }}" class="btn btn-dark btn-link btn-slide-right btn-icon-right">More
@@ -981,8 +981,8 @@
                                 
                                 </div>
                          </div>
-                     </section>
-                     <section class="related-product-section">
+                     </section> -->
+                     <!-- <section class="related-product-section">
                          <div class="title-link-wrapper mb-4">
                              <h4 class="title">Related Products</h4>
                              <a href="#" class="btn btn-dark btn-link btn-slide-right btn-icon-right">More
@@ -1045,7 +1045,7 @@
                                     @endforeach
                                 </div>
                             </div>
-                     </section>
+                     </section> -->
                  </div>
                  <!-- End of Main Content -->
                  <aside class="sidebar product-sidebar sidebar-fixed right-sidebar sticky-sidebar-wrapper">
@@ -1132,12 +1132,13 @@
                                                          <h4 class="product-name">
                                                              <a href="#">{{ $product->product_name }}</a>
                                                          </h4>
-                                                         <div class="ratings-container">
-                                                             <div class="ratings-full">
-                                                                 <span class="ratings" style="width: 100%;"></span>
-                                                                 <span class="tooltiptext tooltip-top"></span>
-                                                             </div>
-                                                         </div>
+                                                        
+                                                            <div class="ratings-container">
+                                                                <div class="ratings-full">
+                                                                    <span class="ratings" style="width: {{ $product->avg_rating ?? 0 }}%"></span>
+                                                                </div>
+                                                                <a>({{ $product->review_count }} Reviews)</a>
+                                                            </div>
                                                          <!-- <div class="product-price">$80.00 - $90.00</div> -->
                                                           <div class="product-pa-wrapper">
                                                                 <div class="product-price">₹{{ $product->selling_price }}</div>
@@ -1287,7 +1288,7 @@
     
 $('.vote-btn').click(function () {
     let btn = $(this);
-
+console.log(btn.data('id'));
     $.ajax({
         url: "{{ route('review.vote') }}",
         type: "POST",

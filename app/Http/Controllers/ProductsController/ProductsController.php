@@ -47,10 +47,11 @@ class ProductsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    {  
         $category_main_data = CategoryMain::where('status', 1)->get();
         $vendorlist = vendorcreate::All();
         $gst = GST::where('status', 1)->get();
+           $login_id = session()->get('login_id');
         $attribute = Attribute::where('status', 1)->get();
         $specification = Specification::where('status', 49)->get();
         $productcollection = productcollection::select('name', DB::raw('GROUP_CONCAT(id) as ids'))
@@ -67,7 +68,7 @@ class ProductsController extends Controller
         ->get();
         
         
-        $login_id = session()->get('login_id');
+     
         //dd($login_id);
         return view('layout.admin.products.add-product')
             ->with([
@@ -81,9 +82,9 @@ class ProductsController extends Controller
             ]);
     }
     public function addinfo(Request $request)
-    {
+    { 
         $category_main_data = CategoryMain::where('status', 1)->get();
-        $vendorlist = vendorcreate::All();
+        $vendorlist = vendorcreate::All(); 
         $category_data = Category::where('main_category_id', $request->category_main)->get();
         $category_sub_data = CategorySub::where('category_id', $request->category)->get();
         $category_sub = CategorySub::where('id', $request->category_sub)->first();
@@ -102,10 +103,8 @@ class ProductsController extends Controller
         $attbutesdata=explode(',',$category_sub->category_sub_attributes);        
         $specdata=explode(',',$category_sub->category_sub_specifications);
         $attribute = AttributeGroup::whereIn('id', $attbutesdata)->get();
-        $login_id = session()->get('login_id');
-        $specification = SpecificationGroup::whereIn('id', $specdata)->where('created_byid', $login_id)->get();
-       
-        
+        $login_id = session()->get('login_id');  
+        $specification = SpecificationGroup::whereIn('id', $specdata)->where('created_byid', $vendorlist->id)->get();
        
         
         

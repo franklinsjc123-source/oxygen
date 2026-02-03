@@ -643,19 +643,54 @@ class FrontendController extends Controller
 
 
 
+    // public function vendorProducts($vendor_id)
+    // {
+
+    //     $products = DB::table('products')
+    //         ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
+    //         ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
+    //         ->select(
+    //             'products.id',
+    //             'products.product_name',
+    //             'products.product_image',
+    //             'category_sub.category_sub_name',
+    //             DB::raw('MIN(products_details.retail_price) as retail_price'),
+    //             DB::raw('MIN(products_details.selling_price) as selling_price')
+    //         )
+    //         ->where('products.vendor_id', $vendor_id)
+    //         ->where('products.status', 1)
+    //         ->groupBy(
+    //             'products.id',
+    //             'products.product_name',
+    //             'products.product_image',
+    //             'category_sub.category_sub_name'
+    //         )
+    //         ->inRandomOrder()
+    //         ->limit('4')
+    //         ->get();
+
+    //     return  $products;
+    // }
     public function vendorProducts($vendor_id)
     {
-
         $products = DB::table('products')
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
             ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
+            ->leftJoin('ratings', function ($join) {
+                $join->on('ratings.products_id', '=', 'products.id')
+                    ->where('ratings.status', 1);
+            })
             ->select(
                 'products.id',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
+
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
-                DB::raw('MIN(products_details.selling_price) as selling_price')
+                DB::raw('MIN(products_details.selling_price) as selling_price'),
+
+                DB::raw('AVG(ratings.star_rating) as avg_rating'),
+                DB::raw('COUNT(ratings.id) as review_count')
             )
             ->where('products.vendor_id', $vendor_id)
             ->where('products.status', 1)
@@ -666,10 +701,10 @@ class FrontendController extends Controller
                 'category_sub.category_sub_name'
             )
             ->inRandomOrder()
-            ->limit('4')
+            ->limit(4)
             ->get();
 
-        return  $products;
+        return $products;
     }
 
 
@@ -707,19 +742,19 @@ class FrontendController extends Controller
     public function productVar($id = '')
     {
         $ratings = Rating::withCount([
-        'helpfulVotes',
-        'unhelpfulVotes'
-    ])
-    ->where('ratings.products_id', $id)
-    ->where('ratings.status', 1)
-    ->orderBy('ratings.id', 'desc')
-    ->select('ratings.*')
-    ->selectSub(function ($q) {
-        $q->from('review_images')
-          ->whereColumn('review_images.rating_id', 'ratings.id')
-          ->selectRaw('GROUP_CONCAT(review_images.image_path)');
-    }, 'images')
-    ->get();
+                'helpfulVotes',
+                'unhelpfulVotes'
+            ])
+            ->where('ratings.products_id', $id)
+            ->where('ratings.status', 1)
+            ->orderBy('ratings.id', 'desc')
+            ->select('ratings.*')
+            ->selectSub(function ($q) {
+                $q->from('review_images')
+                ->whereColumn('review_images.rating_id', 'ratings.id')
+                ->selectRaw('GROUP_CONCAT(review_images.image_path)');
+            }, 'images')
+            ->get();
 
         $prouctsList = $this->getProduct($id);
         $imageList   = $this->getProductImageList($id);
