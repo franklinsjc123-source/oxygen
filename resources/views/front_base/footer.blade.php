@@ -246,23 +246,29 @@
 
    <div class="newsletter-popup mfp-hide">
        <div class="newsletter-content">
-           <h2 class="ls-20">Please Check Pincode</h2>
+           <h2 >Please Check Pincode</h2>
            <form id="pincodeForm" class="">
-               <div class="row mt-3">
-                   <div class="col-md-10">
-                       <div class="form-group mt-1">
+               <div class="row ">
+                   <div class="col-md-12">
+                       <div class="form-group ">
                            <h6> <label for="pincode"></label></h6>
-                           <input type="text" class="form-control" id="pincode"
+                           <input type="text" style="border-radius: 10px" class="form-control" id="pincode"
                                name="pincode"
                                placeholder="Enter pincode" value="{{ session('pincode') }}"
                                required pattern="^\d{6}$" maxlength="6">
-                           <h6 id="pincodeHelp" class="form-text mt-2">Please enter a 6-digit
+                          <center>
+                            <h6 id="pincodeHelp" class="form-text mt-2">Please enter a 6-digit
                                pincode.</h6>
+                            </center> 
                        </div>
                    </div>
-                   <div class="col-md-2 mt-5"><br>
-                       <button type="submit" class="btn btn-primary btn-check">Check
+                   <div class="col-md-12 mt-2">
+                    <center>
+
+                        <button type="submit"   style="border-radius: 20px" class="btn btn-primary ">Check
                            Delivery Area</button>
+                    </center>
+                        
                    </div>
                </div>
                <div id="pincodeResponse" class="mt-3"></div>

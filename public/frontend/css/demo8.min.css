@@ -455,7 +455,7 @@ hr {
 }
 img {
   max-width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: cover;
   vertical-align: middle;
 }
@@ -5817,7 +5817,7 @@ textarea {
 }
 .newsletter-popup {
   display: flex;
-  max-width: 78rem;
+  max-width: 44rem;
   padding: 8.1rem 4.8rem;
   margin: auto;
   background-position: center;
@@ -5838,7 +5838,7 @@ textarea {
   font-weight: 800;
 }
 .newsletter-popup h2 {
-  margin-bottom: 1.1rem;
+  margin-bottom: -1.1rem;
   font-weight: 800;
   font-size: 2.8rem;
   line-height: 1.2;
@@ -12085,8 +12085,9 @@ body .product-popup {
 }
 .intro-slide1 .banner-content {
   right: 12%;
-  margin-top: -0.3rem;
+  margin-top: 10.0rem;
 }
+
 .intro-slide1 .banner-subtitle {
   font-size: 1.6em;
   letter-spacing: 0.05em;

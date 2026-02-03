@@ -47,6 +47,7 @@ class ProductsController extends Controller
     public function index()
     {
         $login_id = session()->get('login_id');
+        // dd(  $login_id );
         $vendorcreate = vendorcreate::select('sub_category_ids')->where('id',$login_id)->first();
         $subcategoryarray=explode(',',$vendorcreate->sub_category_ids);
         //$CategorySub = CategorySub::whereIn('id', $subcategoryarray)->get();
@@ -182,10 +183,14 @@ class ProductsController extends Controller
         $products = new Products();
        // print_r($products);
        $login_id = session()->get('login_id');//Auth::user()->id; // 
-       //dd($login_id);
-       $statement = FacadesDB::select("SHOW TABLE STATUS LIKE 'products'");
-       $next_product_id = $statement[0]->Auto_increment;
+    //    dd($login_id);
+    //    $statement = FacadesDB::select("SHOW TABLE STATUS LIKE 'products'");
+    //    $next_product_id = $statement[0]->Auto_increment;
        // // dd($request->specification);
+
+       $next_product_id = Products::max('id') + 1;
+
+    //    dd($next_product_id);
 
        $products = new Products();
        $filename = '';
@@ -873,15 +878,19 @@ class ProductsController extends Controller
      */
     public function destroy($id, FlasherInterface $flasher)
     {
+       
         
 		try {
             $image = Products::find($id);
+
+          
            // print_r($image);exit();
             $file = $this->image_path1 . "/" . $image->product_image;
-            
+             
             if (file_exists($file)) unlink($file);
 
-            Products::where("id", $id)->delete();
+             Products::where("id", $id)->delete();
+
 
         // $productsdetails = new ProductsDetails();
         $productsdetails = ProductsDetails::where('products_id',$id)->get();
@@ -996,7 +1005,7 @@ class ProductsController extends Controller
 		{
 			$vendor_products_id ='';
 		}
-        //dd($vendor_products_id);
+        // dd($vendor_products_id);
         //$products_list = Products::get();
         
         
