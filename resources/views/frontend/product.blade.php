@@ -369,7 +369,7 @@
                                      <div class="col-xl-4 col-lg-5 mb-4">
                                          <div class="ratings-wrapper">
                                              <div class="avg-rating-container">
-                                                 <h4 class="avg-mark font-weight-bolder ls-50">3.3</h4>
+                                                 <h4 class="avg-mark font-weight-bolder ls-50">{{ round($avg, 1) }}</h4>
                                                  <div class="avg-rating">
                                                      <p class="text-dark mb-1">Average Rating</p>
                                                      <div class="ratings-container">
@@ -384,7 +384,7 @@
                                              <div
                                                  class="ratings-value d-flex align-items-center text-dark ls-25">
                                                  <span
-                                                     class="text-dark font-weight-bold">66.7%</span>Recommended<span
+                                                     class="text-dark font-weight-bold">{{ $percent }}%</span>Recommended<span
                                                      class="count">(2 of 3)</span>
                                              </div>
                                              <div class="ratings-list">

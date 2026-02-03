@@ -807,7 +807,7 @@ class FrontendController extends Controller
 
         $reviewCount = Rating::where('products_id', $prouctdata->id)->count();
 
-        return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts', 'relatedProducts', 'percent', 'reviewCount', 'canRate', 'myRating', 'ratings'));
+        return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts', 'relatedProducts', 'percent', 'reviewCount', 'canRate', 'myRating', 'ratings', 'avg'));
     }
 
     public function quickView($id)
