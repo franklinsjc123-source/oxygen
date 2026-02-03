@@ -128,7 +128,7 @@
                                         <div class="product-price">
                                             ₹{{ $prouctsList['selling_price'] }} 
                                         </div>
-                                        <div  class="product-price-discount mt-2" >
+                                        <div  class="product-price-discount" >
                                                 ₹{{ $prouctsList['retail_price'] }} 
                                         </div>
                                         <?php 
@@ -136,7 +136,7 @@
                                             $discount_rounded = round($discount_percentage / 10) * 10;
                                         ?>
 
-                                        <div  class="product-offer-percentage  mt-2" >
+                                        <div  class="product-offer-percentage" >
                                                 {{ $discount_rounded }}% Off
                                         </div>
                                     </div>
@@ -179,16 +179,11 @@
                                          <?php }
                                             } ?>
                                      </div>
-
                                  </div>
 
-<<<<<<< HEAD
                                    <div class="fix-bottom product-sticky-content sticky-content">
-=======
-                                   <div class="product-sticky-content sticky-content">
->>>>>>> 79fcfd14425ba24e2aba9af002517627b49fda74
                                      <div class="product-form container">
-                                         <div class="product-qty-form mt-2">
+                                         <div class="product-qty-form">
                                              <div class="input-group">
                                                  <input class="quantity form-control" id="quantity" type="number" min="1"
                                                      max="100">
@@ -917,154 +912,7 @@
                              </div>
                          </div>
                      </div>
-<<<<<<< HEAD
                      <!-- <section class="vendor-product-section">
-=======
-                     
-                 </div>
-                 <!-- End of Main Content -->
-                 <aside class="sidebar product-sidebar sidebar-fixed right-sidebar sticky-sidebar-wrapper">
-                     <div class="sidebar-overlay"></div>
-                     <a class="sidebar-close" href="#"><i class="close-icon"></i></a>
-                     <a href="#" class="sidebar-toggle d-flex d-lg-none"><i class="fas fa-chevron-left"></i></a>
-                     <div class="sidebar-content scrollable">
-                         <div class="sticky-sidebar">
-                             <div class="widget widget-icon-box mb-6">
-                                 <div class="icon-box icon-box-side">
-                                     <span class="icon-box-icon text-dark">
-                                         <i class="w-icon-truck"></i>
-                                     </span> 
-                                     <div class="icon-box-content">
-                                         <h4 class="icon-box-title">Free Shipping & Returns</h4>
-                                         <p>For all orders over $99</p>
-                                     </div>
-                                 </div>
-                                 <div class="icon-box icon-box-side">
-                                     <span class="icon-box-icon text-dark">
-                                         <i class="w-icon-bag"></i>
-                                     </span>
-                                     <div class="icon-box-content">
-                                         <h4 class="icon-box-title">Secure Payment</h4>
-                                         <p>We ensure secure payment</p>
-                                     </div>
-                                 </div>
-                                 <div class="icon-box icon-box-side">
-                                     <span class="icon-box-icon text-dark">
-                                         <i class="w-icon-money"></i>
-                                     </span>
-                                     <div class="icon-box-content">
-                                         <h4 class="icon-box-title">Money Back Guarantee</h4>
-                                         <p>Any back within 30 days</p>
-                                     </div>
-                                 </div>
-                             </div>
-                             <!-- End of Widget Icon Box -->
-
-                             <div class="widget widget-banner mb-9">
-                                 <div class="banner banner-fixed br-sm">
-                                     <figure>
-                                         <img src="<?php echo asset('assets') ?>/images/shop/banner3.jpg" alt="Banner" width="266"
-                                             height="220" style="background-color: #1D2D44;" />
-                                     </figure>
-                                     <div class="banner-content">
-                                         <div class="banner-price-info font-weight-bolder text-white lh-1 ls-25">
-                                             40<sup class="font-weight-bold">%</sup><sub
-                                                 class="font-weight-bold text-uppercase ls-25">Off</sub>
-                                         </div>
-                                         <h4
-                                             class="banner-subtitle text-white font-weight-bolder text-uppercase mb-0">
-                                             Ultimate Sale</h4>
-                                     </div>
-                                 </div>
-                             </div>
-                             <!-- End of Widget Banner -->
-
-                             <div class="widget widget-products">
-                                 <div class="title-link-wrapper mb-2">
-                                     <h4 class="title title-link font-weight-bold">Offer Products</h4>
-                                 </div>
-
-                                 <div class="swiper nav-top">
-                                     <div class="swiper-container swiper-theme nav-top" data-swiper-options="{
-                                                'slidesPerView': 1,
-                                                'spaceBetween': 20,
-                                                'navigation': {
-                                                    'prevEl': '.swiper-button-prev',
-                                                    'nextEl': '.swiper-button-next'
-                                                }
-                                            }">
-                                         <div class="swiper-wrapper">
-                                             <div class="widget-col swiper-slide">
-                                                @foreach ($vendorProducts as $product)
-                                                 <div class="product product-widget">
-                                                     <figure class="product-media">
-                                                         <a href="{{ url('/productVar/'.$product->id) }}">
-                                                             <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product"
-                                                                 width="100" height="113" />
-                                                         </a>
-                                                     </figure>
-                                                     <div class="product-details">
-                                                         <h4 class="product-name">
-                                                             <a href="#">{{ $product->product_name }}</a>
-                                                         </h4>
-                                                         <div class="ratings-container">
-                                                             <div class="ratings-full">
-                                                                 <span class="ratings" style="width: 100%;"></span>
-                                                                 <span class="tooltiptext tooltip-top"></span>
-                                                             </div>
-                                                         </div>
-                                                         <!-- <div class="product-price">$80.00 - $90.00</div> -->
-                                                          <div class="product-pa-wrapper">
-                                                                <div class="product-price">₹{{ $product->selling_price }}</div>
-                                                                <div class="product-price-discount mt-1">₹{{ $product->retail_price }}</div>
-                                                                @php
-                                                                    $discount = number_format((($product->retail_price - $product->selling_price) / $product->retail_price) * 100);
-                                                                @endphp
-                                                                <div class="product-offer-percentage mt-1">{{ $discount }}% Off</div>
-                                                            </div>
-                                                     </div>
-                                                 </div>
-                                                @endforeach
-                                               
-                                                
-                                             </div>
-                                             <div class="widget-col swiper-slide">
-                                                 <div class="product product-widget">
-                                                     <figure class="product-media">
-                                                         <a href="#">
-                                                             <img src="<?php echo asset('assets') ?>/images/shop/16.jpg" alt="Product"
-                                                                 width="100" height="113" />
-                                                         </a>
-                                                     </figure>
-                                                     <div class="product-details">
-                                                         <h4 class="product-name">
-                                                             <a href="#">Skate Pan</a>
-                                                         </h4>
-                                                         <div class="ratings-container">
-                                                             <div class="ratings-full">
-                                                                 <span class="ratings" style="width: 100%;"></span>
-                                                                 <span class="tooltiptext tooltip-top"></span>
-                                                             </div>
-                                                         </div>
-                                                         <div class="product-price">$278.00</div>
-                                                     </div>
-                                                 </div>
-                                                 
-                                             </div>
-                                         </div>
-                                         <button class="swiper-button-next"></button>
-                                         <button class="swiper-button-prev"></button>
-                                     </div>
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
-                 </aside>
-                 <!-- End of Sidebar -->
-             </div>
-
-             <section class="vendor-product-section">
->>>>>>> 79fcfd14425ba24e2aba9af002517627b49fda74
                          <div class="title-link-wrapper mb-4">
                              <h4 class="title text-left">More Products From This Vendor</h4>
                              <a href="{{ url('shop-details'). '/'.$getProduct['id'] }}" class="btn btn-dark btn-link btn-slide-right btn-icon-right">More
@@ -1087,7 +935,7 @@
                                 }">
                                 <div class="swiper-wrapper row cols-lg-3 cols-md-4 cols-sm-3 cols-2">
                                   @foreach ($vendorProducts as $product)
-                                    <div class=" col-md-2 swiper-slide product">
+                                    <div class=" col-md-4 swiper-slide product">
                                         <figure class="product-media">
                                             <a href="{{ url('/productVar/'.$product->id) }}">
                                                 <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product"
@@ -1157,7 +1005,7 @@
                                 }">
                                 <div class="swiper-wrapper row cols-lg-3 cols-md-4 cols-sm-3 cols-2">
                                     @foreach ($relatedProducts as $product)
-                                        <div class="col-md-2 swiper-slide product">
+                                        <div class="col-md-4 swiper-slide product">
                                             <figure class="product-media">
                                                 <a href="{{ url('productVar').'/'.$product->id }}">
                                                     <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product"/>
@@ -1197,7 +1045,6 @@
                                     @endforeach
                                 </div>
                             </div>
-<<<<<<< HEAD
                      </section> -->
                  </div>
                  <!-- End of Main Content -->
@@ -1380,9 +1227,6 @@
                  </aside>
                  <!-- End of Sidebar -->
              </div>
-=======
-                     </section>
->>>>>>> 79fcfd14425ba24e2aba9af002517627b49fda74
          </div>
      </div>
      <!-- End of Page Content -->

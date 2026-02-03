@@ -701,11 +701,6 @@ class FrontendController extends Controller
                 'category_sub.category_sub_name'
             )
             ->inRandomOrder()
-<<<<<<< HEAD
-            ->limit(4)
-=======
-            ->limit('6')
->>>>>>> 79fcfd14425ba24e2aba9af002517627b49fda74
             ->get();
 
         return $products;
