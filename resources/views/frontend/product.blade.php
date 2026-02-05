@@ -637,274 +637,291 @@
                                          </div>
                                          <div class="tab-pane" id="helpful-positive">
                                              <ul class="comments list-style-none">
-                                                 <li class="comment">
-                                                     <div class="comment-body">
-                                                         <figure class="comment-avatar">
-                                                             <img src="<?php echo asset('assets') ?>/images/agents/1-100x100.png"
-                                                                 alt="Commenter Avatar" width="90" height="90">
-                                                         </figure>
-                                                         <div class="comment-content">
-                                                             <h4 class="comment-author">
-                                                                 <a href="#">John Doe</a>
-                                                                 <span class="comment-date">March 22, 2021 at
-                                                                     1:54 pm</span>
-                                                             </h4>
-                                                             <div class="ratings-container comment-rating">
-                                                                 <div class="ratings-full">
-                                                                     <span class="ratings"
-                                                                         style="width: 60%;"></span>
-                                                                     <span
-                                                                         class="tooltiptext tooltip-top"></span>
-                                                                 </div>
-                                                             </div>
-                                                             <p>pellentesque habitant morbi tristique senectus
-                                                                 et. In dictum non consectetur a erat.
-                                                                 Nunc ultrices eros in cursus turpis massa
-                                                                 tincidunt ante in nibh mauris cursus mattis.
-                                                                 Cras ornare arcu dui vivamus arcu felis bibendum
-                                                                 ut tristique.</p>
-                                                             <div class="comment-action">
-                                                                 <a href="#"
-                                                                     class="btn btn-secondary btn-link btn-underline sm btn-icon-left font-weight-normal text-capitalize">
-                                                                     <i class="far fa-thumbs-up"></i>Helpful (1)
-                                                                 </a>
-                                                                 <a href="#"
-                                                                     class="btn btn-dark btn-link btn-underline sm btn-icon-left font-weight-normal text-capitalize">
-                                                                     <i class="far fa-thumbs-down"></i>Unhelpful
-                                                                     (0)
-                                                                 </a>
-                                                                 <div class="review-image">
-                                                                     <a href="#">
-                                                                         <figure>
-                                                                             <img src="<?php echo asset('assets') ?>/images/products/default/review-img-1.jpg"
-                                                                                 width="60" height="60"
-                                                                                 alt="Attachment image of John Doe's review on Electronics Black Wrist Watch"
-                                                                                 data-zoom-image="<?php echo asset('assets') ?>/images/products/default/review-img-1.jpg" />
-                                                                         </figure>
-                                                                     </a>
-                                                                 </div>
-                                                             </div>
-                                                         </div>
-                                                     </div>
-                                                 </li>
-                                                 <li class="comment">
-                                                     <div class="comment-body">
-                                                         <figure class="comment-avatar">
-                                                             <img src="<?php echo asset('assets') ?>/images/agents/2-100x100.png"
-                                                                 alt="Commenter Avatar" width="90" height="90">
-                                                         </figure>
-                                                         <div class="comment-content">
-                                                             <h4 class="comment-author">
-                                                                 <a href="#">John Doe</a>
-                                                                 <span class="comment-date">March 22, 2021 at
-                                                                     1:52 pm</span>
-                                                             </h4>
-                                                             <div class="ratings-container comment-rating">
-                                                                 <div class="ratings-full">
-                                                                     <span class="ratings"
-                                                                         style="width: 80%;"></span>
-                                                                     <span
-                                                                         class="tooltiptext tooltip-top"></span>
-                                                                 </div>
-                                                             </div>
-                                                             <p>Nullam a magna porttitor, dictum risus nec,
-                                                                 faucibus sapien.
-                                                                 Ultrices eros in cursus turpis massa tincidunt
-                                                                 ante in nibh mauris cursus mattis.
-                                                                 Cras ornare arcu dui vivamus arcu felis bibendum
-                                                                 ut tristique.</p>
-                                                             <div class="comment-action">
-                                                                 <a href="#"
-                                                                     class="btn btn-secondary btn-link btn-underline sm btn-icon-left font-weight-normal text-capitalize">
-                                                                     <i class="far fa-thumbs-up"></i>Helpful (1)
-                                                                 </a>
-                                                                 <a href="#"
-                                                                     class="btn btn-dark btn-link btn-underline sm btn-icon-left font-weight-normal text-capitalize">
-                                                                     <i class="far fa-thumbs-down"></i>Unhelpful
-                                                                     (0)
-                                                                 </a>
-                                                                 <div class="review-image">
-                                                                     <a href="#">
-                                                                         <figure>
-                                                                             <img src="<?php echo asset('assets') ?>/images/products/default/review-img-2.jpg"
-                                                                                 width="60" height="60"
-                                                                                 alt="Attachment image of John Doe's review on Electronics Black Wrist Watch"
-                                                                                 data-zoom-image="<?php echo asset('assets') ?>/images/products/default/review-img-2-800x900.jpg" />
-                                                                         </figure>
-                                                                     </a>
-                                                                     <a href="#">
-                                                                         <figure>
-                                                                             <img src="<?php echo asset('assets') ?>/images/products/default/review-img-3.jpg"
-                                                                                 width="60" height="60"
-                                                                                 alt="Attachment image of John Doe's review on Electronics Black Wrist Watch"
-                                                                                 data-zoom-image="<?php echo asset('assets') ?>/images/products/default/review-img-3-800x900.jpg" />
-                                                                         </figure>
-                                                                     </a>
-                                                                 </div>
-                                                             </div>
-                                                         </div>
-                                                     </div>
-                                                 </li>
+                                                 @forelse($mostHelpfulPositive as $mostHelpRating)
+                                                    <li class="comment">
+                                                        <div class="comment-body">
+
+                                                            <!-- <figure class="comment-avatar">
+                                                                <img src="{{ asset('assets/images/agents/1-100x100.png') }}"
+                                                                    alt="Avatar" width="90" height="90">
+                                                            </figure> -->
+
+                                                            <div class="comment-content">
+                                                                <h4 class="comment-author">
+                                                                    <a href="#">{{ $mostHelpRating->customer_name }}</a>
+                                                                    <span class="comment-date">
+                                                                       {{ date('M d, Y h:i A', strtotime($rating->created_at)) }}
+                                                                    </span>
+                                                                </h4>
+
+                                                                {{-- Rating stars --}}
+                                                                <div class="ratings-container comment-rating">
+                                                                    <div class="ratings-full">
+                                                                        <span class="ratings"
+                                                                            style="width: {{ ($mostHelpRating->star_rating / 5) * 100 }}%;"></span>
+                                                                    </div>
+                                                                </div>
+
+                                                                {{-- Comment --}}
+                                                                <p>{{ $mostHelpRating->comments }}</p>
+
+                                                                <div class="comment-action">
+                                                                    <a href="javascript:void(0)" class="vote-btn btn btn-secondary btn-link sm"
+                                                                    data-id="{{ $mostHelpRating->id }}"
+                                                                    data-type="helpful">
+                                                                        <i class="far fa-thumbs-up"></i>
+                                                                        Helpful (<span class="helpful-count">{{ $mostHelpRating->helpfulVotes->count() }}</span>)
+                                                                    </a>
+
+                                                                    <a href="javascript:void(0)" class="vote-btn btn btn-dark btn-link sm"
+                                                                    data-id="{{ $mostHelpRating->id }}"
+                                                                    data-type="unhelpful">
+                                                                        <i class="far fa-thumbs-down"></i>
+                                                                        Unhelpful (<span class="unhelpful-count">{{ $mostHelpRating->unhelpfulVotes->count() }}</span>)
+                                                                    </a>
+                                                                </div>
+                                                                @php
+                                                                    $images = $mostHelpRating->images ? explode(',', $rating->images) : [];
+                                                                @endphp
+
+                                                                @if(count($images))
+                                                                <div class="review-image d-flex gap-2 mt-2">
+                                                                    @foreach($images as $img)
+                                                                        <a href="{{ asset('storage/'.$img) }}" target="_blank">
+                                                                            <img src="{{ asset('storage/'.$img) }}"
+                                                                                width="60"
+                                                                                height="60"
+                                                                                class="rounded border">
+                                                                        </a>
+                                                                    @endforeach
+                                                                </div>
+                                                                @endif
+
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                @empty
+                                                    <li>
+                                                        <p class="text-muted">No reviews yet.</p>
+                                                    </li>
+                                                @endforelse
+                                                 
                                              </ul>
                                          </div>
                                          <div class="tab-pane" id="helpful-negative">
                                              <ul class="comments list-style-none">
-                                                 <li class="comment">
-                                                     <div class="comment-body">
-                                                         <figure class="comment-avatar">
-                                                             <img src="<?php echo asset('assets') ?>/images/agents/3-100x100.png"
-                                                                 alt="Commenter Avatar" width="90" height="90">
-                                                         </figure>
-                                                         <div class="comment-content">
-                                                             <h4 class="comment-author">
-                                                                 <a href="#">John Doe</a>
-                                                                 <span class="comment-date">March 22, 2021 at
-                                                                     1:21 pm</span>
-                                                             </h4>
-                                                             <div class="ratings-container comment-rating">
-                                                                 <div class="ratings-full">
-                                                                     <span class="ratings"
-                                                                         style="width: 60%;"></span>
-                                                                     <span
-                                                                         class="tooltiptext tooltip-top"></span>
-                                                                 </div>
-                                                             </div>
-                                                             <p>In fermentum et sollicitudin ac orci phasellus. A
-                                                                 condimentum vitae
-                                                                 sapien pellentesque habitant morbi tristique
-                                                                 senectus et. In dictum
-                                                                 non consectetur a erat. Nunc scelerisque viverra
-                                                                 mauris in aliquam sem fringilla.</p>
-                                                             <div class="comment-action">
-                                                                 <a href="#"
-                                                                     class="btn btn-secondary btn-link btn-underline sm btn-icon-left font-weight-normal text-capitalize">
-                                                                     <i class="far fa-thumbs-up"></i>Helpful (0)
-                                                                 </a>
-                                                                 <a href="#"
-                                                                     class="btn btn-dark btn-link btn-underline sm btn-icon-left font-weight-normal text-capitalize">
-                                                                     <i class="far fa-thumbs-down"></i>Unhelpful
-                                                                     (1)
-                                                                 </a>
-                                                             </div>
-                                                         </div>
-                                                     </div>
-                                                 </li>
+                                                 @forelse($mostHelpfulNegative as $mostUnhelpRating)
+                                                    <li class="comment">
+                                                        <div class="comment-body">
+
+                                                            <!-- <figure class="comment-avatar">
+                                                                <img src="{{ asset('assets/images/agents/1-100x100.png') }}"
+                                                                    alt="Avatar" width="90" height="90">
+                                                            </figure> -->
+
+                                                            <div class="comment-content">
+                                                                <h4 class="comment-author">
+                                                                    <a href="#">{{ $mostUnhelpRating->customer_name }}</a>
+                                                                    <span class="comment-date">
+                                                                       {{ date('M d, Y h:i A', strtotime($mostUnhelpRating->created_at)) }}
+                                                                    </span>
+                                                                </h4>
+
+                                                                {{-- Rating stars --}}
+                                                                <div class="ratings-container comment-rating">
+                                                                    <div class="ratings-full">
+                                                                        <span class="ratings"
+                                                                            style="width: {{ ($mostUnhelpRating->star_rating / 5) * 100 }}%;"></span>
+                                                                    </div>
+                                                                </div>
+
+                                                                {{-- Comment --}}
+                                                                <p>{{ $mostUnhelpRating->comments }}</p>
+
+                                                                <div class="comment-action">
+                                                                    <a href="javascript:void(0)" class="vote-btn btn btn-secondary btn-link sm"
+                                                                    data-id="{{ $mostUnhelpRating->id }}"
+                                                                    data-type="helpful">
+                                                                        <i class="far fa-thumbs-up"></i>
+                                                                        Helpful (<span class="helpful-count">{{ $mostUnhelpRating->helpfulVotes->count() }}</span>)
+                                                                    </a>
+
+                                                                    <a href="javascript:void(0)" class="vote-btn btn btn-dark btn-link sm"
+                                                                    data-id="{{ $mostUnhelpRating->id }}"
+                                                                    data-type="unhelpful">
+                                                                        <i class="far fa-thumbs-down"></i>
+                                                                        Unhelpful (<span class="unhelpful-count">{{ $mostUnhelpRating->unhelpfulVotes->count() }}</span>)
+                                                                    </a>
+                                                                </div>
+                                                                @php
+                                                                    $images = $mostUnhelpRating->images ? explode(',', $rating->images) : [];
+                                                                @endphp
+
+                                                                @if(count($images))
+                                                                <div class="review-image d-flex gap-2 mt-2">
+                                                                    @foreach($images as $img)
+                                                                        <a href="{{ asset('storage/'.$img) }}" target="_blank">
+                                                                            <img src="{{ asset('storage/'.$img) }}"
+                                                                                width="60"
+                                                                                height="60"
+                                                                                class="rounded border">
+                                                                        </a>
+                                                                    @endforeach
+                                                                </div>
+                                                                @endif
+
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                @empty
+                                                    <li>
+                                                        <p class="text-muted">No reviews yet.</p>
+                                                    </li>
+                                                @endforelse
                                              </ul>
                                          </div>
                                          <div class="tab-pane" id="highest-rating">
                                              <ul class="comments list-style-none">
-                                                 <li class="comment">
-                                                     <div class="comment-body">
-                                                         <figure class="comment-avatar">
-                                                             <img src="<?php echo asset('assets') ?>/images/agents/2-100x100.png"
-                                                                 alt="Commenter Avatar" width="90" height="90">
-                                                         </figure>
-                                                         <div class="comment-content">
-                                                             <h4 class="comment-author">
-                                                                 <a href="#">John Doe</a>
-                                                                 <span class="comment-date">March 22, 2021 at
-                                                                     1:52 pm</span>
-                                                             </h4>
-                                                             <div class="ratings-container comment-rating">
-                                                                 <div class="ratings-full">
-                                                                     <span class="ratings"
-                                                                         style="width: 80%;"></span>
-                                                                     <span
-                                                                         class="tooltiptext tooltip-top"></span>
-                                                                 </div>
-                                                             </div>
-                                                             <p>Nullam a magna porttitor, dictum risus nec,
-                                                                 faucibus sapien.
-                                                                 Ultrices eros in cursus turpis massa tincidunt
-                                                                 ante in nibh mauris cursus mattis.
-                                                                 Cras ornare arcu dui vivamus arcu felis bibendum
-                                                                 ut tristique.</p>
-                                                             <div class="comment-action">
-                                                                 <a href="#"
-                                                                     class="btn btn-secondary btn-link btn-underline sm btn-icon-left font-weight-normal text-capitalize">
-                                                                     <i class="far fa-thumbs-up"></i>Helpful (1)
-                                                                 </a>
-                                                                 <a href="#"
-                                                                     class="btn btn-dark btn-link btn-underline sm btn-icon-left font-weight-normal text-capitalize">
-                                                                     <i class="far fa-thumbs-down"></i>Unhelpful
-                                                                     (0)
-                                                                 </a>
-                                                                 <div class="review-image">
-                                                                     <a href="#">
-                                                                         <figure>
-                                                                             <img src="<?php echo asset('assets') ?>/images/products/default/review-img-2.jpg"
-                                                                                 width="60" height="60"
-                                                                                 alt="Attachment image of John Doe's review on Electronics Black Wrist Watch"
-                                                                                 data-zoom-image="<?php echo asset('assets') ?>/images/products/default/review-img-2-800x900.jpg" />
-                                                                         </figure>
-                                                                     </a>
-                                                                     <a href="#">
-                                                                         <figure>
-                                                                             <img src="<?php echo asset('assets') ?>/images/products/default/review-img-3.jpg"
-                                                                                 width="60" height="60"
-                                                                                 alt="Attachment image of John Doe's review on Electronics Black Wrist Watch"
-                                                                                 data-zoom-image="<?php echo asset('assets') ?>/images/products/default/review-img-3-800x900.jpg" />
-                                                                         </figure>
-                                                                     </a>
-                                                                 </div>
-                                                             </div>
-                                                         </div>
-                                                     </div>
-                                                 </li>
+                                                 @forelse($highestRatingList as $HighRating)
+                                                    <li class="comment">
+                                                        <div class="comment-body">
+
+                                                            <!-- <figure class="comment-avatar">
+                                                                <img src="{{ asset('assets/images/agents/1-100x100.png') }}"
+                                                                    alt="Avatar" width="90" height="90">
+                                                            </figure> -->
+
+                                                            <div class="comment-content">
+                                                                <h4 class="comment-author">
+                                                                    <a href="#">{{ $HighRating->customer_name }}</a>
+                                                                    <span class="comment-date">
+                                                                       {{ date('M d, Y h:i A', strtotime($HighRating->created_at)) }}
+                                                                    </span>
+                                                                </h4>
+
+                                                                {{-- Rating stars --}}
+                                                                <div class="ratings-container comment-rating">
+                                                                    <div class="ratings-full">
+                                                                        <span class="ratings"
+                                                                            style="width: {{ ($HighRating->star_rating / 5) * 100 }}%;"></span>
+                                                                    </div>
+                                                                </div>
+
+                                                                {{-- Comment --}}
+                                                                <p>{{ $HighRating->comments }}</p>
+
+                                                                <div class="comment-action">
+                                                                    <a href="javascript:void(0)" class="vote-btn btn btn-secondary btn-link sm"
+                                                                    data-id="{{ $HighRating->id }}"
+                                                                    data-type="helpful">
+                                                                        <i class="far fa-thumbs-up"></i>
+                                                                        Helpful (<span class="helpful-count">{{ $HighRating->helpfulVotes->count() }}</span>)
+                                                                    </a>
+
+                                                                    <a href="javascript:void(0)" class="vote-btn btn btn-dark btn-link sm"
+                                                                    data-id="{{ $HighRating->id }}"
+                                                                    data-type="unhelpful">
+                                                                        <i class="far fa-thumbs-down"></i>
+                                                                        Unhelpful (<span class="unhelpful-count">{{ $HighRating->unhelpfulVotes->count() }}</span>)
+                                                                    </a>
+                                                                </div>
+                                                                @php
+                                                                    $images = $HighRating->images ? explode(',', $HighRating->images) : [];
+                                                                @endphp
+
+                                                                @if(count($images))
+                                                                <div class="review-image d-flex gap-2 mt-2">
+                                                                    @foreach($images as $img)
+                                                                        <a href="{{ asset('storage/'.$img) }}" target="_blank">
+                                                                            <img src="{{ asset('storage/'.$img) }}"
+                                                                                width="60"
+                                                                                height="60"
+                                                                                class="rounded border">
+                                                                        </a>
+                                                                    @endforeach
+                                                                </div>
+                                                                @endif
+
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                @empty
+                                                    <li>
+                                                        <p class="text-muted">No reviews yet.</p>
+                                                    </li>
+                                                @endforelse
                                              </ul>
                                          </div>
                                          <div class="tab-pane" id="lowest-rating">
                                              <ul class="comments list-style-none">
-                                                 <li class="comment">
-                                                     <div class="comment-body">
-                                                         <figure class="comment-avatar">
-                                                             <img src="<?php echo asset('assets') ?>/images/agents/1-100x100.png"
-                                                                 alt="Commenter Avatar" width="90" height="90">
-                                                         </figure>
-                                                         <div class="comment-content">
-                                                             <h4 class="comment-author">
-                                                                 <a href="#">John Doe</a>
-                                                                 <span class="comment-date">March 22, 2021 at
-                                                                     1:54 pm</span>
-                                                             </h4>
-                                                             <div class="ratings-container comment-rating">
-                                                                 <div class="ratings-full">
-                                                                     <span class="ratings"
-                                                                         style="width: 60%;"></span>
-                                                                     <span
-                                                                         class="tooltiptext tooltip-top"></span>
-                                                                 </div>
-                                                             </div>
-                                                             <p>pellentesque habitant morbi tristique senectus
-                                                                 et. In dictum non consectetur a erat.
-                                                                 Nunc ultrices eros in cursus turpis massa
-                                                                 tincidunt ante in nibh mauris cursus mattis.
-                                                                 Cras ornare arcu dui vivamus arcu felis bibendum
-                                                                 ut tristique.</p>
-                                                             <div class="comment-action">
-                                                                 <a href="#"
-                                                                     class="btn btn-secondary btn-link btn-underline sm btn-icon-left font-weight-normal text-capitalize">
-                                                                     <i class="far fa-thumbs-up"></i>Helpful (1)
-                                                                 </a>
-                                                                 <a href="#"
-                                                                     class="btn btn-dark btn-link btn-underline sm btn-icon-left font-weight-normal text-capitalize">
-                                                                     <i class="far fa-thumbs-down"></i>Unhelpful
-                                                                     (0)
-                                                                 </a>
-                                                                 <div class="review-image">
-                                                                     <a href="#">
-                                                                         <figure>
-                                                                             <img src="<?php echo asset('assets') ?>/images/products/default/review-img-3.jpg"
-                                                                                 width="60" height="60"
-                                                                                 alt="Attachment image of John Doe's review on Electronics Black Wrist Watch"
-                                                                                 data-zoom-image="<?php echo asset('assets') ?>/images/products/default/review-img-3-800x900.jpg" />
-                                                                         </figure>
-                                                                     </a>
-                                                                 </div>
-                                                             </div>
-                                                         </div>
-                                                     </div>
-                                                 </li>
+                                                 @forelse($lowestRatingList as $LowRating)
+                                                    <li class="comment">
+                                                        <div class="comment-body">
+
+                                                            <!-- <figure class="comment-avatar">
+                                                                <img src="{{ asset('assets/images/agents/1-100x100.png') }}"
+                                                                    alt="Avatar" width="90" height="90">
+                                                            </figure> -->
+
+                                                            <div class="comment-content">
+                                                                <h4 class="comment-author">
+                                                                    <a href="#">{{ $LowRating->customer_name }}</a>
+                                                                    <span class="comment-date">
+                                                                       {{ date('M d, Y h:i A', strtotime($LowRating->created_at)) }}
+                                                                    </span>
+                                                                </h4>
+
+                                                                {{-- Rating stars --}}
+                                                                <div class="ratings-container comment-rating">
+                                                                    <div class="ratings-full">
+                                                                        <span class="ratings"
+                                                                            style="width: {{ ($LowRating->star_rating / 5) * 100 }}%;"></span>
+                                                                    </div>
+                                                                </div>
+
+                                                                {{-- Comment --}}
+                                                                <p>{{ $LowRating->comments }}</p>
+
+                                                                <div class="comment-action">
+                                                                    <a href="javascript:void(0)" class="vote-btn btn btn-secondary btn-link sm"
+                                                                    data-id="{{ $LowRating->id }}"
+                                                                    data-type="helpful">
+                                                                        <i class="far fa-thumbs-up"></i>
+                                                                        Helpful (<span class="helpful-count">{{ $LowRating->helpfulVotes->count() }}</span>)
+                                                                    </a>
+
+                                                                    <a href="javascript:void(0)" class="vote-btn btn btn-dark btn-link sm"
+                                                                    data-id="{{ $LowRating->id }}"
+                                                                    data-type="unhelpful">
+                                                                        <i class="far fa-thumbs-down"></i>
+                                                                        Unhelpful (<span class="unhelpful-count">{{ $LowRating->unhelpfulVotes->count() }}</span>)
+                                                                    </a>
+                                                                </div>
+                                                                @php
+                                                                    $images = $LowRating->images ? explode(',', $LowRating->images) : [];
+                                                                @endphp
+
+                                                                @if(count($images))
+                                                                <div class="review-image d-flex gap-2 mt-2">
+                                                                    @foreach($images as $img)
+                                                                        <a href="{{ asset('storage/'.$img) }}" target="_blank">
+                                                                            <img src="{{ asset('storage/'.$img) }}"
+                                                                                width="60"
+                                                                                height="60"
+                                                                                class="rounded border">
+                                                                        </a>
+                                                                    @endforeach
+                                                                </div>
+                                                                @endif
+
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                @empty
+                                                    <li>
+                                                        <p class="text-muted">No reviews yet.</p>
+                                                    </li>
+                                                @endforelse
                                              </ul>
                                          </div>
                                      </div>
@@ -1288,13 +1305,19 @@
     
 $('.vote-btn').click(function () {
     let btn = $(this);
-console.log(btn.data('id'));
+    let ratingId = btn.data('id');
+
+    if (!ratingId) {
+        console.error('Rating ID missing');
+        return;
+    }
+
     $.ajax({
         url: "{{ route('review.vote') }}",
         type: "POST",
         data: {
             _token: "{{ csrf_token() }}",
-            rating_id: btn.data('id'),
+            rating_id: ratingId,
             type: btn.data('type')
         },
         success: function (res) {
@@ -1305,6 +1328,8 @@ console.log(btn.data('id'));
             if (xhr.status === 401) {
                 alert('Please login to vote');
                 window.location.href = "{{ route('home') }}";
+            } else {
+                console.error(xhr.responseText);
             }
         }
     });

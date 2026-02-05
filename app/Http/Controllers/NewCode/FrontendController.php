@@ -807,7 +807,46 @@ class FrontendController extends Controller
 
         $reviewCount = Rating::where('products_id', $prouctdata->id)->count();
 
-        return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts', 'relatedProducts', 'percent', 'reviewCount', 'canRate', 'myRating', 'ratings', 'avg'));
+        // ⭐ MOST HELPFUL POSITIVE
+        $mostHelpfulPositive = Rating::withCount(['helpfulVotes'])
+            ->where('ratings.products_id', $id)
+            ->where('ratings.status', 1)
+            ->orderByDesc('helpful_votes_count')
+            ->orderByDesc('ratings.star_rating')
+            ->get();
+
+
+        // ⭐ MOST HELPFUL NEGATIVE
+        $mostHelpfulNegative = Rating::with([
+                'helpfulVotes',
+                'unhelpfulVotes'
+            ])
+            ->withCount('unhelpfulVotes')
+            ->where('ratings.products_id', $id)
+            ->where('ratings.status', 1)
+            ->having('unhelpful_votes_count', '>', 0)   
+            ->orderByDesc('unhelpful_votes_count')    
+            ->orderBy('ratings.star_rating')      
+            ->orderByDesc('ratings.id')
+            ->get();
+
+
+        // ⭐ HIGHEST RATING
+        $highestRatingList = Rating::where('ratings.products_id', $id)
+            ->where('ratings.status', 1)
+            ->orderByDesc('ratings.star_rating')
+            ->orderByDesc('ratings.id')
+            ->get();
+
+
+        // ⭐ LOWEST RATING
+        $lowestRatingList = Rating::where('ratings.products_id', $id)
+            ->where('ratings.status', 1)
+            ->orderBy('ratings.star_rating')
+            ->orderByDesc('ratings.id')
+            ->get();
+
+        return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts', 'relatedProducts', 'percent', 'reviewCount', 'canRate', 'myRating', 'ratings', 'avg',  'mostHelpfulPositive', 'mostHelpfulNegative', 'highestRatingList', 'lowestRatingList'));
     }
 
     public function quickView($id)
@@ -1776,32 +1815,39 @@ class FrontendController extends Controller
     }
 
     public function vote(Request $request)
-    {
-        $customer_id = session('customer_id');
+{
+    $customer_id = session('customer_id');
 
-        if (!$customer_id) {
-            return response()->json(['error' => 'Login required'], 401);
-        }
-
-        ReviewVote::updateOrCreate(
-            [
-                'rating_id' => $request->rating_id,
-                'customer_id' => $customer_id
-            ],
-            [
-                'type' => $request->type
-            ]
-        );
-
-        $rating = Rating::withCount([
-            'helpfulVotes',
-            'unhelpfulVotes'
-        ])->findOrFail($request->rating_id);
-
-        return response()->json([
-            'helpful' => $rating->helpful_votes_count,
-            'unhelpful' => $rating->unhelpful_votes_count
-        ]);
+    if (!$customer_id) {
+        return response()->json(['error' => 'Login required'], 401);
     }
+
+    // 🔥 ADD THIS
+    $request->validate([
+        'rating_id' => 'required|exists:ratings,id',
+        'type' => 'required|in:helpful,unhelpful'
+    ]);
+
+    ReviewVote::updateOrCreate(
+        [
+            'rating_id' => $request->rating_id,
+            'customer_id' => $customer_id,
+        ],
+        [
+            'type' => $request->type
+        ]
+    );
+
+    // 🔥 fresh count fetch
+    $rating = Rating::where('id', $request->rating_id)
+        ->withCount(['helpfulVotes', 'unhelpfulVotes'])
+        ->first();
+
+    return response()->json([
+        'helpful' => $rating->helpful_votes_count,
+        'unhelpful' => $rating->unhelpful_votes_count
+    ]);
+}
+
 
 }
