@@ -681,7 +681,7 @@
                                                         @endphp
                                                         <tr>
 
-                                                            <td><input type="checkbox" id="spec_id" name="spec_id[]" value="{{ $spec->id}}" checked> {{ $spec->specification_group_name}}</td>
+                                                            <td> {{ $spec->specification_group_name}}</td>
                                                             <td>
 
                                                                 <select class='form-select form-select-lg text-secondary' name='specify_value[{{ $spec->id}}]'>

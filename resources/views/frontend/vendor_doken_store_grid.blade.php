@@ -59,7 +59,7 @@
                         <div class="toolbox-left mb-4 mb-md-0">
                             {{-- <a href="#" class="btn btn-primary btn-outline btn-rounded btn-icon-left "><i class="w-icon-category"></i>VENDORS</a> --}}
                             {{-- <label class="d-block">Total Store Showing 6</label> --}}
-                            <h3><label class="d-block">SHOPS</label></h3>
+                            <h3><label class="d-block"></label></h3>
                         </div>
                         {{-- <div class="toolbox-right">
                             <div class="toolbox-item toolbox-sort select-box mb-0">

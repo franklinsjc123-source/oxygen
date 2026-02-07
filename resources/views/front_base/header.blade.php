@@ -234,7 +234,7 @@
                                                   
                                                 </li>
                                                 @else
-                                                <li><a href="{{ url( 'Categoryproductshow/'.$submenus->id ) }}">{{ $submenus->category_name }}</a></li> 
+                                                <li><a href="{{ url( 'categoryShop/'.$submenus->id ) }}">{{ $submenus->category_name }}</a></li> 
                                                 @endif
                                                 @endforeach
                                                 
