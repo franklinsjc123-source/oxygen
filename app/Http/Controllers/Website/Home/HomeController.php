@@ -147,9 +147,9 @@ class HomeController extends Controller
                 Session::put('pincode_area', $pincodeRecord->area );
                 Session::put('post_region', $pincodeRecord->post_region );
 
-                return response()->json(['status' => 'success', 'message' => 'Pincode is valid and saved in session.']);
+                return response()->json(['status' => 'success', 'message' => 'Pincode is valid and delivery is available.']);
             } else {
-                return response()->json(['status' => 'error', 'message' => 'Delivery not Available This area pincode.']);
+                return response()->json(['status' => 'error', 'message' => 'Delivery not available for this area pincode.']);
             }
         }
 

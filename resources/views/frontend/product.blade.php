@@ -9,7 +9,7 @@
              <li><a href="demo1.html">Home</a></li>
              <li>Products</li>
          </ul>
-         <ul class="product-nav list-style-none">
+         {{-- <ul class="product-nav list-style-none">
              <li class="product-nav-prev">
                  <a href="#">
                      <i class="w-icon-angle-left"></i>
@@ -30,7 +30,7 @@
                      <span class="product-name">Fabulous Sound Speaker</span>
                  </span>
              </li>
-         </ul>
+         </ul> --}}
      </nav>
      <!-- End of Breadcrumb -->
 
@@ -116,7 +116,7 @@
                                             </span>
                                          </div>
                                          <div class="product-categories">
-                                             Phone no:
+                                            Phone no:
                                              <span class="product-category"><a href="#"><?php echo $vendor_details['mobile_number1'] ?></a></span>
                                          </div>
                                      </div>
@@ -128,7 +128,7 @@
                                         <div class="product-price">
                                             ₹{{ $prouctsList['selling_price'] }} 
                                         </div>
-                                        <div  class="product-price-discount" >
+                                        <div  class="product-price-discount mt-2" >
                                                 ₹{{ $prouctsList['retail_price'] }} 
                                         </div>
                                         <?php 
@@ -136,7 +136,7 @@
                                             $discount_rounded = round($discount_percentage / 10) * 10;
                                         ?>
 
-                                        <div  class="product-offer-percentage" >
+                                        <div  class="product-offer-percentage  mt-2" >
                                                 {{ $discount_rounded }}% Off
                                         </div>
                                     </div>
@@ -150,11 +150,7 @@
                                 </div>
 
                                  <div class="product-short-desc">
-                                     <ul class="list-type-check list-style-none">
-                                         <li>Ultrices eros in cursus turpis massa cursus mattis.</li>
-                                         <li>Volutpat ac tincidunt vitae semper quis lectus.</li>
-                                         <li>Aliquam id diam maecenas ultricies mi eget mauris.</li>
-                                     </ul>
+                                    {{ $prouctsList['description'] }}
                                  </div>
 
                                  <hr class="product-divider">
@@ -181,9 +177,10 @@
                                      </div>
                                  </div>
 
-                                   <div class="fix-bottom product-sticky-content sticky-content">
+                                   <div class="product-sticky-content sticky-content">
                                      <div class="product-form container">
-                                         <div class="product-qty-form">
+                                        <div class="row">
+                                             <div class="col-md-3 product-qty-form">
                                              <div class="input-group">
                                                  <input class="quantity form-control" id="quantity" type="number" min="1"
                                                      max="100">
@@ -191,10 +188,17 @@
                                                  <button class="quantity-minus w-icon-minus"></button>
                                              </div>
                                          </div>
-                                         <button class="btn btn-primary" onclick="addCart('<?= $prouctsList['id'] ?>')">
+                                         <div class="col-md-3">
+                                             <button class="btn btn-primary " onclick="addCart('<?= $prouctsList['id'] ?>')">
                                              <i class="w-icon-cart"></i>
                                              <span>Add to Cart</span>
                                          </button>
+
+                                          
+                                         </div>
+                                         <div id="product_error" class="mt-3"></div>
+                                        </div>
+                                        
                                      </div>
                                  </div> 
 
@@ -242,44 +246,13 @@
                          <div class="tab-content">
                              <div class="tab-pane active" id="product-tab-description">
                                  <div class="row mb-4">
-                                     <div class="col-md-6 mb-5">
-                                         <h4 class="title tab-pane-title font-weight-bold mb-2">Detail</h4>
+                                     <div class="col-md-12 mb-5">
+                                         <h4 class="title tab-pane-title font-weight-bold mb-2">Product details</h4>
                                          <p class="mb-4">{{ $getSpecificProduct->product->description }}</p>
                                      </div>
-                                     <div class="col-md-6 mb-5">
-                                         <div class="banner banner-video product-video br-xs">
-                                             <figure class="banner-media">
-                                                 <a href="#">
-                                                     <img src="<?php echo asset('assets') ?>/images/products/video-banner-610x300.jpg"
-                                                         alt="banner" width="610" height="300"
-                                                         style="background-color: #bebebe;">
-                                                 </a>
-                                                 <a class="btn-play-video btn-iframe"
-                                                     href="<?php echo asset('assets') ?>/video/memory-of-a-woman.mp4"></a>
-                                             </figure>
-                                         </div>
-                                     </div>
+                                    
                                  </div>
-                                 <div class="row cols-md-3">
-                                     <div class="mb-3">
-                                         <h5 class="sub-title font-weight-bold"><span class="mr-3">1.</span>Free
-                                             Shipping &amp; Return</h5>
-                                         <p class="detail pl-5">We offer free shipping for products on orders
-                                             above 50$ and offer free delivery for all orders in US.</p>
-                                     </div>
-                                     <div class="mb-3">
-                                         <h5 class="sub-title font-weight-bold"><span>2.</span>Free and Easy
-                                             Returns</h5>
-                                         <p class="detail pl-5">We guarantee our products and you could get back
-                                             all of your money anytime you want in 30 days.</p>
-                                     </div>
-                                     <div class="mb-3">
-                                         <h5 class="sub-title font-weight-bold"><span>3.</span>Special Financing
-                                         </h5>
-                                         <p class="detail pl-5">Get 20%-50% off items over 50$ for a month or
-                                             over 250$ for a year with our special credit card.</p>
-                                     </div>
-                                 </div>
+                                 
                              </div>
                              <div class="tab-pane" id="product-tab-specification">
                                  @foreach ($ProductSpecs as $spec)
@@ -326,11 +299,8 @@
                                         </li>
                                         <li class="store-address">
                                             <label>Address:</label>
-                                            <span class="detail">{{ $vendor_details->address }},</span>
-                                            <span class="detail">{{ $vendor_details->address1 }},</span>
-                                            <span class="detail">{{ $vendor_details->city }},</span>
-                                            <span class="detail">{{ $vendor_details->state }}</span>
-                                            <span class="detail">- {{ $vendor_details->pincode }}</span>
+                                            <span class="detail">{{  $vendor_details->address ? $vendor_details->address.', ' : '' }} {{ $vendor_details->address1 ? $vendor_details->address1 . ', ' : '' }}  {{  $vendor_details->city ? $vendor_details->city.', '   :'' }}, {{ $vendor_details->state ? $vendor_details->state . ' - ' : '' }}  {{ $vendor_details->pincode  ? $vendor_details->pincode.'. ' : ''}}</span>
+                                           
                                         </li>
                                         <li class="store-phone">
                                             <label>Phone:</label>
@@ -1078,7 +1048,7 @@
                                      </span> 
                                      <div class="icon-box-content">
                                          <h4 class="icon-box-title">Free Shipping & Returns</h4>
-                                         <p>For all orders over $99</p>
+                                         <p>For all orders over ₹99</p>
                                      </div>
                                  </div>
                                  <div class="icon-box icon-box-side">
@@ -1172,66 +1142,41 @@
                                                 
                                              </div>
                                              <div class="widget-col swiper-slide">
+                                               
+
+                                                      @foreach ($vendorProducts2 as $product)
                                                  <div class="product product-widget">
                                                      <figure class="product-media">
-                                                         <a href="#">
-                                                             <img src="<?php echo asset('assets') ?>/images/shop/16.jpg" alt="Product"
+                                                         <a href="{{ url('/productVar/'.$product->id) }}">
+                                                             <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product"
                                                                  width="100" height="113" />
                                                          </a>
                                                      </figure>
                                                      <div class="product-details">
                                                          <h4 class="product-name">
-                                                             <a href="#">Skate Pan</a>
+                                                             <a href="#">{{ $product->product_name }}</a>
                                                          </h4>
-                                                         <div class="ratings-container">
-                                                             <div class="ratings-full">
-                                                                 <span class="ratings" style="width: 100%;"></span>
-                                                                 <span class="tooltiptext tooltip-top"></span>
-                                                             </div>
-                                                         </div>
-                                                         <div class="product-price">$278.00</div>
+                                                        
+                                                            <div class="ratings-container">
+                                                                <div class="ratings-full">
+                                                                    <span class="ratings" style="width: {{ $product->avg_rating ?? 0 }}%"></span>
+                                                                </div>
+                                                                <a>({{ $product->review_count }} Reviews)</a>
+                                                            </div>
+                                                         <!-- <div class="product-price">$80.00 - $90.00</div> -->
+                                                          <div class="product-pa-wrapper">
+                                                                <div class="product-price">₹{{ $product->selling_price }}</div>
+                                                                <div class="product-price-discount">₹{{ $product->retail_price }}</div>
+                                                                @php
+                                                                    $discount = number_format((($product->retail_price - $product->selling_price) / $product->retail_price) * 100);
+                                                                @endphp
+                                                                <div class="product-offer-percentage">{{ $discount }}% Off</div>
+                                                            </div>
                                                      </div>
                                                  </div>
-                                                 <div class="product product-widget">
-                                                     <figure class="product-media">
-                                                         <a href="#">
-                                                             <img src="<?php echo asset('assets') ?>/images/shop/17.jpg" alt="Product"
-                                                                 width="100" height="113" />
-                                                         </a>
-                                                     </figure>
-                                                     <div class="product-details">
-                                                         <h4 class="product-name">
-                                                             <a href="#">Modern Cooker</a>
-                                                         </h4>
-                                                         <div class="ratings-container">
-                                                             <div class="ratings-full">
-                                                                 <span class="ratings" style="width: 80%;"></span>
-                                                                 <span class="tooltiptext tooltip-top"></span>
-                                                             </div>
-                                                         </div>
-                                                         <div class="product-price">$324.00</div>
-                                                     </div>
-                                                 </div>
-                                                 <div class="product product-widget">
-                                                     <figure class="product-media">
-                                                         <a href="#">
-                                                             <img src="<?php echo asset('assets') ?>/images/shop/18.jpg" alt="Product"
-                                                                 width="100" height="113" />
-                                                         </a>
-                                                     </figure>
-                                                     <div class="product-details">
-                                                         <h4 class="product-name">
-                                                             <a href="#">CT Machine</a>
-                                                         </h4>
-                                                         <div class="ratings-container">
-                                                             <div class="ratings-full">
-                                                                 <span class="ratings" style="width: 100%;"></span>
-                                                                 <span class="tooltiptext tooltip-top"></span>
-                                                             </div>
-                                                         </div>
-                                                         <div class="product-price">$236.00</div>
-                                                     </div>
-                                                 </div>
+                                                @endforeach
+                                                     
+                                                 
                                              </div>
                                          </div>
                                          <button class="swiper-button-next"></button>
@@ -1271,7 +1216,11 @@
          var pincode = '<?= session()->get('pincode'); ?>';
 
          if (pincode === '') {
-             $.notify("Please Check Pincode!", "error");
+
+            $('#product_error').html('<p style="color: red;">' + 
+                            'please select the pincode' + '</p>');
+
+            //  $.notify("Please Check Pincode!", "error");
              return false;
          }
 
@@ -1281,14 +1230,20 @@
          var color = $('#product-color').val();
 
          if (color === '') {
-             $.notify("Please Choose Color!", "error");
+               $('#product_error').html('<p style="color: red;">' + 
+                            'Please choose color' + '</p>');
+            //  $.notify("Please Choose Color!", "error");
              return false;
          }
 
          if (size === '') {
-             $.notify("Please Choose Size!", "error");
+               $('#product_error').html('<p style="color: red;">' + 
+                            'Please choose size' + '</p>');
+            //  $.notify("Please Choose Size!", "error");
              return false;
          }
+
+          $('#product_error').html(' ');
          $.post(url, {
              id: id,
              qty: qty,

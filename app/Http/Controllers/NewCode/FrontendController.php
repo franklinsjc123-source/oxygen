@@ -700,11 +700,53 @@ class FrontendController extends Controller
                 'products.product_image',
                 'category_sub.category_sub_name'
             )
+            ->limit('4')
             ->inRandomOrder()
             ->get();
 
         return $products;
     }
+
+
+
+
+     public function vendorProducts2($vendor_id)
+    {
+        $products = DB::table('products')
+            ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
+            ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
+            ->leftJoin('ratings', function ($join) {
+                $join->on('ratings.products_id', '=', 'products.id')
+                    ->where('ratings.status', 1);
+            })
+            ->select(
+                'products.id',
+                'products.product_name',
+                'products.product_image',
+                'category_sub.category_sub_name',
+
+                DB::raw('MIN(products_details.retail_price) as retail_price'),
+                DB::raw('MIN(products_details.selling_price) as selling_price'),
+
+                DB::raw('AVG(ratings.star_rating) as avg_rating'),
+                DB::raw('COUNT(ratings.id) as review_count')
+            )
+            ->where('products.vendor_id', $vendor_id)
+            ->where('products.status', 1)
+            ->groupBy(
+                'products.id',
+                'products.product_name',
+                'products.product_image',
+                'category_sub.category_sub_name'
+            )
+            ->limit('4')
+            ->inRandomOrder()
+            ->get();
+
+        return $products;
+    }
+
+
 
 
 
@@ -768,6 +810,10 @@ class FrontendController extends Controller
 
         $vendor_name = Vendor::where('id', $getProduct->vendor_id)->value('shop_name');
         $vendorProducts = $this->vendorProducts($getProduct->vendor_id);
+        $vendorProducts2 = $this->vendorProducts2($getProduct->vendor_id);
+
+        
+
         $relatedProducts = $this->relatedProducts($getProduct->category_sub);
 
         $vendor_details = vendorcreate::where('id', $getProduct->created_by)->first();
@@ -846,7 +892,7 @@ class FrontendController extends Controller
             ->orderByDesc('ratings.id')
             ->get();
 
-        return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts', 'relatedProducts', 'percent', 'reviewCount', 'canRate', 'myRating', 'ratings', 'avg',  'mostHelpfulPositive', 'mostHelpfulNegative', 'highestRatingList', 'lowestRatingList'));
+        return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts','vendorProducts2', 'relatedProducts', 'percent', 'reviewCount', 'canRate', 'myRating', 'ratings', 'avg',  'mostHelpfulPositive', 'mostHelpfulNegative', 'highestRatingList', 'lowestRatingList'));
     }
 
     public function quickView($id)

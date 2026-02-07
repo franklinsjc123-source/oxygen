@@ -5817,14 +5817,45 @@ textarea {
 }
 .newsletter-popup {
   display: flex;
-  max-width: 44rem;
+  max-width: 78rem;
   padding: 8.1rem 4.8rem;
   margin: auto;
   background-position: center;
   background-size: cover;
   border-radius: 1rem;
-  background-image: url(../../assets/images/newsletter-1.jpg);
+  background-image: url("../images/location.jpeg");
 }
+
+/* .newsletter-popup {
+  display: flex;
+  max-width: 78rem;
+  padding: 8.1rem 4.9rem;
+  margin: auto;
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+
+  background-image: url("../images/location.jpeg");
+  background-size: cover;
+  background-position: center;
+} */
+
+
+ .newsletter-popup::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 1;
+}
+
+/* Keep content sharp */
+.newsletter-popup > * {
+  position: relative;
+  z-index: 2;
+} */
+
+
 .newsletter-popup .popup-media {
   margin-bottom: 1.7rem;
 }
@@ -6035,12 +6066,13 @@ body .product-popup {
     margin-left: 0;
   }
 }
+
 @media (max-width: 767px) {
   .newsletter-popup {
     max-width: 40rem;
     min-height: 40rem;
     padding: 0rem 2rem;
-    background-image: url(../../assets/images/newsletter-2.jpg);
+   background-image: url("../images/location.jpeg");
     text-align: center;
     align-items: center;
   }
@@ -6512,8 +6544,8 @@ body .product-popup {
 .product-single .product-color-swatch .color {
   display: block;
   text-align: center;
-  width: 2.6rem;
-  height: 2.6rem;
+  width: 2.8rem;
+  height: 2.8rem;
   border-radius: 50%;
   border: none;
   margin-right: 0;
@@ -6525,7 +6557,7 @@ body .product-popup {
   content: "";
   display: inline-block;
   font-family: "Font Awesome 5 Free";
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 600;
   letter-spacing: -0.025em;
   color: #fff;
@@ -6545,7 +6577,7 @@ body .product-popup {
   width: auto;
   height: auto;
   line-height: 1;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   border: 1px solid #ccc;
   border-radius: 2px;
   color: #666;
@@ -6555,6 +6587,7 @@ body .product-popup {
 .product-single .product-size-swatch .size:hover {
   border-color: #0088dd;
   color: #0088dd;
+   background-color: #f0f8ff;
 }
 .product-single .product-image-swatch {
   margin-bottom: 2rem;

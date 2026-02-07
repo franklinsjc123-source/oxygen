@@ -243,10 +243,10 @@
 
    <!-- End of Quick view -->
    <!-- End of Mobile Menu -->
-
+{{-- 
    <div class="newsletter-popup mfp-hide">
        <div class="newsletter-content">
-           <h2 >Please Check Pincode</h2>
+           <h2 style="color:#0088dd" >Please Check Pincode</h2>
            <form id="pincodeForm" class="">
                <div class="row ">
                    <div class="col-md-12">
@@ -257,8 +257,7 @@
                                placeholder="Enter pincode" value="{{ session('pincode') }}"
                                required pattern="^\d{6}$" maxlength="6">
                           <center>
-                            <h6 id="pincodeHelp" class="form-text mt-2">Please enter a 6-digit
-                               pincode.</h6>
+                            <p id="pincodeHelp" class="form-text mt-2">Enter your pin code to check for delivery availability, nearby by merchant and more  offers!!!</p>
                             </center> 
                        </div>
                    </div>
@@ -272,6 +271,35 @@
                    </div>
                </div>
                <div id="pincodeResponse" class="mt-3"></div>
+           </form>
+
+       </div>
+   </div> --}}
+
+      <div class="newsletter-popup mfp-hide">
+       <div class="newsletter-content">
+           <h2 style="color:#0088dd"  class="ls-20">Please Check Pincode</h2>
+           <form id="pincodeForm" class="">
+               <div class="row mt-3">
+                   <div class="col-md-10">
+                       <div class="form-group mt-1">
+                           <h6> <label for="pincode"></label></h6>
+                           <input type="text" class="form-control" id="pincode"
+                               name="pincode"
+                               placeholder="Enter pincode" value="{{ session('pincode') }}"
+                               required pattern="^\d{6}$" maxlength="6">
+                 <p id="pincodeHelp" class="form-text mt-2">Enter your pin code to check for delivery availability, nearby by merchant and more  offers!!!</p>
+                         
+                       </div>
+
+                   </div>
+                   <div class="col-md-2 mt-4"><br>
+                       <button type="submit" class="btn btn-primary btn-check p-2">Check
+                           Delivery Area</button>
+                   </div>
+               </div>
+               
+                 <div id="pincodeResponse" class="mt-3"></div>
            </form>
 
        </div>
@@ -514,7 +542,7 @@ function togglePasswordAccount(inputId, icon) {
                 },
                 success: function(response) {                   
                     if (response.status === 'success') {
-                        $('#pincodeResponse').html('<p style="color: success;">' + response
+                        $('#pincodeResponse').html('<p style="color: #0088dd;">' + response
                             .message + '</p>');
                         location.reload();
                     } else {
