@@ -1,10 +1,91 @@
    <!-- Start of Footer -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  
-   <footer class="footer appear-animate" data-animation-options="{
-            'name': 'fadeIn'
-        }">
+  <style>
+@media (max-width: 767px) {
+
+    .footer-top .row {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow: hidden; /* NO SCROLL */
+    }
+
+    .footer-top .col-lg-3 {
+        flex: 0 0 25%;
+        max-width: 25%;
+        padding: 0 5px;
+    }
+
+    /* Reduce title size */
+    .main-footer .widget-title {
+        font-size: 11px;
+        margin-bottom: 6px;
+    }
+
+    /* Reduce link size */
+    .main-footer .widget-body li a {
+        font-size: 10px;
+        /* line-height: 1.4; */
+    }
+
+    /* Reduce spacing */
+    .widget-body li {
+        margin-bottom: 1px;
+    }
+
+    /* About section text */
+    .widget-about-desc,
+    .widget-about-title,
+    .widget-about-call {
+        font-size: 10px;
+        line-height: 1.4;
+    }
+
+    /* Hide long text if needed */
+    .widget-about-desc {
+        display: none;
+    }
+
+    /* Smaller social icons */
+    .social-icons a {
+        width: 25px;
+        height: 25px;
+        font-size: 10px;
+        margin-right: 4px;
+    }
+
+    /* Footer bottom */
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        gap: 6px;
+    }
+
+    .footer-bottom p {
+        font-size: 10px;
+    }
+
+    .footer .widget-about .widget-about-call {
+    display: block;
+    color: #333;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1;
+    margin-bottom: 0.8rem;
+    }
+
+    .footer-top .widget-body li{
+            line-height: 1.2;
+    margin-bottom: 0.5rem; 
+    }
+
+    .footer-top .widget{
+        margin-bottom: 0rem;
+    }
+}
+
+  </style>
+   <footer   class="footer main-footer appear-animate">
 
 
 
@@ -24,9 +105,9 @@
        <div class="container">
            <div class="footer-top">
                <div class="row">
-                   <div class="col-lg-4 col-sm-6">
+                   <div class="col-lg-3 col-md-6 col-12">
                        <div class="widget widget-about">
-                           <a href="demo1.html" class="logo-footer">
+                           <a href="demo1.html" >
                                <img src="<?= asset('frontend') ?>/images/header-logo.png" alt="logo-footer" width="144"
                                    height="45" />
                            </a>
@@ -46,7 +127,7 @@
                            </div>
                        </div>
                    </div>
-                   <div class="col-lg-3 col-sm-6">
+                   <div class="col-lg-3 col-md-6 col-12">
                        <div class="widget">
                            <h3 class="widget-title">Company</h3>
                            <ul class="widget-body">
@@ -59,7 +140,7 @@
                            </ul>
                        </div>
                    </div>
-                   <div class="col-lg-3 col-sm-6">
+                   <div class="col-lg-3 col-md-6 col-12">
                        <div class="widget">
                            <h4 class="widget-title">My Account</h4>
                            <ul class="widget-body">
@@ -72,7 +153,7 @@
                            </ul>
                        </div>
                    </div>
-                   <div class="col-lg-3 col-sm-6">
+                   <div class="col-lg-3 col-md-6 col-12">
                        <div class="widget">
                            <h4 class="widget-title">Customer Service</h4>
                            <ul class="widget-body">
