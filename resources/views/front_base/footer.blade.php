@@ -72,7 +72,7 @@
 
     .footer .widget-about .widget-about-call {
     display: block;
-    color: #333;
+    color: white;
     font-size: 0.9rem;
     font-weight: 600;
     line-height: 1;
