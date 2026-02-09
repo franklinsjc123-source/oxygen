@@ -2,6 +2,11 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
+
+    .footer {
+        background-color: #172337;
+        color: #FFFFFF !important;
+        }
 @media (max-width: 767px) {
 
     .footer-top .row {
@@ -129,14 +134,14 @@
                    </div>
                    <div class="col-lg-3 col-md-6 col-12">
                        <div class="widget">
-                           <h3 class="widget-title">Company</h3>
+                           <h3 class="widget-title">SHOP</h3>
                            <ul class="widget-body">
-                               <li><a href="about-us.html">About Us</a></li>
-                               <li><a href="#">Team Member</a></li>
-                               <li><a href="#">Career</a></li>
-                               <li><a href="contact-us.html">Contact Us</a></li>
-                               <li><a href="#">Affilate</a></li>
-                               <li><a href="#">Order History</a></li>
+                               <li><a href="#">About Us</a></li>
+                               <li><a href="#">Contact Us</a></li>
+                               <li><a href="#">Terms & Conditions</a></li>
+                               <li><a href="#">Privacy Policy</a></li>
+                               <li><a href="#">Shipping Policy</a></li>
+                               <li><a href="#">Refund Policy</a></li>
                            </ul>
                        </div>
                    </div>
@@ -145,41 +150,45 @@
                            <h4 class="widget-title">My Account</h4>
                            <ul class="widget-body">
                                <li><a href="#">Track My Order</a></li>
-                               <li><a href="cart.html">View Cart</a></li>
-                               <li><a href="login.html">Sign In</a></li>
+                               <li><a href="{{ url('shopping-cart') }}">View Cart</a></li>
+                               <li><a style="cursor:pointer" onclick="showLoginPopup()" >Sign In</a></li>
                                <li><a href="#">Help</a></li>
-                               <li><a href="wishlist.html">My Wishlist</a></li>
+                                <?php  if(session('customer_id')){ ?>
+                                    <li><a href="{{ url('myWishlist') }}">My Wishlist</a></li>
+                               <?php } ?>
                                <li><a href="#">Privacy Policy</a></li>
                            </ul>
                        </div>
                    </div>
                    <div class="col-lg-3 col-md-6 col-12">
                        <div class="widget">
-                           <h4 class="widget-title">Customer Service</h4>
+                           <h4 class="widget-title">Categories</h4>
                            <ul class="widget-body">
-                               <li><a href="#">Payment Methods</a></li>
-                               <li><a href="#">Money-back guarantee!</a></li>
-                               <li><a href="#">Product Returns</a></li>
-                               <li><a href="#">Support Center</a></li>
-                               <li><a href="#">Shipping</a></li>
-                               <li><a href="#">Term and Conditions</a></li>
+                                @foreach ($categorymain as $categoriesmain)
+                                      
+                                         <li><a href="{{ url( 'mainCategoryShop/'.$categoriesmain->id ) }}">   {{ $categoriesmain->category_main_name }}</a></li>
+                               
+                                @endforeach       
                            </ul>
                        </div>
                    </div>
                </div>
            </div>
 
-           <div class="footer-bottom">
-               <div class="footer-left">
-                   <p class="copyright">Copyright © 2021 Wolmart Store. All Rights Reserved.</p>
-               </div>
-               <div class="footer-right">
+           {{-- <div class="footer-bottom"> --}}
+
+          
+               
+               {{-- <div class="footer-right">
                    <span class="payment-label mr-lg-8">We're using safe payment for</span>
                    <figure class="payment">
                        <img src="<?= asset('frontend') ?>/images/payment.png" alt="payment" width="159" height="25" />
                    </figure>
-               </div>
-           </div>
+               </div> --}}
+               
+           {{-- </div> --}}
+             <center>  <p class="mt-3">Copyright © 2026 TRYNEWW</p></center><br>
+             {{-- <br> --}}
        </div>
    </footer>
    <!-- End of Footer -->

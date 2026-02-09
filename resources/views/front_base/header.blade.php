@@ -242,7 +242,7 @@
                                             </ul>
                                         </li>
                                         @else
-                                      <li><a href="{{ url( 'mainCategoryShop/'.$categoriesmain->id ) }}">{{ $categoriesmain->category_main_name }}</a></li> 
+                                      <li><a href="{{ url( 'categoryShop/'.$categoriesmain->id ) }}">{{ $categoriesmain->category_main_name }}</a></li> 
                                        @endif
                                        @endforeach                                     
                                     </ul>
