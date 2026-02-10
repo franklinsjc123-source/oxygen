@@ -368,28 +368,50 @@
 
       <div class="newsletter-popup mfp-hide">
        <div class="newsletter-content">
-           <h2 style="color:#0088dd"  class="ls-20">Please Check Pincode</h2>
-           <form id="pincodeForm" class="">
-               <div class="row mt-3">
-                   <div class="col-md-10">
-                       <div class="form-group mt-1">
-                           <h6> <label for="pincode"></label></h6>
-                           <input type="text" class="form-control" id="pincode"
-                               name="pincode"
-                               placeholder="Enter pincode" value="{{ session('pincode') }}"
-                               required pattern="^\d{6}$" maxlength="6">
-                 <p id="pincodeHelp" class="form-text mt-2">Enter your pin code to check for delivery availability, nearby by merchant and more  offers!!!</p>
-                         
-                       </div>
+        <p class="mt-3"><b>Enjoy exclusive <span style="color:#0088dd" >discount</span> on your first order</b></p>
+           <h2 style="color:#0088dd"  class="ls-20">Sign up to TryNexX</h2>
 
-                   </div>
-                   <div class="col-md-2 mt-4"><br>
-                       <button type="submit" class="btn btn-primary btn-check p-2">Check
-                           Delivery Area</button>
-                   </div>
-               </div>
+           <p class="mt-4">Enter your pin code to check for delivery availability, nearby merchants and more offers!!!</p>
+           <form id="pincodeForm" class="">
+              <div class="row justify-content-center">
+
+    <div class="col-12 col-md-10 px-3 px-md-0">
+        <input
+            type="text"
+            class="form-control"
+            style="border-radius: 20px;" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+            id="pincode"
+            name="pincode"
+            placeholder="Enter pincode"
+            value="{{ session('pincode') }}"
+            required
+            pattern="^\d{6}$"
+            maxlength="6"
+        >
+    </div>
+
+    <div class="col-12 col-md-10 px-3 px-md-0 mt-3">
+        <button
+            type="submit"
+            class="btn btn-primary w-100"
+            style="border-radius: 20px;"
+        >
+            Check Delivery Area
+        </button>
+    </div>
+
+</div>
+
                
                  <div id="pincodeResponse" class="mt-3"></div>
+
+
+                 <div>
+                    <p class="mt-2"><b>Download mobile app & unlock more deals</b></p>
+
+                    <img class="play-store-image" src="{{asset('frontend/images/google_play.png')}}" >
+
+                 </div>
            </form>
 
        </div>

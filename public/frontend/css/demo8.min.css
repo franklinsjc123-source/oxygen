@@ -5815,13 +5815,21 @@ textarea {
 .pswp__button--arrow--left:before {
   content: "";
 }
+
+.play-store-image{
+  width:70%;
+  height:70%;
+  margin-bottom: 20px;
+  cursor:pointer;
+}
 .newsletter-popup {
   display: flex;
-  max-width: 78rem;
-  padding: 8.1rem 4.8rem;
+  max-width: 44rem;
+  padding: 4rem 3rem;
   margin: auto;
   background-position: center;
   background-size: cover;
+  text-align: center;
   border-radius: 1rem;
   background-image: url("../images/location.jpeg");
 }
@@ -5875,7 +5883,7 @@ textarea {
   line-height: 1.2;
 }
 .newsletter-popup p {
-  margin-bottom: 2.3rem;
+  margin-bottom: 1.3rem;
   line-height: 1.75;
 }
 .newsletter-popup .input-wrapper-inline {
