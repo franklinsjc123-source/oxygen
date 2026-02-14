@@ -366,41 +366,39 @@
        </div>
    </div> --}}
 
-      <div class="newsletter-popup mfp-hide">
+    <div class="newsletter-popup mfp-hide">
        <div class="newsletter-content">
-        <p class="mt-3 mobile-single-line"><b>Enjoy exclusive <span style="color:#0088dd" >discount</span> on your first order</b></p>
+            <p class="mt-3 mobile-single-line"><b>Enjoy exclusive <span style="color:#0088dd" >discount</span> on your first order</b></p>
            <h4 style="color:#0088dd"  class="ls-20">Sign up to TryNexX</h4>
 
            <p class="mt-2 mobile-two-line">Enter your pin code to check  delivery availability, nearby merchants and more offers!!!</p>
-           <form id="pincodeForm" class="">
-              <div class="row justify-content-center">
+            <form id="pincodeForm" class="">
+               <div class="row justify-content-center">
 
-    <div class="col-12 col-md-10 px-3 px-md-0">
-        <input
-            type="text"
-            class="form-control mobile-narrow"
-            style="border-radius: 20px; border: 1px solid black;" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
-            id="pincode"
-            name="pincode"
-            placeholder="Delivery Pincode"
-            value="{{ session('pincode') }}"
-            required
-            pattern="^\d{6}$"
-            maxlength="6"
-        >
-    </div>
+                    <div class="col-12 col-md-10 px-3 px-md-0">
+                        <input
+                            type="text"
+                            class="form-control mobile-narrow"
+                            style="border-radius: 20px; border: 1px solid black;" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                            id="pincode"
+                            name="pincode"
+                            placeholder="Delivery Pincode"
+                            value="{{ session('pincode') }}"
+                            required
+                            pattern="^\d{6}$"
+                            maxlength="6" >
+                    </div>
 
-    <div class="col-12 col-md-10 px-3 px-md-0 mt-3">
-        <button
-            type="submit"
-            class="btn btn-primary w-100 mobile-narrow"
-            style="border-radius: 20px; "
-        >
-            Check Availability
-        </button>
-    </div>
+                    <div class="col-12 col-md-10 px-3 px-md-0 mt-3">
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100 mobile-narrow"
+                            style="border-radius: 20px; " >
+                            Check Availability
+                        </button>
+                    </div>
 
-</div>
+                </div>
 
                
                  <div id="pincodeResponse" class="mt-3"></div>
@@ -412,9 +410,8 @@
                     <img class="play-store-image" src="{{asset('frontend/images/google_play.png')}}" >
 
                  </div>
-           </form>
-
-       </div>
+            </form>
+        </div>
    </div>
 
 <style>
@@ -586,6 +583,20 @@ function togglePassword() {
     }
 }
 
+$.magnificPopup.open({
+    items: {
+        src: '.newsletter-popup',
+        type: 'inline'
+    },
+    callbacks: {
+        open: function () {
+            $('html, body').css('overflow', 'hidden');
+        },
+        close: function () {
+            $('html, body').css('overflow', '');
+        }
+    }
+});
 
 
 
@@ -696,19 +707,28 @@ function togglePasswordAccount(inputId, icon) {
            })
        }
 
-    var pincode = '<?= session()->get('pincode') ?? 0; ?>';
-    console.log(pincode);
-    if(pincode == 0)
-    {
-        setTimeout(function () {
-            var pincode = '<?= session()->get('pincode') ?? 0; ?>';
-            console.log(pincode);
+$(document).ready(function () {
 
-            if (pincode == 0) {
-                showPicodePopup();
-            }
+    var pincode = '{{ session()->get("pincode") ?? 0 }}';
+    var popupShown = sessionStorage.getItem('pincode_popup_shown');
+
+    console.log('pincode:', pincode);
+    console.log('popupShown:', popupShown);
+
+    // show popup ONLY if
+    // 1) pincode is 0
+    // 2) popup NOT shown before
+    if (pincode == 0 && !popupShown) {
+
+        setTimeout(function () {
+            showPicodePopup();
+            sessionStorage.setItem('pincode_popup_shown', 'yes');
         }, 3000);
+
     }
+
+});
+
 
     
    
@@ -725,6 +745,8 @@ function togglePasswordAccount(inputId, icon) {
                },
            })
        }
+
+      
    
 
        // function getproduct(id)
