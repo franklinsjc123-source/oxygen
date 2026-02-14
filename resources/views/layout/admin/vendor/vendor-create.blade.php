@@ -422,7 +422,7 @@
                                                             @endphp
 
                                                             <select class="custom-select w-100 form-control"
-                                                                name="package" id="package">
+                                                                name="package" id="package" required>
                                                                 <option value="" selected hidden>Select Package
                                                                 </option>
 
