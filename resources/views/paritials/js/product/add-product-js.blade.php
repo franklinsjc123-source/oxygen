@@ -273,13 +273,13 @@
     }
 </script>
 <script>
-$(document).ready(function() {
-    $(".add-more").click(function(){ 
-        var html = $("#product_details").html();
-        $(".more-products").append(html);        
+    $(document).ready(function() {
+        $(".add-more").click(function() {
+            var html = $("#product_details").html();
+            $(".more-products").append(html);
+        });
     });
-	});
-	 $("body").on("click",".remove",function(){ 
+    $("body").on("click", ".remove", function() {
         $(this).parents("#product_details").remove();
     });
 </script>
@@ -679,7 +679,15 @@ $(document).ready(function() {
         })
     });
 
-    document.getElementById("offer").addEventListener("change", myFunction);
+    // document.getElementById("offer").addEventListener("change", myFunction);
+    document.addEventListener("DOMContentLoaded", function() {
+        const offerSelect = document.getElementById("offer");
+
+        if (offerSelect) {
+            offerSelect.addEventListener("change", myFunction);
+        }
+    });
+
 
     function myFunction() {
         var x = document.getElementById("offer").value;

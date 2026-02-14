@@ -70,32 +70,7 @@
                   $venorderspro = DB::table('notifications')->where('login_id', '<>', 1)->get();
                   
 
-                   function time_elapsed_string($ptime) {
-                                                        $etime = time() - $ptime;
-                                                        
-                                                            // if ($etime < 1) {
-                                                            //     return '0 seconds';
-                                                            // }
-                                                        if (!is_numeric($etime) || $etime < 1) {
-                                                                return '0 seconds';
-                                                            }
-                                                        
-                                                        $a = array( 12 * 30 * 24 * 60 * 60  =>  'year ago',
-                                                                    30 * 24 * 60 * 60       =>  'month ago',
-                                                                    24 * 60 * 60            =>  'day ago',
-                                                                    60 * 60                 =>  'hour ago',
-                                                                    60                      =>  'minute ago',
-                                                                    1                       =>  'second ago'
-                                                                    );
-                                                        
-                                                        foreach ($a as $secs => $str) {
-                                                            $d = $etime / $secs;
-                                                            if ($d >= 1) {
-                                                                $r = round($d);
-                                                                return $r . ' ' . $str . ($r > 1 ? 's' : '');
-                                                            }
-                                                        }
-                                                    }
+
 
                 
             @endphp
