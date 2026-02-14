@@ -5886,11 +5886,11 @@ textarea {
 
 
 
-@media (max-width: 767px) {
+/* @media (max-width: 767px) { */
     .mobile-app-message {
-        margin-top:4rem;
+        margin-top:5rem;
     }
-}
+/* } */
 
 .mobile-br {
     display: inline;
