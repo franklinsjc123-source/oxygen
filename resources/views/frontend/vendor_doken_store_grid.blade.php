@@ -1,5 +1,5 @@
  @extends('app_template')
- @section('title','Vendor Store Grid')
+ @section('title','Shops')
  @section('content')
 <style>
     .custom-split{

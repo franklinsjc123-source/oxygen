@@ -369,9 +369,9 @@
       <div class="newsletter-popup mfp-hide">
        <div class="newsletter-content">
         <p class="mt-3 mobile-single-line"><b>Enjoy exclusive <span style="color:#0088dd" >discount</span> on your first order</b></p>
-           <h2 style="color:#0088dd"  class="ls-20">Sign up to TryNexX</h2>
+           <h4 style="color:#0088dd"  class="ls-20">Sign up to TryNexX</h4>
 
-           <p class="mt-4 mobile-two-line">Enter your pin code to check for delivery availability, nearby merchants and more offers!!!</p>
+           <p class="mt-2 mobile-two-line">Enter your pin code to check  delivery availability, nearby merchants and more offers!!!</p>
            <form id="pincodeForm" class="">
               <div class="row justify-content-center">
 
@@ -379,10 +379,10 @@
         <input
             type="text"
             class="form-control mobile-narrow"
-            style="border-radius: 20px;" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+            style="border-radius: 20px; border: 1px solid black;" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
             id="pincode"
             name="pincode"
-            placeholder="Enter pincode"
+            placeholder="Delivery Pincode"
             value="{{ session('pincode') }}"
             required
             pattern="^\d{6}$"
@@ -394,9 +394,9 @@
         <button
             type="submit"
             class="btn btn-primary w-100 mobile-narrow"
-            style="border-radius: 20px;"
+            style="border-radius: 20px; "
         >
-            Check Delivery Area
+            Check Availability
         </button>
     </div>
 
@@ -406,8 +406,8 @@
                  <div id="pincodeResponse" class="mt-3"></div>
 
 
-                 <div>
-                    <p class="mt-2"><b>Download mobile app & unlock more deals</b></p>
+                 <div class="mobile-app-message">
+                    <p class="mt-2"> <b>Download mobile app <span class="mobile-br">& unlock more deals</span></b></p>
 
                     <img class="play-store-image" src="{{asset('frontend/images/google_play.png')}}" >
 
@@ -700,7 +700,14 @@ function togglePasswordAccount(inputId, icon) {
     console.log(pincode);
     if(pincode == 0)
     {
-         showPicodePopup();
+        setTimeout(function () {
+            var pincode = '<?= session()->get('pincode') ?? 0; ?>';
+            console.log(pincode);
+
+            if (pincode == 0) {
+                showPicodePopup();
+            }
+        }, 3000);
     }
 
     
