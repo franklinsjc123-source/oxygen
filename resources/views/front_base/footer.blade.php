@@ -511,6 +511,11 @@
 </div>
 
 <script>
+
+
+
+
+
     function addwishlist(pid) {
 
         var user_id = '<?= session()->get('customer_id'); ?>';
@@ -583,20 +588,7 @@ function togglePassword() {
     }
 }
 
-$.magnificPopup.open({
-    items: {
-        src: '.newsletter-popup',
-        type: 'inline'
-    },
-    callbacks: {
-        open: function () {
-            $('html, body').css('overflow', 'hidden');
-        },
-        close: function () {
-            $('html, body').css('overflow', '');
-        }
-    }
-});
+
 
 
 
@@ -707,18 +699,18 @@ function togglePasswordAccount(inputId, icon) {
            })
        }
 
+
 $(document).ready(function () {
+
+    // prevent duplicate timers (mobile reload issue)
+    if (window.popupTimerStarted) return;
+    window.popupTimerStarted = true;
 
     var pincode = '{{ session()->get("pincode") ?? 0 }}';
     var popupShown = sessionStorage.getItem('pincode_popup_shown');
 
-    console.log('pincode:', pincode);
-    console.log('popupShown:', popupShown);
 
-    // show popup ONLY if
-    // 1) pincode is 0
-    // 2) popup NOT shown before
-    if (pincode == 0 && !popupShown) {
+    if (pincode == 0 && popupShown) {
 
         setTimeout(function () {
             showPicodePopup();
@@ -726,27 +718,36 @@ $(document).ready(function () {
         }, 3000);
 
     }
-
 });
 
+// popup function
+function showPicodePopup() {
 
-    
-   
-       function showPicodePopup() {
-           Wolmart.popup({
-               items: {
-                   src: ".newsletter-popup"
-               },
-               type: "inline",
-               tLoading: "",
-               mainClass: "mfp-newsletter mfp-fadein-popup",
-               callbacks: {
-                   close: function() {},
-               },
-           })
-       }
 
-      
+    Wolmart.popup({
+        items: {
+            src: ".newsletter-popup"
+        },
+        type: "inline",
+        mainClass: "mfp-newsletter mfp-fadein-popup",
+        callbacks: {
+            open: function () {
+                // LOCK scroll
+                $('html, body').css({
+                    overflow: 'hidden',
+                    height: '100%'
+                });
+            },
+            close: function () {
+                // UNLOCK scroll (VERY IMPORTANT)
+                $('html, body').css({
+                    overflow: '',
+                    height: ''
+                });
+            }
+        }
+    });
+}
    
 
        // function getproduct(id)
