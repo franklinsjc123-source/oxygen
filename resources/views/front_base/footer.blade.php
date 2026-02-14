@@ -368,17 +368,17 @@
 
       <div class="newsletter-popup mfp-hide">
        <div class="newsletter-content">
-        <p class="mt-3"><b>Enjoy exclusive <span style="color:#0088dd" >discount</span> on your first order</b></p>
+        <p class="mt-3 mobile-single-line"><b>Enjoy exclusive <span style="color:#0088dd" >discount</span> on your first order</b></p>
            <h2 style="color:#0088dd"  class="ls-20">Sign up to TryNexX</h2>
 
-           <p class="mt-4">Enter your pin code to check for delivery availability, nearby merchants and more offers!!!</p>
+           <p class="mt-4 mobile-two-line">Enter your pin code to check for delivery availability, nearby merchants and more offers!!!</p>
            <form id="pincodeForm" class="">
               <div class="row justify-content-center">
 
     <div class="col-12 col-md-10 px-3 px-md-0">
         <input
             type="text"
-            class="form-control"
+            class="form-control mobile-narrow"
             style="border-radius: 20px;" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
             id="pincode"
             name="pincode"
@@ -393,7 +393,7 @@
     <div class="col-12 col-md-10 px-3 px-md-0 mt-3">
         <button
             type="submit"
-            class="btn btn-primary w-100"
+            class="btn btn-primary w-100 mobile-narrow"
             style="border-radius: 20px;"
         >
             Check Delivery Area
