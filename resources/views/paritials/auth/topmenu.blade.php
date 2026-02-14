@@ -93,7 +93,7 @@
                                                         @php           
                                                             $ptime1 = $item->created_at;
                                                             $ptime = strtotime($ptime1);
-                                                            echo time_elapsed_string($ptime);
+                                                            // echo time_elapsed_string($ptime);
                                                         @endphp
                                                 @if ($item->details == "New")
                                                     <li>New Order {{$item->orders_id}} Placed by Admin<span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $adminorders_pro}}</a></span></li>
@@ -135,7 +135,7 @@
                                                 @php           
                                                     $ptime1 = $item->created_at;
                                                     $ptime = strtotime($ptime1);
-                                                    echo time_elapsed_string($ptime);
+                                                    // echo time_elapsed_string($ptime);
                                                     $userId = session('userId');
                                                       
                                                 @endphp
@@ -239,7 +239,7 @@
                                                 @php           
                                                     $ptime1 = $item->created_at;
                                                     $ptime = strtotime($ptime1);
-                                                    echo time_elapsed_string($ptime);
+                                                    // echo time_elapsed_string($ptime);
                                                     $userId = session('userId');
                                                       
                                                 @endphp
