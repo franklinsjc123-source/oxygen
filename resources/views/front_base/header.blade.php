@@ -71,6 +71,96 @@
     $count          = Cart::getContent()->count();                                  
 ?>
 
+<style>
+    @media (max-width: 767.98px) {
+        .header-middle .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .home-mobile-logo {
+            display: none !important;
+        }
+        .header-middle .container .header-left {
+            display: flex;
+            align-items: center;
+            flex: 1 1 auto;
+            min-width: 0;
+            margin-right: 0 !important;
+            overflow: hidden;
+        }
+        .header.header-border .header-middle .header-left .home-mobile-search {
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: space-between;
+            flex: 0 1 auto;
+            min-width: 0;
+            width: 280px !important;
+            flex-basis: 280px !important;
+            /* margin-left: 111px; */
+            max-width: 280px !important;
+        }
+        .header.header-border .header-middle .header-left .home-mobile-search .form-control {
+            height: 32px;
+            border-radius: 5px 0 0 5px;
+            border: 1px solid #d9d9d9;
+            font-size: 12px;
+            padding: 4px 8px;
+            width: calc(100% - 34px) !important;
+        }
+        .header.header-border .header-middle .header-left .home-mobile-search .btn-search {
+            border-radius: 0 5px 5px 0;
+            min-width: 34px;
+            height: 32px;
+            padding: 0 8px;
+        }
+        .header-middle .container .header-right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex: 0 0 auto;
+            margin-left: 10px !important;
+        }
+        .header-middle .container .header-right .cart-dropdown .cart-label,
+        .header-middle .container .header-right .compare-label,
+        .header-middle .container .header-right .wishlist-label {
+            display: none !important;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .header-middle .container {
+            gap: 6px;
+        }
+        .header.header-border .header-middle .header-left .home-mobile-search {
+            width: 210px !important;
+            flex-basis: 210px !important;
+            max-width: 210px !important;
+        }
+        .header.header-border .header-middle .header-left .home-mobile-search .form-control {
+            font-size: 11px;
+            padding: 4px 6px;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .header.header-border .header-middle .header-left .home-mobile-search {
+            width: 165px !important;
+            flex-basis: 165px !important;
+            max-width: 165px !important;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .header.header-border .header-middle .header-left .home-mobile-search {
+            width: 140px !important;
+            flex-basis: 140px !important;
+            max-width: 140px !important;
+        }
+    }
+</style>
+
 <body>
     <!-- Start of Page Wrapper -->
     <div class="page-wrapper">
@@ -105,9 +195,15 @@
                     <div class="header-left mr-md-4">
                         <a href="#" class="mobile-menu-toggle  w-icon-hamburger" aria-label="menu-toggle">
                         </a>
-                        <a href="{{ url('home') }}" class="logo ml-lg-0">
+                        <a href="{{ url('home') }}" class="logo ml-lg-0 home-mobile-logo">
                             <img src="<?= asset('frontend') ?>/images/header-logo.png" alt="logo" width="144" height="45" />
                         </a>
+                        <form method="get" action="#" class="header-search hs-expanded hs-round d-flex d-md-none input-wrapper home-mobile-search">
+                            <input type="text" class="form-control" name="search" id="search_mobile"
+                                placeholder="Search in..." required />
+                            <button class="btn btn-search" type="submit"><i class="w-icon-search"></i>
+                            </button>
+                        </form>
                         <form method="get" action="#" class="header-search hs-expanded hs-round d-none d-md-flex input-wrapper">
                             <?php  
                             

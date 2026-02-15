@@ -14,6 +14,49 @@
 #content {
   margin-top: 100px;
 }
+
+/* Mobile: show search in header logo slot */
+@media (max-width: 767.98px) {
+    .desktop-header-search {
+        display: none !important;
+    }
+    .brand-logo {
+        width: 100%;
+    }
+    .brand-logo .mobile-header-search {
+        display: block !important;
+        width: calc(100vw - 120px);
+        max-width: 240px;
+    }
+    .brand-logo .mobile-header-search .form_search {
+        position: relative;
+        width: 100%;
+        margin: 0;
+    }
+    .brand-logo .mobile-header-search .nav-search-field {
+        width: 100%;
+        border: 1px solid #d9d9d9;
+        border-radius: 5px;
+        height: 32px;
+        padding: 4px 30px 4px 8px;
+        font-size: 12px;
+        background: #fff;
+    }
+    .brand-logo .mobile-header-search .btn-search {
+        position: absolute;
+        right: 7px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: 0;
+        background: transparent;
+        padding: 0;
+        line-height: 1;
+        font-size: 13px;
+    }
+    .brand-logo > a {
+        display: none !important;
+    }
+}
 </style>
 
 <header id="header" class="header-tools zindex-up header-style top-relative">
@@ -91,10 +134,19 @@
                             <div class="brand-logo">
                                 <a href="{{ url( '/' ) }}"> <img src="{{ asset('frontend_assets/img/logo/logo.png' ) }}"
                                         class="img-fluid lazyload" alt="" ></a>
+                                <div class="mobile-header-search d-none">
+                                    <form action="{{ route('productsearchdetails') }}" class="form_search" role="form" method="post">
+                                        @csrf
+                                        <input id="keywords_mobile" name="keywords" type="search" placeholder="Search anything..." class="nav-search nav-search-field" aria-expanded="true">
+                                        <button type="submit" name="nav-submit-button" class="btn-search">
+                                            <i class="ti-search"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                         </div>
-                        <div class="col-md-6 col-sm-6 col-6">
+                        <div class="col-md-6 col-sm-6 col-6 desktop-header-search">
                          <div class="pt-1">
                             <form action="{{ route('productsearchdetails') }}" class="form_search m-auto" role="form" method="post">
                                   @csrf
