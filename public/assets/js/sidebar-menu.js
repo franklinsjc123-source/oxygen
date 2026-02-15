@@ -28,18 +28,48 @@ $.sidebarMenu = function(menu) {
 $.sidebarMenu($('.sidebar-menu'))
 $nav = $('.page-sidebar');
 $header = $('.page-main-header');
-$toggle_nav_top = $('#sidebar-toggle');
-$toggle_nav_top.click(function() {
-    $this = $(this);
-    $nav = $('.page-sidebar');
-    $nav.toggleClass('open');
-    $header.toggleClass('open');
 
-});
-$body_part_side = $('.body-part');
-$body_part_side.click(function() {
+function isMobileSidebar() {
+    return ($(window).width() + 17) <= 991;
+}
+
+function closeSidebar() {
     $nav.addClass('open');
     $header.addClass('open');
+}
+
+function openSidebar() {
+    $nav.removeClass('open');
+    $header.removeClass('open');
+}
+
+function toggleSidebar() {
+    $nav.toggleClass('open');
+    $header.toggleClass('open');
+}
+
+// Use delegated binding so feather icon replacement does not break click handling
+$(document).on('click', '.sidebar-toggle-btn, #sidebar-toggle', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleSidebar();
+});
+
+// Close sidebar on outside click in mobile view
+$(document).on('click touchstart', function(e) {
+    if (!isMobileSidebar()) return;
+    if ($nav.hasClass('open')) return; // already hidden
+    if ($(e.target).closest('.page-sidebar, .sidebar-toggle-btn, #sidebar-toggle').length) return;
+    closeSidebar();
+});
+
+// Close sidebar after selecting a leaf menu item in mobile
+$(document).on('click', '.page-sidebar .sidebar-menu a', function() {
+    if (!isMobileSidebar()) return;
+    var hasSubmenu = $(this).next('.sidebar-submenu').length > 0;
+    if (!hasSubmenu) {
+        closeSidebar();
+    }
 });
 
 //    responsive sidebar
@@ -48,18 +78,17 @@ var widthwindow = $window.width();
 (function($) {
     "use strict";
     if (widthwindow + 17 <= 991) {
-        $toggle_nav_top.addClass("open");
-        $nav.addClass("open");
+        closeSidebar();
+    } else {
+        openSidebar();
     }
 })(jQuery);
 $(window).resize(function() {
     var widthwindaw = $window.width();
     if (widthwindaw + 17 <= 991) {
-        $toggle_nav_top.addClass("open");
-        $nav.addClass("open");
+        closeSidebar();
     } else {
-        $toggle_nav_top.removeClass("open");
-        $nav.removeClass("open");
+        openSidebar();
     }
 });
 

@@ -423,10 +423,5 @@
 </script>
 
 
-<!--side menu expand and hide script -->
-<script>
-    document.getElementById('sidebar-toggle').addEventListener('click', function () {
-        document.body.classList.toggle('sidebar-hidden');
-    });
-</script>
+<!-- sidebar handled by assets/js/sidebar-menu.js -->
 
