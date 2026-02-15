@@ -80,6 +80,39 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
+        /* Strong red required-field highlight after submit attempt */
+        form.validation-attempted :is(input, select, textarea).form-control:invalid,
+        form.validation-attempted :is(input, select, textarea).form-select:invalid,
+        form.validation-attempted textarea:invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+        }
+
+        .invalid-field {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+        }
+
+        /* Keep invalid inputs red even when focused (override bootstrap blue focus) */
+        form.validation-attempted input.form-control.invalid-field,
+        form.validation-attempted input.form-control.invalid-field:focus,
+        form.validation-attempted select.form-control.invalid-field,
+        form.validation-attempted select.form-control.invalid-field:focus,
+        form.validation-attempted select.form-select.invalid-field,
+        form.validation-attempted select.form-select.invalid-field:focus,
+        form.validation-attempted textarea.invalid-field,
+        form.validation-attempted textarea.invalid-field:focus {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+            outline: 0 !important;
+        }
+
+        /* Select2 invalid state */
+        form.validation-attempted select.select2-hidden-accessible:invalid + .select2-container .select2-selection {
+            border: 1px solid #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+        }
     </style>
         <div class="page-body text-secondary fcolor">
         <div class="container-fluid">
@@ -534,7 +567,7 @@
                                         @php $j=0; @endphp
                                         @foreach ($attribute as $attri)
                                         @php
-                                        $attri_val = json_decode($attri->attribute_values);
+                                        $attri_val = json_decode($attri->attribute_values, true) ?: [];
                                        
 
                                         @endphp
@@ -675,7 +708,7 @@
                                                         @if(!empty($specification))
                                                         @foreach ($specification as $spec)
                                                         @php
-                                                        $spec_val = json_decode($spec->specification_values);
+                                                        $spec_val = json_decode($spec->specification_values, true) ?: [];
 
 
                                                         @endphp
@@ -916,6 +949,52 @@
     });
 </script>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const markRequiredInvalidFields = function(form) {
+            form.querySelectorAll('input[required], select[required], textarea[required]').forEach(function(el) {
+                if (el.disabled) return;
+                const value = (el.value || '').trim();
+                if (value === '' || !el.checkValidity()) {
+                    el.classList.add('invalid-field');
+                } else {
+                    el.classList.remove('invalid-field');
+                }
+            });
+        };
+
+        document.querySelectorAll('form').forEach(function(form) {
+            form.querySelectorAll('input, select, textarea').forEach(function(el) {
+                el.addEventListener('input', function() {
+                    if (el.checkValidity()) {
+                        el.classList.remove('invalid-field');
+                    }
+                });
+                el.addEventListener('change', function() {
+                    if (el.checkValidity()) {
+                        el.classList.remove('invalid-field');
+                    }
+                });
+            });
+
+            form.querySelectorAll('button[type="submit"], input[type="submit"]').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    form.classList.add('validation-attempted');
+                    markRequiredInvalidFields(form);
+                });
+            });
+
+            form.addEventListener('submit', function(e) {
+                markRequiredInvalidFields(form);
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    form.classList.add('validation-attempted');
+                    form.reportValidity();
+                }
+            });
+        });
+    });
+
     function previewImages(id) {
         const imageUpload = document.getElementById('imageUpload' + id);
         const previewContainer = document.getElementById('previewContainer' + id);
@@ -972,3 +1051,4 @@
 
 
 {{-- <div class="col-md-3"><span class="btn btn-primary btn-productimg"><i class="fa fa-cloud-upload" aria-hidden="true"></i> <input class="form-control add_product" type="file" id="mainimg" name="mainimg[]"  accept="image/*"> </span><label class="text-secondary fw-bold">Upload main image</label> </div> <div class="col-md-3"> <span class="btn btn-primary btn-productimg"  > <i class="fa fa-cloud-upload" aria-hidden="true"></i> <input class="form-control add_product" type="file" id="subimg1" name="subimg1[]"  accept="image/*"> </span><label class="text-secondary">Upload Sub image1</label> </div> <div class="col-md-3"> <span class="btn btn-primary btn-productimg"  > <i class="fa fa-cloud-upload" aria-hidden="true"></i> <input class="form-control add_product" type="file" id="subimg2" name="subimg2[]"  accept="image/*"> </span><label class="text-secondary">Upload Sub image2</label> </div> <div class="col-md-3"> <span class="btn btn-primary btn-productimg" > <i class="fa fa-cloud-upload" aria-hidden="true"></i> <input class="form-control add_product" type="file" id="subimg3" name="subimg3[]"  accept="image/*"> </span><label class="text-secondary">Upload Sub image2</label> </div> --}}
+

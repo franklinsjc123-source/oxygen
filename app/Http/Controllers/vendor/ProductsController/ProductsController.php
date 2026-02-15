@@ -29,8 +29,7 @@ use App\Models\vendor\vendorcreate;
 // use App\Models\vendor\offer\vendor_offer as offer;
 use App\Models\Offer\Offer;
 use session;
-use DB;
-use Illuminate\Support\Facades\DB as FacadesDB;
+use Illuminate\Support\Facades\DB;
 use Intervention\Image\ImageManagerStatic as Image;
 
 class ProductsController extends Controller
@@ -80,80 +79,92 @@ class ProductsController extends Controller
     }
     public function addinfo(Request $request)
     {
-        
-        
-        //$category_sub = CategorySub::where('id', $request->category_sub)->first();
         $category_sub = CategorySub::where('id', $request->category_sub)->first();
+
+        if (!$category_sub) {
+            return redirect()->back()->with('error', 'Sub category not found.');
+        }
+
         $category_main_data = CategoryMain::where('status', 1)->where('id', $category_sub->category_main_id)->get();
         $category_data = Category::where('status', 1)->where('id', $category_sub->category_id)->get();
         $category_sub_data = CategorySub::where('id', $category_sub->id)->get();
         $gst = GST::where('status', 1)->get();
         $productcollection = productcollection::select('name', DB::raw('GROUP_CONCAT(id) as ids'))
-        ->where('status', 1)
-        ->groupBy('name')
-        ->get();
+            ->where('status', 1)
+            ->groupBy('name')
+            ->get();
         $colors = ProductColor::all();
-        //dd($productcollection);
-        $offer = Offer::where('status', 1)
-        ->get();
-        if($category_sub->category_sub_attributes!='')
-        {
-        $attbutesdata=explode(',',$category_sub->category_sub_attributes);        
-        $specdata=explode(',',$category_sub->category_sub_specifications);
-        $attribute = AttributeGroup::whereIn('id', $attbutesdata)->get();
-        $login_id = session()->get('login_id');
-        $specification2= SpecificationGroup::where('created_byid',$login_id)->where('created_by','Vendor')->get();
-         
-         
-        if($specdata)
-        {
-            $specification1 = SpecificationGroup::whereIn('id', $specdata)->get();
-            $combinedSpecifications = $specification1->merge($specification2);//dd($login_id);
+        $offer = Offer::where('status', 1)->get();
+
+        $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $category_sub->id)->first();
+        $hasMapping = !is_null($mapping);
+
+        $attbutesdata = [];
+        $specdata = [];
+
+        if ($hasMapping) {
+            $attbutesdata = ($mapping->category_sub_attribute_ids)
+                ? (json_decode($mapping->category_sub_attribute_ids, true) ?: [])
+                : [];
+            $specdata = ($mapping->category_sub_specification_ids)
+                ? (json_decode($mapping->category_sub_specification_ids, true) ?: [])
+                : [];
+        } else {
+            if ($category_sub->category_sub_attributes != '') {
+                $attbutesdata = explode(',', $category_sub->category_sub_attributes);
+            }
+
+            if ($category_sub->category_sub_specifications != '') {
+                $specdata = explode(',', $category_sub->category_sub_specifications);
+            }
         }
-        else
-        {
-            $combinedSpecifications =$specification2;
+
+        $attbutesdata = array_values(array_filter(array_map('intval', $attbutesdata)));
+        $specdata = array_values(array_filter(array_map('intval', $specdata)));
+
+        if (!empty($attbutesdata) || !empty($specdata)) {
+            $attribute = !empty($attbutesdata)
+                ? AttributeGroup::whereIn('id', $attbutesdata)->get()
+                : collect();
+
+            $combinedSpecifications = !empty($specdata)
+                ? SpecificationGroup::whereIn('id', $specdata)->get()
+                : collect();
+
+            return view('layout.vendor.products.add-product')
+                ->with([
+                    "category_main_data" => $category_main_data,
+                    "gst" => $gst,
+                    "colors" => $colors,
+                    "attribute" => $attribute,
+                    "productcollection" => $productcollection,
+                    "specification" => $combinedSpecifications,
+                    "offers" => $offer,
+                    "addinformation" => "Add",
+                    "maincategoryid" => $category_sub->category_main_id,
+                    "categoryid" => $category_sub->category_id,
+                    "subcategoryid" => $request->category_sub,
+                    "nproduct" => $request->nproduct,
+                    "category_data" => $category_data,
+                    "category_sub_data" => $category_sub_data
+                ]);
         }
-        
-        
-        
-        return view('layout.vendor.products.add-product')
-            ->with([
-                "category_main_data" => $category_main_data,
-                "gst" => $gst,
-                "colors" => $colors,
-                "attribute" => $attribute,
-                "productcollection" => $productcollection,
-                "specification" => $combinedSpecifications,
-                "offers" => $offer,
-                "addinformation"=>"Add",
-                "maincategoryid"=>$category_sub->category_main_id,                
-                "categoryid"=>$category_sub->category_id,                
-                "subcategoryid"=>$request->category_sub,                             
-                "nproduct"=>$request->nproduct,
-                "category_data"=>$category_data,
-                "category_sub_data"=>$category_sub_data
-            ]);
-        }
-        else
-        {
-            
+
         $specification = Specification::where('status', 49)->get();
         return view('layout.vendor.products.add-product')
             ->with([
                 "category_main_data" => $category_main_data,
-                "category_data"=>$category_data,
-                "category_sub_data"=>$category_sub_data,
-                "maincategoryid"=>$request->category_main,                
-                "categoryid"=>$request->category,                
-                "subcategoryid"=>$request->category_sub,                             
-                "nproduct"=>$request->nproduct,
-                 "attribute" => "",
-                 "productcollection" => $productcollection,
-                 "specification" => $specification,
-                "error"=>"Attributes & Specifications Not Assign in this Sub Category.",
+                "category_data" => $category_data,
+                "category_sub_data" => $category_sub_data,
+                "maincategoryid" => $request->category_main,
+                "categoryid" => $request->category,
+                "subcategoryid" => $request->category_sub,
+                "nproduct" => $request->nproduct,
+                "attribute" => "",
+                "productcollection" => $productcollection,
+                "specification" => $specification,
+                "error" => "Attributes & Specifications Not Assign in this Sub Category.",
             ]);
-        }
     }
     /**
      * Show the form for creating a new resource.
@@ -1421,3 +1432,5 @@ class ProductsController extends Controller
     }
     /*End*/
 }
+
+

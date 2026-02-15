@@ -76,6 +76,7 @@
 	
 
 	 Route::get('viewcategory_sub/{id}', [CategorySubController::class, 'viewcategory_sub']);
+	 Route::post('viewcategory_sub/mapping/update/{id}', [CategorySubController::class, 'updateMapping'])->name('vendorsubcategory_mapping_update');
 	 Route::resource('specification_groups', SpecificationGroupController::class);
 	 Route::post('update_specification', [SpecificationGroupController::class, 'update_specification'])->name('update_specification');
 	 
@@ -317,3 +318,4 @@
 	//Route::resource('coupon', CouponController::class, ['names' => 'coupon']);
 	
 	
+

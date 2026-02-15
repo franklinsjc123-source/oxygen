@@ -12,22 +12,22 @@ use App\Models\Master\Attribute\AttributeGroup;
 use App\Models\vendor\vendorcreate;
 use Illuminate\Http\Request;
 use Flasher\Prime\FlasherInterface;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+
 class CategorySubController extends Controller
 {
-   
+
     public function index()
     {
         $login_id = session()->get('login_id');
-        $vendorcreate = vendorcreate::select('sub_category_ids')->where('id',$login_id)->first();
-        $subcategoryarray=($vendorcreate->sub_category_ids)?explode(',',$vendorcreate->sub_category_ids):0;
-        
-        $sub_category_data = CategorySub::
-        join('category', 'category_sub.category_id', '=', 'category.id') 
-        -> join('category_main', 'category_sub.category_main_id', '=', 'category_main.id')
-        ->select('*','category_sub.id as me_id', 'category_sub.status as sc_status' )        
-        ->whereIn('category_sub.id', $subcategoryarray)->get(); 
+        $vendorcreate = vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
+        $subcategoryarray = ($vendorcreate->sub_category_ids) ? explode(',', $vendorcreate->sub_category_ids) : 0;
+
+        $sub_category_data = CategorySub::join('category', 'category_sub.category_id', '=', 'category.id')
+            ->join('category_main', 'category_sub.category_main_id', '=', 'category_main.id')
+            ->select('*', 'category_sub.id as me_id', 'category_sub.status as sc_status')
+            ->whereIn('category_sub.id', $subcategoryarray)->get();
         $attributegroup = AttributeGroup::all();
         $specificationgroup = SpecificationGroup::all();
         return view('layout.vendor.category.category_sub')
@@ -36,33 +36,60 @@ class CategorySubController extends Controller
                 "view" => "table",
                 "attributegroup" => $attributegroup,
                 "specificationgroup" => $specificationgroup,
-                
+
             ]);
-            
     }
+
     public function viewcategory_sub($id)
     {
         $login_id = session()->get('login_id');
-        $vendorcreate = vendorcreate::select('sub_category_ids')->where('id',$login_id)->first();
-        $subcategoryarray=($vendorcreate->sub_category_ids)?explode(',',$vendorcreate->sub_category_ids):0;
-        //dd($subcategoryarray);
-        $sub_category_data = CategorySub::
-        join('category', 'category_sub.category_id', '=', 'category.id') 
-        -> join('category_main', 'category_sub.category_main_id', '=', 'category_main.id')
-        ->select('*','category_sub.id as me_id', 'category_sub.status as sc_status' )        
-        ->whereIn('category_sub.id', $subcategoryarray)->get(); 
-        
-        $sub_category_viewdata = CategorySub::
-        join('category', 'category_sub.category_id', '=', 'category.id') 
-        -> join('category_main', 'category_sub.category_main_id', '=', 'category_main.id')
-        ->select('*','category_sub.id as me_id', 'category_sub.status as sc_status' )        
-        ->where('category_sub.id', $id)->first(); 
-        $category_sub_attributes=($sub_category_viewdata->category_sub_attributes)?explode(',',$sub_category_viewdata->category_sub_attributes):['0'];
-        $category_sub_specifications=($sub_category_viewdata->category_sub_specifications)?explode(',',$sub_category_viewdata->category_sub_specifications):['0'];
-       
-        $attributegroup = AttributeGroup::whereIn('id', $category_sub_attributes)->get();
-        //dd($attributegroup);
-        $specificationgroup = SpecificationGroup::whereIn('id', $category_sub_specifications)->get(); 
+        $vendorcreate = vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
+        $subcategoryarray = ($vendorcreate->sub_category_ids) ? explode(',', $vendorcreate->sub_category_ids) : [0];
+
+        $sub_category_data = CategorySub::join('category', 'category_sub.category_id', '=', 'category.id')
+            ->join('category_main', 'category_sub.category_main_id', '=', 'category_main.id')
+            ->select('*', 'category_sub.id as me_id', 'category_sub.status as sc_status')
+            ->whereIn('category_sub.id', $subcategoryarray)
+            ->get();
+
+        $sub_category_viewdata = CategorySub::join('category', 'category_sub.category_id', '=', 'category.id')
+            ->join('category_main', 'category_sub.category_main_id', '=', 'category_main.id')
+            ->select('*', 'category_sub.id as me_id', 'category_sub.status as sc_status')
+            ->where('category_sub.id', $id)
+            ->first();
+
+        if (!$sub_category_viewdata) {
+            return redirect()->route('vendorcategory.sub.index');
+        }
+
+        $defaultAttributeIds = ($sub_category_viewdata->category_sub_attributes)
+            ? array_values(array_filter(array_map('intval', explode(',', $sub_category_viewdata->category_sub_attributes))))
+            : [];
+
+        $defaultSpecificationIds = ($sub_category_viewdata->category_sub_specifications)
+            ? array_values(array_filter(array_map('intval', explode(',', $sub_category_viewdata->category_sub_specifications))))
+            : [];
+
+        $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $id)->first();
+
+        $selectedAttributeIds = ($mapping && $mapping->category_sub_attribute_ids)
+            ? array_values(array_filter(array_map('intval', json_decode($mapping->category_sub_attribute_ids, true) ?: [])))
+            : $defaultAttributeIds;
+
+        $selectedSpecificationIds = ($mapping && $mapping->category_sub_specification_ids)
+            ? array_values(array_filter(array_map('intval', json_decode($mapping->category_sub_specification_ids, true) ?: [])))
+            : $defaultSpecificationIds;
+
+        $attributegroup = AttributeGroup::orderBy('attribute_group_name', 'asc')->get();
+
+        $specificationgroup = SpecificationGroup::whereIn('id', $defaultSpecificationIds)
+            ->orWhere(function ($query) use ($login_id) {
+                $query->where('created_byid', $login_id)
+                    ->where('created_by', 'Vendor');
+            })
+            ->orderBy('specification_group_name', 'asc')
+            ->get();
+
         return view('layout.vendor.category.category_sub')
             ->with([
                 "sub_category_data" => $sub_category_data,
@@ -70,83 +97,101 @@ class CategorySubController extends Controller
                 "sub_category_viewdata" => $sub_category_viewdata,
                 "attributegroup" => $attributegroup,
                 "specificationgroup" => $specificationgroup,
-                
+                "selectedAttributeIds" => $selectedAttributeIds,
+                "selectedSpecificationIds" => $selectedSpecificationIds,
             ]);
-            
     }
+
+    public function updateMapping(Request $request, $id)
+    {
+        $request->validate([
+            'category_sub_attribute_ids' => 'nullable|array',
+            'category_sub_attribute_ids.*' => 'integer',
+            'category_sub_specification_ids' => 'nullable|array',
+            'category_sub_specification_ids.*' => 'integer',
+        ]);
+
+        $attributeIds = array_values(array_unique(array_map('intval', $request->input('category_sub_attribute_ids', []))));
+        $specificationIds = array_values(array_unique(array_map('intval', $request->input('category_sub_specification_ids', []))));
+
+        DB::table('sub_category_mapping')->updateOrInsert(
+            ['sub_category_id' => $id],
+            [
+                'category_sub_attribute_ids' => json_encode($attributeIds),
+                'category_sub_specification_ids' => json_encode($specificationIds),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        return redirect()->back()->with('success', 'Sub-category mapping updated successfully.');
+    }
+
     public function edit($id)
     {
         $category_sub = CategorySub::find($id);
-        if($category_sub)
-        {
+        if ($category_sub) {
             return response()->json([
 
-                'status'=>200,
-                'category_sub'=>$category_sub
-               
+                'status' => 200,
+                'category_sub' => $category_sub
+
             ]);
-        }
-        else
-        {
+        } else {
             return response()->json([
 
-                'status'=>404,
-                'message'=>'Package not found',
+                'status' => 404,
+                'message' => 'Package not found',
             ]);
         }
     }
 
-   
+
     public function update(Request $request, $id, FlasherInterface $flasher)
     {
-        
-        
+
+
         $category =  CategorySub::find($id);
         $login_id  = Session::get('login_id');
-       
-        if($request->file('editsub_category_iamge'))
-        {   
+
+        if ($request->file('editsub_category_iamge')) {
             $category_image = $request->file('editsub_category_iamge');
-            
-            $image=$category->id."_image.".$category_image->getClientOriginalExtension();
-            
+
+            $image = $category->id . "_image." . $category_image->getClientOriginalExtension();
+
             $img = Image::make($category_image->getRealPath());
-            
+
             $img->resize(500, 300, function ($constraint) {
-                
+
                 $constraint->aspectRatio();
-                
-            })->save($this->image_path.'/'.$image);
-            
-            
-            
+            })->save($this->image_path . '/' . $image);
+
+
+
             $filename =  $image;
-        }
-        else
-        {
-            $filename ="";
+        } else {
+            $filename = "";
         }
 
 
-         try {
-             
-              $category->category_main_id = $request->editmain_category_id;
-              $category->category_id = $request->editcategory_id;
-              $category->category_sub_name = $request->editsub_category_name;
-              $category->category_sub_image = $filename ?? "-";
-              $category->status = $request->editstatus;
-              $category->flag = 1;
-              $category->created_by = 'vendor'; /*auth()->user()->id*/;
-              $category->created_byid = $login_id;
-              $category->update();
-              return redirect()->route('vendorcategory.main.index');
-             } catch (\Throwable $th) {
-                //  $flasher->addError('Something Error!!' . $th);
-               // return error();
-               dd($th);
-                  return redirect()->route('vendorcategory.main.index')->withErrors($th);
-             }
-               
+        try {
+
+            $category->category_main_id = $request->editmain_category_id;
+            $category->category_id = $request->editcategory_id;
+            $category->category_sub_name = $request->editsub_category_name;
+            $category->category_sub_image = $filename ?? "-";
+            $category->status = $request->editstatus;
+            $category->flag = 1;
+            $category->created_by = 'vendor'; /*auth()->user()->id*/;
+            $category->created_byid = $login_id;
+            $category->update();
+            return redirect()->route('vendorcategory.main.index');
+        } catch (\Throwable $th) {
+            //  $flasher->addError('Something Error!!' . $th);
+            // return error();
+            dd($th);
+            return redirect()->route('vendorcategory.main.index')->withErrors($th);
+        }
     }
 
     /**
@@ -157,23 +202,23 @@ class CategorySubController extends Controller
      */
     public function destroy($id, FlasherInterface $flasher)
     {
-       // try {
+        // try {
 
-       // return ($id);
+        // return ($id);
 
-      // $sc_id = ($id);
+        // $sc_id = ($id);
 
-            $image = CategorySub::find($id);
-           // unlink($this->image_path . "/" . $image->category_sub_image);
-            $file  = $this->image_path . "/" . $image->category_sub_image;
-            //$image->delete();
-            if (!file_exists($file)) unlink($file);
-            CategorySub::where('id', $id)->delete();
-            $flasher->addsuccess('Sub Category Removed!');
-            return redirect()->route('vendorcategory.sub.index');
+        $image = CategorySub::find($id);
+        // unlink($this->image_path . "/" . $image->category_sub_image);
+        $file  = $this->image_path . "/" . $image->category_sub_image;
+        //$image->delete();
+        if (!file_exists($file)) unlink($file);
+        CategorySub::where('id', $id)->delete();
+        $flasher->addsuccess('Sub Category Removed!');
+        return redirect()->route('vendorcategory.sub.index');
         //} catch (\Throwable $th) {
-            //$flasher->addError('Something Error!');
-           // return redirect()->route('category.sub.index');
+        //$flasher->addError('Something Error!');
+        // return redirect()->route('category.sub.index');
         //}
     }
 }
