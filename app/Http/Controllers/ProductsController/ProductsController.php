@@ -24,11 +24,10 @@ use App\Models\vendor\vendorcreate;
 use App\Models\Master\Colors\ProductColor;
 use App\Models\Master\Attribute\AttributeGroup;
 use App\Models\Master\Specification\SpecificationGroup;
-use DB;
 use Flasher\Prime\FlasherInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB as FacadesDB;
+use Illuminate\Support\Facades\DB;
 use Intervention\Image\ImageManagerStatic as Image;
 use Maatwebsite\Excel\Facades\Excel;
 use session;
@@ -104,7 +103,7 @@ class ProductsController extends Controller
         $specdata=explode(',',$category_sub->category_sub_specifications);
         $attribute = AttributeGroup::whereIn('id', $attbutesdata)->get();
         $login_id = session()->get('login_id');  
-        $specification = SpecificationGroup::whereIn('id', $specdata)->where('created_byid', $vendorlist->id)->get();
+        $specification = SpecificationGroup::whereIn('id', $specdata)->where('created_byid', $request->vendorlist)->get();
        
         
         
