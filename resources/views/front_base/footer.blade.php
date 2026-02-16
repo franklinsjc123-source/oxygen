@@ -702,6 +702,8 @@ function togglePasswordAccount(inputId, icon) {
 
 $(document).ready(function () {
 
+
+
     // prevent duplicate timers (mobile reload issue)
     if (window.popupTimerStarted) return;
     window.popupTimerStarted = true;
@@ -709,12 +711,11 @@ $(document).ready(function () {
     var pincode = '{{ session()->get("pincode") ?? 0 }}';
     var popupShown = sessionStorage.getItem('pincode_popup_shown');
 
-
-    if (pincode == 0 && popupShown) {
+    if (pincode == 0 ) {
 
         setTimeout(function () {
             showPicodePopup();
-            sessionStorage.setItem('pincode_popup_shown', 'yes');
+            // sessionStorage.setItem('pincode_popup_shown', 'yes');
         }, 3000);
 
     }
