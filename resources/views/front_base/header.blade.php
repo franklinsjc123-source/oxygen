@@ -309,38 +309,38 @@
                                 </a>
                                 <div class="dropdown-box text-default">
                                     <ul class="menu vertical-menu category-menu"> 
-                                    @foreach ($categorymain as $categoriesmain)
-                                       @if(count($categoriesmain->submenu) > 0)                                       
-                                        <li>
-                                            <a href="{{ url( 'mainCategoryShop/'.$categoriesmain->id ) }}">
-                                               
-                                                {{ $categoriesmain->category_main_name }}
-                                            </a>
-                                            <ul class="megamenu">
-                                                @foreach($categoriesmain->submenu as $submenus)                                                
-                                                @if(count($submenus->childmenu) > 0)
+                                        @foreach ($categorymain as $categoriesmain)
+                                            @if(count($categoriesmain->submenu) > 0)                                       
                                                 <li>
-                                                    <a href="{{ url( 'categoryShop/'.$submenus->id ) }}"><h4 class="menu-title">{{ $submenus->category_name }}</h4></a>
-                                                    <hr class="divider">
-                                                    <ul>
-                                                        @foreach($submenus->childmenu as $childmenus)                                                        
-                                                            <li><a href="{{ url( 'categoryShop/'.$submenus->id.'/'.$childmenus->id ) }}">{{ $childmenus->category_sub_name }} </a></li>                                                
-                                                         @endforeach
+                                                    <a href="{{ url( 'mainCategoryShop/'.$categoriesmain->id ) }}">
+                                                    
+                                                        {{ $categoriesmain->category_main_name }}
+                                                    </a>
+                                                    <ul class="megamenu">
+                                                        @foreach($categoriesmain->submenu as $submenus)                                                
+                                                        @if(count($submenus->childmenu) > 0)
+                                                        <li>
+                                                            <a href="{{ url( 'categoryShop/'.$submenus->id ) }}"><h4 class="menu-title">{{ $submenus->category_name }}</h4></a>
+                                                            <hr class="divider">
+                                                            <ul>
+                                                                @foreach($submenus->childmenu as $childmenus)                                                        
+                                                                    <li><a href="{{ url( 'categoryShop/'.$submenus->id.'/'.$childmenus->id ) }}">{{ $childmenus->category_sub_name }} </a></li>                                                
+                                                                @endforeach
+                                                            </ul>
+                                                        
+                                                        </li>
+                                                        @else
+                                                        <li><a href="{{ url( 'categoryShop/'.$submenus->id ) }}">{{ $submenus->category_name }}</a></li> 
+                                                        @endif
+                                                        @endforeach
+                                                        
+                                                    
                                                     </ul>
-                                                  
                                                 </li>
-                                                @else
-                                                <li><a href="{{ url( 'categoryShop/'.$submenus->id ) }}">{{ $submenus->category_name }}</a></li> 
-                                                @endif
-                                                @endforeach
-                                                
-                                               
-                                            </ul>
-                                        </li>
-                                        @else
-                                      <li><a href="{{ url( 'categoryShop/'.$categoriesmain->id ) }}">{{ $categoriesmain->category_main_name }}</a></li> 
-                                       @endif
-                                       @endforeach                                     
+                                            @else
+                                                <li><a href="{{ url( 'mainCategoryShop/'.$categoriesmain->id ) }}">{{ $categoriesmain->category_main_name }}</a></li> 
+                                            @endif
+                                        @endforeach                                     
                                     </ul>
                                      
                                 </div>
