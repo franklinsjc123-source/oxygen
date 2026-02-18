@@ -6,7 +6,7 @@ use App\Models\PinCode\PinCode;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class PinCodeExport implements FromCollection, WithHeadings
+class pinCodeExport implements FromCollection, WithHeadings
 {
     /**
      * @return \Illuminate\Support\Collection

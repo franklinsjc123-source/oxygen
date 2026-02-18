@@ -136,7 +136,7 @@
                                     <h5 style="font-family: "serif;"> {{ $details['size'] }}</h5>
                                 </td>
                                 <td class="d-icon-bag">
-                                    <h5 style="font-family:serif;"> {{ $details['color'] }}</h5>
+                                    <h5 style="font-family:serif;"> {{ $details['color'] ?? '' }}</h5>
                                 </td>
                                 <td>
                                     <div class="qty-box">

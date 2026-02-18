@@ -1,4 +1,7 @@
  
+  @extends('app_template')
+ @section('title','Vendor Store')
+ @section('content')
  @include('website.front-end.newhead')
  
  {{-- @include('website.front-end.newheader') --}}
@@ -8,7 +11,7 @@
     @include('website.partials.js.frontendjs')
     @include('paritials.js.userwebsite.cart_js')
     @include('website.partials.css.frontendcss');
-    @include('paritials.website.header')
+    {{-- @include('paritials.website.header') --}}
 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <style>
@@ -1790,3 +1793,4 @@
     <!-- footer start -->
    
    @include('website.front-end.newfooter')
+   @endsection

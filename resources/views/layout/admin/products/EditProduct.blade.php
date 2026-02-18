@@ -113,7 +113,7 @@
                                                                       @foreach ($category_main_data as $category_main)
                                                                     
                                                                         <option id="{{ $category_main->id }}"
-                                                                            value="{{ $category_main->id }}" {{ ($category_main->id==$product->category_main)?'selected':'';}} hidden>
+                                                                            value="{{ $category_main->id }}" {{ ($category_main->id==$product->category_main)?'selected':'';}}>
                                                                             {{ $category_main->category_main_name }}
                                                                         </option>
                                                                     @endforeach  
@@ -141,7 +141,7 @@
                                                                     {{-- <option value="" selected hidden>Select Main
                                                                         Category</option> --}}
 
-                                                                        <option value="{{ $product->category }}"> {{$cates['0']->category_name}}</option>
+                                                                        <option value="{{ $product->category }}" selected> {{$cates['0']->category_name}}</option>
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -156,7 +156,7 @@
                                                                         Category
                                                                     </option> --}}
 
-                                                                    <option value="  {{ $product->category_sub }}"> {{ $cates['0']->category_sub_name }}</option>
+                                                                    <option value="{{ $product->category_sub }}" selected> {{ $cates['0']->category_sub_name }}</option>
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -309,70 +309,47 @@
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody class="spectable">
-                                                                            {{-- @dd($specifi); --}}
-                                                                            <?php
-                                                                                for($i=0;$i< count($specifi); $i++){
-                                                                                    $spec = (json_decode($specifi[$i]->value));
-                                                                                    
-                                                                                    ?>
-                                                                            
-                                                                            <tr>
-                                                                        
-                                                                                @php $sp=0; @endphp
-                                                                                @foreach ($productspecs as $pres)
-                                                                                @if($specifi[$i]->id==$pres->spec_id)
-                                                                                @php $sp++; @endphp
-                                                                                @endif
-                                                                                @endforeach
-                                                                                <td> <div class="row">
-                                                                                    <div class="col-md-1">
-                                                                                        <input type="checkbox" id="spec_id" name="spec_id[]" value="{{$specifi[$i]->id}}" {{ ($sp>0)?'checked':'' }}>
-                                                                                    </div>
-                                                                                    <div class="col-md-11">
-                                                                                <select   class="form-control"  name="speci_attri[{{$specifi[$i]->id}}]" id="speci_attri">
-                                                                               
-                                                                                    <option value="{{ $specifi[$i]->name }}">{{ $specifi[$i]->name }}</option>
-                                                                                </select> 
-                                                                                    </div>
-                                                                                 </div>
-                                                                                </td>
-                                                                                
-                                                                                <td>
-                                                                                    
-                                                                                        <select class="form-select form-select-lg text-secondary"  name="speci_value[{{$specifi[$i]->id}}]" id="speci_value" id="speci_value[]" >
-                                                                                        
-                                                                                            @foreach ($spec as $specify_value)
-                                                                                            @php $spat="";$spoth=''; @endphp
-                                                                                            @foreach ($productspecs as $pres)
-                                                                                            @if($specifi[$i]->id==$pres->spec_id && ($specify_value == $pres->specify_value))
-                                                                                            @php $spat="selected"; @endphp
-                                                                                            
-                                                                                            @elseif($specifi[$i]->id==$pres->spec_id && ($pres->specify_value=='Others'))
-                                                                                            @php $spoth="selected"; @endphp
-                                                                                            @endif
-                                                                                            @endforeach
-                                                                                                    <option value="{{ $specify_value }}" {{  $spat }}> {{ $specify_value }} </option>
-                                                                                                                                                                                              
-                                                                                            @endforeach
-                                                                                                
-                                                                                            
-
-                                                                                            <?php
-                                                                                            // }
-                                                                                            ?>
-                                                                                            <option value="Others" {{ $spoth  }}>Others</option>
-                                                                                        </select>
-                                                                                
-                                                                              
-                                                                                            {{-- <input type="text" list="speci_value[]" class="js-select2 form-control" name="speci_value[]" id="speci_value" > --}}                                                                                
-                                                                                            {{-- </select> --}}                                                                              
+                                                                            @php
+                                                                                $specById = [];
+                                                                                $specByName = [];
+                                                                                foreach ($productspecs as $ps) {
+                                                                                    if (!empty($ps->spec_id)) {
+                                                                                        $specById[$ps->spec_id] = $ps->specify_value;
+                                                                                    }
+                                                                                    if (!empty($ps->specify_attribute)) {
+                                                                                        $specByName[$ps->specify_attribute] = $ps->specify_value;
+                                                                                    }
+                                                                                }
+                                                                            @endphp
+                                                                            @foreach ($specification as $spec)
+                                                                                @php
+                                                                                    $specValues = json_decode($spec->specification_values ?? '[]', true) ?: [];
+                                                                                    $selectedValue = $specById[$spec->id] ?? ($specByName[$spec->specification_group_name] ?? '');
+                                                                                @endphp
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        <div class="row">
+                                                                                            <div class="col-md-1">
+                                                                                                <input type="checkbox" id="spec_id_{{ $spec->id }}" name="spec_id[]" value="{{ $spec->id }}" {{ $selectedValue !== '' ? 'checked' : '' }}>
+                                                                                            </div>
+                                                                                            <div class="col-md-11">
+                                                                                                <select class="form-control" name="speci_attri[{{ $spec->id }}]" id="speci_attri_{{ $spec->id }}">
+                                                                                                    <option value="{{ $spec->specification_group_name }}">{{ $spec->specification_group_name }}</option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
                                                                                     </td>
-                                                                            </tr>
-                                                                            <?php
-                                                                        }
-                                                                        ?>
-                                                                            {{-- @endforeach --}}
-                                                                        {{-- @endforeach     --}}
+                                                                                    <td>
+                                                                                        <select class="form-select form-select-lg text-secondary" name="speci_value[{{ $spec->id }}]" id="speci_value_{{ $spec->id }}">
+                                                                                            <option value="" hidden {{ $selectedValue === '' ? 'selected' : '' }}> --Select {{ $spec->specification_group_name }}--</option>
+                                                                                            @foreach ($specValues as $specify_value)
+                                                                                                <option value="{{ $specify_value }}" {{ ($specify_value == $selectedValue)?'selected':'';}}>{{ $specify_value }}</option>
+                                                                                            @endforeach
+                                                                                            <option value="Others" {{ ('Others' == $selectedValue)?'selected':'';}}>Others</option>
+                                                                                        </select>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            @endforeach
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
@@ -422,9 +399,8 @@
                                                                                 id="collection" name="collection">
                                                                                 {{-- <option selected hidden value="">Select Here
                                                                                 </option> --}}
-                                                                                <option hidden value="{{ $product->collection }}">{{ $product->collection }}</option>
                                                                                 @foreach ($productcollection as $item )
-                                                                                <option value="{{ $item->name }}">{{ $item->name }}</option>
+                                                                                <option value="{{ $item->name }}" {{ ($item->name == $product->collection)?'selected':'';}}>{{ $item->name }}</option>
                                                                                 @endforeach
                                                                                 {{-- <option value="1">New Arrivals</option>
                                                                                 <option value="2">Best Collection

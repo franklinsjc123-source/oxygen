@@ -1075,7 +1075,7 @@
                              <div class="widget widget-banner mb-9">
                                  <div class="banner banner-fixed br-sm">
                                      <figure>
-                                         <img src="<?php echo asset('assets') ?>/images/shop/banner3.jpg" alt="Banner" width="266"
+                                         <img src="<?php echo asset('frontend') ?>/images/shop/banner3.jpg" alt="Banner" width="266"
                                              height="220" style="background-color: #1D2D44;" />
                                      </figure>
                                      <div class="banner-content">
@@ -1213,12 +1213,17 @@
      function addCart(id) {
 
 
-         var pincode = '<?= session()->get('pincode'); ?>';
+         var pincode = ('<?= session()->get('pincode'); ?>' || '').trim();
+         var missingPincode = !/^\d{6}$/.test(pincode);
 
-         if (pincode === '') {
+         if (missingPincode) {
 
             $('#product_error').html('<p style="color: red;">' + 
                             'please select the pincode' + '</p>');
+
+            if (typeof window.showPicodePopup === 'function') {
+                window.showPicodePopup();
+            }
 
             //  $.notify("Please Check Pincode!", "error");
              return false;

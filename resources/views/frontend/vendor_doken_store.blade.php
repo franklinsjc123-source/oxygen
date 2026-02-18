@@ -341,9 +341,15 @@
                                                         <div  class="product-price-discount" >
                                                                 ₹{{ $products['retail_price'] }} 
                                                         </div>
-                                                        <?php 
-                                                        $discount_percentage = (($products['retail_price'] - $products['selling_price']) / $products['retail_price']) * 100;
+                                                        <?php
+                                                        $retailPrice = (float) ($products['retail_price'] ?? 0);
+                                                        $sellingPrice = (float) ($products['selling_price'] ?? 0);
+                                                        if ($retailPrice > 0) {
+                                                            $discount_percentage = (($retailPrice - $sellingPrice) / $retailPrice) * 100;
                                                             $discount_rounded = round($discount_percentage / 10) * 10;
+                                                        } else {
+                                                            $discount_rounded = 0;
+                                                        }
                                                         ?>
 
                                                         <div  class="product-offer-percentage" >

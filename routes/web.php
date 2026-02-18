@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Routes For Admin
-Route::prefix('/admin')->group(__DIR__.'/admin/adminRoutes.php');
+Route::prefix('/admin')->middleware('panel.session')->group(__DIR__.'/admin/adminRoutes.php');
 
 // Routes For Vendor
-Route::prefix('/vendar')->group(__DIR__.'/vendor/vendorRoutes.php');
+Route::prefix('/vendar')->middleware('panel.session')->group(__DIR__.'/vendor/vendorRoutes.php');
 
 
 // Routes For Staff

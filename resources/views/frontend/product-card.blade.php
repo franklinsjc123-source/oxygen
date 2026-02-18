@@ -27,7 +27,11 @@
                 <div class="product-price">₹{{ $product->selling_price }}</div>
                 <div class="product-price-discount">₹{{ $product->retail_price }}</div>
                 @php
-                    $discount = number_format((($product->retail_price - $product->selling_price) / $product->retail_price) * 100);
+                    $retailPrice = (float) ($product->retail_price ?? 0);
+                    $sellingPrice = (float) ($product->selling_price ?? 0);
+                    $discount = $retailPrice > 0
+                        ? number_format((($retailPrice - $sellingPrice) / $retailPrice) * 100)
+                        : 0;
                 @endphp
                 <div class="product-offer-percentage">{{ $discount }}% Off</div>
             </div>

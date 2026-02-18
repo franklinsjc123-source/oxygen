@@ -615,19 +615,19 @@ public function orderscancel($id)
 		//  return view('website.front-end.order-success');
 	}
 
-	public function order_success(Request $request)
+	public function order_success(Request $request, $orders_id = null)
 	{
-		$orders_id=$request->orders_id;
-		$order_info = orders::where('orders_id',$orders_id)->get(); 
-			$orders_pro = ordersproduct::where('order_id',$orders_id)->get(); 
-			//dd($order_info);
-			return view('website.front-end.order-success')->
-			with([
-				"orders_id"=>$orders_id,
-				'order_infos' =>$order_info,
-				'orders_pro' =>$orders_pro
-			]);
+		$orders_id = $orders_id ?? $request->orders_id;
+		$order_infos = orders::where('orders_id', $orders_id)->get();
+		$order_info = $order_infos->first();
+		$orders_pro = ordersproduct::where('order_id', $orders_id)->get();
 
+		return view('website.front-end.order-success')->with([
+			"orders_id" => $orders_id,
+			"order_infos" => $order_infos,
+			"order_info" => $order_info,
+			"orders_pro" => $orders_pro
+		]);
 	}
 
 /*Discount offer*/

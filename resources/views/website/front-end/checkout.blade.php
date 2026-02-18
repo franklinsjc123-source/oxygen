@@ -1,5 +1,8 @@
 
 
+ @extends('app_template')
+ @section('title','Vendor Store')
+ @section('content')
 @include('website.front-end.newhead')
  
 {{-- @include('website.front-end.newheader') --}}
@@ -55,7 +58,7 @@
    <!-- loader end -->
 
 <!-- header start -->
-   @include('paritials.website.header')
+   {{-- @include('paritials.website.header') --}}
     <!-- section start -->
     <style>
         .count1{
@@ -154,7 +157,7 @@
                                           
                                           {{-- @dd($details['color']);  --}}
                                           @php
-                                           $colorcount = explode(',' , $details['color']);
+                                           $colorcount = explode(',' , ($details['color'] ?? ''));
                                            $colorqty = count($colorcount);
                                            $quantity = $colorqty * $details['qty'];
                                            
@@ -177,7 +180,7 @@
                                               <?php                                        
                                                 $price = floatval($details['price']);
                                                 $qty = intval($quantity);
-                                                $gst = floatval($details['gst']);
+                                                $gst = floatval($details['gst'] ?? 0);
 
                                                 if (is_numeric($price) && is_numeric($qty) && is_numeric($gst)) {
                                                     $gstAmount = $price * $qty * $gst / 100;
@@ -198,7 +201,7 @@
                                             $toto ='';
                                             $total1 = $details['price'] * $quantity;
                                             $gsttot = $price * $qty * $gst / 100;
-                                            $gst = $details['gst'];
+                                            $gst = $details['gst'] ?? 0;
                                             $toto = $details['price'];
                                             $gtot = $total1 - $gsttot;
                                             $gtot1 += $gtot + $gsttot;
@@ -444,3 +447,4 @@
 
 
 @include('website.front-end.newfooter')
+@endsection

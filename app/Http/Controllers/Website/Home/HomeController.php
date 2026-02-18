@@ -19,6 +19,7 @@ use App\Models\Products\ProductSpecs;
 use App\Models\auction\auction;
 use App\Models\PinCode\PinCode;
 use App\Models\Master\Attribute\AttributeGroup;
+use App\Models\Master\Colors\ProductColor;
 use App\Models\User;
 use App\Models\Vendor;
 
@@ -533,10 +534,16 @@ class HomeController extends Controller
             )->get();
 
         $vendorcreate = vendorcreate::where('user_id', $id)->first();
-        $subid = explode(',', $vendorcreate->sub_category_ids); // This converts to an array
+        if (!$vendorcreate) {
+            $vendorcreate = vendorcreate::where('id', $id)->first();
+        }
 
-        // Fetch categories that match any of the sub_category_ids
-        $Categorysub = CategorySub::whereIn('id', $subid)->get();
+        if (!$vendorcreate) {
+            return redirect('/')->with('error', 'Vendor details not found.');
+        }
+
+        $subid = array_filter(explode(',', (string) $vendorcreate->sub_category_ids));
+        $Categorysub = count($subid) > 0 ? CategorySub::whereIn('id', $subid)->get() : collect();
         return view('front_end.site.vendor_information')
             ->with([
                 "products" => $products,
@@ -932,8 +939,6 @@ class HomeController extends Controller
     /*search product*/
     public function productsearchdetails(Request $request)
     {
-        // dd($request->keywords);
-        // $product_view = Ecom_Product::where("ecom_product_name", "LIKE", "%{$request->keywords}%")->get();
         $product = DB::table('products')
             ->leftjoin('category_main', 'products.category_main', '=', 'category_main.id')
             ->leftjoin('category', 'products.category', '=', 'category.id')
@@ -962,11 +967,200 @@ class HomeController extends Controller
                 "category" => $category,
                 "categorysub" => $Categorysub,
                 "mainslider" => $mainslider
-
             ]);
         } else {
             return view('website.front-end.404');
         }
+    }
+
+    public function productsearchdetails_new(Request $request)
+    {
+        $keyword = trim((string) ($request->input('keywords') ?? $request->input('search') ?? ''));
+
+        if ($keyword === '') {
+            return redirect()->back();
+        }
+
+        $rawTokens = preg_split('/\s+/', strtolower($keyword), -1, PREG_SPLIT_NO_EMPTY);
+        $stopWords = ['for', 'with', 'and', 'the', 'a', 'an', 'of', 'to', 'in', 'on'];
+        $tokens = array_values(array_filter($rawTokens, function ($token) use ($stopWords) {
+            return !in_array($token, $stopWords, true) && strlen($token) > 1;
+        }));
+        if (empty($tokens)) {
+            $tokens = [strtolower($keyword)];
+        }
+
+        $matchedColorNames = ProductColor::query()
+            ->where(function ($query) use ($tokens, $keyword) {
+                $query->where('color_name', 'LIKE', '%' . $keyword . '%');
+                foreach ($tokens as $token) {
+                    $query->orWhere('color_name', 'LIKE', '%' . $token . '%');
+                }
+            })
+            ->pluck('color_name')
+            ->map(function ($value) {
+                return strtolower((string) $value);
+            })
+            ->unique()
+            ->values()
+            ->toArray();
+
+        $product = DB::table('products')
+            ->leftJoin('category_main as cm', 'products.category_main', '=', 'cm.id')
+            ->leftJoin('category as c', 'products.category', '=', 'c.id')
+            ->leftJoin('category_sub as cs', 'products.category_sub', '=', 'cs.id')
+            ->leftJoin('products_details as pd', 'products.id', '=', 'pd.products_id')
+            ->select(
+                'products.*',
+                'pd.*',
+                'cm.category_main_name as main_category_name',
+                'c.category_name as category_name',
+                'cs.category_sub_name as sub_category_name'
+            )
+            ->where('products.status', 1)
+            ->where(function ($query) use ($keyword, $matchedColorNames) {
+                $query->where('products.product_name', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('cm.category_main_name', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('c.category_name', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('cs.category_sub_name', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('pd.attributevalue1', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('pd.attributevalue2', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('pd.attributevalue3', 'LIKE', '%' . $keyword . '%')
+                    ->orWhereExists(function ($brandQuery) use ($keyword) {
+                        $brandQuery->select(DB::raw(1))
+                            ->from('products_specs as ps')
+                            ->whereColumn('ps.products_id', 'products.id')
+                            ->whereRaw('LOWER(ps.specify_attribute) = ?', ['brand'])
+                            ->where('ps.specify_value', 'LIKE', '%' . $keyword . '%');
+                    });
+
+                if (!empty($matchedColorNames)) {
+                    $query->orWhereIn(DB::raw('LOWER(pd.attributevalue1)'), $matchedColorNames);
+                }
+            })
+            ->when(!empty($tokens), function ($query) use ($tokens) {
+                foreach ($tokens as $token) {
+                    $query->where(function ($tokenQuery) use ($token) {
+                        $tokenQuery->where('products.product_name', 'LIKE', '%' . $token . '%')
+                            ->orWhere('cm.category_main_name', 'LIKE', '%' . $token . '%')
+                            ->orWhere('c.category_name', 'LIKE', '%' . $token . '%')
+                            ->orWhere('cs.category_sub_name', 'LIKE', '%' . $token . '%')
+                            ->orWhere('pd.attributevalue1', 'LIKE', '%' . $token . '%')
+                            ->orWhere('pd.attributevalue2', 'LIKE', '%' . $token . '%')
+                            ->orWhere('pd.attributevalue3', 'LIKE', '%' . $token . '%')
+                            ->orWhereExists(function ($brandTokenQuery) use ($token) {
+                                $brandTokenQuery->select(DB::raw(1))
+                                    ->from('products_specs as ps')
+                                    ->whereColumn('ps.products_id', 'products.id')
+                                    ->whereRaw('LOWER(ps.specify_attribute) = ?', ['brand'])
+                                    ->where('ps.specify_value', 'LIKE', '%' . $token . '%');
+                            });
+                    });
+                }
+            })
+            ->orderByRaw("CASE WHEN LOWER(products.product_name) LIKE ? THEN 0 ELSE 1 END", ['%' . strtolower($keyword) . '%'])
+            ->orderBy('products.created_at', 'desc')
+            ->limit(120)
+            ->get();
+
+        return view('website.front-end.search_product_new')->with([
+            "products" => $product,
+            "keyword" => $keyword
+        ]);
+    }
+
+    public function ajaxSearch(Request $request)
+    {
+        $term = trim((string) ($request->input('q') ?? $request->input('keywords') ?? $request->input('search') ?? ''));
+        if (strlen($term) < 2) {
+            return response()->json(['suggestions' => []]);
+        }
+
+        $suggestions = collect();
+
+        $productSuggestions = DB::table('products')
+            ->where('status', 1)
+            ->where('product_name', 'LIKE', '%' . $term . '%')
+            ->select('product_name as value')
+            ->distinct()
+            ->limit(6)
+            ->pluck('value');
+
+        foreach ($productSuggestions as $value) {
+            $suggestions->push([
+                'value' => $value,
+                'type' => 'product',
+            ]);
+        }
+
+        $brandSuggestions = DB::table('products_specs')
+            ->whereRaw('LOWER(specify_attribute) = ?', ['brand'])
+            ->where('specify_value', 'LIKE', '%' . $term . '%')
+            ->select('specify_value as value')
+            ->distinct()
+            ->limit(4)
+            ->pluck('value');
+
+        foreach ($brandSuggestions as $value) {
+            $suggestions->push([
+                'value' => $value,
+                'type' => 'brand',
+            ]);
+        }
+
+        $mainCategorySuggestions = DB::table('category_main')
+            ->where('status', 1)
+            ->where('category_main_name', 'LIKE', '%' . $term . '%')
+            ->select('category_main_name as value')
+            ->distinct()
+            ->limit(3)
+            ->pluck('value');
+
+        foreach ($mainCategorySuggestions as $value) {
+            $suggestions->push([
+                'value' => $value,
+                'type' => 'category',
+            ]);
+        }
+
+        $subCategorySuggestions = DB::table('category_sub')
+            ->where('status', 1)
+            ->where('category_sub_name', 'LIKE', '%' . $term . '%')
+            ->select('category_sub_name as value')
+            ->distinct()
+            ->limit(3)
+            ->pluck('value');
+
+        foreach ($subCategorySuggestions as $value) {
+            $suggestions->push([
+                'value' => $value,
+                'type' => 'subcategory',
+            ]);
+        }
+
+        $colorSuggestions = ProductColor::query()
+            ->where('status', 1)
+            ->where('color_name', 'LIKE', '%' . $term . '%')
+            ->select('color_name as value')
+            ->distinct()
+            ->limit(3)
+            ->pluck('value');
+
+        foreach ($colorSuggestions as $value) {
+            $suggestions->push([
+                'value' => $value,
+                'type' => 'color',
+            ]);
+        }
+
+        $suggestions = $suggestions
+            ->unique('value')
+            ->take(12)
+            ->values();
+
+        return response()->json([
+            'suggestions' => $suggestions,
+        ]);
     }
 
     /*End*/

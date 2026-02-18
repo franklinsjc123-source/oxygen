@@ -181,13 +181,13 @@ class CustomerController extends Controller
     }
     public function ordersuccess()
     {
-        $customer_id = Session::get('customer_id');
-        $customer = Ecom_Customer_info::where('customer_id', $customer_id)->first();
-      
-        if($customer)
-        return view('front_end/site/order_success', compact('customer'));
-        else
-        return Redirect('/404');
+        $orderId = Session::get('order_id');
+
+        if ($orderId) {
+            return redirect()->route('order_success', ['orders_id' => $orderId]);
+        }
+
+        return redirect('/');
     }
     public function myprofile()
     {

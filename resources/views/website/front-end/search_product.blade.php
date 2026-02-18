@@ -88,94 +88,55 @@
 
     <!-- Product section -->
    <section style="background-color:#f7f1f2" class="pt-0 section-b-space ratio_asos">
-      <div class="container-fuild">
-        <div class="row game-product grid-products px-5">
-      
+      <div class="container-fuild px-4">
+        @php
+            $hasResults = isset($groupedProducts) && $groupedProducts->count() > 0;
+        @endphp
 
-        <div align="center">
-            <button style="color:#add8e6;" class="btn btn-default filter-button" data-filter="all">All</button>
-                @php $a=array(); @endphp
-                @foreach($products as $product1 )
-                @php array_push($a,$product1->collection);@endphp
-               
-                @endforeach
-                 @php $collections=array_unique($a);@endphp
-                   @foreach($collections as $collection )
-                
-                 <button style="color:#add8e6;" class="btn btn-default filter-button" data-filter="tab-{{str_replace(" ","-",$collection)}}">{{$collection}}</button>
-               @endforeach
-        </div>
-        <br/>
-
-        @foreach($products as $product )
-            
-         
-            <div class="gallery_product product-box col-xl-2 col-lg-3 col-sm-4 col-6 filter tab-{{str_replace(" ","-",$product->collection)}} tab-content  default">
-                <div class="product-box">
-                    <div class="img-wrapper">
-                            <div class="front">
-    
-                                    <a href="{{ route('addtocart', $product->id ) }}">
-                                    <img src="{{ asset('assets/images/products') . '/' . $product->product_image }}" class="img-fluid blur-up lazyload bg-img"
-                                        alt=""></a>
-                                        
-                           
-                            </div>
-                                                            <div class="cart-info cart-wrap">
-                                                    <!--            <button data-bs-toggle="modal" data-bs-target="#addtocart"-->
-                                                    <!--title="Add to cart"><i class="ti-shopping-cart"></i></button>-->
-                                    <a href="javascript:void(0)" title="Add to Wishlist" tabindex="0"><i
-                                            class="ti-heart" aria-hidden="true"></i></a>
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#quick-view" title="Quick View"
-                                        tabindex="0"><i class="ti-search" aria-hidden="true"></i></a>
-                                    <a href="compare.html" title="Compare" tabindex="0"><i class="ti-reload"
-                                            aria-hidden="true"></i></a>
-                                </div>
-                           
-                    <!--<a class="add-button" href="{{ route('addtocart', $product->product_id ) }}">View Product</a>-->
-                    </div>
-                    <div class="product-detail">
-    
-                        <a href="{{ route('addtocart', $product->product_id ) }}">
-                           
-                        
-                         <?php
-                            //  dd($product);
-                                $vendarname = App\Models\User::where('login_id',$product->created_by)->first();   
-                                // dd(count($vendarname));
-                                // $productdetails = App\Models\Products\ProductsDetails::where('products_id',$product->id)->first();   
-                                
-                                $disc = App\Models\Offer\Offer::where('id',$product->offers)->first();
-                                // dd($disc);
-                        
-                                            
-                                            ?>
-                                           <h6 style="background-color:lightgray;">{{ $vendarname->name }}</h6>
-                                            <h6>{{ $product->product_name }}</h6>
-                                            @php
-                                            $disc = $product->retail_price -$product->selling_price;
-                                            $offerperc = $disc/$product->retail_price *100;
-                                            @endphp
-                                            <h6>Rs.{{ $product->selling_price }} <del>Rs {{ $product->retail_price }}</del><span style="color:red;">Offer: {{round($offerperc)}}%</span></h6>
-                                            
-                                            <ul class="color-variant">
-                                             <li style="background-color:{{ $product->color }};"></li>
-                                            </ul>
-                                
-                         </a>
-    
-                    </div>
-                </div>
-               
+        @if(!$hasResults)
+            <div class="pt-4 pb-4">
+                <h5>No products found for "{{ $keyword ?? '' }}".</h5>
             </div>
+        @endif
 
-        
-        @endforeach                                 
-
-            
-        </div>
-    </div>
-        
+        @foreach(($groupedProducts ?? collect()) as $groupName => $groupItems)
+            <div class="pt-4">
+                <h4 class="title-inner1 text-left">{{ $groupName }}</h4>
+            </div>
+            <div class="row game-product grid-products">
+                @foreach($groupItems as $product)
+                    <div class="gallery_product product-box col-xl-2 col-lg-3 col-sm-4 col-6 default">
+                        <div class="product-box">
+                            <div class="img-wrapper">
+                                <div class="front">
+                                    <a href="{{ route('addtocart', $product->product_id ) }}">
+                                        <img src="{{ asset('assets/images/products') . '/' . $product->product_image }}" class="img-fluid blur-up lazyload bg-img" alt="">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="product-detail">
+                                <a href="{{ route('addtocart', $product->product_id ) }}">
+                                    <?php $vendarname = App\Models\User::where('login_id', $product->created_by)->first(); ?>
+                                    <h6 style="background-color:lightgray;">{{ $vendarname->name ?? 'Vendor' }}</h6>
+                                    <h6>{{ $product->product_name }}</h6>
+                                    @php
+                                        $retail = (float) ($product->retail_price ?? 0);
+                                        $selling = (float) ($product->selling_price ?? 0);
+                                        $offerperc = $retail > 0 ? (($retail - $selling) / $retail) * 100 : 0;
+                                        $displayColor = $product->attributevalue1 ?? '#d9d9d9';
+                                    @endphp
+                                    <h6>Rs.{{ $selling }} <del>Rs {{ $retail }}</del><span style="color:red;">Offer: {{ round($offerperc) }}%</span></h6>
+                                    <ul class="color-variant">
+                                        <li style="background-color:{{ $displayColor }};"></li>
+                                    </ul>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endforeach
+      </div>
     </section>
 
 <script>

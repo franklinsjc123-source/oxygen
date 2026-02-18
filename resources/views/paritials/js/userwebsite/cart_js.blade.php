@@ -51,9 +51,6 @@ $(document).on('click','#cartEffect', function(e){
     //  alert('test');
 
     $(".error-message").hide();
-    $(".product-buttons").hide();
-    $(".product-buttons").show();
-     $('.product-buttons').html('<a href="" id="cartEffect" class="btn btn-solid hover-solid btn-animation"><i class="fa fa-shopping-cart me-1" aria-hidden="true"></i> ADDED TO CART</a>');
                                 
     var product_id = $('#product_id').val();
     var product_name = $('#product_name').val();
@@ -93,7 +90,12 @@ $(document).on('click','#cartEffect', function(e){
                     success: function(response) {
                         console.log(response);
                         getcart();
+                        $('#cartEffect').text('ADDED TO CART');
                         
+                    },
+                    error: function (xhr) {
+                        console.log(xhr);
+                        $(".error-message").show().text('Unable to add to cart. Please try again.');
                     }
                 });
 
@@ -113,9 +115,6 @@ $(document).on('click','#cartbook', function(e){
     //alert('test');
 
     $(".error-message").hide();
-    $(".product-buttons").hide();
-    $(".product-button").show();
-    $('#product-button').html('<a href="" id="cartbook" class="btn btn-solid hover-solid btn-animation"><i class="" aria-hidden="true"></i> Buy Now</a> <a href="" id="cartEffect" class="btn btn-solid hover-solid btn-animation"><i class="fa fa-shopping-cart me-1" aria-hidden="true"></i> ADD TO CART</a>');
                             
     var product_id = $('#product_id').val();
     var product_name = $('#product_name').val();
@@ -152,6 +151,10 @@ $.ajax({
                   window.location.href = "{{route('viewcart')}}";
                   //viewcart();
                   
+              },
+              error: function (xhr) {
+                  console.log(xhr);
+                  $(".error-message").show().text('Unable to process buy now. Please try again.');
               }
           });
 
@@ -192,7 +195,8 @@ function getcart() {
                     // $('#quantity' + item.pid).val(item.qty);
                     // $('#addcart2_' + item.pid).show();
                     // $('#addcart1_' + item.pid).hide();
-                     cart_dt+='<li> <div class="media"> <a href="#"><img alt="" class="me-3" src=" ../assets/images/products/detail/'+item.image+' "></a><div class="media-body"><a href="#"><h4>' + item.name + '</h4></a> <h4><span> ' + item.qty + ' x Rs ' + item.price + '</span></h4> </div></div> <div class="close-circle"><a href="#" onclick=deletecart("' + item.pid + '")><i class="fa fa-times" aria-hidden="true"></i></a></div></li>';
+                     var itemImage = item.image ? ('{{ asset('assets/images/products/detail') }}/' + item.image) : '{{ asset('frontend_assets/images/emptycart.png') }}';
+                     cart_dt+='<li> <div class="media"> <a href="#"><img alt="" class="me-3" src="' + itemImage + '"></a><div class="media-body"><a href="#"><h4>' + item.name + '</h4></a> <h4><span> ' + item.qty + ' x Rs ' + item.price + '</span></h4> </div></div> <div class="close-circle"><a href="#" onclick=deletecart("' + item.pid + '")><i class="fa fa-times" aria-hidden="true"></i></a></div></li>';
                     //cart_id +='<li><div class="media"><div class="media-body"><a href="#"><h4>' + item.name + '</h4></a><h4><span>1 x Rs ' + item.price + '</span></h4></div></div><div class="close-circle"><a href="#"><i class="fa fa-times" aria-hidden="true"></i></a></div></li>';
                      //cart_dt += '<li> <div class="media"><a href="#"><img alt="" class="me-3" src="../assets/img/product/top/1/'+item.image+'"></a><div class="media-body"><a href="#"><h4>' + item.name + '</h4></a><h4><span>1 x Rs ' + item.price + '</span></h4></div></div><div class="close-circle"><a href="#"><i class="fa fa-times" aria-hidden="true"></i></a></div> <div class="qty"> <label for="cart[' + item.pid + '][qty]">Qty:</label> <input type="number" class="input-qty" name="cart[' + item.pid + '][qty]" id="cart[id123][qty]" value="' + item.qty + '" disabled> </div> </div> <div class="action"><a href="#"  onclick=deletecart("' + item.pid + '")> <img src="' + url + '/adminpanel/img/icon/delete.png" style="width:30px;"> </a> </div> </div> </li>';
                     //cart_dt += '<div class="products scrollable" data-id="' + item.pid + '">  <div class="product product-cart"> <figure class="product-media"> <img src="' + url + '/uploads/products/' + item.image + '" style="width:75px;height:75px;" class="img-responsive">     </figure> <div class="product-detail"> <a href="#" class="product-name">' + item.name + '</a> <div class="price-box"> <span class="product-quantity">' + item.qty + '</span> <span class="product-price">' + item.price + '</span> </div> </div>  </div>   </div>';

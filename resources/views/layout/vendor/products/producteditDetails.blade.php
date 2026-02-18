@@ -135,19 +135,36 @@
                                 
                                                             <div class="col-md-9">                                                            
                                                                 <div class="row">                                                             
+                                                                    @php
+                                                                        $currentColor = $productdetails->color
+                                                                            ?? ($productdetails->attributevalue1 ?? null)
+                                                                            ?? (($productdetails->attributename2 ?? '') === 'Color' ? ($productdetails->attributevalue2 ?? null) : null)
+                                                                            ?? (($productdetails->attributename3 ?? '') === 'Color' ? ($productdetails->attributevalue3 ?? null) : null);
+                                                                        $currentSize = $productdetails->size
+                                                                            ?? (($productdetails->attributename2 ?? '') === 'Size' ? ($productdetails->attributevalue2 ?? null) : null)
+                                                                            ?? (($productdetails->attributename3 ?? '') === 'Size' ? ($productdetails->attributevalue3 ?? null) : null)
+                                                                            ?? ($productdetails->attributevalue2 ?? null);
+                                                                        $returnReplace = (string)($productdetails->return_replace ?? '1');
+                                                                    @endphp
                                                                     <div class="col-md-2">
                                                                     <label style="color:gray"for="javascript">Color</label><br>
                                                                     <select class="form-select form-select-lg text-secondary"
                                                                     name="attrcolor[]" id="attrcolor" required>
+                                                                    @if(!empty($currentColor))
+                                                                        <option value="{{ $currentColor }}" selected>{{ $currentColor }}</option>
+                                                                    @endif
 
                                                                     @foreach ($attribute as $attri)
                                                                     {{-- @dd($attri); --}}
                                                                 
-                                                                        @if($attri->attribute_name == 'color')
+                                                                        @php
+                                                                            $attrName = strtolower($attri->attribute_name ?? $attri->attribute_group_name ?? '');
+                                                                            $attrValues = json_decode($attri->value ?? $attri->attribute_values ?? '[]', true) ?: [];
+                                                                        @endphp
+                                                                        @if($attrName == 'color')
 
                                                                             <?php
-                                                                            //    dd($attri->value);
-                                                                            $val = JSON_decode($attri->value);
+                                                                            $val = $attrValues;
                                                                             //  dd($val);
                                                                             //  print_r($val[0]->id);exit();
                                                                                 $count = count($val);
@@ -157,7 +174,7 @@
                                                                                     ?>
 
                                                                                     <option id=""
-                                                                                    value="{{ $val[$i]}}" {{ ($val[$i] == $productdetails->color)?'selected':'';}}>
+                                                                                    value="{{ $val[$i]}}" {{ ($val[$i] == $currentColor)?'selected':'';}}>
                                                                                     {{ $val[$i] }}
                                                                                     </option>
                                                                                     <?php
@@ -171,11 +188,17 @@
                                                                         <label style="color:gray"for="javascript">Size</label><br>
                                                                         <select class="form-select form-select-lg text-secondary"
                                                                         name="attrsize[]" id="attrsize" required>
+                                                                        @if(!empty($currentSize))
+                                                                            <option value="{{ $currentSize }}" selected>{{ $currentSize }}</option>
+                                                                        @endif
                                                                         @foreach ($attribute as $attri)
-                                                                        @if($attri->attribute_name == 'size')
+                                                                        @php
+                                                                            $attrName = strtolower($attri->attribute_name ?? $attri->attribute_group_name ?? '');
+                                                                            $attrValues = json_decode($attri->value ?? $attri->attribute_values ?? '[]', true) ?: [];
+                                                                        @endphp
+                                                                        @if($attrName == 'size')
                                                                             <?php
-                                                                            //    dd($attri->value);
-                                                                            $val = JSON_decode($attri->value);
+                                                                            $val = $attrValues;
                                                                             //  dd($val);
                                                                             //  print_r($val[0]->id);exit();
                                                                                 $count = count($val);
@@ -184,7 +207,7 @@
                                                                                 for($i=0; $i < $count ; $i++) {
                                                                                     ?>
                                                                                     <option id=""
-                                                                                    value="{{ $val[$i]}}" {{ ($val[$i] == $productdetails->size)?'selected':'';}}>
+                                                                                    value="{{ $val[$i]}}" {{ ($val[$i] == $currentSize)?'selected':'';}}>
                                                                                     {{ $val[$i] }}
                                                                                     </option>
                                                                                     <?php
@@ -227,66 +250,18 @@
                                                                     <label style="color:gray"for="javascript">Return</label><br>
                                                                     <select class="form-select form-select-lg text-secondary"
                                                                     value="{{ $productdetails->return_replace }}" name="return_replace[]" required>
-                                                                        <?php if($productdetails->return_replace == 1) { ?>
-                                                                        <option selected value="1">
-                                                                            Return /
-                                                                            Replacement
+                                                                        <option value="1" {{ $returnReplace === '1' ? 'selected' : '' }}>
+                                                                            Return / Replacement
                                                                         </option>
-                                                                        <option value="2">
+                                                                        <option value="2" {{ $returnReplace === '2' ? 'selected' : '' }}>
                                                                             Return
                                                                         </option>
-                                                                        <option value="3">
+                                                                        <option value="3" {{ $returnReplace === '3' ? 'selected' : '' }}>
                                                                             Replacement
                                                                         </option>
-                                                                        <option value="4">
+                                                                        <option value="4" {{ $returnReplace === '4' ? 'selected' : '' }}>
                                                                             NA
                                                                         </option>
-                                                                        <?php } ?>
-                                                                        <?php if($productdetails->return_replace == 2) { ?>
-                                                                        <option selected value="2">
-                                                                            Return
-                                                                        </option>
-                                                                        <option value="1">
-                                                                            Return /
-                                                                            Replacement
-                                                                        </option>
-                                                                        <option value="3">
-                                                                            Replacement
-                                                                        </option>
-                                                                        <option value="4">
-                                                                            NA
-                                                                        </option>
-                                                                        <?php } ?>
-                                                                        <?php if($productdetails->return_replace == 3) { ?>
-                                                                        <option selected value="3">
-                                                                            Replacement
-                                                                        </option>
-                                                                        <option value="1">
-                                                                            Return /
-                                                                            Replacement
-                                                                        </option>
-                                                                        <option value="2">
-                                                                            Return
-                                                                        </option>
-                                                                        <option value="4">
-                                                                            NA
-                                                                        </option>
-                                                                        <?php } ?>
-                                                                        <?php if($productdetails->return_replace == 4) { ?>
-                                                                            <option  value="3">
-                                                                                Replacement
-                                                                            </option>
-                                                                            <option value="1">
-                                                                                Return /
-                                                                                Replacement
-                                                                            </option>
-                                                                            <option value="2">
-                                                                                Return
-                                                                            </option>
-                                                                            <option selected value="4">
-                                                                                NA
-                                                                            </option>
-                                                                            <?php } ?>
                                                                     </select>
                                                                 </div>
                                 

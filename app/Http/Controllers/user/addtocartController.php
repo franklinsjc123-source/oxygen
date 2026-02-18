@@ -122,12 +122,18 @@ class addtocartController extends Controller
         //dd($product_det);
         if(count($product_det)>0)
         {
-        
+        $categorymain = CategoryMain::where('status', 1)->get();
+        $category = Category::where('status', 1)->get();
+        $categorysub = CategorySub::where('status', 1)->get();
+
         $product = Products::where('category',$product_det[0]->category)->get();
         return view('website.front-end.product_view')->with([
         "product_det" =>$product_det,
         "product" =>$product,
-        "productdetailid" =>$productdetailid
+        "productdetailid" =>$productdetailid,
+        "categorymain" => $categorymain,
+        "category" => $category,
+        "categorysub" => $categorysub
            ]);
         }
         else

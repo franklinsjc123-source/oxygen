@@ -789,12 +789,20 @@
                                                             <option selected hidden value="">Select
                                                                 Collection
                                                             </option>
-                                                            @foreach ($productcollection as $productcollection)
+                                                            <option id=""
+                                                                value="collection">
+                                                               Collection
+                                                            </option>
+                                                            <option id=""
+                                                                value="featured">
+                                                               Featured Products
+                                                            </option>
+                                                            {{-- @foreach ($productcollection as $productcollection)
                                                             <option id="{{ $productcollection->id }}"
                                                                 value="{{ $productcollection->name }}">
                                                                 {{ $productcollection->name }}
                                                             </option>
-                                                            @endforeach
+                                                            @endforeach --}}
                                                         </select>
                                                     </div>
                                                 </div>

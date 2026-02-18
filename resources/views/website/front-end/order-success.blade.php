@@ -1,3 +1,9 @@
+ @extends('app_template')
+ @section('title','Vendor Store')
+ @section('content')
+   <!-- Start of Main -->
+
+
 @include('website.front-end.newhead')
  
 {{-- @include('website.front-end.newheader') --}}
@@ -53,7 +59,7 @@
    <!-- loader end -->
 
 <!-- header start -->
-   @include('paritials.website.header')
+   {{-- @include('paritials.website.header') --}}
 
     <!-- thank-you section start -->
     <section class="section-b-space light-layout">
@@ -188,9 +194,12 @@
                                     @endforeach
                         
                        
+                        @php
+                            $order_info = $order_info ?? ($order_infos[0] ?? null);
+                        @endphp
                         <div class="total-sec">
                             <ul>
-                                @foreach($order_infos as $order_info)
+                                @if($order_info)
                                 <!--<li>Subtotal <span>Rs {{ $order_info->total }}</span></li>-->
                                 @foreach($orders_pro as $id => $details1)
                                     <li>Subtotal <span>Rs {{ intval($details1['total_price']) }}</span></li>
@@ -198,13 +207,15 @@
                                 <li>Shipping <span>Rs {{ $order_info->shipping }}</span></li>
                                 <li>Tax(GST) <span>Rs {{ $order_info->gst_charge }}</span></li>
                                 <li>Discount <span>Rs {{ $order_info->discount }}</span></li>
-                                  @endforeach
+                                @else
+                                    <li>Order details not available.</li>
+                                @endif
                             </ul>
                         </div>
                         <div class="final-total">
                            
-                            
-                            <h3>Total <span>Rs {{ $order_info->grandtotal }}</span></h3>
+                             
+                            <h3>Total <span>Rs {{ $order_info->grandtotal ?? 0 }}</span></h3>
                         </div>
                     </div>
                 </div>
@@ -222,8 +233,8 @@
                                 <h4>summery</h4>
                                 <ul class="order-detail">
                                     <li>order ID: {{$orders_id}}</li>
-                                    <li>Order Date: {{ date('d M Y',strtotime($order_info->order_date)) }}</li>
-                                    <li>Order Total: Rs {{ $order_info->grandtotal }}
+                                    <li>Order Date: {{ $order_info ? date('d M Y', strtotime($order_info->order_date)) : '-' }}</li>
+                                    <li>Order Total: Rs {{ $order_info->grandtotal ?? 0 }}
                                     
                                     </li>
                                 </ul>
@@ -231,13 +242,13 @@
                             <div class="col-sm-6">
                                 <h4>Shipping Address</h4>
                                 <ul class="order-detail">
-                                    <li>Name:{{$order_info->firstname}}{{$order_info->lastname}}</li>
-                                    <li>Address: {{$order_info->address}}</li>
-                                    <li>Town:{{$order_info->town}}</li>
+                                    <li>Name:{{ ($order_info->firstname ?? '') . ($order_info->lastname ?? '') }}</li>
+                                    <li>Address: {{ $order_info->address ?? '-' }}</li>
+                                    <li>Town:{{ $order_info->town ?? '-' }}</li>
                                     
-                                    <li>State:{{$order_info->state}}</li>
-                                    <li>Country:{{$order_info->country}}</li>
-                                    <li>Contact No:{{$order_info->phone}}</li>
+                                    <li>State:{{ $order_info->state ?? '-' }}</li>
+                                    <li>Country:{{ $order_info->country ?? '-' }}</li>
+                                    <li>Contact No:{{ $order_info->phone ?? '-' }}</li>
                                 </ul>
                             </div>
                             <div class="col-sm-12 payment-mode">
@@ -247,7 +258,7 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="delivery-sec">
-                                    <h3>Expected Date of Delivery: <span>{{ date('d M Y',strtotime($order_info->order_date. " +7 days")) }} </span></h3>
+                                    <h3>Expected Date of Delivery: <span>{{ $order_info ? date('d M Y', strtotime($order_info->order_date . " +7 days")) : '-' }} </span></h3>
                                     <a href={{ route('order_tracking', $orders_id) }}>Track order</a>
                                 </div>
                             </div>
@@ -264,3 +275,4 @@
     
 @include('website.front-end.newfooter')
 
+@endsection

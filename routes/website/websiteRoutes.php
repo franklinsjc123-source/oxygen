@@ -80,6 +80,7 @@ Route::get('/getProduct/{id}/{name?}', [IndexController::class, 'getProduct'])->
 Route::get('/removeCart/{id?}', [IndexController::class, 'removeCart'])->name('removeCart');
 Route::get('/getProducts/{id?}', [IndexController::class, 'getProducts'])->name('getProducts');
 Route::get('/shopping-cart', [FrontendController::class, 'showCarts'])->name('shopping-cart');
+Route::get('/viewcart', [FrontendController::class, 'showCarts'])->name('viewcart');
 Route::get('/getItemCart', [IndexController::class, 'getItemCart'])->name('getItemCart');
 Route::post('/updateQty', [IndexController::class, 'updateQty'])->name('updateQty');
 Route::post('/customCart', [FrontendController::class, 'customCart'])->name('customCart');
@@ -131,13 +132,15 @@ Route::get('allproductshow', [HomeController::class, 'allproductshow'])->name('a
 Route::get('allvendors', [HomeController::class, 'allvendors'])->name('allvendors');
 Route::get('alloffers', [HomeController::class, 'alloffers'])->name('alloffers');
 
-Route::get('productsearchdetails', [HomeController::class, 'productsearchdetails'])->name('productsearchdetails');
+Route::get('productsearchdetails', [HomeController::class, 'productsearchdetails_new'])->name('productsearchdetails');
+Route::get('productsearchdetails-legacy', [HomeController::class, 'productsearchdetails'])->name('productsearchdetails.legacy');
 
 Route::POST('filterproduct', [HomeController::class, 'filterproduct'])->name('filterproduct');
 Route::POST('subfilterproducts', [HomeController::class, 'subfilterproducts'])->name('subfilterproducts');
 
 Route::get('categorymainshow/{id}', [HomeController::class, 'categorymainshow'])->name('categorymainshow');
 // Route::resource('addtocart', addtocartController::class, ['names' => 'addtocart']);
+Route::get('addtocart/{productdetail_id}', [addtocartController::class, 'productshow'])->name('addtocart');
 Route::resource('usersignin', UserloginController::class, ['names' => 'usersignin']);
 Route::post('login', [AuthController::class, 'userlogin'])->name('userlogin');
 
@@ -178,7 +181,7 @@ Route::get('auction', [AjaxGetProductController::class, 'auction'])->name('aucti
 
 Route::get('Vendor_information/{id}', [HomeController::class, 'Vendor_information'])->name('Vendor_information');
 Route::get('Vendor_AlllProduct/{productdetail_id}', [HomeController::class, 'vendorallproduct'])->name('vendorallproduct');
-Route::post('productsearchdetails', [HomeController::class, 'productsearchdetails'])->name('productsearchdetails');
+Route::post('productsearchdetails', [HomeController::class, 'productsearchdetails_new'])->name('productsearchdetails');
 
 Route::get('Categoryproductshow/{id}', [HomeController::class, 'categoryshow'])->name('vendorCategoryproductshow');
 Route::get('vendorMainCatergoryproductshow/{id}', [HomeController::class, 'vendormaincategoryshow'])->name('vendorMainCatergoryproductshow');
@@ -188,7 +191,7 @@ Route::get('VendorSubcategoryproductshow/{cid}/{vid}', [HomeController::class, '
 
 Route::get('discountoffere', [AjaxGetProductController::class, 'discountoffere'])->name('discountoffere');
 
-Route::get('cartdelete', [AjaxGetProductController::class, 'delete'])->name('cartdelete');
+Route::get('cartdelete-legacy', [AjaxGetProductController::class, 'delete'])->name('cartdelete.legacy');
 
 Route::get('View_Product/{productdetail_id}', [addtocartController::class, 'productshow'])->name('View_Product');
 
@@ -203,13 +206,13 @@ Route::post('bidamt', [addtocartController::class, 'bidamount'])->name('bidamt')
 Route::get('phonepe',[PhonePeController::class,'phonePe'])->name('phonepe');
 Route::post('phonepe-response',[PhonePeController::class,'response'])->name('response');
 // Front End Cart Ajax
-Route::get('ajaxadd', [CartController::class,'ajaxAdd']);
-Route::get('getcart', [CartController::class,'getcart']);
+Route::match(['GET', 'POST'], 'ajaxadd', [CartController::class,'ajaxAdd'])->name('ajaxAdd');
+Route::get('getcart', [CartController::class,'getcart'])->name('getcart');
 
-Route::get('getcart1', [CartController::class,'getcart']);
-Route::get('cartdelete', [CartController::class,'delete']);
-Route::get('updatecart', [CartController::class,'updatecart']);
-Route::get('clear_cart', [CartController::class, 'clear_cart']);
+Route::get('getcart1', [CartController::class,'getcart'])->name('getcart1');
+Route::get('cartdelete', [CartController::class,'delete'])->name('cartdelete');
+Route::get('updatecart', [CartController::class,'updatecart'])->name('updatecart');
+Route::get('clear_cart', [CartController::class, 'clear_cart'])->name('clear_cart');
 Route::get('AjaxPincode', [CartController::class,'GetCity']);
 
 Route::get('/Cuslogin', [CustomerController::class,'loginverify']);
@@ -222,9 +225,9 @@ Route::post('/updateaddress', [CustomerController::class,'updateaddress']);
 Route::post('/changepassword', [CustomerController::class,'changepassword']);
 
 Route::get('/Checkout', function () {
-    return view('front_end.site.checkout');
-});
-Route::post('/placeorder', [CartController::class,'placeorder'])->name('insert.placeorder');
+    return view('website.front-end.checkout');
+})->name('checkout');
+Route::post('/placeorder', [CartController::class,'placeorder'])->name('placeorder');
 
 Route::get('/OrderSuccess', [CustomerController::class, 'ordersuccess']);
 

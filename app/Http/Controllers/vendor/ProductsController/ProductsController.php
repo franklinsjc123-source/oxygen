@@ -195,7 +195,7 @@ class ProductsController extends Controller
        // print_r($products);
        $login_id = session()->get('login_id');//Auth::user()->id; // 
     //    dd($login_id);
-    //    $statement = FacadesDB::select("SHOW TABLE STATUS LIKE 'products'");
+    //    $statement = DB::select("SHOW TABLE STATUS LIKE 'products'");
     //    $next_product_id = $statement[0]->Auto_increment;
        // // dd($request->specification);
 
@@ -376,11 +376,43 @@ class ProductsController extends Controller
         $CategorySub = CategorySub::where('status',1)->get();
         
         $gst = GST::where('status',1)->get();
-        $attribute = Attribute::where('category_sub_id', $category_sub)->where('status',1)->get();
-       // print_r($attribute);exit();
         $offer = Offer::where('created_by_id',$login_id)->where('status',1)->get();
-        $specification = Specification::where('category_sub_id', $category_sub)->where('status',1)->get();
-        $specifi = Specification::where('status',1)->get();
+
+        $subCategoryId = (int) ($products->category_sub ?? $category_sub);
+        $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $subCategoryId)->first();
+        $attributeIds = [];
+        $specificationIds = [];
+
+        if ($mapping) {
+            $attributeIds = $mapping->category_sub_attribute_ids
+                ? (json_decode($mapping->category_sub_attribute_ids, true) ?: [])
+                : [];
+            $specificationIds = $mapping->category_sub_specification_ids
+                ? (json_decode($mapping->category_sub_specification_ids, true) ?: [])
+                : [];
+        } else {
+            $subCategory = CategorySub::find($subCategoryId);
+            if ($subCategory) {
+                if (!empty($subCategory->category_sub_attributes)) {
+                    $attributeIds = explode(',', $subCategory->category_sub_attributes);
+                }
+                if (!empty($subCategory->category_sub_specifications)) {
+                    $specificationIds = explode(',', $subCategory->category_sub_specifications);
+                }
+            }
+        }
+
+        $attributeIds = array_values(array_filter(array_map('intval', $attributeIds)));
+        $specificationIds = array_values(array_filter(array_map('intval', $specificationIds)));
+
+        $attribute = !empty($attributeIds)
+            ? AttributeGroup::whereIn('id', $attributeIds)->get()
+            : collect();
+
+        $specification = !empty($specificationIds)
+            ? SpecificationGroup::whereIn('id', $specificationIds)->get()
+            : collect();
+
         $productdetails = ProductsDetails::where('products_id', $id)->get();        
         $productspecs = ProductSpecs::where('products_id', $id)->get();
         $productsAttri = productsAttri::where('products_id', $id)->get();
@@ -455,7 +487,6 @@ class ProductsController extends Controller
                 "offers" => $offer,
                 "attribute" => $attribute,
                 "specification" => $specification,
-                "specifi" => $specifi,
                 "productspecs"=> $productspecs,
                 "productdetailss"=>$productdetails,
                 "cates" =>$cate,
@@ -948,7 +979,7 @@ class ProductsController extends Controller
         // $offer = offer::get();
         $offer = offer::where('status',1)->get();
 
-        $productDetailsCount = Products::select(FacadesDB::raw('COUNT(products.id) as product_details_cnt'))
+        $productDetailsCount = Products::select(DB::raw('COUNT(products.id) as product_details_cnt'))
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
             ->where('products.logintype', "Vendor")
             ->where('products.flag',1)
@@ -1025,7 +1056,7 @@ class ProductsController extends Controller
          // $offer = offer::get();
          $offer = offer::where('status',1)->get();
 
-        $productDetailsCount = Products::select(FacadesDB::raw('COUNT(products.id) as vendor_product_details_cnt'))
+        $productDetailsCount = Products::select(DB::raw('COUNT(products.id) as vendor_product_details_cnt'))
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
             // ->where('products_details.products_id', '=', $products_id)
 			->where('products.logintype', "Vendor")

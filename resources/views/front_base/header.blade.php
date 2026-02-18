@@ -13,29 +13,33 @@
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="<?= asset('frontend') ?>/images/favicon.png">
-       
+
     <!-- WebFont.js -->
     <script>
         WebFontConfig = {
-            google: { families: ['Poppins:400,500,600,700'] }
+            google: {
+                families: ['Poppins:400,500,600,700']
+            }
         };
-        ( function ( d ) {
-            var wf = d.createElement( 'script' ), s = d.scripts[0];
+        (function(d) {
+            var wf = d.createElement('script'),
+                s = d.scripts[0];
             wf.src = '<?= asset('frontend') ?>/js/webfont.js';
             wf.async = true;
-            s.parentNode.insertBefore( wf, s );
-        } )( document );
+            s.parentNode.insertBefore(wf, s);
+        })(document);
     </script>
 
-     <!-- Default CSS -->
-     <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/css/style.min.css">
+    <!-- Default CSS -->
+    <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/css/style.min.css">
 
 
-    <link rel="preload" href="<?= asset('frontend') ?>/vendor/fontawesome-free/webfonts/fa-regular-400.woff2" as="font" type="font/woff2"
+    <link rel="preload" href="<?= asset('frontend') ?>/vendor/fontawesome-free/webfonts/fa-regular-400.woff2"
+        as="font" type="font/woff2" crossorigin="anonymous">
+    <link rel="preload" href="<?= asset('frontend') ?>/vendor/fontawesome-free/webfonts/fa-solid-900.woff2"
+        as="font" type="font/woff2" crossorigin="anonymous">
+    <link rel="preload" href="<?= asset('frontend') ?>/fonts/wolmart.woff?png09e" as="font" type="font/woff"
         crossorigin="anonymous">
-    <link rel="preload" href="<?= asset('frontend') ?>/vendor/fontawesome-free/webfonts/fa-solid-900.woff2" as="font" type="font/woff2"
-        crossorigin="anonymous">
- <link rel="preload" href="<?= asset('frontend') ?>/fonts/wolmart.woff?png09e" as="font" type="font/woff" crossorigin="anonymous">
     <!-- Vendor CSS -->
     <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/animate/animate.min.css">
@@ -44,130 +48,177 @@
     <link rel="preload" href="<?= asset('frontend') ?>/fonts/venedor.woff" as="font" type="font/woff" crossorigin="anonymous"> -->
 
     <!-- Plugins CSS -->
-   
+
     <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/animate/animate.min.css">
     <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/magnific-popup/magnific-popup.min.css">
-     <link rel="stylesheet" href="<?= asset('frontend') ?>/vendor/swiper/swiper-bundle.min.css">
+    <link rel="stylesheet" href="<?= asset('frontend') ?>/vendor/swiper/swiper-bundle.min.css">
     <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/css/demo8.min.css">
-   
+
     <script src="<?= asset('frontend') ?>/vendor/jquery/jquery.min.js"></script>
-   
+
 </head>
 
 <body>
 
 
-<?php
- 
+    <?php
+    
     use App\Models\Category\CategoryMain;
     use App\Models\Category\Category;
     use App\Models\Category\CategorySub;
     use Darryldecode\Cart\Facades\CartFacade as Cart;
     use Illuminate\Support\Facades\Session;
+    
+    $categorymain = CategoryMain::orderBy('category_main_sortorder', 'asc')->get();
+    $category = Category::orderBy('category_sortorder', 'asc')->get();
+    $categorysub = CategorySub::orderBy('category_sub_sortorder', 'asc')->get();
+    $count = Cart::getContent()->count();
+    ?>
 
-    $categorymain   = CategoryMain::orderBy('category_main_sortorder', 'asc')->get();
-    $category       = Category::orderBy('category_sortorder', 'asc')->get();
-    $categorysub    = CategorySub::orderBy('category_sub_sortorder', 'asc')->get();
-    $count          = Cart::getContent()->count();                                  
-?>
-
-<style>
-    @media (max-width: 767.98px) {
-        .header-middle .container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-        }
-        .home-mobile-logo {
-            display: none !important;
-        }
-        .header-middle .container .header-left {
-            display: flex;
-            align-items: center;
-            flex: 1 1 auto;
-            min-width: 0;
-            margin-right: 0 !important;
-            overflow: hidden;
-        }
-        .header.header-border .header-middle .header-left .home-mobile-search {
-            display: inline-flex !important;
-            align-items: center;
-            justify-content: space-between;
-            flex: 0 1 auto;
-            min-width: 0;
-            width: 280px !important;
-            flex-basis: 280px !important;
-            /* margin-left: 111px; */
-            max-width: 280px !important;
-        }
-        .header.header-border .header-middle .header-left .home-mobile-search .form-control {
-            height: 32px;
-            border-radius: 5px 0 0 5px;
+    <style>
+        .search-suggest-box {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: #fff;
             border: 1px solid #d9d9d9;
-            font-size: 12px;
-            padding: 4px 8px;
-            width: calc(100% - 34px) !important;
+            border-radius: 6px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            z-index: 1100;
+            max-height: 280px;
+            overflow-y: auto;
+            display: none;
         }
-        .header.header-border .header-middle .header-left .home-mobile-search .btn-search {
-            border-radius: 0 5px 5px 0;
-            min-width: 34px;
-            height: 32px;
-            padding: 0 8px;
-        }
-        .header-middle .container .header-right {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            flex: 0 0 auto;
-            margin-left: 10px !important;
-        }
-        .header-middle .container .header-right .cart-dropdown .cart-label,
-        .header-middle .container .header-right .compare-label,
-        .header-middle .container .header-right .wishlist-label {
-            display: none !important;
-        }
-    }
 
-    @media (max-width: 575.98px) {
-        .header-middle .container {
+        .search-suggest-item {
+            padding: 8px 10px;
+            font-size: 13px;
+            color: #333;
+            cursor: pointer;
+            line-height: 1.35;
+            display: flex;
+            justify-content: space-between;
             gap: 6px;
         }
-        .header.header-border .header-middle .header-left .home-mobile-search {
-            width: 210px !important;
-            flex-basis: 210px !important;
-            max-width: 210px !important;
+
+        .search-suggest-item:hover,
+        .search-suggest-item.active {
+            background: #f3f8ff;
         }
-        .header.header-border .header-middle .header-left .home-mobile-search .form-control {
+
+        .search-suggest-type {
             font-size: 11px;
-            padding: 4px 6px;
+            color: #888;
+            text-transform: capitalize;
+            white-space: nowrap;
         }
-    }
 
-    @media (max-width: 420px) {
-        .header.header-border .header-middle .header-left .home-mobile-search {
-            width: 165px !important;
-            flex-basis: 165px !important;
-            max-width: 165px !important;
+        @media (max-width: 767.98px) {
+            .header-middle .container {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 8px;
+            }
+
+            .home-mobile-logo {
+                display: none !important;
+            }
+
+            .header-middle .container .header-left {
+                display: flex;
+                align-items: center;
+                flex: 1 1 auto;
+                min-width: 0;
+                margin-right: 0 !important;
+                overflow: hidden;
+            }
+
+            .header.header-border .header-middle .header-left .home-mobile-search {
+                display: inline-flex !important;
+                align-items: center;
+                justify-content: space-between;
+                flex: 0 1 auto;
+                min-width: 0;
+                width: 280px !important;
+                flex-basis: 280px !important;
+                /* margin-left: 111px; */
+                max-width: 280px !important;
+            }
+
+            .header.header-border .header-middle .header-left .home-mobile-search .form-control {
+                height: 32px;
+                border-radius: 5px 0 0 5px;
+                border: 1px solid #d9d9d9;
+                font-size: 12px;
+                padding: 4px 8px;
+                width: calc(100% - 34px) !important;
+            }
+
+            .header.header-border .header-middle .header-left .home-mobile-search .btn-search {
+                border-radius: 0 5px 5px 0;
+                min-width: 34px;
+                height: 32px;
+                padding: 0 8px;
+            }
+
+            .header-middle .container .header-right {
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                flex: 0 0 auto;
+                margin-left: 10px !important;
+            }
+
+            .header-middle .container .header-right .cart-dropdown .cart-label,
+            .header-middle .container .header-right .compare-label,
+            .header-middle .container .header-right .wishlist-label {
+                display: none !important;
+            }
         }
-    }
 
-    @media (max-width: 360px) {
-        .header.header-border .header-middle .header-left .home-mobile-search {
-            width: 140px !important;
-            flex-basis: 140px !important;
-            max-width: 140px !important;
+        @media (max-width: 575.98px) {
+            .header-middle .container {
+                gap: 6px;
+            }
+
+            .header.header-border .header-middle .header-left .home-mobile-search {
+                width: 210px !important;
+                flex-basis: 210px !important;
+                max-width: 210px !important;
+            }
+
+            .header.header-border .header-middle .header-left .home-mobile-search .form-control {
+                font-size: 11px;
+                padding: 4px 6px;
+            }
         }
-    }
-</style>
 
-<body>
-    <!-- Start of Page Wrapper -->
-    <div class="page-wrapper">
-        <h1 class="d-none">Wolmart - Responsive Marketplace HTML Template</h1>
-        <!-- Start of Header -->
-        <header class="header header-border">
-            <!-- <div class="header-top">
+        @media (max-width: 420px) {
+            .header.header-border .header-middle .header-left .home-mobile-search {
+                width: 165px !important;
+                flex-basis: 165px !important;
+                max-width: 165px !important;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .header.header-border .header-middle .header-left .home-mobile-search {
+                width: 140px !important;
+                flex-basis: 140px !important;
+                max-width: 140px !important;
+            }
+        }
+    </style>
+
+    <body>
+        <!-- Start of Page Wrapper -->
+        <div class="page-wrapper">
+            <h1 class="d-none">Wolmart - Responsive Marketplace HTML Template</h1>
+            <!-- Start of Header -->
+            <header class="header header-border">
+                <!-- <div class="header-top">
                 <div class="container">
                     <div class="header-left">
                         <p class="welcome-msg">Welcome to Oxygen ! </p>
@@ -177,35 +228,40 @@
 
                         
                       
-                         <span class="divider d-lg-show"></span> 
+                         <span class="divider d-lg-show"></span>
                         <a href="blog.html" class="d-lg-show">Blog</a>
-                        <a href="contact-us.html" class="d-lg-show">Contact Us</a>  
-                         <a href="my-account.html" class="d-lg-show">My Account</a> 
+                        <a href="contact-us.html" class="d-lg-show">Contact Us</a>
+                         <a href="my-account.html" class="d-lg-show">My Account</a>
                          <a href="javascript:void(0)" onclick="showLoginPopup()" class="d-lg-show login sign-in"><i
                                 class="w-icon-account"></i>Sign In</a>
                         <span class="delimiter d-lg-show">/</span>
-                        <a href="javascript:void(0)" onclick="showLoginPopup()" class="ml-0 d-lg-show login register">Register</a> 
+                        <a href="javascript:void(0)" onclick="showLoginPopup()" class="ml-0 d-lg-show login register">Register</a>
                     </div>
                 </div>
             </div> -->
-            <!-- End of Header Top -->
+                <!-- End of Header Top -->
 
-            <div class="header-middle">
-                <div class="container">
-                    <div class="header-left mr-md-4">
-                        <a href="#" class="mobile-menu-toggle  w-icon-hamburger" aria-label="menu-toggle">
-                        </a>
-                        <a href="{{ url('home') }}" class="logo ml-lg-0 home-mobile-logo">
-                            <img src="<?= asset('frontend') ?>/images/header-logo.png" alt="logo" width="144" height="45" />
-                        </a>
-                        <form method="get" action="#" class="header-search hs-expanded hs-round d-flex d-md-none input-wrapper home-mobile-search">
-                            <input type="text" class="form-control" name="search" id="search_mobile"
-                                placeholder="Search in..." required />
-                            <button class="btn btn-search" type="submit"><i class="w-icon-search"></i>
-                            </button>
-                        </form>
-                        <form method="get" action="#" class="header-search hs-expanded hs-round d-none d-md-flex input-wrapper">
-                            <?php  
+                <div class="header-middle">
+                    <div class="container">
+                        <div class="header-left mr-md-4">
+                            <a href="#" class="mobile-menu-toggle  w-icon-hamburger" aria-label="menu-toggle">
+                            </a>
+                            <a href="{{ url('home') }}" class="logo ml-lg-0 home-mobile-logo">
+                                <img src="<?= asset('frontend') ?>/images/header-logo.png" alt="logo" width="144"
+                                    height="45" />
+                            </a>
+
+                            <form method="get" action="{{ route('productsearchdetails') }}"
+                                class="header-search hs-expanded hs-round d-flex d-md-none input-wrapper home-mobile-search">
+                                <input type="text" class="form-control" name="keywords" id="search_mobile"
+                                    autocomplete="off" placeholder="Search in..." required />
+                                <button class="btn btn-search" type="submit"><i class="w-icon-search"></i>
+                                </button>
+                                <div class="search-suggest-box" id="search_suggest_mobile"></div>
+                            </form>
+                            <form method="get" action="{{ route('productsearchdetails') }}"
+                                class="header-search hs-expanded hs-round d-none d-md-flex input-wrapper">
+                                <?php  
                             
                             $pincode_area = Session::get('pincode_area'); 
                             $pincode = Session::get('pincode');
@@ -215,27 +271,29 @@
                             ?>
 
                                 <div class="select-box show-location" onclick="showPicodePopup()">
-                            
-                                        <img  class="location-icon" src="<?= asset('frontend') ?>/images/location_icon.svg" alt="location"  />
-                                   
+
+                                    <img class="location-icon" src="<?= asset('frontend') ?>/images/location_icon.svg"
+                                        alt="location" />
+
                                     <marquee behavior="scroll" direction="left" scrollamount="3">
                                         <h6 class="location-text">
-                                          {{ $pincode_area }} - {{  $pincode }}
+                                            {{ $pincode_area }} - {{ $pincode }}
                                         </h6>
                                     </marquee>
                                 </div>
 
-                            <?php   } ?>
-                            
-                           
-                            <input type="text" class="form-control" name="search" id="search"
-                                placeholder="Search in..." required />
-                            <button class="btn btn-search" type="submit"><i class="w-icon-search"></i>
-                            </button>
-                        </form>
-                    </div>
-                    <div class="header-right ml-4">
-                        <!-- <div class="header-call d-xs-show d-lg-flex align-items-center">
+                                <?php   } ?>
+
+
+                                <input type="text" class="form-control" name="keywords" id="search"
+                                    autocomplete="off" placeholder="Search in..." required />
+                                <button class="btn btn-search" type="submit"><i class="w-icon-search"></i>
+                                </button>
+                                <div class="search-suggest-box" id="search_suggest_desktop"></div>
+                            </form>
+                        </div>
+                        <div class="header-right ml-4">
+                            <!-- <div class="header-call d-xs-show d-lg-flex align-items-center">
                             <a href="tel:#" class="w-icon-call"></a>
                             <div class="call-info d-lg-show">
                                 <h4 class="chat font-weight-normal font-size-md text-normal ls-normal text-light mb-0">
@@ -244,114 +302,126 @@
                             </div>
                         </div> -->
 
-                        
 
-                <?php  if(session('customer_id')){ ?>
 
-                     <a   href="{{ route('myAccount') }}"   class="compare label-down link d-xs-show" >
-                                <i class="w-icon-account"  style="font-size:28px;"></i>
+                            <?php  if(session('customer_id')){ ?>
+
+                            <a href="{{ route('myAccount') }}" class="compare label-down link d-xs-show">
+                                <i class="w-icon-account" style="font-size:28px;"></i>
                                 <span class="compare-label d-lg-show mt-1">Account</span>
                             </a>
 
-                     <a class="wishlist label-down link d-xs-show" href="{{ route('myWallet') }}">
-                            <i class="w-icon-wallet2"></i>
-                            <span class="wishlist-label d-lg-show mt-1">Wallet </span>
-                        </a>
-                    
-                    <a class="wishlist label-down link d-xs-show" href="{{ route('myWishlist') }}">
-                            <i class="w-icon-heart"></i>
-                            <span class="wishlist-label d-lg-show mt-1">Wishlist</span>
-                    </a>
+                            <a class="wishlist label-down link d-xs-show" href="{{ route('myWallet') }}">
+                                <i class="w-icon-wallet2"></i>
+                                <span class="wishlist-label d-lg-show mt-1">Wallet </span>
+                            </a>
 
-                     
+                            <a class="wishlist label-down link d-xs-show" href="{{ route('myWishlist') }}">
+                                <i class="w-icon-heart"></i>
+                                <span class="wishlist-label d-lg-show mt-1">Wishlist</span>
+                            </a>
 
 
-               <?php  }else{ ?>
-                    
-                            <a   href="javascript:void(0)" onclick="showLoginPopup()"  class="compare label-down link d-xs-show" >
-                                <i class="w-icon-account"  style="font-size:28px;"></i>
+
+
+                            <?php  }else{ ?>
+
+                            <a href="javascript:void(0)" onclick="showLoginPopup()"
+                                class="compare label-down link d-xs-show">
+                                <i class="w-icon-account" style="font-size:28px;"></i>
                                 <span class="compare-label d-lg-show mt-1">Login</span>
                             </a>
 
-               <?php } ?>
-                        {{-- <a class="compare label-down link d-xs-show" href="compare.html">
+                            <?php } ?>
+                            {{-- <a class="compare label-down link d-xs-show" href="compare.html">
                             <i class="w-icon-compare"></i>
                             <span class="compare-label d-lg-show">Compare</span>
                         </a> --}}
-                        <div class="dropdown cart-dropdown cart-offcanvas mr-0 mr-lg-2">
-                            <div class="cart-overlay"></div>
-                            <a href="javascript:void(0)" onclick="showSideCart()" class="cart-toggle label-down link">
-                                <i class="w-icon-cart-header">
-                                    <span class="cart-count ">0</span>
-                                </i>
-                                <span class="cart-label">Cart</span>
-                            </a>
-                            <div class="dropdown-box sideCart">
-                               
+                            <div class="dropdown cart-dropdown cart-offcanvas mr-0 mr-lg-2">
+                                <div class="cart-overlay"></div>
+                                <a href="javascript:void(0)" onclick="showSideCart()"
+                                    class="cart-toggle label-down link">
+                                    <i class="w-icon-cart-header">
+                                        <span class="cart-count ">0</span>
+                                    </i>
+                                    <span class="cart-label">Cart</span>
+                                </a>
+                                <div class="dropdown-box sideCart">
+
+                                </div>
+                                <!-- End of Dropdown Box -->
                             </div>
-                            <!-- End of Dropdown Box -->
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- End of Header Middle -->
+                <!-- End of Header Middle -->
 
-            <div class="header-bottom sticky-content fix-top sticky-header">
-                <div class="container">
-                    <div class="inner-wrap">
-                        <div class="header-left">
-                            <div class="dropdown category-dropdown has-border " data-visible="true">
-                                <a href="#" class="category-toggle" role="button" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="true" data-display="static"
-                                    title="Browse Categories">
-                                    <i class="w-icon-category"></i>
-                                    <span>Browse Categories</span>
-                                </a>
-                                <div class="dropdown-box text-default">
-                                    <ul class="menu vertical-menu category-menu"> 
-                                        @foreach ($categorymain as $categoriesmain)
-                                            @if(count($categoriesmain->submenu) > 0)                                       
-                                                <li>
-                                                    <a href="{{ url( 'mainCategoryShop/'.$categoriesmain->id ) }}">
-                                                    
-                                                        {{ $categoriesmain->category_main_name }}
-                                                    </a>
-                                                    <ul class="megamenu">
-                                                        @foreach($categoriesmain->submenu as $submenus)                                                
-                                                        @if(count($submenus->childmenu) > 0)
-                                                        <li>
-                                                            <a href="{{ url( 'categoryShop/'.$submenus->id ) }}"><h4 class="menu-title">{{ $submenus->category_name }}</h4></a>
-                                                            <hr class="divider">
-                                                            <ul>
-                                                                @foreach($submenus->childmenu as $childmenus)                                                        
-                                                                    <li><a href="{{ url( 'categoryShop/'.$submenus->id.'/'.$childmenus->id ) }}">{{ $childmenus->category_sub_name }} </a></li>                                                
-                                                                @endforeach
-                                                            </ul>
-                                                        
-                                                        </li>
-                                                        @else
-                                                        <li><a href="{{ url( 'categoryShop/'.$submenus->id ) }}">{{ $submenus->category_name }}</a></li> 
-                                                        @endif
-                                                        @endforeach
-                                                        
-                                                    
-                                                    </ul>
-                                                </li>
-                                            @else
-                                                <li><a href="{{ url( 'mainCategoryShop/'.$categoriesmain->id ) }}">{{ $categoriesmain->category_main_name }}</a></li> 
-                                            @endif
-                                        @endforeach                                     
-                                    </ul>
-                                     
+                <div class="header-bottom sticky-content fix-top sticky-header">
+                    <div class="container">
+                        <div class="inner-wrap">
+                            <div class="header-left">
+                                <div class="dropdown category-dropdown has-border " data-visible="true">
+                                    <a href="#" class="category-toggle" role="button" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="true" data-display="static"
+                                        title="Browse Categories">
+                                        <i class="w-icon-category"></i>
+                                        <span>Browse Categories</span>
+                                    </a>
+                                    <div class="dropdown-box text-default">
+                                        <ul class="menu vertical-menu category-menu">
+                                            @foreach ($categorymain as $categoriesmain)
+                                                @if (count($categoriesmain->submenu) > 0)
+                                                    <li>
+                                                        <a href="{{ url('mainCategoryShop/' . $categoriesmain->id) }}">
+
+                                                            {{ $categoriesmain->category_main_name }}
+                                                        </a>
+                                                        <ul class="megamenu">
+                                                            @foreach ($categoriesmain->submenu as $submenus)
+                                                                @if (count($submenus->childmenu) > 0)
+                                                                    <li>
+                                                                        <a
+                                                                            href="{{ url('categoryShop/' . $submenus->id) }}">
+                                                                            <h4 class="menu-title">
+                                                                                {{ $submenus->category_name }}</h4>
+                                                                        </a>
+                                                                        <hr class="divider">
+                                                                        <ul>
+                                                                            @foreach ($submenus->childmenu as $childmenus)
+                                                                                <li><a
+                                                                                        href="{{ url('categoryShop/' . $submenus->id . '/' . $childmenus->id) }}">{{ $childmenus->category_sub_name }}
+                                                                                    </a></li>
+                                                                            @endforeach
+                                                                        </ul>
+
+                                                                    </li>
+                                                                @else
+                                                                    <li><a
+                                                                            href="{{ url('categoryShop/' . $submenus->id) }}">{{ $submenus->category_name }}</a>
+                                                                    </li>
+                                                                @endif
+                                                            @endforeach
+
+
+                                                        </ul>
+                                                    </li>
+                                                @else
+                                                    <li><a
+                                                            href="{{ url('mainCategoryShop/' . $categoriesmain->id) }}">{{ $categoriesmain->category_main_name }}</a>
+                                                    </li>
+                                                @endif
+                                            @endforeach
+                                        </ul>
+
+                                    </div>
+
                                 </div>
-                              
-                            </div>
-                            <nav class="main-nav">
-                                <ul class="menu active-underline">
-                                    <li>
-                                         <a href="{{ url('home') }}"><i class="w-icon-home"></i>  Home</a>
-                                    </li>
-                                    {{-- <li>
+                                <nav class="main-nav">
+                                    <ul class="menu active-underline">
+                                        <li>
+                                            <a href="{{ url('home') }}"><i class="w-icon-home"></i> Home</a>
+                                        </li>
+                                        {{-- <li>
                                         <a href="shop-banner-sidebar.html">Shop</a>
 
                                         <ul class="megamenu">
@@ -415,9 +485,10 @@
                                             </li>
                                         </ul>
                                     </li> --}}
-                                    <li >
-                                     <a href="{{ url('shops') }}">    <i class="w-icon-vendor-store"></i>  Shops</a>
-                                        {{-- <ul>
+                                        <li>
+                                            <a href="{{ url('shops') }}"> <i class="w-icon-vendor-store"></i>
+                                                Shops</a>
+                                            {{-- <ul>
                                             <li>
                                                 <a href="vendor-dokan-store-list.html">Store Listing</a>
                                                 <ul>
@@ -442,20 +513,24 @@
 
                                             
                                         </ul> --}}
-                                    </li>
+                                        </li>
 
-                                      <li>   <a href="{{ url('mainCategoryShop').'/'.'1' }}"><i class="w-icon-tshirt"></i> Men</a></li>
+                                        <li> <a href="{{ url('mainCategoryShop') . '/' . '1' }}"><i
+                                                    class="w-icon-tshirt"></i> Men</a></li>
 
-                                        <li><a href="{{ url('mainCategoryShop').'/'.'3' }}"><i class="w-icon-tshirt2"></i>  Women</a></li>
+                                        <li><a href="{{ url('mainCategoryShop') . '/' . '3' }}"><i
+                                                    class="w-icon-tshirt2"></i> Women</a></li>
 
-                                          <li><a href="{{ url('mainCategoryShop').'/'.'2' }}"> <i class="w-icon-basketball"></i> Kids</a></li>
-                                          <li><a href="{{ url('mainCategoryShop').'/'.'4' }}"> <i class="w-icon-shopify"></i>  Living</a></li>
-                                    {{-- <li><a href="">Location</a></li> --}}
+                                        <li><a href="{{ url('mainCategoryShop') . '/' . '2' }}"> <i
+                                                    class="w-icon-basketball"></i> Kids</a></li>
+                                        <li><a href="{{ url('mainCategoryShop') . '/' . '4' }}"> <i
+                                                    class="w-icon-shopify"></i> Living</a></li>
+                                        {{-- <li><a href="">Location</a></li> --}}
                                         {{-- <li >
                                         <a href="vendor-dokan-store.html">Offers</a>
                                         
                                     </li> --}}
-                                    {{-- <li>
+                                        {{-- <li>
                                         <a href="blog.html">Blog</a>
                                         <ul>
                                             <li><a href="blog.html">Classic</a></li>
@@ -490,7 +565,7 @@
                                             </li>
                                         </ul>
                                     </li> --}}
-                                    {{-- <li>
+                                        {{-- <li>
                                         <a href="about-us.html">Pages</a>
                                         <ul>
 
@@ -507,7 +582,7 @@
                                             <li><a href="compare.html">Compare</a></li>
                                         </ul>
                                     </li> --}}
-                                    {{-- <li>
+                                        {{-- <li>
                                         <a href="elements.html">Elements</a>
                                         <ul>
                                             <li><a href="element-accordions.html">Accordions</a></li>
@@ -528,15 +603,149 @@
                                             <li><a href="element-vendors.html">Vendors</a></li>
                                         </ul>
                                     </li> --}}
-                                </ul>
-                            </nav>
-                        </div>
-                        <div class="header-right">
-                            <a href="{{ url('offers') }}"><i class="w-icon-sale"></i>Offer Products</a>
-                            <a href="#" class="d-xl-show"><i class="w-icon-map-marker mr-1"></i>Track Order</a>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <div class="header-right">
+                                <a href="{{ url('offers') }}"><i class="w-icon-sale"></i>Offer Products</a>
+                                <a href="#" class="d-xl-show"><i class="w-icon-map-marker mr-1"></i>Track
+                                    Order</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </header>
-        <!-- End of Header -->
+            </header>
+            <!-- End of Header -->
+            <script>
+                (function() {
+                    var endpoint = "{{ route('ajax.search') }}";
+
+                    function setupSearchSuggest(inputId, boxId) {
+                        var input = document.getElementById(inputId);
+                        var box = document.getElementById(boxId);
+                        if (!input || !box) return;
+
+                        var form = input.closest('form');
+                        var suggestions = [];
+                        var activeIndex = -1;
+                        var debounceTimer = null;
+                        var reqSeq = 0;
+
+                        function hideBox() {
+                            box.style.display = 'none';
+                            box.innerHTML = '';
+                            suggestions = [];
+                            activeIndex = -1;
+                        }
+
+                        function render(items) {
+                            if (!items || !items.length) {
+                                hideBox();
+                                return;
+                            }
+                            suggestions = items;
+                            activeIndex = -1;
+                            box.innerHTML = items.map(function(item, idx) {
+                                var safeValue = String(item.value || '').replace(/[<>&"]/g, function(ch) {
+                                    return ({
+                                        '<': '&lt;',
+                                        '>': '&gt;',
+                                        '&': '&amp;',
+                                        '"': '&quot;'
+                                    })[ch];
+                                });
+                                return '<div class="search-suggest-item" data-index="' + idx + '">' +
+                                    '<span>' + safeValue + '</span>' +
+                                    '<span class="search-suggest-type">' + String(item.type || 'search') + '</span>' +
+                                    '</div>';
+                            }).join('');
+                            box.style.display = 'block';
+                        }
+
+                        function setActive(idx) {
+                            var items = box.querySelectorAll('.search-suggest-item');
+                            items.forEach(function(el) {
+                                el.classList.remove('active');
+                            });
+                            if (idx >= 0 && idx < items.length) {
+                                items[idx].classList.add('active');
+                                activeIndex = idx;
+                            }
+                        }
+
+                        function fetchSuggest(query) {
+                            reqSeq += 1;
+                            var currentReq = reqSeq;
+                            fetch(endpoint + '?q=' + encodeURIComponent(query), {
+                                    method: 'GET'
+                                })
+                                .then(function(res) {
+                                    return res.ok ? res.json() : {
+                                        suggestions: []
+                                    };
+                                })
+                                .then(function(data) {
+                                    if (currentReq !== reqSeq) return;
+                                    render((data && data.suggestions) ? data.suggestions : []);
+                                })
+                                .catch(function() {
+                                    hideBox();
+                                });
+                        }
+
+                        input.addEventListener('input', function() {
+                            var value = input.value.trim();
+                            if (debounceTimer) clearTimeout(debounceTimer);
+                            if (value.length < 2) {
+                                hideBox();
+                                return;
+                            }
+                            debounceTimer = setTimeout(function() {
+                                fetchSuggest(value);
+                            }, 250);
+                        });
+
+                        input.addEventListener('keydown', function(e) {
+                            if (box.style.display !== 'block') return;
+                            if (e.key === 'ArrowDown') {
+                                e.preventDefault();
+                                setActive(Math.min(activeIndex + 1, suggestions.length - 1));
+                            } else if (e.key === 'ArrowUp') {
+                                e.preventDefault();
+                                setActive(Math.max(activeIndex - 1, 0));
+                            } else if (e.key === 'Enter' && activeIndex >= 0 && suggestions[activeIndex]) {
+                                e.preventDefault();
+                                input.value = suggestions[activeIndex].value;
+                                hideBox();
+                                form.submit();
+                            } else if (e.key === 'Escape') {
+                                hideBox();
+                            }
+                        });
+
+                        box.addEventListener('mousedown', function(e) {
+                            var item = e.target.closest('.search-suggest-item');
+                            if (!item) return;
+                            var idx = parseInt(item.getAttribute('data-index'), 10);
+                            if (!isNaN(idx) && suggestions[idx] && suggestions[idx].value) {
+                                input.value = suggestions[idx].value;
+                            }
+                            hideBox();
+                            form.submit();
+                        });
+
+                        document.addEventListener('click', function(e) {
+                            if (!form.contains(e.target)) {
+                                hideBox();
+                            }
+                        });
+
+                        form.addEventListener('submit', function() {
+                            hideBox();
+                        });
+                    }
+
+                    setupSearchSuggest('search', 'search_suggest_desktop');
+                    setupSearchSuggest('search_mobile', 'search_suggest_mobile');
+                })();
+            </script>

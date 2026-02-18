@@ -59,7 +59,7 @@ class FrontendController extends Controller
     public function myAccount()
     {
         $customer_id = Session::get('customer_id');
-        
+
         if ($customer_id) {
             $customer = Ecom_Customer_info::where('customer_id', $customer_id)->first();
             $shipping_address = Ecom_Customer_Shipping::where('customer_id', $customer_id)->get();
@@ -228,6 +228,49 @@ class FrontendController extends Controller
                 'category_sub.category_sub_name'
             )
             ->get();
+        $featuredProducts = DB::table('products')
+            ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
+            ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
+            ->select(
+                'products.id',
+                'products.product_name',
+                'products.product_image',
+                'category_sub.category_sub_name',
+                DB::raw('MIN(products_details.retail_price) as retail_price'),
+                DB::raw('MIN(products_details.selling_price) as selling_price')
+            )
+            ->where('products.vendor_id', $id)
+            ->where('products.status', 1)
+            ->where('products.collection', 'featured')
+            ->groupBy(
+                'products.id',
+                'products.product_name',
+                'products.product_image',
+                'category_sub.category_sub_name'
+            )
+            ->get();
+
+        $collectionProducts = DB::table('products')
+            ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
+            ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
+            ->select(
+                'products.id',
+                'products.product_name',
+                'products.product_image',
+                'category_sub.category_sub_name',
+                DB::raw('MIN(products_details.retail_price) as retail_price'),
+                DB::raw('MIN(products_details.selling_price) as selling_price')
+            )
+            ->where('products.vendor_id', $id)
+            ->where('products.collection', 'collection')
+            ->where('products.status', 1)
+            ->groupBy(
+                'products.id',
+                'products.product_name',
+                'products.product_image',
+                'category_sub.category_sub_name'
+            )
+            ->get();
 
         $offerList = $this->getProductByVendorOffers($id, $offer_id = '');
 
@@ -257,15 +300,22 @@ class FrontendController extends Controller
             ->get();
 
         $vendorcreate = vendorcreate::where('user_id', $id)->first();
-        $subid        = explode(',', $vendorcreate->sub_category_ids);
+        if (!$vendorcreate) {
+            $vendorcreate = vendorcreate::where('id', $id)->first();
+        }
 
-        $Categorysub = CategorySub::whereIn('id', $subid)->get();
+        if (!$vendorcreate) {
+            return redirect()->route('shops')->with('error', 'Vendor details not found.');
+        }
+
+        $subid = array_filter(explode(',', (string) $vendorcreate->sub_category_ids));
+        $Categorysub = count($subid) > 0 ? CategorySub::whereIn('id', $subid)->get() : collect();
         return view('frontend/vendor_doken_store')
             ->with([
                 "products"          => $products,
                 "topCollection"     => $topCollection,
-                "newCollection"     => $products,
-                "featuredProducts"  => $products,
+                "newCollection"     => $collectionProducts,
+                "featuredProducts"  => $featuredProducts,
                 "offerList"         => $offerList,
                 "Categorysub"       => $Categorysub,
                 "vendordetails"     => $vendorcreate,
@@ -590,56 +640,56 @@ class FrontendController extends Controller
         return $resultArr;
     }
 
-  public function home()
-{
-    $mainslider = mainslider::where('status', 1)->get();
+    public function home()
+    {
+        $mainslider = mainslider::where('status', 1)->get();
 
-    $topRatedProducts = $this->getSpecificProduct('');
-    $mensProducts = $this->getMensProduct();
-    $womensProducts = $this->getWomensProduct();
-    $kidsProducts = $this->getKidsProduct();
+        $topRatedProducts = $this->getSpecificProduct('');
+        $mensProducts = $this->getMensProduct();
+        $womensProducts = $this->getWomensProduct();
+        $kidsProducts = $this->getKidsProduct();
 
-    // Function to attach ratings
-    $attachRatings = function (&$products) {
-        foreach ($products as &$product) {
-            $avg = Rating::where('products_id', $product['id'])->avg('star_rating');
-            $product['rating_percent'] = $avg ? ($avg / 5) * 100 : 0;
-            $product['review_count'] = Rating::where('products_id', $product['id'])->count();
+        // Function to attach ratings
+        $attachRatings = function (&$products) {
+            foreach ($products as &$product) {
+                $avg = Rating::where('products_id', $product['id'])->avg('star_rating');
+                $product['rating_percent'] = $avg ? ($avg / 5) * 100 : 0;
+                $product['review_count'] = Rating::where('products_id', $product['id'])->count();
+            }
+        };
+
+        $attachRatings($mensProducts);
+        $attachRatings($womensProducts);
+        $attachRatings($kidsProducts);
+        $attachRatings($topRatedProducts);
+
+        $vendorcreate = vendorcreate::get();
+
+        $pincode = session('pincode');
+
+        if ($pincode) {
+            $zonal_id = PinCode::where('name', $pincode)->value('zonal_id');
+
+            $locations = PinCode::where('zonal_id', $zonal_id)
+                ->select('area')
+                ->get();
+        } else {
+            $locations = PinCode::select('area')
+                ->inRandomOrder()
+                ->limit(8)
+                ->get();
         }
-    };
 
-    $attachRatings($mensProducts);
-    $attachRatings($womensProducts);
-    $attachRatings($kidsProducts);
-    $attachRatings($topRatedProducts);
-
-    $vendorcreate = vendorcreate::get();
-
-    $pincode = session('pincode');
-
-    if ($pincode) {
-        $zonal_id = PinCode::where('name', $pincode)->value('zonal_id');
-
-        $locations = PinCode::where('zonal_id', $zonal_id)
-            ->select('area')
-            ->get();
-    } else {
-        $locations = PinCode::select('area')
-            ->inRandomOrder()
-            ->limit(8)
-            ->get();
+        return view('frontend/demo_eight', compact(
+            'mainslider',
+            'topRatedProducts',
+            'mensProducts',
+            'womensProducts',
+            'kidsProducts',
+            'vendorcreate',
+            'locations'
+        ));
     }
-
-    return view('frontend/demo_eight', compact(
-        'mainslider',
-        'topRatedProducts',
-        'mensProducts',
-        'womensProducts',
-        'kidsProducts',
-        'vendorcreate',
-        'locations'
-    ));
-}
 
 
 
@@ -710,7 +760,7 @@ class FrontendController extends Controller
 
 
 
-     public function vendorProducts2($vendor_id)
+    public function vendorProducts2($vendor_id)
     {
         $products = DB::table('products')
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
@@ -783,17 +833,17 @@ class FrontendController extends Controller
     public function productVar($id = '')
     {
         $ratings = Rating::withCount([
-                'helpfulVotes',
-                'unhelpfulVotes'
-            ])
+            'helpfulVotes',
+            'unhelpfulVotes'
+        ])
             ->where('ratings.products_id', $id)
             ->where('ratings.status', 1)
             ->orderBy('ratings.id', 'desc')
             ->select('ratings.*')
             ->selectSub(function ($q) {
                 $q->from('review_images')
-                ->whereColumn('review_images.rating_id', 'ratings.id')
-                ->selectRaw('GROUP_CONCAT(review_images.image_path)');
+                    ->whereColumn('review_images.rating_id', 'ratings.id')
+                    ->selectRaw('GROUP_CONCAT(review_images.image_path)');
             }, 'images')
             ->get();
 
@@ -812,7 +862,7 @@ class FrontendController extends Controller
         $vendorProducts = $this->vendorProducts($getProduct->vendor_id);
         $vendorProducts2 = $this->vendorProducts2($getProduct->vendor_id);
 
-        
+
 
         $relatedProducts = $this->relatedProducts($getProduct->category_sub);
 
@@ -864,15 +914,15 @@ class FrontendController extends Controller
 
         // ⭐ MOST HELPFUL NEGATIVE
         $mostHelpfulNegative = Rating::with([
-                'helpfulVotes',
-                'unhelpfulVotes'
-            ])
+            'helpfulVotes',
+            'unhelpfulVotes'
+        ])
             ->withCount('unhelpfulVotes')
             ->where('ratings.products_id', $id)
             ->where('ratings.status', 1)
-            ->having('unhelpful_votes_count', '>', 0)   
-            ->orderByDesc('unhelpful_votes_count')    
-            ->orderBy('ratings.star_rating')      
+            ->having('unhelpful_votes_count', '>', 0)
+            ->orderByDesc('unhelpful_votes_count')
+            ->orderBy('ratings.star_rating')
             ->orderByDesc('ratings.id')
             ->get();
 
@@ -892,7 +942,7 @@ class FrontendController extends Controller
             ->orderByDesc('ratings.id')
             ->get();
 
-        return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts','vendorProducts2', 'relatedProducts', 'percent', 'reviewCount', 'canRate', 'myRating', 'ratings', 'avg',  'mostHelpfulPositive', 'mostHelpfulNegative', 'highestRatingList', 'lowestRatingList'));
+        return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts', 'vendorProducts2', 'relatedProducts', 'percent', 'reviewCount', 'canRate', 'myRating', 'ratings', 'avg',  'mostHelpfulPositive', 'mostHelpfulNegative', 'highestRatingList', 'lowestRatingList'));
     }
 
     public function quickView($id)
@@ -1813,7 +1863,7 @@ class FrontendController extends Controller
     }
 
     public function storeRating(Request $request)
-    { 
+    {
         if (!session()->has('customer_id')) {
             return back()->with('error', 'Login first');
         }
@@ -1846,7 +1896,7 @@ class FrontendController extends Controller
         ]);
 
         // 🖼️ multiple images
-        if ($request->hasFile('review_images')) { 
+        if ($request->hasFile('review_images')) {
             foreach ($request->file('review_images') as $img) {
                 $path = $img->store('review_images', 'public');
 
@@ -1861,39 +1911,37 @@ class FrontendController extends Controller
     }
 
     public function vote(Request $request)
-{
-    $customer_id = session('customer_id');
+    {
+        $customer_id = session('customer_id');
 
-    if (!$customer_id) {
-        return response()->json(['error' => 'Login required'], 401);
+        if (!$customer_id) {
+            return response()->json(['error' => 'Login required'], 401);
+        }
+
+        // 🔥 ADD THIS
+        $request->validate([
+            'rating_id' => 'required|exists:ratings,id',
+            'type' => 'required|in:helpful,unhelpful'
+        ]);
+
+        ReviewVote::updateOrCreate(
+            [
+                'rating_id' => $request->rating_id,
+                'customer_id' => $customer_id,
+            ],
+            [
+                'type' => $request->type
+            ]
+        );
+
+        // 🔥 fresh count fetch
+        $rating = Rating::where('id', $request->rating_id)
+            ->withCount(['helpfulVotes', 'unhelpfulVotes'])
+            ->first();
+
+        return response()->json([
+            'helpful' => $rating->helpful_votes_count,
+            'unhelpful' => $rating->unhelpful_votes_count
+        ]);
     }
-
-    // 🔥 ADD THIS
-    $request->validate([
-        'rating_id' => 'required|exists:ratings,id',
-        'type' => 'required|in:helpful,unhelpful'
-    ]);
-
-    ReviewVote::updateOrCreate(
-        [
-            'rating_id' => $request->rating_id,
-            'customer_id' => $customer_id,
-        ],
-        [
-            'type' => $request->type
-        ]
-    );
-
-    // 🔥 fresh count fetch
-    $rating = Rating::where('id', $request->rating_id)
-        ->withCount(['helpfulVotes', 'unhelpfulVotes'])
-        ->first();
-
-    return response()->json([
-        'helpful' => $rating->helpful_votes_count,
-        'unhelpful' => $rating->unhelpful_votes_count
-    ]);
-}
-
-
 }
