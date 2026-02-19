@@ -11,6 +11,7 @@ use App\Models\Category\CategoryMain;
 use Flasher\Prime\FlasherInterface;
 use Illuminate\Http\Request;
 use App\Models\vendor\Products\productcollection;
+use App\Models\Products\productcollection as adminproductcollection;
 use App\Models\Category\Category;
 use App\Models\Category\CategorySub;
 use App\Models\Master\Attribute\Attribute;
@@ -60,7 +61,7 @@ class ProductsController extends Controller
         $gst = GST::where('status', 1)->get();
         $attribute = Attribute::where('status', 1)->get();
         $specification = Specification::where('status', 1)->get();
-        $productcollection = productcollection::select('name', DB::raw('GROUP_CONCAT(id) as ids'))
+        $productcollection = adminproductcollection::select('name', DB::raw('GROUP_CONCAT(id) as ids'))
         ->where('status', 1)
         ->groupBy('name')
         ->get();
@@ -89,10 +90,10 @@ class ProductsController extends Controller
         $category_data = Category::where('status', 1)->where('id', $category_sub->category_id)->get();
         $category_sub_data = CategorySub::where('id', $category_sub->id)->get();
         $gst = GST::where('status', 1)->get();
-        $productcollection = productcollection::select('name', DB::raw('GROUP_CONCAT(id) as ids'))
-            ->where('status', 1)
-            ->groupBy('name')
-            ->get();
+        $productcollection = adminproductcollection::select('name', DB::raw('GROUP_CONCAT(id) as ids'))
+        ->where('status', 1)
+        ->groupBy('name')
+        ->get();
         $colors = ProductColor::all();
         $offer = Offer::where('status', 1)->get();
 
@@ -445,8 +446,11 @@ class ProductsController extends Controller
         //   $employee_id = $staff[0]['employee_id'];
         // //print_r($productdetails);
 
-            $productcollection = productcollection::where('vendor_id',$login_id)->get();
-
+            $productcollection =  adminproductcollection::select('name', DB::raw('GROUP_CONCAT(id) as ids'))
+            ->where('status', 1)
+        ->groupBy('name')
+        ->get();
+// dd($productcollection);
        $cate = Products::join('category', 'category.id', '=', 'products.category')
        ->join('category_main','category_main.id','=','products.category_main')
        ->join('category_sub','category_sub.id','=','products.category_sub')

@@ -434,7 +434,7 @@
                                                             <div class="col-md-3">
                                                                 <h6>Upload Main Image</h6>
                                                                 <input class="form-control" type="file" id="mainImg" accept="image/*"
-                                                                    name="mainImage" />
+                                                                    name="mainImage" required/>
 
                                                             </div>
                                                             <div class="col-md-3">
@@ -590,13 +590,13 @@
                                     <div class="row">
                                         <div class="form-group col-md-3">
                                             <label> MRP</label>
-                                            <input type="text" name="retail_price[{{ $i }}][]"
+                                            <input type="number" name="retail_price[{{ $i }}][]"
                                                 placeholder="Retail Price" class="form-control" required>
                                         </div>
 
                                         <div class="form-group col-md-3">
                                             <label> Selling Price</label>
-                                            <input type="text" name="selling_price[{{ $i }}][]"
+                                            <input type="number" name="selling_price[{{ $i }}][]"
                                                 placeholder="Selling Price" class="form-control" required>
                                         </div>
 
@@ -786,23 +786,14 @@
                                                     <div class="col-md-4 ">
                                                         <select class="form-select form-select-lg text-secondary"
                                                             id="collection" name="collection">
-                                                            <option selected hidden value="">Select
-                                                                Collection
+                                                             <option selected hidden value="">Select Here
                                                             </option>
-                                                            <option id=""
-                                                                value="collection">
-                                                               Collection
-                                                            </option>
-                                                            <option id=""
-                                                                value="featured">
-                                                               Featured Products
-                                                            </option>
-                                                            {{-- @foreach ($productcollection as $productcollection)
+                                                            @foreach ($productcollection as $productcollection)
                                                             <option id="{{ $productcollection->id }}"
                                                                 value="{{ $productcollection->name }}">
                                                                 {{ $productcollection->name }}
                                                             </option>
-                                                            @endforeach --}}
+                                                            @endforeach
                                                         </select>
                                                     </div>
                                                 </div>

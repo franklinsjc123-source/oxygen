@@ -241,7 +241,7 @@ class FrontendController extends Controller
             )
             ->where('products.vendor_id', $id)
             ->where('products.status', 1)
-            ->where('products.collection', 'featured')
+            ->where('products.collection', '4')
             ->groupBy(
                 'products.id',
                 'products.product_name',
@@ -262,7 +262,7 @@ class FrontendController extends Controller
                 DB::raw('MIN(products_details.selling_price) as selling_price')
             )
             ->where('products.vendor_id', $id)
-            ->where('products.collection', 'collection')
+            ->where('products.collection', '5')
             ->where('products.status', 1)
             ->groupBy(
                 'products.id',
