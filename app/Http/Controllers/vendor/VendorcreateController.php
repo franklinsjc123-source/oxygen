@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB as FacadesDB;
 use App\Models\PinCode\PinCode;
 use App\Models\Category\CategorySub;
+use App\Models\Category\Category;
+use App\Models\Category\CategoryMain;
 use App\Models\ActivityTracker;
 
 class VendorcreateController extends Controller
@@ -42,10 +44,12 @@ class VendorcreateController extends Controller
         $Zonal = Zonal::all();
         $State = State::all();
         $City = City::all();
+        $CategoryMain = CategoryMain::where('status', 1)->select('id', 'category_main_name')->get();
+        $Category = Category::where('status', 1)->select('id', 'main_category_id', 'category_name')->get();
         $CategorySub = DB::table('category_sub as t1')
             ->join('category as t2', 't1.category_id', '=', 't2.id')
             ->join('category_main as t3', 't1.category_main_id', '=', 't3.id')
-            ->select('t1.id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
+            ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
             ->where('t1.status', 1)
             ->get();
         return view('layout.admin.vendor.vendor-create')->with(
@@ -56,6 +60,8 @@ class VendorcreateController extends Controller
                 "zone" => $Zonal,
                 "State" => $State,
                 "City" => $City,
+                "CategoryMain" => $CategoryMain,
+                "Category" => $Category,
                 "CategorySub" => $CategorySub
             ]
         );
@@ -249,10 +255,12 @@ class VendorcreateController extends Controller
         $Zonal = Zonal::all();
         $State = State::all();
         $City = City::all();
+        $CategoryMain = CategoryMain::where('status', 1)->select('id', 'category_main_name')->get();
+        $Category = Category::where('status', 1)->select('id', 'main_category_id', 'category_name')->get();
         $CategorySub = DB::table('category_sub as t1')
             ->join('category as t2', 't1.category_id', '=', 't2.id')
             ->join('category_main as t3', 't1.category_main_id', '=', 't3.id')
-            ->select('t1.id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
+            ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
             ->where('t1.status', 1)
             ->get();
         return view('layout.admin.vendor.vendor-create')->with(
@@ -261,6 +269,8 @@ class VendorcreateController extends Controller
                 $package,
                 "route" => $route,
                 "zone" => $Zonal,
+                "CategoryMain" => $CategoryMain,
+                "Category" => $Category,
                 "CategorySub" => $CategorySub,
                 "tracker" => $tracker,
                 'State' => $State,
@@ -282,10 +292,12 @@ class VendorcreateController extends Controller
         $package = packages::all();
         $route = Route::all();
         $Zonal = Zonal::all();
+        $CategoryMain = CategoryMain::where('status', 1)->select('id', 'category_main_name')->get();
+        $Category = Category::where('status', 1)->select('id', 'main_category_id', 'category_name')->get();
         $CategorySub = DB::table('category_sub as t1')
             ->join('category as t2', 't1.category_id', '=', 't2.id')
             ->join('category_main as t3', 't1.category_main_id', '=', 't3.id')
-            ->select('t1.id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
+            ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
             ->where('t1.status', 1)
             ->get();
         return view('layout.admin.vendor.vendor-edit')
@@ -294,6 +306,8 @@ class VendorcreateController extends Controller
                 "package" => $package,
                 "route" => $route,
                 "zone" => $Zonal,
+                "CategoryMain" => $CategoryMain,
+                "Category" => $Category,
                 "CategorySub" => $CategorySub
             ]);
     }

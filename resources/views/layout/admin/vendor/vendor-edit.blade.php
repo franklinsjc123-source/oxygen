@@ -354,29 +354,49 @@
                                         <div class="tab-pane fade" id="top-product" role="tabpanel"
                                             aria-labelledby="top-product-tab">
                                             <div class="row mt-4">
+                                                @php
+                                                    $subcategoryarray = array_filter(explode(',', (string) $vendorcreate->sub_category_ids));
+                                                @endphp
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="mb-1">Main Category :</label>
+                                                        <select class="form-control" id="vendor_main_category_id">
+                                                            <option value="">Select Main Category</option>
+                                                            @foreach ($CategoryMain as $main)
+                                                                <option value="{{ $main->id }}">{{ $main->category_main_name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="mb-1">Category :</label>
+                                                        <select class="form-control" id="vendor_category_id">
+                                                            <option value="">Select Category</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
                                                 <div class="col-md-12">
-                                                <div class="form-group">
-                                                                <label for="validationCustom01" class="mb-1">Product Subcategory
-                                                                    :</label>
-                                                                    <select class="form-control select2" id="sub_category_ids" name="sub_category_ids[]" multiple style="width:100%;height:200px;">
-                                                                   @php
-                                                                   $subcategoryarray=explode(',',$vendorcreate->sub_category_ids);
-                                                                   @endphp
-                                                                    @foreach ($CategorySub as $sub_category)
-                                                                    @php 
-                                                                    $selected=in_array($sub_category->id,$subcategoryarray)?'Selected':'';
-                                                                    @endphp
-                                                                        <option value="{{ $sub_category->id }}" {{$selected}}>
-                                                                            {{ $sub_category->category_sub_name }} ( {{ $sub_category->category_main_name }} - {{ $sub_category->category_name }} )
-                                                                        </option>
-                                                                    @endforeach
-                                                                    </select>
-                                                                
-                                                            </div>
-                                
+                                                    <div class="form-group">
+                                                        <label for="sub_category_ids" class="mb-1">Product Subcategory :</label>
+                                                        <select class="form-control select2" id="sub_category_ids" name="sub_category_ids[]" multiple style="width:100%;height:200px;">
+                                                            @foreach ($CategorySub as $sub_category)
+                                                                @php
+                                                                    $selected = in_array($sub_category->id, $subcategoryarray) ? 'selected' : '';
+                                                                @endphp
+                                                                <option
+                                                                    value="{{ $sub_category->id }}"
+                                                                    data-main-id="{{ $sub_category->category_main_id }}"
+                                                                    data-category-id="{{ $sub_category->category_id }}"
+                                                                    {{ $selected }}>
+                                                                    {{ $sub_category->category_sub_name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                                </div>
-                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="tab-pane fade" id="top-upload" role="tabpanel"
                                             aria-labelledby="top-upload-tab">
                                             <div class="form-group mt-4 row">
@@ -692,6 +712,74 @@
 <script>
                                     $('.select2').select2();
                                 </script>
+<script>
+    $(function () {
+        const $mainCategory = $('#vendor_main_category_id');
+        const $category = $('#vendor_category_id');
+        const $subCategory = $('#sub_category_ids');
+        const allSubOptions = $subCategory.find('option').clone();
+        const selectedSubIds = $subCategory.val() || [];
+
+        function loadCategories(mainId, selectedCategoryId = '') {
+            $category.empty().append('<option value="">Select Category</option>');
+            if (!mainId) {
+                return;
+            }
+
+            $.get("{{ route('getCategory') }}", { main_category_id: mainId }, function (data) {
+                $.each(data, function (_, item) {
+                    const selected = String(selectedCategoryId) === String(item.id) ? 'selected' : '';
+                    $category.append(`<option value="${item.id}" ${selected}>${item.category_name}</option>`);
+                });
+            });
+        }
+
+        function loadSubCategories(categoryId, keepSelected = []) {
+            $subCategory.empty();
+            if (!categoryId) {
+                $subCategory.trigger('change.select2');
+                return;
+            }
+
+            $.get("{{ route('getSubCategory') }}", { category_id: categoryId }, function (data) {
+                $.each(data, function (_, item) {
+                    const matched = allSubOptions.filter(`[value="${item.id}"]`).first();
+                    if (matched.length > 0) {
+                        $subCategory.append(matched.clone());
+                    } else {
+                        $subCategory.append(`<option value="${item.id}">${item.category_sub_name}</option>`);
+                    }
+                });
+
+                const kept = keepSelected.filter(value => $subCategory.find(`option[value="${value}"]`).length > 0);
+                $subCategory.val(kept).trigger('change.select2');
+            });
+        }
+
+        $mainCategory.on('change', function () {
+            const mainId = $(this).val();
+            loadCategories(mainId);
+            $category.val('');
+            $subCategory.empty().trigger('change.select2');
+        });
+
+        $category.on('change', function () {
+            loadSubCategories($(this).val(), selectedSubIds);
+        });
+
+        const initialSelected = $subCategory.find('option:selected').first();
+        const initialMainId = initialSelected.data('main-id') ? String(initialSelected.data('main-id')) : '';
+        const initialCategoryId = initialSelected.data('category-id') ? String(initialSelected.data('category-id')) : '';
+
+        if (initialMainId) {
+            $mainCategory.val(initialMainId);
+            loadCategories(initialMainId, initialCategoryId);
+            loadSubCategories(initialCategoryId, selectedSubIds);
+        } else {
+            $subCategory.empty().trigger('change.select2');
+        }
+    });
+</script>
     <script>
         $(function() {
 
