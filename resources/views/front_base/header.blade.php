@@ -70,8 +70,10 @@
     use Illuminate\Support\Facades\Session;
     
     $categorymain = CategoryMain::orderBy('category_main_sortorder', 'asc')->get();
-    $category = Category::orderBy('category_sortorder', 'asc')->get();
-    $categorysub = CategorySub::orderBy('category_sub_sortorder', 'asc')->get();
+    // dd($categorymain);
+    // $category = Category::orderBy('category_sortorder', 'asc')->get();
+
+    // $categorysub = CategorySub::orderBy('category_sub_sortorder', 'asc')->get();
     $count = Cart::getContent()->count();
     ?>
 

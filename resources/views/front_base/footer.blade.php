@@ -101,7 +101,7 @@
        use App\Models\Category\CategorySub;
        use Darryldecode\Cart\Facades\CartFacade as Cart;
        
-       $categorymain = CategoryMain::get();
+       $categorymain = CategoryMain::orderBy('category_main_sortorder', 'asc')->get();
        $category = Category::get();
        $categorysub = CategorySub::get();
        $count = Cart::getContent()->count();
