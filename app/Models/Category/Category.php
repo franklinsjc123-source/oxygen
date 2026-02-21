@@ -21,7 +21,7 @@ class Category extends Model
     protected $fillable = ["main_category_id", "category_name", "category_image", "status", "flag", "created_by"];
 
     public function childmenu(){
-        return $this->hasMany('App\Models\Category\CategorySub');
+        return $this->hasMany('App\Models\Category\CategorySub')->orderBy('category_sub_sortorder', 'asc');
         
     }
 

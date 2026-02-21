@@ -1212,7 +1212,7 @@ class FrontendController extends Controller
         }
         $product->get();
 
-        $sub_categories_menu = CategorySub::where('category_id', $category_id)->where('status', 1)->get();
+        $sub_categories_menu = CategorySub::where('category_id', $category_id)->orderBy('category_sub_sortorder', 'asc')->where('status', 1)->get();
 
         $prouctsList = $this->getProductByCategory($category_id, $sub_category_id);
 
