@@ -16,7 +16,7 @@ class CategoryMain extends Model
     public function submenu(){
        // $sub = ('App\Models\Category\Category', 'main_category_id', 'id');
         
-        return $this->hasMany('App\Models\Category\Category', 'main_category_id', 'id');
+        return $this->hasMany('App\Models\Category\Category', 'main_category_id', 'id')->orderBy('category_sortorder', 'asc');
           
     }
 
