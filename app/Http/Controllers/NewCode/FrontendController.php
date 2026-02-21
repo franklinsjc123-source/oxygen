@@ -1173,7 +1173,7 @@ class FrontendController extends Controller
 
         $prouctsList = $this->getProductByMainCategory($main_category_id);
 
-        $categories = Category::where('main_category_id', $main_category_id)->get();
+        $categories = Category::where('main_category_id', $main_category_id)->orderBy('category_sortorder', 'asc')->get();
 
         $main_category = CategoryMain::where('id', $main_category_id)->first();
 

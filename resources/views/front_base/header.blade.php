@@ -384,8 +384,8 @@
                                                                     <li>
                                                                         <a
                                                                             href="{{ url('categoryShop/' . $submenus->id) }}">
-                                                                            <h4 class="menu-title">
-                                                                                {{ $submenus->category_name }}</h4>
+                                                                           
+                                                                              <b> {{ $submenus->category_name }}</b> 
                                                                         </a>
                                                                         <hr class="divider">
                                                                         <ul>
