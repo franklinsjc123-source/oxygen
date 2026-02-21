@@ -357,42 +357,55 @@
                                                 @php
                                                     $subcategoryarray = array_filter(explode(',', (string) $vendorcreate->sub_category_ids));
                                                 @endphp
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label class="mb-1">Main Category :</label>
-                                                        <select class="form-control" id="vendor_main_category_id">
-                                                            <option value="">Select Main Category</option>
-                                                            @foreach ($CategoryMain as $main)
-                                                                <option value="{{ $main->id }}">{{ $main->category_main_name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label class="mb-1">Category :</label>
-                                                        <select class="form-control" id="vendor_category_id">
-                                                            <option value="">Select Category</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label for="sub_category_ids" class="mb-1">Product Subcategory :</label>
-                                                        <select class="form-control select2" id="sub_category_ids" name="sub_category_ids[]" multiple style="width:100%;height:200px;">
-                                                            @foreach ($CategorySub as $sub_category)
+                                                        <label class="mb-2">Select Category</label>
+                                                        <div class="border rounded p-3" style="max-height: 360px; overflow-y: auto;">
+                                                            @foreach ($CategoryMain as $main)
                                                                 @php
-                                                                    $selected = in_array($sub_category->id, $subcategoryarray) ? 'selected' : '';
+                                                                    $mainCategories = $Category->where('main_category_id', $main->id)->values();
                                                                 @endphp
-                                                                <option
-                                                                    value="{{ $sub_category->id }}"
-                                                                    data-main-id="{{ $sub_category->category_main_id }}"
-                                                                    data-category-id="{{ $sub_category->category_id }}"
-                                                                    {{ $selected }}>
-                                                                    {{ $sub_category->category_sub_name }}
-                                                                </option>
+                                                                @if ($mainCategories->count() > 0)
+                                                                    <div class="mb-2">
+                                                                        <div>
+                                                                            <input type="checkbox" class="form-check-input me-1 main-cat" id="main_{{ $main->id }}" data-main-id="{{ $main->id }}">
+                                                                            <label class="fw-bold mb-0" for="main_{{ $main->id }}">{{ $main->category_main_name }}</label>
+                                                                        </div>
+                                                                        <div class="ms-4 mt-1">
+                                                                            @foreach ($mainCategories as $cat)
+                                                                                @php
+                                                                                    $subList = $CategorySub->where('category_id', $cat->id)->values();
+                                                                                    $subIds = $subList->pluck('id')->map(fn($v) => (string) $v)->toArray();
+                                                                                    $selectedCount = count(array_intersect($subIds, array_map('strval', $subcategoryarray)));
+                                                                                    $isCategoryChecked = $selectedCount > 0 ? 'checked' : '';
+                                                                                    $subIdsCsv = implode(',', $subIds);
+                                                                                @endphp
+                                                                                <div class="mb-1">
+                                                                                    <div>
+                                                                                        <input
+                                                                                            type="checkbox"
+                                                                                            class="form-check-input me-1 category-cat"
+                                                                                            id="category_{{ $cat->id }}"
+                                                                                            data-main-id="{{ $main->id }}"
+                                                                                            data-main-name="{{ $main->category_main_name }}"
+                                                                                            data-category-id="{{ $cat->id }}"
+                                                                                            data-category-name="{{ $cat->category_name }}"
+                                                                                            data-sub-ids="{{ $subIdsCsv }}"
+                                                                                            {{ $isCategoryChecked }}>
+                                                                                        <label class="mb-0 fw-semibold" for="category_{{ $cat->id }}">{{ $cat->category_name }}</label>
+                                                                                    </div>
+                                                                                </div>
+                                                                            @endforeach
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
                                                             @endforeach
-                                                        </select>
+                                                        </div>
+                                                        <div id="selected_subcategory_inputs"></div>
+                                                        <div class="mt-3">
+                                                            <label class="mb-1">Product Categories</label>
+                                                            <div id="selected_subcategory_tags" class="d-flex flex-wrap gap-2"></div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -714,70 +727,54 @@
                                 </script>
 <script>
     $(function () {
-        const $mainCategory = $('#vendor_main_category_id');
-        const $category = $('#vendor_category_id');
-        const $subCategory = $('#sub_category_ids');
-        const allSubOptions = $subCategory.find('option').clone();
-        const selectedSubIds = $subCategory.val() || [];
-
-        function loadCategories(mainId, selectedCategoryId = '') {
-            $category.empty().append('<option value="">Select Category</option>');
-            if (!mainId) {
-                return;
-            }
-
-            $.get("{{ route('getCategory') }}", { main_category_id: mainId }, function (data) {
-                $.each(data, function (_, item) {
-                    const selected = String(selectedCategoryId) === String(item.id) ? 'selected' : '';
-                    $category.append(`<option value="${item.id}" ${selected}>${item.category_name}</option>`);
-                });
+        function syncParentStates() {
+            $('.main-cat').each(function () {
+                const mainId = $(this).data('main-id');
+                const allCategories = $(`.category-cat[data-main-id="${mainId}"]`);
+                const checkedCategories = allCategories.filter(':checked');
+                $(this).prop('checked', allCategories.length > 0 && checkedCategories.length === allCategories.length);
             });
         }
 
-        function loadSubCategories(categoryId, keepSelected = []) {
-            $subCategory.empty();
-            if (!categoryId) {
-                $subCategory.trigger('change.select2');
-                return;
-            }
+        function renderSelections() {
+            const $inputs = $('#selected_subcategory_inputs');
+            const $tags = $('#selected_subcategory_tags');
+            $inputs.empty();
+            $tags.empty();
 
-            $.get("{{ route('getSubCategory') }}", { category_id: categoryId }, function (data) {
-                $.each(data, function (_, item) {
-                    const matched = allSubOptions.filter(`[value="${item.id}"]`).first();
-                    if (matched.length > 0) {
-                        $subCategory.append(matched.clone());
-                    } else {
-                        $subCategory.append(`<option value="${item.id}">${item.category_sub_name}</option>`);
-                    }
-                });
+            const subIds = new Set();
+            $('.category-cat:checked').each(function () {
+                const mainName = $(this).data('main-name');
+                const categoryName = $(this).data('category-name');
+                const rawSubIds = ($(this).data('sub-ids') || '').toString();
+                if (rawSubIds.length > 0) {
+                    rawSubIds.split(',').forEach(id => {
+                        if (id) subIds.add(id);
+                    });
+                }
+                $tags.append(`<span class="badge bg-light text-dark border">${mainName} | ${categoryName}</span>`);
+            });
 
-                const kept = keepSelected.filter(value => $subCategory.find(`option[value="${value}"]`).length > 0);
-                $subCategory.val(kept).trigger('change.select2');
+            subIds.forEach(id => {
+                $inputs.append(`<input type="hidden" name="sub_category_ids[]" value="${id}">`);
             });
         }
 
-        $mainCategory.on('change', function () {
-            const mainId = $(this).val();
-            loadCategories(mainId);
-            $category.val('');
-            $subCategory.empty().trigger('change.select2');
+        $(document).on('change', '.main-cat', function () {
+            const mainId = $(this).data('main-id');
+            const checked = $(this).is(':checked');
+            $(`.category-cat[data-main-id="${mainId}"]`).prop('checked', checked);
+            syncParentStates();
+            renderSelections();
         });
 
-        $category.on('change', function () {
-            loadSubCategories($(this).val(), selectedSubIds);
+        $(document).on('change', '.category-cat', function () {
+            syncParentStates();
+            renderSelections();
         });
 
-        const initialSelected = $subCategory.find('option:selected').first();
-        const initialMainId = initialSelected.data('main-id') ? String(initialSelected.data('main-id')) : '';
-        const initialCategoryId = initialSelected.data('category-id') ? String(initialSelected.data('category-id')) : '';
-
-        if (initialMainId) {
-            $mainCategory.val(initialMainId);
-            loadCategories(initialMainId, initialCategoryId);
-            loadSubCategories(initialCategoryId, selectedSubIds);
-        } else {
-            $subCategory.empty().trigger('change.select2');
-        }
+        syncParentStates();
+        renderSelections();
     });
 </script>
     <script>
