@@ -237,7 +237,7 @@
            </a>
            <form action="#" class="input-wrapper">
                <input type="text" class="form-control" name="search" autocomplete="off" placeholder="Search"
-                   required />
+                    />
                <button class="btn btn-search" type="submit">
                    <i class="w-icon-search"></i>
                </button>
@@ -265,7 +265,7 @@
        <div class="mobile-menu-container scrollable">
            <form action="#" method="get" class="input-wrapper">
                <input type="text" class="form-control" name="search" autocomplete="off" placeholder="Search"
-                   required />
+                    />
                <button class="btn btn-search" type="submit">
                    <i class="w-icon-search"></i>
                </button>

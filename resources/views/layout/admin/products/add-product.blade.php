@@ -80,6 +80,39 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
+        /* Strong red required-field highlight after submit attempt */
+        form.validation-attempted :is(input, select, textarea).form-control:invalid,
+        form.validation-attempted :is(input, select, textarea).form-select:invalid,
+        form.validation-attempted textarea:invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+        }
+
+        .invalid-field {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+        }
+
+        /* Keep invalid inputs red even when focused (override bootstrap blue focus) */
+        form.validation-attempted input.form-control.invalid-field,
+        form.validation-attempted input.form-control.invalid-field:focus,
+        form.validation-attempted select.form-control.invalid-field,
+        form.validation-attempted select.form-control.invalid-field:focus,
+        form.validation-attempted select.form-select.invalid-field,
+        form.validation-attempted select.form-select.invalid-field:focus,
+        form.validation-attempted textarea.invalid-field,
+        form.validation-attempted textarea.invalid-field:focus {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+            outline: 0 !important;
+        }
+
+        /* Select2 invalid state */
+        form.validation-attempted select.select2-hidden-accessible:invalid + .select2-container .select2-selection {
+            border: 1px solid #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+        }
     </style>
     <div class="page-body text-secondary fcolor">
 
@@ -451,6 +484,7 @@
                                                                 class="text-danger">*</span>Product Status</label>
                                                         <select class="custom-select form-control text-secondary"
                                                             id="gs" onchange="r()" name="tax_id" required>
+                                                            <option value="" selected hidden>--Select Status--</option>
                                                             <option value="1">Active</option>
                                                             <option value="0">De-Active</option>
                                                         </select>
@@ -474,6 +508,7 @@
                                                                         class="text-danger">*</span>Tax</label>
                                                                 <select class="custom-select form-control text-secondary"
                                                                     id="gs" onchange="r()" name="tax_id" required>
+                                                                    <option value="" selected hidden>--Select Tax Type--</option>
                                                                     <option value="1">Included</option>
                                                                     <option value="0">Excluded</option>
                                                                 </select>
@@ -514,7 +549,7 @@
                                                     <div class="digital-add needs-validation">
                                                         <div class="form-group mb-0">
                                                             <div class="description-sm">
-                                                                <textarea class="form-control ckeditor" id="description" cols="10" required rows="4" name="description"></textarea>
+                                                                <textarea class="form-control ckeditor" id="description" cols="10" rows="4" name="description"></textarea>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -549,7 +584,7 @@
                                     <div class="form-group col-md-3">
                                         <label>SKU</label>
                                         <input type="text" name="sku[{{ $i }}]" placeholder="SKU"
-                                            class="form-control" required>
+                                            class="form-control">
                                     </div>
 
                                     <div class="form-group col-md-3">
@@ -558,9 +593,7 @@
                                         <select class="form-select form-select-lg text-secondary"
                                             name="return_replace[{{ $i }}]" required>
 
-                                            <option selected value="NA">
-                                                NA
-                                            </option>
+                                            <option selected value="" hidden>Select Return / Replacement</option>
                                             <option value="Return">
                                                 Return
                                             </option>
@@ -589,7 +622,7 @@
                                             <label> Color </label>
                                             <input type="hidden" name="attributecolorname[{{ $i }}][]" value="Color">
                                             <select class="form-select form-select-lg text-secondary attrcolor{{ $i }}"
-                                                name="attributecolorval[{{ $i }}][]" id="attrcolor{{ $i }}">
+                                                name="attributecolorval[{{ $i }}][]" id="attrcolor{{ $i }}" required>
                                                 <option selected value='' hidden> --Select Color--</option>
                                                 @foreach( $colors as $color)
                                                 <option value='{{ $color->color_name }}' style="background-color: {{ $color->color_code }}"> {{ $color->color_name }} </option>
@@ -607,7 +640,7 @@
                                             <label> {{ $attri->attribute_group_name}} </label>
                                             <input type="hidden" name="attributename[{{ $i }}][{{ $j }}][]" value="{{ $attri->attribute_group_name}}">
                                             <select class="form-select form-select-lg text-secondary attrsize"
-                                                name="attributeval[{{ $i }}][{{ $j }}][]" id="attrsize">
+                                                name="attributeval[{{ $i }}][{{ $j }}][]" id="attrsize" required>
                                                 <option selected value='' hidden> --Select {{ $attri->attribute_group_name}}--</option>
                                                 @foreach( $attri_val as $attval)
                                                 <option value='{{ $attval }}'> {{ $attval }}</option>
@@ -783,7 +816,7 @@
                                                     <div class="digital-add needs-validation">
                                                         <div class="form-group mb-0">
                                                             <div class="description-sm">
-                                                                <textarea class="form-control ckeditor" id="specification" cols="10" required rows="4" name="specification"></textarea>
+                                                                <textarea class="form-control ckeditor" id="specification" cols="10" rows="4" name="specification"></textarea>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -810,7 +843,7 @@
                                                     <div class="col-md-3">
 
                                                         <select class="form-select form-select-lg text-secondary"
-                                                            id="offtype" name="offers">
+                                                            id="offtype" name="offers" required>
                                                             <option selected hidden value="">Select Here
                                                             </option>
 
@@ -842,7 +875,7 @@
                                                     </div>
                                                     <div class="col-md-4 ">
                                                         <select class="form-select form-select-lg text-secondary"
-                                                            id="collection" name="collection">
+                                                            id="collection" name="collection" required>
                                                             <option selected hidden value="">Select
                                                                 Collection
                                                             </option>
@@ -1008,6 +1041,61 @@
     });
 </script>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const shouldSkipValidation = function(el) {
+            const name = (el.getAttribute('name') || '').toLowerCase();
+            return name === 'description'
+                || name === 'specification'
+                || name === 'hsncode'
+                || name.indexOf('sku[') === 0
+                || name.indexOf('shipping_container') === 0;
+        };
+
+        const markRequiredInvalidFields = function(form) {
+            form.querySelectorAll('input[required], select[required], textarea[required]').forEach(function(el) {
+                if (el.disabled || shouldSkipValidation(el)) return;
+                const value = (el.value || '').trim();
+                if (value === '' || !el.checkValidity()) {
+                    el.classList.add('invalid-field');
+                } else {
+                    el.classList.remove('invalid-field');
+                }
+            });
+        };
+
+        document.querySelectorAll('form').forEach(function(form) {
+            form.querySelectorAll('input, select, textarea').forEach(function(el) {
+                el.addEventListener('input', function() {
+                    if (el.checkValidity()) {
+                        el.classList.remove('invalid-field');
+                    }
+                });
+                el.addEventListener('change', function() {
+                    if (el.checkValidity()) {
+                        el.classList.remove('invalid-field');
+                    }
+                });
+            });
+
+            form.querySelectorAll('button[type="submit"], input[type="submit"]').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    form.classList.add('validation-attempted');
+                    markRequiredInvalidFields(form);
+                });
+            });
+
+            form.addEventListener('submit', function(e) {
+                markRequiredInvalidFields(form);
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    form.classList.add('validation-attempted');
+                    form.reportValidity();
+                }
+            });
+        });
+    });
+
     function previewImages(id) {
         const imageUpload = document.getElementById('imageUpload' + id);
         const previewContainer = document.getElementById('previewContainer' + id);

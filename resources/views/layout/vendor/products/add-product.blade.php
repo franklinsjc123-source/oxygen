@@ -419,6 +419,7 @@
                                                                 class="text-danger">*</span>Product Status</label>
                                                         <select class="custom-select form-control text-secondary"
                                                             id="gs" onchange="r()" name="tax_id" required>
+                                                            <option value="" selected hidden>--Select Status--</option>
                                                             <option value="1">Active</option>
                                                             <option value="0">De-Active</option>
                                                         </select>
@@ -442,6 +443,7 @@
                                                                         class="text-danger">*</span>Tax</label>
                                                                 <select class="custom-select form-control text-secondary"
                                                                     id="gs" onchange="r()" name="tax_id" required>
+                                                                    <option value="" selected hidden>--Select Tax Type--</option>
                                                                     <option value="1">Included</option>
                                                                     <option value="0">Excluded</option>
                                                                 </select>
@@ -482,7 +484,7 @@
                                                     <div class="digital-add needs-validation">
                                                         <div class="form-group mb-0">
                                                             <div class="description-sm">
-                                                                <textarea id="description" cols="10" required rows="4" name="description"></textarea>
+                                                                <textarea id="description" cols="10" rows="4" name="description"></textarea>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -517,18 +519,17 @@
                                     <div class="form-group col-md-3">
                                         <label>SKU</label>
                                         <input type="text" name="sku[{{ $i }}]" placeholder="SKU"
-                                            class="form-control" required>
+                                            class="form-control">
                                     </div>
 
                                     <div class="form-group col-md-3">
-                                        <label> Return /
+                                        <label><span
+                                                                        class="text-danger">*</span> Return /
                                             Replacement</label>
                                         <select class="form-select form-select-lg text-secondary"
                                             name="return_replace[{{ $i }}]" required>
 
-                                            <option selected value="NA">
-                                                NA
-                                            </option>
+                                            <option selected value="" hidden>Select Return / Replacement</option>
                                             <option value="Return">
                                                 Return
                                             </option>
@@ -541,7 +542,8 @@
                                     </div>
 
                                     <div class="form-group col-md-2">
-                                        <label> Return Days</label>
+                                        <label> <span
+                                                                        class="text-danger">*</span>Return Days</label>
                                         <input type="text" name="r_days[{{ $i }}]" placeholder="Days"
                                             class="form-control" required>
                                     </div>
@@ -554,10 +556,11 @@
                                     <hr>
                                     <div class="row">
                                     <div class="form-group col-md-3">
-                                            <label> Color </label>
+                                            <label><span
+                                                                        class="text-danger">*</span> Color </label>
                                             <input type="hidden" name="attributecolorname[{{ $i }}][]" value="Color">
                                             <select class="form-select form-select-lg text-secondary attrcolor{{ $i }}"
-                                                name="attributecolorval[{{ $i }}][]" id="attrcolor{{ $i }}">
+                                                name="attributecolorval[{{ $i }}][]" id="attrcolor{{ $i }}" required>
                                                 <option selected value='' hidden> --Select Color--</option>
                                                 @foreach( $colors as $color)
                                                 <option value='{{ $color->color_name }}' style="background-color: {{ $color->color_code }}"> {{ $color->color_name }} </option>
@@ -572,10 +575,11 @@
 
                                         @endphp
                                         <div class="form-group col-md-3">
-                                            <label> {{ $attri->attribute_group_name}} </label>
+                                            <label><span
+                                                                        class="text-danger">*</span> {{ $attri->attribute_group_name}} </label>
                                             <input type="hidden" name="attributename[{{ $i }}][{{ $j }}][]" value="{{ $attri->attribute_group_name}}">
                                             <select class="form-select form-select-lg text-secondary attrsize"
-                                                name="attributeval[{{ $i }}][{{ $j }}][]" id="attrsize">
+                                                name="attributeval[{{ $i }}][{{ $j }}][]" id="attrsize" required>
                                                 <option selected value='' hidden> --Select {{ $attri->attribute_group_name}}--</option>
                                                 @foreach( $attri_val as $attval)
                                                 <option value='{{ $attval }}'> {{ $attval }}</option>
@@ -589,24 +593,28 @@
                                     </div>
                                     <div class="row">
                                         <div class="form-group col-md-3">
-                                            <label> MRP</label>
+                                            <label><span
+                                                                        class="text-danger">*</span> MRP</label>
                                             <input type="number" name="retail_price[{{ $i }}][]"
                                                 placeholder="Retail Price" class="form-control" required>
                                         </div>
 
                                         <div class="form-group col-md-3">
-                                            <label> Selling Price</label>
+                                            <label><span
+                                                                        class="text-danger">*</span> Selling Price</label>
                                             <input type="number" name="selling_price[{{ $i }}][]"
                                                 placeholder="Selling Price" class="form-control" required>
                                         </div>
 
                                         <div class="form-group col-md-3">
-                                            <label> Quantity</label>
+                                            <label><span
+                                                                        class="text-danger">*</span> Quantity</label>
                                             <input type="number" class="form-control"
                                                 placeholder="Qty" name="quantity[{{ $i }}][]" required>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label> Low Stock Limit</label>
+                                            <label><span
+                                                                        class="text-danger">*</span> Low Stock Limit</label>
                                             <input type="number" id="low_stock_limit" name="low_stock_limit[{{ $i }}][]"
                                                 placeholder="Low Stock Limit" class="form-control" required>
                                         </div>
@@ -689,7 +697,7 @@
                                             <div class="conatiner">
                                                 <div class="row mt-3">
                                                     <div class="col-md-12 ">
-                                                        <h4 class="fw-bold"><span style="color: red;">*</span>Specification</h4>
+                                                        <h4 class="fw-bold">Specification</h4>
                                                     </div>
                                                     <div class="col-md-2 text-start">
                                                         <span class="text-dark fw-bold"
@@ -753,7 +761,7 @@
                                                     <div class="col-md-3">
 
                                                         <select class="form-select form-select-lg text-secondary"
-                                                            id="offtype" name="offers">
+                                                            id="offtype" name="offers" required>
                                                             <option selected hidden value="">Select Here
                                                             </option>
 
@@ -785,7 +793,7 @@
                                                     </div>
                                                     <div class="col-md-4 ">
                                                         <select class="form-select form-select-lg text-secondary"
-                                                            id="collection" name="collection">
+                                                            id="collection" name="collection" required>
                                                              <option selected hidden value="">Select Here
                                                             </option>
                                                             @foreach ($productcollection as $productcollection)
@@ -949,9 +957,18 @@
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const shouldSkipValidation = function(el) {
+            const name = (el.getAttribute('name') || '').toLowerCase();
+            return name === 'description'
+                || name === 'specification'
+                || name === 'hsncode'
+                || name.indexOf('sku[') === 0
+                || name.indexOf('shipping_container') === 0;
+        };
+
         const markRequiredInvalidFields = function(form) {
             form.querySelectorAll('input[required], select[required], textarea[required]').forEach(function(el) {
-                if (el.disabled) return;
+                if (el.disabled || shouldSkipValidation(el)) return;
                 const value = (el.value || '').trim();
                 if (value === '' || !el.checkValidity()) {
                     el.classList.add('invalid-field');

@@ -31,6 +31,7 @@ use App\Models\vendor\vendorcreate;
 use App\Models\Offer\Offer;
 use session;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManagerStatic as Image;
 
 class ProductsController extends Controller
@@ -185,168 +186,345 @@ class ProductsController extends Controller
      */
 
 
-   
+public function store(Request $request, FlasherInterface $flasher)
+{
+    $request->validate([
+        'product_name' => 'required|string|max:255',
+        'retail_price.*.*' => 'required|numeric|min:0.01',
+        'selling_price.*.*' => 'required|numeric|min:0',
+        'imageUpload.*.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'mainImage' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-     
-   public function store(Request $request, FlasherInterface $flasher)
-   {
-      // return 'adminstore';
-       // echo 'test';
-        $products = new Products();
-       // print_r($products);
-       $login_id = session()->get('login_id');//Auth::user()->id; // 
-    //    dd($login_id);
-    //    $statement = DB::select("SHOW TABLE STATUS LIKE 'products'");
-    //    $next_product_id = $statement[0]->Auto_increment;
-       // // dd($request->specification);
+    DB::beginTransaction();
 
-       $next_product_id = Products::max('id') + 1;
+    try {
 
-    //    dd($next_product_id);
+        $login_id = session()->get('login_id');
+        $nextProductId = ((int) Products::max('product_id')) + 1;
+        if ($nextProductId <= 0) {
+            $nextProductId = ((int) Products::max('id')) + 1;
+        }
 
-       $products = new Products();
-       $filename = '';
-      
-       if ($request->file('mainImage')) {   
-        $main_image = $request->file('mainImage');
-        
-        $image = $next_product_id . "_image." . $main_image->getClientOriginalExtension();
-        
-        $img = Image::make($main_image->getRealPath());
-        $image_path = "assets/images/products/";
-        $img->fit(800, 900)->save($image_path . '/' . $image);
-        
-        $filename = $image;
+        if (empty($login_id)) {
+            throw new \RuntimeException('Vendor session expired. Please login again.');
+        }
+
+        /* ===================================
+           STEP 1: CREATE PRODUCT
+        =================================== */
+
+        $product = new Products();
+        $product->login_id = $login_id;
+        $product->vendor_id = $login_id;
+        $product->product_id = $nextProductId;
+        $product->category = $request->category;
+        $product->category_main = $request->category_main;
+        $product->category_sub = $request->category_sub;
+        $product->product_name = $request->product_name;
+        $product->tax_id = $request->tax_id;
+        $product->gst_id = $request->gst_id;
+        $product->description = $request->description;
+        $product->weight = $request->weight;
+        $product->length = $request->length;
+        $product->width = $request->width;
+        $product->height = $request->height;
+        $product->specification = $request->specification;
+        $product->offers = $request->offers;
+        $product->collection = $request->collection;
+        $product->flag = 1;
+        $product->status = $request->status ?? 1;
+        $product->logintype = "Vendor";
+        $product->created_by = $login_id;
+
+        $product->save();
+
+        // Keep legacy requirement: product_id must match the inserted row id.
+        if ((int) $product->product_id !== (int) $product->id) {
+            $product->product_id = $product->id;
+            $product->save();
+        }
+
+        $productId = $product->id;
+
+        /* ===================================
+           STEP 3: MAIN IMAGE UPLOAD
+        =================================== */
+
+        if ($request->hasFile('mainImage')) {
+
+            $mainImage = $request->file('mainImage');
+            $imageName = $productId . "_main." . $mainImage->getClientOriginalExtension();
+
+            $path = public_path('assets/images/products/');
+            if (!file_exists($path)) {
+                mkdir($path, 0755, true);
+            }
+
+            Image::make($mainImage->getRealPath())
+                ->fit(800, 900)
+                ->save($path . '/' . $imageName);
+
+            $product->product_image = $imageName;
+            $product->save();
+        }
+
+        /* ===================================
+           STEP 4: PRODUCT DETAILS
+        =================================== */
+
+        $np = $request->nproduct;
+
+        for ($i = 1; $i <= $np; $i++) {
+
+            $imagesArray = [];
+
+            if ($request->hasFile('imageUpload' . $i)) {
+
+                $images = $request->file('imageUpload' . $i);
+                $detailPath = public_path('assets/images/products/detail/');
+
+                if (!file_exists($detailPath)) {
+                    mkdir($detailPath, 0755, true);
+                }
+
+                foreach ($images as $index => $img) {
+
+                    $imageName = $productId . '_' . time() . '_' . $index . '.' . $img->getClientOriginalExtension();
+
+                    Image::make($img->getRealPath())
+                        ->fit(800, 900)
+                        ->save($detailPath . '/' . $imageName);
+
+                    $imagesArray[] = $imageName;
+                }
+            }
+
+            $variantCount = count($request->retail_price[$i] ?? []);
+
+            for ($k = 0; $k < $variantCount; $k++) {
+
+                $detail = new ProductsDetails();
+                $detail->products_id = $productId; // CONNECT HERE
+                $detail->common_product = $i;
+                $detail->product_detail_image = !empty($imagesArray) ? json_encode($imagesArray) : null;
+                $detail->sku = $request->sku[$i] ?? null;
+                $detail->return_replace = $request->return_replace[$i] ?? 1;
+                $detail->r_days = $request->r_days[$i] ?? null;
+
+                $detail->attributevalue1 = $request->attributecolorval[$i][$k] ?? null;
+                $detail->attributename1 = 'Color';
+
+                $detail->attributevalue2 = $request->attributeval[$i][0][$k] ?? null;
+                $detail->attributename2 = $request->attributename[$i][0][$k] ?? null;
+
+                $detail->attributevalue3 = $request->attributeval[$i][1][$k] ?? null;
+                $detail->attributename3 = $request->attributename[$i][1][$k] ?? null;
+
+                $detail->quantity = $request->quantity[$i][$k] ?? 0;
+                $detail->retail_price = $request->retail_price[$i][$k];
+                $detail->selling_price = $request->selling_price[$i][$k];
+                $detail->low_stock_limit = $request->low_stock_limit[$i][$k] ?? 0;
+
+                $detail->save();
+            }
+        }
+
+        /* ===================================
+           STEP 5: PRODUCT SPECIFICATIONS
+        =================================== */
+
+        if (!empty($request->spec_id)) {
+
+            foreach ($request->spec_id as $value) {
+
+                $spec = new ProductSpecs();
+                $spec->products_id = $productId;
+                $spec->category_sub_id = $request->category_sub;
+                $spec->spec_id = $value;
+                $spec->specify_attribute = $request->specify_attribute[$value] ?? null;
+                $spec->specify_value = $request->specify_value[$value] ?? null;
+                $spec->save();
+            }
+        }
+
+        DB::commit();
+
+        $flasher->addSuccess('New Product Added Successfully!');
+        return redirect()->route('vendorproducts.crud.listing');
+
+    } catch (\Throwable $e) {
+
+        DB::rollBack();
+
+        Log::error('Vendor product create failed', [
+            'message' => $e->getMessage(),
+            'line' => $e->getLine(),
+        ]);
+
+        $flasher->addError('Something went wrong!');
+        return redirect()->back()->withInput();
     }
-        
-           $products->login_id   =  $login_id; 
-           $products->vendor_id   =  $login_id; 
-           $products->product_id = $next_product_id;
-           $products->category = $request->category;
-           $products->category_main = $request->category_main;
-           $products->category_sub = $request->category_sub;
-           $products->product_name = $request->product_name;
-           $products->tax_id = $request->tax_id;
-           $products->gst_id = $request->gst_id;
-           $products->product_image = $filename ?? "-";
-           $products->description = $request->description;
-           $products->weight = $request->weight;
-           $products->length = $request->length;
-           $products->width = $request->width;
-           $products->height = $request->height;
-           $products->specification= $request->specification;
+} 
+//    public function store(Request $request, FlasherInterface $flasher)
+//    {
+//       // return 'adminstore';
+//        // echo 'test';
+//         $products = new Products();
+//        // print_r($products);
+//        $login_id = session()->get('login_id');//Auth::user()->id; // 
+//     //    dd($login_id);
+//     //    $statement = DB::select("SHOW TABLE STATUS LIKE 'products'");
+//     //    $next_product_id = $statement[0]->Auto_increment;
+//        // // dd($request->specification);
 
-           $products->offers = $request->offers;
-           $products->collection = $request->collection;
-           $products->flag = 1;
-           $products->status = $request->status ?? 1;
+//        $next_product_id = Products::max('id') + 1;
+
+//     //    dd($next_product_id);
+
+//        $products = new Products();
+//        $filename = '';
+      
+//        if ($request->file('mainImage')) {   
+//         $main_image = $request->file('mainImage');
+        
+//         $image = $next_product_id . "_image." . $main_image->getClientOriginalExtension();
+        
+//         $img = Image::make($main_image->getRealPath());
+//         $image_path = "assets/images/products/";
+//         $img->fit(800, 900)->save($image_path . '/' . $image);
+        
+//         $filename = $image;
+//     }
+        
+//            $products->login_id   =  $login_id; 
+//            $products->vendor_id   =  $login_id; 
+//            $products->product_id = $next_product_id;
+//            $products->category = $request->category;
+//            $products->category_main = $request->category_main;
+//            $products->category_sub = $request->category_sub;
+//            $products->product_name = $request->product_name;
+//            $products->tax_id = $request->tax_id;
+//            $products->gst_id = $request->gst_id;
+//            $products->product_image = $filename ?? "-";
+//            $products->description = $request->description;
+//            $products->weight = $request->weight;
+//            $products->length = $request->length;
+//            $products->width = $request->width;
+//            $products->height = $request->height;
+//            $products->specification= $request->specification;
+
+//            $products->offers = $request->offers;
+//            $products->collection = $request->collection;
+//            $products->flag = 1;
+//            $products->status = $request->status ?? 1;
            
-           $products->logintype = "Vendor";
-           $products->created_by =$login_id;
-           //dd($products);
-           $products->save();
-           //
+//            $products->logintype = "Vendor";
+//            $products->created_by =$login_id;
+//            //dd($products);
+//            $products->save();
+//            //
                
                  
-                 $np = $request->nproduct;
+//                  $np = $request->nproduct;
          
           
-           for ($i = 1; $i <= $np; $i++) {
+//            for ($i = 1; $i <= $np; $i++) {
                        
 
-               $arr=[];
+//                $arr=[];
 
-               $request->validate([
-                   'imageUpload.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust validation as needed
-               ]);
+//                $request->validate([
+//                    'imageUpload.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust validation as needed
+//                ]);
            
              
            
-               if ($request->hasFile('imageUpload'.$i)) {
-                   $images = $request->file('imageUpload'.$i);
-                   $image_path = "assets/images/products/detail/";
+//                if ($request->hasFile('imageUpload'.$i)) {
+//                    $images = $request->file('imageUpload'.$i);
+//                    $image_path = "assets/images/products/detail/";
            
-                   foreach ($images as $index => $sub_image) {
-                    // Create a unique image name
-                    $imageName = $next_product_id . '_' . time() . '_' . $index . '_' . $sub_image->getClientOriginalName();
+//                    foreach ($images as $index => $sub_image) {
+//                     // Create a unique image name
+//                     $imageName = $next_product_id . '_' . time() . '_' . $index . '_' . $sub_image->getClientOriginalName();
                     
-                    // Resize and save the image
-                    $img = Image::make($sub_image->getRealPath());
-                    $img->fit(800, 900)->save($image_path . $imageName);
+//                     // Resize and save the image
+//                     $img = Image::make($sub_image->getRealPath());
+//                     $img->fit(800, 900)->save($image_path . $imageName);
                     
-                    // Add the image path to the array
-                    $arr[] = $imageName;
-                }
-               }
+//                     // Add the image path to the array
+//                     $arr[] = $imageName;
+//                 }
+//                }
            
-               // Convert the array to JSON
-               $np1 = count($request->retail_price[$i]);
-               $ac=$request->attributecount;
-               for($k=0;$k<$np1;$k++)
-               {
-               $products_details = new ProductsDetails();       
-               $products_details->products_id = $next_product_id;
-               $products_details->common_product=$i;
-               $products_details->product_detail_image = json_encode($arr) ?? "-";
-               $products_details->sku = $request->sku[$i];
-               $products_details->return_replace = $request->return_replace[$i] ?? 1;
-               $products_details->r_days = $request->r_days[$i];
+//                // Convert the array to JSON
+//                $np1 = count($request->retail_price[$i]);
+//                $ac=$request->attributecount;
+//                for($k=0;$k<$np1;$k++)
+//                {
+//                $products_details = new ProductsDetails();       
+//                $products_details->products_id = $next_product_id;
+//                $products_details->common_product=$i;
+//                $products_details->product_detail_image = json_encode($arr) ?? "-";
+//                $products_details->sku = $request->sku[$i];
+//                $products_details->return_replace = $request->return_replace[$i] ?? 1;
+//                $products_details->r_days = $request->r_days[$i];
               
                
-               $products_details->attributevalue1 = isset($request->attributecolorval[$i][$k]) ? $request->attributecolorval[$i][$k] : '';
-               $products_details->attributename1 = isset($request->attributecolorname[$i][$k]) ? 'Color' : 'Color';
-               $products_details->attributevalue2 = isset($request->attributeval[$i][0][$k]) ? $request->attributeval[$i][0][$k] : '';
-               $products_details->attributename2 = isset($request->attributename[$i][0][$k]) ? $request->attributename[$i][0] [$k]: '';
-               $products_details->attributevalue3 = isset($request->attributeval[$i][1][$k]) ? $request->attributeval[$i][1][$k] : '';
-               $products_details->attributename3 = isset($request->attributename[$i][1][$k]) ? $request->attributename[$i][1][$k] : '';
+//                $products_details->attributevalue1 = isset($request->attributecolorval[$i][$k]) ? $request->attributecolorval[$i][$k] : '';
+//                $products_details->attributename1 = isset($request->attributecolorname[$i][$k]) ? 'Color' : 'Color';
+//                $products_details->attributevalue2 = isset($request->attributeval[$i][0][$k]) ? $request->attributeval[$i][0][$k] : '';
+//                $products_details->attributename2 = isset($request->attributename[$i][0][$k]) ? $request->attributename[$i][0] [$k]: '';
+//                $products_details->attributevalue3 = isset($request->attributeval[$i][1][$k]) ? $request->attributeval[$i][1][$k] : '';
+//                $products_details->attributename3 = isset($request->attributename[$i][1][$k]) ? $request->attributename[$i][1][$k] : '';
                
 
-               //$products_details->color = isset($request->attrcolor[$k]) ? $request->attrcolor[$k] : NULL;
-               //$products_details->size = isset($request->attrsize[$k]) ? $request->attrsize[$k] : NULL;
+//                //$products_details->color = isset($request->attrcolor[$k]) ? $request->attrcolor[$k] : NULL;
+//                //$products_details->size = isset($request->attrsize[$k]) ? $request->attrsize[$k] : NULL;
                                
-               $products_details->quantity = $request->quantity[$i][$k];
+//                $products_details->quantity = $request->quantity[$i][$k];
                
-               $products_details->retail_price = $request->retail_price[$i][$k];
-               $products_details->selling_price = $request->selling_price[$i][$k];
+//                $products_details->retail_price = $request->retail_price[$i][$k];
+//                $products_details->selling_price = $request->selling_price[$i][$k];
              
-               $products_details->low_stock_limit = $request->low_stock_limit[$i][$k];
+//                $products_details->low_stock_limit = $request->low_stock_limit[$i][$k];
               
-               $products_details->threshold = "";
-               // dd($products_details);
-               $products_details->save();
-               }
+//                $products_details->threshold = "";
+//                // dd($products_details);
+//                $products_details->save();
+//                }
               
-           }
+//            }
           
           
                
-                if(isset($request->spec_id)){
+//                 if(isset($request->spec_id)){
 
            
-                   foreach($request->spec_id as $key => $value) {
+//                    foreach($request->spec_id as $key => $value) {
 
-                       $products_spec = new ProductSpecs();
+//                        $products_spec = new ProductSpecs();
        
-                       $products_spec->products_id = $next_product_id;
-                       $products_spec->category_sub_id = $request->category_sub;
-                       $products_spec->spec_id = $value;
-                       $products_spec->specify_attribute = $request->specify_attribute[$value];
-                       $products_spec->specify_value = $request->specify_value[$value];
-                      // dd($products_spec);
-                       $products_spec->save();
-                   }	
+//                        $products_spec->products_id = $next_product_id;
+//                        $products_spec->category_sub_id = $request->category_sub;
+//                        $products_spec->spec_id = $value;
+//                        $products_spec->specify_attribute = $request->specify_attribute[$value];
+//                        $products_spec->specify_value = $request->specify_value[$value];
+//                       // dd($products_spec);
+//                        $products_spec->save();
+//                    }	
               
-               }
+//                }
                
            
-            $flasher->addSuccess('New Product Added successfully!');
-            return redirect()->route('vendorproducts.crud.listing');
-        // } catch (\Throwable $th) {
-        // print_r($th);exit();
-            $flasher->addError('Something Error!!');
-            return redirect()->route('vendorproducts.crud.index');
-        // }
-    }
+//             $flasher->addSuccess('New Product Added successfully!');
+//             return redirect()->route('vendorproducts.crud.listing');
+//         // } catch (\Throwable $th) {
+//         // print_r($th);exit();
+//             $flasher->addError('Something Error!!');
+//             return redirect()->route('vendorproducts.crud.index');
+//         // }
+//     }
 
     /**
      * Display the specified resource.
@@ -370,8 +548,7 @@ class ProductsController extends Controller
        // try{
         $login_id = session()->get('login_id');
         //  echo $id;exit();
-        $products = Products::where('flag',1)->find($id);
-        // print_r($productInfo);
+        $products = Products::where('flag',1)->where('product_id', $id)->first();
         $category = Category::where('status',1)->get();
         $category_main_data = CategoryMain::where('status',1)->get();
         $CategorySub = CategorySub::where('status',1)->get();
@@ -454,9 +631,8 @@ class ProductsController extends Controller
        $cate = Products::join('category', 'category.id', '=', 'products.category')
        ->join('category_main','category_main.id','=','products.category_main')
        ->join('category_sub','category_sub.id','=','products.category_sub')
-       ->where('products.id', $id)
+       ->where('products.product_id', $id)
        ->get();
-     // dd($products); 
      //  print_r($cate);exit();
 
 
@@ -777,9 +953,13 @@ class ProductsController extends Controller
              
                 }
              
-                $products_details->color = isset($request->attrcolor[$key]) ? $request->attrcolor[$key] : NULL;
-                $products_details->size = isset($request->attrsize[$key]) ? $request->attrsize[$key] : NULL;
-                                // $products_details->size = $request->attrsize[$key];
+                $products_details->attributevalue1 = isset($request->attrcolor[$key]) ? $request->attrcolor[$key] : null;
+                $products_details->attributename1 = 'Color';
+                $products_details->attributevalue2 = isset($request->attrsize[$key]) ? $request->attrsize[$key] : null;
+                if (!empty($products_details->attributevalue2)) {
+                    $products_details->attributename2 = $products_details->attributename2 ?: 'Size';
+                }
+                // $products_details->size = $request->attrsize[$key];
                 $products_details->quantity = $request->quantity[$key];
                 $products_details->retail_price = $request->retail_price[$key];
                 $products_details->selling_price = $request->selling_price[$key];
@@ -788,9 +968,6 @@ class ProductsController extends Controller
                 $products_details->r_days = $request->r_days[$key];
                 $products_details->low_stock_limit = $request->low_stock_limit[$key];
                 //$products_details->threshold = $request->threshold[$key];
-                $products_details->login_id =$login_id;
-                $products_details->logintype = "Vendor";
-                $products_details->created_by =$login_id;
 
                 $products_details->save();
             // }
@@ -893,7 +1070,7 @@ class ProductsController extends Controller
                             $productsAttri->products_id = $id;
                             $productsAttri->category_sub_id = $request->category_sub;
                             $productsAttri->spec_attribute = $request->specify_attri[$ke];
-                            $productsAttri->spec_value = $request->atttibute_value[$ke];exit();
+                            $productsAttri->spec_value = $request->atttibute_value[$ke] ?? null;
                             $productsAttri->flag = 1;
                             $productsAttri->status = 1;
                             $productsAttri->created_by = "1";
@@ -908,7 +1085,14 @@ class ProductsController extends Controller
             return redirect()->route('vendorproducts.crud.listing');
            
         } catch(\Throwable $th) {
-            $flasher->addError('Something Error!');
+            Log::error('Vendor product update failed', [
+                'product_id' => $id,
+                'vendor_login_id' => session()->get('login_id'),
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+            ]);
+            $flasher->addError('Something Error! ' . $th->getMessage());
             return redirect()->route('vendorproducts.crud.listing');
         }
         // print_r($category);exit;

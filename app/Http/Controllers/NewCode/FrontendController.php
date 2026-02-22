@@ -47,12 +47,40 @@ class FrontendController extends Controller
     }
 
 
-    public function shops()
+    public function shops(Request $request)
     {
+        $keyword = trim((string) ($request->input('keywords') ?? $request->input('vendor') ?? ''));
+        $vendorcreate = vendorcreate::query();
+        if ($keyword !== '') {
+            $vendorcreate->where('shop_name', 'LIKE', '%' . $keyword . '%');
+        }
+        $vendorcreate = $vendorcreate->get();
+        return view('frontend/vendor_doken_store_grid', compact('vendorcreate', 'keyword'));
+    }
 
-        $vendorcreate = vendorcreate::get();
-        // dd($vendorcreate);
-        return view('frontend/vendor_doken_store_grid', compact('vendorcreate'));
+    public function ajaxVendorSearch(Request $request)
+    {
+        $term = trim((string) ($request->input('q') ?? $request->input('vendor') ?? ''));
+        if (strlen($term) < 1) {
+            return response()->json(['suggestions' => []]);
+        }
+
+        $vendors = vendorcreate::query()
+            ->where('shop_name', 'LIKE', '%' . $term . '%')
+            ->orderBy('shop_name', 'asc')
+            ->limit(10)
+            ->get(['id', 'shop_name', 'profile_image']);
+
+        $suggestions = $vendors->map(function ($vendor) {
+            return [
+                'value' => $vendor->shop_name,
+                'type' => 'vendor',
+                'image' => !empty($vendor->profile_image) ? asset('assets/images/vendor/profile/' . $vendor->profile_image) : null,
+                'url' => url('/shop-details/' . $vendor->id),
+            ];
+        })->values();
+
+        return response()->json(['suggestions' => $suggestions]);
     }
 
 
@@ -724,7 +752,7 @@ class FrontendController extends Controller
     public function vendorProducts($vendor_id)
     {
         $products = DB::table('products')
-            ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
+            ->leftJoin('products_details', 'products.product_id', '=', 'products_details.products_id')
             ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
             ->leftJoin('ratings', function ($join) {
                 $join->on('ratings.products_id', '=', 'products.id')
@@ -753,7 +781,6 @@ class FrontendController extends Controller
             ->limit('4')
             ->inRandomOrder()
             ->get();
-
         return $products;
     }
 
@@ -763,7 +790,7 @@ class FrontendController extends Controller
     public function vendorProducts2($vendor_id)
     {
         $products = DB::table('products')
-            ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
+            ->leftJoin('products_details', 'products.product_id', '=', 'products_details.products_id')
             ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
             ->leftJoin('ratings', function ($join) {
                 $join->on('ratings.products_id', '=', 'products.id')
@@ -855,7 +882,6 @@ class FrontendController extends Controller
             ->first();
 
         $getProduct = Products::where('product_id', $getSpecificProduct->products_id)->first();
-
         $ProductSpecs = ProductSpecs::where('products_id', $getSpecificProduct->products_id)->get();
 
         $vendor_name = Vendor::where('id', $getProduct->vendor_id)->value('shop_name');

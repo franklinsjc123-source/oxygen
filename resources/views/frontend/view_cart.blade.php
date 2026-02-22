@@ -45,7 +45,7 @@
                                             <div class="p-relative">
                                                 <a href="product-default.html">
                                                     <figure>
-                                                        <img src="<?= asset('assets/images/products/detail/'.$image) ?>" alt="product"
+                                                        <img src="<?= asset('assets/images/products/'.$image) ?>" alt="product"
                                                             width="300" height="338">
                                                     </figure>
                                                 </a>

@@ -1081,60 +1081,84 @@ class HomeController extends Controller
         $productSuggestions = DB::table('products')
             ->where('status', 1)
             ->where('product_name', 'LIKE', '%' . $term . '%')
-            ->select('product_name as value')
-            ->distinct()
+            ->select('id', 'product_name as value', 'product_image')
+            ->orderBy('created_at', 'desc')
             ->limit(6)
-            ->pluck('value');
+            ->get();
 
-        foreach ($productSuggestions as $value) {
+        foreach ($productSuggestions as $row) {
             $suggestions->push([
-                'value' => $value,
+                'value' => $row->value,
                 'type' => 'product',
+                'image' => !empty($row->product_image) ? asset('assets/images/products/' . $row->product_image) : null,
+                'url' => url('/productsearchdetails?keywords=' . urlencode($row->value)),
             ]);
         }
 
         $brandSuggestions = DB::table('products_specs')
+            ->leftJoin('products as p', 'p.id', '=', 'products_specs.products_id')
             ->whereRaw('LOWER(specify_attribute) = ?', ['brand'])
             ->where('specify_value', 'LIKE', '%' . $term . '%')
-            ->select('specify_value as value')
+            ->where('p.status', 1)
+            ->select('specify_value as value', 'p.product_image')
             ->distinct()
             ->limit(4)
-            ->pluck('value');
+            ->get();
 
-        foreach ($brandSuggestions as $value) {
+        foreach ($brandSuggestions as $row) {
             $suggestions->push([
-                'value' => $value,
+                'value' => $row->value,
                 'type' => 'brand',
+                'image' => !empty($row->product_image) ? asset('assets/images/products/' . $row->product_image) : null,
+                'url' => url('/productsearchdetails?keywords=' . urlencode($row->value)),
             ]);
         }
 
         $mainCategorySuggestions = DB::table('category_main')
             ->where('status', 1)
             ->where('category_main_name', 'LIKE', '%' . $term . '%')
-            ->select('category_main_name as value')
-            ->distinct()
+            ->select('category_main_name as value', 'category_main_image')
             ->limit(3)
-            ->pluck('value');
+            ->get();
 
-        foreach ($mainCategorySuggestions as $value) {
+        foreach ($mainCategorySuggestions as $row) {
             $suggestions->push([
-                'value' => $value,
+                'value' => $row->value,
                 'type' => 'category',
+                'image' => !empty($row->category_main_image) ? asset('assets/images/categoryMain/' . $row->category_main_image) : null,
+                'url' => url('/productsearchdetails?keywords=' . urlencode($row->value)),
+            ]);
+        }
+
+        $categorySuggestions = DB::table('category')
+            ->where('status', 1)
+            ->where('category_name', 'LIKE', '%' . $term . '%')
+            ->select('category_name as value', 'category_image')
+            ->limit(3)
+            ->get();
+
+        foreach ($categorySuggestions as $row) {
+            $suggestions->push([
+                'value' => $row->value,
+                'type' => 'category',
+                'image' => !empty($row->category_image) ? asset('assets/images/category/' . $row->category_image) : null,
+                'url' => url('/productsearchdetails?keywords=' . urlencode($row->value)),
             ]);
         }
 
         $subCategorySuggestions = DB::table('category_sub')
             ->where('status', 1)
             ->where('category_sub_name', 'LIKE', '%' . $term . '%')
-            ->select('category_sub_name as value')
-            ->distinct()
+            ->select('category_sub_name as value', 'category_sub_image')
             ->limit(3)
-            ->pluck('value');
+            ->get();
 
-        foreach ($subCategorySuggestions as $value) {
+        foreach ($subCategorySuggestions as $row) {
             $suggestions->push([
-                'value' => $value,
+                'value' => $row->value,
                 'type' => 'subcategory',
+                'image' => !empty($row->category_sub_image) ? asset('assets/images/categorySub/' . $row->category_sub_image) : null,
+                'url' => url('/productsearchdetails?keywords=' . urlencode($row->value)),
             ]);
         }
 
@@ -1144,17 +1168,21 @@ class HomeController extends Controller
             ->select('color_name as value')
             ->distinct()
             ->limit(3)
-            ->pluck('value');
+            ->get();
 
-        foreach ($colorSuggestions as $value) {
+        foreach ($colorSuggestions as $row) {
             $suggestions->push([
-                'value' => $value,
+                'value' => $row->value,
                 'type' => 'color',
+                'image' => null,
+                'url' => url('/productsearchdetails?keywords=' . urlencode($row->value)),
             ]);
         }
 
         $suggestions = $suggestions
-            ->unique('value')
+            ->unique(function ($item) {
+                return strtolower((string) ($item['type'] ?? '')) . '|' . strtolower((string) ($item['value'] ?? ''));
+            })
             ->take(12)
             ->values();
 

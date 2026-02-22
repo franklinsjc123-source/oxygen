@@ -138,6 +138,7 @@
 	
 	
 	Route::post("vendorproducts/addinfo", [ProductsController::class, "addinfo"])->name('vendorproducts.addinfo');
+	Route::get("vendorproducts/addinfo", [ProductsController::class, "index"]);
 	//    // hide
 	Route::resource("vendorproducts_crud", ProductsController::class, ['names' => 'vendorproducts.crud'])->middleware('auth');
 	Route::get("productscreate", [ProductsController::class, "index"])->name('vendorproductscreate');

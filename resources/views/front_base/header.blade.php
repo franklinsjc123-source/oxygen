@@ -100,8 +100,35 @@
             cursor: pointer;
             line-height: 1.35;
             display: flex;
+            align-items: center;
             justify-content: space-between;
             gap: 6px;
+        }
+
+        .search-suggest-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .search-suggest-thumb {
+            width: 34px !important;
+            height: 34px !important;
+            border-radius: 4px;
+            object-fit: cover !important;
+            background: #f4f4f4;
+            flex-shrink: 0;
+            display: block !important;
+            max-width: 34px !important;
+            min-width: 34px !important;
+        }
+
+        .search-suggest-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 220px;
         }
 
         .search-suggest-item:hover,
@@ -256,7 +283,7 @@
                             <form method="get" action="{{ route('productsearchdetails') }}"
                                 class="header-search hs-expanded hs-round d-flex d-md-none input-wrapper home-mobile-search">
                                 <input type="text" class="form-control" name="keywords" id="search_mobile"
-                                    autocomplete="off" placeholder="Search in..." required />
+                                    autocomplete="off" placeholder="Search in..." />
                                 <button class="btn btn-search" type="submit"><i class="w-icon-search"></i>
                                 </button>
                                 <div class="search-suggest-box" id="search_suggest_mobile"></div>
@@ -288,7 +315,7 @@
 
 
                                 <input type="text" class="form-control" name="keywords" id="search"
-                                    autocomplete="off" placeholder="Search in..." required />
+                                    autocomplete="off" placeholder="Search in..." />
                                 <button class="btn btn-search" type="submit"><i class="w-icon-search"></i>
                                 </button>
                                 <div class="search-suggest-box" id="search_suggest_desktop"></div>
@@ -620,7 +647,31 @@
             <!-- End of Header -->
             <script>
                 (function() {
-                    var endpoint = "{{ route('ajax.search') }}";
+                    var productEndpoint = "{{ route('ajax.search') }}";
+                    var vendorEndpoint = "{{ route('ajax.vendor.search') }}";
+                    var defaultSuggestImage = "{{ asset('frontend/images/favicon.png') }}";
+                    var isShopsPage = window.location.pathname.replace(/\/+$/, '') === '/shops';
+
+                    function escapeHtml(value) {
+                        return String(value || '').replace(/[<>&"]/g, function(ch) {
+                            return ({
+                                '<': '&lt;',
+                                '>': '&gt;',
+                                '&': '&amp;',
+                                '"': '&quot;'
+                            })[ch];
+                        });
+                    }
+
+                    function navigateToSuggestion(item, input, form) {
+                        if (!item) return;
+                        if (item.url) {
+                            window.location.href = item.url;
+                            return;
+                        }
+                        input.value = item.value || '';
+                        form.submit();
+                    }
 
                     function setupSearchSuggest(inputId, boxId) {
                         var input = document.getElementById(inputId);
@@ -628,6 +679,10 @@
                         if (!input || !box) return;
 
                         var form = input.closest('form');
+                        var endpoint = isShopsPage ? vendorEndpoint : productEndpoint;
+                        if (isShopsPage && form) {
+                            form.setAttribute('action', "{{ route('shops') }}");
+                        }
                         var suggestions = [];
                         var activeIndex = -1;
                         var debounceTimer = null;
@@ -648,17 +703,13 @@
                             suggestions = items;
                             activeIndex = -1;
                             box.innerHTML = items.map(function(item, idx) {
-                                var safeValue = String(item.value || '').replace(/[<>&"]/g, function(ch) {
-                                    return ({
-                                        '<': '&lt;',
-                                        '>': '&gt;',
-                                        '&': '&amp;',
-                                        '"': '&quot;'
-                                    })[ch];
-                                });
+                                var safeValue = escapeHtml(item.value);
+                                var safeType = escapeHtml(item.type || 'search');
+                                var imgSrc = item.image ? item.image : defaultSuggestImage;
+                                var imageHtml = '<img class="search-suggest-thumb" style="width:34px;height:34px;display:block;object-fit:cover;border-radius:4px;flex:0 0 34px;" src="' + escapeHtml(imgSrc) + '" alt="' + safeValue + '" onerror="this.src=\'' + escapeHtml(defaultSuggestImage) + '\'">';
                                 return '<div class="search-suggest-item" data-index="' + idx + '">' +
-                                    '<span>' + safeValue + '</span>' +
-                                    '<span class="search-suggest-type">' + String(item.type || 'search') + '</span>' +
+                                    '<span class="search-suggest-left">' + imageHtml + '<span class="search-suggest-text">' + safeValue + '</span></span>' +
+                                    '<span class="search-suggest-type">' + safeType + '</span>' +
                                     '</div>';
                             }).join('');
                             box.style.display = 'block';
@@ -717,23 +768,43 @@
                                 setActive(Math.max(activeIndex - 1, 0));
                             } else if (e.key === 'Enter' && activeIndex >= 0 && suggestions[activeIndex]) {
                                 e.preventDefault();
-                                input.value = suggestions[activeIndex].value;
                                 hideBox();
-                                form.submit();
+                                navigateToSuggestion(suggestions[activeIndex], input, form);
                             } else if (e.key === 'Escape') {
                                 hideBox();
                             }
                         });
 
                         box.addEventListener('mousedown', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
                             var item = e.target.closest('.search-suggest-item');
                             if (!item) return;
                             var idx = parseInt(item.getAttribute('data-index'), 10);
-                            if (!isNaN(idx) && suggestions[idx] && suggestions[idx].value) {
-                                input.value = suggestions[idx].value;
+                            if (!isNaN(idx) && suggestions[idx]) {
+                                var selected = suggestions[idx];
+                                hideBox();
+                                setTimeout(function() {
+                                    navigateToSuggestion(selected, input, form);
+                                }, 0);
+                                return;
                             }
                             hideBox();
-                            form.submit();
+                        });
+
+                        box.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            var item = e.target.closest('.search-suggest-item');
+                            if (!item) return;
+                            var idx = parseInt(item.getAttribute('data-index'), 10);
+                            if (!isNaN(idx) && suggestions[idx]) {
+                                var selected = suggestions[idx];
+                                hideBox();
+                                setTimeout(function() {
+                                    navigateToSuggestion(selected, input, form);
+                                }, 0);
+                            }
                         });
 
                         document.addEventListener('click', function(e) {

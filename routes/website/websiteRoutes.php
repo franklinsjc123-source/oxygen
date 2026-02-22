@@ -69,6 +69,7 @@ Route::get('ViewProduct_information/{productdetail_id}', [HomeController::class,
 Route::get('getvendorsubfilterproduct/', [HomeController::class, 'getvendorsubfilterproduct'])->name('getvendorsubfilterproduct');
 
 Route::get('/ajax-search', [HomeController::class, 'ajaxSearch'])->name('ajax.search');
+Route::get('/ajax-vendor-search', [FrontendController::class, 'ajaxVendorSearch'])->name('ajax.vendor.search');
 Route::get('/getCategoryByMainId', [HomeController::class, 'getCategoryByMainId'])->name('getCategoryByMainId');
 Route::get('/categoryWiseListProduct/{id}', [HomeController::class, 'categoryWiseListProduct'])->name('categoryWiseListProduct');
 

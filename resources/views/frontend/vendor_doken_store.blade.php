@@ -271,29 +271,29 @@
                             <!-- End of Store Banner -->
 
 
-                           <ul class="nav nav-tabs mb-3" id="productTabs">
+                            <ul class="nav nav-tabs mb-3" id="productTabs">
                                 <li  style="cursor:pointer;" class="nav-item">
                                     <a class="nav-link active" data-target="#allProducts"
-                                    onclick="activateTab(this.getAttribute('data-target'))">All Products</a>
+                                    href="javascript:void(0)">All Products</a>
                                 </li>
 
 
                                 <li  style="cursor:pointer;" class="nav-item">
                                     <a class="nav-link" data-target="#offers"
-                                    onclick="activateTab(this.getAttribute('data-target'))">Offers</a>
+                                    href="javascript:void(0)">Offers</a>
                                 </li>
                                
                                 <li  style="cursor:pointer;" class="nav-item">
                                     <a class="nav-link" data-target="#newCollection"
-                                    onclick="activateTab(this.getAttribute('data-target'))">New Collection</a>
+                                    href="javascript:void(0)">New Collection</a>
                                 </li>
                                 <li  style="cursor:pointer;" class="nav-item">
                                     <a class="nav-link" data-target="#featuredProducts"
-                                    onclick="activateTab(this.getAttribute('data-target'))">Featured Products</a>
+                                    href="javascript:void(0)">Featured Products</a>
                                 </li>
                             </ul>
 
-
+                            <div id="productTabContents">
                             <div  id="allProducts" class="product-wrapper row cols-md-5 cols-sm-2 cols-2 tabContent active">
                                 @foreach ($products as $product)
                                     @include('frontend/product-card', ['product' => $product])
@@ -377,6 +377,7 @@
                                     @include('frontend/product-card', ['product' => $product])
                                 @endforeach
                             </div>
+                            </div>
                             
                         </div>
                         <!-- End of Main Content -->
@@ -388,33 +389,38 @@
         <!-- End of Main -->
  @endsection
 
-  <script>
-    function activateTab(target) {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tabNav = document.getElementById('productTabs');
+        if (!tabNav) return;
+        const panelIds = ['#allProducts', '#offers', '#newCollection', '#featuredProducts'];
 
-       
-        document.querySelectorAll('#productTabs .nav-link')
-            .forEach(x => x.classList.remove('active'));
+        function activateTab(target) {
+            tabNav.querySelectorAll('.nav-link').forEach(function (el) {
+                el.classList.remove('active');
+            });
 
-        document.querySelector('#productTabs .nav-link[data-target="' + target + '"]')
-            ?.classList.add('active');
+            const activeTab = tabNav.querySelector('.nav-link[data-target="' + target + '"]');
+            if (activeTab) activeTab.classList.add('active');
 
-        document.querySelectorAll('.tabContent')
-            .forEach(x => x.classList.add('d-none'));
+            panelIds.forEach(function (id) {
+                const panel = document.querySelector(id);
+                if (panel) panel.classList.add('d-none');
+            });
 
-        document.querySelector(target)?.classList.remove('d-none');
-    }
+            const activePanel = document.querySelector(target);
+            if (activePanel) activePanel.classList.remove('d-none');
+        }
 
-    document.querySelectorAll('#productTabs .nav-link').forEach(function(tab){
-        tab.addEventListener('click', function(e){
-            e.preventDefault();
-            let target = this.getAttribute('data-target');
-
-            history.pushState(null, null, target);  
-            activateTab(target);
+        tabNav.querySelectorAll('.nav-link').forEach(function (tab) {
+            tab.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = this.getAttribute('data-target');
+                if (!target) return;
+                activateTab(target);
+            });
         });
     });
-
-  
 </script>
 
 

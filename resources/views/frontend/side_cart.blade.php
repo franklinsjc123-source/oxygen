@@ -16,7 +16,7 @@
             </div>
             <figure class="product-media">
                 <a href="product-default.html">
-                    <img src="<?= $baseUrl ?>/assets/images/products/detail/<?= $row['attributes']['image'] ?>" alt="product" height="84" width="94">
+                    <img src="<?= $baseUrl ?>/assets/images/products/<?= $row['attributes']['image'] ?>" alt="product" height="84" width="94">
                 </a>
             </figure>
             <button onclick="removeCart('<?= $row['id'] ?>')" class="btn btn-link btn-close" aria-label="button">

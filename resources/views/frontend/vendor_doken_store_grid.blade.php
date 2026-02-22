@@ -36,6 +36,10 @@
     color: #fff5f5ff;
   }
 
+  .vendor-search-form {
+    position: relative;
+  }
+
 
 </style>
 
@@ -74,9 +78,10 @@
                         </div> --}}
                     </div>
                     <div class="vendor-search-wrapper">
-                        <form class="vendor-search-form">
-                            <input type="email" class="form-control mr-4 bg-white" name="vendor" id="vendor"
-                                placeholder="Search Vendors" />
+                        <form class="vendor-search-form" method="get" action="{{ route('shops') }}">
+                            <input type="text" class="form-control mr-4 bg-white" name="vendor" id="vendor"
+                                placeholder="Search Vendors" autocomplete="off" value="{{ $keyword ?? '' }}" />
+                            <div class="search-suggest-box" id="vendor_suggest_box"></div>
                             <button class="btn btn-primary btn-rounded" type="submit">Apply</button>
                         </form>
                     </div>
@@ -135,4 +140,161 @@
                 </div>
             </div>
         </main>
+        <script>
+            (function() {
+                var input = document.getElementById('vendor');
+                var box = document.getElementById('vendor_suggest_box');
+                var form = input ? input.closest('form') : null;
+                if (!input || !box || !form) return;
+
+                var endpoint = "{{ route('ajax.vendor.search') }}";
+                var defaultSuggestImage = "{{ asset('frontend/images/favicon.png') }}";
+                var suggestions = [];
+                var activeIndex = -1;
+                var debounceTimer = null;
+                var reqSeq = 0;
+
+                function escapeHtml(value) {
+                    return String(value || '').replace(/[<>&"]/g, function(ch) {
+                        return ({
+                            '<': '&lt;',
+                            '>': '&gt;',
+                            '&': '&amp;',
+                            '"': '&quot;'
+                        })[ch];
+                    });
+                }
+
+                function hideBox() {
+                    box.style.display = 'none';
+                    box.innerHTML = '';
+                    suggestions = [];
+                    activeIndex = -1;
+                }
+
+                function setActive(idx) {
+                    var items = box.querySelectorAll('.search-suggest-item');
+                    items.forEach(function(el) {
+                        el.classList.remove('active');
+                    });
+                    if (idx >= 0 && idx < items.length) {
+                        items[idx].classList.add('active');
+                        activeIndex = idx;
+                    }
+                }
+
+                function navigate(item) {
+                    if (item && item.url) {
+                        window.location.href = item.url;
+                        return;
+                    }
+                    form.submit();
+                }
+
+                function render(items) {
+                    if (!items || !items.length) {
+                        hideBox();
+                        return;
+                    }
+                    suggestions = items;
+                    activeIndex = -1;
+                    box.innerHTML = items.map(function(item, idx) {
+                        var safeValue = escapeHtml(item.value);
+                        var safeType = escapeHtml(item.type || 'vendor');
+                        var imgSrc = item.image ? item.image : defaultSuggestImage;
+                        var imageHtml = '<img class="search-suggest-thumb" src="' + escapeHtml(imgSrc) + '" alt="' + safeValue + '">';
+                        return '<div class="search-suggest-item" data-index="' + idx + '">' +
+                            '<span class="search-suggest-left">' + imageHtml + '<span class="search-suggest-text">' + safeValue + '</span></span>' +
+                            '<span class="search-suggest-type">' + safeType + '</span>' +
+                            '</div>';
+                    }).join('');
+                    box.style.display = 'block';
+                }
+
+                function fetchSuggest(query) {
+                    reqSeq += 1;
+                    var currentReq = reqSeq;
+                    fetch(endpoint + '?q=' + encodeURIComponent(query), {
+                            method: 'GET'
+                        })
+                        .then(function(res) {
+                            return res.ok ? res.json() : {
+                                suggestions: []
+                            };
+                        })
+                        .then(function(data) {
+                            if (currentReq !== reqSeq) return;
+                            render((data && data.suggestions) ? data.suggestions : []);
+                        })
+                        .catch(function() {
+                            hideBox();
+                        });
+                }
+
+                input.addEventListener('input', function() {
+                    var value = input.value.trim();
+                    if (debounceTimer) clearTimeout(debounceTimer);
+                    if (value.length < 1) {
+                        hideBox();
+                        return;
+                    }
+                    debounceTimer = setTimeout(function() {
+                        fetchSuggest(value);
+                    }, 250);
+                });
+
+                input.addEventListener('keydown', function(e) {
+                    if (box.style.display !== 'block') return;
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        setActive(Math.min(activeIndex + 1, suggestions.length - 1));
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        setActive(Math.max(activeIndex - 1, 0));
+                    } else if (e.key === 'Enter' && activeIndex >= 0 && suggestions[activeIndex]) {
+                        e.preventDefault();
+                        hideBox();
+                        navigate(suggestions[activeIndex]);
+                    } else if (e.key === 'Escape') {
+                        hideBox();
+                    }
+                });
+
+                box.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var item = e.target.closest('.search-suggest-item');
+                    if (!item) return;
+                    var idx = parseInt(item.getAttribute('data-index'), 10);
+                    if (!isNaN(idx) && suggestions[idx]) {
+                        var selected = suggestions[idx];
+                        hideBox();
+                        setTimeout(function() {
+                            navigate(selected);
+                        }, 0);
+                    }
+                });
+
+                box.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var item = e.target.closest('.search-suggest-item');
+                    if (!item) return;
+                    var idx = parseInt(item.getAttribute('data-index'), 10);
+                    if (!isNaN(idx) && suggestions[idx]) {
+                        var selected = suggestions[idx];
+                        hideBox();
+                        setTimeout(function() {
+                            navigate(selected);
+                        }, 0);
+                    }
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!form.contains(e.target)) {
+                        hideBox();
+                    }
+                });
+            })();
+        </script>
 @endsection

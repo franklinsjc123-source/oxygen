@@ -390,8 +390,6 @@
                                                                                                         <div class="col-md-1">
                                                                                                             <label class="text-center  fw-bold mt-2">Collection</label>
                                                                                                         </div>
-                                                                                                                @dd($productcollection)
-
                                                                                                         <div class="col-md-4 ">
                                                                                                             <select class="form-select form-select-lg text-secondary"
                                                                                             id="collection" name="collection">
