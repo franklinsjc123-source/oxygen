@@ -175,37 +175,24 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold"> Primary / Main Category</h5>
+                                                        <h5 class="fw-bold">Main Category / Category</h5>
                                                         <div class="form-group">
-                                                            <select class="js-select2 form-control" id="main_category"
-                                                                name="category_main" required>
-                                                                <option selected hidden value="">-- Select --
+                                                            <select class="js-select2 form-control" id="main_category_category"
+                                                                name="category" required>
+                                                                <option selected hidden value="">-- Select Category --
                                                                 </option>
-                                                                @foreach ($category_main_data as $category_main)
-                                                                <option id="{{ $category_main->id }}"
-                                                                    value="{{ $category_main->id}}">
-                                                                    {{ $category_main->category_main_name }}
+                                                                @foreach ($category_data_all as $category_item)
+                                                                <option value="{{ $category_item->id }}"
+                                                                    data-main-category-id="{{ $category_item->main_category_id }}">
+                                                                    {{ $category_item->category_main_name }} -> {{ $category_item->category_name }}
                                                                 </option>
                                                                 @endforeach
                                                             </select>
+                                                            <input type="hidden" id="category_main" name="category_main" value="">
                                                         </div>
                                                     </div>
                                                 </div>
                                                 
-												 <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <h5 class="fw-bold">Category</h5>
-                                                        <div id="clothing">
-                                                            <select class="js-select2 form-control" name="category"
-                                                                id="category"  required>
-                                                                <option value="">Select Main
-                                                                    Category</option>
-
-
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <h5 class="fw-bold">Sub Category</h5>
@@ -937,37 +924,24 @@
     }
 
 
-    // Get Category
-    $('#main_category').on('change', function() {
+    // Get Sub Category from combined Main Category / Category dropdown
+    $('#main_category_category').on('change', function() {
+        const selectedOption = $(this).find(':selected');
+        const category_id = selectedOption.val();
+        const main_category_id = selectedOption.data('main-category-id') || '';
 
-        let main_category_id = $(this).find(":selected").attr("id");
-        let url = "{{ route('getCategory') }}?main_category_id=" + main_category_id;
-        let method = 'GET';
-        getAjaxValue(url, method, function(data) {
-            // $('.spectable').empty();
-            $('#attrsize').empty();
-            $('#attrcolor').empty();
-            $('#category').empty();
-            $('#category').append(
-                `<option value=""selected hidden>Select Category</option>`
-            );
-            $.each(data, function(key, category) {
-                $('#category').append(
-                    `<option id="${category.id}" value="${category.id}">${category.category_name}</option>`
-                );
-            });
+        $('#category_main').val(main_category_id);
 
-            $('#category').removeAttr('disabled');
-        })
-    });
+        if (!category_id) {
+            $('#sub_category').empty().append(
+                `<option value="" selected hidden>Select Category</option>`
+            ).attr('disabled', true);
+            return;
+        }
 
-    //  Get Sub Categoy
-    $('#category').on('change', function() {
-        let category_id = $(this).find(":selected").attr("id");
         let url = "{{ route('getSubCategory') }}?category_id=" + category_id;
         let method = 'GET';
         getAjaxValue(url, method, function(data) {
-            // $('.spectable').empty();
             $('#attrsize').empty();
             $('#attrcolor').empty();
             $('#sub_category').empty();
@@ -981,7 +955,7 @@
             });
 
             $('#sub_category').removeAttr('disabled');
-        })
+        });
     });
 
     $(document).ready(function() {

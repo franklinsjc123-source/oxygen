@@ -200,7 +200,7 @@
                     activeIndex = -1;
                     box.innerHTML = items.map(function(item, idx) {
                         var safeValue = escapeHtml(item.value);
-                        var safeType = escapeHtml(item.type || 'vendor');
+                        var safeType = escapeHtml(item.type || 'shop');
                         var imgSrc = item.image ? item.image : defaultSuggestImage;
                         var imageHtml = '<img class="search-suggest-thumb" src="' + escapeHtml(imgSrc) + '" alt="' + safeValue + '">';
                         return '<div class="search-suggest-item" data-index="' + idx + '">' +

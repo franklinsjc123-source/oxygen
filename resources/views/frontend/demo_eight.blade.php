@@ -1,6 +1,12 @@
  @extends('app_template')
  @section('title','TryNexX')
  @section('content')
+ <style>
+    .product-price-home{
+
+        font-family: monospace;
+    }
+ </style>
  <!-- Start of Main -->
 
 

@@ -48,6 +48,18 @@ class ProductsController extends Controller
     public function index()
     {  
         $category_main_data = CategoryMain::where('status', 1)->get();
+        $category_data_all = Category::join('category_main', 'category.main_category_id', '=', 'category_main.id')
+            ->where('category.status', 1)
+            ->where('category_main.status', 1)
+            ->select(
+                'category.id',
+                'category.main_category_id',
+                'category.category_name',
+                'category_main.category_main_name'
+            )
+            ->orderBy('category_main.category_main_name')
+            ->orderBy('category.category_name')
+            ->get();
         $vendorlist = vendorcreate::All();
         $gst = GST::where('status', 1)->get();
            $login_id = session()->get('login_id');
@@ -72,6 +84,7 @@ class ProductsController extends Controller
         return view('layout.admin.products.add-product')
             ->with([
                 "category_main_data" => $category_main_data,
+                "category_data_all" => $category_data_all,
                 "gst" => $gst,
                 "attribute" => $attribute,
                 "productcollection" => $productcollection,
@@ -83,8 +96,24 @@ class ProductsController extends Controller
     public function addinfo(Request $request)
     { 
         $category_main_data = CategoryMain::where('status', 1)->get();
+        $category_data_all = Category::join('category_main', 'category.main_category_id', '=', 'category_main.id')
+            ->where('category.status', 1)
+            ->where('category_main.status', 1)
+            ->select(
+                'category.id',
+                'category.main_category_id',
+                'category.category_name',
+                'category_main.category_main_name'
+            )
+            ->orderBy('category_main.category_main_name')
+            ->orderBy('category.category_name')
+            ->get();
         $vendorlist = vendorcreate::All(); 
-        $category_data = Category::where('main_category_id', $request->category_main)->get();
+        $selected_main_category_id = $request->category_main;
+        if (empty($selected_main_category_id) && !empty($request->category)) {
+            $selected_main_category_id = Category::where('id', $request->category)->value('main_category_id');
+        }
+        $category_data = Category::where('main_category_id', $selected_main_category_id)->get();
         $category_sub_data = CategorySub::where('category_id', $request->category)->get();
         $category_sub = CategorySub::where('id', $request->category_sub)->first();
         $category_sub = CategorySub::where('id', $request->category_sub)->first();
@@ -112,6 +141,7 @@ class ProductsController extends Controller
         return view('layout.admin.products.add-product')
             ->with([
                 "category_main_data" => $category_main_data,
+                "category_data_all" => $category_data_all,
                 "gst" => $gst,
                 "colors" => $colors,
                 "attribute" => $attribute,
@@ -119,7 +149,7 @@ class ProductsController extends Controller
                 "specification" => $specification,
                 "offers" => $offer,
                 "addinformation"=>"Add",
-                "maincategoryid"=>$request->category_main,                
+                "maincategoryid"=>$selected_main_category_id,                
                 "categoryid"=>$request->category,                
                 "subcategoryid"=>$request->category_sub,                             
                 "nproduct"=>$request->nproduct,
@@ -136,9 +166,10 @@ class ProductsController extends Controller
         return view('layout.admin.products.add-product')
             ->with([
                 "category_main_data" => $category_main_data,
+                "category_data_all" => $category_data_all,
                 "category_data"=>$category_data,
                 "category_sub_data"=>$category_sub_data,
-                "maincategoryid"=>$request->category_main,                
+                "maincategoryid"=>$selected_main_category_id,                
                 "categoryid"=>$request->category,                
                 "subcategoryid"=>$request->category_sub,                             
                 "nproduct"=>$request->nproduct,

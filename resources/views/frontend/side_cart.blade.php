@@ -9,6 +9,21 @@
         <div class="product product-cart">
             <div class="product-detail">
                 <a href="<?= route('productVar', [$row['id']]) ?>" class="product-name"><?= $row['name'] ?></a>
+                <?php
+                    $size = $row['attributes']['size'] ?? '';
+                    $color = $row['attributes']['color'] ?? '';
+                ?>
+                <div class="small text-muted">
+                    <?php if ($size !== '') { ?>
+                        <span>Size: <?= $size ?></span>
+                    <?php } ?>
+                    <?php if ($size !== '' && $color !== '') { ?>
+                        <span> | </span>
+                    <?php } ?>
+                    <?php if ($color !== '') { ?>
+                        <span>Color: <?= $color ?></span>
+                    <?php } ?>
+                </div>
                 <div class="price-box">
                     <span class="product-quantity"><?= $row['quantity'] ?></span>
                     <span class="product-price"><?= $row['price'] ?></span>

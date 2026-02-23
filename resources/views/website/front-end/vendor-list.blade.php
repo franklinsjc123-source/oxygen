@@ -136,7 +136,7 @@
                                 </select>
                             </div>
                             <input type="text" class="form-control" name="search" id="search"
-                                placeholder="Search in..." required />
+                                placeholder="Search in..." />
                             <button class="btn btn-search" type="submit"><i class="w-icon-search"></i>
                             </button>
                         </form>

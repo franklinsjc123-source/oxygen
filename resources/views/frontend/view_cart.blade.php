@@ -57,6 +57,23 @@
                                             <a href="#">
                                                {{ $row['name'] }}
                                             </a>
+                                            @php
+                                                $size = $row['attributes']['size'] ?? '';
+                                                $color = $row['attributes']['color'] ?? '';
+                                            @endphp
+                                            @if($size || $color)
+                                                <div class="text-muted" style="font-size: 12px;">
+                                                    @if($size)
+                                                        <span>Size: {{ $size }}</span>
+                                                    @endif
+                                                    @if($size && $color)
+                                                        <span> | </span>
+                                                    @endif
+                                                    @if($color)
+                                                        <span>Color: {{ $color }}</span>
+                                                    @endif
+                                                </div>
+                                            @endif
                                         </td>
                                         <td class="product-price"><span class="amount">Rs.{{ $row['price'] }}</span></td>
                                         <td class="product-quantity">

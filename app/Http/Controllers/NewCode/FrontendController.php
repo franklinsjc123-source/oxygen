@@ -74,7 +74,7 @@ class FrontendController extends Controller
         $suggestions = $vendors->map(function ($vendor) {
             return [
                 'value' => $vendor->shop_name,
-                'type' => 'vendor',
+                'type' => 'shop',
                 'image' => !empty($vendor->profile_image) ? asset('assets/images/vendor/profile/' . $vendor->profile_image) : null,
                 'url' => url('/shop-details/' . $vendor->id),
             ];
@@ -468,13 +468,34 @@ class FrontendController extends Controller
                     'images'             => [],
                     'retail_amount'      => [],
                     'selling_amount'     => [],
+                    'color_options'      => [],
+                    'variants'           => [],
                     'images'             => [],
                 ];
             }
 
-            if (! in_array($val->color, $resultArr[$productId]['colors'])) {
+            if (!empty($val->color) && ! in_array($val->color, $resultArr[$productId]['colors'])) {
                 $color                             = ProductColor::Where('color_name', $val->color)->value('color_code');
                 $resultArr[$productId]['colors'][] = isset($color) ? $color : '';
+            }
+
+            $colorCode = ProductColor::where('color_name', $val->color)->value('color_code');
+            $colorCode = !empty($colorCode) ? $colorCode : $val->color;
+
+            $colorExists = false;
+            if (!empty($val->color)) {
+                foreach ($resultArr[$productId]['color_options'] as $opt) {
+                    if (($opt['name'] ?? '') === $val->color) {
+                        $colorExists = true;
+                        break;
+                    }
+                }
+            }
+            if (!empty($val->color) && !$colorExists) {
+                $resultArr[$productId]['color_options'][] = [
+                    'name' => $val->color,
+                    'code' => $colorCode,
+                ];
             }
 
             if (! in_array($val->retail_amount, $resultArr[$productId]['retail_amount'])) {
@@ -491,6 +512,16 @@ class FrontendController extends Controller
 
             if (! in_array($val->product_detail_image, $resultArr[$productId]['images'])) {
                 $resultArr[$productId]['images'][] = $val->product_detail_image;
+            }
+
+            if (!empty($val->color) && !empty($val->size)) {
+                $resultArr[$productId]['variants'][] = [
+                    'color_name' => $val->color,
+                    'color_code' => $colorCode,
+                    'size' => $val->size,
+                    'selling_amount' => (float) ($val->selling_amount ?? 0),
+                    'retail_amount' => (float) ($val->retail_amount ?? 0),
+                ];
             }
         }
         if ($id != '') {

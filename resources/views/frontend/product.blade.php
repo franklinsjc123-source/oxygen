@@ -125,10 +125,10 @@
                                  <hr class="product-divider">
 
                                     <div class="product-pa-wrapper">
-                                        <div class="product-price">
+                                        <div class="product-price" id="product-selling-price">
                                             ₹{{ $prouctsList['selling_price'] }} 
                                         </div>
-                                        <div  class="product-price-discount mt-2" >
+                                        <div  class="product-price-discount mt-2" id="product-retail-price">
                                                 ₹{{ $prouctsList['retail_price'] }} 
                                         </div>
                                         <?php 
@@ -136,7 +136,7 @@
                                             $discount_rounded = round($discount_percentage / 10) * 10;
                                         ?>
 
-                                        <div  class="product-offer-percentage  mt-2" >
+                                        <div  class="product-offer-percentage  mt-2" id="product-discount-percentage">
                                                 {{ $discount_rounded }}% Off
                                         </div>
                                     </div>
@@ -158,22 +158,18 @@
                                  <input type="hidden" id="product-color" value="" />
                                  <div class="product-form product-variation-form product-color-swatch">
                                      <label>Color:</label>
-                                     <div class="d-flex align-items-center product-variations">
-                                         <?php if (isset($prouctsList['colors'])) {
-                                                foreach ($prouctsList['colors'] as $col) { ?>
-                                                 <a onclick="setColor('<?= $col ?>')" href="#" class="color" style="background-color: <?php echo $col ?>"></a>
-                                         <?php }
-                                            } ?>
+                                     <div class="d-flex align-items-center product-variations" id="product-color-options">
+                                         @foreach (($prouctsList['color_options'] ?? []) as $colorOption)
+                                            <a href="#" class="color product-color-option"
+                                                data-color-name="{{ $colorOption['name'] }}"
+                                                title="{{ $colorOption['name'] }}"
+                                                style="background-color: {{ $colorOption['code'] }};"></a>
+                                         @endforeach
                                      </div>
                                  </div>
                                  <div class="product-form product-variation-form product-size-swatch">
                                      <label class="mb-1">Size:</label>
-                                     <div class="flex-wrap d-flex align-items-center product-variations">
-                                         <?php if (isset($prouctsList['size'])) {
-                                                foreach ($prouctsList['size'] as $key=>$col) { ?>
-                                                 <a data-amount1="<?= isset($prouctsList['retail_amount'][$key]) ? $prouctsList['retail_amount'][$key]:'' ?>" data-amount="<?= isset($prouctsList['selling_amount'][$key]) ? $prouctsList['selling_amount'][$key]:'' ?>" onclick="setSize('<?= $col ?>',this)" href="#" class="size"><?php echo $col ?></a>
-                                         <?php }
-                                            } ?>
+                                     <div class="flex-wrap d-flex align-items-center product-variations" id="product-size-options">
                                      </div>
                                  </div>
 
@@ -1062,20 +1058,100 @@
  </main>
  <!-- End of Main -->
  <script>
-     function setSize(size,e) {
-       var amt1 = $(e).attr('data-amount');
-       var amt2 =  $(e).attr('data-amount1');
-         $('#product-size').val(size);
-         setTimeout(() => {
-            $('.new-price').text("₹"+amt1);
-            $('#strikeamt').text("₹"+amt2);
-               $('#sellingAmount').text("₹"+amt1);
-         }, 300);
+          const productVariants = @json($prouctsList['variants'] ?? []);
+
+     function formatINR(value) {
+         return '₹' + Number(value || 0);
      }
 
-     function setColor(color) {
-         $('#product-color').val(color);
+     function updateProductPrice(variant) {
+         if (!variant) return;
+         const selling = Number(variant.selling_amount || 0);
+         const retail = Number(variant.retail_amount || 0);
+         let discount = 0;
+         if (retail > 0) {
+             discount = Math.round((((retail - selling) / retail) * 100) / 10) * 10;
+         }
+
+         $('#product-selling-price').text(formatINR(selling));
+         $('#product-retail-price').text(formatINR(retail));
+         $('#product-discount-percentage').text(discount + '% Off');
      }
+
+     function setSize(size, e) {
+         const $el = $(e);
+         $('.product-size-option').removeClass('active');
+         $el.addClass('active');
+         $('#product-size').val(size);
+         updateProductPrice({
+             selling_amount: $el.data('selling'),
+             retail_amount: $el.data('retail')
+         });
+     }
+
+     function renderSizesForColor(colorName) {
+         const filtered = productVariants.filter(function(v) {
+             return String(v.color_name || '') === String(colorName || '');
+         });
+
+         const sizeMap = {};
+         filtered.forEach(function(v) {
+             const sizeKey = String(v.size || '');
+             if (!sizeKey) return;
+             if (!sizeMap[sizeKey] || Number(v.selling_amount || 0) < Number(sizeMap[sizeKey].selling_amount || 0)) {
+                 sizeMap[sizeKey] = v;
+             }
+         });
+
+         const sizes = Object.values(sizeMap).sort(function(a, b) {
+             return Number(a.selling_amount || 0) - Number(b.selling_amount || 0);
+         });
+
+         const $sizeBox = $('#product-size-options');
+         $sizeBox.empty();
+
+         if (!sizes.length) {
+             $('#product-size').val('');
+             return;
+         }
+
+         sizes.forEach(function(v, idx) {
+             const activeClass = idx === 0 ? ' active' : '';
+             const sizeHtml = '<a href="#" class="size product-size-option' + activeClass + '" data-size="' + String(v.size) +
+                 '" data-selling="' + Number(v.selling_amount || 0) + '" data-retail="' + Number(v.retail_amount || 0) + '">' +
+                 String(v.size) + '</a>';
+             $sizeBox.append(sizeHtml);
+         });
+
+         const $first = $sizeBox.find('.product-size-option').first();
+         if ($first.length) {
+             setSize($first.data('size'), $first.get(0));
+         }
+     }
+
+     function setColor(colorName) {
+         $('#product-color').val(colorName);
+         $('.product-color-option').removeClass('active');
+         $('.product-color-option[data-color-name="' + String(colorName).replace(/"/g, '\\"') + '"]').addClass('active');
+         renderSizesForColor(colorName);
+     }
+
+     $(document).on('click', '.product-color-option', function(e) {
+         e.preventDefault();
+         setColor($(this).data('color-name'));
+     });
+
+     $(document).on('click', '.product-size-option', function(e) {
+         e.preventDefault();
+         setSize($(this).data('size'), this);
+     });
+
+     $(function() {
+         const $firstColor = $('.product-color-option').first();
+         if ($firstColor.length) {
+             setColor($firstColor.data('color-name'));
+         }
+     });
 
      function addCart(id) {
 
@@ -1164,3 +1240,5 @@ $('.vote-btn').click(function () {
 
  </script>
  @endsection
+
+
