@@ -55,7 +55,14 @@ class ProductsController extends Controller
         $CategorySub=DB::table('category_sub as t1')
         ->leftJoin('category as t2', 't1.category_id', '=', 't2.id')
         ->leftJoin('category_main as t3', 't1.category_main_id', '=', 't3.id')
-        ->select('t1.id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
+        ->select(
+            't1.id',
+            't1.category_id',
+            't1.category_main_id',
+            't1.category_sub_name',
+            't2.category_name',
+            't3.category_main_name'
+        )
         ->where('t1.status', 1)
         ->whereIn('t1.id', $subcategoryarray)->get();
         //dd($CategorySub);

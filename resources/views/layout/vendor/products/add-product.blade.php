@@ -154,21 +154,43 @@
                                     <div class="card-body">
                                         <div class="col-md-12">
                                             <div class="row">
-                                                
+                                                @php
+                                                    $categoryPairs = collect($CategorySub)
+                                                        ->groupBy('category_id')
+                                                        ->map(function ($items) {
+                                                            return $items->first();
+                                                        })
+                                                        ->values();
+                                                @endphp
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <h5 class="fw-bold">Main Category / Category</h5>
+                                                        <div id="clothing">
+                                                            <select class="js-select2 form-control" name="category"
+                                                                id="main_category_category_vendor" required>
+                                                                <option selected value="">Select Category</option>
+                                                                @foreach ($categoryPairs as $pair)
+                                                                    <option value="{{ $pair->category_id }}"
+                                                                        data-main-category-id="{{ $pair->category_main_id }}">
+                                                                        {{ $pair->category_main_name }} -> {{ $pair->category_name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                            <input type="hidden" name="category_main" id="category_main_hidden_vendor" value="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <h5 class="fw-bold">Sub Category</h5>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="category_sub"
-                                                                id="sub_category"  required>
+                                                                id="sub_category_initial_vendor" disabled required>
                                                                 <option selected  value="">Select
                                                                     Category
                                                                 </option>
-                                                                @foreach ($CategorySub as $sub_category)
-                                                                        <option value="{{ $sub_category->id }}">
-                                                                            {{ $sub_category->category_sub_name }} ( {{ $sub_category->category_main_name }} - {{ $sub_category->category_name }} )
-                                                                        </option>
-                                                                    @endforeach
                                                             </select>
                                                         </div>
                                                     </div>
@@ -838,65 +860,32 @@
 
 
     <script type="text/javascript">
-    // AJAX REQUEST
-    function getAjaxValue(url, method, callback) {
-        $.ajax({
-            url: url,
-            type: method,
-            data: {
-                "_token": "{{ csrf_token() }}"
-            },
-            dataType: "json",
-            success: callback
+    const vendorSubCategories = @json($CategorySub);
+
+    $('#main_category_category_vendor').on('change', function() {
+        const selectedOption = $(this).find(':selected');
+        const categoryId = selectedOption.val();
+        const mainCategoryId = selectedOption.data('main-category-id') || '';
+
+        $('#category_main_hidden_vendor').val(mainCategoryId);
+
+        const $sub = $('#sub_category_initial_vendor');
+        $sub.empty().append('<option selected value="">Select Category</option>');
+
+        if (!categoryId) {
+            $sub.attr('disabled', true);
+            return;
+        }
+
+        const filtered = (vendorSubCategories || []).filter(function(item) {
+            return String(item.category_id) === String(categoryId);
         });
-    }
 
+        filtered.forEach(function(item) {
+            $sub.append('<option value="' + item.id + '">' + item.category_sub_name + '</option>');
+        });
 
-    // Get Category
-    $('#main_category').on('change', function() {
-
-        let main_category_id = $(this).find(":selected").attr("id");
-        let url = "{{ route('getCategory') }}?main_category_id=" + main_category_id;
-        let method = 'GET';
-        getAjaxValue(url, method, function(data) {
-            // $('.spectable').empty();
-            $('#attrsize').empty();
-            $('#attrcolor').empty();
-            $('#category').empty();
-            $('#category').append(
-                `<option value=""selected hidden>Select Category</option>`
-            );
-            $.each(data, function(key, category) {
-                $('#category').append(
-                    `<option id="${category.id}" value="${category.id}">${category.category_name}</option>`
-                );
-            });
-
-            $('#category').removeAttr('disabled');
-        })
-    });
-
-    //  Get Sub Categoy
-    $('#category').on('change', function() {
-        let category_id = $(this).find(":selected").attr("id");
-        let url = "{{ route('getSubCategory') }}?category_id=" + category_id;
-        let method = 'GET';
-        getAjaxValue(url, method, function(data) {
-            // $('.spectable').empty();
-            $('#attrsize').empty();
-            $('#attrcolor').empty();
-            $('#sub_category').empty();
-            $('#sub_category').append(
-                `<option value=""selected hidden>Select Sub Category</option>`
-            );
-            $.each(data, function(key, subCategory) {
-                $('#sub_category').append(
-                    `<option id="${subCategory.id}"  value="${subCategory.id}">${subCategory.category_sub_name}</option>`
-                );
-            });
-
-            $('#sub_category').removeAttr('disabled');
-        })
+        $sub.removeAttr('disabled');
     });
 
     $(document).ready(function() {
