@@ -17,6 +17,30 @@ use DB;
 use session;
 class SalesController extends Controller
 {
+    private function vendorOrderProductsQuery($vendor_id)
+    {
+        return Ecom_Order_product::select(
+                'ecom_order_product.*',
+                'ecom_order_info.order_date',
+                'ecom_order_info.payment_type',
+                'ecom_order_info.payment_status'
+            )
+            ->join('ecom_order_info', 'ecom_order_product.order_id', '=', 'ecom_order_info.order_id')
+            ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
+            ->join('products', 'products.product_id', '=', 'products_details.products_id')
+            ->where('products.logintype', '=', 'Vendor')
+            ->where('products.created_by', '=', $vendor_id);
+    }
+
+    private function vendorOwnedOrderProductQuery($vendor_id, $orderProductId)
+    {
+        return Ecom_Order_product::join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
+            ->join('products', 'products.product_id', '=', 'products_details.products_id')
+            ->where('products.logintype', '=', 'Vendor')
+            ->where('products.created_by', '=', $vendor_id)
+            ->where('ecom_order_product.id', '=', $orderProductId);
+    }
+
     public function order()
     {
         
@@ -31,16 +55,9 @@ class SalesController extends Controller
          
            
         
-        $ordersproduct = Ecom_Order_product::
-            //  join('ecom_order_product','ecom_order_product.order_id','=','ecom_order_info.order_id')
-                select('ecom_order_product.*','ecom_order_info.order_date','ecom_order_info.payment_type','ecom_order_info.payment_status')                
-               ->join('ecom_order_info','ecom_order_product.order_id','=','ecom_order_info.order_id')
-               ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
-               ->join('products', 'products.product_id', '=', 'products_details.products_id')
-              ->where('ecom_order_product.order_status', '=', 'Pending')
-             ->where('products.logintype', '=', 'Vendor')
-	         ->where('products.created_by', '=', $vendor_id)
-             ->get();
+        $ordersproduct = $this->vendorOrderProductsQuery($vendor_id)
+            ->where('ecom_order_product.order_status', '=', 'Pending')
+            ->get();
             //   dd($ordersproduct);
         $product = Products::get();
 	
@@ -87,63 +104,33 @@ class SalesController extends Controller
 				    //->where('products.created_by', '=', $vendor_id)
         //           ->get
                   
-                   $ordersproductaccept = Ecom_Order_product::
-                   select('ecom_order_product.*','ecom_order_info.order_date','ecom_order_info.payment_type','ecom_order_info.payment_status')                             
-                   ->join('ecom_order_info','ecom_order_product.order_id','=','ecom_order_info.order_id')
-                            ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
-                           ->join('products', 'products.product_id', '=', 'products_details.products_id')
-                           ->where('ecom_order_product.order_status', '=', 'Accept')
-                          ->where('products.logintype', '=', 'Vendor')
-                          ->where('products.created_by', '=', $vendor_id)
-                         ->get();
+                   $ordersproductaccept = $this->vendorOrderProductsQuery($vendor_id)
+                       ->where('ecom_order_product.order_status', '=', 'Accept')
+                       ->get();
                          
                  //  dd($ordersproductaccept);
                    
           
-                   $ordersproductdispatch = Ecom_Order_product::
-                   select('ecom_order_product.*','ecom_order_info.order_date','ecom_order_info.payment_type','ecom_order_info.payment_status')                              
-                   ->join('ecom_order_info','ecom_order_product.order_id','=','ecom_order_info.order_id')
-                            ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
-                           ->join('products', 'products.product_id', '=', 'products_details.products_id')
-                           ->where('ecom_order_product.order_status', '=', 'Dispatch')
-                           ->where('products.logintype', '=', 'Vendor')
-                           ->where('products.created_by', '=', $vendor_id)
-                           ->get();
+                   $ordersproductdispatch = $this->vendorOrderProductsQuery($vendor_id)
+                       ->where('ecom_order_product.order_status', '=', 'Dispatch')
+                       ->get();
                    
-          $ordersproductdelivered = Ecom_Order_product::
-          select('ecom_order_product.*','ecom_order_info.order_date','ecom_order_info.payment_type','ecom_order_info.payment_status')                            
-          ->join('ecom_order_info','ecom_order_product.order_id','=','ecom_order_info.order_id')
-                            ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
-                           ->join('products', 'products.product_id', '=', 'products_details.products_id')
-                          ->where('ecom_order_product.order_status', '=', 'Delivered')
-                          ->where('products.logintype', '=', 'Vendor')
-                          ->where('products.created_by', '=', $vendor_id)
-                          ->get();
+          $ordersproductdelivered = $this->vendorOrderProductsQuery($vendor_id)
+              ->where('ecom_order_product.order_status', '=', 'Delivered')
+              ->get();
                    
                    
                    
                 //   dd($ordersproductdelivered);
                    
                    
-          $ordersproductreturn = Ecom_Order_product::
-          select('ecom_order_product.*','ecom_order_info.order_date','ecom_order_info.payment_type','ecom_order_info.payment_status')                 
-          ->join('ecom_order_info','ecom_order_product.order_id','=','ecom_order_info.order_id')
-                            ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
-                           ->join('products', 'products.product_id', '=', 'products_details.products_id')
-                  ->where('ecom_order_product.order_status', '=', 'Return')
-                  ->where('products.logintype', '=', 'Vendor')
-			      ->where('products.created_by', '=', $vendor_id)
-                  ->get();
+          $ordersproductreturn = $this->vendorOrderProductsQuery($vendor_id)
+              ->where('ecom_order_product.order_status', '=', 'Return')
+              ->get();
                    
-          $ordersproductcancel = Ecom_Order_product::
-          select('ecom_order_product.*','ecom_order_info.order_date','ecom_order_info.payment_type','ecom_order_info.payment_status')                    
-          ->join('ecom_order_info','ecom_order_product.order_id','=','ecom_order_info.order_id')
-                            ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
-                           ->join('products', 'products.product_id', '=', 'products_details.products_id')
-                            ->where('ecom_order_product.order_status', '=', 'Cancel')
-                            ->where('products.logintype', '=', 'Vendor')
-				            ->where('products.created_by', '=', $vendor_id)
-                            ->get();
+          $ordersproductcancel = $this->vendorOrderProductsQuery($vendor_id)
+              ->where('ecom_order_product.order_status', '=', 'Cancel')
+              ->get();
 
 
 
@@ -240,7 +227,12 @@ class SalesController extends Controller
     {
         
         $vendor_id = session()->get('login_id');
-        $orderdetails = Ecom_Order_product::where('id',$id)->first();
+        $orderdetails = $this->vendorOwnedOrderProductQuery($vendor_id, $id)
+            ->select('ecom_order_product.*')
+            ->first();
+        if (!$orderdetails) {
+            abort(403, 'Unauthorized order access.');
+        }
         //dd($orderdetails);
         $order = Ecom_Orders::where('order_id',$orderdetails->order_id)->first();
         $product = ProductsDetails::where('id',$orderdetails->product_id)->first();
@@ -260,8 +252,19 @@ class SalesController extends Controller
     public function quickview_product(Request $request, $id)
     {
         
-        
-        $productdetails = ProductsDetails::where('id',$id)->first();
+        $vendor_id = session()->get('login_id');
+        $productdetails = ProductsDetails::join('products', 'products.product_id', '=', 'products_details.products_id')
+            ->where('products.logintype', '=', 'Vendor')
+            ->where('products.created_by', '=', $vendor_id)
+            ->where('products_details.id', '=', $id)
+            ->select('products_details.*')
+            ->first();
+        if (!$productdetails) {
+            return response()->json([
+                'status' => 'Failed',
+                'message' => 'Unauthorized product access.',
+            ], 403);
+        }
         $product = Products::where('id',$productdetails->products_id)->first();
       
         
@@ -276,11 +279,25 @@ class SalesController extends Controller
     {
         // echo 'test';
        $status = $request->sts;
+       $vendor_id = session()->get('login_id');
+       $allowedStatuses = ['Pending', 'Accept', 'Dispatch', 'Delivered', 'Return', 'Cancel'];
+       if (!in_array($status, $allowedStatuses, true)) {
+            return response()->json([
+                'Success' => 'Failed',
+                'message' => 'Invalid order status.',
+            ], 422);
+       }
         // echo $status;
         // echo $id;
         // exit;
         // $status = $request->input('status');
-        $dd = Ecom_Order_product::where('id',$id)->update(['order_status'=>$status]);
+        $dd = $this->vendorOwnedOrderProductQuery($vendor_id, $id)->update(['order_status' => $status]);
+        if ($dd === 0) {
+            return response()->json([
+                'Success' => 'Failed',
+                'message' => 'Unauthorized order access.',
+            ], 403);
+        }
     
 
         // return view('layout.admin.sales.order-list');
@@ -295,6 +312,11 @@ class SalesController extends Controller
     {
         //   echo 'test';   
           $sts = $request->sts;
+          $vendor_id = session()->get('login_id');
+          $allowedStatuses = ['Pending', 'Accept', 'Dispatch', 'Delivered', 'Return', 'Cancel'];
+          if (!in_array($sts, $allowedStatuses, true)) {
+              return response()->json(['success' => "Invalid status."], 422);
+          }
            // dd($sts);
               $ids = $request->ids;
               $id = explode(",",$ids);
@@ -302,7 +324,7 @@ class SalesController extends Controller
         //   $sts = $request->sts;
         foreach($id as $idr)
         {
-            Ecom_Order_product::where('id',$idr)->update(['order_status'=>$sts]);
+            $this->vendorOwnedOrderProductQuery($vendor_id, $idr)->update(['order_status' => $sts]);
         //   DB::table("ordersproduct")->whereIn('id',$idr)->update(['order_status'=>$sts]);
         }
         
