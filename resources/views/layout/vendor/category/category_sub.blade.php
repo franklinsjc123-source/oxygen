@@ -214,10 +214,51 @@
     </script>
 
     @if($view=='Modal')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        $('#exampleModal').modal('show');
+        function openCategorySubModal() {
+            var modalEl = document.getElementById('exampleModal');
+            if (!modalEl) return;
+
+            // Bootstrap 5
+            if (window.bootstrap && window.bootstrap.Modal) {
+                if (typeof window.bootstrap.Modal.getOrCreateInstance === 'function') {
+                    window.bootstrap.Modal.getOrCreateInstance(modalEl).show();
+                    return;
+                }
+                if (typeof window.bootstrap.Modal === 'function') {
+                    new window.bootstrap.Modal(modalEl).show();
+                    return;
+                }
+                return;
+            }
+
+            // Bootstrap 4 fallback
+            if (window.jQuery && typeof window.jQuery.fn.modal === 'function') {
+                window.jQuery('#exampleModal').modal('show');
+            }
+        }
+
+        function retryOpenModal(attemptsLeft) {
+            openCategorySubModal();
+            if (attemptsLeft <= 0) return;
+
+            var hasBs5 = window.bootstrap && window.bootstrap.Modal;
+            var hasBs4 = window.jQuery && typeof window.jQuery.fn.modal === 'function';
+
+            if (!hasBs5 && !hasBs4) {
+                setTimeout(function() {
+                    retryOpenModal(attemptsLeft - 1);
+                }, 100);
+            }
+        }
+
+        if (document.readyState === 'complete') {
+            retryOpenModal(20);
+        } else {
+            window.addEventListener('load', function() {
+                retryOpenModal(20);
+            });
+        }
     </script>
     @endif
     @endsection

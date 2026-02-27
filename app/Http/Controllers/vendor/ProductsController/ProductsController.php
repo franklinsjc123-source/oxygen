@@ -88,6 +88,24 @@ class ProductsController extends Controller
     }
     public function addinfo(Request $request)
     {
+        $login_id = session()->get('login_id');
+        $vendorcreate = vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
+        $subcategoryarray = array_filter(explode(',', (string) optional($vendorcreate)->sub_category_ids));
+        $CategorySub = DB::table('category_sub as t1')
+            ->leftJoin('category as t2', 't1.category_id', '=', 't2.id')
+            ->leftJoin('category_main as t3', 't1.category_main_id', '=', 't3.id')
+            ->select(
+                't1.id',
+                't1.category_id',
+                't1.category_main_id',
+                't1.category_sub_name',
+                't2.category_name',
+                't3.category_main_name'
+            )
+            ->where('t1.status', 1)
+            ->whereIn('t1.id', !empty($subcategoryarray) ? $subcategoryarray : [0])
+            ->get();
+
         $category_sub = CategorySub::where('id', $request->category_sub)->first();
 
         if (!$category_sub) {
@@ -142,6 +160,7 @@ class ProductsController extends Controller
 
             return view('layout.vendor.products.add-product')
                 ->with([
+                    "CategorySub" => $CategorySub,
                     "category_main_data" => $category_main_data,
                     "gst" => $gst,
                     "colors" => $colors,
@@ -162,6 +181,7 @@ class ProductsController extends Controller
         $specification = Specification::where('status', 49)->get();
         return view('layout.vendor.products.add-product')
             ->with([
+                "CategorySub" => $CategorySub,
                 "category_main_data" => $category_main_data,
                 "category_data" => $category_data,
                 "category_sub_data" => $category_sub_data,

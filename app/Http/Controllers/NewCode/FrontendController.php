@@ -1713,8 +1713,7 @@ class FrontendController extends Controller
         $totalTax   = $mappedItems->sum('tax_amt');
         $grandTotal = $mappedItems->sum('total');
 
-        $fmt = new NumberFormatter("en", NumberFormatter::SPELLOUT);
-        $inWords = ucwords($fmt->format($grandTotal)) . " Only";
+        $inWords = $this->amountInWords($grandTotal);
 
         $data = [
             'seller' => [
@@ -1758,6 +1757,20 @@ class FrontendController extends Controller
 
         $pdf = Pdf::loadView('frontend.invoice', $data);
         return $pdf->stream('invoice.pdf');
+    }
+
+    private function amountInWords($amount)
+    {
+        if (class_exists(\NumberFormatter::class)) {
+            try {
+                $fmt = new \NumberFormatter('en', \NumberFormatter::SPELLOUT);
+                return ucwords($fmt->format((float) $amount)) . ' Only';
+            } catch (\Throwable $e) {
+                // Fall back to numeric text below.
+            }
+        }
+
+        return 'Rs ' . number_format((float) $amount, 2) . ' Only';
     }
 
 
