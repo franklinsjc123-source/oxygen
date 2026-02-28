@@ -3,7 +3,17 @@
  @section('content')
    <!-- Start of Main -->
 
+<style>
 
+    .shop-footer{
+        height: 69px !important;
+    }
+    .shop-details-ps-image{
+            height: 65px;
+            /* margin-top: 12px; */
+    }
+
+</style>
    
         <main class="main">
             <!-- Start of Breadcrumb -->

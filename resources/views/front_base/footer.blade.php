@@ -113,7 +113,7 @@
                    <div class="col-lg-3 col-md-6 col-12">
                        <div class="widget widget-about">
                            <a href="demo1.html">
-                               <img src="<?= asset('frontend') ?>/images/header-logo.png" alt="logo-footer"
+                               <img class="shop-footer" src="<?= asset('frontend') ?>/images/header-logo.png" alt="logo-footer"
                                    width="144" height="45" />
                            </a>
                            <div class="widget-body">
@@ -410,7 +410,7 @@
                    <p class="mt-2"> <b>Download mobile app <span class="mobile-br">& unlock more deals</span></b>
                    </p>
 
-                   <img class="play-store-image" src="{{ asset('frontend/images/google_play.png') }}">
+                   <img class="play-store-image shop-details-ps-image" src="{{ asset('frontend/images/google_play.png') }}">
 
                </div>
            </form>
