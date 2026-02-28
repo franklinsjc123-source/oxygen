@@ -1541,6 +1541,11 @@ class FrontendController extends Controller
     //     return redirect()->back()->with('success', 'Order placed successfully!');
     // }
 
+    // OLD checkout logic (Ecom_Orders + Ecom_Order_product) intentionally disabled.
+    // New logic stores:
+    // 1) customer data in ecom_customer_info
+    // 2) vendor-wise invoice rows in ecom_invoice
+    // 3) one order row in ecom_order with invoice_ids (comma separated)
     public function checkout_store(Request $request)
     {
         $request->validate([
@@ -1555,22 +1560,27 @@ class FrontendController extends Controller
             'billing_postcode'   => 'required',
         ]);
 
-        /* ===============================
-        CUSTOMER LOGIC
-        =============================== */
+        $cartItems = Cart::getContent();
+        if ($cartItems->count() === 0) {
+            return redirect()->back()->with('error', 'Cart is empty.');
+        }
 
-        if (auth()->check()) {
-            $userId = auth()->id();
-            $customer = Ecom_Customer_info::where('id', $userId)->first();
-            $customerCode = $customer->customer_id ?? null;
-        } else {
+        DB::beginTransaction();
+        try {
+            $customer = null;
 
-            $customer = Ecom_Customer_info::where('customer_mobileno', $request->billing_phone)
-                ->orWhere('customer_email', $request->billing_email)
-                ->first();
+            if (auth()->check()) {
+                $customer = Ecom_Customer_info::where('id', auth()->id())->first();
+            }
 
             if (!$customer) {
-                $customerCode = 'OXY-C' . str_pad(Ecom_Customer_info::max('id') + 1, 5, '0', STR_PAD_LEFT);
+                $customer = Ecom_Customer_info::where('customer_mobileno', $request->billing_phone)
+                    ->orWhere('customer_email', $request->billing_email)
+                    ->first();
+            }
+
+            if (!$customer) {
+                $customerCode = 'OXY-C' . str_pad(((int) Ecom_Customer_info::max('id')) + 1, 5, '0', STR_PAD_LEFT);
 
                 $customer = Ecom_Customer_info::create([
                     'customer_id'        => $customerCode,
@@ -1586,98 +1596,151 @@ class FrontendController extends Controller
                     'customer_pincode'   => $request->billing_postcode,
                     'customer_type'      => 'Customer',
                 ]);
+            } else {
+                $customer->update([
+                    'customer_firstname' => $request->billing_first_name,
+                    'customer_lastname'  => $request->billing_last_name,
+                    'customer_email'     => $request->billing_email,
+                    'customer_mobileno'  => $request->billing_phone,
+                    'customer_address'   => $request->billing_address,
+                    'customer_address1'  => $request->billing_address,
+                    'customer_city'      => $request->billing_city,
+                    'customer_state'     => $request->billing_state,
+                    'customer_pincode'   => $request->billing_postcode,
+                ]);
             }
 
             $customerCode = $customer->customer_id;
-            $userId = $customer->id;
-        }
 
-        /* ===============================
-        SHIPPING LOGIC
-        =============================== */
+            $productIds = $cartItems->pluck('id')->map(function ($id) {
+                return (int) $id;
+            })->unique()->values()->all();
+            $productMeta = DB::table('products as p')
+                ->leftJoin('vendor_details as vd', 'vd.id', '=', 'p.vendor_id')
+                ->whereIn('p.id', $productIds)
+                ->select('p.id as product_id', 'p.vendor_id', 'vd.shop_name')
+                ->get()
+                ->keyBy('product_id');
 
-        if ($request->has('ship_to_different')) {
-            $shipping_address  = $request->shipping_address;
-            $shipping_city     = $request->shipping_city;
-            $shipping_state    = $request->shipping_state;
-            $shipping_country  = $request->shipping_country;
-            $shipping_postcode = $request->shipping_postcode;
-        } else {
-            $shipping_address  = $request->billing_address;
-            $shipping_city     = $request->billing_city;
-            $shipping_state    = $request->billing_state;
-            $shipping_country  = $request->billing_country;
-            $shipping_postcode = $request->billing_postcode;
-        }
+            $vendorBuckets = [];
+            $grandTotal = 0;
 
-        // Insert Shipping
-        $shipping = Ecom_Customer_Shipping::create([
-            'customer_id'       => $customerCode,
-            'customer_firstname' => $request->billing_first_name,
-            'customer_email'    => $request->billing_email,
-            'customer_mobileno' => $request->billing_phone,
-            'customer_address'  => $shipping_address,
-            'customer_city'     => $shipping_city,
-            'customer_state'    => $shipping_state,
-            'customer_pincode'  => $shipping_postcode,
-            'is_default'        => 1,
-        ]);
+            foreach ($cartItems as $item) {
+                $productId = (int) $item->id;
+                $meta = $productMeta->get($productId);
+                if (!$meta || empty($meta->vendor_id)) {
+                    throw new \RuntimeException('Vendor not found for product ID ' . $productId);
+                }
 
-        /* ===============================
-        ORDER INSERT
-        =============================== */
-        $orderCode = 'OXY-O' . str_pad(Ecom_Orders::max('id') + 1, 4, '0', STR_PAD_LEFT);
-        $order = Ecom_Orders::create([
-            'order_id'            => $orderCode,
-            'delivery_type'       => 'Normal',
-            'customer_id'         => $customerCode,
-            'customer_firstname'  => $request->billing_first_name,
-            'customer_lastname'   => $request->billing_last_name,
-            'customer_mobileno'   => $request->billing_phone,
-            'customer_email'      => $request->billing_email,
-            'customer_address'    => $shipping_address,
-            'customer_address1'   => $shipping_address,
-            'customer_city'       => $shipping_city,
-            'customer_state'      => $shipping_state,
-            'customer_pincode'    => $shipping_postcode,
-            'payment_type'        => $request->payment_method ?? 'Cash On Delivery',
-            'total_amount'        => Cart::getTotal(),
-            'discount_amount'     => 0,
-            'shipping_charge'     => 0,
-            'gst_charge'          => 0,
-            'grand_total'         => Cart::getTotal(),
-            'order_status'        => 'Pending',
-            'payment_status'      => 'Pending',
-            'order_notes'         => $request->order_notes,
-            'order_date'          => now(),
-            'created_at'          => now(),
-            'updated_at'          => now(),
-        ]);
+                $vendorId = (int) $meta->vendor_id;
+                $shopName = (string) ($meta->shop_name ?? 'GEN');
+                $size = $item->attributes->size ?? null;
+                $color = $item->attributes->color ?? null;
+                $detailId = $this->resolveProductDetailId($productId, $size, $color);
+                $lineTotal = (float) $item->price * (int) $item->quantity;
+                $grandTotal += $lineTotal;
 
-        /* ===============================
-        ORDER PRODUCTS INSERT
-        =============================== */
+                if (!isset($vendorBuckets[$vendorId])) {
+                    $vendorBuckets[$vendorId] = [
+                        'shop_name' => $shopName,
+                        'product_detail_ids' => [],
+                        'line_total' => 0,
+                    ];
+                }
 
-        foreach (Cart::getContent() as $item) {
-            Ecom_Order_product::create([
-                'order_id'         => $order->order_id,
-                'product_id'       => $item->id,
-                'product_name'     => $item->name,
-                'product_image'    => $item->attributes->image ?? null,
-                'product_gstin'    => $item->attributes->gst ?? 0,
-                'product_size'     => $item->attributes->size ?? null,
-                'product_quantity' => $item->quantity,
-                'product_price'    => $item->price,
-                'total_price'      => $item->price * $item->quantity,
-                'order_status'     => 'Pending',
-                'created_at'       => now(),
-                'updated_at'       => now(),
+                if (!empty($detailId)) {
+                    $vendorBuckets[$vendorId]['product_detail_ids'][] = $detailId;
+                }
+                $vendorBuckets[$vendorId]['line_total'] += $lineTotal;
+            }
+
+            $invoiceIds = [];
+            $vendorIds = [];
+
+            foreach ($vendorBuckets as $vendorId => $bucket) {
+                $invoiceId = $this->generateUniqueInvoiceId($bucket['shop_name']);
+                $invoiceIds[] = $invoiceId;
+                $vendorIds[] = $vendorId;
+
+                DB::table('ecom_invoice')->insert([
+                    'invoice_id'         => $invoiceId,
+                    'customer_id'        => $customerCode,
+                    'vendor_id'          => $vendorId,
+                    'product_detail_ids' => implode(',', array_unique($bucket['product_detail_ids'])),
+                    'status'             => 'Pending',
+                    'line_discount'      => 0,
+                    'total_amount'       => $bucket['line_total'],
+                    'created_at'         => now(),
+                    'updated_at'         => now(),
+                ]);
+            }
+
+            $orderId = $this->generateUniqueOrderId();
+
+            DB::table('ecom_order')->insert([
+                'order_id'        => $orderId,
+                'customer_id'     => $customerCode,
+                'invoice_ids'     => implode(',', $invoiceIds),
+                'vendor_ids'      => implode(',', array_unique($vendorIds)),
+                'status'          => 'Pending',
+                'payment_type'    => $request->payment_method ?? 'Cash On Delivery',
+                'total_discount'  => 0,
+                'total_amount'    => $grandTotal,
+                'order_notes'     => $request->order_notes,
+                'created_at'      => now(),
+                'updated_at'      => now(),
             ]);
+
+            DB::commit();
+            Cart::clear();
+
+            return redirect()->back()->with('success', 'Order placed successfully! Order ID: ' . $orderId);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Checkout failed: ' . $e->getMessage());
+        }
+    }
+
+    private function resolveProductDetailId(int $productId, $size = null, $color = null): ?int
+    {
+        $query = ProductsDetails::where('products_id', $productId);
+
+        if (!empty($size)) {
+            $query->where('attributevalue2', $size);
         }
 
-        Cart::clear();
+        if (!empty($color)) {
+            $query->where('attributevalue1', $color);
+        }
 
-        return redirect()->back()->with('success', 'Order placed successfully!');
+        $detail = $query->orderBy('id')->first();
+        if (!$detail && (!empty($size) || !empty($color))) {
+            $detail = ProductsDetails::where('products_id', $productId)->orderBy('id')->first();
+        }
+
+        return $detail ? (int) $detail->id : null;
+    }
+
+    private function generateUniqueInvoiceId(string $shopName): string
+    {
+        $letters = preg_replace('/[^A-Za-z]/', '', strtoupper($shopName));
+        $shopCode = substr($letters, 0, 3);
+        $shopCode = str_pad($shopCode, 3, 'X');
+
+        do {
+            $invoiceId = 'INV' . $shopCode . now()->format('ymdHis') . strtoupper(Str::random(4));
+        } while (DB::table('ecom_invoice')->where('invoice_id', $invoiceId)->exists());
+
+        return $invoiceId;
+    }
+
+    private function generateUniqueOrderId(): string
+    {
+        do {
+            $orderId = 'ORD' . now()->format('ymdHis') . strtoupper(Str::random(4));
+        } while (DB::table('ecom_order')->where('order_id', $orderId)->exists());
+
+        return $orderId;
     }
 
     public function downloadInvoice($id)
