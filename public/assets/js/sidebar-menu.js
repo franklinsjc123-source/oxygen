@@ -10,13 +10,9 @@ $.sidebarMenu = function(menu) {
             });
             checkElement.parent("li").removeClass("active");
         } else if ((checkElement.is(subMenuSelector)) && (!checkElement.is(':visible'))) {
-            var parent = $this.parents('ul').first();
-            var ul = parent.find('ul:visible').slideUp(animationSpeed);
-            ul.removeClass('menu-open');
             var parent_li = $this.parent("li");
             checkElement.slideDown(animationSpeed, function() {
                 checkElement.addClass('menu-open');
-                parent.find('li.active').removeClass('active');
                 parent_li.addClass('active');
             });
         }
@@ -92,22 +88,35 @@ $(window).resize(function() {
     }
 });
 
-// $(".sidebar-menu>li").removeClass("active");
 $(".sidebar-menu").find("a").removeClass("active");
 $(".sidebar-menu").find("li").removeClass("active");
 
-var current = window.location.pathname
-$(".sidebar-menu>li a").filter(function() {
-
-    // console.log(window.location.pathname);
-    // console.log($(this).attr("href"));
-
+var current = window.location.pathname.replace(/\/+$/, "");
+$(".sidebar-menu a").filter(function() {
     var link = $(this).attr("href");
-    if (link) {
-        if (current.indexOf(link) != -1) {
-            $(this).parents('li').addClass('active');
-            $(this).addClass('active');
-            console.log(link + " found");
-        }
+    if (!link || link === "#" || link.indexOf("javascript:") === 0) {
+        return false;
     }
+
+    var linkPath = "";
+    try {
+        linkPath = new URL(link, window.location.origin).pathname;
+    } catch (e) {
+        linkPath = link;
+    }
+    linkPath = (linkPath || "").replace(/\/+$/, "");
+    if (!linkPath) {
+        return false;
+    }
+
+    var isMatch = current === linkPath || current.indexOf(linkPath + "/") === 0;
+    if (isMatch) {
+        $(this).parents("li").addClass("active");
+        $(this).addClass("active");
+        return true;
+    }
+    return false;
 });
+
+// Keep current parent menu expanded on page load.
+$(".sidebar-menu li.active").children(".sidebar-submenu").addClass("menu-open").show();

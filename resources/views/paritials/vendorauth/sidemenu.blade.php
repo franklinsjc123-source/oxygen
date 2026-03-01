@@ -1,3 +1,16 @@
+@php
+    $vendorProfile = null;
+    if (session()->get('login_id')) {
+        $vendorProfile = App\Models\vendor\vendorcreate::select('shop_name', 'owner_name', 'profile_image')
+            ->where('id', session()->get('login_id'))
+            ->first();
+    }
+    $vendorName = optional($vendorProfile)->shop_name ?: (optional($vendorProfile)->owner_name ?: (session()->get('username') ?: 'Vendor'));
+    $vendorRole = optional($vendorProfile)->owner_name ?: 'Vendor Panel';
+    $vendorImage = optional($vendorProfile)->profile_image
+        ? asset('assets/images/vendor/profile/' . $vendorProfile->profile_image)
+        : asset('assets/images/dashboard/man.png');
+@endphp
 <div class="page-sidebar">
     <div class="main-header-left d-none d-lg-block">
         <div class="logo-wrapper">
@@ -7,13 +20,13 @@
         </div>
     </div>
     <div class="sidebar custom-scrollbar mt-3">
-        <div class="sidebar-user text-center d-none">
+        <div class="sidebar-user text-center">
             <div>
                 <img class="img-60 rounded-circle lazyloaded blur-up"
-                    src="{{ asset('assets/images/dashboard/man.png') }}" alt="#">
+                    src="{{ $vendorImage }}" alt="{{ $vendorName }}">
             </div>
-            <h6 class="mt-3 f-14">JOHN</h6>
-            <p>general manager.</p>
+            <h6 class="mt-3 f-14">{{ $vendorName }}</h6>
+            <p>{{ $vendorRole }}</p>
         </div>
         <ul class="sidebar-menu">
             @if (session()->get('login_id'))

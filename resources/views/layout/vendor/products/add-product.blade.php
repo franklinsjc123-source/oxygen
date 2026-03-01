@@ -843,7 +843,7 @@
                                         </button>
                                     </div>
                                     <div class="d-inline px-2 text-white">
-                                        <a href="#" class="btn btn-secondary w-100 " type="button">
+                                        <a href="{{ route('vendorproducts.crud.listing') }}" class="btn btn-secondary w-100 " type="button">
                                             Close
                                         </a>
                                     </div>

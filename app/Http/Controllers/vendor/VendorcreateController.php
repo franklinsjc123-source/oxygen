@@ -32,6 +32,28 @@ class VendorcreateController extends Controller
     private $PROFILE_IMAGE_PATH = "assets/images/vendor/profile";
     private $GST_IMAGE_PATH = "assets/images/vendor/gst";
     private $OTHER_IMAGE_PATH = "assets/images/vendor/other";
+
+    private function sanitizeGstNumber(?string $gstNumber): string
+    {
+        $gstNumber = strtoupper(trim((string) $gstNumber));
+        $gstNumber = preg_replace('/\s+/', '', $gstNumber);
+
+        // Respect DB column size to avoid SQLSTATE[22001] (Data too long).
+        try {
+            $columnMeta = FacadesDB::select("SHOW COLUMNS FROM vendor_details LIKE 'gst_number'");
+            if (!empty($columnMeta[0]->Type) && preg_match('/varchar\((\d+)\)/i', $columnMeta[0]->Type, $m)) {
+                $maxLen = (int) $m[1];
+                if ($maxLen > 0) {
+                    $gstNumber = substr($gstNumber, 0, $maxLen);
+                }
+            }
+        } catch (\Throwable $th) {
+            // Fallback: GSTIN standard length.
+            $gstNumber = substr($gstNumber, 0, 15);
+        }
+
+        return $gstNumber;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -175,7 +197,7 @@ class VendorcreateController extends Controller
             $vendor->route = $request->route;
             $vendor->location_map = $request->location_map;
             $vendor->aadhar_no = $request->aadhar_no;
-            $vendor->gst_number = $request->gst_number;
+            $vendor->gst_number = $this->sanitizeGstNumber($request->gst_number);
 
 
             $vendor->profile_image = $profilename;
@@ -188,7 +210,12 @@ class VendorcreateController extends Controller
             $vendor->purchase_date  = $request->purchase_date;
             $vendor->expired_date = $request->expired_date;
             $vendor->next_renewal_date = $request->next_renewal_date;
-            $vendor->sub_category_ids = !empty($request->sub_category_ids) ? implode(',', $request->sub_category_ids) : '';
+            $selectedSubCategoryIds = $request->input('sub_category_ids', []);
+            if (empty($selectedSubCategoryIds) && $request->filled('sub_category_ids_csv')) {
+                $selectedSubCategoryIds = explode(',', (string) $request->sub_category_ids_csv);
+            }
+            $selectedSubCategoryIds = array_values(array_unique(array_filter($selectedSubCategoryIds)));
+            $vendor->sub_category_ids = !empty($selectedSubCategoryIds) ? implode(',', $selectedSubCategoryIds) : '';
             $vendor->wallet = $request->wallet;
             $vendor->commission = $request->commission;
             $vendor->description = $request->description;
@@ -233,7 +260,7 @@ class VendorcreateController extends Controller
                 return 'failde';
             }
             $flasher->addSuccess('vendor Information has been saved successfully!');
-            return redirect()->route('vendor-list');
+            return redirect()->to(url('admin/vendor/list'));
         } catch (\Throwable $th) {
             //$flasher->addError('Something Error!!');
             $flasher->addError('Something Error!! =>' . $th);
@@ -406,9 +433,14 @@ class VendorcreateController extends Controller
             $vendor->route = $request->route;
             $vendor->location_map = $request->location_map;
             $vendor->aadhar_no = $request->aadhar_no;
-            $vendor->gst_number = $request->gst_number;
+            $vendor->gst_number = $this->sanitizeGstNumber($request->gst_number);
 
-            $vendor->sub_category_ids = !empty($request->sub_category_ids) ? implode(',', $request->sub_category_ids) : '';
+            $selectedSubCategoryIds = $request->input('sub_category_ids', []);
+            if (empty($selectedSubCategoryIds) && $request->filled('sub_category_ids_csv')) {
+                $selectedSubCategoryIds = explode(',', (string) $request->sub_category_ids_csv);
+            }
+            $selectedSubCategoryIds = array_values(array_unique(array_filter($selectedSubCategoryIds)));
+            $vendor->sub_category_ids = !empty($selectedSubCategoryIds) ? implode(',', $selectedSubCategoryIds) : '';
 
             $vendor->profile_image = $profile_image;
             $vendor->gst = $gst;

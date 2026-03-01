@@ -1,7 +1,11 @@
 @extends('layout.auth.master')
 @section('contents')
+    <style>
+        .gothic{
+            font-family:'Century Gothic',lucida grande, helvetica, verdana, arial, sans-serif;
+        }
+    </style>
 
-  
 
     <!-- page-wrapper Start-->
     @include('paritials.auth.topmenu');
@@ -14,7 +18,7 @@
         @include('paritials.auth.sidemenu');
         <!-- Page Sidebar Ends-->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-        
+
         <!-- Right sidebar Start-->
 
         <!-- Right sidebar Ends-->
@@ -33,7 +37,8 @@
                         </div>
                         <div class="col-lg-6">
                             <ol class="breadcrumb pull-right">
-                                <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
+                                <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}"><i
+                                            data-feather="home"></i></a></li>
 
                                 <li class="breadcrumb-item active">Vendor Creation </li>
                             </ol>
@@ -49,17 +54,18 @@
 
                     <div class="col-xl-10">
                         <div class="card tab2-card">
-                            <div class="card-body" style="font-family: Times New Roman, Times, serif;">
+                            <div class="card-body"
+                                style="font-family: 'Century Gothic',lucida grande, helvetica, verdana, arial, sans-serif;">
                                 <ul class="nav nav-tabs nav-material" id="top-tab" role="tablist">
                                     <li class="nav-item"><a class="nav-link active" id="top-profile-tab"
                                             data-bs-toggle="tab" href="#top-profile" role="tab"
                                             aria-controls="top-profile" aria-selected="true"><i data-feather="user"
                                                 class="me-2"></i><span class="fw-bold">Personal Information</span></a>
                                     </li>
-                                    <li class="nav-item"><a class="nav-link " id="top-product-tab"
-                                            data-bs-toggle="tab" href="#top-product" role="tab"
-                                            aria-controls="top-product" aria-selected="true"><i data-feather="user"
-                                                class="me-2"></i><span class="fw-bold">Product Category </span></a>
+                                    <li class="nav-item"><a class="nav-link " id="top-product-tab" data-bs-toggle="tab"
+                                            href="#top-product" role="tab" aria-controls="top-product"
+                                            aria-selected="true"><i data-feather="user" class="me-2"></i><span
+                                                class="fw-bold">Product Category </span></a>
                                     </li>
 
                                     <li class="nav-item"><a class="nav-link" id="upload-top-tab" data-bs-toggle="tab"
@@ -72,7 +78,7 @@
                                     <li class="nav-item"><a class="nav-link" id="top-bank-upload" data-bs-toggle="tab"
                                             href="#top-bank" role="tab" aria-controls="top-upload"
                                             aria-selected="false"><i data-feather="bank" class="me-2"></i><span
-                                                class="fa fa-bank "><span class="fw-bold mx-2">Bank
+                                                class="fa fa-bank "><span class="fw-bold mx-2 gothic">Bank
                                                     Details</span></span></a>
                                     </li>
 
@@ -80,7 +86,7 @@
                                             href="#top-setting" role="tab" aria-controls="top-upload"
                                             aria-selected="false"><i data-feather="settings" class="me-2"></i><span
                                                 class=" fa fa-solid fa-gear"><span
-                                                    class="fw-bold mx-2">Support</span></span></a>
+                                                    class="fw-bold mx-2 gothic">Support</span></span></a>
                                     </li>
                                 </ul>
 
@@ -97,10 +103,10 @@
                                                         <label for="validationCustom0" class="col-xl-4 col-md-4"> Created
                                                             By</label>
                                                         <div class="col-xl-8 col-md-8">
-                                                             <input class="form-control" readonly
+                                                            <input class="form-control" readonly
                                                                 value="{{ session()->get('username') }}"
-                                                                id="validationCustom0" type="text" name="created_by">                                                                
-                                                                {{-- <input class="form-control" readonly
+                                                                id="validationCustom0" type="text" name="created_by">
+                                                            {{-- <input class="form-control" readonly
                                                                 value="SKAP"
                                                                 id="validationCustom0" type="text" name="created_by"> --}}
                                                         </div>
@@ -122,10 +128,10 @@
 
                                                     <div class="form-group row">
                                                         <label for="validationCustom0" class="col-xl-4 col-md-4"> Password
-                                                            </label>
+                                                        </label>
                                                         <div class="col-xl-8 col-md-8">
-                                                            <input class="form-control" id="pass"
-                                                                type="text" name="pass">
+                                                            <input class="form-control" id="pass" type="text"
+                                                                name="pass">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -139,7 +145,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <span id="wrong_pass_alert"></span>                                            </div>
+                                                <span id="wrong_pass_alert"></span>
+                                            </div>
 
                                             <div class="row">
                                                 <div class="col-md-6">
@@ -149,7 +156,9 @@
                                                             Name</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom0"
-                                                                type="text" name="shop_name" value="{{ old('shop_name', @$tracker->shop_name) }}">                                                        </div>
+                                                                type="text" name="shop_name"
+                                                                value="{{ old('shop_name', @$tracker->shop_name) }}">
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
@@ -158,7 +167,8 @@
                                                             Name</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="" type="text"
-                                                                name="owner_name" value="{{ old('owner_name', @$tracker->owner_name) }}">
+                                                                name="owner_name"
+                                                                value="{{ old('owner_name', @$tracker->owner_name) }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -172,7 +182,8 @@
                                                             Category</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="business_category"
-                                                                type="text" name="business_category" value="{{ old('business_category', @$tracker->business_category) }}">
+                                                                type="text" name="business_category"
+                                                                value="{{ old('business_category', @$tracker->business_category) }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -182,7 +193,8 @@
                                                             class="col-xl-4 col-md-4">E.Mail</label>
                                                         <div class="col-xl-8 col-md-7">
                                                             <input class="form-control" id="email" type="email"
-                                                                name="email" value="{{ old('email', @$tracker->email) }}">
+                                                                name="email"
+                                                                value="{{ old('email', @$tracker->email) }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -196,7 +208,8 @@
                                                             Number</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="m_number" type="text"
-                                                                name="mobile_number1" value="{{ old('mobile_number1', @$tracker->mobile_number) }}">
+                                                                name="mobile_number1"
+                                                                value="{{ old('mobile_number1', @$tracker->mobile_number) }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -206,7 +219,8 @@
                                                             Number</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="alter_no" type="text"
-                                                                name="mobile_number2" value="{{ old('mobile_number2', @$tracker->mobile_number1) }}">
+                                                                name="mobile_number2"
+                                                                value="{{ old('mobile_number2', @$tracker->mobile_number1) }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -219,7 +233,8 @@
                                                             I</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom0"
-                                                                type="text" name="address1" value="{{ old('address1', @$tracker->address) }}">
+                                                                type="text" name="address1"
+                                                                value="{{ old('address1', @$tracker->address) }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -229,7 +244,8 @@
                                                             II</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom0"
-                                                                type="text" name="address2" value="{{ old('address2', @$tracker->address1) }}">
+                                                                type="text" name="address2"
+                                                                value="{{ old('address2', @$tracker->address1) }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -241,14 +257,17 @@
                                                         <label for="validationCustom01" class="col-xl-4 col-md-4">State
                                                             :</label>
                                                         <div class="col-xl-8 col-md-8">
-                                                        <select class="custom-select w-100 form-control" name="state" required="" >
-																<option value="">--Select--</option>
-																
-																@foreach ($State as $st)
-                                        <option value="{{ $st->state_name }}" {{(@$tracker->state==$st->state_name)?'selected':''}}> {{ $st->state_name }} </option>
-												@endforeach   
-																
-															</select>
+                                                            <select class="custom-select w-100 form-control"
+                                                                name="state" required="">
+                                                                <option value="">--Select--</option>
+
+                                                                @foreach ($State as $st)
+                                                                    <option value="{{ $st->state_name }}"
+                                                                        {{ @$tracker->state == $st->state_name ? 'selected' : '' }}>
+                                                                        {{ $st->state_name }} </option>
+                                                                @endforeach
+
+                                                            </select>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -257,14 +276,17 @@
                                                         <label for="validationCustom01"
                                                             class="col-xl-4 col-md-4">City:</label>
                                                         <div class="col-xl-8 col-md-8">
-                                                        <select class="custom-select w-100 form-control" name="city" required="">
-																<option value="">--Select--</option>
-																
-																@foreach ($City as $ct)
-												<option value="{{ $ct->city_name }}" {{(@$tracker->city==$ct->city_name)?'selected':''}}> {{ $ct->city_name }} </option>
-												@endforeach  
-																
-															</select>
+                                                            <select class="custom-select w-100 form-control"
+                                                                name="city" required="">
+                                                                <option value="">--Select--</option>
+
+                                                                @foreach ($City as $ct)
+                                                                    <option value="{{ $ct->city_name }}"
+                                                                        {{ @$tracker->city == $ct->city_name ? 'selected' : '' }}>
+                                                                        {{ $ct->city_name }} </option>
+                                                                @endforeach
+
+                                                            </select>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -277,7 +299,8 @@
                                                             Pincode</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="pincode" type="text"
-                                                                name="pincode" value="{{ old('pincode', @$tracker->pincode) }}">
+                                                                name="pincode"
+                                                                value="{{ old('pincode', @$tracker->pincode) }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -287,7 +310,8 @@
                                                             Map</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom0"
-                                                                type="text" name="location_map" value="{{ old('location_map', @$tracker->location_map) }}">
+                                                                type="text" name="location_map"
+                                                                value="{{ old('location_map', @$tracker->location_map) }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -301,13 +325,15 @@
                                                             Zone</label>
                                                         <div class="col-xl-8 col-md-8">
 
-                                                        <select class="form-control" name="zone" id="zone">
+                                                            <select class="form-control" name="zone" id="zone">
 
-                                                            <option value=''>Select zone</option>
+                                                                <option value=''>Select zone</option>
 
-                                                            @foreach ($zone as $zo)
-                                                            <option value="{{ $zo->name }}" {{(@$tracker->zone==$zo->name)?'selected':''}}> {{ $zo->name }} </option>
-                                                            @endforeach   
+                                                                @foreach ($zone as $zo)
+                                                                    <option value="{{ $zo->name }}"
+                                                                        {{ @$tracker->zone == $zo->name ? 'selected' : '' }}>
+                                                                        {{ $zo->name }} </option>
+                                                                @endforeach
                                                             </select>
 
                                                             {{-- <input class="form-control" id="validationCustom0"
@@ -320,8 +346,9 @@
                                                         <label for="validationCustom2"
                                                             class="col-xl-4 col-md-4">Area</label>
                                                         <div class="col-xl-8 col-md-7">
-                                                            <input class="form-control" 
-                                                                type="text" id="route" name="route" value="{{ old('route', @$tracker->area) }}">
+                                                            <input class="form-control" type="text" id="route"
+                                                                name="route"
+                                                                value="{{ old('route', @$tracker->area) }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -351,41 +378,43 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="modal-footer"> 
-												<ul class="nav nav-tabs nav-material" id="top-tab" role="tablist">
-													{{-- <li class="nav-item"><a class="nav-link active" id="top-profile-tab" data-bs-toggle="tab" href="#top-profile" role="tab" aria-controls="top-profile" aria-selected="true"><i data-feather="user" class="me-2"></i>Personal Information</a>
-													</li> --}}
-												  
-													<li class="nav-item"><a class="nav-link" id="upload-top-tab" data-bs-toggle="tab" href="#top-product" role="tab" aria-controls="top-upload" aria-selected="false"><i data-feather="settings" class="me-2"></i>Next</a>
-													</li>
-												</ul></div>
                                         <div class="tab-pane fade" id="top-product" role="tabpanel"
                                             aria-labelledby="top-product-tab">
                                             <div class="row mt-4">
                                                 <div class="col-md-12">
                                                     <div class="form-group">
                                                         <label class="mb-2">Select Category</label>
-                                                        <div class="border rounded p-3" style="max-height: 360px; overflow-y: auto;">
+                                                        <div class="border rounded p-3"
+                                                            style="max-height: 360px; overflow-y: auto;">
                                                             @foreach ($CategoryMain as $main)
                                                                 @php
-                                                                    $mainCategories = $Category->where('main_category_id', $main->id)->values();
+                                                                    $mainCategories = $Category
+                                                                        ->where('main_category_id', $main->id)
+                                                                        ->values();
                                                                 @endphp
                                                                 @if ($mainCategories->count() > 0)
                                                                     <div class="mb-2">
                                                                         <div>
-                                                                            <input type="checkbox" class="form-check-input me-1 main-cat" id="main_{{ $main->id }}" data-main-id="{{ $main->id }}">
-                                                                            <label class="fw-bold mb-0" for="main_{{ $main->id }}">{{ $main->category_main_name }}</label>
+                                                                            <input type="checkbox"
+                                                                                class="form-check-input me-1 main-cat"
+                                                                                id="main_{{ $main->id }}"
+                                                                                data-main-id="{{ $main->id }}">
+                                                                            <label class="fw-bold mb-0"
+                                                                                for="main_{{ $main->id }}">{{ $main->category_main_name }}</label>
                                                                         </div>
                                                                         <div class="ms-4 mt-1">
                                                                             @foreach ($mainCategories as $cat)
                                                                                 @php
-                                                                                    $subList = $CategorySub->where('category_id', $cat->id)->values();
-                                                                                    $subIdsCsv = $subList->pluck('id')->implode(',');
+                                                                                    $subList = $CategorySub
+                                                                                        ->where('category_id', $cat->id)
+                                                                                        ->values();
+                                                                                    $subIdsCsv = $subList
+                                                                                        ->pluck('id')
+                                                                                        ->implode(',');
                                                                                 @endphp
                                                                                 <div class="mb-1">
                                                                                     <div>
-                                                                                        <input
-                                                                                            type="checkbox"
+                                                                                        <input type="checkbox"
                                                                                             class="form-check-input me-1 category-cat"
                                                                                             id="category_{{ $cat->id }}"
                                                                                             data-main-id="{{ $main->id }}"
@@ -393,7 +422,8 @@
                                                                                             data-category-id="{{ $cat->id }}"
                                                                                             data-category-name="{{ $cat->category_name }}"
                                                                                             data-sub-ids="{{ $subIdsCsv }}">
-                                                                                        <label class="mb-0 fw-semibold" for="category_{{ $cat->id }}">{{ $cat->category_name }}</label>
+                                                                                        <label class="mb-0 fw-semibold"
+                                                                                            for="category_{{ $cat->id }}">{{ $cat->category_name }}</label>
                                                                                     </div>
                                                                                 </div>
                                                                             @endforeach
@@ -402,10 +432,14 @@
                                                                 @endif
                                                             @endforeach
                                                         </div>
-                                                        <div id="selected_subcategory_inputs"></div>
+                                                        <div id="selected_subcategory_inputs">
+                                                            <input type="hidden" name="sub_category_ids_csv"
+                                                                id="sub_category_ids_csv" value="">
+                                                        </div>
                                                         <div class="mt-3">
                                                             <label class="mb-1">Product Categories</label>
-                                                            <div id="selected_subcategory_tags" class="d-flex flex-wrap gap-2"></div>
+                                                            <div id="selected_subcategory_tags"
+                                                                class="d-flex flex-wrap gap-2"></div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -427,7 +461,7 @@
                                                     class="col-xl-2 col-md-2"><span>*</span>GST</label>
                                                 <div class="col-xl-10 col-md-10">
                                                     <input class="form-control" id="fileUpload1" type="file"
-                                                        name="gst" multiple accept="image/*,.pdf"/>
+                                                        name="gst" multiple accept="image/*,.pdf" />
                                                     <div id="image-holder1"></div>
                                                 </div>
                                             </div>
@@ -450,7 +484,11 @@
                                                             :</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             @php
-                                                                $pack = App\Models\vendor\packages::where('status', '=', '1')->get();
+                                                                $pack = App\Models\vendor\packages::where(
+                                                                    'status',
+                                                                    '=',
+                                                                    '1',
+                                                                )->get();
                                                             @endphp
 
                                                             <select class="custom-select w-100 form-control"
@@ -459,7 +497,8 @@
                                                                 </option>
 
                                                                 @foreach ($pack as $pack)
-                                                                    <option value="{{ $pack->id }}">{{ $pack->name }}
+                                                                    <option value="{{ $pack->id }}">
+                                                                        {{ $pack->name }}
                                                                     </option>
                                                                 @endforeach
                                                             </select>
@@ -471,9 +510,8 @@
                                                         <label for="validationCustom0" class="col-xl-4 col-md-4">Purchase
                                                             Date</label>
                                                         <div class="col-xl-8 col-md-8">
-                                                            <input id="datePicker" type="date"
-                                                                class="form-control " name="purchase_date"
-                                                                placeholder="dd/mm/yy" />
+                                                            <input id="datePicker" type="date" class="form-control "
+                                                                name="purchase_date" placeholder="dd/mm/yy" />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -626,8 +664,8 @@
                                                                 width="100px">
                                                         </div>
                                                         <div class="col-xl-9 col-md-9">
-                                                            <input class="form-control" id="upi" type="text" name="upi"
-                                                                name="ifsc">
+                                                            <input class="form-control" id="upi" type="text"
+                                                                name="upi" name="ifsc">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -664,18 +702,26 @@
                                                                 <textarea class="form-control" rows="3" id="validationCustom1" type="text" name="comments"></textarea>
                                                             </div>
                                                         </div><br>
-                                                        
+
                                                         <div class="">
 
-                                                            <button class="btn  px-5 btn-lg btn-primary" id="create" type="submit" onclick="wrong_ac_no_alert()">Save</button>
-                                                            <button class="btn btn-lg btn-secondary px-5" type="button">Close</button>
+                                                            <button class="btn  px-5 btn-lg btn-primary" id="create"
+                                                                type="submit" onclick="wrong_ac_no_alert()">Save</button>
+                                                            <button class="btn btn-lg btn-secondary px-5"
+                                                                type="button" onclick="window.location.href='{{ url('admin/vendor/list') }}'">Close</button>
                                                         </div>
                                                     </div>
-                                                    
+
                                                 </div>
                                             </div>
                                         </div>
-                                       
+
+                                    </div>
+                                    <div class="d-flex justify-content-end gap-2 mt-4" id="vendor-wizard-controls">
+                                        <button type="button" class="btn btn-secondary px-4"
+                                            id="wizard-prev-btn">Previous</button>
+                                        <button type="button" class="btn btn-primary px-4"
+                                            id="wizard-next-btn">Next</button>
                                     </div>
                                 </form>
                             </div>
@@ -696,63 +742,110 @@
     </div>
 @endsection
 @push('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 
-<script>
-                                    $('.select2').select2();
-                                </script>
-<script>
-    $(function () {
-        function syncParentStates() {
-            $('.main-cat').each(function () {
+    <script>
+        $('.select2').select2();
+    </script>
+    <script>
+        $(function() {
+            function syncParentStates() {
+                $('.main-cat').each(function() {
+                    const mainId = $(this).data('main-id');
+                    const allCategories = $(`.category-cat[data-main-id="${mainId}"]`);
+                    const checkedCategories = allCategories.filter(':checked');
+                    $(this).prop('checked', allCategories.length > 0 && checkedCategories.length ===
+                        allCategories.length);
+                });
+            }
+
+            function renderSelections() {
+                const $inputs = $('#selected_subcategory_inputs');
+                const $tags = $('#selected_subcategory_tags');
+                $inputs.empty();
+                $tags.empty();
+                $inputs.append(
+                    '<input type="hidden" name="sub_category_ids_csv" id="sub_category_ids_csv" value="">');
+
+                const subIds = new Set();
+                $('.category-cat:checked').each(function() {
+                    const mainName = $(this).data('main-name');
+                    const categoryName = $(this).data('category-name');
+                    const rawSubIds = ($(this).data('sub-ids') || '').toString();
+                    if (rawSubIds.length > 0) {
+                        rawSubIds.split(',').forEach(id => {
+                            if (id) subIds.add(id);
+                        });
+                    }
+                    $tags.append(
+                        `<span class="badge bg-light text-dark border">${mainName} | ${categoryName}</span>`
+                        );
+                });
+
+                $('#sub_category_ids_csv').val(Array.from(subIds).join(','));
+            }
+
+            $(document).on('change', '.main-cat', function() {
                 const mainId = $(this).data('main-id');
-                const allCategories = $(`.category-cat[data-main-id="${mainId}"]`);
-                const checkedCategories = allCategories.filter(':checked');
-                $(this).prop('checked', allCategories.length > 0 && checkedCategories.length === allCategories.length);
-            });
-        }
-
-        function renderSelections() {
-            const $inputs = $('#selected_subcategory_inputs');
-            const $tags = $('#selected_subcategory_tags');
-            $inputs.empty();
-            $tags.empty();
-
-            const subIds = new Set();
-            $('.category-cat:checked').each(function () {
-                const mainName = $(this).data('main-name');
-                const categoryName = $(this).data('category-name');
-                const rawSubIds = ($(this).data('sub-ids') || '').toString();
-                if (rawSubIds.length > 0) {
-                    rawSubIds.split(',').forEach(id => {
-                        if (id) subIds.add(id);
-                    });
-                }
-                $tags.append(`<span class="badge bg-light text-dark border">${mainName} | ${categoryName}</span>`);
+                const checked = $(this).is(':checked');
+                $(`.category-cat[data-main-id="${mainId}"]`).prop('checked', checked);
+                syncParentStates();
+                renderSelections();
             });
 
-            subIds.forEach(id => {
-                $inputs.append(`<input type="hidden" name="sub_category_ids[]" value="${id}">`);
+            $(document).on('change', '.category-cat', function() {
+                syncParentStates();
+                renderSelections();
             });
-        }
 
-        $(document).on('change', '.main-cat', function () {
-            const mainId = $(this).data('main-id');
-            const checked = $(this).is(':checked');
-            $(`.category-cat[data-main-id="${mainId}"]`).prop('checked', checked);
             syncParentStates();
             renderSelections();
         });
+    </script>
+    <script>
+        $(function() {
+            const $tabLinks = $('#top-tab .nav-link');
+            const $tabPanes = $('#top-tabContent .tab-pane');
+            const tabCount = $tabLinks.length;
 
-        $(document).on('change', '.category-cat', function () {
-            syncParentStates();
-            renderSelections();
+            function getActiveIndex() {
+                const idx = $tabLinks.index($('#top-tab .nav-link.active'));
+                return idx >= 0 ? idx : 0;
+            }
+
+            function showTab(index) {
+                if (index < 0 || index >= tabCount) return;
+                $tabLinks.removeClass('active').attr('aria-selected', 'false');
+                $($tabLinks.get(index)).addClass('active').attr('aria-selected', 'true');
+                $tabPanes.removeClass('show active');
+                const targetSelector = $($tabLinks.get(index)).attr('href');
+                $(targetSelector).addClass('show active');
+                syncWizardButtons();
+            }
+
+            function syncWizardButtons() {
+                const index = getActiveIndex();
+                $('#wizard-prev-btn').toggle(index > 0);
+                $('#wizard-next-btn').toggle(index < tabCount - 1);
+            }
+
+            $('#wizard-next-btn').on('click', function() {
+                showTab(getActiveIndex() + 1);
+            });
+
+            $('#wizard-prev-btn').on('click', function() {
+                showTab(getActiveIndex() - 1);
+            });
+
+            $tabLinks.on('click', function(e) {
+                e.preventDefault();
+                showTab($tabLinks.index(this));
+            });
+
+            showTab(getActiveIndex());
+            syncWizardButtons();
         });
-
-        syncParentStates();
-        renderSelections();
-    });
-</script>
+    </script>
     <script>
         $(function() {
 
@@ -801,13 +894,13 @@
 
             $('#package').on('click', function() {
                 var package = $(this).val();
-               // alert(package);
+                // alert(package);
                 if (package) {
                     $.ajax({
                         // '{{ url('Ajaxpackage') }}'
-                       // url:'/admin/Ajaxpackage',
-                        //action: "{{route('Ajaxpackage')}}",    {{ route('checkZonalnamePost') }}
-                        url : "{{ route('Ajaxpackage') }}",
+                        // url:'/admin/Ajaxpackage',
+                        //action: "{{ route('Ajaxpackage') }}",    {{ route('checkZonalnamePost') }}
+                        url: "{{ route('Ajaxpackage') }}",
                         type: "POST",
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -848,39 +941,38 @@
                                 //swal("Warning!", "Shipping Not Available Your Area.", "error");
                             }
                         },
-                        error: function(data){
-                        alert("fail");
+                        error: function(data) {
+                            alert("fail");
                         }
                     });
                 }
             });
 
         });
-        
-
-        $(document).ready( function() {
-    var now = new Date();
- 
-    var day = ("0" + now.getDate()).slice(-2);
-    var month = ("0" + (now.getMonth() + 1)).slice(-2);
-
-    var today = now.getFullYear()+"-"+(month)+"-"+(day) ;
 
 
-   $('#datePicker').val(today);
-    });
+        $(document).ready(function() {
+            var now = new Date();
+
+            var day = ("0" + now.getDate()).slice(-2);
+            var month = ("0" + (now.getMonth() + 1)).slice(-2);
+
+            var today = now.getFullYear() + "-" + (month) + "-" + (day);
+
+
+            $('#datePicker').val(today);
+        });
 
 
 
-    /*Password valitation*/
-    function validate_password() {
- 
+        /*Password valitation*/
+        function validate_password() {
+
             var pass = document.getElementById('pass').value;
             var confirm_pass = document.getElementById('confirm_pass').value;
             if (pass != confirm_pass) {
                 document.getElementById('wrong_pass_alert').style.color = 'red';
-                document.getElementById('wrong_pass_alert').innerHTML
-                    = '☒ Use same password';
+                document.getElementById('wrong_pass_alert').innerHTML = '☒ Use same password';
                 document.getElementById('create').disabled = true;
                 document.getElementById('create').style.opacity = (0.4);
             } else {
@@ -890,18 +982,17 @@
                 document.getElementById('create').disabled = false;
                 document.getElementById('create').style.opacity = (1);
             }
-            }
-/*Account no valitation*/
+        }
+        /*Account no valitation*/
 
-    function validate_acno() {
- 
-        
+        function validate_acno() {
+
+
             var ac_no = document.getElementById('ac_no').value;
             var ac_no1 = document.getElementById('ac_no1').value;
             if (ac_no != ac_no1) {
                 document.getElementById('wrong_ac_no_alert').style.color = 'red';
-                document.getElementById('wrong_ac_no_alert').innerHTML
-                    = '☒ Use same Acount number';
+                document.getElementById('wrong_ac_no_alert').innerHTML = '☒ Use same Acount number';
                 document.getElementById('create').disabled = true;
                 document.getElementById('create').style.opacity = (0.4);
             } else {
@@ -911,41 +1002,44 @@
                 document.getElementById('create').disabled = false;
                 document.getElementById('create').style.opacity = (1);
             }
-            }
+        }
 
-            function wrong_ac_no_alert() {
+        function wrong_ac_no_alert() {
             if (document.getElementById('ac_no').value != "" &&
                 document.getElementById('ac_no1').value != "") {
                 alert("Your response is submitted");
             } else {
                 alert("Please fill all the fields");
             }
-            }
+        }
     </script>
     <script>
         $(document).ready(function() {
-      $('#pincode').on('change', function(){
-        var pincode = $(this).val();
-         alert(pincode);
-       
-        $.ajax({
-            url: "{{route('picodedetailsreceived')}}", 
-            method: 'POST',
-            data: {pincode: pincode},
-            success: function(response){
-                alert()
-                // Handle the response from the server
-                // $('#result').html(response);
-                $('#zone').html('<option value="' + response[0].id + '">' + response[0].name + '</option>');
-                $('#route').val(response[0].area);
-            },
-            error: function(){
-                // Handle errors if any
-                alert('Error sending pincode');
-            }
-        });
+            $('#pincode').on('change', function() {
+                var pincode = $(this).val();
+                alert(pincode);
 
+                $.ajax({
+                    url: "{{ route('picodedetailsreceived') }}",
+                    method: 'POST',
+                    data: {
+                        pincode: pincode
+                    },
+                    success: function(response) {
+                        alert()
+                        // Handle the response from the server
+                        // $('#result').html(response);
+                        $('#zone').html('<option value="' + response[0].id + '">' + response[0]
+                            .name + '</option>');
+                        $('#route').val(response[0].area);
+                    },
+                    error: function() {
+                        // Handle errors if any
+                        alert('Error sending pincode');
+                    }
+                });
+
+            });
         });
-    });
-        </script>
+    </script>
 @endpush

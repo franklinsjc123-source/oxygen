@@ -1544,7 +1544,7 @@ class FrontendController extends Controller
     // OLD checkout logic (Ecom_Orders + Ecom_Order_product) intentionally disabled.
     // New logic stores:
     // 1) customer data in ecom_customer_info
-    // 2) vendor-wise invoice rows in ecom_invoice
+    // 2) product-wise invoice rows in ecom_invoice (one invoice per cart line)
     // 3) one order row in ecom_order with invoice_ids (comma separated)
     public function checkout_store(Request $request)
     {
@@ -1622,7 +1622,7 @@ class FrontendController extends Controller
                 ->get()
                 ->keyBy('product_id');
 
-            $vendorBuckets = [];
+            $productInvoices = [];
             $grandTotal = 0;
 
             foreach ($cartItems as $item) {
@@ -1640,36 +1640,30 @@ class FrontendController extends Controller
                 $lineTotal = (float) $item->price * (int) $item->quantity;
                 $grandTotal += $lineTotal;
 
-                if (!isset($vendorBuckets[$vendorId])) {
-                    $vendorBuckets[$vendorId] = [
-                        'shop_name' => $shopName,
-                        'product_detail_ids' => [],
-                        'line_total' => 0,
-                    ];
-                }
-
-                if (!empty($detailId)) {
-                    $vendorBuckets[$vendorId]['product_detail_ids'][] = $detailId;
-                }
-                $vendorBuckets[$vendorId]['line_total'] += $lineTotal;
+                $productInvoices[] = [
+                    'vendor_id' => $vendorId,
+                    'shop_name' => $shopName,
+                    'product_detail_ids' => !empty($detailId) ? [(int) $detailId] : [],
+                    'line_total' => $lineTotal,
+                ];
             }
 
             $invoiceIds = [];
             $vendorIds = [];
 
-            foreach ($vendorBuckets as $vendorId => $bucket) {
-                $invoiceId = $this->generateUniqueInvoiceId($bucket['shop_name']);
+            foreach ($productInvoices as $lineInvoice) {
+                $invoiceId = $this->generateUniqueInvoiceId($lineInvoice['shop_name']);
                 $invoiceIds[] = $invoiceId;
-                $vendorIds[] = $vendorId;
+                $vendorIds[] = (int) $lineInvoice['vendor_id'];
 
                 DB::table('ecom_invoice')->insert([
                     'invoice_id'         => $invoiceId,
                     'customer_id'        => $customerCode,
-                    'vendor_id'          => $vendorId,
-                    'product_detail_ids' => implode(',', array_unique($bucket['product_detail_ids'])),
+                    'vendor_id'          => (int) $lineInvoice['vendor_id'],
+                    'product_detail_ids' => implode(',', array_unique($lineInvoice['product_detail_ids'])),
                     'status'             => 'Pending',
                     'line_discount'      => 0,
-                    'total_amount'       => $bucket['line_total'],
+                    'total_amount'       => $lineInvoice['line_total'],
                     'created_at'         => now(),
                     'updated_at'         => now(),
                 ]);

@@ -93,7 +93,7 @@ Route::post('subcategory/update/{id}', [CategorySubController::class, 'update'])
 Route::resource('category_sub', CategorySubController::class, ['names' => 'category.sub']);
 Route::resource('attribute_groups', AttributeGroupController::class);
 Route::post('update_attributevalues', [AttributeGroupController::class, 'update_attributes'])->name('update_attributevalues');
-Route::resource('specification_groups', SpecificationGroupController::class,['names' => 'specification_groups']);
+Route::resource('specification_groups', SpecificationGroupController::class,['names' => 'specification_groups.admin']);
 Route::post('update_specification', [SpecificationGroupController::class, 'update_specification'])->name('update_specification');
 Route::resource('product_colors', ProductColorController::class);
 //Pincode

@@ -112,6 +112,42 @@
     <!--  editable JS
 		============================================ -->
 
+    <script>
+        // Global close-button behavior for non-modal pages.
+        $(document).on('click', 'button[type="button"]', function(e) {
+            var $btn = $(this);
+            var label = $.trim($btn.text()).toLowerCase();
+            if (label !== 'close') return;
+
+            // Keep modal/tab/custom-close buttons on their own behavior.
+            if (
+                $btn.is('[data-bs-dismiss], [data-dismiss], [data-bs-toggle], [onclick], .close, .btn-close') ||
+                $btn.attr('id') === 'upload-top-tab'
+            ) {
+                return;
+            }
+
+            var $modal = $btn.closest('.modal');
+            if ($modal.length) {
+                if (window.bootstrap && bootstrap.Modal) {
+                    var modalInstance = bootstrap.Modal.getInstance($modal[0]) || new bootstrap.Modal($modal[0]);
+                    modalInstance.hide();
+                    return;
+                }
+                if (typeof $modal.modal === 'function') {
+                    $modal.modal('hide');
+                    return;
+                }
+            }
+
+            e.preventDefault();
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = '/';
+            }
+        });
+    </script>
 
     </body>
 
