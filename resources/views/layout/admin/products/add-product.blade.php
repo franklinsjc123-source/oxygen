@@ -471,8 +471,8 @@
                                                                 class="text-danger">*</span>Product Status</label>
                                                         <select class="custom-select form-control text-secondary"
                                                             id="gs" onchange="r()" name="tax_id" required>
-                                                            <option value="" selected hidden>--Select Status--</option>
-                                                            <option value="1">Active</option>
+                                                            <option value="" hidden>--Select Status--</option>
+                                                            <option value="1" selected>Active</option>
                                                             <option value="0">De-Active</option>
                                                         </select>
                                                     </div>
@@ -750,29 +750,16 @@
 
                                                 </div>
                                                 <table class="table table-bordered ">
-                                                    <thead>
-                                                        <tr>
-                                                            <td>Specification</td>
-                                                            <td> Value</td>
-                                                            <td>Specification</td>
-                                                            <td> Value</td>
-                                                        </tr>
-                                                    </thead>
                                                     <tbody class="spectable">
-                                                    <tr>
                                                         @if(!empty($specification))
-                                                        @php $aa=0; @endphp
-                                                        @foreach ($specification as $spec)
-                                                        @php
-                                                        $spec_val = json_decode($spec->specification_values);
-                                                        $aa++;
-                                                       
-                                                        
-                                                        @endphp
-                                                       
+                                                        @foreach (collect($specification)->chunk(2) as $specPair)
+                                                        <tr>
+                                                            @foreach ($specPair as $spec)
+                                                            @php
+                                                            $spec_val = json_decode($spec->specification_values);
+                                                            @endphp
                                                             <td><input type="checkbox" id="spec_id" name="spec_id[]" value="{{ $spec->id}}" checked> {{ $spec->specification_group_name}}</td>
                                                             <td>
-
                                                                 <select class='form-select form-select-lg text-secondary' name='specify_value[{{ $spec->id}}]'>
                                                                     <option selected value='' hidden> --Select {{ $spec->specification_group_name}}--</option>
                                                                     @foreach( $spec_val as $spval )
@@ -780,17 +767,14 @@
                                                                     @endforeach
                                                                 </select>
                                                                 <input type="hidden" name="specify_attribute[{{ $spec->id}}]" value="{{ $spec->specification_group_name}}">
-
                                                             </td>
-                                                          
-                                                            @if($aa%2==2)
-                                                            </tr>
-                                                       <tr>
-                                                     
-                                                       @endif
-                                                   
-                                                        @endforeach
+                                                            @endforeach
+                                                            @if($specPair->count() === 1)
+                                                            <td></td>
+                                                            <td></td>
+                                                            @endif
                                                         </tr>
+                                                        @endforeach
                                                         @endif
                                                     </tbody>
                                                 </table>
@@ -891,7 +875,7 @@
                                         </button>
                                     </div>
                                     <div class="d-inline px-2 text-white">
-                                        <a href="#" class="btn btn-secondary w-100 " type="button">
+                                        <a href="{{ route('products.crud.listing') }}" class="btn btn-secondary w-100 " type="button">
                                             Close
                                         </a>
                                     </div>
@@ -987,29 +971,30 @@
         //main image
 
         $("#mainImg").on("change", function(e) {
-            //console.log(e);
+            var files = e.target.files || [];
+            var $preview = $("#ming_preview");
+            $preview.empty(); // Always reset previous preview when chooser changes
 
-            var files = e.target.files,
-                filesLength = files.length;
+            if (!files.length) {
+                return; // User closed chooser without picking file
+            }
 
-            for (var i = 0; i < filesLength; i++) {
-                var f = files[i]
+            for (var i = 0; i < files.length; i++) {
+                var f = files[i];
                 var fileReader = new FileReader();
-                fileReader.onload = (function(e) {
-                    var file = e.target;
-
-                    $("<div class='col-md-2'><span class=\"pip\">" +
-                        "<img class=\"imageThumb\" src=\"" + e.target.result +
-                        "\" title=\"" + file.name + "\"/>" +
-                        "<br/><span class=\"remove\">Remove image</span>" +
-                        "</span></div>").insertAfter("#ming_preview");
-                    $(".remove").click(function() {
-                        $(this).parent(".pip").remove();
-                    });
-
+                fileReader.onload = (function(evt) {
+                    var html = "<div class='col-md-2'><span class=\"pip\">" +
+                        "<img class=\"imageThumb\" src=\"" + evt.target.result + "\"/>" +
+                        "<br/><span class=\"remove remove-mainimg-preview\">Remove image</span>" +
+                        "</span></div>";
+                    $preview.append(html);
                 });
                 fileReader.readAsDataURL(f);
             }
+        });
+
+        $(document).on("click", ".remove-mainimg-preview", function() {
+            $(this).closest(".col-md-2").remove();
         });
 
     });
@@ -1107,16 +1092,24 @@
     function addmoreinfo(id) {
 
         var productinfo = $('#productinfo' + id).clone();
+        productinfo.find('[id]').removeAttr('id');
+        var selectedColor = $('#attrcolor' + id).val() || '';
+        var colorSelect = productinfo.find('.attrcolor' + id).first();
+        if (colorSelect.length) {
+            colorSelect.val(selectedColor);
+            colorSelect.prop('disabled', true);
+            colorSelect.removeAttr('required');
+            var colorFieldName = colorSelect.attr('name');
+            colorSelect.removeAttr('name');
+            productinfo.append('<input type="hidden" class="cloned-color-hidden" name="' + colorFieldName + '" value="' + selectedColor + '">');
+        }
         var removeBtn = $('<button class="btn btn-danger">Remove</button>');
         removeBtn.click(function() {
             $(this).parent().remove(); // Remove the parent div
         });
-        var color = $('#attrcolor'+id).val();
-        //alert(color);
         // Append the remove button and the cloned div to the target div
         productinfo.append(removeBtn);
         $('#productmoreinfo' + id).append(productinfo);
-        $('.attrcolor'+id).val(color);
     }
 </script>
 <!--<script src="//js.nicedit.com/nicEdit-latest.js" type="text/javascript"></script>

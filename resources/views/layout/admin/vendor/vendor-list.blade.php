@@ -89,7 +89,7 @@
                                              
                                             @endphp
                                         <tr>
-                                             <td><span>{{ str_pad($vendor_id ? $vendor_id->login_id : 'N/A' , 4, '0', STR_PAD_LEFT) . '- ' . $vendor_list->zone . '- ' . $vendor_list->route }}</span></br></td>
+                                             <td><span>{{ $vendor_list->zone . '- ' . $vendor_list->route . '- ' . str_pad($vendor_id ? $vendor_id->login_id : 'N/A' , 4, '0', STR_PAD_LEFT)}}</span></br></td>
 
                                             <td>
                                                 <div class="d-flex">

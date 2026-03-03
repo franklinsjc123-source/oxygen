@@ -9,6 +9,20 @@
 <!-- Page Body Start-->
 <div class="page-body-wrapper">
     @include('paritials.vendorauth.sidemenu');
+    <style>
+        #exampleModal .modal-dialog {
+            max-width: 760px;
+        }
+        .subcategory-preview-img {
+            width: 100%;
+            max-height: 220px;
+            object-fit: contain;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 8px;
+            background: #fff;
+        }
+    </style>
 
     <div class="page-body">
         <div class="container-fluid">
@@ -70,7 +84,7 @@
                                             <td>{{ $sub_category->category_name }}</td>
                                             <td>{{ $sub_category->category_sub_name }}</td>
                                             <td>
-                                                <a href="{{ url('vendar/viewcategory_sub/' . $sub_category->me_id) }}"
+                                                <a href="{{ route('vendorcategory.sub.index', ['view_id' => $sub_category->me_id]) }}"
                                                     class="btn btn-warning">View</a>
                                             </td>
                                         </tr>
@@ -92,12 +106,17 @@
     @endphp
     <div class="btn-popup pull-right">
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <form method="POST" action="{{ route('vendorsubcategory_mapping_update', $sub_category_viewdata->me_id) }}">
                         @csrf
                         <div class="modal-header">
-                            <h5 class="modal-title f-w-600" id="exampleModalLabel">Sub Category Mapping</h5>
+                            <div>
+                                <h5 class="modal-title f-w-600 mb-1" id="exampleModalLabel">Sub Category Mapping</h5>
+                                <div class="small text-muted">
+                                    {{ $sub_category_viewdata->category_main_name }} / {{ $sub_category_viewdata->category_name }} / {{ $sub_category_viewdata->category_sub_name }}
+                                </div>
+                            </div>
                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">x</span>
                             </button>
@@ -106,28 +125,13 @@
                             <div class="row">
                                 <div class="col-12 col-md-4">
                                     <img src="{{ asset('assets/images/categorySub') . '/' . $sub_category_viewdata->category_sub_image }}"
-                                        alt="" class="img-fluid me-2 blur-up lazyloaded">
-                                </div>
-                                <div class="col-12 col-md-8">
-                                    <table class="table table-bordered">
-                                        <tr>
-                                            <td>Main Category :</td>
-                                            <td>{{ $sub_category_viewdata->category_main_name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Category :</td>
-                                            <td>{{ $sub_category_viewdata->category_name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Sub Category :</td>
-                                            <td>{{ $sub_category_viewdata->category_sub_name }}</td>
-                                        </tr>
-                                    </table>
+                                        alt="" class="subcategory-preview-img blur-up lazyloaded">
                                 </div>
 
-                                <div class="col-12 mt-3">
+                                <div class="col-12 col-md-8 mt-3 mt-md-0">
                                     <h5>Attributes</h5>
-                                    <table class="table table-bordered">
+                                    <div class="table-responsive" style="max-height: 240px; overflow: auto;">
+                                    <table class="table table-bordered table-sm">
                                         <tr>
                                             <th style="width: 60px;">Select</th>
                                             <th>Name</th>
@@ -154,11 +158,13 @@
                                         </tr>
                                         @endforeach
                                     </table>
+                                    </div>
                                 </div>
 
                                 <div class="col-12 mt-2">
                                     <h5>Specification</h5>
-                                    <table class="table table-bordered">
+                                    <div class="table-responsive" style="max-height: 260px; overflow: auto;">
+                                    <table class="table table-bordered table-sm">
                                         <tr>
                                             <th style="width: 60px;">Select</th>
                                             <th>Name</th>
@@ -185,6 +191,7 @@
                                         </tr>
                                         @endforeach
                                     </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>

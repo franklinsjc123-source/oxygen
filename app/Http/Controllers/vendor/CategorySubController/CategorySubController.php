@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Session;
 class CategorySubController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
         $login_id = session()->get('login_id');
         $vendorcreate = vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
@@ -28,78 +28,68 @@ class CategorySubController extends Controller
             ->join('category_main', 'category_sub.category_main_id', '=', 'category_main.id')
             ->select('*', 'category_sub.id as me_id', 'category_sub.status as sc_status')
             ->whereIn('category_sub.id', $subcategoryarray)->get();
+        $viewId = (int) $request->query('view_id', 0);
+        if ($viewId > 0) {
+            $sub_category_viewdata = CategorySub::join('category', 'category_sub.category_id', '=', 'category.id')
+                ->join('category_main', 'category_sub.category_main_id', '=', 'category_main.id')
+                ->select('*', 'category_sub.id as me_id', 'category_sub.status as sc_status')
+                ->where('category_sub.id', $viewId)
+                ->first();
+
+            if ($sub_category_viewdata) {
+                $defaultAttributeIds = ($sub_category_viewdata->category_sub_attributes)
+                    ? array_values(array_filter(array_map('intval', explode(',', $sub_category_viewdata->category_sub_attributes))))
+                    : [];
+
+                $defaultSpecificationIds = ($sub_category_viewdata->category_sub_specifications)
+                    ? array_values(array_filter(array_map('intval', explode(',', $sub_category_viewdata->category_sub_specifications))))
+                    : [];
+
+                $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $viewId)->first();
+
+                $selectedAttributeIds = ($mapping && $mapping->category_sub_attribute_ids)
+                    ? array_values(array_filter(array_map('intval', json_decode($mapping->category_sub_attribute_ids, true) ?: [])))
+                    : $defaultAttributeIds;
+
+                $selectedSpecificationIds = ($mapping && $mapping->category_sub_specification_ids)
+                    ? array_values(array_filter(array_map('intval', json_decode($mapping->category_sub_specification_ids, true) ?: [])))
+                    : $defaultSpecificationIds;
+
+                $attributegroup = AttributeGroup::orderBy('attribute_group_name', 'asc')->get();
+
+                $specificationgroup = SpecificationGroup::whereIn('id', $defaultSpecificationIds)
+                    ->orWhere(function ($query) use ($login_id) {
+                        $query->where('created_byid', $login_id)
+                            ->where('created_by', 'Vendor');
+                    })
+                    ->orderBy('specification_group_name', 'asc')
+                    ->get();
+
+                return view('layout.vendor.category.category_sub')->with([
+                    "sub_category_data" => $sub_category_data,
+                    "view" => "Modal",
+                    "sub_category_viewdata" => $sub_category_viewdata,
+                    "attributegroup" => $attributegroup,
+                    "specificationgroup" => $specificationgroup,
+                    "selectedAttributeIds" => $selectedAttributeIds,
+                    "selectedSpecificationIds" => $selectedSpecificationIds,
+                ]);
+            }
+        }
+
         $attributegroup = AttributeGroup::all();
         $specificationgroup = SpecificationGroup::all();
-        return view('layout.vendor.category.category_sub')
-            ->with([
-                "sub_category_data" => $sub_category_data,
-                "view" => "table",
-                "attributegroup" => $attributegroup,
-                "specificationgroup" => $specificationgroup,
-
-            ]);
+        return view('layout.vendor.category.category_sub')->with([
+            "sub_category_data" => $sub_category_data,
+            "view" => "table",
+            "attributegroup" => $attributegroup,
+            "specificationgroup" => $specificationgroup,
+        ]);
     }
 
     public function viewcategory_sub($id)
     {
-        $login_id = session()->get('login_id');
-        $vendorcreate = vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
-        $subcategoryarray = ($vendorcreate->sub_category_ids) ? explode(',', $vendorcreate->sub_category_ids) : [0];
-
-        $sub_category_data = CategorySub::join('category', 'category_sub.category_id', '=', 'category.id')
-            ->join('category_main', 'category_sub.category_main_id', '=', 'category_main.id')
-            ->select('*', 'category_sub.id as me_id', 'category_sub.status as sc_status')
-            ->whereIn('category_sub.id', $subcategoryarray)
-            ->get();
-
-        $sub_category_viewdata = CategorySub::join('category', 'category_sub.category_id', '=', 'category.id')
-            ->join('category_main', 'category_sub.category_main_id', '=', 'category_main.id')
-            ->select('*', 'category_sub.id as me_id', 'category_sub.status as sc_status')
-            ->where('category_sub.id', $id)
-            ->first();
-
-        if (!$sub_category_viewdata) {
-            return redirect()->route('vendorcategory.sub.index');
-        }
-
-        $defaultAttributeIds = ($sub_category_viewdata->category_sub_attributes)
-            ? array_values(array_filter(array_map('intval', explode(',', $sub_category_viewdata->category_sub_attributes))))
-            : [];
-
-        $defaultSpecificationIds = ($sub_category_viewdata->category_sub_specifications)
-            ? array_values(array_filter(array_map('intval', explode(',', $sub_category_viewdata->category_sub_specifications))))
-            : [];
-
-        $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $id)->first();
-
-        $selectedAttributeIds = ($mapping && $mapping->category_sub_attribute_ids)
-            ? array_values(array_filter(array_map('intval', json_decode($mapping->category_sub_attribute_ids, true) ?: [])))
-            : $defaultAttributeIds;
-
-        $selectedSpecificationIds = ($mapping && $mapping->category_sub_specification_ids)
-            ? array_values(array_filter(array_map('intval', json_decode($mapping->category_sub_specification_ids, true) ?: [])))
-            : $defaultSpecificationIds;
-
-        $attributegroup = AttributeGroup::orderBy('attribute_group_name', 'asc')->get();
-
-        $specificationgroup = SpecificationGroup::whereIn('id', $defaultSpecificationIds)
-            ->orWhere(function ($query) use ($login_id) {
-                $query->where('created_byid', $login_id)
-                    ->where('created_by', 'Vendor');
-            })
-            ->orderBy('specification_group_name', 'asc')
-            ->get();
-
-        return view('layout.vendor.category.category_sub')
-            ->with([
-                "sub_category_data" => $sub_category_data,
-                "view" => "Modal",
-                "sub_category_viewdata" => $sub_category_viewdata,
-                "attributegroup" => $attributegroup,
-                "specificationgroup" => $specificationgroup,
-                "selectedAttributeIds" => $selectedAttributeIds,
-                "selectedSpecificationIds" => $selectedSpecificationIds,
-            ]);
+        return redirect()->route('vendorcategory.sub.index', ['view_id' => $id]);
     }
 
     public function updateMapping(Request $request, $id)
@@ -124,7 +114,7 @@ class CategorySubController extends Controller
             ]
         );
 
-        return redirect()->back()->with('success', 'Sub-category mapping updated successfully.');
+        return redirect()->route('vendorcategory.sub.index')->with('success', 'Sub-category mapping updated successfully.');
     }
 
     public function edit($id)
