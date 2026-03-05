@@ -124,6 +124,7 @@ class IndexController extends Controller
         return response()->json([
             'message' => 'Item removed successfully.',
             'removed'   => 1,
+            'count' => Cart::getContent()->count(),
         ]);
     }
 
@@ -146,7 +147,6 @@ class IndexController extends Controller
     {
         $input  = $request->all();
         $id     = $input['id'];
-        $qty    = $input['qty'];
         $type   = $input['type'];
 
         $item = Cart::get($id);
@@ -162,12 +162,36 @@ class IndexController extends Controller
         } else {
             return response()->json(['message' => 'Invalid update type'], 400);
         }
+
+        if ($type === 'Add') {
+            $size = $item->attributes->size ?? null;
+            $color = $item->attributes->color ?? null;
+            $availableStock = $this->getAvailableStock((int) $item->id, $size, $color);
+
+            if ($availableStock <= 0 || $newQty > $availableStock) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Out of stock. Only ' . max(0, $availableStock) . ' item(s) available.',
+                    'quantity' => $currentQty,
+                    'count' => Cart::getContent()->count(),
+                ]);
+            }
+        }
+
         Cart::update($id, ['quantity' => [
             'relative' => false,
             'value' => $newQty
         ]]);
+
+        $updatedItem = Cart::get($id);
+
         return response()->json([
+            'status' => 'success',
             'message' => 'Qty Updated successfully.',
+            'quantity' => (int) ($updatedItem->quantity ?? $newQty),
+            'item_subtotal' => (float) ($updatedItem->price ?? 0) * (int) ($updatedItem->quantity ?? $newQty),
+            'total' => (float) Cart::getTotal(),
+            'count' => Cart::getContent()->count(),
         ]);
     }
 
@@ -176,7 +200,27 @@ class IndexController extends Controller
          $count   = Cart::getContent()->count();
         $records = Cart::getContent();
         $total   = Cart::getTotal();
-         return view('front_end.site.show_cart',compact('count','records','total'));
+         return view('frontend.show_cart',compact('count','records','total'));
+    }
+
+    private function getAvailableStock(int $productId, $size = null, $color = null): int
+    {
+        $query = ProductsDetails::where('products_id', $productId);
+
+        if (!empty($size)) {
+            $query->where('attributevalue2', $size);
+        }
+
+        if (!empty($color)) {
+            $query->where('attributevalue1', $color);
+        }
+
+        $detail = $query->orderBy('id')->first();
+        if (!$detail) {
+            return 0;
+        }
+
+        return max(0, (int) ($detail->quantity ?? 0));
     }
 
 

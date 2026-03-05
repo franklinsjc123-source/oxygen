@@ -434,6 +434,8 @@ class FrontendController extends Controller
             'p.product_image',
             'pd.selling_price',
             'pd.retail_price',
+            'pd.id as product_detail_id',
+            'pd.quantity as stock_quantity',
             'c.category_name',
             'cs.category_sub_name',
             'cm.category_main_name',
@@ -516,11 +518,13 @@ class FrontendController extends Controller
 
             if (!empty($val->color) && !empty($val->size)) {
                 $resultArr[$productId]['variants'][] = [
+                    'detail_id' => (int) ($val->product_detail_id ?? 0),
                     'color_name' => $val->color,
                     'color_code' => $colorCode,
                     'size' => $val->size,
                     'selling_amount' => (float) ($val->selling_amount ?? 0),
                     'retail_amount' => (float) ($val->retail_amount ?? 0),
+                    'stock_quantity' => (int) ($val->stock_quantity ?? 0),
                 ];
             }
         }
@@ -1021,7 +1025,26 @@ class FrontendController extends Controller
         $size  = $input['size'];
         $color = $input['color'];
         $id    = $input['id'];
-        $qty   = $input['qty'];
+        $qty   = max(1, (int) ($input['qty'] ?? 1));
+        $stockQty = $this->getAvailableStock((int) $id, $size, $color);
+        $existingQty = (int) optional(Cart::get($id))->quantity;
+
+        if ($stockQty <= 0) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Out of stock for selected variant.',
+                'count' => Cart::getContent()->count(),
+            ]);
+        }
+
+        if (($existingQty + $qty) > $stockQty) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Out of stock. Only ' . $stockQty . ' item(s) available.',
+                'count' => Cart::getContent()->count(),
+            ]);
+        }
+
         $prouctsList = $this->getSpecificProduct($id)[$id];
         $cartArray = array(
             'id'        => $prouctsList['id'],
@@ -1037,10 +1060,31 @@ class FrontendController extends Controller
         Cart::add($cartArray);
         $count = Cart::getContent()->count();
         return response()->json([
+            'status' => 'success',
             'message' => 'Item added to cart successfully.',
             'count'   => $count,
             'cart' => Cart::getContent()
         ]);
+    }
+
+    private function getAvailableStock(int $productId, $size = null, $color = null): int
+    {
+        $query = ProductsDetails::where('products_id', $productId);
+
+        if (!empty($size)) {
+            $query->where('attributevalue2', $size);
+        }
+
+        if (!empty($color)) {
+            $query->where('attributevalue1', $color);
+        }
+
+        $detail = $query->orderBy('id')->first();
+        if (!$detail) {
+            return 0;
+        }
+
+        return max(0, (int) ($detail->quantity ?? 0));
     }
 
 

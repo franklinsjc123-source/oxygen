@@ -89,7 +89,7 @@
                                                     <th data-field="attributes" data-sortable="true">ATTRIBUTES</th>&nbsp; &nbsp; 
                                                         <!--<th data-field="stock" data-sortable="true">IN STOCK</th>-->                                                        
                                                         <th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
-                                                    <th data-field="status" data-sortable="true">PAYMENT STATUS</th>
+                                                    <th data-field="status" data-sortable="true">ORDER STATUS</th>
                                                     <th data-field="action" data-sortable="true">ACTION</th>
                                                     </tr>
                                                 </thead>
@@ -116,7 +116,7 @@
                                                         <td>       
                                                             
                                                             <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
-                                                                                    class="img-fluid img-30 me-2 blur-up lazyloaded" alt="">
+                                                                                    class="img-fluid img-30 me-2 blur-up lazyloaded" onerror="this.onerror=null;this.src='/website_assets/images/icons/no_product.png';" alt="">
                                                             {{-- {{ $attribute->product_image }} --}}
                                                         </td>
                                                         <td>                                          
@@ -131,13 +131,13 @@
                                                         
 
                                                         <td>                                          
-                                                            {{ $attribute->payment_status }}
+                                                            {{ $attribute->order_status }}
                                                         </td>
 
                                                         <!--<td><p class="text-center" style="border:1px solid #ffc000;color:#ffc000;border-radius:5px;">Accept</p></td>-->
                                                         
                                                         <td> 
-                                                        <span> <button  id ="btnnew" value= "{{ $attribute->id }}" class="btnnew badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
+                                                        <span> <button  id ="btnnew" value= "{{ $attribute->id }}" class="btnnew badge badge-secondary px-2" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                                                         
                                                                 <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
                                                         
@@ -228,7 +228,7 @@
                                                         <!--<th data-field="stock" data-sortable="true">IN STOCK</th>-->
                                                     
                                                     <th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
-                                                    <th data-field="status" data-sortable="true">PAYMENT STATUS</th>
+                                                    <th data-field="status" data-sortable="true">ORDER STATUS</th>
                                                     <th data-field="action" data-sortable="true">ACTION</th>
                                                 </tr>
                                             </thead>
@@ -262,7 +262,7 @@
                                                     <td>       
                                                         
                                                         <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
-                                                                                class="img-fluid img-30 me-2 blur-up lazyloaded" alt="">
+                                                                                class="img-fluid img-30 me-2 blur-up lazyloaded" onerror="this.onerror=null;this.src='/website_assets/images/icons/no_product.png';" alt="">
                                                         {{-- {{ $attribute->product_image }} --}}
                                                     </td>
                                                     <td>                                          
@@ -277,14 +277,14 @@
                                                         
 
                                                         <td>                                          
-                                                            {{ $attribute->payment_status }}
+                                                            {{ $attribute->order_status }}
                                                         </td>
 
                                                     <!--<td><p class="text-center" style="border:1px solid #ffc000;color:#ffc000;border-radius:5px;">Accept</p></td>-->
                                                     
                                                     <td>
                                                             <a href="{{url('vendar/Print_invoice/'.$attribute->id)}}" onclick="return confirm('Are you sure, you want to Print it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="Print" data-original-title="Print"><i class="fa fa-print"></i></a><span>
-                                                            <button  id ="btnaccess" value= "{{ $attribute->id }}" class="btnaccess badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
+                                                            <button  id ="btnaccess" value= "{{ $attribute->id }}" class="btnaccess badge badge-secondary px-2" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                                                             
                                                         
                                                             <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
@@ -372,7 +372,7 @@
                                     
                                     <!--<th data-field="stock" data-sortable="true">IN STOCK</th>-->                                                        
                                     <th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
-                                                    <th data-field="status" data-sortable="true">PAYMENT STATUS</th>
+                                                    <th data-field="status" data-sortable="true">ORDER STATUS</th>
                                     <th data-field="action" data-sortable="true">ACTION</th>
                                     </tr>
                                 </thead>
@@ -410,7 +410,7 @@
                                         <td>       
                                             
                                             <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
-                                                                    class="img-fluid img-30 me-2 blur-up lazyloaded" alt="">
+                                                                    class="img-fluid img-30 me-2 blur-up lazyloaded" onerror="this.onerror=null;this.src='/website_assets/images/icons/no_product.png';" alt="">
                                             {{-- {{ $attribute->product_image }} --}}
                                         </td>
                                         <td>                                          
@@ -425,14 +425,14 @@
                                                         
 
                                                         <td>                                          
-                                                            {{ $attribute->payment_status }}
+                                                            {{ $attribute->order_status }}
                                                         </td>
 
                                         <!--<td><p class="text-center" style="border:1px solid #ffc000;color:#ffc000;border-radius:5px;">Accept</p></td>-->
                                         
                                         <td><span> 
                                             
-                                            <button  id ="btndispatch" value= "{{ $attribute->id }}" class="btndispatch badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
+                                            <button  id ="btndispatch" value= "{{ $attribute->id }}" class="btndispatch badge badge-secondary px-2" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                                         
                                                 <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
                                         
@@ -522,7 +522,7 @@
                                                     
                                                     <!--<th data-field="stock" data-sortable="true">IN STOCK</th>-->                                                        
                                                     <th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
-                                                    <th data-field="status" data-sortable="true">PAYMENT STATUS</th>
+                                                    <th data-field="status" data-sortable="true">ORDER STATUS</th>
                                                     <th data-field="action" data-sortable="true">ACTION</th>
                                                 </tr>
                                             </thead>
@@ -555,7 +555,7 @@
                                                     <td>       
                                                         
                                                         <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
-                                                                                class="img-fluid img-30 me-2 blur-up lazyloaded" alt="">
+                                                                                class="img-fluid img-30 me-2 blur-up lazyloaded" onerror="this.onerror=null;this.src='/website_assets/images/icons/no_product.png';" alt="">
                                                         {{-- {{ $attribute->product_image }} --}}
                                                     </td>
                                                     <td>                                          
@@ -570,13 +570,13 @@
                                                         
 
                                                         <td>                                          
-                                                            {{ $attribute->payment_status }}
+                                                            {{ $attribute->order_status }}
                                                         </td>
                                                     <!--<td><p class="text-center" style="border:1px solid #ffc000;color:#ffc000;border-radius:5px;">Accept</p></td>-->
                                                     
                                                     <td><span>
                                                         
-                                                        <button  id ="btndelivered" value= "{{ $attribute->id }}" class="btndelivered badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
+                                                        <button  id ="btndelivered" value= "{{ $attribute->id }}" class="btndelivered badge badge-secondary px-2" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                                                     
                                                             <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
                                                     
@@ -666,7 +666,7 @@
                                                     
                                                     <!--<th data-field="stock" data-sortable="true">IN STOCK</th>-->                                                        
                                                     <th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
-                                                    <th data-field="status" data-sortable="true">PAYMENT STATUS</th>
+                                                    <th data-field="status" data-sortable="true">ORDER STATUS</th>
                                                     <th data-field="action" data-sortable="true">ACTION</th>
                                                 </tr>
                                             </thead>
@@ -703,7 +703,7 @@
                                                     <td>       
                                                         
                                                         <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
-                                                                                class="img-fluid img-30 me-2 blur-up lazyloaded" alt="">
+                                                                                class="img-fluid img-30 me-2 blur-up lazyloaded" onerror="this.onerror=null;this.src='/website_assets/images/icons/no_product.png';" alt="">
                                                         {{-- {{ $attribute->product_image }} --}}
                                                     </td>
                                                     <td>                                          
@@ -718,14 +718,14 @@
                                                         
 
                                                         <td>                                          
-                                                            {{ $attribute->payment_status }}
+                                                            {{ $attribute->order_status }}
                                                         </td>
                                                     
                                                     <!--<td><p class="text-center" style="border:1px solid #f90000;color:#f90000;border-radius:5px;">{{ $attribute->order_status }}</p></td>-->
                                                     
                                                     <td><span> 
                                                         
-                                                        <button  id ="btnreturn" value= "{{ $attribute->id }}" class="btnreturn badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
+                                                        <button  id ="btnreturn" value= "{{ $attribute->id }}" class="btnreturn badge badge-secondary px-2" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                                                     
                                                             <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
                                                     
@@ -813,7 +813,7 @@
                                             
                                             <!--<th data-field="stock" data-sortable="true">IN STOCK</th>-->                                                        
                                             <th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
-                                                    <th data-field="status" data-sortable="true">PAYMENT STATUS</th>
+                                                    <th data-field="status" data-sortable="true">ORDER STATUS</th>
                                             <th data-field="action" data-sortable="true">ACTION</th>
                                             </tr>
                                         </thead>
@@ -849,7 +849,7 @@
                                                 <td>       
                                                     
                                                     <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
-                                                                            class="img-fluid img-30 me-2 blur-up lazyloaded" alt="">
+                                                                            class="img-fluid img-30 me-2 blur-up lazyloaded" onerror="this.onerror=null;this.src='/website_assets/images/icons/no_product.png';" alt="">
                                                     {{-- {{ $attribute->product_image }} --}}
                                                 </td>
                                                 <td>                                          
@@ -864,14 +864,14 @@
                                                         
 
                                                         <td>                                          
-                                                            {{ $attribute->payment_status }}
+                                                            {{ $attribute->order_status }}
                                                         </td>
                                                 
     
                                                 <!--<td><p class="text-center" style="border:1px solid #f90000;color:#f90000;border-radius:5px;">{{ $attribute->order_status }}</p></td>-->
                                                 
                                                 <td><span> 
-                                                    <button  id ="btncancel" value= "{{ $attribute->id }}" class="btncancel badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
+                                                    <button  id ="btncancel" value= "{{ $attribute->id }}" class="btncancel badge badge-secondary px-2" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                                                 
                                                         <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
                                                 
@@ -988,7 +988,6 @@ dataType: "json",
 success: function (data) {
     let productImages = [];
     productImages = JSON.parse(data.productdetails.product_detail_image);
-    console.log(productImages);
     $('#product_title').html(data.product.product_name);
     if(data.productdetails.product_detail_image)
     {
@@ -1033,7 +1032,7 @@ $(".close").click(function(e) {
 
     $(document).ready(function() {
     
-    $("#btnnew").click(function(e) {
+    $(".btnnew").click(function(e) {
     e.preventDefault();
     
     var btnnew = $(this).val();
@@ -1104,7 +1103,7 @@ $(".btnaccess").click(function(e) {
 
     $.ajax({
 
-    url: "{{ url('admin/orderstatusupdate') }}/"+btnaccess, 
+    url: "{{ url('vendar/orderstatusupdate') }}/"+btnaccess, 
     type: "POST",
     data: {
         "_token": "{{ csrf_token() }}",
@@ -1148,7 +1147,7 @@ $(".btnaccess").click(function(e) {
 
     $.ajax({
 
-    url: "{{ url('admin/orderstatusupdate') }}/"+btndispatch, 
+    url: "{{ url('vendar/orderstatusupdate') }}/"+btndispatch, 
     type: "POST",
     data: {
         "_token": "{{ csrf_token() }}",
@@ -1187,7 +1186,7 @@ $(".btndelivered").click(function(e) {
 
     $.ajax({
 
-    url: "{{ url('admin/orderstatusupdate') }}/"+btndelivered, 
+    url: "{{ url('vendar/orderstatusupdate') }}/"+btndelivered, 
     type: "POST",
     data: {
         "_token": "{{ csrf_token() }}",
@@ -1232,7 +1231,7 @@ $(".btnreturn").click(function(e) {
 
     $.ajax({
 
-    url: "{{ url('admin/orderstatusupdate') }}/"+btnreturn, 
+    url: "{{ url('vendar/orderstatusupdate') }}/"+btnreturn, 
     type: "POST",
     data: {
         "_token": "{{ csrf_token() }}",
@@ -1279,7 +1278,7 @@ $(".btnreturn").click(function(e) {
 
     $.ajax({
 
-    url: "{{ url('admin/orderstatusupdate') }}/"+btncancel, 
+    url: "{{ url('vendar/orderstatusupdate') }}/"+btncancel, 
     type: "POST",
     data: {
         "_token": "{{ csrf_token() }}",
@@ -1308,7 +1307,6 @@ $(".btnreturn").click(function(e) {
 
 <script>
     var chk = document.querySelectorAll("input[type=checkbox]");
-console.log(chk);
 
 function checkall(checkbox)
 {
@@ -1558,3 +1556,7 @@ $('#delmaster').on('click', function(e) {
 </script>
 
 @endsection
+
+
+
+

@@ -421,7 +421,39 @@
        .mfp-content {
            width: 60% !important;
        }
+
+       .center-toast {
+           position: fixed;
+           top: 50%;
+           left: 50%;
+           transform: translate(-50%, -50%);
+           z-index: 99999;
+           min-width: 220px;
+           max-width: 90vw;
+           padding: 12px 18px;
+           color: #fff;
+           border-radius: 10px;
+           text-align: center;
+           font-weight: 600;
+           box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+           opacity: 0;
+           pointer-events: none;
+           transition: opacity .2s ease;
+       }
+
+       .center-toast.show {
+           opacity: 1;
+       }
+
+       .center-toast.success {
+           background: #1c9c53;
+       }
+
+       .center-toast.error {
+           background: #d13434;
+       }
    </style>
+   <div id="centerToast" class="center-toast" aria-live="polite"></div>
 
    <!-- Start of Quick View -->
    <div class="login-register-popup mfp-hide">
@@ -530,6 +562,38 @@
    </div>
 
    <script>
+       const isCustomerLoggedIn = <?= session()->has('customer_id') ? 'true' : 'false' ?>;
+
+       window.showCenterMessage = function(message, type = 'success') {
+           const toast = document.getElementById('centerToast');
+           if (!toast) return;
+           toast.classList.remove('success', 'error', 'show');
+           toast.classList.add(type === 'error' ? 'error' : 'success');
+           toast.textContent = message || '';
+           toast.classList.add('show');
+           clearTimeout(window.centerToastTimer);
+           window.centerToastTimer = setTimeout(function() {
+               toast.classList.remove('show');
+           }, 2200);
+       };
+
+       window.syncCartCount = function(count) {
+           const safeCount = Math.max(0, parseInt(count || 0, 10) || 0);
+           $('.cart-count').html(safeCount);
+           if (!isCustomerLoggedIn) {
+               localStorage.setItem('oxy_cart_count', String(safeCount));
+           } else {
+               localStorage.removeItem('oxy_cart_count');
+           }
+       };
+
+       function applyInitialCartCount() {
+           if (!isCustomerLoggedIn) {
+               const stored = parseInt(localStorage.getItem('oxy_cart_count') || '0', 10) || 0;
+               $('.cart-count').html(stored);
+           }
+       }
+
        function addwishlist(pid) {
 
            var user_id = '<?= session()->get('customer_id') ?>';
@@ -786,7 +850,8 @@
                    if (willDelete) {
                        $.get(url, function(data) {
                            if (data.removed == 1) {
-                               $.notify(data.message, "success");
+                               window.showCenterMessage(data.message, "success");
+                               window.syncCartCount(data.count || 0);
                                showSideCart();
                            }
                        });
@@ -804,26 +869,35 @@
            var url = '<?= route('getSideCart') ?>';
            $.get(url, function(data) {
                $('.sideCart').html(data);
+               var currentCount = $('.sideCart .product.product-cart').length;
+               window.syncCartCount(currentCount);
            });
        }
 
 
        function updateQty(id, type, view) {
 
-           var qty = parseInt($('#quantity' + id).val());
-           (type == 'Add') ? qty += 1: ((type == 'Minus' && qty > 1) ? qty -= 1 : '');
-           $('#quantity' + id).val(qty);
+           var qty = parseInt($('#quantity' + id).val() || '1', 10);
+           var nextQty = (type == 'Add') ? qty + 1 : ((type == 'Minus' && qty > 1) ? qty - 1 : qty);
+
            if (id > 0) {
                var url = '<?= route('updateQty') ?>';
                $.post(url, {
                    id: id,
-                   'qty': qty,
+                   'qty': nextQty,
                    '_token': '<?= csrf_token() ?>',
                    'type': type,
                }, function(data) {
-                   getCart();
-                   $.notify(data.message, "success");
+                   if (data.status === 'error') {
+                       $('#quantity' + id).val(data.quantity || qty);
+                       window.showCenterMessage(data.message || 'Unable to update quantity.', 'error');
+                       return;
+                   }
 
+                   $('#quantity' + id).val(data.quantity || nextQty);
+                   getCart();
+                   window.syncCartCount(data.count || 0);
+                   window.showCenterMessage(data.message, "success");
 
                })
            }
@@ -833,8 +907,21 @@
            var url = '<?= route('getItemCart') ?>';
            $.get(url, function(data) {
                $('#cartView').html(data);
+               showSideCart();
            });
        }
+
+       $(document).ready(function() {
+           applyInitialCartCount();
+           showSideCart();
+
+           @if(session('success'))
+           window.showCenterMessage(@json(session('success')), 'success');
+           @endif
+           @if(session('error'))
+           window.showCenterMessage(@json(session('error')), 'error');
+           @endif
+       });
 
        function cuslogin() {
            var username = $('#login_username').val();

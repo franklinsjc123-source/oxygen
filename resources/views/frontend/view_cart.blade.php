@@ -1,7 +1,23 @@
  @extends('app_template')
- @section('title','View Products')
- @section('content')
-  <!-- Start of Main -->
+@section('title','View Products')
+@section('content')
+<style>
+    .shop-table.cart-table th,
+    .shop-table.cart-table td {
+        vertical-align: middle;
+    }
+
+    .shop-table.cart-table .product-image,
+    .shop-table.cart-table .product-thumbnail {
+        width: 120px;
+    }
+
+    .shop-table.cart-table .product-name {
+        padding-left: 16px;
+        text-align: left;
+    }
+</style>
+ <!-- Start of Main -->
         <main class="main cart">
             <!-- Start of Breadcrumb -->
             <nav class="breadcrumb-nav">
@@ -25,75 +41,13 @@
                                     <tr>
                                         <th class="product-image"><span>Image</span></th>
                                         <th class="product-name">Product Name</th>
-                                        <th class="product-price"><span>Price</span></th>
-                                        <th class="product-quantity"><span>Quantity</span></th>
-                                        <th class="product-subtotal"><span>Subtotal</span></th>
+                                        <th class="product-price text-center"><span>Price</span></th>
+                                        <th class="product-quantity text-center"><span>Quantity</span></th>
+                                        <th class="product-subtotal text-center"><span>Subtotal</span></th>
                                     </tr>
                                 </thead>
                                 <tbody id="cartView">
-								<?php
-                                    if(isset($records)){
-                                       
-                                    foreach ($records as $row) {
-                                         $image = $row['attributes']['image'];
-                                         //print_r($row);
-                                        
-                                    ?>
-
-                                    <tr>
-                                        <td class="product-thumbnail">
-                                            <div class="p-relative">
-                                                <a href="product-default.html">
-                                                    <figure>
-                                                        <img src="<?= asset('assets/images/products/'.$image) ?>" alt="product"
-                                                            width="300" height="338">
-                                                    </figure>
-                                                </a>
-                                                <button type="button" class="btn btn-close" onclick="removeCart('<?= $row['id'] ?>')"><i
-                                                        class="fas fa-times"></i></button>
-                                            </div>
-                                        </td>
-                                        <td class="product-name">
-                                            <a href="#">
-                                               {{ $row['name'] }}
-                                            </a>
-                                            @php
-                                                $size = $row['attributes']['size'] ?? '';
-                                                $color = $row['attributes']['color'] ?? '';
-                                            @endphp
-                                            @if($size || $color)
-                                                <div class="text-muted" style="font-size: 12px;">
-                                                    @if($size)
-                                                        <span>Size: {{ $size }}</span>
-                                                    @endif
-                                                    @if($size && $color)
-                                                        <span> | </span>
-                                                    @endif
-                                                    @if($color)
-                                                        <span>Color: {{ $color }}</span>
-                                                    @endif
-                                                </div>
-                                            @endif
-                                        </td>
-                                        <td class="product-price"><span class="amount">Rs.{{ $row['price'] }}</span></td>
-                                        <td class="product-quantity">
-                                            <div class="input-group">
-                                                <input class="form-control" value="<?= $row['quantity'] ?>" type="number" min="1" max="100" id="quantity{{$row['id']}}" readonly> 
-                                                <button class="w-icon-plus" onclick="updateQty('{{$row['id']}}','Add')"></button>
-                                                <button class=" w-icon-minus" onclick="updateQty('{{$row['id']}}','Minus')"></button>
-                                            </div>
-                                        </td>
-                                        <td class="product-subtotal">
-                                            <span class="amount">Rs.{{ $row['price'] * $row['quantity'] }}</span>
-                                        </td>
-                                    </tr>
-									<?php } }else{ ?>                                       
-                                        <tr data-id="1">
-                                            <td colspan="5">
-                                                <center><i class="d-icon-bag"></i> Your Cart is Empty</center>
-                                            </td>
-                                        </tr>
-                                        <?php } ?>
+                                    @include('frontend.show_cart', ['records' => $records ?? []])
                                 </tbody>
                             </table>
 

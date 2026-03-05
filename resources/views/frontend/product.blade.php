@@ -156,6 +156,7 @@
                                  <hr class="product-divider">
                                  <input type="hidden" id="product-size" value="" />
                                  <input type="hidden" id="product-color" value="" />
+                                 <input type="hidden" id="selected-stock" value="0" />
                                  <div class="product-form product-variation-form product-color-swatch">
                                      <label>Color:</label>
                                      <div class="d-flex align-items-center product-variations" id="product-color-options">
@@ -179,7 +180,7 @@
                                              <div class="col-md-3 product-qty-form">
                                              <div class="input-group">
                                                  <input class="quantity form-control" id="quantity" type="number" min="1"
-                                                     max="100">
+                                                     max="100" value="1">
                                                  <button class="quantity-plus w-icon-plus"></button>
                                                  <button class="quantity-minus w-icon-minus"></button>
                                              </div>
@@ -1083,6 +1084,15 @@
          $('.product-size-option').removeClass('active');
          $el.addClass('active');
          $('#product-size').val(size);
+         const stock = Number($el.data('stock') || 0);
+         $('#selected-stock').val(stock);
+         if (stock > 0) {
+             $('#quantity').attr('max', stock);
+             const currentQty = Number($('#quantity').val() || 1);
+             if (currentQty > stock) {
+                 $('#quantity').val(stock);
+             }
+         }
          updateProductPrice({
              selling_amount: $el.data('selling'),
              retail_amount: $el.data('retail')
@@ -1118,7 +1128,8 @@
          sizes.forEach(function(v, idx) {
              const activeClass = idx === 0 ? ' active' : '';
              const sizeHtml = '<a href="#" class="size product-size-option' + activeClass + '" data-size="' + String(v.size) +
-                 '" data-selling="' + Number(v.selling_amount || 0) + '" data-retail="' + Number(v.retail_amount || 0) + '">' +
+                 '" data-selling="' + Number(v.selling_amount || 0) + '" data-retail="' + Number(v.retail_amount || 0) +
+                 '" data-stock="' + Number(v.stock_quantity || 0) + '">' +
                  String(v.size) + '</a>';
              $sizeBox.append(sizeHtml);
          });
@@ -1153,6 +1164,69 @@
          }
      });
 
+     function enforceQuantityLimit(showMessageOnExceed) {
+         var selectedStock = parseInt($('#selected-stock').val() || '0', 10);
+         var qty = parseInt($('#quantity').val() || '1', 10);
+
+         if (!Number.isFinite(qty) || qty < 1) {
+             qty = 1;
+         }
+
+         if (selectedStock > 0 && qty > selectedStock) {
+             qty = selectedStock;
+             if (showMessageOnExceed) {
+                 if (typeof window.showCenterMessage === 'function') {
+                     window.showCenterMessage('Out of stock. Only ' + selectedStock + ' item(s) available.', 'error');
+                 } else {
+                     $.notify('Out of stock. Only ' + selectedStock + ' item(s) available.', "error");
+                 }
+             }
+         }
+
+         $('#quantity').val(qty);
+         return qty;
+     }
+
+     $(document).on('click', '.product-qty-form .quantity-plus', function(e) {
+         e.preventDefault();
+         e.stopImmediatePropagation();
+         var selectedStock = parseInt($('#selected-stock').val() || '0', 10);
+         var qty = parseInt($('#quantity').val() || '1', 10);
+
+         if (!Number.isFinite(qty) || qty < 1) {
+             qty = 1;
+         }
+
+         if (selectedStock > 0 && qty >= selectedStock) {
+             if (typeof window.showCenterMessage === 'function') {
+                 window.showCenterMessage('Out of stock. Only ' + selectedStock + ' item(s) available.', 'error');
+             } else {
+                 $.notify('Out of stock. Only ' + selectedStock + ' item(s) available.', "error");
+             }
+             $('#quantity').val(selectedStock);
+             return false;
+         }
+
+         $('#quantity').val(qty + 1);
+         return false;
+     });
+
+     $(document).on('click', '.product-qty-form .quantity-minus', function(e) {
+         e.preventDefault();
+         e.stopImmediatePropagation();
+         var qty = parseInt($('#quantity').val() || '1', 10);
+         if (!Number.isFinite(qty) || qty <= 1) {
+             $('#quantity').val(1);
+             return false;
+         }
+         $('#quantity').val(qty - 1);
+         return false;
+     });
+
+     $(document).on('input change', '#quantity', function() {
+         enforceQuantityLimit(false);
+     });
+
      function addCart(id) {
 
 
@@ -1172,10 +1246,16 @@
              return false;
          }
 
-         var qty = $('#quantity').val();
+         var qty = enforceQuantityLimit(true);
          var url = '<?= route('customCart') ?>';
          var size = $('#product-size').val();
          var color = $('#product-color').val();
+         var selectedStock = parseInt($('#selected-stock').val() || '0', 10);
+
+         if (!Number.isFinite(qty) || qty < 1) {
+             qty = 1;
+             $('#quantity').val(1);
+         }
 
          if (color === '') {
                $('#product_error').html('<p style="color: red;">' + 
@@ -1191,6 +1271,21 @@
              return false;
          }
 
+         if (selectedStock <= 0) {
+             if (typeof window.showCenterMessage === 'function') {
+                 window.showCenterMessage('Out of stock for selected variant.', 'error');
+             }
+             return false;
+         }
+
+         if (qty > selectedStock) {
+             $('#quantity').val(selectedStock);
+             if (typeof window.showCenterMessage === 'function') {
+                 window.showCenterMessage('Only ' + selectedStock + ' item(s) available.', 'error');
+             }
+             return false;
+         }
+
           $('#product_error').html(' ');
          $.post(url, {
              id: id,
@@ -1199,8 +1294,26 @@
              color: color,
              '_token': '<?= csrf_token() ?>'
          }, function(data) {
-             $.notify(data.message, "success", "bottom");
-             $('.cart-count').html(data.count);
+             if (data.status === 'error') {
+                 if (typeof window.showCenterMessage === 'function') {
+                     window.showCenterMessage(data.message, 'error');
+                 } else {
+                     $.notify(data.message, "error");
+                 }
+                 return;
+             }
+
+             if (typeof window.showCenterMessage === 'function') {
+                 window.showCenterMessage(data.message, 'success');
+             } else {
+                 $.notify(data.message, "success");
+             }
+
+             if (typeof window.syncCartCount === 'function') {
+                 window.syncCartCount(data.count || 0);
+             } else {
+                 $('.cart-count').html(data.count || 0);
+             }
          });
      }
  </script>
