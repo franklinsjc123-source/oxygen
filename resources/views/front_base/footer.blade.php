@@ -699,7 +699,12 @@
 
 
 
-       function showLoginPopup() {
+       function showLoginPopup(redirectUrl = null) {
+           if (redirectUrl) {
+               sessionStorage.setItem('post_login_redirect', redirectUrl);
+           } else {
+               sessionStorage.removeItem('post_login_redirect');
+           }
            //    Wolmart.popup({
            //        items: {
            //            src: ".login-register-popup"
@@ -943,10 +948,29 @@
                    success: function(data) {
                        console.log(data);
                        if (data.msg == 'Success') {
-                           swal("Success!", "Login Successfully", "success");
-                           window.location.href = "{{ route('myAccount') }}";
+                           var redirectUrl = sessionStorage.getItem('post_login_redirect') || "{{ route('myAccount') }}";
+                           sessionStorage.removeItem('post_login_redirect');
+                           if (typeof swal === 'function') {
+                               swal("Success!", "Login Successfully", "success").then(function() {
+                                   window.location.href = redirectUrl;
+                               });
+                               setTimeout(function() {
+                                   window.location.href = redirectUrl;
+                               }, 1200);
+                           } else {
+                               if (typeof window.showCenterMessage === 'function') {
+                                   window.showCenterMessage("Login Successfully", "success");
+                               }
+                               window.location.href = redirectUrl;
+                           }
                        } else {
-                           swal("Warning!", "Username And Password is Wrong", "error");
+                           if (typeof swal === 'function') {
+                               swal("Warning!", "Username And Password is Wrong", "error");
+                           } else if (typeof window.showCenterMessage === 'function') {
+                               window.showCenterMessage("Username And Password is Wrong", "error");
+                           } else {
+                               alert("Username And Password is Wrong");
+                           }
                        }
 
 

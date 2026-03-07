@@ -110,7 +110,6 @@ class CustomerController extends Controller
 
         $username = $request->username;
         $password = base64_encode(base64_encode($request->password));
-
         $userlogin = Ecom_Customer_info::where(['customer_mobileno' => $username, 'customer_password' => $password])->get();
         $count1 = $userlogin->count();
 

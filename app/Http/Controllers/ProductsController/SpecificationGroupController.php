@@ -36,7 +36,7 @@ class SpecificationGroupController extends Controller
         $validated['created_byid'] = $login_id;
         SpecificationGroup::create($validated);;
 
-        return redirect()->route('specification_groups.index')->with('success', 'Specification Group created successfully.');
+        return redirect()->route('specification_groups.admin.index')->with('success', 'Specification Group created successfully.');
     }
 
     public function edit($id)
@@ -61,7 +61,7 @@ class SpecificationGroupController extends Controller
         $group = SpecificationGroup::findOrFail($id);
         $group->update( $validated);
 
-        return redirect()->route('specification_groups.index')->with('success', 'Specification Group updated successfully.');
+        return redirect()->route('specification_groups.admin.index')->with('success', 'Specification Group updated successfully.');
     }
     public function update_specification(Request $request)
     {
@@ -73,13 +73,13 @@ class SpecificationGroupController extends Controller
         $group = SpecificationGroup::findOrFail($id);
         $group->update( $validated);
 
-        return redirect()->route('specification_groups.index')->with('success', 'Specification updated successfully.');
+        return redirect()->route('specification_groups.admin.index')->with('success', 'Specification updated successfully.');
     }
     public function destroy($id)
     {
         $group = SpecificationGroup::findOrFail($id);
         $group->delete();
 
-        return redirect()->route('specification_groups.index')->with('success', 'Specification Group deleted successfully.');
+        return redirect()->route('specification_groups.admin.index')->with('success', 'Specification Group deleted successfully.');
     }
 }

@@ -50,7 +50,7 @@
 				<div class="card-body">
 				
 				
-				<form action="{{ route('specification_groups.update', $group->id) }}" method="POST">
+				<form action="{{ route('specification_groups.admin.update', $group->id) }}" method="POST">
         @csrf
         @method('PUT')
         <div class="mb-3">

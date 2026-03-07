@@ -66,6 +66,7 @@
     use App\Models\Category\CategoryMain;
     use App\Models\Category\Category;
     use App\Models\Category\CategorySub;
+    use App\Models\Ecom_Customer_info;
     use Darryldecode\Cart\Facades\CartFacade as Cart;
     use Illuminate\Support\Facades\Session;
     
@@ -75,6 +76,10 @@
 
     // $categorysub = CategorySub::orderBy('category_sub_sortorder', 'asc')->get();
     $count = Cart::getContent()->count();
+    $customerName = Session::get('customer_name');
+    if (!$customerName && Session::has('customer_id')) {
+        $customerName = optional(Ecom_Customer_info::where('customer_id', Session::get('customer_id'))->first())->customer_firstname;
+    }
     ?>
 
     <style>
@@ -336,8 +341,7 @@
                             <?php  if(session('customer_id')){ ?>
 
                             <a href="{{ route('myAccount') }}" class="compare label-down link d-xs-show">
-                                <i class="w-icon-account" style="font-size:28px;"></i>
-                                <span class="compare-label d-lg-show mt-1">Account</span>
+                                <span class="compare-label d-lg-show mt-1">{{ $customerName ?: 'Account' }}</span>
                             </a>
 
                             <a class="wishlist label-down link d-xs-show" href="{{ route('myWallet') }}">

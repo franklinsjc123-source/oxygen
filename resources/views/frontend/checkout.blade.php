@@ -23,10 +23,12 @@
 		<!-- Start of PageContent -->
 		<div class="page-content">
 			<div class="container">
+                @if(!session()->has('customer_id'))
 				<div style="cursor:pointer" >
-					Returning customer? <a  onclick="showLoginPopup()" 
+					Returning customer? <a  onclick="showLoginPopup('{{ route('checkoutPage') }}')" 
 						class="show-login font-weight-bold text-uppercase text-dark">Login</a>
 				</div>
+                @endif
 			
 				<div class="coupon-toggle mt-3">
 					Have a coupon? <a href="#"

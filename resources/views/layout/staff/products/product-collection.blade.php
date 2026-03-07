@@ -105,7 +105,7 @@
                             <div class="datatable-dashv1-list custom-datatable-overright">
                                 <table class="table" id="table" data-click-to-select="true" data-sort-name="id"
                                     data-sort-order="asc" data-mobile-responsive="true" data-toggle="table"
-                                    data-show-columns="true" data-sort="true" data-pagination="true" data-search="true"
+                                    data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true"
                                     data-show-refresh="true" data-key-events="true" data-resizable="true" data-cookie="true"
                                     data-show-export="true" data-click-to-select="true" data-toolbar="#toolbar">
                                     <thead>
@@ -172,3 +172,4 @@
         <!-- Container-fluid Ends-->
     </div>
 @endsection
+

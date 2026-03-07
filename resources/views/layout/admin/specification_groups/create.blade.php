@@ -53,7 +53,7 @@
 				<div class="card-body">
 				
 				
-				<form action="{{ route('specification_groups.store') }}" method="POST">
+				<form action="{{ route('specification_groups.admin.store') }}" method="POST">
         @csrf
         <div class="mb-3">
             <label for="specification_group_name" class="form-label">Group Name</label>

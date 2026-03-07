@@ -24,6 +24,62 @@
             font-size: 18px;
         }
     } */
+    .order-summary-row {
+        cursor: pointer;
+    }
+    .order-details-row {
+        display: none;
+        background: #fafafa;
+    }
+    .order-details-card {
+        border: 1px solid #e8e8e8;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 12px;
+        background: #fff;
+    }
+    .order-product-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed #ececec;
+    }
+    .order-product-item:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: 0;
+    }
+    .order-product-thumb {
+        width: 58px;
+        height: 58px;
+        border-radius: 6px;
+        object-fit: cover;
+        background: #f0f0f0;
+    }
+    #account-orders .account-orders-table {
+        width: 100%;
+        table-layout: fixed;
+    }
+    #account-orders .account-orders-table thead th,
+    #account-orders .account-orders-table tbody td {
+        text-align: left;
+        vertical-align: middle;
+        padding: 12px 10px;
+    }
+    #account-orders .account-orders-table thead th:last-child,
+    #account-orders .account-orders-table tbody td:last-child {
+        text-align: center;
+    }
+    #account-orders .account-orders-table .order-details-row td {
+        text-align: left !important;
+    }
+    #account-orders .account-orders-table .order-id { width: 22%; }
+    #account-orders .account-orders-table .order-date { width: 20%; }
+    #account-orders .account-orders-table .order-status { width: 18%; }
+    #account-orders .account-orders-table .order-total { width: 20%; }
+    #account-orders .account-orders-table .order-actions { width: 20%; }
     </style>
 
    <main class="main">
@@ -190,7 +246,6 @@
                        </div>
 
                        <div class="tab-pane mb-4" id="account-orders">
-                           
                            <center><h3>Orders</h3></center>
 
                            <table class="shop-table account-orders-table mb-6">
@@ -206,36 +261,59 @@
                                <tbody>
                                     @if($orderdata->count() > 0)
                                         @foreach($orderdata as $order)
-                                            <tr>
-                                                <td class="order-id">
-                                                    #{{ $order->order_id }}
-                                                </td>
-
-                                                <td class="order-date">
-                                                    {{ \Carbon\Carbon::parse($order->order_date)->format('d M Y') }}
-                                                </td>
-
-                                                <td class="order-status">
-                                                    {{ $order->order_status }}
-                                                </td>
-
-                                                <td class="order-total">
-                                                    <span class="order-price">₹{{ number_format($order->grand_total, 2) }}</span>
-                                                </td>
-
+                                            <tr class="order-summary-row" onclick="toggleOrderDetails('{{ $order->id }}')">
+                                                <td class="order-id">#{{ $order->order_id }}</td>
+                                                <td class="order-date">{{ \Carbon\Carbon::parse($order->order_date)->format('d M Y') }}</td>
+                                                <td class="order-status">{{ $order->order_status }}</td>
+                                                <td class="order-total"><span class="order-price">Rs. {{ number_format($order->grand_total, 2) }}</span></td>
                                                 <td class="order-action">
-                                                    <a href="{{ url('invoice-pdf/'.$order->id) }}" target="_blank"
-                                                        class="btn btn-outline btn-default btn-block btn-sm btn-rounded">
-                                                        View
+                                                    <a href="javascript:void(0)" class="btn btn-outline btn-default btn-block btn-sm btn-rounded">
+                                                        View Details
                                                     </a>
+                                                </td>
+                                            </tr>
+                                            <tr id="order-details-{{ $order->id }}" class="order-details-row">
+                                                <td colspan="5">
+                                                    @foreach($order->invoice_details as $invoice)
+                                                        <div class="order-details-card">
+                                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                <div>
+                                                                    <b>Invoice:</b> {{ $invoice->invoice_id }}<br>
+                                                                    <b>Status:</b> {{ $invoice->status }}
+                                                                </div>
+                                                                <div class="text-right"><b>Amount:</b> Rs. {{ number_format($invoice->line_amount, 2) }}</div>
+                                                            </div>
+                                                            @if(isset($invoice->products) && count($invoice->products) > 0)
+                                                                @foreach($invoice->products as $product)
+                                                                    @php
+                                                                        $productImage = $product->product_image ?? '';
+                                                                        $productImageUrl = $productImage !== '' ? asset('assets/images/products/detail/' . $productImage) : asset('frontend/images/demos/demo1/products/1-1.jpg');
+                                                                    @endphp
+                                                                    <div class="order-product-item">
+                                                                        <img src="{{ $productImageUrl }}" alt="{{ $product->product_name }}" class="order-product-thumb">
+                                                                        <div>
+                                                                            <div><b>{{ $product->product_name }}</b></div>
+                                                                            @if(!empty($product->product_size) || !empty($product->product_color))
+                                                                                <div>Size: {{ $product->product_size ?: '-' }} | Color: {{ $product->product_color ?: '-' }}</div>
+                                                                            @endif
+                                                                            <div>Price: Rs. {{ number_format($product->product_price, 2) }}</div>
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            @endif
+                                                        </div>
+                                                    @endforeach
+                                                    <div class="text-right">
+                                                        <a href="{{ url('invoice-pdf/'.$order->id) }}" class="btn btn-dark btn-rounded btn-sm" target="_blank">
+                                                            Download Invoice
+                                                        </a>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach
                                     @else
                                         <tr>
-                                            <td colspan="5" class="text-center">
-                                                No orders found
-                                            </td>
+                                            <td colspan="5" class="text-center">No orders found</td>
                                         </tr>
                                     @endif
                                 </tbody>
@@ -587,9 +665,11 @@
    @endsection
 
 <script>
-
-
-
+    function toggleOrderDetails(orderId) {
+        var row = document.getElementById('order-details-' + orderId);
+        if (!row) return;
+        row.style.display = row.style.display === 'table-row' ? 'none' : 'table-row';
+    }
 
     function setDefaultAddress(e, addressId) {
         e.stopPropagation(); // prevent card click
@@ -648,6 +728,17 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+        const hash = window.location.hash;
+        if (hash) {
+            const targetTab = document.querySelector('a.nav-link[data-bs-toggle="tab"][href="' + hash + '"]');
+            if (targetTab) {
+                if (window.bootstrap && bootstrap.Tab) {
+                    bootstrap.Tab.getOrCreateInstance(targetTab).show();
+                } else {
+                    targetTab.click();
+                }
+            }
+        }
 
 
        document.getElementById('changePasswordForm').addEventListener('submit', function (e) {

@@ -126,7 +126,7 @@
 			ajax: options.hasOwnProperty("ajax") ? options.ajax : null,
 			serverSide: options.hasOwnProperty("serverSide") ? options.serverSide : false,
 			paging: options.hasOwnProperty("paging") ? options.paging : true,
-			iDisplayLength: options.hasOwnProperty("iDisplayLength") ? options.iDisplayLength : 10,
+			iDisplayLength: options.hasOwnProperty("iDisplayLength") ? options.iDisplayLength : 25,
 			lengthMenu: options.hasOwnProperty("lengthMenu") ? options.lengthMenu : [
 				[10, 25, 50, 100, -1],
 				[10, 25, 50, 100, "All"]
@@ -179,7 +179,7 @@
 			ajax: options.hasOwnProperty("ajax") ? options.ajax : null,
 			serverSide: options.hasOwnProperty("serverSide") ? options.serverSide : false,
 			paging: options.hasOwnProperty("paging") ? options.paging : true,
-			iDisplayLength: options.hasOwnProperty("iDisplayLength") ? options.iDisplayLength : 10,
+			iDisplayLength: options.hasOwnProperty("iDisplayLength") ? options.iDisplayLength : 25,
 			lengthMenu: options.hasOwnProperty("lengthMenu") ? options.lengthMenu : [
 				[10, 25, 50, 100, -1],
 				[10, 25, 50, 100, "All"]
@@ -424,4 +424,5 @@
 
 
 <!-- sidebar handled by assets/js/sidebar-menu.js -->
+
 

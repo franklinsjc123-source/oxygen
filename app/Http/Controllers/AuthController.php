@@ -61,7 +61,7 @@ class AuthController extends Controller
                 
                 // } 
                      else {
-                return redirect()->route('/');
+                return redirect()->route('adminerror');
                     return view('auth.adminlogin');
                 }                
 

@@ -99,9 +99,7 @@ class FrontendController extends Controller
                 ->get();
             $wishCount = count($wishlist);
 
-            $orderdata = Ecom_orders::where('customer_id', $customer_id)
-                ->orderBy('id', 'desc')
-                ->get();
+            $orderdata = $this->getCustomerOrderSummaries($customer_id);
 
             return view('frontend/my_account', compact('customer', 'wishlist', 'wishCount', 'shipping_address', 'orderdata'));
         } else {
@@ -938,6 +936,11 @@ class FrontendController extends Controller
         if (session()->has('customer_id')) {
 
             $customer_id = session('customer_id');
+            $customerInfo = Ecom_Customer_info::where('customer_id', $customer_id)->first();
+            $customerName = trim((string) (($customerInfo->customer_firstname ?? session('customer_name', '')) . ' ' . ($customerInfo->customer_lastname ?? '')));
+            if ($customerName === '') {
+                $customerName = (string) session('customer_name', $customer_id);
+            }
 
             // delivered order check
             $hasPurchased = DB::table('ecom_order_product')
@@ -949,7 +952,7 @@ class FrontendController extends Controller
 
             // already rated check
             $myRating = Rating::where('products_id', $id)
-                ->where('customer_id', $customer_id)
+                ->where('customer_name', $customerName)
                 ->first();
 
             // only if purchased AND not rated
@@ -1612,6 +1615,7 @@ class FrontendController extends Controller
         DB::beginTransaction();
         try {
             $customer = null;
+            $isNewCustomer = false;
 
             if (auth()->check()) {
                 $customer = Ecom_Customer_info::where('id', auth()->id())->first();
@@ -1625,6 +1629,7 @@ class FrontendController extends Controller
 
             if (!$customer) {
                 $customerCode = 'OXY-C' . str_pad(((int) Ecom_Customer_info::max('id')) + 1, 5, '0', STR_PAD_LEFT);
+                $isNewCustomer = true;
 
                 $customer = Ecom_Customer_info::create([
                     'customer_id'        => $customerCode,
@@ -1632,7 +1637,7 @@ class FrontendController extends Controller
                     'customer_lastname'  => $request->billing_last_name,
                     'customer_email'     => $request->billing_email,
                     'customer_mobileno'  => $request->billing_phone,
-                    'customer_password'  => base64_encode('welcome@123'),
+                    'customer_password'  => base64_encode(base64_encode('welcome@123')),
                     'customer_address'   => $request->billing_address,
                     'customer_address1'  => $request->billing_address,
                     'customer_city'      => $request->billing_city,
@@ -1655,6 +1660,8 @@ class FrontendController extends Controller
             }
 
             $customerCode = $customer->customer_id;
+            Session::put('customer_id', $customerCode);
+            Session::put('customer_name', (string) ($customer->customer_firstname ?? 'Customer'));
 
             $productIds = $cartItems->pluck('id')->map(function ($id) {
                 return (int) $id;
@@ -1668,6 +1675,7 @@ class FrontendController extends Controller
 
             $productInvoices = [];
             $grandTotal = 0;
+            $stockMoves = [];
 
             foreach ($cartItems as $item) {
                 $productId = (int) $item->id;
@@ -1681,6 +1689,10 @@ class FrontendController extends Controller
                 $size = $item->attributes->size ?? null;
                 $color = $item->attributes->color ?? null;
                 $detailId = $this->resolveProductDetailId($productId, $size, $color);
+                $qty = (int) $item->quantity;
+                if (empty($detailId)) {
+                    throw new \RuntimeException('Product variant not found for product ID ' . $productId);
+                }
                 $lineTotal = (float) $item->price * (int) $item->quantity;
                 $grandTotal += $lineTotal;
 
@@ -1690,6 +1702,30 @@ class FrontendController extends Controller
                     'product_detail_ids' => !empty($detailId) ? [(int) $detailId] : [],
                     'line_total' => $lineTotal,
                 ];
+                $stockMoves[] = [
+                    'detail_id' => (int) $detailId,
+                    'qty' => $qty,
+                ];
+            }
+
+            $stockByDetail = [];
+            foreach ($stockMoves as $move) {
+                $detailId = (int) $move['detail_id'];
+                $stockByDetail[$detailId] = ($stockByDetail[$detailId] ?? 0) + (int) $move['qty'];
+            }
+
+            foreach ($stockByDetail as $detailId => $qtyToReduce) {
+                $detail = ProductsDetails::where('id', $detailId)->lockForUpdate()->first();
+                if (!$detail) {
+                    throw new \RuntimeException('Stock detail not found for variant ID ' . $detailId);
+                }
+
+                $availableQty = (int) $detail->quantity;
+                if ($availableQty < (int) $qtyToReduce) {
+                    throw new \RuntimeException('Insufficient stock for product variant. Available: ' . $availableQty . ', Requested: ' . (int) $qtyToReduce);
+                }
+
+                $detail->decrement('quantity', (int) $qtyToReduce);
             }
 
             $invoiceIds = [];
@@ -1732,7 +1768,12 @@ class FrontendController extends Controller
             DB::commit();
             Cart::clear();
 
-            return redirect()->back()->with('success', 'Order placed successfully! Order ID: ' . $orderId);
+            $message = 'Order placed successfully! Order ID: ' . $orderId;
+            if ($isNewCustomer) {
+                $message .= ' Account created. Default password: welcome@123';
+            }
+
+            return redirect()->to(route('myAccount') . '#account-orders')->with('success', $message);
         } catch (\Throwable $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Checkout failed: ' . $e->getMessage());
@@ -1783,81 +1824,333 @@ class FrontendController extends Controller
 
     public function downloadInvoice($id)
     {
-        $order = Ecom_Orders::where('id', $id)->firstOrFail();
+        $customerId = Session::get('customer_id');
+        if (!$customerId) {
+            return redirect('/home');
+        }
 
-        // customer_id is string like OXY-C00001
+        $newOrder = DB::table('ecom_order')
+            ->where('id', $id)
+            ->where('customer_id', $customerId)
+            ->first();
+
+        if ($newOrder) {
+            $invoiceIds = collect(explode(',', (string) $newOrder->invoice_ids))
+                ->map(fn($val) => trim($val))
+                ->filter()
+                ->values();
+
+            $invoiceRows = $invoiceIds->isNotEmpty()
+                ? DB::table('ecom_invoice')->whereIn('invoice_id', $invoiceIds)->get()
+                : collect();
+
+            $productDetailIds = $invoiceRows->flatMap(function ($invoice) {
+                return collect(explode(',', (string) $invoice->product_detail_ids))
+                    ->map(fn($val) => (int) trim($val))
+                    ->filter();
+            })->unique()->values();
+
+            $detailRows = $productDetailIds->isNotEmpty()
+                ? DB::table('products_details as pd')
+                ->leftJoin('products as p', 'p.id', '=', 'pd.products_id')
+                ->whereIn('pd.id', $productDetailIds)
+                ->select(
+                    'pd.id as detail_id',
+                    'p.product_name',
+                    'pd.selling_price',
+                    'pd.attributevalue2 as product_size'
+                )
+                ->get()
+                ->keyBy('detail_id')
+                : collect();
+
+            $mappedItems = [];
+            foreach ($invoiceRows as $invoiceRow) {
+                $lineDetails = collect(explode(',', (string) $invoiceRow->product_detail_ids))
+                    ->map(fn($val) => (int) trim($val))
+                    ->filter()
+                    ->values();
+
+                if ($lineDetails->isEmpty()) {
+                    $mappedItems[] = [
+                        'name'     => 'Order Item',
+                        'hsn'      => '-',
+                        'price'    => (float) $invoiceRow->total_amount,
+                        'qty'      => 1,
+                        'net'      => (float) $invoiceRow->total_amount,
+                        'tax_rate' => 0,
+                        'tax_type' => 'NA',
+                        'tax_amt'  => 0,
+                        'total'    => (float) $invoiceRow->total_amount,
+                    ];
+                    continue;
+                }
+
+                foreach ($lineDetails as $detailId) {
+                    $product = $detailRows->get($detailId);
+                    $amount = (float) ($product->selling_price ?? $invoiceRow->total_amount);
+                    $name = (string) ($product->product_name ?? 'Order Item');
+                    $size = (string) ($product->product_size ?? '');
+
+                    if ($size !== '') {
+                        $name .= ' (' . $size . ')';
+                    }
+
+                    $mappedItems[] = [
+                        'name'     => $name,
+                        'hsn'      => '-',
+                        'price'    => $amount,
+                        'qty'      => 1,
+                        'net'      => $amount,
+                        'tax_rate' => 0,
+                        'tax_type' => 'NA',
+                        'tax_amt'  => 0,
+                        'total'    => $amount,
+                    ];
+                }
+            }
+
+            $customer = Ecom_Customer_info::where('customer_id', $customerId)->first();
+            $orderDate = $newOrder->created_at ? Carbon::parse($newOrder->created_at) : now();
+            $grandTotal = (float) $newOrder->total_amount;
+
+            $data = [
+                'seller' => [
+                    'name' => 'Tryneww',
+                    'address' => 'India',
+                    'pan' => '-',
+                    'gst' => '-',
+                ],
+                'invoice' => [
+                    'order_no'     => $newOrder->order_id,
+                    'invoice_no'   => $invoiceIds->first() ?? $newOrder->order_id,
+                    'order_date'   => $orderDate->format('d-m-Y'),
+                    'invoice_date' => now()->format('d-m-Y'),
+                ],
+                'billing' => [
+                    'name'       => trim((string) (($customer->customer_firstname ?? '') . ' ' . ($customer->customer_lastname ?? ''))),
+                    'address'    => (string) ($customer->customer_address ?? ''),
+                    'city'       => (string) ($customer->customer_city ?? ''),
+                    'pincode'    => (string) ($customer->customer_pincode ?? ''),
+                    'state_code' => (string) ($customer->customer_state ?? ''),
+                ],
+                'shipping' => [
+                    'name'       => trim((string) (($customer->customer_firstname ?? '') . ' ' . ($customer->customer_lastname ?? ''))),
+                    'address'    => (string) ($customer->customer_address1 ?? $customer->customer_address ?? ''),
+                    'city'       => (string) ($customer->customer_city ?? ''),
+                    'pincode'    => (string) ($customer->customer_pincode ?? ''),
+                    'state_code' => (string) ($customer->customer_state ?? ''),
+                ],
+                'items' => $mappedItems,
+                'summary' => [
+                    'tax'   => 0,
+                    'grand' => $grandTotal,
+                    'words' => $this->amountInWords($grandTotal),
+                ],
+            ];
+
+            $pdf = Pdf::loadView('frontend.invoice', $data);
+            return $pdf->download('invoice-' . $newOrder->order_id . '.pdf');
+        }
+
+        $order = Ecom_Orders::where('id', $id)
+            ->where('customer_id', $customerId)
+            ->firstOrFail();
+
         $customer = Ecom_Customer_info::where('customer_id', $order->customer_id)->first();
-
-        // order_id is like OXY-O0001
         $items = Ecom_Order_product::where('order_id', $order->order_id)->get();
 
         $mappedItems = $items->map(function ($item) {
-            $net = $item->product_price * $item->product_quantity;
-
-            $taxRate = 18; // or from GST table if needed
-            $taxAmt = ($net * $taxRate) / 100;
-            $total = $net + $taxAmt;
+            $net = (float) $item->product_price * (int) $item->product_quantity;
 
             return [
                 'name'     => $item->product_name,
                 'hsn'      => $item->product_gstin ?? '-',
-                'price'    => $item->product_price,
-                'qty'      => $item->product_quantity,
+                'price'    => (float) $item->product_price,
+                'qty'      => (int) $item->product_quantity,
                 'net'      => $net,
-                'tax_rate' => $taxRate,
-                'tax_type' => 'IGST',
-                'tax_amt'  => $taxAmt,
-                'total'    => $total,
+                'tax_rate' => 0,
+                'tax_type' => 'NA',
+                'tax_amt'  => 0,
+                'total'    => $net,
             ];
         });
 
-        $totalTax   = $mappedItems->sum('tax_amt');
-        $grandTotal = $mappedItems->sum('total');
-
-        $inWords = $this->amountInWords($grandTotal);
-
+        $grandTotal = (float) $mappedItems->sum('total');
         $data = [
             'seller' => [
-                'name' => 'Le Delite',
-                'address' => 'New Rajender Nagar, Delhi - 110060',
-                'pan' => 'AKUPA3250C',
-                'gst' => '07AKUPA3250C1ZI'
+                'name' => 'Tryneww',
+                'address' => 'India',
+                'pan' => '-',
+                'gst' => '-',
             ],
-
             'invoice' => [
                 'order_no'     => $order->order_id,
                 'invoice_no'   => $order->order_id,
-                'order_date'   => \Carbon\Carbon::parse($order->order_date)->format('d-m-Y'),
+                'order_date'   => Carbon::parse($order->order_date)->format('d-m-Y'),
                 'invoice_date' => now()->format('d-m-Y'),
             ],
-
             'billing' => [
-                'name'       => ($customer ? $customer->customer_firstname . ' ' . $customer->customer_lastname : ''),
-                'address'    => $order->customer_address,
-                'city'       => $order->customer_city,
-                'pincode'    => $order->customer_pincode,
-                'state_code' => $order->customer_state,
+                'name'       => trim((string) (($customer->customer_firstname ?? '') . ' ' . ($customer->customer_lastname ?? ''))),
+                'address'    => (string) ($order->customer_address ?? ''),
+                'city'       => (string) ($order->customer_city ?? ''),
+                'pincode'    => (string) ($order->customer_pincode ?? ''),
+                'state_code' => (string) ($order->customer_state ?? ''),
             ],
-
             'shipping' => [
-                'name'       => $order->customer_firstname . ' ' . $order->customer_lastname,
-                'address'    => $order->customer_address1,
-                'city'       => $order->customer_city,
-                'pincode'    => $order->customer_pincode,
-                'state_code' => $order->customer_state,
+                'name'       => trim((string) (($order->customer_firstname ?? '') . ' ' . ($order->customer_lastname ?? ''))),
+                'address'    => (string) ($order->customer_address1 ?? ''),
+                'city'       => (string) ($order->customer_city ?? ''),
+                'pincode'    => (string) ($order->customer_pincode ?? ''),
+                'state_code' => (string) ($order->customer_state ?? ''),
             ],
-
             'items' => $mappedItems,
-
             'summary' => [
-                'tax'   => $totalTax,
+                'tax'   => 0,
                 'grand' => $grandTotal,
-                'words' => $inWords,
+                'words' => $this->amountInWords($grandTotal),
             ],
         ];
 
         $pdf = Pdf::loadView('frontend.invoice', $data);
-        return $pdf->stream('invoice.pdf');
+        return $pdf->download('invoice-' . $order->order_id . '.pdf');
+    }
+
+    private function getCustomerOrderSummaries(string $customerId)
+    {
+        $newOrders = DB::table('ecom_order')
+            ->where('customer_id', $customerId)
+            ->orderByDesc('id')
+            ->get();
+
+        if ($newOrders->isNotEmpty()) {
+            $allInvoiceIds = $newOrders->flatMap(function ($order) {
+                return collect(explode(',', (string) $order->invoice_ids))
+                    ->map(fn($val) => trim($val))
+                    ->filter();
+            })->unique()->values();
+
+            $invoiceRows = $allInvoiceIds->isNotEmpty()
+                ? DB::table('ecom_invoice')
+                ->whereIn('invoice_id', $allInvoiceIds)
+                ->get()
+                ->keyBy('invoice_id')
+                : collect();
+
+            $allProductDetailIds = $invoiceRows->flatMap(function ($invoice) {
+                return collect(explode(',', (string) $invoice->product_detail_ids))
+                    ->map(fn($val) => (int) trim($val))
+                    ->filter();
+            })->unique()->values();
+
+            $productDetails = $allProductDetailIds->isNotEmpty()
+                ? DB::table('products_details as pd')
+                ->leftJoin('products as p', 'p.id', '=', 'pd.products_id')
+                ->whereIn('pd.id', $allProductDetailIds)
+                ->select(
+                    'pd.id as detail_id',
+                    'p.product_name',
+                    'pd.product_detail_image',
+                    'pd.selling_price',
+                    'pd.attributevalue1 as product_color',
+                    'pd.attributevalue2 as product_size'
+                )
+                ->get()
+                ->keyBy('detail_id')
+                : collect();
+
+            return $newOrders->map(function ($order) use ($invoiceRows, $productDetails) {
+                $invoiceIds = collect(explode(',', (string) $order->invoice_ids))
+                    ->map(fn($val) => trim($val))
+                    ->filter()
+                    ->values();
+
+                $invoiceDetails = [];
+                foreach ($invoiceIds as $invoiceId) {
+                    $invoice = $invoiceRows->get($invoiceId);
+                    if (!$invoice) {
+                        continue;
+                    }
+
+                    $lineProducts = collect(explode(',', (string) $invoice->product_detail_ids))
+                        ->map(fn($val) => (int) trim($val))
+                        ->filter()
+                        ->map(function ($detailId) use ($productDetails) {
+                            $detail = $productDetails->get($detailId);
+                            if (!$detail) {
+                                return null;
+                            }
+                            $productImage = $detail->product_detail_image ?? '';
+                            $productImage = trim((string) $productImage, '[]"\'' . " \t\n\r\0\x0B");
+
+                            return (object) [
+                                'product_name' => (string) ($detail->product_name ?? 'Product'),
+                                'product_image' => $productImage,
+                                'product_color' => (string) ($detail->product_color ?? ''),
+                                'product_size' => (string) ($detail->product_size ?? ''),
+                                'product_price' => (float) ($detail->selling_price ?? 0),
+                            ];
+                        })
+                        ->filter()
+                        ->values();
+
+                    $invoiceDetails[] = (object) [
+                        'invoice_id' => (string) $invoice->invoice_id,
+                        'status' => (string) ($invoice->status ?? 'Pending'),
+                        'line_amount' => (float) ($invoice->total_amount ?? 0),
+                        'products' => $lineProducts,
+                    ];
+                }
+
+                return (object) [
+                    'id' => (int) $order->id,
+                    'order_id' => (string) $order->order_id,
+                    'order_date' => $order->created_at,
+                    'order_status' => (string) ($order->status ?? 'Pending'),
+                    'grand_total' => (float) ($order->total_amount ?? 0),
+                    'invoice_details' => collect($invoiceDetails),
+                ];
+            });
+        }
+
+        $oldOrders = Ecom_orders::where('customer_id', $customerId)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        if ($oldOrders->isEmpty()) {
+            return collect();
+        }
+
+        $orderIds = $oldOrders->pluck('order_id')->filter()->values();
+        $productsByOrder = Ecom_Order_product::whereIn('order_id', $orderIds)->get()->groupBy('order_id');
+
+        return $oldOrders->map(function ($order) use ($productsByOrder) {
+            $products = $productsByOrder->get($order->order_id, collect())->map(function ($item) {
+                return (object) [
+                    'product_name' => (string) ($item->product_name ?? 'Product'),
+                    'product_image' => (string) ($item->product_image ?? ''),
+                    'product_color' => '',
+                    'product_size' => (string) ($item->product_size ?? ''),
+                    'product_price' => (float) ($item->product_price ?? 0),
+                ];
+            })->values();
+
+            return (object) [
+                'id' => (int) $order->id,
+                'order_id' => (string) $order->order_id,
+                'order_date' => $order->order_date,
+                'order_status' => (string) ($order->order_status ?? 'Pending'),
+                'grand_total' => (float) ($order->grand_total ?? 0),
+                'invoice_details' => collect([
+                    (object) [
+                        'invoice_id' => (string) $order->order_id,
+                        'status' => (string) ($order->order_status ?? 'Pending'),
+                        'line_amount' => (float) ($order->grand_total ?? 0),
+                        'products' => $products,
+                    ],
+                ]),
+            ];
+        });
     }
 
     private function amountInWords($amount)
@@ -2047,10 +2340,15 @@ class FrontendController extends Controller
         // ]);
 
         $customerId = session('customer_id');
+        $customerInfo = Ecom_Customer_info::where('customer_id', $customerId)->first();
+        $customerName = trim((string) (($customerInfo->customer_firstname ?? session('customer_name', '')) . ' ' . ($customerInfo->customer_lastname ?? '')));
+        if ($customerName === '') {
+            $customerName = (string) session('customer_name', $customerId);
+        }
 
         // 🔒 already rated check
         $alreadyRated = Rating::where('products_id', $request->product_id)
-            ->where('customer_id', $customerId)
+            ->where('customer_name', $customerName)
             ->exists();
 
         if ($alreadyRated) {
@@ -2059,8 +2357,7 @@ class FrontendController extends Controller
 
         $rating = Rating::create([
             'products_id'   => $request->product_id,
-            'customer_id'   => $customerId,
-            'customer_name' => 'test',
+            'customer_name' => $customerName,
             'star_rating'   => $request->star_rating,
             'comments'      => $request->comment,
             'status'        => 1
