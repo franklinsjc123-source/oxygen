@@ -80,6 +80,27 @@
     #account-orders .account-orders-table .order-status { width: 18%; }
     #account-orders .account-orders-table .order-total { width: 20%; }
     #account-orders .account-orders-table .order-actions { width: 20%; }
+    .account-dashboard-grid .icon-box {
+        border: 1px solid #e8e8e8;
+        border-radius: 6px;
+        padding: 48px 20px;
+        min-height: 190px;
+        transition: all .2s ease;
+        background: #fff;
+    }
+    .account-dashboard-grid .icon-box:hover {
+        border-color: #cfd8dc;
+        box-shadow: 0 4px 14px rgba(0,0,0,.06);
+    }
+    .account-back-wrap {
+        display: flex;
+        justify-content: flex-start;
+        margin-bottom: 16px;
+    }
+    .account-back-btn {
+        border-radius: 20px;
+        padding: 7px 14px;
+    }
     </style>
 
    <main class="main">
@@ -105,61 +126,12 @@
        <!-- Start of PageContent -->
        <div class="page-content pt-2">
            <div class="container">
-               <div class="tab tab-vertical row gutter-lg">
-                   <ul class="nav nav-tabs mb-6" role="tablist">
-                       <li class="nav-item">
-                           <a href="#account-dashboard"  data-bs-toggle="tab"  class="nav-link    active">Dashboard</a>
-                       </li>
-                       <li class="nav-item">
-                           <a href="#account-orders"  data-bs-toggle="tab"   class="nav-link  ">Orders</a>
-                       </li>
-                       <li class="nav-item">
-                           <a href="#account-downloads"  data-bs-toggle="tab"  class="nav-link  ">Wallet</a>
-                       </li>
-                       <li class="nav-item">
-                           <a href="#account-addresses"  data-bs-toggle="tab"  class="nav-link ">Addresses</a>
-                       </li>
-                       <li class="nav-item">
-                           <a href="#profile-details"  data-bs-toggle="tab"  class="nav-link ">profile Details</a>
-                       </li>
-                       <li class="nav-item">
-                           <a href="#account-details"  data-bs-toggle="tab"   class="nav-link ">Account Settings</a>
-                       </li>
-                       <li class="link-item">
-                           <a href="#wishlist"  data-bs-toggle="tab"  class="nav-link ">Wishlist</a>
-                       </li>
-                       <li class="link-item">
-                            <a href="{{ route('customer-logout') }}" 
-                                class="nav-link " 
-                                onclick="window.location.href=this.href; return false;">
-                                Logout
-                            </a>
-                       </li>
-                   </ul>
-
+               <div class="tab tab-vertical">
                    <div class="tab-content mb-6">
                        <div class="tab-pane active in" id="account-dashboard">
-                           <p class="greeting">
-                               Hello
-                               <span class="text-dark font-weight-bold"><?=  $customer['customer_firstname'] ?></span>
-                               (not
-                               <span class="text-dark font-weight-bold"><?=  $customer['customer_firstname'] ?></span> ?
-                               <a href="{{ route('customer-logout') }}" class="text-primary">Log out</a>)
-                           </p>
-
-                           <p class="mb-4">
-                               From your account dashboard you can view your <a href="#account-orders"
-                                   class="text-primary link-to-tab">recent orders</a>,
-                               manage your <a href="#account-addresses" class="text-primary link-to-tab">shipping
-                                   and billing
-                                   addresses</a>, and
-                               <a href="#account-details" class="text-primary link-to-tab">edit your password and
-                                   account details.</a>
-                           </p>
-
-                           <div class="row">
+                           <div class="row account-dashboard-grid">
                                <div class="col-lg-4 col-md-6 col-sm-4 col-xs-6 mb-4">
-                                   <a href="#account-orders" class="link-to-tab">
+                                   <a href="#account-orders" data-bs-toggle="tab" class="dashboard-option">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-orders">
                                                <i class="w-icon-orders"></i>
@@ -171,7 +143,7 @@
                                    </a>
                                </div>
                                <div class="col-lg-4 col-md-6 col-sm-4 col-xs-6 mb-4">
-                                   <a href="#account-downloads" class="link-to-tab">
+                                   <a href="#account-downloads" data-bs-toggle="tab" class="dashboard-option">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-download">
                                                <i class="w-icon-wallet"></i>
@@ -183,7 +155,7 @@
                                    </a>
                                </div>
                                <div class="col-lg-4 col-md-6 col-sm-4 col-xs-6 mb-4">
-                                   <a href="#account-addresses" class="link-to-tab">
+                                   <a href="#account-addresses" data-bs-toggle="tab" class="dashboard-option">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-address">
                                                <i class="w-icon-map-marker"></i>
@@ -195,7 +167,7 @@
                                    </a>
                                </div>
                                <div class="col-lg-4 col-md-6 col-sm-4 col-xs-6 mb-4">
-                                   <a href="#profile-details" class="link-to-tab">
+                                   <a href="#profile-details" data-bs-toggle="tab" class="dashboard-option">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-account">
                                                <i class="w-icon-user"></i>
@@ -207,7 +179,7 @@
                                    </a>
                                </div>
                                <div class="col-lg-4 col-md-6 col-sm-4 col-xs-6 mb-4">
-                                   <a href="#account-details" class="link-to-tab">
+                                   <a href="#account-details" data-bs-toggle="tab" class="dashboard-option">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-account">
                                                <i class="w-icon-tools"></i>
@@ -219,7 +191,7 @@
                                    </a>
                                </div>
                                <div class="col-lg-4 col-md-6 col-sm-4 col-xs-6 mb-4">
-                                   <a href="#wishlist" class="link-to-tab">
+                                   <a href="#wishlist" data-bs-toggle="tab" class="dashboard-option">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-wishlist">
                                                <i class="w-icon-heart"></i>
@@ -246,6 +218,9 @@
                        </div>
 
                        <div class="tab-pane mb-4" id="account-orders">
+                           <div class="account-back-wrap">
+                               <a href="#account-dashboard" data-bs-toggle="tab" class="btn btn-outline btn-default btn-sm account-back-btn back-to-dashboard">Back</a>
+                           </div>
                            <center><h3>Orders</h3></center>
 
                            <table class="shop-table account-orders-table mb-6">
@@ -279,7 +254,9 @@
                                                             <div class="d-flex justify-content-between align-items-center mb-2">
                                                                 <div>
                                                                     <b>Invoice:</b> {{ $invoice->invoice_id }}<br>
-                                                                    <b>Status:</b> {{ $invoice->status }}
+                                                                    <b>Status:</b> {{ $invoice->status }}<br>
+                                                                    <b>Qty:</b> {{ $invoice->line_qty ?? 1 }} |
+                                                                    <b>Tax:</b> Rs. {{ number_format($invoice->tax_amount ?? 0, 2) }}
                                                                 </div>
                                                                 <div class="text-right"><b>Amount:</b> Rs. {{ number_format($invoice->line_amount, 2) }}</div>
                                                             </div>
@@ -301,6 +278,22 @@
                                                                     </div>
                                                                 @endforeach
                                                             @endif
+                                                            <div class="d-flex justify-content-end gap-2 mt-2">
+                                                                @if(!empty($invoice->can_cancel))
+                                                                    <form method="POST" action="{{ route('my-account.invoice.cancel', $invoice->invoice_id) }}" onsubmit="return confirm('Cancel this order item?');">
+                                                                        @csrf
+                                                                        <button type="submit" class="btn btn-outline btn-danger btn-sm btn-rounded">Cancel</button>
+                                                                    </form>
+                                                                @endif
+                                                                @if(!empty($invoice->can_return))
+                                                                    <form method="POST" action="{{ route('my-account.invoice.return', $invoice->invoice_id) }}" onsubmit="return confirm('Raise return request for this item?');">
+                                                                        @csrf
+                                                                        <button type="submit" class="btn btn-outline btn-primary btn-sm btn-rounded">Return</button>
+                                                                    </form>
+                                                                @elseif(!empty($invoice->return_deadline))
+                                                                    <small class="text-muted align-self-center">Return till {{ $invoice->return_deadline }}</small>
+                                                                @endif
+                                                            </div>
                                                         </div>
                                                     @endforeach
                                                     <div class="text-right">
@@ -324,6 +317,9 @@
                        </div>
 
                        <div class="tab-pane" id="account-downloads">
+                            <div class="account-back-wrap">
+                                <a href="#account-dashboard" data-bs-toggle="tab" class="btn btn-outline btn-default btn-sm account-back-btn back-to-dashboard">Back</a>
+                            </div>
                          
                             <center><h3>Wallet</h3></center>
 
@@ -361,6 +357,9 @@
                        </div>
 
                        <div class="tab-pane" id="account-addresses">
+                           <div class="account-back-wrap">
+                               <a href="#account-dashboard" data-bs-toggle="tab" class="btn btn-outline btn-default btn-sm account-back-btn back-to-dashboard">Back</a>
+                           </div>
                           
                            <center><h3>Addresses</h3></center>
 
@@ -481,6 +480,9 @@
                            </div>
                        </div>
                        <div class="tab-pane" id="profile-details">
+                          <div class="account-back-wrap">
+                              <a href="#account-dashboard" data-bs-toggle="tab" class="btn btn-outline btn-default btn-sm account-back-btn back-to-dashboard">Back</a>
+                          </div>
                            
                           <center><h3>Profile Details</h3></center> 
 
@@ -538,6 +540,9 @@
                    </div>
 
                     <div class="tab-pane" id="account-details">                           
+                        <div class="account-back-wrap">
+                            <a href="#account-dashboard" data-bs-toggle="tab" class="btn btn-outline btn-default btn-sm account-back-btn back-to-dashboard">Back</a>
+                        </div>
                         <center><h3>Account Details</h3></center> 
                         <div class="row">
                             <form id="changePasswordForm"  action="{{url('/change-customer-password')}}" method="post" name="frm-login" autocomplete="Off" class="checkout-form" >
@@ -582,6 +587,9 @@
                     </div>
 
                     <div class="tab-pane" id="wishlist">                           
+                        <div class="account-back-wrap">
+                            <a href="#account-dashboard" data-bs-toggle="tab" class="btn btn-outline btn-default btn-sm account-back-btn back-to-dashboard">Back</a>
+                        </div>
                         <center><h3>Wishlist</h3></center> 
                         <div class="row">
                             <div class="page-content">
@@ -665,6 +673,26 @@
    @endsection
 
 <script>
+    function showAccountTab(target) {
+        if (!target || target.charAt(0) !== '#') return;
+
+        var pane = document.querySelector(target);
+        if (!pane) return;
+
+        if (window.bootstrap && bootstrap.Tab) {
+            var toggle = document.querySelector('[data-bs-toggle="tab"][href="' + target + '"]');
+            if (toggle) {
+                bootstrap.Tab.getOrCreateInstance(toggle).show();
+                return;
+            }
+        }
+
+        document.querySelectorAll('.tab-content .tab-pane').forEach(function (el) {
+            el.classList.remove('active', 'show', 'in');
+        });
+        pane.classList.add('active', 'show', 'in');
+    }
+
     function toggleOrderDetails(orderId) {
         var row = document.getElementById('order-details-' + orderId);
         if (!row) return;
@@ -730,15 +758,19 @@
     document.addEventListener('DOMContentLoaded', function () {
         const hash = window.location.hash;
         if (hash) {
-            const targetTab = document.querySelector('a.nav-link[data-bs-toggle="tab"][href="' + hash + '"]');
-            if (targetTab) {
-                if (window.bootstrap && bootstrap.Tab) {
-                    bootstrap.Tab.getOrCreateInstance(targetTab).show();
-                } else {
-                    targetTab.click();
-                }
-            }
+            showAccountTab(hash);
         }
+
+        document.querySelectorAll('.dashboard-option, .back-to-dashboard, .link-to-tab').forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                const target = this.getAttribute('href');
+                if (!target || target.charAt(0) !== '#') {
+                    return;
+                }
+                e.preventDefault();
+                showAccountTab(target);
+            });
+        });
 
 
        document.getElementById('changePasswordForm').addEventListener('submit', function (e) {

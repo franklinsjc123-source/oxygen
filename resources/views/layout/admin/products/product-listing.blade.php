@@ -167,10 +167,16 @@
                                        {{-- @dd($offers); --}}
                                         @foreach ($products_list as $products)
                                             <tr>
-                                                 <td><input type="checkbox" class="checkbox" data-id="{{ $products->id }}"></td>
+                                                <td><input type="checkbox" class="checkbox" data-id="{{ $products->id }}"></td>
                                                  <?php
                                                $login_id = str_pad($products->login_id, 4, '0', STR_PAD_LEFT);
                                                $pro_id = str_pad($products->id, 5, '0', STR_PAD_LEFT);
+                                               $stockSummary = App\Models\Products\ProductsDetails::where('products_id', $products->product_id)
+                                                    ->selectRaw('COALESCE(SUM(quantity),0) as total_qty, COALESCE(MAX(low_stock_limit),0) as low_limit')
+                                                    ->first();
+                                               $totalQty = (int) ($stockSummary->total_qty ?? 0);
+                                               $lowLimit = (int) ($stockSummary->low_limit ?? 0);
+                                               $isLowStock = $lowLimit > 0 && $totalQty <= $lowLimit;
                                             //   $produ = App\Models\vendor\vendorcreate::where('user_id',$products->login_id)->get();
                                                                                                
                                                 // if(count($produ) > 0)
@@ -190,20 +196,17 @@
                                                             alt="" class="img-fluid img-40 me-2 blur-up lazyloaded">
                                                     </div>
                                                 </td>
-                                                <td> 
-                                                    
-                                                    {{ $products->product_name }}</td>
+                                                <td>
+                                                    <div>{{ $products->product_name }}</div>
+                                                    @if($isLowStock)
+                                                        <small class="text-danger d-block">Low stock: {{ $totalQty }} left (limit {{ $lowLimit }})</small>
+                                                    @endif
+                                                </td>
 
                                                 <td class="text-center">
-                                                    <?php
-                                                     
-                                                      $produ1 = App\Models\Products\ProductsDetails::where('products_id', $products->product_id)
-                                                          ->sum('quantity');
-                                                      
-                                                    ?>
                                                     <span class="fw-bold">
                                                         <a href="#" data-id={{ $products->id }} title="Stock Quantity"
-                                                            class="text-danger " onclick="getquantity('{{ $products->id }}')">{{ $produ1 }}</a>
+                                                            class="text-danger " onclick="getquantity('{{ $products->id }}')">{{ $totalQty }}</a>
                                                     </span>
                                                 </td>
                                                 {{-- @dd($product_price->selling_price); --}}

@@ -14,6 +14,28 @@
         <!-- Page Sidebar Ends-->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
                                 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+        <style>
+            #exampleModal1 .select2-container--default .select2-selection--multiple {
+                min-height: 42px;
+                border: 1px solid #ced4da;
+                background-color: #fff;
+            }
+            #exampleModal1 .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+                display: block !important;
+                padding: 4px 6px;
+                white-space: normal !important;
+            }
+            #exampleModal1 .select2-container--default .select2-selection--multiple .select2-selection__choice {
+                display: inline-block !important;
+                background: #e9f2ff !important;
+                border: 1px solid #9ec1ff !important;
+                color: #1f2937 !important;
+                padding: 2px 8px !important;
+                margin-top: 4px !important;
+                margin-right: 6px !important;
+                border-radius: 12px !important;
+            }
+        </style>
 
 
         <!-- Right sidebar Start-->
@@ -131,7 +153,6 @@
                                                                         </option>
                                                                     @endforeach
                                                                     </select>
-                                                                
                                                             </div>
                                                             <div class="form-group  col-12">
                                                                 <label for="validationCustom01" class="mb-1">Specifications
@@ -143,7 +164,6 @@
                                                                         </option>
                                                                     @endforeach
                                                                     </select>
-                                                                
                                                             </div>
                                                             <div class="form-group  col-6">
                                                                 <label for="validationCustom01"
@@ -261,7 +281,6 @@
                                                                         </option>
                                                                     @endforeach
                                                                     </select>
-                                                                
                                                             </div>
                                                             <div class="form-group col-12">
                                                                 <label for="validationCustom01" class="mb-1">Specifications
@@ -273,7 +292,6 @@
                                                                         </option>
                                                                     @endforeach
                                                                     </select>
-                                                                
                                                             </div>
                                 
                             
@@ -406,6 +424,41 @@
             <!-- Container-fluid Ends-->
         </div>
         <script>
+            function ensureEditSelect2Rendered() {
+                var $modal = $('#exampleModal1');
+                var $attrs = $('#edit_attributes');
+                var $specs = $('#edit_specifications');
+
+                [$attrs, $specs].forEach(function($el) {
+                    if (!$el.length) return;
+                    if ($el.data('select2')) {
+                        $el.select2('destroy');
+                    }
+                    $el.select2({
+                        width: '100%',
+                        dropdownParent: $modal,
+                        closeOnSelect: false
+                    });
+                });
+            }
+
+            function applySelectedValues($select, values) {
+                if (!$select || !$select.length) return;
+                var cleanValues = (values || []).map(function(v) {
+                    return String(v).trim();
+                }).filter(function(v) {
+                    return v !== '';
+                });
+
+                cleanValues.forEach(function(v) {
+                    if ($select.find('option[value="' + v.replace(/"/g, '\\"') + '"]').length === 0) {
+                        $select.append(new Option(v, v, true, true));
+                    }
+                });
+
+                $select.val(cleanValues).trigger('change').trigger('change.select2');
+            }
+
                                     $('.select2').select2();
                                 </script>
         <script>
@@ -465,6 +518,31 @@
                   $('successmessage').text(response.message);
                   }
                   else{
+                    function parseStoredMultiValue(rawValue) {
+                        if (!rawValue) return [];
+                        var text = String(rawValue).trim();
+                        if (!text) return [];
+
+                        if (text.charAt(0) === '[') {
+                            try {
+                                var parsed = JSON.parse(text);
+                                if (Array.isArray(parsed)) {
+                                    return parsed.map(function(item) {
+                                        return String(item).trim();
+                                    }).filter(function(item) {
+                                        return item !== '';
+                                    });
+                                }
+                            } catch (e) {}
+                        }
+
+                        return text.split(',').map(function(item) {
+                            return String(item).trim();
+                        }).filter(function(item) {
+                            return item !== '';
+                        });
+                    }
+
                     getsubcat(response.category_sub.category_main_id,response.category_sub.category_id);
                     $('#edit_id').val(response.category_sub.id);
 					$('#editmain_category_id').val(response.category_sub.category_main_id);
@@ -477,21 +555,20 @@
                     $('#editstatus').val(response.category_sub.status);
                      // $('#editmain_category_image').val();		
                      //  $('#oldeditmain_category_image').val(response.category_sub.category_main_image);
-                     var attributesString = response.category_sub.category_sub_attributes; // e.g., "1,2,3"
-            var attributesArray = attributesString.split(',').map(function(item) {
-                return item.trim(); // Remove any extra spaces
-            });
-            
-            // Set selected values for multi-select dropdown
-            $('#edit_attributes').val(attributesArray).trigger('change.select2'); 
-                    var specifications = response.category_sub.category_sub_specifications; // Assuming this is an array of selected values
-                  
-                    var specificationsArray = specifications.split(',').map(function(item) {
-                return item.trim(); // Remove any extra spaces
-            });
-            
-            // Set selected values for multi-select dropdown
-            $('#edit_specifications').val(specificationsArray).trigger('change.select2'); 
+                    var attributesArray = parseStoredMultiValue(response.category_sub.category_sub_attributes);
+                    var specificationsArray = parseStoredMultiValue(response.category_sub.category_sub_specifications);
+
+                    // Set selected values for multi-select dropdown
+                    applySelectedValues($('#edit_attributes'), attributesArray);
+                    applySelectedValues($('#edit_specifications'), specificationsArray);
+                    $('#exampleModal1').one('shown.bs.modal', function() {
+                        ensureEditSelect2Rendered();
+                        applySelectedValues($('#edit_attributes'), attributesArray);
+                        applySelectedValues($('#edit_specifications'), specificationsArray);
+                    });
+                    ensureEditSelect2Rendered();
+                    applySelectedValues($('#edit_attributes'), attributesArray);
+                    applySelectedValues($('#edit_specifications'), specificationsArray);
                       // alert(response.category_main.category_main_image);
                   }
            
@@ -569,20 +646,8 @@
     });
    
 
-    // Add event listener to enforce the maximum selection limit
-    $('#edit_attributes').on('change', function() {
-        var maxSelections = 2;
-        var selectedOptions = $(this).val();
-
-        if (selectedOptions.length >= maxSelections) {
-          
-            // Remove the last selected option to enforce the limit
-            selectedOptions = selectedOptions.slice(0, maxSelections); // Limit to maxSelections
-            //$(this).val(selectedOptions).trigger('change.select2');
-            $('#edit_attributes').val(selectedOptions).trigger('change.select2'); 
-            alert('You can only select up to ' + maxSelections + ' options.');
-        }
-    });
+    // Keep all stored selections visible in edit mode.
+    // (No hard limit here.)
 
 
         </script>

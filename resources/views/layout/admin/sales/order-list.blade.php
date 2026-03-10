@@ -1113,6 +1113,14 @@
 
 <script>
      $(document).ready(function() {
+      function setStatusValue(selectId, statusValue) {
+        var $select = $('#' + selectId);
+        if ($select.find('option[value="' + statusValue + '"]').length) {
+            $select.val(statusValue);
+        } else {
+            $select.prop('selectedIndex', 0);
+        }
+      }
         
       $(".btnnew").click(function(e) {
         e.preventDefault();
@@ -1120,8 +1128,9 @@
         var btnnew = $(this).val();
         
      // alert(btnaccess);
+     setStatusValue('o_status', 'Pending');
      var newmodal = $('#New').modal('show');
-     $('button[type=submit]').click(function(e) {
+     $('#New .btn-primary').off('click').on('click', function(e) {
      var sts = $('#o_status').val();   
     // alert(sts);
 
@@ -1164,8 +1173,9 @@
         var btnaccess = $(this).val();
         
      // alert(btnaccess);
+     setStatusValue('a_status', 'Accept');
      var newmodal = $('#accept').modal('show');
-     $('button[type=submit]').click(function(e) {
+     $('#accept .btn-primary').off('click').on('click', function(e) {
      var sts = $('#a_status').val();   
     // alert(sts);
 
@@ -1202,8 +1212,9 @@
         var btndispatch = $(this).val();
         
      // alert(btnaccess);
+      setStatusValue('d_status', 'Dispatch');
       $('#Dispatch').modal('show');
-     $('button[type=submit]').click(function(e) {
+     $('#Dispatch .btn-primary').off('click').on('click', function(e) {
      var sts = $('#d_status').val();   
     // alert(sts);
 
@@ -1241,8 +1252,9 @@
         var btndelivered = $(this).val();
         
      // alert(btnaccess);
+     setStatusValue('deli_status', 'Delivered');
      $('#delivere').modal('show');
-     $('button[type=submit]').click(function(e) {
+     $('#delivere .btn-primary').off('click').on('click', function(e) {
      var sts = $('#deli_status').val();   
     // alert(sts);
 
@@ -1280,8 +1292,9 @@
         var btnreturn = $(this).val();
         
      // alert(btnaccess);
+     setStatusValue('return_status', 'Return');
      $('#return').modal('show');
-     $('button[type=submit]').click(function(e) {
+     $('#return .btn-primary').off('click').on('click', function(e) {
      var sts = $('#return_status').val();   
     // alert(sts);
 
@@ -1321,8 +1334,9 @@
         var btncancel = $(this).val();
         
      // alert(btnaccess);
+     setStatusValue('can_status', 'Cancel');
      $('#can').modal('show');
-     $('button[type=submit]').click(function(e) {
+     $('#can .btn-primary').off('click').on('click', function(e) {
      var sts = $('#can_status').val();   
     // alert(sts);
 

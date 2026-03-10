@@ -1470,6 +1470,7 @@ class FrontendController extends Controller
         $count   = Cart::getContent()->count();
         $records = Cart::getContent();
         $total   = Cart::getTotal();
+        $checkoutSummary = $this->buildCheckoutSummary($records);
 
         $customer = null;
         $customer_id = Session::get('customer_id');
@@ -1477,7 +1478,7 @@ class FrontendController extends Controller
             $customer = Ecom_Customer_info::where('customer_id', $customer_id)->first();
         }
 
-        return view('frontend.checkout', compact('count', 'records', 'total', 'customer'));
+        return view('frontend.checkout', compact('count', 'records', 'total', 'customer', 'checkoutSummary'));
     }
 
     // public function checkout_store(Request $request)
@@ -1612,6 +1613,11 @@ class FrontendController extends Controller
             return redirect()->back()->with('error', 'Cart is empty.');
         }
 
+        $checkoutSummary = $this->buildCheckoutSummary($cartItems);
+        if (empty($checkoutSummary['lines'])) {
+            return redirect()->back()->with('error', 'No valid items found in cart.');
+        }
+
         DB::beginTransaction();
         try {
             $customer = null;
@@ -1663,9 +1669,7 @@ class FrontendController extends Controller
             Session::put('customer_id', $customerCode);
             Session::put('customer_name', (string) ($customer->customer_firstname ?? 'Customer'));
 
-            $productIds = $cartItems->pluck('id')->map(function ($id) {
-                return (int) $id;
-            })->unique()->values()->all();
+            $productIds = collect($checkoutSummary['lines'])->pluck('product_id')->map(fn($id) => (int) $id)->unique()->values()->all();
             $productMeta = DB::table('products as p')
                 ->leftJoin('vendor_details as vd', 'vd.id', '=', 'p.vendor_id')
                 ->whereIn('p.id', $productIds)
@@ -1674,11 +1678,11 @@ class FrontendController extends Controller
                 ->keyBy('product_id');
 
             $productInvoices = [];
-            $grandTotal = 0;
+            $grandTotal = (float) ($checkoutSummary['grand_total'] ?? 0);
             $stockMoves = [];
 
-            foreach ($cartItems as $item) {
-                $productId = (int) $item->id;
+            foreach ($checkoutSummary['lines'] as $line) {
+                $productId = (int) $line['product_id'];
                 $meta = $productMeta->get($productId);
                 if (!$meta || empty($meta->vendor_id)) {
                     throw new \RuntimeException('Vendor not found for product ID ' . $productId);
@@ -1686,20 +1690,29 @@ class FrontendController extends Controller
 
                 $vendorId = (int) $meta->vendor_id;
                 $shopName = (string) ($meta->shop_name ?? 'GEN');
-                $size = $item->attributes->size ?? null;
-                $color = $item->attributes->color ?? null;
-                $detailId = $this->resolveProductDetailId($productId, $size, $color);
-                $qty = (int) $item->quantity;
+                $detailId = (int) ($line['detail_id'] ?? 0);
+                $qty = (int) ($line['qty'] ?? 0);
                 if (empty($detailId)) {
                     throw new \RuntimeException('Product variant not found for product ID ' . $productId);
                 }
-                $lineTotal = (float) $item->price * (int) $item->quantity;
-                $grandTotal += $lineTotal;
+                if ($qty <= 0) {
+                    throw new \RuntimeException('Invalid quantity for product ID ' . $productId);
+                }
+                $lineTotal = (float) ($line['line_total'] ?? 0);
+                $lineSubtotal = (float) ($line['line_subtotal'] ?? 0);
+                $taxAmount = (float) ($line['tax_amount'] ?? 0);
+                $taxRate = (float) ($line['tax_rate'] ?? 0);
+                $taxType = (string) ($line['tax_type'] ?? 'NA');
 
                 $productInvoices[] = [
                     'vendor_id' => $vendorId,
                     'shop_name' => $shopName,
                     'product_detail_ids' => !empty($detailId) ? [(int) $detailId] : [],
+                    'line_qty' => $qty,
+                    'line_subtotal' => $lineSubtotal,
+                    'tax_rate' => $taxRate,
+                    'tax_type' => $taxType,
+                    'tax_amount' => $taxAmount,
                     'line_total' => $lineTotal,
                 ];
                 $stockMoves[] = [
@@ -1743,6 +1756,11 @@ class FrontendController extends Controller
                     'product_detail_ids' => implode(',', array_unique($lineInvoice['product_detail_ids'])),
                     'status'             => 'Pending',
                     'line_discount'      => 0,
+                    'line_qty'           => (int) ($lineInvoice['line_qty'] ?? 1),
+                    'line_subtotal'      => (float) ($lineInvoice['line_subtotal'] ?? 0),
+                    'tax_rate'           => (float) ($lineInvoice['tax_rate'] ?? 0),
+                    'tax_type'           => (string) ($lineInvoice['tax_type'] ?? 'NA'),
+                    'tax_amount'         => (float) ($lineInvoice['tax_amount'] ?? 0),
                     'total_amount'       => $lineInvoice['line_total'],
                     'created_at'         => now(),
                     'updated_at'         => now(),
@@ -1759,8 +1777,11 @@ class FrontendController extends Controller
                 'status'          => 'Pending',
                 'payment_type'    => $request->payment_method ?? 'Cash On Delivery',
                 'total_discount'  => 0,
+                'sub_total'       => (float) ($checkoutSummary['subtotal'] ?? 0),
+                'tax_amount'      => (float) ($checkoutSummary['tax_total'] ?? 0),
+                'delivery_charge' => (float) ($checkoutSummary['delivery_charge'] ?? 0),
                 'total_amount'    => $grandTotal,
-                'order_notes'     => $request->order_notes,
+                'order_notes'     => $request->input('order_notes', $request->input('order-notes')),
                 'created_at'      => now(),
                 'updated_at'      => now(),
             ]);
@@ -1778,6 +1799,80 @@ class FrontendController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error', 'Checkout failed: ' . $e->getMessage());
         }
+    }
+
+    private function calculateDeliveryCharge(float $amount): float
+    {
+        return $amount >= 500 ? 0.0 : 40.0;
+    }
+
+    private function buildCheckoutSummary($cartItems): array
+    {
+        $lines = [];
+        $subtotal = 0.0;
+        $taxTotal = 0.0;
+        $grandWithoutDelivery = 0.0;
+
+        foreach ($cartItems as $item) {
+            $productId = (int) $item->id;
+            $qty = max(1, (int) $item->quantity);
+            $unitPrice = (float) $item->price;
+            $size = $item->attributes->size ?? null;
+            $color = $item->attributes->color ?? null;
+            $detailId = $this->resolveProductDetailId($productId, $size, $color);
+
+            if (empty($detailId)) {
+                continue;
+            }
+
+            $taxMeta = DB::table('products')
+                ->where('id', $productId)
+                ->select('tax_id', 'gst_id')
+                ->first();
+
+            $taxRate = (float) ($taxMeta->gst_id ?? 0);
+            $isTaxIncluded = ((int) ($taxMeta->tax_id ?? 1) === 1);
+
+            $lineRaw = $unitPrice * $qty;
+            if ($isTaxIncluded) {
+                $lineTax = $taxRate > 0 ? ($lineRaw * $taxRate) / (100 + $taxRate) : 0.0;
+                $lineSubtotal = $lineRaw - $lineTax;
+                $lineTotal = $lineRaw;
+                $taxType = 'Included';
+            } else {
+                $lineTax = $taxRate > 0 ? ($lineRaw * $taxRate) / 100 : 0.0;
+                $lineSubtotal = $lineRaw;
+                $lineTotal = $lineRaw + $lineTax;
+                $taxType = 'Excluded';
+            }
+
+            $subtotal += $lineSubtotal;
+            $taxTotal += $lineTax;
+            $grandWithoutDelivery += $lineTotal;
+
+            $lines[] = [
+                'product_id' => $productId,
+                'detail_id' => (int) $detailId,
+                'name' => (string) ($item->name ?? 'Product'),
+                'qty' => $qty,
+                'unit_price' => $unitPrice,
+                'line_subtotal' => round($lineSubtotal, 2),
+                'tax_rate' => round($taxRate, 2),
+                'tax_type' => $taxType,
+                'tax_amount' => round($lineTax, 2),
+                'line_total' => round($lineTotal, 2),
+            ];
+        }
+
+        $deliveryCharge = $this->calculateDeliveryCharge($grandWithoutDelivery);
+
+        return [
+            'lines' => $lines,
+            'subtotal' => round($subtotal, 2),
+            'tax_total' => round($taxTotal, 2),
+            'delivery_charge' => round($deliveryCharge, 2),
+            'grand_total' => round($grandWithoutDelivery + $deliveryCharge, 2),
+        ];
     }
 
     private function resolveProductDetailId(int $productId, $size = null, $color = null): ?int
@@ -1870,25 +1965,31 @@ class FrontendController extends Controller
                     ->map(fn($val) => (int) trim($val))
                     ->filter()
                     ->values();
+                $lineQty = max(1, (int) ($invoiceRow->line_qty ?? 1));
+                $lineSubtotal = (float) ($invoiceRow->line_subtotal ?? $invoiceRow->total_amount ?? 0);
+                $lineTaxAmount = (float) ($invoiceRow->tax_amount ?? 0);
+                $lineTaxRate = (float) ($invoiceRow->tax_rate ?? 0);
+                $lineTaxType = (string) ($invoiceRow->tax_type ?? 'NA');
+                $lineTotal = (float) ($invoiceRow->total_amount ?? 0);
 
                 if ($lineDetails->isEmpty()) {
                     $mappedItems[] = [
                         'name'     => 'Order Item',
                         'hsn'      => '-',
-                        'price'    => (float) $invoiceRow->total_amount,
-                        'qty'      => 1,
-                        'net'      => (float) $invoiceRow->total_amount,
-                        'tax_rate' => 0,
-                        'tax_type' => 'NA',
-                        'tax_amt'  => 0,
-                        'total'    => (float) $invoiceRow->total_amount,
+                        'price'    => $lineQty > 0 ? ($lineTotal / $lineQty) : $lineTotal,
+                        'qty'      => $lineQty,
+                        'net'      => $lineSubtotal,
+                        'tax_rate' => $lineTaxRate,
+                        'tax_type' => $lineTaxType,
+                        'tax_amt'  => $lineTaxAmount,
+                        'total'    => $lineTotal,
                     ];
                     continue;
                 }
 
                 foreach ($lineDetails as $detailId) {
                     $product = $detailRows->get($detailId);
-                    $amount = (float) ($product->selling_price ?? $invoiceRow->total_amount);
+                    $amount = $lineQty > 0 ? ($lineTotal / $lineQty) : (float) ($product->selling_price ?? $lineTotal);
                     $name = (string) ($product->product_name ?? 'Order Item');
                     $size = (string) ($product->product_size ?? '');
 
@@ -1900,12 +2001,12 @@ class FrontendController extends Controller
                         'name'     => $name,
                         'hsn'      => '-',
                         'price'    => $amount,
-                        'qty'      => 1,
-                        'net'      => $amount,
-                        'tax_rate' => 0,
-                        'tax_type' => 'NA',
-                        'tax_amt'  => 0,
-                        'total'    => $amount,
+                        'qty'      => $lineQty,
+                        'net'      => $lineSubtotal,
+                        'tax_rate' => $lineTaxRate,
+                        'tax_type' => $lineTaxType,
+                        'tax_amt'  => $lineTaxAmount,
+                        'total'    => $lineTotal,
                     ];
                 }
             }
@@ -1913,6 +2014,7 @@ class FrontendController extends Controller
             $customer = Ecom_Customer_info::where('customer_id', $customerId)->first();
             $orderDate = $newOrder->created_at ? Carbon::parse($newOrder->created_at) : now();
             $grandTotal = (float) $newOrder->total_amount;
+            $taxTotal = (float) $invoiceRows->sum('tax_amount');
 
             $data = [
                 'seller' => [
@@ -1943,7 +2045,7 @@ class FrontendController extends Controller
                 ],
                 'items' => $mappedItems,
                 'summary' => [
-                    'tax'   => 0,
+                    'tax'   => $taxTotal,
                     'grand' => $grandTotal,
                     'words' => $this->amountInWords($grandTotal),
                 ],
@@ -2016,6 +2118,143 @@ class FrontendController extends Controller
         return $pdf->download('invoice-' . $order->order_id . '.pdf');
     }
 
+    public function cancelInvoice(Request $request, string $invoiceId)
+    {
+        $customerId = Session::get('customer_id');
+        if (!$customerId) {
+            return redirect('/home');
+        }
+
+        $invoice = DB::table('ecom_invoice')
+            ->where('invoice_id', $invoiceId)
+            ->where('customer_id', $customerId)
+            ->first();
+
+        if (!$invoice) {
+            return redirect()->back()->with('error', 'Order invoice not found.');
+        }
+
+        $status = strtolower((string) ($invoice->status ?? 'pending'));
+        if (!in_array($status, ['pending', 'accept', 'accepted'], true)) {
+            return redirect()->back()->with('error', 'This order cannot be cancelled now.');
+        }
+
+        DB::table('ecom_invoice')
+            ->where('invoice_id', $invoiceId)
+            ->update([
+                'status' => 'Cancel',
+                'updated_at' => now(),
+            ]);
+
+        $this->syncOrderStatusByInvoice($customerId, $invoiceId);
+        return redirect()->to(route('myAccount') . '#account-orders')->with('success', 'Order cancelled successfully.');
+    }
+
+    public function returnInvoice(Request $request, string $invoiceId)
+    {
+        $customerId = Session::get('customer_id');
+        if (!$customerId) {
+            return redirect('/home');
+        }
+
+        $invoice = DB::table('ecom_invoice')
+            ->where('invoice_id', $invoiceId)
+            ->where('customer_id', $customerId)
+            ->first();
+
+        if (!$invoice) {
+            return redirect()->back()->with('error', 'Order invoice not found.');
+        }
+
+        $status = strtolower((string) ($invoice->status ?? 'pending'));
+        if (!in_array($status, ['delivery', 'delivered'], true)) {
+            return redirect()->back()->with('error', 'Return is available only after delivery.');
+        }
+
+        $detailIds = collect(explode(',', (string) ($invoice->product_detail_ids ?? '')))
+            ->map(fn($val) => (int) trim($val))
+            ->filter()
+            ->values();
+
+        $detailRows = $detailIds->isNotEmpty()
+            ? DB::table('products_details')->whereIn('id', $detailIds)->select('return_replace', 'r_days')->get()
+            : collect();
+
+        $maxReturnDays = 0;
+        foreach ($detailRows as $row) {
+            $rr = (int) ($row->return_replace ?? 0);
+            $days = (int) ($row->r_days ?? 0);
+            if (!in_array($rr, [0, 4], true) && $days > $maxReturnDays) {
+                $maxReturnDays = $days;
+            }
+        }
+
+        if ($maxReturnDays <= 0) {
+            return redirect()->back()->with('error', 'Return is not available for this product.');
+        }
+
+        $deliveredAt = $invoice->updated_at ? Carbon::parse($invoice->updated_at) : null;
+        if (!$deliveredAt || now()->greaterThan($deliveredAt->copy()->addDays($maxReturnDays)->endOfDay())) {
+            return redirect()->back()->with('error', 'Return window has expired.');
+        }
+
+        DB::table('ecom_invoice')
+            ->where('invoice_id', $invoiceId)
+            ->update([
+                'status' => 'Return',
+                'updated_at' => now(),
+            ]);
+
+        $this->syncOrderStatusByInvoice($customerId, $invoiceId);
+        return redirect()->to(route('myAccount') . '#account-orders')->with('success', 'Return request submitted.');
+    }
+
+    private function syncOrderStatusByInvoice(string $customerId, string $invoiceId): void
+    {
+        $order = DB::table('ecom_order')
+            ->where('customer_id', $customerId)
+            ->whereRaw("FIND_IN_SET(?, invoice_ids)", [$invoiceId])
+            ->first();
+
+        if (!$order) {
+            return;
+        }
+
+        $invoiceIds = collect(explode(',', (string) ($order->invoice_ids ?? '')))
+            ->map(fn($val) => trim($val))
+            ->filter()
+            ->values();
+
+        if ($invoiceIds->isEmpty()) {
+            return;
+        }
+
+        $statuses = DB::table('ecom_invoice')
+            ->whereIn('invoice_id', $invoiceIds)
+            ->pluck('status')
+            ->map(fn($s) => strtolower((string) $s))
+            ->values();
+
+        if ($statuses->every(fn($s) => in_array($s, ['cancel', 'return'], true))) {
+            DB::table('ecom_order')->where('id', $order->id)->update(['status' => 'Closed', 'updated_at' => now()]);
+            return;
+        }
+
+        if ($statuses->contains(fn($s) => in_array($s, ['pending', 'accept', 'accepted'], true))) {
+            DB::table('ecom_order')->where('id', $order->id)->update(['status' => 'Pending', 'updated_at' => now()]);
+            return;
+        }
+
+        if ($statuses->contains(fn($s) => in_array($s, ['dispatch', 'dispatched'], true))) {
+            DB::table('ecom_order')->where('id', $order->id)->update(['status' => 'Dispatch', 'updated_at' => now()]);
+            return;
+        }
+
+        if ($statuses->every(fn($s) => in_array($s, ['delivery', 'delivered'], true))) {
+            DB::table('ecom_order')->where('id', $order->id)->update(['status' => 'Delivered', 'updated_at' => now()]);
+        }
+    }
+
     private function getCustomerOrderSummaries(string $customerId)
     {
         $newOrders = DB::table('ecom_order')
@@ -2053,7 +2292,9 @@ class FrontendController extends Controller
                     'pd.product_detail_image',
                     'pd.selling_price',
                     'pd.attributevalue1 as product_color',
-                    'pd.attributevalue2 as product_size'
+                    'pd.attributevalue2 as product_size',
+                    'pd.return_replace',
+                    'pd.r_days'
                 )
                 ->get()
                 ->keyBy('detail_id')
@@ -2084,19 +2325,57 @@ class FrontendController extends Controller
                             $productImage = trim((string) $productImage, '[]"\'' . " \t\n\r\0\x0B");
 
                             return (object) [
+                                'detail_id' => (int) $detailId,
                                 'product_name' => (string) ($detail->product_name ?? 'Product'),
                                 'product_image' => $productImage,
                                 'product_color' => (string) ($detail->product_color ?? ''),
                                 'product_size' => (string) ($detail->product_size ?? ''),
                                 'product_price' => (float) ($detail->selling_price ?? 0),
+                                'return_replace' => (int) ($detail->return_replace ?? 0),
+                                'return_days' => (int) ($detail->r_days ?? 0),
                             ];
                         })
                         ->filter()
                         ->values();
 
+                    $status = (string) ($invoice->status ?? 'Pending');
+                    $normalizedStatus = strtolower(trim($status));
+                    $lineQty = max(1, (int) ($invoice->line_qty ?? 1));
+                    $lineTax = (float) ($invoice->tax_amount ?? 0);
+                    $lineTaxRate = (float) ($invoice->tax_rate ?? 0);
+                    $lineTaxType = (string) ($invoice->tax_type ?? 'NA');
+
+                    $isCancelAllowed = in_array($normalizedStatus, ['pending', 'accept', 'accepted'], true);
+                    $isDelivered = in_array($normalizedStatus, ['delivery', 'delivered'], true);
+
+                    $maxReturnDays = 0;
+                    foreach ($lineProducts as $lineProduct) {
+                        $rr = (int) ($lineProduct->return_replace ?? 0);
+                        $days = (int) ($lineProduct->return_days ?? 0);
+                        $returnEnabled = !in_array($rr, [0, 4], true);
+                        if ($returnEnabled && $days > $maxReturnDays) {
+                            $maxReturnDays = $days;
+                        }
+                    }
+
+                    $deliveryDate = $invoice->updated_at ? Carbon::parse($invoice->updated_at) : null;
+                    $returnDeadline = null;
+                    $isReturnAllowed = false;
+                    if ($isDelivered && $maxReturnDays > 0 && $deliveryDate) {
+                        $returnDeadline = $deliveryDate->copy()->addDays($maxReturnDays)->endOfDay();
+                        $isReturnAllowed = now()->lessThanOrEqualTo($returnDeadline);
+                    }
+
                     $invoiceDetails[] = (object) [
                         'invoice_id' => (string) $invoice->invoice_id,
-                        'status' => (string) ($invoice->status ?? 'Pending'),
+                        'status' => $status,
+                        'line_qty' => $lineQty,
+                        'tax_amount' => $lineTax,
+                        'tax_rate' => $lineTaxRate,
+                        'tax_type' => $lineTaxType,
+                        'can_cancel' => $isCancelAllowed,
+                        'can_return' => $isReturnAllowed,
+                        'return_deadline' => $returnDeadline ? $returnDeadline->format('d M Y') : null,
                         'line_amount' => (float) ($invoice->total_amount ?? 0),
                         'products' => $lineProducts,
                     ];
@@ -2145,6 +2424,13 @@ class FrontendController extends Controller
                     (object) [
                         'invoice_id' => (string) $order->order_id,
                         'status' => (string) ($order->order_status ?? 'Pending'),
+                        'line_qty' => 1,
+                        'tax_amount' => 0,
+                        'tax_rate' => 0,
+                        'tax_type' => 'NA',
+                        'can_cancel' => false,
+                        'can_return' => false,
+                        'return_deadline' => null,
                         'line_amount' => (float) ($order->grand_total ?? 0),
                         'products' => $products,
                     ],

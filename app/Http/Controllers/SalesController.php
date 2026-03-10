@@ -52,14 +52,29 @@ class SalesController extends Controller
     }
     public function orderstatusupdate(Request $request, $id)
     {
-        //  echo $id;
          $status = $request->sts;
-         $curr_data= $request->formattedDate;
-         
-        // $status = $request->input('status');
-        Ecom_Order_product::where('id',$id)->update(['order_status'=>$status]);
-        Ecom_Orders::where('id',$id)->update(['order_status'=>$status,'delivery_date'=>$curr_data]);
-        // return view('layout.admin.sales.order-list');
+         $curr_data = $request->formattedDate ?: date('Y-m-d');
+         $allowedStatuses = ['Pending', 'Accept', 'Dispatch', 'Delivered', 'Return', 'Cancel'];
+         if (!in_array($status, $allowedStatuses, true)) {
+            return response()->json([
+                'Success' => 'Failed',
+                'message' => 'Invalid order status.',
+            ], 422);
+         }
+
+        $orderProduct = Ecom_Order_product::where('id', $id)->first();
+        if (!$orderProduct) {
+            return response()->json([
+                'Success' => 'Failed',
+                'message' => 'Order item not found.',
+            ], 404);
+        }
+
+        Ecom_Order_product::where('id', $id)->update(['order_status' => $status]);
+        Ecom_Orders::where('order_id', $orderProduct->order_id)->update([
+            'order_status' => $status,
+            'delivery_date' => $curr_data,
+        ]);
         
         $notification =  new Notification();
         $ord1 = Ecom_Order_product::where('id',$id)->get();
@@ -81,9 +96,12 @@ class SalesController extends Controller
     }
     public function orderbulkstatusupdate(Request $request)
     {
-    //   dd($request->all());
       $curr_data= $request->formattedDate;
       $sts = $request->sts;
+      $allowedStatuses = ['Pending', 'Accept', 'Dispatch', 'Delivered', 'Return', 'Cancel'];
+      if (!in_array($sts, $allowedStatuses, true)) {
+          return response()->json(['success' => "Invalid status."], 422);
+      }
 
           $ids = $request->ids;
           $id = explode(",",$ids);
@@ -92,18 +110,24 @@ class SalesController extends Controller
             //   $sts = $request->sts;
     foreach($id as $idr)
     {   
-        //dd($idr);
+        if (empty($idr)) {
+            continue;
+        }
         Ecom_Order_product::where('id',$idr)->update(['order_status'=>$sts]);
-        Ecom_Orders::where('id',$id)->update(['order_status'=>$sts,'delivery_date'=>$curr_data]);
+        $ord1 = Ecom_Order_product::where('id', $idr)->first();
+        if (!$ord1) {
+            continue;
+        }
+        Ecom_Orders::where('order_id', $ord1->order_id)->update([
+            'order_status' => $sts,
+            'delivery_date' => $curr_data ?: date('Y-m-d'),
+        ]);
        
         $notification =  new Notification();
-        
-        $ord1 = Ecom_Order_product::where('id',$id)->get();
-        
         $userId = session('userId');
         $notification->details= $sts;
-        $notification->orders_id = $ord1[0]->order_id;
-        $notification->product_id = $ord1[0]->product_id;
+        $notification->orders_id = $ord1->order_id;
+        $notification->product_id = $ord1->product_id;
 
         $notification->login_id= $userId;
         $notification->status=1;

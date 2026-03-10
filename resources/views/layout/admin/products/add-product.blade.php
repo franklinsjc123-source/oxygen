@@ -619,7 +619,7 @@
                                         @php $j=0; @endphp
                                         @foreach ($attribute as $attri)
                                         @php
-                                        $attri_val = json_decode($attri->attribute_values);
+                                        $attri_val = json_decode($attri->attribute_values, true) ?: [];
                                        
 
                                         @endphp
@@ -756,9 +756,12 @@
                                                         <tr>
                                                             @foreach ($specPair as $spec)
                                                             @php
-                                                            $spec_val = json_decode($spec->specification_values);
+                                                            $spec_val = json_decode($spec->specification_values, true) ?: [];
                                                             @endphp
-                                                            <td><input type="checkbox" id="spec_id" name="spec_id[]" value="{{ $spec->id}}" checked> {{ $spec->specification_group_name}}</td>
+                                                            <td>
+                                                                <input type="hidden" name="spec_id[]" value="{{ $spec->id}}">
+                                                                {{ $spec->specification_group_name}}
+                                                            </td>
                                                             <td>
                                                                 <select class='form-select form-select-lg text-secondary' name='specify_value[{{ $spec->id}}]'>
                                                                     <option selected value='' hidden> --Select {{ $spec->specification_group_name}}--</option>

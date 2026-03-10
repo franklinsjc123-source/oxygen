@@ -111,6 +111,38 @@
     <script src="{{asset('assets/js/data-table/bootstrap-table-export.js')}}"></script>
     <!--  editable JS
 		============================================ -->
+    <script>
+        // Stabilize profile dropdown (logout menu): click toggle to avoid hover flicker.
+        $(document).ready(function() {
+            if (!document.getElementById('stable-profile-dropdown-style')) {
+                $('<style id="stable-profile-dropdown-style">\
+                    .nav-menus > li.onhover-dropdown{padding-bottom:10px;margin-bottom:-10px;}\
+                    .nav-menus > li.onhover-dropdown > .onhover-show-div{top:calc(100% + 2px)!important;}\
+                    .nav-menus li.onhover-dropdown.manual-open > .onhover-show-div{opacity:1!important;visibility:visible!important;transform:translateY(0)!important;}\
+                </style>').appendTo('head');
+            }
+
+            var $profileDrops = $('.nav-menus > li.onhover-dropdown').has('> ul.profile-dropdown');
+            $profileDrops.each(function() {
+                var $drop = $(this);
+                var $toggle = $drop.children('.media').first();
+                $toggle.css('cursor', 'pointer');
+
+                $toggle.off('click.stableProfile').on('click.stableProfile', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $profileDrops.not($drop).removeClass('manual-open');
+                    $drop.toggleClass('manual-open');
+                });
+            });
+
+            $(document).off('click.stableProfileOutside').on('click.stableProfileOutside', function(e) {
+                if ($(e.target).closest('.nav-menus > li.onhover-dropdown.manual-open').length === 0) {
+                    $profileDrops.removeClass('manual-open');
+                }
+            });
+        });
+    </script>
 
     <script>
         // Global close-button behavior for non-modal pages.

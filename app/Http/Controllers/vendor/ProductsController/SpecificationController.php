@@ -151,7 +151,11 @@ class SpecificationController extends Controller
     public function getSpecifications(Request $request)
     {
         $login_id = session()->get('login_id');
-        $spec_data = Specification::whereIn('created_byid', [$login_id, 1])->get();
+        $spec_data = Specification::whereIn('created_byid', [$login_id, 1]);
+        if ($request->filled('sub_category_id')) {
+            $spec_data->where('category_sub_id', $request->sub_category_id);
+        }
+        $spec_data = $spec_data->get();
         // ->where('created_by','vendor')
     
        

@@ -74,7 +74,6 @@ class ProductsController extends Controller
         ->groupBy('name')
         ->get();
         $offer = Offer::where('created_by_id', $login_id)->where('status', 1)->get();
-        
         //dd($login_id);
         return view('layout.vendor.products.add-product')
             ->with([
@@ -121,7 +120,9 @@ class ProductsController extends Controller
         ->groupBy('name')
         ->get();
         $colors = ProductColor::all();
-        $offer = Offer::where('status', 1)->get();
+        // $offer = Offer::where('status', 1)->get();
+        $offer = Offer::where('created_by_id', $login_id)->where('status', 1)->get();
+
 
         $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $category_sub->id)->first();
         $hasMapping = !is_null($mapping);
@@ -149,13 +150,17 @@ class ProductsController extends Controller
         $attbutesdata = array_values(array_filter(array_map('intval', $attbutesdata)));
         $specdata = array_values(array_filter(array_map('intval', $specdata)));
 
-        if (!empty($attbutesdata) || !empty($specdata)) {
+       if (!empty($attbutesdata) || !empty($specdata)) {
             $attribute = !empty($attbutesdata)
-                ? AttributeGroup::whereIn('id', $attbutesdata)->get()
+                ? AttributeGroup::whereIn('id', $attbutesdata)
+                    ->whereIn('created_byid', [1, $login_id])
+                    ->get()
                 : collect();
 
             $combinedSpecifications = !empty($specdata)
-                ? SpecificationGroup::whereIn('id', $specdata)->get()
+                ? SpecificationGroup::whereIn('id', $specdata)
+                    ->whereIn('created_byid', [1, $login_id])
+                    ->get()
                 : collect();
 
             return view('layout.vendor.products.add-product')
@@ -178,7 +183,7 @@ class ProductsController extends Controller
                 ]);
         }
 
-        $specification = Specification::where('status', 49)->get();
+        $specification = collect();
         return view('layout.vendor.products.add-product')
             ->with([
                 "CategorySub" => $CategorySub,
@@ -189,9 +194,10 @@ class ProductsController extends Controller
                 "categoryid" => $request->category,
                 "subcategoryid" => $request->category_sub,
                 "nproduct" => $request->nproduct,
-                "attribute" => "",
+                "attribute" => collect(),
                 "productcollection" => $productcollection,
                 "specification" => $specification,
+                "offers" => $offer,
                 "error" => "Attributes & Specifications Not Assign in this Sub Category.",
             ]);
     }

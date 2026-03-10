@@ -30,8 +30,8 @@
         </div>
         <ul class="sidebar-menu">
             @if (session()->get('login_id'))
-            <li><a class="sidebar-header" href="{{ url('vendar/dashboard/'.session()->get('login_id')) }}"><i
-                        data-feather="home"></i><span>Dasshboard</span></a></li>
+            <li><a class="sidebar-header" href="{{ url('vendor/dashboard/'.session()->get('login_id')) }}"><i
+                        data-feather="home"></i><span>Dashboard</span></a></li>
 
                 {{-- category --}}
                 <li><a class="sidebar-header" href="#"><i data-feather="box"></i> <span>Category</span><i
@@ -51,7 +51,7 @@
                     </li>-->
                  <li><a href="{{ route('vendorproducts.crud.listing') }}"><i class="fa fa-circle"></i>Product List</a>
                     </li>
-                    <li><a href="{{ url('vendar/specification_groups') }}"><i class="fa fa-circle"></i>
+                    <li><a href="{{ url('vendor/specification_groups') }}"><i class="fa fa-circle"></i>
                             Specification</a>
                     </li>
 
@@ -139,7 +139,7 @@
             <li><a class="sidebar-header" href=""><i data-feather="settings"></i><span>Settings</span><i
                         class="fa fa-angle-right pull-right"></i></a>
                 <ul class="sidebar-submenu">
-                    <li><a href="{{ url('vendar/profile') }}"><i class="fa fa-circle"></i>Profile</a></li>
+                    <li><a href="{{ url('vendor/profile') }}"><i class="fa fa-circle"></i>Profile</a></li>
                 </ul>
             </li>
             @if (session()->get('level') == 5 || session()->get('level') == 4)

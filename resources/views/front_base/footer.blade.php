@@ -1208,6 +1208,48 @@
    </style>
    <script>
        (function() {
+           if (window.__stableHeaderDropdownInit) return;
+           window.__stableHeaderDropdownInit = true;
+
+           if (!document.getElementById('stable-frontbase-dropdown-style')) {
+               var style = document.createElement('style');
+               style.id = 'stable-frontbase-dropdown-style';
+               style.textContent = '.header-dropdown > li.onhover-dropdown{padding-bottom:10px;margin-bottom:-10px;}\
+                   .header-dropdown > li.onhover-dropdown > .onhover-show-div{top:calc(100% + 2px)!important;}\
+                   .header-dropdown li.onhover-dropdown.manual-open > .onhover-show-div{opacity:1!important;visibility:visible!important;transform:translateY(0)!important;}';
+               document.head.appendChild(style);
+           }
+
+           document.addEventListener('DOMContentLoaded', function() {
+               var drops = document.querySelectorAll('.header-dropdown > li.onhover-dropdown');
+               drops.forEach(function(drop) {
+                   var hasLogout = drop.querySelector('a[href*="logout"], a[href*="customer-logout"], a[href*="userlogout"]');
+                   if (!hasLogout) return;
+                   var toggle = drop.querySelector(':scope > i, :scope > a, :scope > div');
+                   if (!toggle) return;
+                   toggle.style.cursor = 'pointer';
+                   toggle.addEventListener('click', function(e) {
+                       e.preventDefault();
+                       e.stopPropagation();
+                       drops.forEach(function(other) {
+                           if (other !== drop) other.classList.remove('manual-open');
+                       });
+                       drop.classList.toggle('manual-open');
+                   });
+               });
+
+               document.addEventListener('click', function(e) {
+                   if (!e.target.closest('.header-dropdown > li.onhover-dropdown.manual-open')) {
+                       drops.forEach(function(drop) {
+                           drop.classList.remove('manual-open');
+                       });
+                   }
+               });
+           });
+       })();
+   </script>
+   <script>
+       (function() {
            if (window.__globalFrontendValidationInitialized) return;
            window.__globalFrontendValidationInitialized = true;
 
@@ -1318,6 +1360,40 @@
                    validateField(el);
                }
            }, true);
+       })();
+   </script>
+   <script>
+       (function() {
+           if (window.__globalSingleSubmitInitialized) return;
+           window.__globalSingleSubmitInitialized = true;
+
+           document.addEventListener('submit', function(e) {
+               var form = e.target;
+               if (!form || form.tagName !== 'FORM') return;
+               if (e.defaultPrevented) return;
+
+               if (form.dataset.submitting === '1') {
+                   e.preventDefault();
+                   return;
+               }
+
+               form.dataset.submitting = '1';
+               var buttons = form.querySelectorAll('button[type="submit"], input[type="submit"]');
+               buttons.forEach(function(btn) {
+                   btn.disabled = true;
+                   btn.classList.add('disabled');
+               });
+
+               setTimeout(function() {
+                   if (document.body.contains(form)) {
+                       form.dataset.submitting = '0';
+                       buttons.forEach(function(btn) {
+                           btn.disabled = false;
+                           btn.classList.remove('disabled');
+                       });
+                   }
+               }, 15000);
+           }, false);
        })();
    </script>
 

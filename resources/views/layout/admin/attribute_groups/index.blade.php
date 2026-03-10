@@ -1,7 +1,6 @@
 @extends('layout.auth.master')
 @section('contents')
 
-@include('paritials.js.product.attribute-js')
     @include('paritials.css.product.attribute-css')
 
  
@@ -168,26 +167,13 @@
                               
                             <div class="col-md-12">
                                 <table class="table addproduct">
-                                    <tbody class="input_fields_wrap" id="display">
-                                        <thead class="bordered-darkorange">
-                                            <tr role="row">
-                                                <th style="width:150px;">Value</th>
-                                                <th style="width:150px;"></th>
-                                            </tr>
-                                        </thead>
-
-                                        
-                                        <tr>
-                                            <td class="tbl1">
-                                                {{-- <input id="editvalue" name="editvalue[]" class="form-control" type="text"
-                                                    placeholder="Enter Value" /> --}}
-                                            </td>
-                                            <td>
-                                                <button type="button" class="add_field_button btn btn-xs btn-primary"
-                                                    id="add1">Add More</button>
-                                            </td>
+                                    <thead class="bordered-darkorange">
+                                        <tr role="row">
+                                            <th style="width:150px;">Value</th>
+                                            <th style="width:150px;"></th>
                                         </tr>
-                                    </tbody>
+                                    </thead>
+                                    <tbody class="input_fields_wrap" id="display"></tbody>
                                 </table>
                             </div>
                             
@@ -287,44 +273,64 @@
     $('#exampleModal2').modal('show');
 });    </script>    
 <script>
-         
-             $(document).on('click','.edit_attribute', function(e){
-        var editroute1='';
-        var htmlPlan='';
-    e.preventDefault();
-    var id = $(this).val();
-    $('#edit_id').val(id);
-    //    console.log(pin_id);
-    //  alert(id);
-    
-    $('#exampleModal1').modal('show');
-        
-    
-                     //alert(response.subcategory[0].attribute_name);
-                    //  $k = response.subcategory[0].value;
-                    //  alert($k);
-                    var wrapper         = $(".input_fields_wrap"); //Fields wrapper	
-                     result = $('#attributes_val'+id).val();
-                     var splitResult = result.split(',');
-                     cache: false;
-                     var x=1;
-                     $(wrapper).html('');
-                     splitResult.forEach(function(item) {
-                       
-                        max_fields = result.length;
-                        if(x <= max_fields){ //max input box allowed
-                            x++; //text box increment
-                            $(wrapper).append('<tr class="attr_row"><td><input id ="value" name="value[]" class="form-control" value ='+item+' type ="text" placeholder="Enter Value" /></td><td><a href="#" id="r'+x+'" class="remove " ><span class="text-danger fw-bold border p-2">X</span></a></td><tr>'); //add input box
-                        }
+    (function () {
+        var maxFields = 100;
+        var wrapper = $(".input_fields_wrap");
 
-                        });
+        function getValues() {
+            var values = [];
+            wrapper.find('input[name="value[]"]').each(function () {
+                values.push($(this).val());
+            });
+            return values;
+        }
 
-                    
-    
-    });
-    
+        function renderRows(values) {
+            wrapper.empty();
+            values.forEach(function (item, idx) {
+                var safeValue = $('<div/>').text(item || '').html();
+                var actionHtml = '<a href="#" class="remove"><span class="text-danger fw-bold border p-2">X</span></a>';
+                if (idx === values.length - 1) {
+                    actionHtml += '<a href="#" class="btn btn-primary mx-3 add">+ Add More</a>';
+                }
+                wrapper.append('<tr class="attr_row"><td><input name="value[]" class="form-control" value="' + safeValue + '" type="text" placeholder="Enter Value" /></td><td>' + actionHtml + '</td></tr>');
+            });
+        }
 
+        $(document).on('click', '.edit_attribute', function (e) {
+            e.preventDefault();
+            var id = $(this).val();
+            $('#edit_id').val(id);
+            $('#exampleModal1').modal('show');
 
-        </script>
+            var result = ($('#attributes_val' + id).val() || '').trim();
+            var splitResult = result ? result.split(',').filter(function (v) { return v.trim() !== ''; }) : [];
+            if (splitResult.length === 0) {
+                splitResult = ['', '', ''];
+            }
+            renderRows(splitResult.slice(0, maxFields));
+        });
+
+        wrapper.on('click', '.add', function (e) {
+            e.preventDefault();
+            var values = getValues();
+            if (values.length < maxFields) {
+                values.push('');
+                renderRows(values);
+            }
+        });
+
+        wrapper.on('click', '.remove', function (e) {
+            e.preventDefault();
+            var rowIndex = $(this).closest('tr').index();
+            var values = getValues();
+            values.splice(rowIndex, 1);
+            if (values.length === 0) {
+                values = [''];
+            }
+            renderRows(values);
+        });
+    })();
+</script>
         
 @endsection

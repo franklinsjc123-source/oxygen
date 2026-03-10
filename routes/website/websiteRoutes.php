@@ -119,6 +119,8 @@ Route::post('/set-default-shipping-address', [FrontendController::class, 'setDef
 
 
 Route::post('/change-customer-password', [FrontendController::class,'changeCustomerPassword'])->name('change-customer-password');
+Route::post('/my-account/invoice/{invoiceId}/cancel', [FrontendController::class, 'cancelInvoice'])->name('my-account.invoice.cancel');
+Route::post('/my-account/invoice/{invoiceId}/return', [FrontendController::class, 'returnInvoice'])->name('my-account.invoice.return');
 /** NEW CODE END  */
 Route::get('/', [FrontendController::class, 'home']);
 

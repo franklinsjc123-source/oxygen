@@ -752,7 +752,7 @@ getAjaxValue(url, method, function(data) {
     //console.log ($id)
     $.ajax({
         //   data: $('').serialize(),  {{ url('admin/pincode1') }}/"+pin_id+"/edit"
-          url: "{{ url('vendar/editattribute') }}/"+id+"/edit",          
+          url: "{{ url('vendor/editattribute') }}/"+id+"/edit",          
           type: "get",
           dataType: 'json',
           success: function (response) {

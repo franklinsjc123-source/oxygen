@@ -154,7 +154,7 @@
                     </div>
 
                     <div class="modal-body">
-                        <form class="" method="post"   action="{{ url('vendar/update_specification') }}"             
+                        <form class="" method="post"   action="{{ url('vendor/update_specification') }}"             
                         enctype="multipart/form-data">
                         @csrf
                        

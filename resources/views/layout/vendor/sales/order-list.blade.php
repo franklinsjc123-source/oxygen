@@ -283,7 +283,7 @@
                                                     <!--<td><p class="text-center" style="border:1px solid #ffc000;color:#ffc000;border-radius:5px;">Accept</p></td>-->
                                                     
                                                     <td>
-                                                            <a href="{{url('vendar/Print_invoice/'.$attribute->id)}}" onclick="return confirm('Are you sure, you want to Print it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="Print" data-original-title="Print"><i class="fa fa-print"></i></a><span>
+                                                            <a href="{{url('vendor/Print_invoice/'.$attribute->id)}}" onclick="return confirm('Are you sure, you want to Print it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="Print" data-original-title="Print"><i class="fa fa-print"></i></a><span>
                                                             <button  id ="btnaccess" value= "{{ $attribute->id }}" class="btnaccess badge badge-secondary px-2" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                                                             
                                                         
@@ -977,7 +977,7 @@ function showproduct(id)
 {
     $.ajax({
 
-url: "{{ url('vendar/quickview_product') }}/"+id, 
+url: "{{ url('vendor/quickview_product') }}/"+id, 
 type: "GET",
 data: {
     "_token": "{{ csrf_token() }}"
@@ -1052,7 +1052,7 @@ $(".close").click(function(e) {
 
     $.ajax({
 
-    url: "{{ url('vendar/orderstatusupdate') }}/"+btnnew, 
+    url: "{{ url('vendor/orderstatusupdate') }}/"+btnnew, 
     type: "POST",
     data: {
         "_token": "{{ csrf_token() }}",
@@ -1103,7 +1103,7 @@ $(".btnaccess").click(function(e) {
 
     $.ajax({
 
-    url: "{{ url('vendar/orderstatusupdate') }}/"+btnaccess, 
+    url: "{{ url('vendor/orderstatusupdate') }}/"+btnaccess, 
     type: "POST",
     data: {
         "_token": "{{ csrf_token() }}",
@@ -1147,7 +1147,7 @@ $(".btnaccess").click(function(e) {
 
     $.ajax({
 
-    url: "{{ url('vendar/orderstatusupdate') }}/"+btndispatch, 
+    url: "{{ url('vendor/orderstatusupdate') }}/"+btndispatch, 
     type: "POST",
     data: {
         "_token": "{{ csrf_token() }}",
@@ -1186,7 +1186,7 @@ $(".btndelivered").click(function(e) {
 
     $.ajax({
 
-    url: "{{ url('vendar/orderstatusupdate') }}/"+btndelivered, 
+    url: "{{ url('vendor/orderstatusupdate') }}/"+btndelivered, 
     type: "POST",
     data: {
         "_token": "{{ csrf_token() }}",
@@ -1231,7 +1231,7 @@ $(".btnreturn").click(function(e) {
 
     $.ajax({
 
-    url: "{{ url('vendar/orderstatusupdate') }}/"+btnreturn, 
+    url: "{{ url('vendor/orderstatusupdate') }}/"+btnreturn, 
     type: "POST",
     data: {
         "_token": "{{ csrf_token() }}",
@@ -1278,7 +1278,7 @@ $(".btnreturn").click(function(e) {
 
     $.ajax({
 
-    url: "{{ url('vendar/orderstatusupdate') }}/"+btncancel, 
+    url: "{{ url('vendor/orderstatusupdate') }}/"+btncancel, 
     type: "POST",
     data: {
         "_token": "{{ csrf_token() }}",

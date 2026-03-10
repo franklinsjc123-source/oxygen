@@ -206,7 +206,7 @@
 	Route::get('coupon/create', [CouponsController::class, 'create']);
 	
 	Route::post('orderstatusupdate/{id}', [SalesController::class, 'orderstatusupdate'])->name('orderstatusupdate');
-	Route::get("quickview_product/{id}", [SalesController::class, "quickview_product"])->name('vendar.quickview_product');
+	Route::get("quickview_product/{id}", [SalesController::class, "quickview_product"])->name('vendor.quickview_product');
 	//banner
 	// Route::get('advbanner', [BannerController::class, 'banner']);
 	

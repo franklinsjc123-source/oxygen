@@ -4,6 +4,9 @@
         .gothic{
             font-family:'Century Gothic',lucida grande, helvetica, verdana, arial, sans-serif;
         }
+        .vendor-final-actions{
+            padding-right:102px;
+        }
     </style>
 
 
@@ -703,12 +706,15 @@
                                                             </div>
                                                         </div><br>
 
-                                                        <div class="">
-
-                                                            <button class="btn  px-5 btn-lg btn-primary" id="create"
-                                                                type="submit" onclick="wrong_ac_no_alert()">Save</button>
-                                                            <button class="btn btn-lg btn-secondary px-5"
-                                                                type="button" onclick="window.location.href='{{ url('admin/vendor/list') }}'">Close</button>
+                                                        <div class="d-flex justify-content-between align-items-center mt-4 vendor-final-actions" style="display:none;">
+                                                            <button type="button" class="btn btn-secondary px-4"
+                                                                id="wizard-prev-last-btn">Previous</button>
+                                                            <div class="d-flex gap-2">
+                                                                <button class="btn px-5 btn-lg btn-primary" id="create"
+                                                                    type="submit" onclick="wrong_ac_no_alert()">Save</button>
+                                                                <button class="btn btn-lg btn-secondary px-5"
+                                                                    type="button" onclick="window.location.href='{{ url('admin/vendor/list') }}'">Close</button>
+                                                            </div>
                                                         </div>
                                                     </div>
 
@@ -825,8 +831,11 @@
 
             function syncWizardButtons() {
                 const index = getActiveIndex();
-                $('#wizard-prev-btn').toggle(index > 0);
-                $('#wizard-next-btn').toggle(index < tabCount - 1);
+                const isLastTab = index === tabCount - 1;
+                $('#vendor-wizard-controls').toggle(!isLastTab);
+                $('#wizard-prev-btn').toggle(index > 0 && !isLastTab);
+                $('#wizard-next-btn').toggle(index < tabCount - 1 && !isLastTab);
+                $('.vendor-final-actions').toggle(isLastTab);
             }
 
             $('#wizard-next-btn').on('click', function() {
@@ -834,6 +843,10 @@
             });
 
             $('#wizard-prev-btn').on('click', function() {
+                showTab(getActiveIndex() - 1);
+            });
+
+            $('#wizard-prev-last-btn').on('click', function() {
                 showTab(getActiveIndex() - 1);
             });
 

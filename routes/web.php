@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('/admin')->middleware('panel.session')->group(__DIR__.'/admin/adminRoutes.php');
 
 // Routes For Vendor
-Route::prefix('/vendar')->middleware('panel.session')->group(__DIR__.'/vendor/vendorRoutes.php');
+Route::prefix('/vendor')->middleware('panel.session')->group(__DIR__.'/vendor/vendorRoutes.php');
 
 
 // Routes For Staff

@@ -315,7 +315,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
-                                                <a href="{{ url('vendar/productscreate') }}" class="btn btn-warning"> Back </a>
+                                                <a href="{{ url('vendor/productscreate') }}" class="btn btn-warning"> Back </a>
                                             </div>
                                         </div>
                                     </div>
@@ -738,6 +738,7 @@
                                                             @endphp
                                                             <td>{{ $spec->specification_group_name }}</td>
                                                             <td>
+                                                                <input type="hidden" name="spec_id[]" value="{{ $spec->id }}">
                                                                 <select class='form-select form-select-lg text-secondary' name='specify_value[{{ $spec->id}}]'>
                                                                     <option selected value='' hidden> --Select {{ $spec->specification_group_name}}--</option>
                                                                     @foreach( $spec_val as $spval )
@@ -776,9 +777,8 @@
                                                         <label class="text-center  fw-bold mt-2">Offers</label>
                                                     </div>
                                                     <div class="col-md-3">
-
                                                         <select class="form-select form-select-lg text-secondary"
-                                                            id="offtype" name="offers" required>
+                                                            id="offtype" name="offers">
                                                             <option selected hidden value="">Select Here
                                                             </option>
 
@@ -810,7 +810,7 @@
                                                     </div>
                                                     <div class="col-md-4 ">
                                                         <select class="form-select form-select-lg text-secondary"
-                                                            id="collection" name="collection" required>
+                                                            id="collection" name="collection">
                                                              <option selected hidden value="">Select Here
                                                             </option>
                                                             @foreach ($productcollection as $productcollection)

@@ -383,7 +383,7 @@
     //console.log ($id)
     $.ajax({
         //   data: $('').serialize(),  {{ url('admin/pincode1') }}/"+pin_id+"/edit"
-          url: "{{ url('vendar/vendoreditspec') }}/"+id+"/edit",        
+          url: "{{ url('vendor/vendoreditspec') }}/"+id+"/edit",        
          
           type: "get",
           dataType: 'json',

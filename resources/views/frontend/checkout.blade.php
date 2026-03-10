@@ -215,23 +215,31 @@
 											</tr>
 										</thead>
 										<tbody>
-											@foreach($records as $item)
+											@foreach(($checkoutSummary['lines'] ?? []) as $item)
 											<tr class="bb-no">
 												<td class="product-name">
-													{{ $item->name }}
+													{{ $item['name'] }}
 													<i class="fas fa-times"></i>
-													<span class="product-quantity">{{ $item->quantity }}</span>
+													<span class="product-quantity">{{ $item['qty'] }}</span>
 												</td>
 												<td class="product-total">
-													₹{{ number_format($item->price * $item->quantity, 2) }}
+													₹{{ number_format($item['line_total'], 2) }}
 												</td>
 											</tr>
 											@endforeach
 
-											<tr class="cart-subtotal bb-no">
-												<td><b>Subtotal</b></td>
-												<td><b>₹{{ number_format($total, 2) }}</b></td>
-											</tr>
+                                            <tr class="cart-subtotal bb-no">
+                                                <td><b>Subtotal</b></td>
+                                                <td><b>&#8377;{{ number_format(($checkoutSummary['subtotal'] ?? $total), 2) }}</b></td>
+                                            </tr>
+                                            <tr class="cart-subtotal bb-no">
+                                                <td><b>Tax</b></td>
+                                                <td><b>&#8377;{{ number_format(($checkoutSummary['tax_total'] ?? 0), 2) }}</b></td>
+                                            </tr>
+                                            <tr class="cart-subtotal bb-no">
+                                                <td><b>Delivery Charge</b></td>
+                                                <td><b>&#8377;{{ number_format(($checkoutSummary['delivery_charge'] ?? 0), 2) }}</b></td>
+                                            </tr>
 										</tbody>
 										<tfoot>
 											<tr class="shipping-methods">
@@ -274,7 +282,7 @@
 													<b>Total</b>
 												</th>
 												<td>
-													<b>₹{{ number_format($total, 2) }}</b>
+                                                    <b>&#8377;{{ number_format(($checkoutSummary['grand_total'] ?? $total), 2) }}</b>
 												</td>
 											</tr>
 										</tfoot>
@@ -381,3 +389,4 @@ updateShippingRequired();
 
 
 	 @endsection
+

@@ -13,7 +13,9 @@ class EnsurePanelSession
     public function handle(Request $request, Closure $next)
     {
         $isAdminAuthPage = $request->is('admin') || $request->is('admin/login') || $request->is('admin/register');
-        $isVendorAuthPage = $request->is('vendar') || $request->is('vendar/login') || $request->is('vendar/register');
+        // Support correct vendor path and legacy typo path.
+        $isVendorAuthPage = $request->is('vendor') || $request->is('vendor/login') || $request->is('vendor/register')
+            || $request->is('vendar') || $request->is('vendar/login') || $request->is('vendar/register');
 
         if ($isAdminAuthPage || $isVendorAuthPage) {
             return $next($request);
@@ -26,4 +28,3 @@ class EnsurePanelSession
         return $next($request);
     }
 }
-

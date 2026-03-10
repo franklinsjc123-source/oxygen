@@ -242,7 +242,17 @@ class SpecificationController extends Controller
 	
     public function getSpecifications(Request $request)
     {
-        $spec_data = Specification::all();
+        $vendorId = (int) $request->get('vendor_id', 0);
+        $spec_data = Specification::query();
+        if ($request->filled('sub_category_id')) {
+            $spec_data->where('category_sub_id', $request->sub_category_id);
+        }
+        if ($vendorId > 0) {
+            $spec_data->whereIn('created_byid', [1, $vendorId]);
+        } else {
+            $spec_data->where('created_byid', 1);
+        }
+        $spec_data = $spec_data->get();
         return response()->json($spec_data);
         
     }

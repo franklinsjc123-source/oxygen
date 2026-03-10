@@ -268,17 +268,27 @@ class AttributeController extends Controller
 
     public function getAttributes(Request $request)
     {
-        $attribute_data = Attribute::where('category_sub_id', $request->sub_category_id)
-        ->where('created_byid', 1)
-        ->get();
+        $vendorId = (int) $request->get('vendor_id', 0);
+        $attribute_data = Attribute::where('category_sub_id', $request->sub_category_id);
+        if ($vendorId > 0) {
+            $attribute_data->whereIn('created_byid', [1, $vendorId]);
+        } else {
+            $attribute_data->where('created_byid', 1);
+        }
+        $attribute_data = $attribute_data->get();
         return response()->json($attribute_data);
     }
 
     public function getSubCategory(Request $request)
     {
-        $attribute_data = Attribute::where('category_sub_id', $request->sub_category_id)
-        ->where('created_byid', 1)
-        ->get();
+        $vendorId = (int) $request->get('vendor_id', 0);
+        $attribute_data = Attribute::where('category_sub_id', $request->sub_category_id);
+        if ($vendorId > 0) {
+            $attribute_data->whereIn('created_byid', [1, $vendorId]);
+        } else {
+            $attribute_data->where('created_byid', 1);
+        }
+        $attribute_data = $attribute_data->get();
         return response()->json($attribute_data);
     }
 }

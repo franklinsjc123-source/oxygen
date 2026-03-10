@@ -116,7 +116,6 @@ class ProductsController extends Controller
         $category_data = Category::where('main_category_id', $selected_main_category_id)->get();
         $category_sub_data = CategorySub::where('category_id', $request->category)->get();
         $category_sub = CategorySub::where('id', $request->category_sub)->first();
-        $category_sub = CategorySub::where('id', $request->category_sub)->first();
         $gst = GST::where('status', 1)->get();
         $productcollection = productcollection::select('name', DB::raw('GROUP_CONCAT(id) as ids'))
         ->where('status', 1)
@@ -126,16 +125,28 @@ class ProductsController extends Controller
         //dd($colors);
         $offer = Offer::where('status', 1)
         ->get();
-        if($category_sub->category_sub_attributes!='')
+        if($category_sub && $category_sub->category_sub_attributes!='')
         {
         $attbutesdata=explode(',',$category_sub->category_sub_attributes);        
         $specdata=explode(',',$category_sub->category_sub_specifications);
-        $attribute = AttributeGroup::whereIn('id', $attbutesdata)->get();
-        $login_id = session()->get('login_id');  
-        $specification = SpecificationGroup::whereIn('id', $specdata)->where('created_byid', $request->vendorlist)->get();
+        $attbutesdata = array_values(array_filter(array_map('intval', $attbutesdata)));
+        $specdata = array_values(array_filter(array_map('intval', $specdata)));
+        $vendorId = (int) $request->vendorlist;
+
+        $attributeQuery = AttributeGroup::query()->whereIn('id', $attbutesdata);
+        if ($vendorId > 0) {
+            $attributeQuery->whereIn('created_byid', [1, $vendorId]);
+        }
+        $attribute = $attributeQuery->get();
+
+        $specQuery = SpecificationGroup::query()->whereIn('id', $specdata);
+        if ($vendorId > 0) {
+            $specQuery->whereIn('created_byid', [1, $vendorId]);
+        }
+        $specification = $specQuery->get();
+
        
-        
-        
+       
        
         //dd($login_id);
         return view('layout.admin.products.add-product')
@@ -153,7 +164,7 @@ class ProductsController extends Controller
                 "categoryid"=>$request->category,                
                 "subcategoryid"=>$request->category_sub,                             
                 "nproduct"=>$request->nproduct,
-                "vendorid"=>$request->vendorlist,
+                "vendorid"=>$vendorId,
                 "category_data"=>$category_data,
                 "category_sub_data"=>$category_sub_data,
                 "vendorlist"=>$vendorlist
@@ -162,7 +173,7 @@ class ProductsController extends Controller
         else
         {
             
-        $specification = Specification::where('status', 49)->get();
+        $specification = collect();
         return view('layout.admin.products.add-product')
             ->with([
                 "category_main_data" => $category_main_data,
@@ -173,9 +184,10 @@ class ProductsController extends Controller
                 "categoryid"=>$request->category,                
                 "subcategoryid"=>$request->category_sub,                             
                 "nproduct"=>$request->nproduct,
-                 "attribute" => "",
+                 "attribute" => collect(),
                  "productcollection" => $productcollection,
                  "specification" => $specification,
+                "vendorlist"=>$vendorlist,
                 "error"=>"Attributes & Specifications Not Assign in this Sub Category.",
             ]);
         }
