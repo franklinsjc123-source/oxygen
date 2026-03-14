@@ -35,9 +35,81 @@ use App\Models\wishlist;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use NumberFormatter;
+// use Illuminate\Support\Str;
 
 class FrontendController extends Controller
 {
+    private function resolveCartKey(Request $request): array
+    {
+        $key = (string) ($request->cookie('oxy_cart_key') ?? '');
+        if ($key !== '') {
+            return [$key, null];
+        }
+
+        $key = (string) Str::uuid();
+        $cookie = cookie('oxy_cart_key', $key, 60 * 24 * 30);
+
+        return [$key, $cookie];
+    }
+
+    private function cartSession(Request $request): array
+    {
+        [$key, $cookie] = $this->resolveCartKey($request);
+        $cart = Cart::session($key);
+        $this->hydrateCartFromCookie($request, $cart);
+
+        return [$cart, $cookie];
+    }
+
+    private function hydrateCartFromCookie(Request $request, $cart): void
+    {
+        if ($cart->getContent()->count() > 0) {
+            return;
+        }
+
+        $payload = (string) ($request->cookie('oxy_cart_payload') ?? '');
+        if ($payload === '') {
+            return;
+        }
+
+        $items = json_decode($payload, true);
+        if (!is_array($items)) {
+            return;
+        }
+
+        foreach ($items as $item) {
+            if (!is_array($item) || empty($item['id'])) {
+                continue;
+            }
+
+            $cart->add([
+                'id' => $item['id'],
+                'name' => $item['name'] ?? '',
+                'price' => $item['price'] ?? 0,
+                'quantity' => max(1, (int) ($item['quantity'] ?? 1)),
+                'attributes' => $item['attributes'] ?? [],
+            ]);
+        }
+    }
+
+    private function attachCartCookies($response, $cookie, $cart)
+    {
+        if ($cookie) {
+            $response->withCookie($cookie);
+        }
+
+        $items = $cart->getContent()->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'name' => $item->name,
+                'price' => $item->price,
+                'quantity' => $item->quantity,
+                'attributes' => $item->attributes ? $item->attributes->toArray() : [],
+            ];
+        })->values()->toJson();
+
+        return $response->withCookie(cookie('oxy_cart_payload', $items, 60 * 24 * 30));
+    }
 
 
     public function customer_logout()
@@ -360,7 +432,9 @@ class FrontendController extends Controller
             ->leftJoin('category_sub as cs', 'cs.id', '=', 'p.category_sub')
             ->leftJoin('category_main as cm', 'cm.id', '=', 'p.category_main')
             ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
-            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id');
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
+            ->where('p.status', 1)
+            ->where('p.flag', 1);
         if ($id != '') {
             $productsData = $productsData->where('p.id', $id);
         }
@@ -420,7 +494,9 @@ class FrontendController extends Controller
             ->leftJoin('category_sub as cs', 'cs.id', '=', 'p.category_sub')
             ->leftJoin('category_main as cm', 'cm.id', '=', 'p.category_main')
             ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
-            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id');
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
+            ->where('p.status', 1)
+            ->where('p.flag', 1);
         if ($id != '') {
             $productsData = $productsData->where('p.id', $id);
         }
@@ -545,7 +621,9 @@ class FrontendController extends Controller
             ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
             ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
             ->limit(12)
-            ->where('cm.id', 1);
+            ->where('cm.id', 1)
+            ->where('p.status', 1)
+            ->where('p.flag', 1);
 
         $productsData = $productsData->select(
             'p.id',
@@ -601,7 +679,9 @@ class FrontendController extends Controller
             ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
             ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
             ->limit(12)
-            ->where('cm.id', 3);
+            ->where('cm.id', 3)
+            ->where('p.status', 1)
+            ->where('p.flag', 1);
 
         $productsData = $productsData->select(
             'p.id',
@@ -656,7 +736,9 @@ class FrontendController extends Controller
             ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
             ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
             ->limit(12)
-            ->where('cm.id', 2);
+            ->where('cm.id', 2)
+            ->where('p.status', 1)
+            ->where('p.flag', 1);
 
         $productsData = $productsData->select(
             'p.id',
@@ -1029,23 +1111,26 @@ class FrontendController extends Controller
         $color = $input['color'];
         $id    = $input['id'];
         $qty   = max(1, (int) ($input['qty'] ?? 1));
+        [$cart, $cookie] = $this->cartSession($request);
         $stockQty = $this->getAvailableStock((int) $id, $size, $color);
-        $existingQty = (int) optional(Cart::get($id))->quantity;
+        $existingQty = (int) optional($cart->get($id))->quantity;
 
         if ($stockQty <= 0) {
-            return response()->json([
+            $response = response()->json([
                 'status' => 'error',
                 'message' => 'Out of stock for selected variant.',
-                'count' => Cart::getContent()->count(),
+                'count' => $cart->getContent()->count(),
             ]);
+            return $this->attachCartCookies($response, $cookie, $cart);
         }
 
         if (($existingQty + $qty) > $stockQty) {
-            return response()->json([
+            $response = response()->json([
                 'status' => 'error',
                 'message' => 'Out of stock. Only ' . $stockQty . ' item(s) available.',
-                'count' => Cart::getContent()->count(),
+                'count' => $cart->getContent()->count(),
             ]);
+            return $this->attachCartCookies($response, $cookie, $cart);
         }
 
         $prouctsList = $this->getSpecificProduct($id)[$id];
@@ -1060,14 +1145,16 @@ class FrontendController extends Controller
                 'color'      => $color,
             )
         );
-        Cart::add($cartArray);
-        $count = Cart::getContent()->count();
-        return response()->json([
+        $cart->add($cartArray);
+        $count = $cart->getContent()->count();
+        $response = response()->json([
             'status' => 'success',
             'message' => 'Item added to cart successfully.',
             'count'   => $count,
-            'cart' => Cart::getContent()
+            'cart' => $cart->getContent()
         ]);
+
+        return $this->attachCartCookies($response, $cookie, $cart);
     }
 
     private function getAvailableStock(int $productId, $size = null, $color = null): int
@@ -1446,30 +1533,34 @@ class FrontendController extends Controller
 
 
 
-    public function getSideCart()
+    public function getSideCart(Request $request)
     {
-        $count   = Cart::getContent()->count();
-        $records = Cart::getContent();
-        $total   = Cart::getTotal();
-        return view('frontend.side_cart', compact('count', 'records', 'total'));
+        [$cart, $cookie] = $this->cartSession($request);
+        $count   = $cart->getContent()->count();
+        $records = $cart->getContent();
+        $total   = $cart->getTotal();
+        $response = response()->view('frontend.side_cart', compact('count', 'records', 'total'));
+        return $this->attachCartCookies($response, $cookie, $cart);
     }
 
 
     public function showCarts(Request $request)
     {
-
-        $count   = Cart::getContent()->count();
-        $records = Cart::getContent();
-        $total   = Cart::getTotal();
-        return view('frontend.view_cart', compact('count', 'records', 'total'));
+        [$cart, $cookie] = $this->cartSession($request);
+        $count   = $cart->getContent()->count();
+        $records = $cart->getContent();
+        $total   = $cart->getTotal();
+        $response = response()->view('frontend.view_cart', compact('count', 'records', 'total'));
+        return $this->attachCartCookies($response, $cookie, $cart);
     }
 
 
     public function checkoutPage(Request $request)
     {
-        $count   = Cart::getContent()->count();
-        $records = Cart::getContent();
-        $total   = Cart::getTotal();
+        [$cart, $cookie] = $this->cartSession($request);
+        $count   = $cart->getContent()->count();
+        $records = $cart->getContent();
+        $total   = $cart->getTotal();
         $checkoutSummary = $this->buildCheckoutSummary($records);
 
         $customer = null;
@@ -1478,7 +1569,8 @@ class FrontendController extends Controller
             $customer = Ecom_Customer_info::where('customer_id', $customer_id)->first();
         }
 
-        return view('frontend.checkout', compact('count', 'records', 'total', 'customer', 'checkoutSummary'));
+        $response = response()->view('frontend.checkout', compact('count', 'records', 'total', 'customer', 'checkoutSummary'));
+        return $this->attachCartCookies($response, $cookie, $cart);
     }
 
     // public function checkout_store(Request $request)
@@ -1608,14 +1700,17 @@ class FrontendController extends Controller
             'billing_postcode'   => 'required',
         ]);
 
-        $cartItems = Cart::getContent();
+        [$cart, $cookie] = $this->cartSession($request);
+        $cartItems = $cart->getContent();
         if ($cartItems->count() === 0) {
-            return redirect()->back()->with('error', 'Cart is empty.');
+            $response = redirect()->back()->with('error', 'Cart is empty.');
+            return $this->attachCartCookies($response, $cookie, $cart);
         }
 
         $checkoutSummary = $this->buildCheckoutSummary($cartItems);
         if (empty($checkoutSummary['lines'])) {
-            return redirect()->back()->with('error', 'No valid items found in cart.');
+            $response = redirect()->back()->with('error', 'No valid items found in cart.');
+            return $this->attachCartCookies($response, $cookie, $cart);
         }
 
         DB::beginTransaction();
@@ -1623,8 +1718,9 @@ class FrontendController extends Controller
             $customer = null;
             $isNewCustomer = false;
 
-            if (auth()->check()) {
-                $customer = Ecom_Customer_info::where('id', auth()->id())->first();
+            $sessionCustomerId = Session::get('customer_id');
+            if ($sessionCustomerId) {
+                $customer = Ecom_Customer_info::where('customer_id', $sessionCustomerId)->first();
             }
 
             if (!$customer) {
@@ -1786,18 +1882,86 @@ class FrontendController extends Controller
                 'updated_at'      => now(),
             ]);
 
+            $legacyOrder = new Ecom_Orders();
+            $legacyOrder->order_id = $orderId;
+            $legacyOrder->delivery_type = 'Normal';
+            $legacyOrder->customer_id = $customerCode;
+            $legacyOrder->customer_firstname = $request->billing_first_name;
+            $legacyOrder->customer_lastname = $request->billing_last_name;
+            $legacyOrder->customer_company_name = $request->input('billing_company', '');
+            $legacyOrder->customer_email = $request->billing_email;
+            $legacyOrder->customer_mobileno = $request->billing_phone;
+            $legacyOrder->customer_address = $request->billing_address;
+            $legacyOrder->customer_address1 = $request->input('street-address-2', '');
+            $legacyOrder->customer_city = $request->billing_city;
+            $legacyOrder->customer_state = $request->billing_state;
+            $legacyOrder->customer_pincode = $request->billing_postcode;
+            $legacyOrder->payment_type = $request->payment_method ?? 'Cash On Delivery';
+            $legacyOrder->discount_amount = 0;
+            $legacyOrder->shipping_charge = (float) ($checkoutSummary['delivery_charge'] ?? 0);
+            $legacyOrder->gst_charge = (float) ($checkoutSummary['tax_total'] ?? 0);
+            $legacyOrder->total_amount = (float) ($checkoutSummary['subtotal'] ?? 0);
+            $legacyOrder->grand_total = (float) $grandTotal;
+            $legacyOrder->coupon_code = $request->input('coupon_code', '');
+            $legacyOrder->order_status = 'Pending';
+            $legacyOrder->payment_status = 'Pending';
+            $legacyOrder->order_date = now();
+            $legacyOrder->save();
+
+            foreach ($checkoutSummary['lines'] as $line) {
+                $productId = (int) ($line['product_id'] ?? 0);
+                $detailId = (int) ($line['detail_id'] ?? 0);
+                $qty = (int) ($line['qty'] ?? 0);
+                $unitPrice = (float) ($line['unit_price'] ?? 0);
+                $lineTotal = (float) ($line['line_total'] ?? 0);
+
+                if ($detailId <= 0 || $qty <= 0) {
+                    continue;
+                }
+
+                $detail = ProductsDetails::where('id', $detailId)->first();
+                $product = Products::where('id', $productId)->first();
+
+                $image = '';
+                if ($detail && !empty($detail->product_detail_image)) {
+                    $decoded = json_decode($detail->product_detail_image, true);
+                    if (is_array($decoded) && !empty($decoded[0])) {
+                        $image = (string) $decoded[0];
+                    }
+                }
+                if ($image === '' && $product && !empty($product->product_image)) {
+                    $image = (string) $product->product_image;
+                }
+
+                $orderProduct = new Ecom_Order_product();
+                $orderProduct->product_gstin = $product ? $product->gst_id : null;
+                $orderProduct->order_id = $orderId;
+                $orderProduct->product_id = $detailId;
+                $orderProduct->product_name = (string) ($line['name'] ?? 'Product');
+                $orderProduct->product_image = $image;
+                $orderProduct->product_size = $detail ? (string) ($detail->attributevalue2 ?? '') : '';
+                $orderProduct->product_quantity = $qty;
+                $orderProduct->product_price = $unitPrice;
+                $orderProduct->total_price = $lineTotal;
+                $orderProduct->order_status = 'Pending';
+                $orderProduct->save();
+            }
+
             DB::commit();
-            Cart::clear();
+            [$cart, $cookie] = $this->cartSession($request);
+            $cart->clear();
 
             $message = 'Order placed successfully! Order ID: ' . $orderId;
             if ($isNewCustomer) {
                 $message .= ' Account created. Default password: welcome@123';
             }
 
-            return redirect()->to(route('myAccount') . '#account-orders')->with('success', $message);
+            $response = redirect()->to(route('myAccount') . '#account-orders')->with('success', $message);
+            return $this->attachCartCookies($response, $cookie, $cart);
         } catch (\Throwable $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Checkout failed: ' . $e->getMessage());
+            $response = redirect()->back()->with('error', 'Checkout failed: ' . $e->getMessage());
+            return $this->attachCartCookies($response, $cookie ?? null, $cart ?? Cart::session('default'));
         }
     }
 
@@ -2146,6 +2310,27 @@ class FrontendController extends Controller
                 'updated_at' => now(),
             ]);
 
+        $detailIds = collect(explode(',', (string) ($invoice->product_detail_ids ?? '')))
+            ->map(fn($val) => (int) trim($val))
+            ->filter()
+            ->values();
+
+        $orderRow = DB::table('ecom_order')
+            ->where('customer_id', $customerId)
+            ->whereRaw("FIND_IN_SET(?, invoice_ids)", [$invoiceId])
+            ->first();
+
+        if ($orderRow && $detailIds->isNotEmpty()) {
+            DB::table('ecom_order_product')
+                ->where('order_id', $orderRow->order_id)
+                ->whereIn('product_id', $detailIds->all())
+                ->update(['order_status' => 'Cancel']);
+
+            DB::table('ecom_order_info')
+                ->where('order_id', $orderRow->order_id)
+                ->update(['order_status' => 'Cancel']);
+        }
+
         $this->syncOrderStatusByInvoice($customerId, $invoiceId);
         return redirect()->to(route('myAccount') . '#account-orders')->with('success', 'Order cancelled successfully.');
     }
@@ -2205,6 +2390,27 @@ class FrontendController extends Controller
                 'updated_at' => now(),
             ]);
 
+        $detailIds = collect(explode(',', (string) ($invoice->product_detail_ids ?? '')))
+            ->map(fn($val) => (int) trim($val))
+            ->filter()
+            ->values();
+
+        $orderRow = DB::table('ecom_order')
+            ->where('customer_id', $customerId)
+            ->whereRaw("FIND_IN_SET(?, invoice_ids)", [$invoiceId])
+            ->first();
+
+        if ($orderRow && $detailIds->isNotEmpty()) {
+            DB::table('ecom_order_product')
+                ->where('order_id', $orderRow->order_id)
+                ->whereIn('product_id', $detailIds->all())
+                ->update(['order_status' => 'Return']);
+
+            DB::table('ecom_order_info')
+                ->where('order_id', $orderRow->order_id)
+                ->update(['order_status' => 'Return']);
+        }
+
         $this->syncOrderStatusByInvoice($customerId, $invoiceId);
         return redirect()->to(route('myAccount') . '#account-orders')->with('success', 'Return request submitted.');
     }
@@ -2240,8 +2446,13 @@ class FrontendController extends Controller
             return;
         }
 
-        if ($statuses->contains(fn($s) => in_array($s, ['pending', 'accept', 'accepted'], true))) {
+        if ($statuses->contains('pending')) {
             DB::table('ecom_order')->where('id', $order->id)->update(['status' => 'Pending', 'updated_at' => now()]);
+            return;
+        }
+
+        if ($statuses->contains(fn($s) => in_array($s, ['accept', 'accepted'], true))) {
+            DB::table('ecom_order')->where('id', $order->id)->update(['status' => 'Accept', 'updated_at' => now()]);
             return;
         }
 
@@ -2300,7 +2511,14 @@ class FrontendController extends Controller
                 ->keyBy('detail_id')
                 : collect();
 
-            return $newOrders->map(function ($order) use ($invoiceRows, $productDetails) {
+            $legacyOrderProducts = DB::table('ecom_order_product')
+                ->whereIn('order_id', $newOrders->pluck('order_id')->filter()->values())
+                ->whereIn('product_id', $allProductDetailIds)
+                ->select('order_id', 'product_id', 'order_status')
+                ->get()
+                ->groupBy('order_id');
+
+            return $newOrders->map(function ($order) use ($invoiceRows, $productDetails, $legacyOrderProducts) {
                 $invoiceIds = collect(explode(',', (string) $order->invoice_ids))
                     ->map(fn($val) => trim($val))
                     ->filter()
@@ -2345,6 +2563,51 @@ class FrontendController extends Controller
                     $lineTaxRate = (float) ($invoice->tax_rate ?? 0);
                     $lineTaxType = (string) ($invoice->tax_type ?? 'NA');
 
+                    $legacyStatuses = collect();
+                    $legacyRows = $legacyOrderProducts->get($order->order_id, collect());
+                    if ($legacyRows->isNotEmpty()) {
+                        $legacyStatuses = $legacyRows
+                            ->whereIn('product_id', $lineProducts->pluck('detail_id')->all())
+                            ->pluck('order_status')
+                            ->map(fn($s) => strtolower((string) $s))
+                            ->values();
+                    }
+
+                    if ($legacyStatuses->isNotEmpty()) {
+                        $derivedStatus = $normalizedStatus;
+                        if ($legacyStatuses->every(fn($s) => in_array($s, ['cancel', 'return'], true))) {
+                            $derivedStatus = $legacyStatuses->contains('return') ? 'return' : 'cancel';
+                        } elseif ($legacyStatuses->contains('pending')) {
+                            $derivedStatus = 'pending';
+                        } elseif ($legacyStatuses->contains(fn($s) => in_array($s, ['accept', 'accepted'], true))) {
+                            $derivedStatus = 'accept';
+                        } elseif ($legacyStatuses->contains(fn($s) => in_array($s, ['dispatch', 'dispatched'], true))) {
+                            $derivedStatus = 'dispatch';
+                        } elseif ($legacyStatuses->every(fn($s) => in_array($s, ['delivery', 'delivered'], true))) {
+                            $derivedStatus = 'delivered';
+                        } elseif ($legacyStatuses->contains('return')) {
+                            $derivedStatus = 'return';
+                        } elseif ($legacyStatuses->contains('cancel')) {
+                            $derivedStatus = 'cancel';
+                        }
+
+                        if ($derivedStatus !== $normalizedStatus) {
+                            $statusMap = [
+                                'pending' => 'Pending',
+                                'accept' => 'Accept',
+                                'dispatch' => 'Dispatch',
+                                'delivered' => 'Delivered',
+                                'return' => 'Return',
+                                'cancel' => 'Cancel',
+                            ];
+                            $status = $statusMap[$derivedStatus] ?? $status;
+                            $normalizedStatus = strtolower(trim($status));
+                            DB::table('ecom_invoice')
+                                ->where('invoice_id', $invoice->invoice_id)
+                                ->update(['status' => $status, 'updated_at' => now()]);
+                        }
+                    }
+
                     $isCancelAllowed = in_array($normalizedStatus, ['pending', 'accept', 'accepted'], true);
                     $isDelivered = in_array($normalizedStatus, ['delivery', 'delivered'], true);
 
@@ -2381,16 +2644,36 @@ class FrontendController extends Controller
                     ];
                 }
 
-                return (object) [
-                    'id' => (int) $order->id,
-                    'order_id' => (string) $order->order_id,
-                    'order_date' => $order->created_at,
-                    'order_status' => (string) ($order->status ?? 'Pending'),
-                    'grand_total' => (float) ($order->total_amount ?? 0),
-                    'invoice_details' => collect($invoiceDetails),
-                ];
-            });
-        }
+                  $invoiceStatuses = collect($invoiceDetails)
+                      ->pluck('status')
+                      ->map(fn($s) => strtolower((string) $s))
+                      ->values();
+
+                  $derivedOrderStatus = (string) ($order->status ?? 'Pending');
+                  if ($invoiceStatuses->isNotEmpty()) {
+                      if ($invoiceStatuses->every(fn($s) => in_array($s, ['cancel', 'return'], true))) {
+                          $derivedOrderStatus = 'Closed';
+                      } elseif ($invoiceStatuses->contains('pending')) {
+                          $derivedOrderStatus = 'Pending';
+                      } elseif ($invoiceStatuses->contains(fn($s) => in_array($s, ['accept', 'accepted'], true))) {
+                          $derivedOrderStatus = 'Accept';
+                      } elseif ($invoiceStatuses->contains(fn($s) => in_array($s, ['dispatch', 'dispatched'], true))) {
+                          $derivedOrderStatus = 'Dispatch';
+                      } elseif ($invoiceStatuses->every(fn($s) => in_array($s, ['delivery', 'delivered'], true))) {
+                          $derivedOrderStatus = 'Delivered';
+                      }
+                  }
+
+                  return (object) [
+                      'id' => (int) $order->id,
+                      'order_id' => (string) $order->order_id,
+                      'order_date' => $order->created_at,
+                      'order_status' => $derivedOrderStatus,
+                      'grand_total' => (float) ($order->total_amount ?? 0),
+                      'invoice_details' => collect($invoiceDetails),
+                  ];
+              });
+          }
 
         $oldOrders = Ecom_orders::where('customer_id', $customerId)
             ->orderBy('id', 'desc')

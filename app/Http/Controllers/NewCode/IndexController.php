@@ -34,9 +34,81 @@ use App\Models\vendor\vendorcreate;
 use App\Models\CMSPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class IndexController extends Controller
 {
+    private function resolveCartKey(Request $request): array
+    {
+        $key = (string) ($request->cookie('oxy_cart_key') ?? '');
+        if ($key !== '') {
+            return [$key, null];
+        }
+
+        $key = (string) Str::uuid();
+        $cookie = cookie('oxy_cart_key', $key, 60 * 24 * 30);
+
+        return [$key, $cookie];
+    }
+
+    private function cartSession(Request $request): array
+    {
+        [$key, $cookie] = $this->resolveCartKey($request);
+        $cart = Cart::session($key);
+        $this->hydrateCartFromCookie($request, $cart);
+
+        return [$cart, $cookie];
+    }
+
+    private function hydrateCartFromCookie(Request $request, $cart): void
+    {
+        if ($cart->getContent()->count() > 0) {
+            return;
+        }
+
+        $payload = (string) ($request->cookie('oxy_cart_payload') ?? '');
+        if ($payload === '') {
+            return;
+        }
+
+        $items = json_decode($payload, true);
+        if (!is_array($items)) {
+            return;
+        }
+
+        foreach ($items as $item) {
+            if (!is_array($item) || empty($item['id'])) {
+                continue;
+            }
+
+            $cart->add([
+                'id' => $item['id'],
+                'name' => $item['name'] ?? '',
+                'price' => $item['price'] ?? 0,
+                'quantity' => max(1, (int) ($item['quantity'] ?? 1)),
+                'attributes' => $item['attributes'] ?? [],
+            ]);
+        }
+    }
+
+    private function attachCartCookies($response, $cookie, $cart)
+    {
+        if ($cookie) {
+            $response->withCookie($cookie);
+        }
+
+        $items = $cart->getContent()->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'name' => $item->name,
+                'price' => $item->price,
+                'quantity' => $item->quantity,
+                'attributes' => $item->attributes ? $item->attributes->toArray() : [],
+            ];
+        })->values()->toJson();
+
+        return $response->withCookie(cookie('oxy_cart_payload', $items, 60 * 24 * 30));
+    }
 
     public function getProduct($id = '', $name = '')
 
@@ -87,6 +159,7 @@ class IndexController extends Controller
         $id     = $input['id'];
         $qty    = $input['qty'];
 
+        [$cart, $cookie] = $this->cartSession($request);
         $records = $this->getProduct($id, '');
         $row = $records[$id];
         $image = isset($row['image_path']) ? json_decode($row['image_path']) : '';
@@ -101,57 +174,67 @@ class IndexController extends Controller
                 'color'      => $color,
             )
         );
-        Cart::add($cartArray);
-        $count = Cart::getContent()->count();
-        return response()->json([
+        $cart->add($cartArray);
+        $count = $cart->getContent()->count();
+        $response = response()->json([
             'message' => 'Item added to cart successfully.',
             'count'   => $count,
-            'cart' => Cart::getContent()
+            'cart' => $cart->getContent()
         ]);
+        return $this->attachCartCookies($response, $cookie, $cart);
     }
 
-    public function getSideCart()
+    public function getSideCart(Request $request)
     {
-        $count   = Cart::getContent()->count();
-        $records = Cart::getContent();
-        $total   = Cart::getTotal();           
-        return view('front_end.site.side_cart', compact('count', 'records', 'total'));
+        [$cart, $cookie] = $this->cartSession($request);
+        $count   = $cart->getContent()->count();
+        $records = $cart->getContent();
+        $total   = $cart->getTotal();
+        $response = response()->view('front_end.site.side_cart', compact('count', 'records', 'total'));
+        return $this->attachCartCookies($response, $cookie, $cart);
     }
 
-     public function removeCart($id)
+     public function removeCart(Request $request, $id)
     {
-        Cart::remove($id);
-        return response()->json([
+        [$cart, $cookie] = $this->cartSession($request);
+        $cart->remove($id);
+        $response = response()->json([
             'message' => 'Item removed successfully.',
             'removed'   => 1,
-            'count' => Cart::getContent()->count(),
+            'count' => $cart->getContent()->count(),
         ]);
+        return $this->attachCartCookies($response, $cookie, $cart);
     }
 
     public function showCarts(Request $request)
     {
-
-         $count   = Cart::getContent()->count();
-        $records = Cart::getContent();
-        $total   = Cart::getTotal();
-         return view('front_end.site.view_cart',compact('count','records','total'));
+        [$cart, $cookie] = $this->cartSession($request);
+        $count   = $cart->getContent()->count();
+        $records = $cart->getContent();
+        $total   = $cart->getTotal();
+        $response = response()->view('front_end.site.view_cart', compact('count', 'records', 'total'));
+        return $this->attachCartCookies($response, $cookie, $cart);
     }
 
-    public function clearCart()
+    public function clearCart(Request $request)
     {
-        Cart::clear();
-        return redirect('home');
+        [$cart, $cookie] = $this->cartSession($request);
+        $cart->clear();
+        $response = redirect('home');
+        return $this->attachCartCookies($response, $cookie, $cart);
     }
 
      public function updateQty(Request $request)
     {
+        [$cart, $cookie] = $this->cartSession($request);
         $input  = $request->all();
         $id     = $input['id'];
         $type   = $input['type'];
 
-        $item = Cart::get($id);
+        $item = $cart->get($id);
         if (!$item) {
-            return response()->json(['message' => 'Item not found'], 404);
+            $response = response()->json(['message' => 'Item not found'], 404);
+            return $this->attachCartCookies($response, $cookie, $cart);
         }
         $currentQty = $item->quantity;
 
@@ -169,38 +252,42 @@ class IndexController extends Controller
             $availableStock = $this->getAvailableStock((int) $item->id, $size, $color);
 
             if ($availableStock <= 0 || $newQty > $availableStock) {
-                return response()->json([
+                $response = response()->json([
                     'status' => 'error',
                     'message' => 'Out of stock. Only ' . max(0, $availableStock) . ' item(s) available.',
                     'quantity' => $currentQty,
-                    'count' => Cart::getContent()->count(),
+                    'count' => $cart->getContent()->count(),
                 ]);
+                return $this->attachCartCookies($response, $cookie, $cart);
             }
         }
 
-        Cart::update($id, ['quantity' => [
+        $cart->update($id, ['quantity' => [
             'relative' => false,
             'value' => $newQty
         ]]);
 
-        $updatedItem = Cart::get($id);
+        $updatedItem = $cart->get($id);
 
-        return response()->json([
+        $response = response()->json([
             'status' => 'success',
             'message' => 'Qty Updated successfully.',
             'quantity' => (int) ($updatedItem->quantity ?? $newQty),
             'item_subtotal' => (float) ($updatedItem->price ?? 0) * (int) ($updatedItem->quantity ?? $newQty),
-            'total' => (float) Cart::getTotal(),
-            'count' => Cart::getContent()->count(),
+            'total' => (float) $cart->getTotal(),
+            'count' => $cart->getContent()->count(),
         ]);
+        return $this->attachCartCookies($response, $cookie, $cart);
     }
 
-    public function getItemCart()
+    public function getItemCart(Request $request)
     {
-         $count   = Cart::getContent()->count();
-        $records = Cart::getContent();
-        $total   = Cart::getTotal();
-         return view('frontend.show_cart',compact('count','records','total'));
+        [$cart, $cookie] = $this->cartSession($request);
+        $count   = $cart->getContent()->count();
+        $records = $cart->getContent();
+        $total   = $cart->getTotal();
+        $response = response()->view('frontend.show_cart', compact('count', 'records', 'total'));
+        return $this->attachCartCookies($response, $cookie, $cart);
     }
 
     private function getAvailableStock(int $productId, $size = null, $color = null): int

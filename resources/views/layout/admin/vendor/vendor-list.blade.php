@@ -65,14 +65,14 @@
 
                                     <thead>
                                         <tr>
-                                            <th data-field="id"> SNO</th>
-                                            <th data-field="image">Image</th>
-                                            <th data-field="empdetails" data-sortable="true"> Shop Details</th>
-                                            <th data-field="contactdetail" data-sortable="true">Vendor Details</th>
-                                            <th data-field="package" data-sortable="true"> Package Details </th>
+                                            <th data-field="image">Profile Pic</th>
+                                            <th data-field="storeinfo"> Store Information</th>
+                                            <th data-field="contactdetail" data-sortable="true">Contact Details</th>
+                                            {{-- <th data-field="empdetails" data-sortable="true"> Shop Details</th> --}}
+                                            <th data-field="package" data-sortable="true"> Package Information </th>
                                             
-                                            <th data-field="documents" data-sortable="true">Business Details </th>
-                                            <th data-field="personal" data-sortable="true">Shop Details </th>
+                                            <th data-field="documents" data-sortable="true">Business Information </th>
+                                            <th data-field="personal" data-sortable="true">Address </th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -89,8 +89,6 @@
                                              
                                             @endphp
                                         <tr>
-                                             <td><span>{{ $vendor_list->zone . '- ' . $vendor_list->route . '- ' . str_pad($vendor_id ? $vendor_id->login_id : 'N/A' , 4, '0', STR_PAD_LEFT)}}</span></br></td>
-
                                             <td>
                                                 <div class="d-flex">
                                                     <img src="{{ asset('assets/images/vendor/profile') . '/' . $vendor_list->profile_image  }}"
@@ -98,15 +96,22 @@
                                                         class="img-fluid img-40 me-2 blur-up lazyloaded">
                                                 </div>
                                             </td>
+                                             <td><b>{{$vendor_list->shop_name}}</b> <br>
+                                                {{str_pad($vendor_id ? $vendor_id->login_id : 'N/A' , 4, '0', STR_PAD_LEFT)}}<br>
+                                                <span>{{ $vendor_list->zone . '/ ' . $vendor_list->route}}</span></br></td>
+
+                                            
 
                                            
-                                            <td><span><b>{{$vendor_list->shop_name}}</b></span>
+                                            {{-- <td><span><b>{{$vendor_list->shop_name}}</b></span>
                                                 <br><span>{{$vendor_list->owner_name}}</span>
                                                 <br><span>{{$vendor_list->business_category }}</span>
 
 
-                                            </td>
-                                            <td> <span><b>{{$vendor_list->username}}</b></span>
+                                            </td> --}}
+                                            {{-- <td> <span><b>{{$vendor_list->username}}</b></span> --}}
+                                            <td> <span><b>{{$vendor_list->owner_name}}</b></span>
+
                                                 <br><span>{{$vendor_list->email }}</span><br>
                                                  <span>+91</span> <span>{{$vendor_list->mobile_number1 }}</span><br>
                                             </td>

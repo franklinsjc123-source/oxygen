@@ -137,7 +137,7 @@
                                                         <!--<td><p class="text-center" style="border:1px solid #ffc000;color:#ffc000;border-radius:5px;">Accept</p></td>-->
                                                         
                                                         <td> 
-                                                        <span> <button  id ="btnnew" value= "{{ $attribute->id }}" class="btnnew badge badge-secondary px-2" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
+<span> <button  id ="btnnew" value= "{{ $attribute->id }}" data-status="{{ $attribute->order_status }}" class="btnnew badge badge-secondary px-2" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                                                         
                                                                 <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
                                                         
@@ -284,7 +284,7 @@
                                                     
                                                     <td>
                                                             <a href="{{url('vendor/Print_invoice/'.$attribute->id)}}" onclick="return confirm('Are you sure, you want to Print it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="Print" data-original-title="Print"><i class="fa fa-print"></i></a><span>
-                                                            <button  id ="btnaccess" value= "{{ $attribute->id }}" class="btnaccess badge badge-secondary px-2" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
+    <button  id ="btnaccess" value= "{{ $attribute->id }}" data-status="{{ $attribute->order_status }}" class="btnaccess badge badge-secondary px-2" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                                                             
                                                         
                                                             <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
@@ -432,7 +432,7 @@
                                         
                                         <td><span> 
                                             
-                                            <button  id ="btndispatch" value= "{{ $attribute->id }}" class="btndispatch badge badge-secondary px-2" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
+                                            <button  id ="btndispatch" value= "{{ $attribute->id }}" data-status="{{ $attribute->order_status }}" class="btndispatch badge badge-secondary px-2" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                                         
                                                 <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
                                         
@@ -576,7 +576,7 @@
                                                     
                                                     <td><span>
                                                         
-                                                        <button  id ="btndelivered" value= "{{ $attribute->id }}" class="btndelivered badge badge-secondary px-2" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
+                                                        <button  id ="btndelivered" value= "{{ $attribute->id }}" data-status="{{ $attribute->order_status }}" class="btndelivered badge badge-secondary px-2" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                                                     
                                                             <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
                                                     
@@ -725,7 +725,7 @@
                                                     
                                                     <td><span> 
                                                         
-                                                        <button  id ="btnreturn" value= "{{ $attribute->id }}" class="btnreturn badge badge-secondary px-2" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
+                                                        <button  id ="btnreturn" value= "{{ $attribute->id }}" data-status="{{ $attribute->order_status }}" class="btnreturn badge badge-secondary px-2" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                                                     
                                                             <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
                                                     
@@ -871,7 +871,7 @@
                                                 <!--<td><p class="text-center" style="border:1px solid #f90000;color:#f90000;border-radius:5px;">{{ $attribute->order_status }}</p></td>-->
                                                 
                                                 <td><span> 
-                                                    <button  id ="btncancel" value= "{{ $attribute->id }}" class="btncancel badge badge-secondary px-2" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
+                                                    <button  id ="btncancel" value= "{{ $attribute->id }}" data-status="{{ $attribute->order_status }}" class="btncancel badge badge-secondary px-2" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                                                 
                                                         <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
                                                 
@@ -1032,14 +1032,25 @@ $(".close").click(function(e) {
 
     $(document).ready(function() {
     
+    function setStatusValue(selectId, statusValue) {
+        var $select = $('#' + selectId);
+        if ($select.find('option[value="' + statusValue + '"]').length) {
+            $select.val(statusValue);
+        } else {
+            $select.prop('selectedIndex', 0);
+        }
+    }
+
     $(".btnnew").click(function(e) {
     e.preventDefault();
     
     var btnnew = $(this).val();
+    var currentStatus = ($(this).data('status') || '').toString();
     //alert(btnnew);
     // alert(btnaccess);
+    setStatusValue('o_status', currentStatus || 'Pending');
     var newmodal = $('#New').modal('show');
-    $('button[type=submit]').click(function(e) {
+    $('#New .btn-primary').off('click').on('click', function(e) {
     var sts = $('#o_status').val();   
 //  alert(sts);
     var currentDate = new Date();
@@ -1087,10 +1098,12 @@ $(".btnaccess").click(function(e) {
     e.preventDefault();
     
     var btnaccess = $(this).val();
+    var currentStatus = ($(this).data('status') || '').toString();
     
     // alert(btnaccess);
+    setStatusValue('a_status', currentStatus || 'Accept');
     var newmodal = $('#accept').modal('show');
-    $('button[type=submit]').click(function(e) {
+    $('#accept .btn-primary').off('click').on('click', function(e) {
     var sts = $('#a_status').val();   
 // alert(sts);
     var currentDate = new Date();
@@ -1131,10 +1144,12 @@ $(".btnaccess").click(function(e) {
     e.preventDefault();
     
     var btndispatch = $(this).val();
+    var currentStatus = ($(this).data('status') || '').toString();
     
     // alert(btnaccess);
+    setStatusValue('d_status', currentStatus || 'Dispatch');
     $('#Dispatch').modal('show');
-    $('button[type=submit]').click(function(e) {
+    $('#Dispatch .btn-primary').off('click').on('click', function(e) {
     var sts = $('#d_status').val();   
 // alert(sts);
     var currentDate = new Date();
@@ -1176,10 +1191,12 @@ $(".btndelivered").click(function(e) {
     e.preventDefault();
     
     var btndelivered = $(this).val();
+    var currentStatus = ($(this).data('status') || '').toString();
     
     // alert(btnaccess);
+    setStatusValue('deli_status', currentStatus || 'Delivered');
     $('#delivere').modal('show');
-    $('button[type=submit]').click(function(e) {
+    $('#delivere .btn-primary').off('click').on('click', function(e) {
     var sts = $('#deli_status').val();   
 // alert(sts);
 
@@ -1215,10 +1232,12 @@ $(".btnreturn").click(function(e) {
     e.preventDefault();
     
     var btnreturn = $(this).val();
+    var currentStatus = ($(this).data('status') || '').toString();
     
     // alert(btnaccess);
+    setStatusValue('return_status', currentStatus || 'Return');
     $('#return').modal('show');
-    $('button[type=submit]').click(function(e) {
+    $('#return .btn-primary').off('click').on('click', function(e) {
     var sts = $('#return_status').val();   
 // alert(sts);
             var currentDate = new Date();
@@ -1262,10 +1281,12 @@ $(".btnreturn").click(function(e) {
     e.preventDefault();
     
     var btncancel = $(this).val();
+    var currentStatus = ($(this).data('status') || '').toString();
     
     // alert(btnaccess);
+    setStatusValue('can_status', currentStatus || 'Cancel');
     $('#can').modal('show');
-    $('button[type=submit]').click(function(e) {
+    $('#can .btn-primary').off('click').on('click', function(e) {
     var sts = $('#can_status').val();   
 // alert(sts);
             var currentDate = new Date();
@@ -1383,7 +1404,7 @@ $(document).ready(function () {
 
                 $.ajax({
 
-                    url: "{{route('orderbulkstatusupdate')}}", 
+                    url: "{{ url('vendor/orderbulkstatusupdate') }}", 
                     type: "POST",
                     data: {
                         "_token": "{{ csrf_token() }}",
@@ -1455,7 +1476,7 @@ $('#dismaster').on('click', function(e) {
 
                 $.ajax({
 
-                    url: "{{route('orderbulkstatusupdate')}}", 
+                    url: "{{ url('vendor/orderbulkstatusupdate') }}", 
                     type: "POST",
                     data: {
                         "_token": "{{ csrf_token() }}",
@@ -1527,7 +1548,7 @@ $('#delmaster').on('click', function(e) {
 
                 $.ajax({
 
-                    url: "{{route('orderbulkstatusupdate')}}", 
+                    url: "{{ url('vendor/orderbulkstatusupdate') }}", 
                     type: "POST",
                     data: {
                         "_token": "{{ csrf_token() }}",

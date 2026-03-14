@@ -45,153 +45,55 @@
 				<form class="form checkout-form" action="{{ route('checkout_store') }}" method="post">
 					@csrf
 					<div class="row mb-9">
-						<div class="col-lg-7 pr-lg-4 mb-4">
-							<h3 class="title billing-title text-uppercase ls-10 pt-1 pb-3 mb-0">
-								Billing Details
-							</h3>
-							<div class="row gutter-sm">
-								<div class="col-xs-6">
-									<div class="form-group">
-										<label>First name *</label>
-										<input type="text" class="form-control form-control-md" name="billing_first_name" value="{{ $customer->customer_firstname ?? '' }}"
-											required>
-									</div>
+						<div class="col-lg-8 pr-lg-4 mb-4">
+							<div class="card mb-4" id="delivery-address">
+								<div class="card-header d-flex align-items-center justify-content-between">
+									<h4 class="mb-0">Delivery Address</h4>
+									<a href="javascript:void(0)" class="text-primary" id="change-delivery-address">Change</a>
 								</div>
-								<div class="col-xs-6">
-									<div class="form-group">
-										<label>Last name *</label>
-										<input type="text" class="form-control form-control-md" name="billing_last_name" value="{{ $customer->customer_lastname ?? '' }}"
-											required>
-									</div>
-								</div>
-							</div>
-						
-							<div class="form-group">
-								<label>Country / Region *</label>
-								<div class="select-box">
-									<select name="billing_country" class="form-control form-control-md">
-										<option value="default" selected="selected">United States
-											(US)
-										</option>
-										<option value="uk">United Kingdom (UK)</option>
-										<option value="us">United States</option>
-										<option value="fr">France</option>
-										<option value="aus">Australia</option>
-										<option value="ind">India</option>
-									</select>
+								<div class="card-body">
+									<div class="mb-2 text-muted">Deliver to:</div>
+									<div id="delivery-summary" class="mb-3"></div>
+
+									<input type="hidden" name="billing_first_name" id="billing_first_name" value="{{ $customer->customer_firstname ?? '' }}">
+									<input type="hidden" name="billing_last_name" id="billing_last_name" value="{{ $customer->customer_lastname ?? '' }}">
+									<input type="hidden" name="billing_country" id="billing_country" value="{{ $customer->customer_country ?? 'India' }}">
+									<input type="hidden" name="billing_address" id="billing_address" value="{{ $customer->customer_address ?? '' }}">
+									<input type="hidden" name="street-address-2" id="billing_address_2" value="{{ $customer->customer_address1 ?? '' }}">
+									<input type="hidden" name="billing_city" id="billing_city" value="{{ $customer->customer_city ?? '' }}">
+									<input type="hidden" name="billing_postcode" id="billing_postcode" value="{{ $customer->customer_pincode ?? '' }}">
+									<input type="hidden" name="billing_state" id="billing_state" value="{{ $customer->customer_state ?? '' }}">
+									<input type="hidden" name="billing_phone" id="billing_phone" value="{{ $customer->customer_mobileno ?? '' }}">
+									<input type="hidden" name="billing_email" id="billing_email" value="{{ $customer->customer_email ?? '' }}">
 								</div>
 							</div>
-							<div class="form-group">
-								<label>Street address *</label>
-								<input type="text" placeholder="House number and street name"
-									class="form-control form-control-md mb-2" name="billing_address" value="{{ $customer->customer_address ?? '' }}" required>
-								<input type="text" placeholder="Apartment, suite, unit, etc. (optional)"
-									class="form-control form-control-md" name="street-address-2" value="{{ $customer->customer_address1 ?? '' }}" required>
-							</div>
-							<div class="row gutter-sm">
-								<div class="col-md-6">
-									<div class="form-group">
-										<label>Town / City *</label>
-										<input type="text" class="form-control form-control-md" name="billing_city" value="{{ $customer->customer_city ?? '' }}" required>
-									</div>
-									<div class="form-group">
-										<label>ZIP *</label>
-										<input type="text" class="form-control form-control-md" name="billing_postcode" value="{{ $customer->customer_pincode ?? '' }}" required>
-									</div>
+
+							<div class="card mb-4">
+								<div class="card-header">
+									<h4 class="mb-0">Items in Your Order</h4>
 								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label>State *</label>
-										<div class="select-box">
-											<select name="billing_state" class="form-control form-control-md">
-												<option value="default" selected="selected">Tamilnadu</option>
-												<option value="uk">United Kingdom (UK)</option>
-												<option value="us">United States</option>
-												<option value="fr">France</option>
-												<option value="aus">Australia</option>
-												
-											</select>
-										</div>
-									</div>
-									<div class="form-group">
-										<label>Phone *</label>
-										<input type="text" class="form-control form-control-md" name="billing_phone" value="{{ $customer->customer_mobileno ?? '' }}" required>
-									</div>
-								</div>
-							</div>
-							<div class="form-group mb-7">
-								<label>Email address *</label>
-								<input type="email" class="form-control form-control-md" name="billing_email" value="{{ $customer->customer_email ?? '' }}" required>
-							</div>
-							<div class="form-group checkbox-toggle pb-2">
-								<input type="checkbox" class="custom-checkbox" id="shipping-toggle"
-									name="shipping-toggle">
-								<label for="shipping-toggle">Ship to a different address?</label>
-							</div>
-							<div class="checkbox-content">
-								<div class="row gutter-sm">
-									<div class="col-xs-6">
-										<div class="form-group">
-											<label>First name *</label>
-											<input type="text" class="form-control form-control-md" name="shipping_firstname" id="shipping_firstname">
-										</div>
-									</div>
-									<div class="col-xs-6">
-										<div class="form-group">
-											<label>Last name *</label>
-											<input type="text" class="form-control form-control-md" name="shipping_lastname" id="shipping_lastname">
-										</div>
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<label>Country / Region *</label>
-									<div class="select-box">
-										<select name="shipping_country" class="form-control form-control-md" id="shipping_country">
-											<option value="default" selected="selected">United States
-												(US)
-											</option>
-											<option value="uk">United Kingdom (UK)</option>
-											<option value="us">United States</option>
-											<option value="fr">France</option>
-											<option value="aus">Australia</option>
-											<option value="ind">India</option>
-										</select>
-									</div>
-								</div>
-								<div class="form-group">
-									<label>Street address *</label>
-									<input type="text" placeholder="House number and street name" id="shipping_address"
-										class="form-control form-control-md mb-2" name="shipping_address" >
-									<input type="text" placeholder="Apartment, suite, unit, etc. (optional)" id="shipping_address1"
-										class="form-control form-control-md" name="shipping_address1" >
-								</div>
-								<div class="row gutter-sm">
-									<div class="col-md-6">
-										<div class="form-group">
-											<label>Town / City *</label>
-											<input type="text" class="form-control form-control-md" name="shipping_city" id="shipping_city" >
-										</div>
-										<div class="form-group">
-											<label>Postcode *</label>
-											<input type="text" class="form-control form-control-md" name="shipping_postcode" id="shipping_postcode" >
-										</div>
-									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<label>State *</label>
-											<div class="select-box">
-												<select name="shipping_state" class="form-control form-control-md" id="shipping_state">
-													<option value="default" selected="selected">Tamilnadu</option>
-													<option value="uk">United Kingdom (UK)</option>
-													<option value="us">United States</option>
-													<option value="fr">France</option>
-													<option value="aus">Australia</option>
-												
-												</select>
+								<div class="card-body">
+									@foreach($records as $item)
+										<div class="product product-list d-flex align-items-center mb-3">
+											<figure class="product-media mr-3">
+												<img src="{{ asset('assets/images/products/' . ($item['attributes']['image'] ?? '')) }}" alt="product" width="80" height="90">
+											</figure>
+											<div class="product-details flex-grow-1">
+												<div class="product-name mb-1">{{ $item['name'] }}</div>
+												@if(!empty($item['attributes']['size']) || !empty($item['attributes']['color']))
+													<div class="small text-muted">
+														@if(!empty($item['attributes']['size'])) Size: {{ $item['attributes']['size'] }} @endif
+														@if(!empty($item['attributes']['color'])) | Color: {{ $item['attributes']['color'] }} @endif
+													</div>
+												@endif
+												<div class="small text-muted">Qty: {{ $item['quantity'] }}</div>
+											</div>
+											<div class="text-right">
+												<div class="product-price font-weight-bold">&#8377;{{ number_format($item['price'], 2) }}</div>
+												<div class="small text-muted">Total: &#8377;{{ number_format(($item['price'] * $item['quantity']), 2) }}</div>
 											</div>
 										</div>
-									</div>
+									@endforeach
 								</div>
 							</div>
 
@@ -202,7 +104,7 @@
 									placeholder="Notes about your order, e.g special notes for delivery"></textarea>
 							</div>
 						</div>
-						<div class="col-lg-5 mb-4 sticky-sidebar-wrapper">
+						<div class="col-lg-4 mb-4 sticky-sidebar-wrapper">
 							<div class="order-summary-wrapper sticky-sidebar">
 								<h3 class="title text-uppercase ls-10">Your Order</h3>
 								<div class="order-summary">
@@ -223,7 +125,7 @@
 													<span class="product-quantity">{{ $item['qty'] }}</span>
 												</td>
 												<td class="product-total">
-													₹{{ number_format($item['line_total'], 2) }}
+													&#8377;{{ number_format($item['line_total'], 2) }}
 												</td>
 											</tr>
 											@endforeach
@@ -350,43 +252,349 @@
 						</div>
 					</div>
 				</form>
+
+				<div id="deliveryModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display:none;">
+					<div class="modal-dialog modal-md" role="document">
+						<div class="modal-content">
+							<div class="modal-header d-flex align-items-center justify-content-between">
+								<h5 class="modal-title mb-0">Delivery Address</h5>
+								<button type="button" class="close m-0" aria-label="Close" id="close-delivery-modal">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<div class="row gutter-sm">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label>First name *</label>
+											<input type="text" class="form-control form-control-md" id="modal_billing_first_name" value="{{ $customer->customer_firstname ?? '' }}" required>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label>Last name *</label>
+											<input type="text" class="form-control form-control-md" id="modal_billing_last_name" value="{{ $customer->customer_lastname ?? '' }}" required>
+										</div>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label>Country / Region *</label>
+									<div class="select-box">
+										<select id="modal_billing_country" class="form-control form-control-md">
+											<option value="India" {{ ($customer->customer_country ?? 'India') == 'India' ? 'selected' : '' }}>India</option>
+											<option value="United States">United States</option>
+											<option value="United Kingdom">United Kingdom</option>
+											<option value="France">France</option>
+											<option value="Australia">Australia</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label>Street address *</label>
+									<input type="text" placeholder="House number and street name"
+										class="form-control form-control-md mb-2" id="modal_billing_address" value="{{ $customer->customer_address ?? '' }}" required>
+									<input type="text" placeholder="Apartment, suite, unit, etc. (optional)"
+										class="form-control form-control-md" id="modal_billing_address_2" value="{{ $customer->customer_address1 ?? '' }}">
+								</div>
+								<div class="row gutter-sm">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>Town / City *</label>
+											<input type="text" class="form-control form-control-md" id="modal_billing_city" value="{{ $customer->customer_city ?? '' }}" required>
+										</div>
+										<div class="form-group">
+											<label>ZIP *</label>
+											<input type="text" class="form-control form-control-md" id="modal_billing_postcode" value="{{ $customer->customer_pincode ?? '' }}" required>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label>State *</label>
+											<input type="text" class="form-control form-control-md" id="modal_billing_state" value="{{ $customer->customer_state ?? '' }}" required>
+										</div>
+										<div class="form-group">
+											<label>Phone *</label>
+											<input type="text" class="form-control form-control-md" id="modal_billing_phone" value="{{ $customer->customer_mobileno ?? '' }}" required>
+										</div>
+									</div>
+								</div>
+								<div class="form-group mb-0">
+									<label>Email address *</label>
+									<input type="email" class="form-control form-control-md" id="modal_billing_email" value="{{ $customer->customer_email ?? '' }}" required>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-outline-secondary" id="cancel-delivery-modal">Cancel</button>
+								<button type="button" class="btn btn-dark" id="save-delivery-address">Save Address</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="deliveryModalBackdrop" class="modal-backdrop" style="display:none;"></div>
 			</div>
 		</div>
 		<!-- End of PageContent -->
 	</main>
 
+	<style>
+		#deliveryModal {
+			position: fixed;
+			inset: 0;
+			z-index: 1050;
+			overflow-y: auto;
+			background: rgba(0, 0, 0, 0.4);
+		}
+		#deliveryModal .modal-dialog {
+			margin: 4rem auto;
+			max-width: 720px;
+		}
+		#deliveryModalBackdrop {
+			position: fixed;
+			inset: 0;
+			background: rgba(0, 0, 0, 0.4);
+			z-index: 1040;
+		}
+		#deliveryModal .modal-content {
+			background: #fff;
+			border-radius: 8px;
+		}
+		#deliveryModal .modal-header,
+		#deliveryModal .modal-body,
+		#deliveryModal .modal-footer {
+			padding: 1rem 1.25rem;
+		}
+		#deliveryModal .close {
+			font-size: 1.5rem;
+			line-height: 1;
+		}
+	</style>
 
-<script>
+	<script>
+		(function () {
+			var changeBtn = document.getElementById('change-delivery-address');
+			var modal = document.getElementById('deliveryModal');
+			var saveBtn = document.getElementById('save-delivery-address');
+			var closeBtn = document.getElementById('close-delivery-modal');
+			var cancelBtn = document.getElementById('cancel-delivery-modal');
+			var summary = document.getElementById('delivery-summary');
+			var form = document.querySelector('.checkout-form');
+			var placeOrderBtn = form ? form.querySelector('button[type="submit"]') : null;
 
-const toggle = document.getElementById('shipping-toggle');
-const shippingFields = [
-  'shipping_firstname',
-  'shipping_lastname',
-  'shipping_address',
-  'shipping_address1',
-  'shipping_city',
-  'shipping_postcode',
-  'shipping_state'
-];
+			var isLoggedIn = {{ session()->has('customer_id') ? 'true' : 'false' }};
+			var storageKey = 'oxy_delivery_address';
 
-function updateShippingRequired() {
-  shippingFields.forEach(id => {
-    const el = document.getElementById(id);
-    if (toggle.checked) {
-      el.setAttribute('required','required');
-    } else {
-      el.removeAttribute('required');
-    }
-  });
-}
+			var fields = {
+				firstName: document.getElementById('billing_first_name'),
+				lastName: document.getElementById('billing_last_name'),
+				country: document.getElementById('billing_country'),
+				address: document.getElementById('billing_address'),
+				address2: document.getElementById('billing_address_2'),
+				city: document.getElementById('billing_city'),
+				postcode: document.getElementById('billing_postcode'),
+				state: document.getElementById('billing_state'),
+				phone: document.getElementById('billing_phone'),
+				email: document.getElementById('billing_email')
+			};
 
-toggle.addEventListener('change', updateShippingRequired);
+			var modalFields = {
+				firstName: document.getElementById('modal_billing_first_name'),
+				lastName: document.getElementById('modal_billing_last_name'),
+				country: document.getElementById('modal_billing_country'),
+				address: document.getElementById('modal_billing_address'),
+				address2: document.getElementById('modal_billing_address_2'),
+				city: document.getElementById('modal_billing_city'),
+				postcode: document.getElementById('modal_billing_postcode'),
+				state: document.getElementById('modal_billing_state'),
+				phone: document.getElementById('modal_billing_phone'),
+				email: document.getElementById('modal_billing_email')
+			};
 
-// page load-la first time check
-updateShippingRequired();
-</script>
+			function hasAddress() {
+				return !!(
+					fields.firstName.value &&
+					fields.lastName.value &&
+					fields.address.value &&
+					fields.city.value &&
+					fields.postcode.value &&
+					fields.state.value &&
+					fields.phone.value &&
+					fields.email.value
+				);
+			}
 
+			function syncToModal() {
+				modalFields.firstName.value = fields.firstName.value || '';
+				modalFields.lastName.value = fields.lastName.value || '';
+				modalFields.country.value = fields.country.value || 'India';
+				modalFields.address.value = fields.address.value || '';
+				modalFields.address2.value = fields.address2.value || '';
+				modalFields.city.value = fields.city.value || '';
+				modalFields.postcode.value = fields.postcode.value || '';
+				modalFields.state.value = fields.state.value || '';
+				modalFields.phone.value = fields.phone.value || '';
+				modalFields.email.value = fields.email.value || '';
+			}
 
+			function renderSummary() {
+				if (!summary) return;
+				if (!hasAddress()) {
+					summary.innerHTML = '<span class="text-muted">No delivery address added.</span>';
+					return;
+				}
+
+				var name = (fields.firstName.value + ' ' + fields.lastName.value).trim();
+				var addressLine = fields.address.value;
+				var address2 = fields.address2.value ? ', ' + fields.address2.value : '';
+				var cityLine = fields.city.value + ', ' + fields.state.value + ' ' + fields.postcode.value;
+				var phoneLine = 'Phone: ' + fields.phone.value;
+				var emailLine = 'Email: ' + fields.email.value;
+
+				summary.innerHTML =
+					'<div class="font-weight-bold">' + name + '</div>' +
+					'<div>' + addressLine + address2 + '</div>' +
+					'<div>' + cityLine + '</div>' +
+					'<div>' + (fields.country.value || '') + '</div>' +
+					'<div class="small text-muted">' + phoneLine + '</div>' +
+					'<div class="small text-muted">' + emailLine + '</div>';
+			}
+
+			function syncFromModal() {
+				fields.firstName.value = modalFields.firstName.value.trim();
+				fields.lastName.value = modalFields.lastName.value.trim();
+				fields.country.value = modalFields.country.value;
+				fields.address.value = modalFields.address.value.trim();
+				fields.address2.value = modalFields.address2.value.trim();
+				fields.city.value = modalFields.city.value.trim();
+				fields.postcode.value = modalFields.postcode.value.trim();
+				fields.state.value = modalFields.state.value.trim();
+				fields.phone.value = modalFields.phone.value.trim();
+				fields.email.value = modalFields.email.value.trim();
+			}
+
+			function persistToStorage() {
+				var payload = {
+					firstName: fields.firstName.value,
+					lastName: fields.lastName.value,
+					country: fields.country.value,
+					address: fields.address.value,
+					address2: fields.address2.value,
+					city: fields.city.value,
+					postcode: fields.postcode.value,
+					state: fields.state.value,
+					phone: fields.phone.value,
+					email: fields.email.value
+				};
+				try {
+					localStorage.setItem(storageKey, JSON.stringify(payload));
+				} catch (e) {
+					// Ignore storage failures (privacy mode).
+				}
+			}
+
+			function hydrateFromStorage() {
+				try {
+					var raw = localStorage.getItem(storageKey);
+					if (!raw) return;
+					var data = JSON.parse(raw);
+					fields.firstName.value = data.firstName || fields.firstName.value;
+					fields.lastName.value = data.lastName || fields.lastName.value;
+					fields.country.value = data.country || fields.country.value || 'India';
+					fields.address.value = data.address || fields.address.value;
+					fields.address2.value = data.address2 || fields.address2.value;
+					fields.city.value = data.city || fields.city.value;
+					fields.postcode.value = data.postcode || fields.postcode.value;
+					fields.state.value = data.state || fields.state.value;
+					fields.phone.value = data.phone || fields.phone.value;
+					fields.email.value = data.email || fields.email.value;
+				} catch (e) {
+					// Ignore parse errors.
+				}
+			}
+
+			function saveAddressToApi() {
+				if (!isLoggedIn) return;
+				var formData = new FormData();
+				formData.append('customer_firstname', fields.firstName.value);
+				formData.append('customer_mobileno', fields.phone.value);
+				formData.append('customer_email', fields.email.value);
+				formData.append('customer_address', fields.address.value);
+				formData.append('customer_state', fields.state.value);
+				formData.append('customer_pincode', fields.postcode.value);
+
+				fetch("{{ route('save-shipping-address') }}", {
+					method: 'POST',
+					headers: {
+						'X-CSRF-TOKEN': '{{ csrf_token() }}'
+					},
+					body: formData
+				}).catch(function () {
+					// Silent fail; checkout will still save on place order.
+				});
+			}
+
+			function openModal() {
+				if (!modal) return;
+				if (!backdrop && modal) {
+					backdrop = document.getElementById('deliveryModalBackdrop');
+				}
+				modal.classList.add('show');
+				modal.style.display = 'block';
+				if (backdrop) backdrop.style.display = 'block';
+				document.body.classList.add('modal-open');
+			}
+
+			function closeModal() {
+				if (!modal) return;
+				modal.classList.remove('show');
+				modal.style.display = 'none';
+				if (backdrop) backdrop.style.display = 'none';
+				document.body.classList.remove('modal-open');
+			}
+
+			var backdrop = document.getElementById('deliveryModalBackdrop');
+
+			if (changeBtn) {
+				changeBtn.addEventListener('click', function () {
+					syncToModal();
+					openModal();
+				});
+			}
+
+			if (closeBtn) closeBtn.addEventListener('click', closeModal);
+			if (cancelBtn) cancelBtn.addEventListener('click', function () {
+				syncToModal();
+				closeModal();
+			});
+			if (backdrop) backdrop.addEventListener('click', closeModal);
+
+			if (saveBtn) {
+				saveBtn.addEventListener('click', function () {
+					syncFromModal();
+					persistToStorage();
+					renderSummary();
+					saveAddressToApi();
+					closeModal();
+				});
+			}
+
+			if (form) {
+				form.addEventListener('submit', function (e) {
+					if (!hasAddress()) {
+						e.preventDefault();
+						openModal();
+					}
+				});
+			}
+
+			// Keep button enabled; block submit only if address missing.
+
+			if (!hasAddress()) {
+				hydrateFromStorage();
+			}
+			renderSummary();
+		})();
+	</script>
 
 	 @endsection
 

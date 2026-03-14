@@ -244,6 +244,33 @@
                 max-width: 140px !important;
             }
         }
+
+        /* Side cart: make items scroll and keep actions visible at bottom */
+        .cart-dropdown.cart-offcanvas .dropdown-box.sideCart {
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 80px);
+            height: 100%;
+        }
+
+        .cart-dropdown.cart-offcanvas .dropdown-box.sideCart .products {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+
+        .cart-dropdown.cart-offcanvas .dropdown-box.sideCart .cart-total,
+        .cart-dropdown.cart-offcanvas .dropdown-box.sideCart .cart-action {
+            flex: 0 0 auto;
+            background: #fff;
+        }
+
+        .cart-dropdown.cart-offcanvas .dropdown-box.sideCart .cart-action {
+            position: sticky;
+            bottom: 0;
+            padding-top: 12px;
+        }
     </style>
 
     <body>

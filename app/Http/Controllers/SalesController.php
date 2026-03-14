@@ -14,6 +14,68 @@ use DB;
 
 class SalesController extends Controller
 {
+    private function updateNewOrderStatusesByInvoiceIds(array $invoiceIds): void
+    {
+        $invoiceIds = array_values(array_unique(array_filter($invoiceIds)));
+        if (empty($invoiceIds)) {
+            return;
+        }
+
+        $orders = DB::table('ecom_order')
+            ->where(function ($query) use ($invoiceIds) {
+                foreach ($invoiceIds as $invoiceId) {
+                    $query->orWhereRaw('FIND_IN_SET(?, invoice_ids)', [$invoiceId]);
+                }
+            })
+            ->get();
+
+        foreach ($orders as $order) {
+            $orderInvoiceIds = collect(explode(',', (string) ($order->invoice_ids ?? '')))
+                ->map(fn($val) => trim($val))
+                ->filter()
+                ->values()
+                ->all();
+
+            if (empty($orderInvoiceIds)) {
+                continue;
+            }
+
+            $statuses = DB::table('ecom_invoice')
+                ->whereIn('invoice_id', $orderInvoiceIds)
+                ->pluck('status')
+                ->map(fn($s) => strtolower((string) $s))
+                ->values();
+
+            if ($statuses->isEmpty()) {
+                continue;
+            }
+
+            if ($statuses->every(fn($s) => in_array($s, ['cancel', 'return'], true))) {
+                DB::table('ecom_order')->where('id', $order->id)->update(['status' => 'Closed', 'updated_at' => now()]);
+                continue;
+            }
+
+            if ($statuses->contains('pending')) {
+                DB::table('ecom_order')->where('id', $order->id)->update(['status' => 'Pending', 'updated_at' => now()]);
+                continue;
+            }
+
+            if ($statuses->contains(fn($s) => in_array($s, ['accept', 'accepted'], true))) {
+                DB::table('ecom_order')->where('id', $order->id)->update(['status' => 'Accept', 'updated_at' => now()]);
+                continue;
+            }
+
+            if ($statuses->contains(fn($s) => in_array($s, ['dispatch', 'dispatched'], true))) {
+                DB::table('ecom_order')->where('id', $order->id)->update(['status' => 'Dispatch', 'updated_at' => now()]);
+                continue;
+            }
+
+            if ($statuses->every(fn($s) => in_array($s, ['delivery', 'delivered'], true))) {
+                DB::table('ecom_order')->where('id', $order->id)->update(['status' => 'Delivered', 'updated_at' => now()]);
+            }
+        }
+    }
+
     public function order()
     {
         $orders = Ecom_Orders::get();
@@ -75,6 +137,20 @@ class SalesController extends Controller
             'order_status' => $status,
             'delivery_date' => $curr_data,
         ]);
+
+        $detailId = (int) ($orderProduct->product_id ?? 0);
+        if ($detailId > 0) {
+            DB::table('ecom_invoice')
+                ->whereRaw('FIND_IN_SET(?, product_detail_ids)', [$detailId])
+                ->update(['status' => $status, 'updated_at' => now()]);
+
+            $invoiceIds = DB::table('ecom_invoice')
+                ->whereRaw('FIND_IN_SET(?, product_detail_ids)', [$detailId])
+                ->pluck('invoice_id')
+                ->toArray();
+
+            $this->updateNewOrderStatusesByInvoiceIds($invoiceIds);
+        }
         
         $notification =  new Notification();
         $ord1 = Ecom_Order_product::where('id',$id)->get();
@@ -108,6 +184,7 @@ class SalesController extends Controller
             //   print_r( $id );
             //   exit;
             //   $sts = $request->sts;
+    $invoiceIds = [];
     foreach($id as $idr)
     {   
         if (empty($idr)) {
@@ -133,8 +210,23 @@ class SalesController extends Controller
         $notification->status=1;
         $notification->orders_date = date('Y-m-d');
         $notification->save();
+
+        $detailId = (int) ($ord1->product_id ?? 0);
+        if ($detailId > 0) {
+            DB::table('ecom_invoice')
+                ->whereRaw('FIND_IN_SET(?, product_detail_ids)', [$detailId])
+                ->update(['status' => $sts, 'updated_at' => now()]);
+
+            $matched = DB::table('ecom_invoice')
+                ->whereRaw('FIND_IN_SET(?, product_detail_ids)', [$detailId])
+                ->pluck('invoice_id')
+                ->toArray();
+            $invoiceIds = array_merge($invoiceIds, $matched);
+        }
       //   DB::table("ordersproduct")->whereIn('id',$idr)->update(['order_status'=>$sts]);
     }
+
+      $this->updateNewOrderStatusesByInvoiceIds($invoiceIds);
     
       return response()->json(['success'=>"Products Updated successfully."]);
 

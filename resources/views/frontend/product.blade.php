@@ -101,13 +101,12 @@
                                       </a>
                                      <div class="product-meta">
                                          <div class="product-categories">
-                                             Shop Name:
-                                             <span class="product-category"><a href="{{ url('shop-details'). '/'.$getProduct['id'] }}">
-                                                <?php echo $vendor_details['shop_name'] ?></a></span>
+                                            <b><span class="product-category"><a href="{{ url('shop-details'). '/'.$getProduct['id'] }}">
+                                                <?php echo $vendor_details['shop_name'] ?></a></span></b> 
                                          </div>
                                          <div class="product-categories">
-                                             Location:
-                                            <span class="product-category">
+                                             <i class="fa-solid fa-location-dot"></i>
+                                                                                         <span class="product-category">
                                                 <a href="#">
                                                     {{ $vendor_details->address }},
                                                     {{ $vendor_details->city }},
@@ -116,7 +115,7 @@
                                             </span>
                                          </div>
                                          <div class="product-categories">
-                                            Phone no:
+                                            Contact no:
                                              <span class="product-category"><a href="#"><?php echo $vendor_details['mobile_number1'] ?></a></span>
                                          </div>
                                      </div>

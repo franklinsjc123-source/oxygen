@@ -910,9 +910,11 @@
 
        function getCart() {
            var url = '<?= route('getItemCart') ?>';
+           var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
            $.get(url, function(data) {
                $('#cartView').html(data);
                showSideCart();
+               window.scrollTo(0, scrollTop);
            });
        }
 

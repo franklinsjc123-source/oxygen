@@ -255,11 +255,13 @@
                                                         
                                                          @if($products->status  == 1){
                                                          <input type="checkbox"
-                                                             onclick="return confirm('you want to Change it?  Please Click Edit Button')"
+                                                             class="status-toggle"
+                                                             data-id="{{ $products->id }}"
                                                              checked id="togBtn">
                                                          }@else{
                                                              <input type="checkbox"
-                                                             onclick="return confirm('you want to Change it?  Please Click Edit Button')" 
+                                                             class="status-toggle"
+                                                             data-id="{{ $products->id }}"
                                                               id="togBtn">
                                                          }
                                                          @endif
@@ -500,7 +502,7 @@
 
                     $.ajax({
 
-                        url: "{{route('productbulkdelete')}}", 
+                        url: "{{ url('admin/productbulkdelete') }}", 
                         type: "POST",
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -559,7 +561,7 @@
   
                       $.ajax({
   
-                          url: "{{route('productbulkactive')}}", 
+                          url: "{{ url('admin/productbulkactive') }}", 
                           type: "POST",
                           data: {
                               "_token": "{{ csrf_token() }}",
@@ -611,7 +613,7 @@
                   if(check == true){  
                       var join_selected_values = allVals.join(","); 
                       $.ajax({
-                          url: "{{route('productbulkdeactive')}}", 
+                          url: "{{ url('admin/productbulkdeactive') }}", 
                           type: "POST",
                           data: {
                               "_token": "{{ csrf_token() }}",
@@ -634,6 +636,34 @@
               }  
           });
        /*End*/
+
+       $(document).on('change', '.status-toggle', function() {
+           var productId = $(this).data('id');
+           var nextStatus = $(this).is(':checked') ? '1' : '0';
+           var confirmText = nextStatus === '1'
+               ? 'Are you sure you want to Activate this product?'
+               : 'Are you sure you want to DeActivate this product?';
+
+           if (!confirm(confirmText)) {
+               $(this).prop('checked', !$(this).is(':checked'));
+               return;
+           }
+
+           $.ajax({
+               url: nextStatus === '1' ? "{{ url('admin/productbulkactive') }}" : "{{ url('admin/productbulkdeactive') }}",
+               type: "POST",
+               data: {
+                   "_token": "{{ csrf_token() }}",
+                   "ids": String(productId),
+                   "sts": nextStatus
+               },
+               dataType: "json",
+               error: function() {
+                   $(this).prop('checked', !$(this).is(':checked'));
+                   alert('Status update failed.');
+               }.bind(this)
+           });
+       });
     });
     function getAjaxValue(url, method, callback) {
     $.ajax({

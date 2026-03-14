@@ -274,7 +274,7 @@
                                                                 </div>  
                                                                 {{$inc=$key + 1;}}
                                                                 <div class="col-md-2">
-                                                                    <label  style="color:gray"for="javascript">Low Stack</label><br>
+                                                                    <label  style="color:gray"for="javascript">Low Stock</label><br>
                                                                     <input type="number" name="low_stock_limit[]" id="low_stock_limit{{$inc}}" 
                                                                         placeholder="Low Stock Limit" class="low_stock_limit form-control" required value="{{ $productdetails->low_stock_limit }}">  
                                                                 </div>  

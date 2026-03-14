@@ -133,6 +133,19 @@ class ProductsController extends Controller
         $specdata = array_values(array_filter(array_map('intval', $specdata)));
         $vendorId = (int) $request->vendorlist;
 
+        $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $request->category_sub)->first();
+        if ($mapping) {
+            $mappedAttributes = $mapping->category_sub_attribute_ids
+                ? array_values(array_filter(array_map('intval', json_decode($mapping->category_sub_attribute_ids, true) ?: [])))
+                : [];
+            $mappedSpecifications = $mapping->category_sub_specification_ids
+                ? array_values(array_filter(array_map('intval', json_decode($mapping->category_sub_specification_ids, true) ?: [])))
+                : [];
+
+            $attbutesdata = array_values(array_unique(array_merge($attbutesdata, $mappedAttributes)));
+            $specdata = array_values(array_unique(array_merge($specdata, $mappedSpecifications)));
+        }
+
         $attributeQuery = AttributeGroup::query()->whereIn('id', $attbutesdata);
         if ($vendorId > 0) {
             $attributeQuery->whereIn('created_byid', [1, $vendorId]);

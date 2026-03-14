@@ -144,7 +144,7 @@
                                         @endphp
                                         <tr>
                                             <td>
-                                                <input type="checkbox" name="category_sub_attribute_ids[]"
+                                                <input type="radio" name="category_sub_attribute_ids[]"
                                                     value="{{ $group->id }}"
                                                     {{ in_array($group->id, $selectedAttributeIds) ? 'checked' : '' }}>
                                             </td>
