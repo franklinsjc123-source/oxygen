@@ -42,6 +42,16 @@
 						<button type="submit" class="btn button btn-rounded btn-coupon mb-2" name="apply_coupon" value="Apply coupon">Apply Coupon</button>
 					</div>
 				</div>
+				@php
+					$hasCustomer = session()->has('customer_id');
+					$hasAddress = !empty($customer->customer_address ?? '')
+						|| !empty($customer->customer_mobileno ?? '')
+						|| !empty($customer->customer_email ?? '')
+						|| !empty($customer->customer_city ?? '')
+						|| !empty($customer->customer_state ?? '')
+						|| !empty($customer->customer_pincode ?? '');
+					$deliveryActionText = ($hasCustomer && $hasAddress) ? 'Change' : 'Add';
+				@endphp
 				<form class="form checkout-form" action="{{ route('checkout_store') }}" method="post">
 					@csrf
 					<div class="row mb-9">
@@ -49,7 +59,7 @@
 							<div class="card mb-4" id="delivery-address">
 								<div class="card-header d-flex align-items-center justify-content-between">
 									<h4 class="mb-0">Delivery Address</h4>
-									<a href="javascript:void(0)" class="text-primary" id="change-delivery-address">Change</a>
+									<a href="javascript:void(0)" class="text-primary" id="change-delivery-address">{{ $deliveryActionText }}</a>
 								</div>
 								<div class="card-body">
 									<div class="mb-2 text-muted">Deliver to:</div>
@@ -589,7 +599,16 @@
 
 			// Keep button enabled; block submit only if address missing.
 
-			if (!hasAddress()) {
+			if (!isLoggedIn) {
+				try {
+					localStorage.removeItem(storageKey);
+				} catch (e) {
+					// Ignore storage failures.
+				}
+				Object.keys(fields).forEach(function (key) {
+					if (fields[key]) fields[key].value = '';
+				});
+			} else if (!hasAddress()) {
 				hydrateFromStorage();
 			}
 			renderSummary();

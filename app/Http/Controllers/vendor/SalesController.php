@@ -96,7 +96,8 @@ class SalesController extends Controller
 
     private function vendorOwnedOrderProductQuery($vendor_id, $orderProductId)
     {
-        return Ecom_Order_product::join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
+        return Ecom_Order_product::select('ecom_order_product.*')
+            ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
             ->join('products', 'products.product_id', '=', 'products_details.products_id')
             ->where('products.logintype', '=', 'Vendor')
             ->where('products.created_by', '=', $vendor_id)
@@ -361,14 +362,20 @@ class SalesController extends Controller
             ], 403);
         }
 
-        $dd = Ecom_Order_product::where('id', $orderProduct->id)->update(['order_status' => $status]);
+          $dd = Ecom_Order_product::where('id', $orderProduct->id)->update(['order_status' => $status]);
     
         $detailId = (int) ($orderProduct->product_id ?? 0);
         if ($detailId > 0) {
-            DB::table('ecom_invoice')
-                ->where('vendor_id', $vendor_id)
-                ->whereRaw('FIND_IN_SET(?, product_detail_ids)', [$detailId])
-                ->update(['status' => $status, 'updated_at' => now()]);
+              $invoiceUpdate = ['status' => $status, 'updated_at' => now()];
+              if (in_array($status, ['Delivered', 'delivery', 'delivered'], true)) {
+                  $invoiceUpdate['delivered_at'] = now();
+              } else {
+                  $invoiceUpdate['delivered_at'] = null;
+              }
+              DB::table('ecom_invoice')
+                  ->where('vendor_id', $vendor_id)
+                  ->whereRaw('FIND_IN_SET(?, product_detail_ids)', [$detailId])
+                  ->update($invoiceUpdate);
 
             $invoiceIds = DB::table('ecom_invoice')
                 ->where('vendor_id', $vendor_id)
@@ -412,10 +419,16 @@ class SalesController extends Controller
             Ecom_Order_product::where('id', $orderProduct->id)->update(['order_status' => $sts]);
             $detailId = (int) ($orderProduct->product_id ?? 0);
             if ($detailId > 0) {
-                DB::table('ecom_invoice')
-                    ->where('vendor_id', $vendor_id)
-                    ->whereRaw('FIND_IN_SET(?, product_detail_ids)', [$detailId])
-                    ->update(['status' => $sts, 'updated_at' => now()]);
+                  $invoiceUpdate = ['status' => $sts, 'updated_at' => now()];
+                  if (in_array($sts, ['Delivered', 'delivery', 'delivered'], true)) {
+                      $invoiceUpdate['delivered_at'] = now();
+                  } else {
+                      $invoiceUpdate['delivered_at'] = null;
+                  }
+                  DB::table('ecom_invoice')
+                      ->where('vendor_id', $vendor_id)
+                      ->whereRaw('FIND_IN_SET(?, product_detail_ids)', [$detailId])
+                      ->update($invoiceUpdate);
 
                 $matched = DB::table('ecom_invoice')
                     ->where('vendor_id', $vendor_id)

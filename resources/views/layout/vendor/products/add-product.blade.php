@@ -163,7 +163,7 @@
                                                         ->values();
                                                 @endphp
 
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
                                                         <h5 class="fw-bold">Main Category / Category</h5>
                                                         <div id="clothing">
@@ -182,7 +182,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
                                                         <h5 class="fw-bold">Sub Category</h5>
                                                         <div id="clothing">
@@ -195,6 +195,19 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <h5 class="fw-bold">Attribute</h5>
+                                                        <div id="clothing">
+                                                            <select class="js-select2 form-control" name="selected_attribute_id"
+                                                                id="attribute_group_initial_vendor" disabled required>
+                                                                <option selected value="">Select Attribute</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <h5 class="fw-bold">No.of Products</h5>
@@ -330,6 +343,9 @@
         @if(@$addinformation)
             <form action="{{ route('vendorproducts.crud.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
+                @if(!empty($selectedAttributeId))
+                    <input type="hidden" name="selected_attribute_id" value="{{ $selectedAttributeId }}">
+                @endif
                 <!-- Container-fluid starts-->
                 
 
@@ -856,6 +872,7 @@
 
     <script type="text/javascript">
     const vendorSubCategories = @json($CategorySub);
+    const vendorAttributeUrl = "{{ route('vendor.getSubCategoryAttributes') }}";
 
     $('#main_category_category_vendor').on('change', function() {
         const selectedOption = $(this).find(':selected');
@@ -865,7 +882,11 @@
         $('#category_main_hidden_vendor').val(mainCategoryId);
 
         const $sub = $('#sub_category_initial_vendor');
+        const $attribute = $('#attribute_group_initial_vendor');
         $sub.empty().append('<option selected value="">Select Category</option>');
+        $attribute.empty().append('<option selected value="">Select Attribute</option>');
+        $attribute.prop('disabled', true);
+        $attribute.prop('required', false);
 
         if (!categoryId) {
             $sub.attr('disabled', true);
@@ -881,6 +902,45 @@
         });
 
         $sub.removeAttr('disabled');
+    });
+
+    $('#sub_category_initial_vendor').on('change', function() {
+        const subCategoryId = $(this).val();
+        const $attribute = $('#attribute_group_initial_vendor');
+
+        $attribute.empty().append('<option selected value="">Select Attribute</option>');
+        if (!subCategoryId) {
+            $attribute.prop('disabled', true);
+            $attribute.prop('required', false);
+            return;
+        }
+
+        $.ajax({
+            url: vendorAttributeUrl,
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                sub_category_id: subCategoryId
+            },
+            success: function(data) {
+                if (Array.isArray(data) && data.length > 0) {
+                    data.forEach(function(attr) {
+                        $attribute.append('<option value="' + attr.id + '">' + attr.attribute_group_name + '</option>');
+                    });
+                    $attribute.prop('disabled', false);
+                    $attribute.prop('required', true);
+                } else {
+                    $attribute.append('<option value="">No attributes available</option>');
+                    $attribute.prop('disabled', true);
+                    $attribute.prop('required', false);
+                }
+            },
+            error: function() {
+                $attribute.append('<option value="">Unable to load attributes</option>');
+                $attribute.prop('disabled', true);
+                $attribute.prop('required', false);
+            }
+        });
     });
 
     $(document).ready(function() {

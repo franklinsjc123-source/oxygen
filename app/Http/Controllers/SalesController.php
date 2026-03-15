@@ -140,9 +140,15 @@ class SalesController extends Controller
 
         $detailId = (int) ($orderProduct->product_id ?? 0);
         if ($detailId > 0) {
+            $invoiceUpdate = ['status' => $status, 'updated_at' => now()];
+            if (in_array($status, ['Delivered', 'delivery', 'delivered'], true)) {
+                $invoiceUpdate['delivered_at'] = now();
+            } else {
+                $invoiceUpdate['delivered_at'] = null;
+            }
             DB::table('ecom_invoice')
                 ->whereRaw('FIND_IN_SET(?, product_detail_ids)', [$detailId])
-                ->update(['status' => $status, 'updated_at' => now()]);
+                ->update($invoiceUpdate);
 
             $invoiceIds = DB::table('ecom_invoice')
                 ->whereRaw('FIND_IN_SET(?, product_detail_ids)', [$detailId])
@@ -213,9 +219,15 @@ class SalesController extends Controller
 
         $detailId = (int) ($ord1->product_id ?? 0);
         if ($detailId > 0) {
+            $invoiceUpdate = ['status' => $sts, 'updated_at' => now()];
+            if (in_array($sts, ['Delivered', 'delivery', 'delivered'], true)) {
+                $invoiceUpdate['delivered_at'] = now();
+            } else {
+                $invoiceUpdate['delivered_at'] = null;
+            }
             DB::table('ecom_invoice')
                 ->whereRaw('FIND_IN_SET(?, product_detail_ids)', [$detailId])
-                ->update(['status' => $sts, 'updated_at' => now()]);
+                ->update($invoiceUpdate);
 
             $matched = DB::table('ecom_invoice')
                 ->whereRaw('FIND_IN_SET(?, product_detail_ids)', [$detailId])

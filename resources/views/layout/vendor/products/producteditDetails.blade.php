@@ -144,7 +144,22 @@
                                                                             ?? (($productdetails->attributename2 ?? '') === 'Size' ? ($productdetails->attributevalue2 ?? null) : null)
                                                                             ?? (($productdetails->attributename3 ?? '') === 'Size' ? ($productdetails->attributevalue3 ?? null) : null)
                                                                             ?? ($productdetails->attributevalue2 ?? null);
-                                                                        $returnReplace = (string)($productdetails->return_replace ?? '1');
+                                                                        $returnRaw = (string)($productdetails->return_replace ?? '1');
+                                                                        $returnReplace = $returnRaw;
+                                                                        if (!is_numeric($returnReplace)) {
+                                                                            $normalized = strtolower(trim($returnRaw));
+                                                                            if ($normalized === 'return') {
+                                                                                $returnReplace = '2';
+                                                                            } elseif ($normalized === 'replacement') {
+                                                                                $returnReplace = '3';
+                                                                            } elseif (in_array($normalized, ['return/replacement', 'return & replacement', 'return and replacement'], true)) {
+                                                                                $returnReplace = '1';
+                                                                            } elseif (in_array($normalized, ['na', 'n/a', 'none'], true)) {
+                                                                                $returnReplace = '4';
+                                                                            } else {
+                                                                                $returnReplace = '1';
+                                                                            }
+                                                                        }
                                                                     @endphp
                                                                     <div class="col-md-2">
                                                                     <label style="color:gray"for="javascript">Color</label><br>

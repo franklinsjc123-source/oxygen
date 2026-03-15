@@ -42,6 +42,17 @@ class PackageController extends Controller
      */
     public function store(Request $request, FlasherInterface $flasher)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required',
+            'validity' => 'required',
+            'days' => 'required',
+            'wallet' => 'required',
+            'commission' => 'required',
+            'description' => 'required',
+            'status' => 'required',
+        ]);
+
    //dd($request);
   
  // dd($next_packages_id);

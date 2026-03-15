@@ -50,7 +50,7 @@ class ProductsController extends Controller
         $login_id = session()->get('login_id');
         // dd(  $login_id );
         $vendorcreate = vendorcreate::select('sub_category_ids')->where('id',$login_id)->first();
-        $subcategoryarray=explode(',',$vendorcreate->sub_category_ids);
+        $subcategoryarray = array_values(array_filter(array_map('intval', array_map('trim', explode(',', (string) optional($vendorcreate)->sub_category_ids)))));
         //$CategorySub = CategorySub::whereIn('id', $subcategoryarray)->get();
         $CategorySub=DB::table('category_sub as t1')
         ->leftJoin('category as t2', 't1.category_id', '=', 't2.id')
@@ -89,7 +89,7 @@ class ProductsController extends Controller
     {
         $login_id = session()->get('login_id');
         $vendorcreate = vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
-        $subcategoryarray = array_filter(explode(',', (string) optional($vendorcreate)->sub_category_ids));
+        $subcategoryarray = array_values(array_filter(array_map('intval', array_map('trim', explode(',', (string) optional($vendorcreate)->sub_category_ids)))));
         $CategorySub = DB::table('category_sub as t1')
             ->leftJoin('category as t2', 't1.category_id', '=', 't2.id')
             ->leftJoin('category_main as t3', 't1.category_main_id', '=', 't3.id')
@@ -150,12 +150,18 @@ class ProductsController extends Controller
         $attbutesdata = array_values(array_filter(array_map('intval', $attbutesdata)));
         $specdata = array_values(array_filter(array_map('intval', $specdata)));
 
-       if (!empty($attbutesdata) || !empty($specdata)) {
+        $selectedAttributeId = (int) ($request->selected_attribute_id ?? 0);
+
+        if (!empty($attbutesdata) || !empty($specdata)) {
             $attribute = !empty($attbutesdata)
-                ? AttributeGroup::whereIn('id', $attbutesdata)
-                    ->whereIn('created_byid', [1, $login_id])
-                    ->get()
+                ? AttributeGroup::whereIn('id', $attbutesdata)->get()
                 : collect();
+
+            if ($selectedAttributeId > 0 && $attribute->isNotEmpty()) {
+                $attribute = $attribute->where('id', $selectedAttributeId)->values();
+            } elseif ($attribute->count() === 1) {
+                $selectedAttributeId = (int) ($attribute->first()->id ?? 0);
+            }
 
             $combinedSpecifications = !empty($specdata)
                 ? SpecificationGroup::whereIn('id', $specdata)
@@ -177,6 +183,7 @@ class ProductsController extends Controller
                     "maincategoryid" => $category_sub->category_main_id,
                     "categoryid" => $category_sub->category_id,
                     "subcategoryid" => $request->category_sub,
+                    "selectedAttributeId" => $selectedAttributeId,
                     "nproduct" => $request->nproduct,
                     "category_data" => $category_data,
                     "category_sub_data" => $category_sub_data
@@ -200,6 +207,39 @@ class ProductsController extends Controller
                 "offers" => $offer,
                 "error" => "Attributes & Specifications Not Assign in this Sub Category.",
             ]);
+    }
+
+    public function getSubCategoryAttributes(Request $request)
+    {
+        $subCategoryId = (int) ($request->sub_category_id ?? 0);
+
+        if ($subCategoryId <= 0) {
+            return response()->json([]);
+        }
+
+        $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $subCategoryId)->first();
+        $attributeIds = [];
+
+        if ($mapping) {
+            $attributeIds = $mapping->category_sub_attribute_ids
+                ? (json_decode($mapping->category_sub_attribute_ids, true) ?: [])
+                : [];
+        } else {
+            $subCategory = CategorySub::find($subCategoryId);
+            if ($subCategory && !empty($subCategory->category_sub_attributes)) {
+                $attributeIds = explode(',', $subCategory->category_sub_attributes);
+            }
+        }
+
+        $attributeIds = array_values(array_filter(array_map('intval', (array) $attributeIds)));
+        if (empty($attributeIds)) {
+            return response()->json([]);
+        }
+
+        $attributes = AttributeGroup::whereIn('id', $attributeIds)
+            ->get(['id', 'attribute_group_name']);
+
+        return response()->json($attributes);
     }
     /**
      * Show the form for creating a new resource.

@@ -35,6 +35,19 @@
                 @endphp
                 <div class="product-offer-percentage">{{ $discount }}% Off</div>
             </div>
+            @php
+                $showStockCount = $showStockCount ?? false;
+                $stockQty = isset($product->stock_qty) ? (int) $product->stock_qty : null;
+                $lowStockLimit = isset($product->low_stock_limit) ? (int) $product->low_stock_limit : null;
+            @endphp
+            @if($showStockCount && $stockQty !== null)
+                <div class="small mt-1 {{ ($lowStockLimit !== null && $stockQty <= $lowStockLimit) ? 'text-danger' : 'text-muted' }}">
+                    Stock: {{ $stockQty }}
+                    @if($lowStockLimit !== null && $stockQty <= $lowStockLimit)
+                        <span class="ms-1">Low stock</span>
+                    @endif
+                </div>
+            @endif
         </div>
     </div>
 </div>

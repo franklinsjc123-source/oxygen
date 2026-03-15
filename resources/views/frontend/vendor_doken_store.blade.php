@@ -306,7 +306,7 @@
                             <div id="productTabContents">
                             <div  id="allProducts" class="product-wrapper row cols-md-5 cols-sm-2 cols-2 tabContent active">
                                 @foreach ($products as $product)
-                                    @include('frontend/product-card', ['product' => $product])
+                                    @include('frontend/product-card', ['product' => $product, 'showStockCount' => true])
                                 @endforeach
                             </div>
 
@@ -365,6 +365,18 @@
                                                         <div  class="product-offer-percentage" >
                                                                 {{ $discount_rounded }}% Off
                                                         </div>
+                                                        @php
+                                                            $stockQty = isset($products['stock_qty']) ? (int) $products['stock_qty'] : null;
+                                                            $lowStockLimit = isset($products['low_stock_limit']) ? (int) $products['low_stock_limit'] : null;
+                                                        @endphp
+                                                        @if($stockQty !== null)
+                                                            <div class="small mt-1 {{ ($lowStockLimit !== null && $stockQty <= $lowStockLimit) ? 'text-danger' : 'text-muted' }}">
+                                                                Stock: {{ $stockQty }}
+                                                                @if($lowStockLimit !== null && $stockQty <= $lowStockLimit)
+                                                                    <span class="ms-1">Low stock</span>
+                                                                @endif
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
@@ -378,13 +390,13 @@
 
                             <div  id="newCollection" class="product-wrapper row cols-md-5 cols-sm-2 cols-2 tabContent d-none">
                                 @foreach ($newCollection as $product)
-                                    @include('frontend/product-card', ['product' => $product])
+                                    @include('frontend/product-card', ['product' => $product, 'showStockCount' => true])
                                 @endforeach
                             </div>
 
                             <div  id="featuredProducts" class="product-wrapper row cols-md-5 cols-sm-2 cols-2 tabContent d-none">
                                 @foreach ($featuredProducts as $product)
-                                    @include('frontend/product-card', ['product' => $product])
+                                    @include('frontend/product-card', ['product' => $product, 'showStockCount' => true])
                                 @endforeach
                             </div>
                             </div>

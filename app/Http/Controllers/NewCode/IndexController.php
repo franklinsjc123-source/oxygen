@@ -56,6 +56,7 @@ class IndexController extends Controller
         [$key, $cookie] = $this->resolveCartKey($request);
         $cart = Cart::session($key);
         $this->hydrateCartFromCookie($request, $cart);
+        $this->pruneInactiveCartItems($cart);
 
         return [$cart, $cookie];
     }
@@ -108,6 +109,32 @@ class IndexController extends Controller
         })->values()->toJson();
 
         return $response->withCookie(cookie('oxy_cart_payload', $items, 60 * 24 * 30));
+    }
+
+    private function pruneInactiveCartItems($cart): void
+    {
+        $items = $cart->getContent();
+        if ($items->isEmpty()) {
+            return;
+        }
+
+        $productIds = $items->pluck('id')->map(fn($id) => (int) $id)->unique()->values()->all();
+        if (empty($productIds)) {
+            return;
+        }
+
+        $activeIds = Products::whereIn('id', $productIds)
+            ->where('status', 1)
+            ->pluck('id')
+            ->map(fn($id) => (int) $id)
+            ->all();
+
+        $activeLookup = array_flip($activeIds);
+        foreach ($productIds as $productId) {
+            if (!isset($activeLookup[$productId])) {
+                $cart->remove($productId);
+            }
+        }
     }
 
     public function getProduct($id = '', $name = '')

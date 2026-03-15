@@ -178,10 +178,10 @@
                                         <div class="row">
                                              <div class="col-md-3 product-qty-form">
                                              <div class="input-group">
-                                                 <input class="quantity form-control" id="quantity" type="number" min="1"
-                                                     max="100" value="1">
-                                                 <button class="quantity-plus w-icon-plus"></button>
-                                                 <button class="quantity-minus w-icon-minus"></button>
+                                                <input class="form-control qty-input" id="quantity" type="number" min="1"
+                                                    max="100" step="1" value="1">
+                                                <button type="button" class="qty-plus w-icon-plus" aria-label="Increase quantity"></button>
+                                                <button type="button" class="qty-minus w-icon-minus" aria-label="Decrease quantity"></button>
                                              </div>
                                          </div>
                                          <div class="col-md-3">
@@ -290,7 +290,7 @@
                                     </div>
                                     <ul class="vendor-info list-style-none">
                                         <li class="store-name">
-                                            <label>Store Name:</label>
+                                            <label>Shop Name:</label>
                                             <span class="detail">{{ $vendor_details->shop_name }}</span>
                                         </li>
                                         <li class="store-address">
@@ -1186,41 +1186,58 @@
          return qty;
      }
 
-     $(document).on('click', '.product-qty-form .quantity-plus', function(e) {
-         e.preventDefault();
-         e.stopImmediatePropagation();
-         var selectedStock = parseInt($('#selected-stock').val() || '0', 10);
-         var qty = parseInt($('#quantity').val() || '1', 10);
+    (function() {
+        function adjustQty(delta) {
+            var selectedStock = parseInt($('#selected-stock').val() || '0', 10);
+            var qty = parseInt($('#quantity').val() || '1', 10);
 
-         if (!Number.isFinite(qty) || qty < 1) {
-             qty = 1;
-         }
+            if (!Number.isFinite(qty) || qty < 1) {
+                qty = 1;
+            }
 
-         if (selectedStock > 0 && qty >= selectedStock) {
-             if (typeof window.showCenterMessage === 'function') {
-                 window.showCenterMessage('Out of stock. Only ' + selectedStock + ' item(s) available.', 'error');
-             } else {
-                 $.notify('Out of stock. Only ' + selectedStock + ' item(s) available.', "error");
-             }
-             $('#quantity').val(selectedStock);
-             return false;
-         }
+            if (delta > 0 && selectedStock > 0 && qty >= selectedStock) {
+                if (typeof window.showCenterMessage === 'function') {
+                    window.showCenterMessage('Out of stock. Only ' + selectedStock + ' item(s) available.', 'error');
+                } else {
+                    $.notify('Out of stock. Only ' + selectedStock + ' item(s) available.', "error");
+                }
+                $('#quantity').val(selectedStock);
+                return;
+            }
 
-         $('#quantity').val(qty + 1);
-         return false;
-     });
+            var nextQty = qty + delta;
+            if (nextQty < 1) {
+                nextQty = 1;
+            }
+            if (selectedStock > 0 && nextQty > selectedStock) {
+                nextQty = selectedStock;
+            }
+            $('#quantity').val(nextQty);
+        }
 
-     $(document).on('click', '.product-qty-form .quantity-minus', function(e) {
-         e.preventDefault();
-         e.stopImmediatePropagation();
-         var qty = parseInt($('#quantity').val() || '1', 10);
-         if (!Number.isFinite(qty) || qty <= 1) {
-             $('#quantity').val(1);
-             return false;
-         }
-         $('#quantity').val(qty - 1);
-         return false;
-     });
+        document.addEventListener('click', function(e) {
+            var target = e.target;
+            if (!target) return;
+            if (target.closest && target.closest('.product-qty-form .qty-plus')) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                e.stopPropagation();
+                adjustQty(1);
+            } else if (target.closest && target.closest('.product-qty-form .qty-minus')) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                e.stopPropagation();
+                adjustQty(-1);
+            }
+        }, true);
+
+        document.addEventListener('wheel', function(e) {
+            var target = e.target;
+            if (target && target.id === 'quantity') {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    })();
 
      $(document).on('input change', '#quantity', function() {
          enforceQuantityLimit(false);

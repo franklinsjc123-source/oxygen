@@ -147,7 +147,25 @@
                                                                 <div class="col-md-2">
                                                                     <select class="form-select form-select-lg text-secondary"
                                                                         name="return_replace[]" required>
-                                                                        <?php if($productdetails->return_replace == 1) { ?>
+                                                                        <?php
+                                                                            $returnRaw = (string) ($productdetails->return_replace ?? '1');
+                                                                            $returnReplace = $returnRaw;
+                                                                            if (!is_numeric($returnReplace)) {
+                                                                                $normalized = strtolower(trim($returnRaw));
+                                                                                if ($normalized === 'return') {
+                                                                                    $returnReplace = '2';
+                                                                                } elseif ($normalized === 'replacement') {
+                                                                                    $returnReplace = '3';
+                                                                                } elseif (in_array($normalized, ['return/replacement', 'return & replacement', 'return and replacement'], true)) {
+                                                                                    $returnReplace = '1';
+                                                                                } elseif (in_array($normalized, ['na', 'n/a', 'none'], true)) {
+                                                                                    $returnReplace = '4';
+                                                                                } else {
+                                                                                    $returnReplace = '1';
+                                                                                }
+                                                                            }
+                                                                        ?>
+                                                                        <?php if($returnReplace == 1) { ?>
                                                                         <option selected value="1">
                                                                             Return /
                                                                             Replacement
@@ -162,7 +180,7 @@
                                                                             NA
                                                                         </option>
                                                                         <?php } ?>
-                                                                        <?php if($productdetails->return_replace == 2) { ?>
+                                                                        <?php if($returnReplace == 2) { ?>
                                                                         <option selected value="2">
                                                                             Return
                                                                         </option>
@@ -177,7 +195,7 @@
                                                                             NA
                                                                         </option>
                                                                         <?php } ?>
-                                                                        <?php if($productdetails->return_replace == 3) { ?>
+                                                                        <?php if($returnReplace == 3) { ?>
                                                                         <option selected value="3">
                                                                             Replacement
                                                                         </option>

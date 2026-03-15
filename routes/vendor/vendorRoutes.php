@@ -192,6 +192,8 @@
 	// Route::get('get-category', [CategoryController::class, 'getCategory'])->name('getCategory');
 	// Route::get('get-subcategory', [CategoryController::class, 'getSubCategory'])->name('getSubCategory');
 	Route::get('get-attribute', [AttributeController::class, 'getAttributes'])->name('getvendorAttributes');
+	Route::get('get-subcategory-attributes', [ProductsController::class, 'getSubCategoryAttributes'])
+		->name('vendor.getSubCategoryAttributes');
 	Route::get('get-spec--value', [SpecificationController::class, 'getSpecValue'])->name('getvendorSpecValue');
 	Route::get('get-specification', [SpecificationController::class, 'getSpecifications'])->name('getvendorSpecifications');
 	Route::get('get_product_details', [ProductsController::class, 'getProductDetails'])->name('getvendorProductDetails');

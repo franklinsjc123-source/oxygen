@@ -699,30 +699,49 @@
 
 
 
-       function showLoginPopup(redirectUrl = null) {
-           if (redirectUrl) {
-               sessionStorage.setItem('post_login_redirect', redirectUrl);
-           } else {
-               sessionStorage.removeItem('post_login_redirect');
-           }
-           //    Wolmart.popup({
-           //        items: {
-           //            src: ".login-register-popup"
-           //        },
+        function showLoginPopup(redirectUrl = null, prefillMobile = null) {
+            if (redirectUrl) {
+                sessionStorage.setItem('post_login_redirect', redirectUrl);
+            } else {
+                sessionStorage.removeItem('post_login_redirect');
+            }
+
+            if (prefillMobile) {
+                sessionStorage.setItem('prefill_login_mobile', prefillMobile);
+            }
+            //    Wolmart.popup({
+            //        items: {
+            //            src: ".login-register-popup"
+            //        },
            //        type: "inline",
            //        closeBtnInside: true,                      
            //        callbacks: {
            //            close: function() {},
            //        },
            //    })
-           Wolmart.popup({
-               items: {
+            Wolmart.popup({
+                items: {
                    src: ".login-register-popup"
-               },
-               type: "inline",
-               closeBtnInside: true
-           });
-       }
+                },
+                type: "inline",
+                closeBtnInside: true
+            });
+
+            var storedMobile = prefillMobile || sessionStorage.getItem('prefill_login_mobile');
+            if (storedMobile) {
+                setTimeout(function() {
+                    $('#login_username').val(storedMobile);
+                }, 80);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var serverLoginMobile = @json(session('login_mobile'));
+            var serverLoginRedirect = @json(session('login_redirect'));
+            if (serverLoginMobile) {
+                showLoginPopup(serverLoginRedirect || null, serverLoginMobile);
+            }
+        });
 
        $('#pincodeForm').on('submit', function(e) {
            e.preventDefault();
@@ -949,10 +968,11 @@
                    dataType: "json",
                    success: function(data) {
                        console.log(data);
-                       if (data.msg == 'Success') {
-                           var redirectUrl = sessionStorage.getItem('post_login_redirect') || "{{ route('myAccount') }}";
-                           sessionStorage.removeItem('post_login_redirect');
-                           if (typeof swal === 'function') {
+                        if (data.msg == 'Success') {
+                            var redirectUrl = sessionStorage.getItem('post_login_redirect') || "{{ route('myAccount') }}";
+                            sessionStorage.removeItem('post_login_redirect');
+                            sessionStorage.removeItem('prefill_login_mobile');
+                            if (typeof swal === 'function') {
                                swal("Success!", "Login Successfully", "success").then(function() {
                                    window.location.href = redirectUrl;
                                });

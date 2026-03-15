@@ -57,6 +57,7 @@ class FrontendController extends Controller
         [$key, $cookie] = $this->resolveCartKey($request);
         $cart = Cart::session($key);
         $this->hydrateCartFromCookie($request, $cart);
+        $this->pruneInactiveCartItems($cart);
 
         return [$cart, $cookie];
     }
@@ -109,6 +110,32 @@ class FrontendController extends Controller
         })->values()->toJson();
 
         return $response->withCookie(cookie('oxy_cart_payload', $items, 60 * 24 * 30));
+    }
+
+    private function pruneInactiveCartItems($cart): void
+    {
+        $items = $cart->getContent();
+        if ($items->isEmpty()) {
+            return;
+        }
+
+        $productIds = $items->pluck('id')->map(fn($id) => (int) $id)->unique()->values()->all();
+        if (empty($productIds)) {
+            return;
+        }
+
+        $activeIds = Products::whereIn('id', $productIds)
+            ->where('status', 1)
+            ->pluck('id')
+            ->map(fn($id) => (int) $id)
+            ->all();
+
+        $activeLookup = array_flip($activeIds);
+        foreach ($productIds as $productId) {
+            if (!isset($activeLookup[$productId])) {
+                $cart->remove($productId);
+            }
+        }
     }
 
 
@@ -168,6 +195,7 @@ class FrontendController extends Controller
                 ->leftJoin('products_details as pd', 'pd.id', '=', 'ecom_wishlist.ecom_product_id')
                 ->leftJoin('products as pr', 'pd.products_id', '=', 'pr.product_id')
                 ->where('ecom_wishlist.customer_id', '=', $customer_id)
+                ->where('pr.status', 1)
                 ->get();
             $wishCount = count($wishlist);
 
@@ -286,21 +314,38 @@ class FrontendController extends Controller
 
     public function getProductImageList($id)
     {
-        $imageList = ProductsDetails::from('products_details as pd')
-            ->Where('products_id', $id)
-            ->get(['product_detail_image']);
-        $imageArr = $img = [];
-        $images   = '';
-        foreach ($imageList as $val) {
-            $imageArr[] = json_decode($val->product_detail_image);
-        }
+        $productId = null;
 
-        if (isset($imageArr) && count($imageArr) > 0) {
-            foreach ($imageArr as $key => $val) {
-                $img[] = isset($val[$key]) ? $val[$key] : '';
+        if (Products::where('id', $id)->exists()) {
+            $productId = (int) $id;
+        } else {
+            $detail = ProductsDetails::where('id', $id)->first();
+            if ($detail) {
+                $productId = (int) $detail->products_id;
             }
         }
-        return $img;
+
+        if (!$productId) {
+            return [];
+        }
+
+        $imageList = ProductsDetails::from('products_details as pd')
+            ->where('products_id', $productId)
+            ->get(['product_detail_image']);
+
+        $images = [];
+        foreach ($imageList as $val) {
+            $decoded = json_decode($val->product_detail_image, true);
+            if (is_array($decoded)) {
+                foreach ($decoded as $img) {
+                    if (!empty($img)) {
+                        $images[] = $img;
+                    }
+                }
+            }
+        }
+
+        return array_values(array_unique($images));
     }
 
     public function vendorDetails($id)
@@ -315,7 +360,9 @@ class FrontendController extends Controller
                 'products.product_image',
                 'category_sub.category_sub_name',
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
-                DB::raw('MIN(products_details.selling_price) as selling_price')
+                DB::raw('MIN(products_details.selling_price) as selling_price'),
+                DB::raw('SUM(products_details.quantity) as stock_qty'),
+                DB::raw('MIN(products_details.low_stock_limit) as low_stock_limit')
             )
             ->where('products.vendor_id', $id)
             ->where('products.status', 1)
@@ -335,7 +382,9 @@ class FrontendController extends Controller
                 'products.product_image',
                 'category_sub.category_sub_name',
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
-                DB::raw('MIN(products_details.selling_price) as selling_price')
+                DB::raw('MIN(products_details.selling_price) as selling_price'),
+                DB::raw('SUM(products_details.quantity) as stock_qty'),
+                DB::raw('MIN(products_details.low_stock_limit) as low_stock_limit')
             )
             ->where('products.vendor_id', $id)
             ->where('products.status', 1)
@@ -357,7 +406,9 @@ class FrontendController extends Controller
                 'products.product_image',
                 'category_sub.category_sub_name',
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
-                DB::raw('MIN(products_details.selling_price) as selling_price')
+                DB::raw('MIN(products_details.selling_price) as selling_price'),
+                DB::raw('SUM(products_details.quantity) as stock_qty'),
+                DB::raw('MIN(products_details.low_stock_limit) as low_stock_limit')
             )
             ->where('products.vendor_id', $id)
             ->where('products.collection', '5')
@@ -385,7 +436,9 @@ class FrontendController extends Controller
                 'products.product_image',
                 'category_sub.category_sub_name',
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
-                DB::raw('MIN(products_details.selling_price) as selling_price')
+                DB::raw('MIN(products_details.selling_price) as selling_price'),
+                DB::raw('SUM(products_details.quantity) as stock_qty'),
+                DB::raw('MIN(products_details.low_stock_limit) as low_stock_limit')
             )
             ->where('products.vendor_id', $id)
             ->where('products.status', 0)
@@ -1196,6 +1249,8 @@ class FrontendController extends Controller
             $productsData = $productsData->where('p.category_sub', $sub_category_id);
         }
 
+        $productsData = $productsData->where('p.status', 1);
+
         $productsData = $productsData->select(
             'p.id',
             'p.vendor_id',
@@ -1258,6 +1313,8 @@ class FrontendController extends Controller
             $productsData = $productsData->whereNotNull('p.offers');
         }
 
+        $productsData = $productsData->where('p.status', 1);
+
         $productsData = $productsData->select(
             'p.id',
             'p.vendor_id',
@@ -1272,7 +1329,9 @@ class FrontendController extends Controller
             'vp.profile_image',
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
-            'pd.product_detail_image'
+            'pd.product_detail_image',
+            'pd.quantity as stock_qty',
+            'pd.low_stock_limit as low_stock_limit'
         )->get();
         $resultArr = [];
         foreach ($productsData as $val) {
@@ -1290,7 +1349,18 @@ class FrontendController extends Controller
                     'category_main_name' => $val->category_main_name,
                     'shop_name'          => $val->shop_name,
                     'profile_image'      => $val->profile_image,
+                    'stock_qty'          => (int) ($val->stock_qty ?? 0),
+                    'low_stock_limit'    => isset($val->low_stock_limit) ? (int) $val->low_stock_limit : null,
                 ];
+            } else {
+                $resultArr[$productId]['stock_qty'] += (int) ($val->stock_qty ?? 0);
+                if (isset($val->low_stock_limit)) {
+                    $currentLimit = $resultArr[$productId]['low_stock_limit'];
+                    $nextLimit = (int) $val->low_stock_limit;
+                    if ($currentLimit === null || $nextLimit < $currentLimit) {
+                        $resultArr[$productId]['low_stock_limit'] = $nextLimit;
+                    }
+                }
             }
         }
 
@@ -1313,6 +1383,8 @@ class FrontendController extends Controller
         if ($main_category_id != '') {
             $productsData = $productsData->where('p.category_main', $main_category_id);
         }
+
+        $productsData = $productsData->where('p.status', 1);
 
         $productsData = $productsData->select(
             'p.id',
@@ -1372,6 +1444,7 @@ class FrontendController extends Controller
         $productcolors = DB::table('products_details')
             ->leftJoin('products', 'products.id', '=', 'products_details.products_id')
             ->select(DB::raw('DISTINCT(products_details.attributevalue1) as color'))
+            ->where('products.status', 1)
             ->where('products.category_sub', $main_category_id)
             ->pluck('color');
 
@@ -1417,6 +1490,7 @@ class FrontendController extends Controller
         if ($sub_category_id > 0) {
             $productcolors->where('products.category_sub', $sub_category_id);
         }
+        $productcolors->where('products.status', 1);
 
         $colors = $productcolors->pluck('color')->toArray();
 
@@ -1713,12 +1787,23 @@ class FrontendController extends Controller
             return $this->attachCartCookies($response, $cookie, $cart);
         }
 
+        $sessionCustomerId = Session::get('customer_id');
+        if (!$sessionCustomerId) {
+            $existingCustomer = Ecom_Customer_info::where('customer_mobileno', $request->billing_phone)->first();
+            if ($existingCustomer) {
+                $response = redirect('/')
+                    ->with('login_mobile', $request->billing_phone)
+                    ->with('login_redirect', url('/myAccount#account-orders'))
+                    ->with('error', 'Please login to place your order.');
+                return $this->attachCartCookies($response, $cookie, $cart);
+            }
+        }
+
         DB::beginTransaction();
         try {
             $customer = null;
             $isNewCustomer = false;
 
-            $sessionCustomerId = Session::get('customer_id');
             if ($sessionCustomerId) {
                 $customer = Ecom_Customer_info::where('customer_id', $sessionCustomerId)->first();
             }
@@ -2531,16 +2616,45 @@ class FrontendController extends Controller
                         continue;
                     }
 
-                    $lineProducts = collect(explode(',', (string) $invoice->product_detail_ids))
-                        ->map(fn($val) => (int) trim($val))
-                        ->filter()
-                        ->map(function ($detailId) use ($productDetails) {
-                            $detail = $productDetails->get($detailId);
-                            if (!$detail) {
-                                return null;
-                            }
-                            $productImage = $detail->product_detail_image ?? '';
-                            $productImage = trim((string) $productImage, '[]"\'' . " \t\n\r\0\x0B");
+                      $normalizeReturnReplace = function ($value): int {
+                          $raw = is_null($value) ? '' : (string) $value;
+                          if (is_numeric($raw)) {
+                              return (int) $raw;
+                          }
+                          $normalized = strtolower(trim($raw));
+                          if ($normalized === 'return') {
+                              return 2;
+                          }
+                          if ($normalized === 'replacement') {
+                              return 3;
+                          }
+                          if (in_array($normalized, ['return/replacement', 'return & replacement', 'return and replacement'], true)) {
+                              return 1;
+                          }
+                          if (in_array($normalized, ['na', 'n/a', 'none'], true)) {
+                              return 4;
+                          }
+                          return 1;
+                      };
+
+                      $lineProducts = collect(explode(',', (string) $invoice->product_detail_ids))
+                          ->map(fn($val) => (int) trim($val))
+                          ->filter()
+                          ->map(function ($detailId) use ($productDetails, $normalizeReturnReplace) {
+                              $detail = $productDetails->get($detailId);
+                              if (!$detail) {
+                                  return null;
+                              }
+                              $productImage = '';
+                              $rawImage = $detail->product_detail_image ?? '';
+                              if (is_string($rawImage) && $rawImage !== '') {
+                                  $decodedImage = json_decode($rawImage, true);
+                                  if (is_array($decodedImage)) {
+                                      $productImage = (string) (collect($decodedImage)->first() ?? '');
+                                  } else {
+                                      $productImage = trim((string) $rawImage, '[]"\'' . " \t\n\r\0\x0B");
+                                  }
+                              }
 
                             return (object) [
                                 'detail_id' => (int) $detailId,
@@ -2549,11 +2663,11 @@ class FrontendController extends Controller
                                 'product_color' => (string) ($detail->product_color ?? ''),
                                 'product_size' => (string) ($detail->product_size ?? ''),
                                 'product_price' => (float) ($detail->selling_price ?? 0),
-                                'return_replace' => (int) ($detail->return_replace ?? 0),
-                                'return_days' => (int) ($detail->r_days ?? 0),
-                            ];
-                        })
-                        ->filter()
+                                  'return_replace' => $normalizeReturnReplace($detail->return_replace ?? 0),
+                                  'return_days' => (int) ($detail->r_days ?? 0),
+                              ];
+                          })
+                          ->filter()
                         ->values();
 
                     $status = (string) ($invoice->status ?? 'Pending');
@@ -2621,7 +2735,14 @@ class FrontendController extends Controller
                         }
                     }
 
-                    $deliveryDate = $invoice->updated_at ? Carbon::parse($invoice->updated_at) : null;
+                      $deliveryDate = null;
+                      if ($isDelivered) {
+                          if (!empty($invoice->delivered_at)) {
+                              $deliveryDate = Carbon::parse($invoice->delivered_at);
+                          } elseif (!empty($invoice->updated_at)) {
+                              $deliveryDate = Carbon::parse($invoice->updated_at);
+                          }
+                      }
                     $returnDeadline = null;
                     $isReturnAllowed = false;
                     if ($isDelivered && $maxReturnDays > 0 && $deliveryDate) {
@@ -2857,6 +2978,7 @@ class FrontendController extends Controller
             ->leftJoin('products_details as pd', 'pd.id', '=', 'ecom_wishlist.ecom_product_id')
             ->leftJoin('products as pr', 'pd.products_id', '=', 'pr.product_id')
             ->where('ecom_wishlist.customer_id', '=', $customer_id)
+            ->where('pr.status', 1)
             ->get();
         $wishCount = count($wishlist);
         return view('frontend.wishlist', compact('wishlist', 'wishCount'));
