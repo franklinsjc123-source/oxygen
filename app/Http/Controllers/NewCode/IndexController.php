@@ -276,7 +276,8 @@ class IndexController extends Controller
         if ($type === 'Add') {
             $size = $item->attributes->size ?? null;
             $color = $item->attributes->color ?? null;
-            $availableStock = $this->getAvailableStock((int) $item->id, $size, $color);
+            $productId = $item->attributes->product_id ?? $item->id;
+            $availableStock = $this->getAvailableStock((int) $productId, $size, $color);
 
             if ($availableStock <= 0 || $newQty > $availableStock) {
                 $response = response()->json([

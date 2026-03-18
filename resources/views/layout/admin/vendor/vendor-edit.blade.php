@@ -8,6 +8,11 @@
         .vendor-final-actions {
             padding-right: 102px;
         }
+        #ac_no,
+        #ac_no1 {
+            -webkit-text-security: disc;
+            text-security: disc;
+        }
     </style>
 
     <!-- page-wrapper Start-->
@@ -689,8 +694,13 @@
                                                             Number</label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no" name="ac_no"
-                                                                type="text" value={{ $vendorcreate->ac_no }}
-                                                                name="ac_no">
+                                                                type="password" value={{ $vendorcreate->ac_no }}
+                                                                name="ac_no" inputmode="numeric" pattern="[0-9]*"
+                                                                autocomplete="off" spellcheck="false"
+                                                                oncopy="return false" oncut="return false"
+                                                                onpaste="return false" oncontextmenu="return false"
+                                                                onselectstart="return false"
+                                                                style="user-select: none;">
                                                         </div>
                                                     </div>
 
@@ -699,8 +709,14 @@
                                                             Account Number</label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no1" name="ac_no1"
-                                                                type="text" value={{ $vendorcreate->ac_no1 }}
-                                                                name="ac_no1" onkeyup="validate_acno()">
+                                                                type="password" value={{ $vendorcreate->ac_no1 }}
+                                                                name="ac_no1" onkeyup="validate_acno()"
+                                                                inputmode="numeric" pattern="[0-9]*"
+                                                                autocomplete="off" spellcheck="false"
+                                                                oncopy="return false" oncut="return false"
+                                                                onpaste="return false" oncontextmenu="return false"
+                                                                onselectstart="return false"
+                                                                style="user-select: none;">
                                                         </div>
                                                         <span id="wrong_ac_no_alert"></span>
                                                     </div>
@@ -723,7 +739,9 @@
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="upi" name="upi"
                                                                 type="text" value={{ $vendorcreate->upi }}
-                                                                name="upi">
+                                                                name="upi" maxlength="10" inputmode="numeric"
+                                                                pattern="[0-9]{10}" autocomplete="off"
+                                                                spellcheck="false">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1030,6 +1048,44 @@
 
 
             $('#datePicker').val(today);
+        });
+
+        $(document).ready(function() {
+            const accountFields = $('#ac_no, #ac_no1');
+            accountFields.on('copy cut paste contextmenu selectstart', function(e) {
+                e.preventDefault();
+            });
+            accountFields.on('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x' || e.key === 'v' || e.key === 'a')) {
+                    e.preventDefault();
+                }
+            });
+            accountFields.on('input', function() {
+                this.value = this.value.replace(/\D/g, '');
+            });
+            accountFields.on('focus blur', function() {
+                this.type = 'password';
+            });
+
+            $(document).on('copy cut paste contextmenu selectstart', function(e) {
+                const el = document.activeElement;
+                if (el && (el.id === 'ac_no' || el.id === 'ac_no1')) {
+                    e.preventDefault();
+                }
+            });
+            $(document).on('keydown', function(e) {
+                const el = document.activeElement;
+                if (el && (el.id === 'ac_no' || el.id === 'ac_no1')) {
+                    if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x' || e.key === 'v' || e.key === 'a')) {
+                        e.preventDefault();
+                    }
+                }
+            });
+
+            const upiField = $('#upi');
+            upiField.on('input', function() {
+                this.value = this.value.replace(/\D/g, '').slice(0, 10);
+            });
         });
 
 

@@ -37,11 +37,14 @@ if (isset($records) && count($records) > 0) {
         @endif
     </td>
     <td class="product-price text-center align-middle"><span class="amount">Rs.{{ $row['price'] }}</span></td>
+    @php
+        $domId = 'quantity' . preg_replace('/[^A-Za-z0-9_:-]/', '_', $row['id']);
+    @endphp
     <td class="product-quantity text-center align-middle">
         <div class="input-group justify-content-center">
-            <input class="form-control" value="<?= $row['quantity'] ?>" type="number" min="1" max="100" id="quantity{{$row['id']}}" readonly>
-            <button type="button" class="w-icon-plus" onclick="updateQty('{{$row['id']}}','Add')"></button>
-            <button type="button" class="w-icon-minus" onclick="updateQty('{{$row['id']}}','Minus')"></button>
+            <input class="form-control" value="<?= $row['quantity'] ?>" type="number" min="1" max="100" id="{{ $domId }}" data-item-id="{{ $row['id'] }}" readonly>
+            <button type="button" class="w-icon-plus" onclick="updateQty('{{ $row['id'] }}','Add','{{ $domId }}')"></button>
+            <button type="button" class="w-icon-minus" onclick="updateQty('{{ $row['id'] }}','Minus','{{ $domId }}')"></button>
         </div>
     </td>
     <td class="product-subtotal text-center align-middle">

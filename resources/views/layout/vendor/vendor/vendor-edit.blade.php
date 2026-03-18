@@ -533,8 +533,9 @@
                                                         <label for="validationCustom0" class="col-xl-3 col-md-3"> Account
                                                             Number</label>
                                                         <div class="col-xl-9 col-md-9">
-                                                            <input class="form-control" id="ac_no" type="text" value={{$vendorcreate->ac_no}}
-                                                                name="ac_no">
+                                                            <input class="form-control" id="ac_no" type="password" value={{$vendorcreate->ac_no}}
+                                                                name="ac_no" inputmode="numeric" pattern="[0-9]*"
+                                                                autocomplete="off" spellcheck="false">
                                                         </div>
                                                     </div>
 
@@ -542,8 +543,10 @@
                                                         <label for="validationCustom0" class="col-xl-3 col-md-3"> Confirm
                                                             Account Number</label>
                                                         <div class="col-xl-9 col-md-9">
-                                                            <input class="form-control" id="ac_no1" type="text" value={{$vendorcreate->ac_no1}}
-                                                                name="ac_no1">
+                                                            <input class="form-control" id="ac_no1" type="password" value={{$vendorcreate->ac_no1}}
+                                                                name="ac_no1"
+                                                                inputmode="numeric" pattern="[0-9]*"
+                                                                autocomplete="off" spellcheck="false">
                                                         </div>
                                                     </div>
 
@@ -563,8 +566,10 @@
                                                                 width="100px">
                                                         </div>
                                                         <div class="col-xl-9 col-md-9">
-                                                            <input class="form-control" id="ifsc" type="text" value={{$vendorcreate->upi}}
-                                                                name="upi">
+                                                            <input class="form-control" id="upi" type="text" value={{$vendorcreate->upi}}
+                                                                name="upi" maxlength="10" inputmode="numeric"
+                                                                pattern="[0-9]{10}" autocomplete="off"
+                                                                spellcheck="false">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -737,10 +742,25 @@
     var day = ("0" + now.getDate()).slice(-2);
     var month = ("0" + (now.getMonth() + 1)).slice(-2);
 
-    var today = now.getFullYear()+"-"+(month)+"-"+(day) ;
+   var today = now.getFullYear()+"-"+(month)+"-"+(day) ;
 
 
    $('#datePicker').val(today);
+});
+
+$(document).ready(function() {
+    const accountFields = $('#ac_no, #ac_no1');
+    accountFields.on('copy cut paste contextmenu', function(e) {
+        e.preventDefault();
+    });
+    accountFields.on('input', function() {
+        this.value = this.value.replace(/\D/g, '');
+    });
+
+    const upiField = $('#upi');
+    upiField.on('input', function() {
+        this.value = this.value.replace(/\D/g, '').slice(0, 10);
+    });
 });
     </script>
 @endpush

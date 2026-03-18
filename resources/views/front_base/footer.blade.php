@@ -860,7 +860,7 @@
 
 
        function removeCart(id) {
-           var url = '<?= route('removeCart') ?>/' + id;
+           var url = '<?= route('removeCart') ?>/' + encodeURIComponent(id);
 
 
            swal({
@@ -899,12 +899,17 @@
        }
 
 
-       function updateQty(id, type, view) {
-
-           var qty = parseInt($('#quantity' + id).val() || '1', 10);
+       function updateQty(id, type, domId) {
+           var input = null;
+           if (domId) {
+               input = document.getElementById(domId);
+           } else {
+               input = document.querySelector('input[data-item-id="' + String(id).replace(/"/g, '\\"') + '"]');
+           }
+           var qty = parseInt((input ? input.value : '1') || '1', 10);
            var nextQty = (type == 'Add') ? qty + 1 : ((type == 'Minus' && qty > 1) ? qty - 1 : qty);
 
-           if (id > 0) {
+           if (id) {
                var url = '<?= route('updateQty') ?>';
                $.post(url, {
                    id: id,
@@ -913,12 +918,16 @@
                    'type': type,
                }, function(data) {
                    if (data.status === 'error') {
-                       $('#quantity' + id).val(data.quantity || qty);
+                       if (input) {
+                           input.value = data.quantity || qty;
+                       }
                        window.showCenterMessage(data.message || 'Unable to update quantity.', 'error');
                        return;
                    }
 
-                   $('#quantity' + id).val(data.quantity || nextQty);
+                   if (input) {
+                       input.value = data.quantity || nextQty;
+                   }
                    getCart();
                    window.syncCartCount(data.count || 0);
                    window.showCenterMessage(data.message, "success");

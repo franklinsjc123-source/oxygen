@@ -1,6 +1,13 @@
 @extends('layout.auth.master')
 @section('contents')
     @include('paritials.auth.header');
+    <style>
+        #ac_no,
+        #ac_no1 {
+            -webkit-text-security: disc;
+            text-security: disc;
+        }
+    </style>
   
 
     <!-- page-wrapper Start-->
@@ -561,8 +568,13 @@
                                                         <label for="validationCustom0" class="col-xl-3 col-md-3"> Account
                                                             Number</label>
                                                         <div class="col-xl-9 col-md-9">
-                                                            <input class="form-control" id="ac_no" type="text"
-                                                                name="ac_no">
+                                                            <input class="form-control" id="ac_no" type="password"
+                                                                name="ac_no" inputmode="numeric" pattern="[0-9]*"
+                                                                autocomplete="off" spellcheck="false"
+                                                                oncopy="return false" oncut="return false"
+                                                                onpaste="return false" oncontextmenu="return false"
+                                                                onselectstart="return false"
+                                                                style="user-select: none;">
                                                         </div>
                                                     </div>
 
@@ -570,8 +582,14 @@
                                                         <label for="validationCustom0" class="col-xl-3 col-md-3"> Confirm
                                                             Account Number</label>
                                                         <div class="col-xl-9 col-md-9">
-                                                            <input class="form-control" id="ac_no1" type="text"
-                                                                name="ac_no1" onkeyup="validate_acno()">
+                                                            <input class="form-control" id="ac_no1" type="password"
+                                                                name="ac_no1" onkeyup="validate_acno()"
+                                                                inputmode="numeric" pattern="[0-9]*" autocomplete="off"
+                                                                spellcheck="false" oncopy="return false"
+                                                                oncut="return false" onpaste="return false"
+                                                                oncontextmenu="return false"
+                                                                onselectstart="return false"
+                                                                style="user-select: none;">
                                                         </div>
                                                         <span id="wrong_ac_no_alert"></span>
                                                     </div>
@@ -593,7 +611,9 @@
                                                         </div>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="upi" type="text" name="upi"
-                                                                name="ifsc">
+                                                                maxlength="10" inputmode="numeric"
+                                                                pattern="[0-9]{10}" autocomplete="off"
+                                                                spellcheck="false">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -784,6 +804,44 @@
    $('#datePicker').val(today);
     });
 
+    $(document).ready(function() {
+        const accountFields = $('#ac_no, #ac_no1');
+        accountFields.on('copy cut paste contextmenu selectstart', function(e) {
+            e.preventDefault();
+        });
+        accountFields.on('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x' || e.key === 'v')) {
+                e.preventDefault();
+            }
+        });
+        accountFields.on('input', function() {
+            this.value = this.value.replace(/\D/g, '');
+        });
+        accountFields.on('focus blur', function() {
+            this.type = 'password';
+        });
+
+        $(document).on('copy cut paste contextmenu selectstart', function(e) {
+            const el = document.activeElement;
+            if (el && (el.id === 'ac_no' || el.id === 'ac_no1')) {
+                e.preventDefault();
+            }
+        });
+        $(document).on('keydown', function(e) {
+            const el = document.activeElement;
+            if (el && (el.id === 'ac_no' || el.id === 'ac_no1')) {
+                if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x' || e.key === 'v' || e.key === 'a')) {
+                    e.preventDefault();
+                }
+            }
+        });
+
+        const upiField = $('#upi');
+        upiField.on('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 10);
+        });
+    });
+
 
 
     /*Password valitation*/
@@ -810,8 +868,10 @@
     function validate_acno() {
  
         
-            var ac_no = document.getElementById('ac_no').value;
-            var ac_no1 = document.getElementById('ac_no1').value;
+            var acNoField = document.getElementById('ac_no');
+            var acNo1Field = document.getElementById('ac_no1');
+            var ac_no = acNoField.value;
+            var ac_no1 = acNo1Field.value;
             if (ac_no != ac_no1) {
                 document.getElementById('wrong_ac_no_alert').style.color = 'red';
                 document.getElementById('wrong_ac_no_alert').innerHTML

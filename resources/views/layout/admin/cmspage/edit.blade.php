@@ -123,7 +123,7 @@
 	
 	
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-   	<script src="//cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
+   	<script src="https://cdn.ckeditor.com/4.25.1-lts/standard/ckeditor.js"></script>
 
 <script type="text/javascript">
 

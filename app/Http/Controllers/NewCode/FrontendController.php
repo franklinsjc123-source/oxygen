@@ -1164,9 +1164,10 @@ class FrontendController extends Controller
         $color = $input['color'];
         $id    = $input['id'];
         $qty   = max(1, (int) ($input['qty'] ?? 1));
+        $variantKey = $id . '|' . $size . '|' . $color;
         [$cart, $cookie] = $this->cartSession($request);
         $stockQty = $this->getAvailableStock((int) $id, $size, $color);
-        $existingQty = (int) optional($cart->get($id))->quantity;
+        $existingQty = (int) optional($cart->get($variantKey))->quantity;
 
         if ($stockQty <= 0) {
             $response = response()->json([
@@ -1188,11 +1189,12 @@ class FrontendController extends Controller
 
         $prouctsList = $this->getSpecificProduct($id)[$id];
         $cartArray = array(
-            'id'        => $prouctsList['id'],
+            'id'        => $variantKey,
             'name'      => $prouctsList['product_name'],
             'price'     => $prouctsList['selling_price'],
             'quantity'  => $qty,
             'attributes' => array(
+                'product_id' => $prouctsList['id'],
                 'image'     => isset($prouctsList['product_image']) ? $prouctsList['product_image'] : '',
                 'size'      => $size,
                 'color'      => $color,
