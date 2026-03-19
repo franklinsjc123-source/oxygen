@@ -977,6 +977,7 @@
                                                 img.onload = () => {
                                                     URL.revokeObjectURL(img.src); // no longer needed, free memory
                                                 }
+                                                img.style.display = 'block';
                                                 img.src = URL.createObjectURL(file[0]); // set src to blob url
                                             } else {
                                                 img.src = "";
@@ -1000,6 +1001,7 @@
                                                 img.onload = () => {
                                                     URL.revokeObjectURL(img.src); // no longer needed, free memory
                                                 }
+                                                img.style.display = 'block';
                                                 img.src = URL.createObjectURL(file[0]); // set src to blob url
                                             } else {
 
@@ -1024,6 +1026,7 @@
                                                 img.onload = () => {
                                                     URL.revokeObjectURL(img.src); // no longer needed, free memory
                                                 }
+                                                img.style.display = 'block';
                                                 img.src = URL.createObjectURL(file[0]); // set src to blob url
                                             } else {
 
@@ -1048,6 +1051,7 @@
                                                 img.onload = () => {
                                                     URL.revokeObjectURL(img.src); // no longer needed, free memory
                                                 }
+                                                img.style.display = 'block';
                                                 img.src = URL.createObjectURL(file[0]); // set src to blob url
                                             } else {
                                                 img.src = "";

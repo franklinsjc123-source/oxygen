@@ -602,14 +602,37 @@
              });
              if (backdrop) backdrop.addEventListener('click', closeModal);
 
-             if (saveBtn) {
-                 saveBtn.addEventListener('click', function() {
-                     syncFromModal();
-                     persistToStorage();
-                     renderSummary();
-                     saveAddressToApi();
-                     closeModal();
-                 });
+            if (saveBtn) {
+                saveBtn.addEventListener('click', function() {
+                    var requiredModalFields = [
+                        modalFields.firstName,
+                        modalFields.lastName,
+                        modalFields.address,
+                        modalFields.city,
+                        modalFields.postcode,
+                        modalFields.state,
+                        modalFields.phone,
+                        modalFields.email
+                    ];
+
+                    var invalid = false;
+                    requiredModalFields.forEach(function(field) {
+                        if (field && !field.checkValidity()) {
+                            field.reportValidity();
+                            invalid = true;
+                        }
+                    });
+
+                    if (invalid) {
+                        return;
+                    }
+
+                    syncFromModal();
+                    persistToStorage();
+                    renderSummary();
+                    saveAddressToApi();
+                    closeModal();
+                });
              }
 
              if (form) {

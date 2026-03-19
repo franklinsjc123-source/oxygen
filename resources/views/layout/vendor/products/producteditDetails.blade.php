@@ -82,41 +82,77 @@
                                                                    
                                                                     {{-- <input type="hidden" name="newproduct_details_id[]" placeholder=""
                                                                         class="form-control" > --}}
-                                                                    <input type="hidden" name="product_details_id[]" placeholder=""
-                                                                        class="form-control" required  value={{ $productdetails->id }}>
+                                                                <input type="hidden" name="product_details_id[]" placeholder=""
+                                                                    class="form-control" required  value={{ $productdetails->id }}>
+                                                                @php
+                                                                    $p_imgs = json_decode($productdetails->product_detail_image, true) ?: [];
+                                                                @endphp
                                                                 <?php
                                                                 // $p_imgs = json_decode($productdetails->product_detail_image); 
                                                                  //dd($p_imgs);                                                                
                                                                 ?>
 
                                                                                                                             
-                                                                    <div class="col-md-3">
-                                                                        <span class="btn btn-primary btn-productimg"> 
-                                                                            <i class="fa fa-cloud-upload" aria-hidden="true"></i>
-                                                                           <input class="form-control add_product" type="file" onchange="previewmainImg(this)" id="p_mainimg{{ $key }}" name="mainimg[]"  accept="image/*">                                                                          
-                                                                        </span><label class="text-secondary fw-bold">Upload main image</label>
-                                                                    </div>
-                                                                
-                                                                
-                                                                    <div class="col-md-3">
-                                                                        <span class="btn btn-primary btn-productimg"  > 
-                                                                            <i class="fa fa-cloud-upload" aria-hidden="true"></i>
-                                                                            <input class="form-control add_product" type="file" onchange="previewsubImg1(this)" id="subimg1{{ $key }}" name="subimg1[]"  accept="image/*">
-                                                                         </span><label class="text-secondary">Upload Sub image1</label>
-                                                                    </div>
-                                                                    
-                                                                    <div class="col-md-3">
-                                                                        <span class="btn btn-primary btn-productimg"  >
-                                                                            <i class="fa fa-cloud-upload" aria-hidden="true"></i>
-                                                                           <input class="form-control add_product" type="file" onchange="previewsubImg2(this)" id="subimg2{{ $key }}" name="subimg2[]"  accept="image/*">
-                                                                        </span><label class="text-secondary">Upload Sub image2</label>
-                                                                    </div>
-                                                                    
-                                                                    <div class="col-md-3">
-                                                                        <span class="btn btn-primary btn-productimg" >
-                                                                            <i class="fa fa-cloud-upload" aria-hidden="true"></i>
-                                                                           <input class="form-control add_product" type="file" onchange="previewsubImg3(this)" id="subimg3{{ $key }}" name="subimg3[]"  accept="image/*">
-                                                                        </span><label class="text-secondary">Upload Sub image2</label>
+                                                                    <div class="row">
+                                                                        <div class="col-md-3">
+                                                                            <span class="btn btn-primary btn-productimg">
+                                                                                <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+                                                                                <input class="form-control add_product" type="file" onchange="previewmainImg(this)" id="p_mainimg{{ $key }}" name="mainimg[]" accept="image/*">
+                                                                            </span>
+                                                                            <label class="text-secondary fw-bold">Upload main image</label>
+                                                                            <div class="img-thumb-wrapper card shadow mt-2">
+                                                                                <img class="img-thumb" id="mainr{{$key}}" src="{{ !empty($p_imgs[0]) ? url('assets/images/products/detail/'.$p_imgs[0]) : '' }}" style="{{ empty($p_imgs[0]) ? 'display:none;' : '' }}" />
+                                                                                @if(!empty($p_imgs[0]))
+                                                                                    <input type="hidden" name="old_mainimg[]" value="{{$p_imgs[0]}}" accept="image/*">
+                                                                                    <br/><span class="removeimg" id="removemainimg" value="mainimg">Remove</span>
+                                                                                @endif
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-md-3">
+                                                                            <span class="btn btn-primary btn-productimg">
+                                                                                <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+                                                                                <input class="form-control add_product" type="file" onchange="previewsubImg1(this)" id="subimg1{{ $key }}" name="subimg1[]" accept="image/*">
+                                                                            </span>
+                                                                            <label class="text-secondary">Upload Sub image1</label>
+                                                                            <div class="img-thumb-wrapper card shadow mt-2">
+                                                                                <img class="img-thumb" id="sub1r{{$key}}" src="{{ !empty($p_imgs[1]) ? url('assets/images/products/detail/'.$p_imgs[1]) : '' }}" style="{{ empty($p_imgs[1]) ? 'display:none;' : '' }}" />
+                                                                                @if(!empty($p_imgs[1]))
+                                                                                    <input type="hidden" name="old_subimg1[]" value="{{$p_imgs[1]}}" accept="image/*">
+                                                                                    <br/><span class="removeimg" id="removesub1img" value="subimg1">Remove</span>
+                                                                                @endif
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-md-3">
+                                                                            <span class="btn btn-primary btn-productimg">
+                                                                                <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+                                                                                <input class="form-control add_product" type="file" onchange="previewsubImg2(this)" id="subimg2{{ $key }}" name="subimg2[]" accept="image/*">
+                                                                            </span>
+                                                                            <label class="text-secondary">Upload Sub image2</label>
+                                                                            <div class="img-thumb-wrapper card shadow mt-2">
+                                                                                <img class="img-thumb" id="sub2r{{$key}}" src="{{ !empty($p_imgs[2]) ? url('assets/images/products/detail/'.$p_imgs[2]) : '' }}" style="{{ empty($p_imgs[2]) ? 'display:none;' : '' }}" />
+                                                                                @if(!empty($p_imgs[2]))
+                                                                                    <input type="hidden" name="old_subimg2[]" value="{{$p_imgs[2]}}" accept="image/*">
+                                                                                    <br/><span class="removeimg" id="removesub2img" value="subimg2">Remove</span>
+                                                                                @endif
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-md-3">
+                                                                            <span class="btn btn-primary btn-productimg">
+                                                                                <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+                                                                                <input class="form-control add_product" type="file" onchange="previewsubImg3(this)" id="subimg3{{ $key }}" name="subimg3[]" accept="image/*">
+                                                                            </span>
+                                                                            <label class="text-secondary">Upload Sub image2</label>
+                                                                            <div class="img-thumb-wrapper card shadow mt-2">
+                                                                                <img class="img-thumb" id="sub3r{{$key}}" src="{{ !empty($p_imgs[3]) ? url('assets/images/products/detail/'.$p_imgs[3]) : '' }}" style="{{ empty($p_imgs[3]) ? 'display:none;' : '' }}" />
+                                                                                @if(!empty($p_imgs[3]))
+                                                                                    <input type="hidden" name="old_subimg3[]" value="{{$p_imgs[3]}}" accept="image/*">
+                                                                                    <br/><span class="removeimg" id="removesub3img" value="subimg3">Remove</span>
+                                                                                @endif
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
 
                                                                     {{-- <input class="form-control add_product" type="file" id="im{{ $key }}" name="nproducts[]"  multiple accept="image/*">                                                                
@@ -317,42 +353,6 @@
 
                                                             {{-- <div class="col-md-12" id="r{{$key}}">                                                            
                                                             </div> --}}
-                                                            <?php
-                                                                 $p_imgs = json_decode($productdetails->product_detail_image); 
-                                                                 //dd($p_imgs);                                                                
-                                                            ?>
-
-                                                            @foreach ( $p_imgs as $ke => $val)
-                                                            @if($ke == 0)
-                                                            <div class='col-md-2'><div class="img-thumb-wrapper card shadow">
-                                                                <img class="img-thumb" id="mainr{{$key}}"  src="{{ url('assets/images/products/detail/'.$val) }}"   />
-                                                                <input type="hidden" name="old_mainimg[]" value="{{$val}}" accept="image/*">
-                                                                <br/><span class="removeimg" id="removemainimg" value="mainimg">Remove</span>
-                                                            </div></div>
-                                                            @endif
-                                                            @if($ke == 1)
-                                                            <div class='col-md-2'><div class="img-thumb-wrapper card shadow">
-                                                                <img class="img-thumb" id="sub1r{{$key}}"  src="{{ url('assets/images/products/detail/'.$val) }}"   />
-                                                                <input type="hidden" name="old_subimg1[]" value="{{$val}}" accept="image/*">
-                                                                <br/><span class="removeimg" id="removesub1img" value="subimg1">Remove</span>
-                                                            </div></div>
-                                                            @endif
-                                                            @if($ke == 2)
-                                                            <div class='col-md-2'><div class="img-thumb-wrapper card shadow">
-                                                                <img class="img-thumb" id="sub2r{{$key}}"  src="{{ url('assets/images/products/detail/'.$val) }}"   />
-                                                                {{-- <img class="img-thumb" id="sub2r{{$key}}"  src="{{ url('assets/images/products/detail/'.$val) }}"   /> --}}
-                                                                <input type="hidden" name="old_subimg2[]" value="{{$val}}" accept="image/*">
-                                                                <br/><span class="removeimg" id="removesub2img" value="subimg2">Remove</span>
-                                                            </div></div>
-                                                            @endif
-                                                            @if($ke == 3)
-                                                            <div class='col-md-2'><div class="img-thumb-wrapper card shadow">
-                                                                <img class="img-thumb" id="sub3r{{$key}}"  src="{{ url('assets/images/products/detail/'.$val) }}"   />
-                                                                <input type="hidden" name="old_subimg3[]" value="{{$val}}" accept="image/*">
-                                                                <br/><span class="removeimg" id="removesub3img" value="subimg3">Remove</span>
-                                                            </div></div>
-                                                            @endif
-                                                            @endforeach
                                                         </div> 
                                                         @endforeach
                                                     </div>
