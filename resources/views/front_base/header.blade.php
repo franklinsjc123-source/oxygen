@@ -271,6 +271,74 @@
             bottom: 0;
             padding-top: 12px;
         }
+
+        /* ── Megamenu Clean Design ── */
+        .category-menu > li > .megamenu {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 0 18px 14px 18px;
+            margin-top: 0 !important;
+            max-height: 65vh;
+            min-width: 130vh;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #0088dd #eef6fc;
+        }
+        .category-menu > li > .megamenu::-webkit-scrollbar {
+            width: 5px;
+        }
+        .category-menu > li > .megamenu::-webkit-scrollbar-track {
+            background: #eef6fc;
+            border-radius: 10px;
+        }
+        .category-menu > li > .megamenu::-webkit-scrollbar-thumb {
+            background: #0088dd;
+            border-radius: 10px;
+        }
+
+        /* Hide hr dividers */
+        .category-menu > li > .megamenu .divider {
+            display: none;
+        }
+
+        /* Each category column — separator line between */
+        .category-menu > li > .megamenu > li {
+            border-right: 1px solid #e8eff5;
+            padding: 14px 16px 8px;
+        }
+        .category-menu > li > .megamenu > li:last-child {
+            border-right: none;
+        }
+
+        /* Category heading — stands out from subcategories */
+        .category-menu > li > .megamenu > li > a {
+            font-size: 13.5px !important;
+            font-weight: 600 !important;
+            color: #0088dd !important;
+            padding-bottom: 8px !important;
+            margin-bottom: 6px !important;
+            border-bottom: 2px solid #0088dd !important;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .category-menu > li > .megamenu > li > a:hover {
+            color: #006bb3 !important;
+        }
+
+        /* Subcategory child links */
+        .category-menu > li > .megamenu > li ul li a {
+            padding: 5px 0 !important;
+            font-size: 13px !important;
+            color: #444 !important;
+            transition: color 0.2s ease, padding-left 0.2s ease;
+        }
+        .category-menu > li > .megamenu > li ul li a:hover {
+            color: #0088dd !important;
+            padding-left: 6px !important;
+        }
     </style>
 
     <body>
