@@ -1,5 +1,5 @@
    @extends('app_template')
- @section('title','Vendor Products')
+ @section('title','Shop Products')
  @section('content')
   <!-- Start of Main -->
         <main class="main">
@@ -34,6 +34,45 @@
                    
                     <!-- End of Shop Brands-->
 
+                    <!-- Active Category Highlight Styles -->
+                    <style>
+                        /* ── Selected / Active Sub-Category ── */
+                        .category-ellipse.sc-active .category-media {
+                            position: relative;
+                            border-radius: 50%;
+                            padding: 4px;
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+                            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.45),
+                                        0 0 30px rgba(118, 75, 162, 0.2);
+                            transition: all 0.35s cubic-bezier(.25,.8,.25,1);
+                        }
+                        .category-ellipse.sc-active .category-media img {
+                            border-radius: 50%;
+                            border: 3px solid #fff;
+                        }
+                        .category-ellipse.sc-active {
+                            transform: scale(1.08);
+                            transition: transform 0.35s cubic-bezier(.25,.8,.25,1);
+                        }
+                        .category-ellipse.sc-active .category-name a {
+                            color: #764ba2 !important;
+                            font-weight: 700 !important;
+                            letter-spacing: 0.2px;
+                        }
+                        /* Small "selected" dot indicator under the name */
+                     
+                        
+                        /* Hover effect for non-active items */
+                        .category-ellipse:not(.sc-active):hover {
+                            transform: translateY(-3px);
+                            transition: transform 0.25s ease;
+                        }
+                        .category-ellipse:not(.sc-active):hover .category-media {
+                            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                            transition: box-shadow 0.25s ease;
+                        }
+                    </style>
+
                     <!-- Start of Shop Category -->
                     <div class="shop-default-category category-ellipse-section mb-6">
                         <div class="swiper-container swiper-theme shadow-swiper"
@@ -64,13 +103,13 @@
                               	@foreach($sub_categories_menu as $sc )
 
                                     <div class="swiper-slide category-wrap">
-                                        <div class="category category-ellipse">
-                                            <figure class="category-media">
-                                                <a href="{{ url( 'categoryShop/'.$sc->category_id.'/'.$sc->id ) }}">
+                                        <div class="category category-ellipse {{ (isset($sub_category) && $sub_category->id == $sc->id) ? 'sc-active' : '' }}">
+                                            <center> <figure class="category-media">
+                                               <a href="{{ url( 'categoryShop/'.$sc->category_id.'/'.$sc->id ) }}">
                                                     <img src="{{  $sc->category_sub_image ? asset('assets/images/categorySub').'/'.$sc->category_sub_image  : ''}}" alt="Categroy"
                                                     style="background-color: #5C92C0;" />
                                                 </a>
-                                            </figure>
+                                            </figure></center>
                                             <div class="category-content">
                                                 <h4 class="category-name">
                                                     <a href="{{ url( 'categoryShop/'.$sc->category_id.'/'.$sc->id ) }}">{{$sc->category_sub_name}}</a>
