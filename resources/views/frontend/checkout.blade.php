@@ -292,13 +292,13 @@
      </div>
      </div>
 
+     <div class="row gutter-sm">
+     <div class="col-md-6">
      <div class="form-group">
      <label>Country / Region *</label>
      <div class="select-box">
-     <select id="modal_billing_country" class="form-control form-control-md" style="height: 10px">
-     <option value="India"
-     {{ ($customer->customer_country ?? 'India') == 'India' ? 'selected' : '' }}>
-     India</option>
+     <select id="modal_billing_country" class="form-control form-control-md">
+     <option value="India" {{ ($customer->customer_country ?? 'India') == 'India' ? 'selected' : '' }}>India</option>
      <option value="United States">United States</option>
      <option value="United Kingdom">United Kingdom</option>
      <option value="France">France</option>
@@ -306,23 +306,33 @@
      </select>
      </div>
      </div>
+     </div>
+     <div class="col-md-6">
      <div class="form-group">
      <label>Street address *</label>
-     <input type="text" placeholder="House number and street name"
-     class="form-control form-control-md mb-2" id="modal_billing_address"
-     value="{{ $customer->customer_address ?? '' }}" required>
-     <input type="text" placeholder="Apartment, suite, unit, etc. (optional)"
-     class="form-control form-control-md" id="modal_billing_address_2"
-     value="{{ $customer->customer_address1 ?? '' }}">
+     <input type="text" placeholder="House number and street name" class="form-control form-control-md" id="modal_billing_address" value="{{ $customer->customer_address ?? '' }}" required>
+     <input type="hidden" id="modal_billing_address_2" value="{{ $customer->customer_address1 ?? '' }}">
+     </div>
+     </div>
      </div>
      <div class="row gutter-sm">
-     <div class="col-md-6">
+     <div class="col-md-4">
      <div class="form-group">
      <label>Town / City *</label>
      <input type="text" class="form-control form-control-md"
      id="modal_billing_city" value="{{ $customer->customer_city ?? '' }}"
      required>
      </div>
+     </div>
+     <div class="col-md-4">
+     <div class="form-group">
+     <label>State *</label>
+     <input type="text" class="form-control form-control-md"
+     id="modal_billing_state" value="{{ $customer->customer_state ?? '' }}"
+     required>
+     </div>
+     </div>
+     <div class="col-md-4">
      <div class="form-group">
      <label>ZIP *</label>
      <input type="text" class="form-control form-control-md"
@@ -330,25 +340,23 @@
      value="{{ $customer->customer_pincode ?? '' }}" required>
      </div>
      </div>
-     <div class="col-md-6">
-     <div class="form-group">
-     <label>State *</label>
-     <input type="text" class="form-control form-control-md"
-     id="modal_billing_state" value="{{ $customer->customer_state ?? '' }}"
-     required>
      </div>
-     <div class="form-group">
+     <div class="row gutter-sm">
+     <div class="col-md-6">
+     <div class="form-group mb-0">
      <label>Phone *</label>
      <input type="text" class="form-control form-control-md"
      id="modal_billing_phone"
      value="{{ $customer->customer_mobileno ?? '' }}" required>
      </div>
      </div>
-     </div>
+     <div class="col-md-6">
      <div class="form-group mb-0">
      <label>Email address *</label>
      <input type="email" class="form-control form-control-md" id="modal_billing_email"
      value="{{ $customer->customer_email ?? '' }}" required>
+     </div>
+     </div>
      </div>
      </div>
      <div class="modal-footer">
@@ -367,40 +375,163 @@
      </main>
 
      <style>
+     /* Premium Checkout Modal Aesthetics */
+     #deliveryModalBackdrop {
+         position: fixed;
+         inset: 0;
+         background: rgba(15, 23, 42, 0.5) !important;
+         backdrop-filter: blur(4px);
+         z-index: 1040;
+         transition: opacity 0.3s ease;
+     }
+
      #deliveryModal {
-     position: fixed;
-     inset: 0;
-     z-index: 1050;
-     overflow-y: auto;
-     background: rgba(0, 0, 0, 0.4);
+         position: fixed;
+         inset: 0;
+         z-index: 1050;
+         overflow-y: auto;
+         padding: 0 15px;
      }
 
      #deliveryModal .modal-dialog {
-     margin: 2rem auto;
-     max-width: 520px;
+         margin: 5vh auto;
+         max-width: 550px;
+         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+         transform: translateY(-20px) scale(0.98);
+         opacity: 0;
      }
 
-     #deliveryModalBackdrop {
-     position: fixed;
-     inset: 0;
-     background: rgba(0, 0, 0, 0.4);
-     z-index: 1040;
+     #deliveryModal.show .modal-dialog {
+         transform: translateY(0) scale(1);
+         opacity: 1;
      }
 
      #deliveryModal .modal-content {
-     background: #fff;
-     border-radius: 8px;
+         background: #ffffff;
+         border-radius: 16px;
+         border: 1px solid rgba(255, 255, 255, 0.2);
+         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05);
+         overflow: hidden;
      }
 
-     #deliveryModal .modal-header,
-     #deliveryModal .modal-body,
-     #deliveryModal .modal-footer {
-     padding: 0.75rem 1rem;
+     #deliveryModal .modal-header {
+         padding: 24px 28px 16px;
+         border-bottom: 1px solid #f1f5f9;
+         background: linear-gradient(to right, #ffffff, #f8fafc);
+     }
+
+     #deliveryModal .modal-title {
+         font-weight: 700;
+         font-size: 1.45rem;
+         color: #0f172a;
+         letter-spacing: -0.01em;
      }
 
      #deliveryModal .close {
-     font-size: 1.5rem;
-     line-height: 1;
+         font-size: 1.8rem;
+         line-height: 1;
+         color: #94a3b8;
+         text-shadow: none;
+         opacity: 0.6;
+         padding: 0;
+         margin: 0;
+         background: transparent;
+         border: none;
+         transition: all 0.2s ease;
+         outline: none;
+     }
+     
+     #deliveryModal .close:hover {
+         color: #ef4444;
+         opacity: 1;
+         transform: rotate(90deg) scale(1.1);
+     }
+
+     #deliveryModal .modal-body {
+         padding: 24px 28px;
+         background: #fdfdfd;
+     }
+
+     #deliveryModal .modal-footer {
+         padding: 16px 28px 24px;
+         border-top: none;
+         background: #fdfdfd;
+         display: flex;
+         gap: 12px;
+         justify-content: flex-end;
+     }
+
+     /* Form Fields Premium Polish */
+     #deliveryModal .form-group {
+         margin-bottom: 20px;
+     }
+
+     #deliveryModal .form-group label {
+         font-weight: 600;
+         font-size: 0.75rem;
+         color: #64748b;
+         margin-bottom: 8px;
+         display: block;
+         text-transform: uppercase;
+         letter-spacing: 0.7px;
+     }
+
+     #deliveryModal .form-control {
+         border: 1px solid #cbd5e1;
+         border-radius: 8px;
+         padding: 12px 14px;
+         font-size: 0.95rem;
+         color: #334155;
+         transition: all 0.2s ease;
+         background-color: #ffffff;
+     }
+
+     #deliveryModal .form-control:focus {
+         border-color: #0088dd;
+         box-shadow: 0 0 0 4px rgba(0, 136, 221, 0.1);
+         outline: none;
+         background-color: #fff;
+     }
+     
+     /* Force height on form controls to prevent inline bugs */
+     #deliveryModal .select-box select.form-control,
+     #deliveryModal input.form-control {
+         height: 46px !important;
+     }
+
+     /* Action Buttons */
+     #deliveryModal .modal-footer .btn {
+         border-radius: 8px;
+         padding: 12px 28px;
+         font-size: 0.95rem;
+         font-weight: 600;
+         transition: all 0.2s;
+         letter-spacing: 0.3px;
+     }
+
+     #deliveryModal .modal-footer .btn-outline-secondary {
+         border: 1px solid #e2e8f0;
+         color: #64748b;
+         background: #ffffff;
+         box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+     }
+
+     #deliveryModal .modal-footer .btn-outline-secondary:hover {
+         background: #f8fafc;
+         color: #0f172a;
+         border-color: #cbd5e1;
+     }
+
+     #deliveryModal .modal-footer .btn-dark {
+         background: linear-gradient(135deg, #0088dd 0%, #006bb3 100%);
+         border: none;
+         color: #ffffff;
+         box-shadow: 0 4px 12px rgba(0, 136, 221, 0.3);
+     }
+
+     #deliveryModal .modal-footer .btn-dark:hover {
+         transform: translateY(-2px);
+         box-shadow: 0 6px 16px rgba(0, 136, 221, 0.4);
      }
      </style>
 
@@ -572,9 +703,13 @@
                  if (!backdrop && modal) {
                      backdrop = document.getElementById('deliveryModalBackdrop');
                  }
-                 modal.classList.add('show');
                  modal.style.display = 'block';
                  if (backdrop) backdrop.style.display = 'block';
+                 
+                 // Force reflow allowing the display change to register before the class addition
+                 void modal.offsetWidth;
+                 
+                 modal.classList.add('show');
                  document.body.classList.add('modal-open');
              }
 
