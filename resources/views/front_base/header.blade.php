@@ -272,30 +272,66 @@
             padding-top: 12px;
         }
 
-        /* ── Megamenu Clean Design ── */
-        .category-menu > li > .megamenu {
-            background: #fff;
-            border: 1px solid #e8e8e8;
-            border-radius: 0 8px 8px 0;
-            box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.08);
-            padding: 0 18px 14px 18px;
-            margin-top: 0 !important;
-            max-height: 65vh;
-            min-width: 130vh;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: #0088dd #eef6fc;
+        /* ── Megamenu Premium Design ── */
+        /* Ensure megamenu always opens aligned to the very top */
+        .category-menu {
+            position: static !important;
         }
+        .category-menu > li {
+            position: static !important;
+        }
+
+        .category-menu > li > .megamenu {
+            position: absolute !important;
+            top: 0 !important;
+            left: -9999px !important; /* Force off-screen when not hovered */
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9999 !important;
+            background: #ffffff;
+            border: 1px solid rgba(0,0,0,0.04);
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.03);
+            padding: 24px 10px 24px 20px;
+            margin-top: 0 !important;
+            max-height: 70vh;
+            max-width: 910px !important; /* Approx width for exactly 4 columns */
+            width: max-content;
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            overflow: auto !important;
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 #f8fafc;
+        }
+        
+        @keyframes fadeInMenu {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .category-menu > li:hover > .megamenu {
+            left: 100% !important; /* Bring directly to right edge of main menu */
+            visibility: visible;
+            opacity: 1;
+            pointer-events: auto;
+            animation: fadeInMenu 0.3s ease-out forwards;
+        }
+
         .category-menu > li > .megamenu::-webkit-scrollbar {
-            width: 5px;
+            width: 6px;
+            height: 6px;
         }
         .category-menu > li > .megamenu::-webkit-scrollbar-track {
-            background: #eef6fc;
+            background: #f8fafc;
             border-radius: 10px;
         }
         .category-menu > li > .megamenu::-webkit-scrollbar-thumb {
-            background: #0088dd;
+            background: #cbd5e1;
             border-radius: 10px;
+        }
+        .category-menu > li > .megamenu::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
 
         /* Hide hr dividers */
@@ -303,41 +339,74 @@
             display: none;
         }
 
-        /* Each category column — separator line between */
+        /* Each category column */
         .category-menu > li > .megamenu > li {
-            border-right: 1px solid #e8eff5;
-            padding: 14px 16px 8px;
+            flex: 0 0 220px !important; /* Force exact uniform column width */
+            max-width: 220px !important;
+            border-right: 1px solid #f1f5f9 !important;
+            padding: 10px 24px !important;
+            margin: 0 !important;
+            transition: transform 0.3s ease;
         }
         .category-menu > li > .megamenu > li:last-child {
-            border-right: none;
+            border-right: none !important;
+            padding: 10px 24px !important;
+            margin: 0 !important;
+        }
+        .category-menu > li > .megamenu > li:hover {
+            transform: translateY(-2px);
         }
 
-        /* Category heading — stands out from subcategories */
+        /* Category heading — Bold & Elegant */
         .category-menu > li > .megamenu > li > a {
-            font-size: 13.5px !important;
-            font-weight: 600 !important;
-            color: #0088dd !important;
-            padding-bottom: 8px !important;
-            margin-bottom: 6px !important;
-            border-bottom: 2px solid #0088dd !important;
-            display: block;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            color: #1e293b !important;
+            padding: 0 0 10px 0 !important;
+            margin: 0 0 12px 0 !important;
+            border-bottom: 2px solid #e2e8f0 !important;
+            display: block !important;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
+            position: relative;
+            white-space: nowrap;
         }
-        .category-menu > li > .megamenu > li > a:hover {
-            color: #006bb3 !important;
+        
+        /* Subtle animated underline on hover for heading */
+        .category-menu > li > .megamenu > li > a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #0088dd;
+            transition: width 0.3s ease;
+        }
+        .category-menu > li > .megamenu > li:hover > a::after {
+            width: 30px;
         }
 
         /* Subcategory child links */
         .category-menu > li > .megamenu > li ul li a {
-            padding: 5px 0 !important;
-            font-size: 13px !important;
-            color: #444 !important;
-            transition: color 0.2s ease, padding-left 0.2s ease;
+            padding: 6px 10px !important;
+            margin-bottom: 2px;
+            font-size: 12.5px !important;
+            font-weight: 500 !important;
+            color: #475569 !important;
+            border-radius: 6px;
+            transition: all 0.2s ease-in-out;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            background-color: transparent;
         }
+        
         .category-menu > li > .megamenu > li ul li a:hover {
             color: #0088dd !important;
-            padding-left: 6px !important;
+            background-color: #f1f6fa !important;
+            padding-left: 16px !important;
         }
     </style>
 
@@ -508,24 +577,17 @@
                                                             @foreach ($categoriesmain->submenu as $submenus)
                                                                 @if (count($submenus->childmenu) > 0)
                                                                     <li>
-                                                                        <a
-                                                                            href="{{ url('categoryShop/' . $submenus->id) }}">
-                                                                           
-                                                                              <b> {{ $submenus->category_name }}</b> 
-                                                                        </a>
+                                                                        <a href="{{ url('categoryShop/' . $submenus->id) }}">{{ $submenus->category_name }}</a>
                                                                         <hr class="divider">
                                                                         <ul>
                                                                             @foreach ($submenus->childmenu as $childmenus)
-                                                                                <li><a
-                                                                                        href="{{ url('categoryShop/' . $submenus->id . '/' . $childmenus->id) }}">{{ $childmenus->category_sub_name }}
-                                                                                    </a></li>
+                                                                                <li><a href="{{ url('categoryShop/' . $submenus->id . '/' . $childmenus->id) }}">{{ $childmenus->category_sub_name }}</a></li>
                                                                             @endforeach
                                                                         </ul>
-
                                                                     </li>
                                                                 @else
-                                                                    <li><a
-                                                                            href="{{ url('categoryShop/' . $submenus->id) }}">{{ $submenus->category_name }}</a>
+                                                                    <li>
+                                                                        <a href="{{ url('categoryShop/' . $submenus->id) }}">{{ $submenus->category_name }}</a>
                                                                     </li>
                                                                 @endif
                                                             @endforeach
