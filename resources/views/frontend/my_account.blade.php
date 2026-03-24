@@ -24,6 +24,15 @@
             font-size: 18px;
         }
     } */
+
+
+    .shop-footer{
+        height: 69px !important;
+    }
+    .shop-details-ps-image{
+            height: 65px;
+            /* margin-top: 12px; */
+    }
     .order-summary-row {
         cursor: pointer;
     }
@@ -130,7 +139,7 @@
                    <div class="tab-content mb-6">
                        <div class="tab-pane active in" id="account-dashboard">
                            <div class="row account-dashboard-grid">
-                               <div class="col-lg-4 col-md-6 col-sm-4 col-xs-6 mb-4">
+                               <div class="col-lg-3 col-md-6 col-sm-4 col-xs-6 mb-4">
                                    <a href="#account-orders" data-bs-toggle="tab" class="dashboard-option">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-orders">
@@ -142,7 +151,7 @@
                                        </div>
                                    </a>
                                </div>
-                               <div class="col-lg-4 col-md-6 col-sm-4 col-xs-6 mb-4">
+                               <div class="col-lg-3 col-md-6 col-sm-4 col-xs-6 mb-4">
                                    <a href="#account-downloads" data-bs-toggle="tab" class="dashboard-option">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-download">
@@ -154,7 +163,7 @@
                                        </div>
                                    </a>
                                </div>
-                               <div class="col-lg-4 col-md-6 col-sm-4 col-xs-6 mb-4">
+                               <div class="col-lg-3 col-md-6 col-sm-4 col-xs-6 mb-4">
                                    <a href="#account-addresses" data-bs-toggle="tab" class="dashboard-option">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-address">
@@ -166,7 +175,7 @@
                                        </div>
                                    </a>
                                </div>
-                               <div class="col-lg-4 col-md-6 col-sm-4 col-xs-6 mb-4">
+                               <div class="col-lg-3 col-md-6 col-sm-4 col-xs-6 mb-4">
                                    <a href="#profile-details" data-bs-toggle="tab" class="dashboard-option">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-account">
@@ -178,7 +187,7 @@
                                        </div>
                                    </a>
                                </div>
-                               <div class="col-lg-4 col-md-6 col-sm-4 col-xs-6 mb-4">
+                               <div class="col-lg-3 col-md-6 col-sm-4 col-xs-6 mb-4">
                                    <a href="#account-details" data-bs-toggle="tab" class="dashboard-option">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-account">
@@ -190,7 +199,7 @@
                                        </div>
                                    </a>
                                </div>
-                               <div class="col-lg-4 col-md-6 col-sm-4 col-xs-6 mb-4">
+                               <div class="col-lg-3 col-md-6 col-sm-4 col-xs-6 mb-4">
                                    <a href="#wishlist" data-bs-toggle="tab" class="dashboard-option">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-wishlist">
@@ -202,7 +211,7 @@
                                        </div>
                                    </a>
                                </div>
-                               <div class="col-lg-4 col-md-6 col-sm-4 col-xs-6 mb-4">
+                               <div class="col-lg-3 col-md-6 col-sm-4 col-xs-6 mb-4">
                                    <a href="{{ route('customer-logout') }}">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-logout">
@@ -218,8 +227,8 @@
                        </div>
 
                        <div class="tab-pane mb-4" id="account-orders">
-                           <div class="account-back-wrap">
-                               <a href="#account-dashboard" data-bs-toggle="tab" class="btn btn-outline btn-default btn-sm account-back-btn back-to-dashboard">Back</a>
+                           <div class="account-back-wrap mt-5" style="float:right" >
+                               <a  href="#account-dashboard" data-bs-toggle="tab" class="btn btn-outline btn-default btn-sm account-back-btn back-to-dashboard">Back </a>
                            </div>
                            <center><h3>Orders</h3></center>
 
@@ -312,12 +321,12 @@
                                 </tbody>
                            </table>
 
-                           <a href="shop-banner-sidebar.html" class="btn btn-dark btn-rounded btn-icon-right">Go
+                           <a href="{{ url('shops') }}" class="btn btn-dark btn-rounded btn-icon-right">Go
                                Shop<i class="w-icon-long-arrow-right"></i></a>
                        </div>
 
                        <div class="tab-pane" id="account-downloads">
-                            <div class="account-back-wrap">
+                            <div class="account-back-wrap" style="float:right" >
                                 <a href="#account-dashboard" data-bs-toggle="tab" class="btn btn-outline btn-default btn-sm account-back-btn back-to-dashboard">Back</a>
                             </div>
                          
@@ -357,7 +366,7 @@
                        </div>
 
                        <div class="tab-pane" id="account-addresses">
-                           <div class="account-back-wrap">
+                           <div class="account-back-wrap" style="float:right" >
                                <a href="#account-dashboard" data-bs-toggle="tab" class="btn btn-outline btn-default btn-sm account-back-btn back-to-dashboard">Back</a>
                            </div>
                           
@@ -480,7 +489,7 @@
                            </div>
                        </div>
                        <div class="tab-pane" id="profile-details">
-                          <div class="account-back-wrap">
+                          <div class="account-back-wrap" style="float:right">
                               <a href="#account-dashboard" data-bs-toggle="tab" class="btn btn-outline btn-default btn-sm account-back-btn back-to-dashboard">Back</a>
                           </div>
                            
@@ -540,7 +549,7 @@
                    </div>
 
                     <div class="tab-pane" id="account-details">                           
-                        <div class="account-back-wrap">
+                        <div class="account-back-wrap" style="float:right">
                             <a href="#account-dashboard" data-bs-toggle="tab" class="btn btn-outline btn-default btn-sm account-back-btn back-to-dashboard">Back</a>
                         </div>
                         <center><h3>Account Details</h3></center> 
@@ -587,7 +596,7 @@
                     </div>
 
                     <div class="tab-pane" id="wishlist">                           
-                        <div class="account-back-wrap">
+                        <div class="account-back-wrap" style="float:right">
                             <a href="#account-dashboard" data-bs-toggle="tab" class="btn btn-outline btn-default btn-sm account-back-btn back-to-dashboard">Back</a>
                         </div>
                         <center><h3>Wishlist</h3></center> 

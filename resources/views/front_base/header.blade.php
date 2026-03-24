@@ -76,8 +76,8 @@
 
     // $categorysub = CategorySub::orderBy('category_sub_sortorder', 'asc')->get();
     $count = Cart::getContent()->count();
-    $customerName = Session::get('customer_name');
-    if (!$customerName && Session::has('customer_id')) {
+    // $customerName = Session::get('customer_name');
+    if ( Session::has('customer_id')) {
         $customerName = optional(Ecom_Customer_info::where('customer_id', Session::get('customer_id'))->first())->customer_firstname;
     }
     ?>
@@ -504,7 +504,8 @@
 
                             <?php  if(session('customer_id')){ ?>
 
-                            <a href="{{ route('myAccount') }}" class="compare label-down link d-xs-show">
+                            <a href="{{ route('myAccount') }}" class="compare label-down link d-xs-show mt-1">
+                                  <i class="w-icon-account" style="font-size:24px;"></i>
                                 <span class="compare-label d-lg-show mt-1">{{ $customerName ?: 'Account' }}</span>
                             </a>
 

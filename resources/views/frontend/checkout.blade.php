@@ -1,11 +1,5 @@
  @extends('app_template')
  @section('title', 'Checkout Page')
- <style>
- .product-media img {
- height: 134px !important;
- width: 50% !important;
- }
- </style>
  @section('content')
      <div class="woo-page-header">
      <div class="">
@@ -27,19 +21,234 @@
 
 
      <!-- Start of PageContent -->
+     <style>
+         /* Premium Checkout Redesign */
+
+          .shop-footer{
+                height: 69px !important;
+            }
+            .shop-details-ps-image{
+                    height: 65px;
+                    /* margin-top: 12px; */
+            }
+
+         .checkout .card {
+             border: 1px solid rgba(0,0,0,0.05) !important;
+             border-radius: 12px !important;
+             box-shadow: 0 6px 16px rgba(0,0,0,0.03) !important;
+             background: #ffffff !important;
+             margin-bottom: 24px !important;
+             overflow: hidden !important;
+         }
+         .checkout .card-header {
+             background: #f8fafc !important;
+             border-bottom: 1px solid rgba(0,0,0,0.04) !important;
+             padding: 18px 24px !important;
+         }
+         .checkout .card-header h4 {
+             font-weight: 700 !important;
+             font-size: 1.15rem !important;
+             color: #1e293b !important;
+             margin: 0 !important;
+             letter-spacing: -0.01em !important;
+         }
+         .checkout .card-body {
+             padding: 24px !important;
+         }
+         
+         /* Login / Coupon Notices */
+         .checkout-notice {
+             background: #f0f7ff;
+             border-left: 4px solid #0088dd;
+             padding: 14px 20px;
+             border-radius: 8px;
+             margin-bottom: 16px;
+             font-size: 0.95rem;
+             color: #334155;
+             display: flex;
+             align-items: center;
+             gap: 12px;
+             box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+         }
+         .checkout-notice a {
+             color: #0088dd !important;
+             font-weight: 700 !important;
+             text-decoration: underline !important;
+         }
+
+         /* Product List Fixes */
+         .checkout .product-list {
+             background: #ffffff !important;
+             border: 1px solid #e2e8f0 !important;
+             border-radius: 10px !important;
+             padding: 20px !important;
+             margin-bottom: 16px !important;
+             transition: all 0.3s ease !important;
+             display: flex !important;
+             align-items: flex-start !important;
+             justify-content: space-between !important;
+         }
+         .checkout .product-list:hover {
+             box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+             border-color: #cbd5e1 !important;
+         }
+         .checkout .product-media {
+             border-radius: 8px !important;
+             overflow: hidden !important;
+             border: 1px solid rgba(0,0,0,0.04) !important;
+             flex-shrink: 0 !important;
+             flex-basis: 75px !important;
+             width: 75px !important;
+             max-width: 75px !important;
+             height: 75px !important;
+             margin-right: 20px !important;
+             display: flex !important;
+             align-items: center !important;
+             justify-content: center !important;
+             background: #f8fafc !important;
+         }
+         .checkout .product-media img {
+             width: 100% !important;
+             height: 100% !important;
+             max-height: 75px !important;
+             max-width: 75px !important;
+             object-fit: cover !important;
+         }
+         .checkout .product-details {
+             flex: 1 1 auto !important;
+             min-width: 0 !important;
+         }
+         .checkout .product-name {
+             font-size: 1.15rem !important;
+             font-weight: 700 !important;
+             color: #1e293b !important;
+             margin-bottom: 6px !important;
+         }
+         .checkout .product-meta {
+             font-size: 0.95rem !important;
+             color: #64748b !important;
+             line-height: 1.4 !important;
+         }
+         .checkout .product-price-block {
+             flex: 0 0 auto !important;
+             text-align: right !important;
+             display: flex !important;
+             flex-direction: column !important;
+             align-items: flex-end !important;
+             padding-left: 20px !important;
+         }
+         .checkout .product-price-block .price {
+             font-size: 1.2rem !important;
+             font-weight: 800 !important;
+             color: #0f172a !important;
+         }
+         .checkout .product-price-block .total {
+             font-size: 0.95rem !important;
+             color: #64748b !important;
+             margin-top: 4px !important;
+         }
+
+         /* Sidebar "Your Order" */
+         .order-summary-wrapper.sticky-sidebar {
+             border: 1px solid rgba(0,0,0,0.05);
+             border-radius: 12px;
+             box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+             background: #ffffff;
+             padding: 24px;
+         }
+         .order-summary-wrapper .title {
+             font-weight: 800;
+             font-size: 1.25rem;
+             color: #0f172a;
+             border-bottom: 2px solid #f1f5f9;
+             padding-bottom: 16px;
+             margin-bottom: 16px;
+             letter-spacing: -0.01em;
+         }
+         .order-table th, .order-table td {
+             padding: 14px 0 !important;
+             border-bottom: 1px dashed #e2e8f0 !important;
+             font-size: 0.95rem;
+         }
+         .order-table .product-name {
+             color: #475569;
+         }
+         .order-table .product-total {
+             font-weight: 600;
+             color: #1e293b;
+             text-align: right;
+         }
+         .order-total th, .order-total td {
+             padding: 24px 0 8px 0 !important;
+             border-top: 2px solid #cbd5e1 !important;
+             border-bottom: none !important;
+         }
+         .order-total b {
+             font-size: 1.35rem;
+             color: #0088dd;
+         }
+
+         /* Payment Methods */
+         .payment-methods {
+             margin-top: 24px;
+             padding-top: 24px;
+             border-top: 1px solid #f1f5f9;
+         }
+         .payment-methods .title {
+             font-size: 1.1rem;
+             color: #1e293b;
+             margin-bottom: 16px;
+         }
+         .payment-accordion .card {
+             border: 1px solid #e2e8f0 !important;
+             border-radius: 8px !important;
+             margin-bottom: 12px !important;
+             box-shadow: none !important;
+         }
+         .payment-accordion .card-header a {
+             padding: 14px 20px;
+             font-weight: 600;
+             color: #334155;
+             display: block;
+             background: #f8fafc;
+             border-radius: 8px;
+             text-decoration: none;
+         }
+         .payment-accordion .card-body {
+             padding: 16px 20px !important;
+             font-size: 0.9rem;
+             color: #64748b;
+             background: #ffffff;
+         }
+         
+         .place-order .btn {
+             background: linear-gradient(135deg, #0088dd 0%, #006bb3 100%) !important;
+             border: none !important;
+             color: #ffffff !important;
+             font-size: 1.1rem !important;
+             font-weight: 700 !important;
+             padding: 16px !important;
+             border-radius: 8px !important;
+             box-shadow: 0 6px 20px rgba(0, 136, 221, 0.3) !important;
+             transition: all 0.2s ease;
+         }
+         .place-order .btn:hover {
+             transform: translateY(-2px);
+             box-shadow: 0 8px 25px rgba(0, 136, 221, 0.4) !important;
+         }
+     </style>
      <div class="page-content">
      <div class="container">
      @if (!session()->has('customer_id'))
-     <div style="cursor:pointer">
-     Returning customer? <a onclick="showLoginPopup('{{ route('checkoutPage') }}')"
-     class="show-login font-weight-bold text-uppercase text-dark">Login</a>
+     <div class="checkout-notice">
+         <i class="w-icon-account" style="font-size: 20px;"></i>
+         <span>Returning customer? <a onclick="showLoginPopup('{{ route('checkoutPage') }}')" class="show-login" style="cursor:pointer">Click here to login</a></span>
      </div>
      @endif
 
-     <div class="coupon-toggle mt-3">
-     Have a coupon? <a href="#" class="show-coupon font-weight-bold text-uppercase text-dark">Enter
-     your
-     code</a>
+     <div class="checkout-notice mt-3 coupon-toggle" style="cursor:pointer">
+         <i class="w-icon-coupon" style="font-size: 20px;"></i>
+         <span>Have a coupon? <a class="show-coupon">Click here to enter your code</a></span>
      </div>
      <div class="coupon-content mb-4">
      <p>If you have a coupon code, please apply it below.</p>
@@ -104,32 +313,27 @@
      </div>
      <div class="card-body">
      @foreach ($records as $item)
-     <div class="product product-list d-flex align-items-center mb-3">
-     <figure class="product-media mr-3">
-     <img src="{{ asset('assets/images/products/' . ($item['attributes']['image'] ?? '')) }}"
-     alt="product" width="80" height="90">
+     <div class="product product-list d-flex align-items-center">
+     <figure class="product-media">
+     <img src="{{ asset('assets/images/products/' . ($item['attributes']['image'] ?? '')) }}" alt="product">
      </figure>
      <div class="product-details flex-grow-1">
-     <div class="product-name mb-1">{{ $item['name'] }}</div>
-     <div class="product-price font-weight-bold mb-1">
-     &#8377;{{ number_format($item['price'], 2) }}
-     </div>
+     <div class="product-name">{{ $item['name'] }}</div>
      @if (!empty($item['attributes']['size']) || !empty($item['attributes']['color']))
-     <div class="small text-muted">
+     <div class="product-meta">
      @if (!empty($item['attributes']['size']))
-     Size: {{ $item['attributes']['size'] }}
+     Size: <b>{{ $item['attributes']['size'] }}</b>
      @endif
      @if (!empty($item['attributes']['color']))
-     | Color: {{ $item['attributes']['color'] }}
+     <span class="mx-1">|</span> Color: <b>{{ $item['attributes']['color'] }}</b>
      @endif
      </div>
      @endif
-     <div class="small text-muted">Qty: {{ $item['quantity'] }}</div>
+     <div class="product-meta mt-1">Qty: <b>{{ $item['quantity'] }}</b></div>
      </div>
-     <div class="text-right">
-     <div class="small text-muted">Total:
-     &#8377;{{ number_format($item['price'] * $item['quantity'], 2) }}
-     </div>
+     <div class="product-price-block">
+     <div class="price">&#8377;{{ number_format($item['price'], 2) }}</div>
+     <div class="total">Total: <b>&#8377;{{ number_format($item['price'] * $item['quantity'], 2) }}</b></div>
      </div>
      </div>
      @endforeach
@@ -158,12 +362,9 @@
      @foreach ($checkoutSummary['lines'] ?? [] as $item)
      <tr class="bb-no">
      <td class="product-name">
-     <div>{{ $item['name'] }}</div>
-     <div class="mt-1 text-muted">
-     &#8377;{{ number_format($item['unit_price'] ?? 0, 2) }}
+     {{ $item['name'] }}
      <i class="fas fa-times"></i>
      <span class="product-quantity">{{ $item['qty'] }}</span>
-     </div>
      </td>
      <td class="product-total">
      &#8377;{{ number_format($item['line_total'], 2) }}
@@ -472,7 +673,7 @@
 
      #deliveryModal .form-group label {
          font-weight: 600;
-         font-size: 0.75rem;
+         font-size: 0.9rem;
          color: #64748b;
          margin-bottom: 8px;
          display: block;
