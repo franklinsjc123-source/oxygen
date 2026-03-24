@@ -145,59 +145,44 @@ class AuthController extends Controller
 
     public function stafflogin(Request $request)
     {
-        //$status = $id;
-
         $data['username'] = $request->username;
         $data['password'] = $request->password;
-        //$data['status'] = $status;
-         //dd($request);
         
-            if (auth()->attempt($data)) {
-                $userId = Auth::user()->id;
-                //return $userId;
-                $userLevel = Auth::user()->level;
-                $login_id   = Auth::user()->login_id;
-                  
-                FacadesSession::put('username', $data['username']);
-                FacadesSession::put('userId', $userId);
-                FacadesSession::put('level', $userLevel);
-                FacadesSession::put('login_id', $login_id);
-                //return 'admin';
-                $status   = Auth::user()->status;
-                $routename = Route::currentRouteName();
-               // dd($status);
-                // if($status == 1){
-                //     //return $id;
-                // return redirect()->route('admindashboard');
-                // }  vendorerror
-                if($status == 3){   
-                $id   = Auth::user()->login_id;
-                //return $id;
-                return redirect()->route('staffdashboard', $id);
-                return 'vendor';
-                }else {
-                    return redirect()->route('stafferror');
-                    return view('auth.stafflogin');
-                }
+        if (auth()->attempt($data)) {
+            $user = Auth::user();
+            $staffExists = \App\Models\Staffcreates::where('employee_id', $user->login_id)->exists();
 
-        }       
-         
-         else {
-            return view('auth.stafflogin');
-            //return redirect('/login');
-            $decrypted = Crypt::decryptString('$2y$10$bRNXTmZ9.kCorxD9SPIaw.hrRsme48WT/GOW6QnkNsIjTrTZKzSjW');
-            //$decrypted = Crypt::decryptString('YTo0OntzOjY6Il90b2tlbiI7czo0MDoicW5oMTZDcGJRUGRmRm');
-			dd($decrypted);
-            try {
-                $decrypted = decrypt('$2y$10$bRNXTmZ9.kCorxD9SPIaw.hrRsme48WT/GOW6QnkNsIjTrTZKzSjW');
-				//$decrypted = decrypt('YTo0OntzOjY6Il90b2tlbiI7czo0MDoicW5oMTZDcGJRUGRmRm');
-            } catch (DecryptException $e) {
-                //
+            if ($staffExists && (int) $user->status !== 3) {
+                $user->status = 3;
+                if (empty($user->log_type)) {
+                    $user->log_type = 'Staff';
+                }
+                $user->save();
+                $user = $user->fresh();
             }
 
-            $viewBag['error'] = $decrypted;
-            return view('auth.vendorlogin', $viewBag);
+            $userId = $user->id;
+            $userLevel = $user->level;
+            $login_id = $user->login_id;
+            $status = $user->status;
+            $log_type = $user->log_type ?? 'Staff';
+
+            FacadesSession::put('username', $data['username']);
+            FacadesSession::put('userId', $userId);
+            FacadesSession::put('level', $userLevel);
+            FacadesSession::put('login_id', $login_id);
+            FacadesSession::put('status', $status);
+            FacadesSession::put('log_type', $log_type);
+
+            if ($status == 3) {
+                return redirect()->route('staffdashboard', $login_id);
+            }
+
+            Auth::logout();
+            return redirect()->route('stafferror');
         }
+
+        return view('auth.stafflogin');
     }
 
     

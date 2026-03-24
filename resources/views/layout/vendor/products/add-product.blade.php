@@ -195,7 +195,9 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
                                                     <div class="form-group">
                                                         <h5 class="fw-bold">Attribute</h5>
                                                         <div id="clothing">
@@ -206,8 +208,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="row">
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <h5 class="fw-bold">No.of Products</h5>

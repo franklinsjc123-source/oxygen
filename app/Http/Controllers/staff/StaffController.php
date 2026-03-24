@@ -156,6 +156,7 @@ class StaffController extends Controller
                 $user->password = $pass;
                 $user->level = 0;
                 $user->status = 3;
+                $user->log_type = 'Staff';
                 $user->save();
             }else{
                 //$flasher->addError('Something Error!! =>');
@@ -360,19 +361,11 @@ class StaffController extends Controller
             // $data['password'] = $request->password;
             
           
-              $staff  =    User::where([['login_id', $employee_id ],['status', 3]])->get();
-            //   $status   =     User::where('status', 3)->get();
-
-
-              //dd($user[0]->id);
-            //$data['status'] = $status;
-            // dd($request);
-            
-              
-              $user = User::find($staff[0]->id);
+              $user = User::where('login_id', $employee_id)->first();
+              if (!$user) {
+                  $user = new User();
+              }
               $pass   =  Hash::make($request->password);
-              //$user->id = $id;
-              //$user->admin_id = 0;
               $user->login_id = $employee_id;
               $user->name     = $request->fullname;
               $user->firstName = $request->department;
@@ -382,7 +375,8 @@ class StaffController extends Controller
               $user->password = $pass;
               $user->level = 0;
               $user->status = 3;
-              $user->update();
+              $user->log_type = 'Staff';
+              $user->save();
                     return redirect()->route('staff-list');
                 //return 'vendor';
                     

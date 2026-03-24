@@ -371,23 +371,13 @@
 	
 	<script src="https://cdn.ckeditor.com/4.25.1-lts/standard/ckeditor.js"></script>
 
-<script type="text/javascript">
-
-    $(document).ready(function() {
-
-       $('.ckeditor').ckeditor();
-
-    });
-
-</script>
 <script>
-	CKEDITOR.replace( 'description' );
-	CKEDITOR.replace( 'editdescription' );
-	timer = setInterval(updateDiv,100);
-    function updateDiv(){
-        var editorText = CKEDITOR.instances.editdescription.getData();
-        $('#trackingDiv').html(editorText);
-    }
+	if (!CKEDITOR.instances.description) {
+		CKEDITOR.replace('description');
+	}
+	if (!CKEDITOR.instances.editdescription) {
+		CKEDITOR.replace('editdescription');
+	}
 </script>
 
 <script>
@@ -439,11 +429,11 @@ $(document).on('click','.edit_package', function(e){
                     $('#editdays').val(response.packages.days);
                     $('#editwallet').val(response.packages.wallet);
                     $('#editcommission').val(response.packages.commission);
-                    var desc= (response.packages.description);
-// alert(desc);
-					// var editorText = CKEDITOR.instances.description.getData();
-					 CKEDITOR.instances.editdescription.setData(desc);
-					// alert(editorText);
+                    var desc = response.packages.description || '';
+                    $('#editdescription').val(desc);
+                    if (CKEDITOR.instances.editdescription) {
+						CKEDITOR.instances.editdescription.setData(desc);
+					}
 					$('#package_id').val(pack_id);
                     // var editroute_id = response.pincodee.route_id;
                     // //alert(editroute_id);
@@ -467,9 +457,7 @@ $(document).on('click','.edit_package', function(e){
 	  <script>
 		/*update*/
      $(document).on('click','#update_package', function(e){
-    //  alert('test');
-
-        //  e.preventDefault(e);
+        e.preventDefault();
     var updateid = $('#package_id').val();
      //alert(updateid);
 	 var name = $('#editname').val();
@@ -480,8 +468,7 @@ $(document).on('click','.edit_package', function(e){
     var days = $('#editdays').val();
     var  wallet = $('#editwallet').val();
 	var  commission = $('#editcommission').val();
-	var description = CKEDITOR.instances.editdescription.getData();
-	// var  description = $('#editdescription').val();
+	var description = CKEDITOR.instances.editdescription ? CKEDITOR.instances.editdescription.getData() : $('#editdescription').val();
 
     var url ="{{route('staffpackage.update', ":updateid")}}";
     url = url.replace(":updateid", updateid);
@@ -500,10 +487,8 @@ $(document).on('click','.edit_package', function(e){
 	data: {	 		_token : `{{csrf_token()}}`,
            name:name,status:status,price:price,validity:validity,days:days,wallet:wallet,commission:commission,description:description
 	},
-         dataType: 'html',
+         dataType: 'json',
           success: function (response) {
-               //console.log(response);
-
                $('#exampleupdateModal').modal('hide');
                location.reload();
            

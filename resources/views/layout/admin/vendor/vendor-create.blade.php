@@ -602,25 +602,6 @@
                                                     <textarea class="form-control" readonly rows="3" id="description" type="text" name="description"></textarea>
                                                 </div>
                                             </div>
-                                            <div class="modal-footer">
-                                                <button class="btn btn-lg btn-secondary px-5" type="button">Send
-                                                    OTP</button>
-                                            </div>
-
-                                            <div class="row pt-2 mt-2 px-4">
-                                                <div class="col-md-9">
-                                                    <div class="form-group row">
-                                                        <label for="validationCustom0"
-                                                            class="col-xl-6 col-md-6 text-right"><span
-                                                                calss="text-right">Enter OTP (Mobile Number)</span></label>
-                                                        <div class="col-xl-6 col-md-6">
-                                                            <input class="form-control" id="validationCustom0"
-                                                                type="text" name="graceperiod">
-                                                        </div>
-                                                    </div>
-                                                    <br>
-                                                </div>
-                                            </div>
                                         </div>
 
                                         <div class="tab-pane fade show " id="top-bank" role="tabpanel"
@@ -673,6 +654,17 @@
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ifsc" type="text"
                                                                 name="ifsc">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="vendor_otp" class="col-xl-3 col-md-3">OTP</label>
+                                                        <div class="col-xl-6 col-md-6">
+                                                            <input class="form-control" id="vendor_otp"
+                                                                type="text" name="graceperiod">
+                                                        </div>
+                                                        <div class="col-xl-3 col-md-3">
+                                                            <button class="btn btn-secondary w-100" type="button">Send
+                                                                OTP</button>
                                                         </div>
                                                     </div>
                                                     <hr>
@@ -923,7 +915,7 @@
         });
         $(document).ready(function() {
 
-            $('#package').on('click', function() {
+            $('#package').on('change', function() {
                 var package = $(this).val();
                 // alert(package);
                 if (package) {

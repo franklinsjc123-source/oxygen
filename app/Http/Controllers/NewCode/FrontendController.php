@@ -441,7 +441,7 @@ class FrontendController extends Controller
                 DB::raw('MIN(products_details.low_stock_limit) as low_stock_limit')
             )
             ->where('products.vendor_id', $id)
-            ->where('products.status', 0)
+            ->where('products.status', 1)
             ->groupBy(
                 'products.id',
                 'products.product_name',
@@ -1537,6 +1537,7 @@ class FrontendController extends Controller
                 DB::raw('GROUP_CONCAT(DISTINCT o.id) as offer_ids')
             )
             ->whereNotNull('o.id')
+            ->where('p.status', 1)
             ->groupBy(
                 'vd.id',
                 'vd.shop_name',

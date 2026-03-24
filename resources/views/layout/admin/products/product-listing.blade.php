@@ -701,18 +701,26 @@ function getquantity(id) {
 }
 
 function createProductRow(productDetails) {
+    const attributeRows = [
+        [productDetails.attributename1, productDetails.attributevalue1],
+        [productDetails.attributename2, productDetails.attributevalue2],
+        [productDetails.attributename3, productDetails.attributevalue3],
+    ].filter(function(item) {
+        return item[0] && item[1];
+    }).map(function(item) {
+        return `<div>${item[0]} : ${item[1]}</div>`;
+    }).join('');
+
     return `
-        <div class="row mb-2">
-                               
-        <div class="col-md-2">
-            <label>${productDetails.attributename1} : ${productDetails.attributevalue1} </label>
-            <label>${productDetails.attributename2} : ${productDetails.attributevalue2} </label>
-            <label>${productDetails.attributename3} : ${productDetails.attributevalue3} </label>
-             <input type="hidden" name="prodt_id[]" class="form-control" value=${productDetails.id}>
+        <div class="row mb-2 align-items-end">
+        <div class="col-md-3">
+            <label>Attributes</label>
+            <div class="form-control bg-light" style="height:auto;min-height:38px;">${attributeRows || '-'}</div>
+            <input type="hidden" name="prodt_id[]" class="form-control" value=${productDetails.id}>
         </div>
         
         <div class="col-md-2">
-            <label> Quantity</label> 
+            <label>No of Product</label> 
             <input type="text" name="quantity[]" class="form-control" value=${productDetails.quantity}>
         </div>
             <div class="col-md-2">
@@ -723,7 +731,7 @@ function createProductRow(productDetails) {
             <label> MRP</label> 
             <input type="text" name="retail_price[]" class="form-control" value=${productDetails.retail_price}>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
             <label> Selling Price</label> 
             <input type="text" name="selling_price[]" class="form-control" value=${productDetails.selling_price}>
         </div>

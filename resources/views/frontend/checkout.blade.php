@@ -111,6 +111,9 @@
      </figure>
      <div class="product-details flex-grow-1">
      <div class="product-name mb-1">{{ $item['name'] }}</div>
+     <div class="product-price font-weight-bold mb-1">
+     &#8377;{{ number_format($item['price'], 2) }}
+     </div>
      @if (!empty($item['attributes']['size']) || !empty($item['attributes']['color']))
      <div class="small text-muted">
      @if (!empty($item['attributes']['size']))
@@ -124,8 +127,6 @@
      <div class="small text-muted">Qty: {{ $item['quantity'] }}</div>
      </div>
      <div class="text-right">
-     <div class="product-price font-weight-bold">
-     &#8377;{{ number_format($item['price'], 2) }}</div>
      <div class="small text-muted">Total:
      &#8377;{{ number_format($item['price'] * $item['quantity'], 2) }}
      </div>
@@ -157,9 +158,12 @@
      @foreach ($checkoutSummary['lines'] ?? [] as $item)
      <tr class="bb-no">
      <td class="product-name">
-     {{ $item['name'] }}
+     <div>{{ $item['name'] }}</div>
+     <div class="mt-1 text-muted">
+     &#8377;{{ number_format($item['unit_price'] ?? 0, 2) }}
      <i class="fas fa-times"></i>
      <span class="product-quantity">{{ $item['qty'] }}</span>
+     </div>
      </td>
      <td class="product-total">
      &#8377;{{ number_format($item['line_total'], 2) }}

@@ -142,12 +142,36 @@ class PackageController extends Controller
      */
     public function update(Request $request, $id, FlasherInterface $flasher)
     {
-      
         $packages = packages::find($id);
-        $input = $request->all();
-        $packages->update($input);
-        // $flasher->addSuccess('Packages Updated successfully!');
-      return route('package.index');
+        if (!$packages) {
+            abort(404);
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required',
+            'validity' => 'required',
+            'days' => 'required',
+            'wallet' => 'required',
+            'commission' => 'required',
+            'description' => 'required',
+            'status' => 'required',
+        ]);
+
+        $packages->name = $request->name;
+        $packages->price = $request->price;
+        $packages->validity = $request->validity;
+        $packages->days = $request->days;
+        $packages->wallet = $request->wallet;
+        $packages->commission = $request->commission;
+        $packages->description = $request->description;
+        $packages->status = $request->status;
+        $packages->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Package updated successfully',
+        ]);
     }
 
     /**
