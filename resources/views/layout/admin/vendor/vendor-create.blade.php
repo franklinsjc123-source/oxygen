@@ -1053,7 +1053,7 @@
             var ac_no1 = document.getElementById('ac_no1').value;
             if (ac_no != ac_no1) {
                 document.getElementById('wrong_ac_no_alert').style.color = 'red';
-                document.getElementById('wrong_ac_no_alert').innerHTML = '☒ Use same Acount number';
+                document.getElementById('wrong_ac_no_alert').innerHTML = '☒ Use same account number';
                 document.getElementById('create').disabled = true;
                 document.getElementById('create').style.opacity = (0.4);
             } else {
