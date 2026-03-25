@@ -36,6 +36,39 @@
     color: #fff5f5ff;
   }
 
+  /* ── Selected / Active Offer ── */
+  .category-ellipse.sc-active .category-media {
+      position: relative;
+      border-radius: 50%;
+      padding: 4px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.45),
+                  0 0 30px rgba(118, 75, 162, 0.2);
+      transition: all 0.35s cubic-bezier(.25,.8,.25,1);
+  }
+  .category-ellipse.sc-active .category-media img {
+      border-radius: 50%;
+      border: 3px solid #fff;
+  }
+  .category-ellipse.sc-active {
+      transform: scale(1.08);
+      transition: transform 0.35s cubic-bezier(.25,.8,.25,1);
+  }
+  .category-ellipse.sc-active .category-name a {
+      color: #764ba2 !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.2px;
+  }
+  
+  /* Hover effect for non-active items */
+  .category-ellipse:not(.sc-active):hover {
+      transform: translateY(-3px);
+      transition: transform 0.25s ease;
+  }
+  .category-ellipse:not(.sc-active):hover .category-media {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: box-shadow 0.25s ease;
+  }
 
 </style>
  
@@ -93,7 +126,7 @@
                               
 
                                   <div class="swiper-slide category-wrap">
-                                    <div class="category category-ellipse">
+                                    <div class="category category-ellipse {{ ($offer_id == 0) ? 'sc-active' : '' }}">
                                        <center>
 
                                          <figure class="category-media">
@@ -117,7 +150,7 @@
 
                              
                                 <div class="swiper-slide category-wrap">
-                                    <div class="category category-ellipse">
+                                    <div class="category category-ellipse {{ ($offer_id == $o->id) ? 'sc-active' : '' }}">
                                        <center>
 
                                          <figure class="category-media">
@@ -152,7 +185,7 @@
                                 <div class="toolbox-left mb-4 mb-md-0">
                                     {{-- <a href="#" class="btn btn-primary btn-outline btn-rounded btn-icon-left "><i class="w-icon-category"></i>VENDORS</a> --}}
                                     {{-- <label class="d-block">Total Store Showing 6</label> --}}
-                                    <h2><label class="d-block">Offer  </label></h3><h4><?=  $offer_name ? '( ' . $offer_name. ' )' :''  ?></h4>
+                                    <!-- <h2><label class="d-block">Offer  </label></h3><h4><?=  $offer_name ? '( ' . $offer_name. ' )' :''  ?></h4> -->
                                 </div>
                                
                             </div>
