@@ -1864,6 +1864,7 @@ class FrontendController extends Controller
             $productInvoices = [];
             $grandTotal = (float) ($checkoutSummary['grand_total'] ?? 0);
             $stockMoves = [];
+            $walletCredits = [];
 
             foreach ($checkoutSummary['lines'] as $line) {
                 $productId = (int) $line['product_id'];
@@ -1887,22 +1888,42 @@ class FrontendController extends Controller
                 $taxAmount = (float) ($line['tax_amount'] ?? 0);
                 $taxRate = (float) ($line['tax_rate'] ?? 0);
                 $taxType = (string) ($line['tax_type'] ?? 'NA');
+                $lineDiscount = (float) ($line['discount_amount'] ?? 0);
+                $freeQty = (int) ($line['free_qty'] ?? 0);
+                $cashbackAmount = (float) ($line['cashback_amount'] ?? 0);
 
                 $productInvoices[] = [
                     'vendor_id' => $vendorId,
                     'shop_name' => $shopName,
                     'product_detail_ids' => !empty($detailId) ? [(int) $detailId] : [],
                     'line_qty' => $qty,
+                    'free_qty' => $freeQty,
                     'line_subtotal' => $lineSubtotal,
+                    'line_discount' => $lineDiscount,
                     'tax_rate' => $taxRate,
                     'tax_type' => $taxType,
                     'tax_amount' => $taxAmount,
                     'line_total' => $lineTotal,
+                    'offer_id' => (int) ($line['offer_id'] ?? 0),
+                    'offer_title' => (string) ($line['offer_title'] ?? ''),
+                    'offer_type' => (string) ($line['offer_type'] ?? ''),
+                    'cashback_amount' => $cashbackAmount,
                 ];
                 $stockMoves[] = [
                     'detail_id' => (int) $detailId,
-                    'qty' => $qty,
+                    'qty' => (int) ($line['stock_reduction_qty'] ?? $qty),
                 ];
+
+                if ($cashbackAmount > 0) {
+                    $walletCredits[] = [
+                        'customer_id' => $customerCode,
+                        'product_id' => $productId,
+                        'detail_id' => $detailId,
+                        'offer_id' => (int) ($line['offer_id'] ?? 0),
+                        'offer_title' => (string) ($line['offer_title'] ?? ''),
+                        'amount' => round($cashbackAmount, 2),
+                    ];
+                }
             }
 
             $stockByDetail = [];
@@ -1939,12 +1960,17 @@ class FrontendController extends Controller
                     'vendor_id'          => (int) $lineInvoice['vendor_id'],
                     'product_detail_ids' => implode(',', array_unique($lineInvoice['product_detail_ids'])),
                     'status'             => 'Pending',
-                    'line_discount'      => 0,
+                    'line_discount'      => (float) ($lineInvoice['line_discount'] ?? 0),
                     'line_qty'           => (int) ($lineInvoice['line_qty'] ?? 1),
+                    'free_qty'           => (int) ($lineInvoice['free_qty'] ?? 0),
                     'line_subtotal'      => (float) ($lineInvoice['line_subtotal'] ?? 0),
                     'tax_rate'           => (float) ($lineInvoice['tax_rate'] ?? 0),
                     'tax_type'           => (string) ($lineInvoice['tax_type'] ?? 'NA'),
                     'tax_amount'         => (float) ($lineInvoice['tax_amount'] ?? 0),
+                    'offer_id'           => !empty($lineInvoice['offer_id']) ? (int) $lineInvoice['offer_id'] : null,
+                    'offer_title'        => (string) ($lineInvoice['offer_title'] ?? ''),
+                    'offer_type'         => (string) ($lineInvoice['offer_type'] ?? ''),
+                    'cashback_amount'    => (float) ($lineInvoice['cashback_amount'] ?? 0),
                     'total_amount'       => $lineInvoice['line_total'],
                     'created_at'         => now(),
                     'updated_at'         => now(),
@@ -1960,7 +1986,7 @@ class FrontendController extends Controller
                 'vendor_ids'      => implode(',', array_unique($vendorIds)),
                 'status'          => 'Pending',
                 'payment_type'    => $request->payment_method ?? 'Cash On Delivery',
-                'total_discount'  => 0,
+                'total_discount'  => (float) ($checkoutSummary['discount_total'] ?? 0),
                 'sub_total'       => (float) ($checkoutSummary['subtotal'] ?? 0),
                 'tax_amount'      => (float) ($checkoutSummary['tax_total'] ?? 0),
                 'delivery_charge' => (float) ($checkoutSummary['delivery_charge'] ?? 0),
@@ -1985,7 +2011,7 @@ class FrontendController extends Controller
             $legacyOrder->customer_state = $request->billing_state;
             $legacyOrder->customer_pincode = $request->billing_postcode;
             $legacyOrder->payment_type = $request->payment_method ?? 'Cash On Delivery';
-            $legacyOrder->discount_amount = 0;
+            $legacyOrder->discount_amount = (float) ($checkoutSummary['discount_total'] ?? 0);
             $legacyOrder->shipping_charge = (float) ($checkoutSummary['delivery_charge'] ?? 0);
             $legacyOrder->gst_charge = (float) ($checkoutSummary['tax_total'] ?? 0);
             $legacyOrder->total_amount = (float) ($checkoutSummary['subtotal'] ?? 0);
@@ -2035,6 +2061,23 @@ class FrontendController extends Controller
                 $orderProduct->save();
             }
 
+            foreach ($walletCredits as $walletCredit) {
+                DB::table('ecom_customer_wallet_transactions')->insert([
+                    'customer_id' => $walletCredit['customer_id'],
+                    'order_id' => $orderId,
+                    'product_id' => $walletCredit['product_id'],
+                    'product_detail_id' => $walletCredit['detail_id'],
+                    'offer_id' => $walletCredit['offer_id'] ?: null,
+                    'offer_title' => $walletCredit['offer_title'],
+                    'type' => 'cashback_credit',
+                    'amount' => $walletCredit['amount'],
+                    'status' => 'credited',
+                    'remarks' => 'Cashback credited for order ' . $orderId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+
             DB::commit();
             [$cart, $cookie] = $this->cartSession($request);
             $cart->clear();
@@ -2058,15 +2101,181 @@ class FrontendController extends Controller
         return $amount >= 500 ? 0.0 : 40.0;
     }
 
+    private function parseCartProductId($cartItem): int
+    {
+        $productId = (int) ($cartItem->attributes->product_id ?? 0);
+        if ($productId > 0) {
+            return $productId;
+        }
+
+        return is_numeric($cartItem->id) ? (int) $cartItem->id : 0;
+    }
+
+    private function getOfferForProduct(int $productId): ?object
+    {
+        if ($productId <= 0) {
+            return null;
+        }
+
+        $offerColumns = [
+            'o.id',
+            'o.title',
+            'o.type',
+            'o.buy',
+            'o.getoffer',
+            'o.buyproduct',
+            'o.getamt',
+            'o.cashbacktype',
+            'o.cashbackvalue',
+            'o.discount_type',
+            'o.value',
+            'o.types',
+            'o.m_p_a',
+        ];
+
+        if (DB::getSchemaBuilder()->hasColumn('master_offers', 'ActiveStartDate')) {
+            $offerColumns[] = 'o.ActiveStartDate';
+        }
+
+        if (DB::getSchemaBuilder()->hasColumn('master_offers', 'ActiveEndDate')) {
+            $offerColumns[] = 'o.ActiveEndDate';
+        }
+
+        $offer = DB::table('products as p')
+            ->join('master_offers as o', 'o.id', '=', 'p.offers')
+            ->where('p.id', $productId)
+            ->where('o.status', 1)
+            ->select($offerColumns)
+            ->first();
+
+        if (!$offer) {
+            return null;
+        }
+
+        $today = now()->toDateString();
+        $startDate = !empty($offer->ActiveStartDate) ? (string) $offer->ActiveStartDate : null;
+        $endDate = !empty($offer->ActiveEndDate) ? (string) $offer->ActiveEndDate : null;
+
+        if ($startDate && $today < $startDate) {
+            return null;
+        }
+
+        if ($endDate && $today > $endDate) {
+            return null;
+        }
+
+        return $offer;
+    }
+
+    private function meetsOfferMinimum(?object $offer, int $qty, float $baseAmount): bool
+    {
+        if (!$offer) {
+            return false;
+        }
+
+        $minimumType = trim((string) ($offer->types ?? 'None'));
+        $minimumValue = (float) ($offer->m_p_a ?? 0);
+
+        if ($minimumType === 'Minimum Purchase Amount') {
+            return $baseAmount >= $minimumValue;
+        }
+
+        if ($minimumType === 'Minimum Quantity Of Items') {
+            return $qty >= (int) $minimumValue;
+        }
+
+        return true;
+    }
+
+    private function applyProductOffer(float $unitPrice, int $qty, ?object $offer): array
+    {
+        $baseAmount = round($unitPrice * $qty, 2);
+        $result = [
+            'offer_id' => null,
+            'offer_title' => null,
+            'offer_type' => null,
+            'discount_amount' => 0.0,
+            'payable_amount' => $baseAmount,
+            'free_qty' => 0,
+            'cashback_amount' => 0.0,
+            'offer_applied' => false,
+        ];
+
+        if (!$offer || !$this->meetsOfferMinimum($offer, $qty, $baseAmount)) {
+            return $result;
+        }
+
+        $result['offer_id'] = (int) $offer->id;
+        $result['offer_title'] = (string) ($offer->title ?? '');
+        $result['offer_type'] = (string) ($offer->type ?? '');
+
+        switch ((string) $offer->type) {
+            case 'Buy X Get Y Free':
+                $buyQty = max(1, (int) ($offer->buy ?? 0));
+                $freeQty = max(0, (int) ($offer->getoffer ?? 0));
+                $bundleCount = intdiv($qty, $buyQty);
+                $result['free_qty'] = $bundleCount * $freeQty;
+                $result['offer_applied'] = $result['free_qty'] > 0;
+                break;
+
+            case 'Buy X @ Y':
+                $bundleQty = max(1, (int) ($offer->buyproduct ?? $offer->buy ?? 0));
+                $bundlePrice = max(0, (float) ($offer->getamt ?? 0));
+                $bundleCount = intdiv($qty, $bundleQty);
+                if ($bundleCount > 0) {
+                    $normalAmount = $baseAmount;
+                    $offerAmount = ($bundleCount * $bundlePrice) + (($qty % $bundleQty) * $unitPrice);
+                    $result['payable_amount'] = round(max(0, $offerAmount), 2);
+                    $result['discount_amount'] = round(max(0, $normalAmount - $result['payable_amount']), 2);
+                    $result['offer_applied'] = $result['discount_amount'] > 0;
+                }
+                break;
+
+            case 'Fixed Discount':
+                $discountAmount = 0.0;
+                if ((string) ($offer->discount_type ?? '') === 'Percentage') {
+                    $discountAmount = ($baseAmount * max(0, (float) ($offer->value ?? 0))) / 100;
+                } else {
+                    $discountAmount = max(0, (float) ($offer->value ?? 0)) * $qty;
+                }
+
+                $discountAmount = min($baseAmount, $discountAmount);
+                $result['discount_amount'] = round($discountAmount, 2);
+                $result['payable_amount'] = round(max(0, $baseAmount - $discountAmount), 2);
+                $result['offer_applied'] = $result['discount_amount'] > 0;
+                break;
+
+            case 'Cashback Offer':
+                $cashbackAmount = 0.0;
+                if ((string) ($offer->cashbacktype ?? '') === 'Percentage') {
+                    $cashbackAmount = ($baseAmount * max(0, (float) ($offer->cashbackvalue ?? 0))) / 100;
+                } else {
+                    $cashbackAmount = max(0, (float) ($offer->cashbackvalue ?? 0));
+                }
+
+                $result['cashback_amount'] = round($cashbackAmount, 2);
+                $result['offer_applied'] = $result['cashback_amount'] > 0;
+                break;
+        }
+
+        return $result;
+    }
+
     private function buildCheckoutSummary($cartItems): array
     {
         $lines = [];
         $subtotal = 0.0;
         $taxTotal = 0.0;
         $grandWithoutDelivery = 0.0;
+        $discountTotal = 0.0;
+        $cashbackTotal = 0.0;
 
         foreach ($cartItems as $item) {
-            $productId = (int) $item->id;
+            $productId = $this->parseCartProductId($item);
+            if ($productId <= 0) {
+                continue;
+            }
+
             $qty = max(1, (int) $item->quantity);
             $unitPrice = (float) $item->price;
             $size = $item->attributes->size ?? null;
@@ -2085,7 +2294,9 @@ class FrontendController extends Controller
             $taxRate = (float) ($taxMeta->gst_id ?? 0);
             $isTaxIncluded = ((int) ($taxMeta->tax_id ?? 1) === 1);
 
-            $lineRaw = $unitPrice * $qty;
+            $offer = $this->getOfferForProduct($productId);
+            $offerMeta = $this->applyProductOffer($unitPrice, $qty, $offer);
+            $lineRaw = (float) ($offerMeta['payable_amount'] ?? ($unitPrice * $qty));
             if ($isTaxIncluded) {
                 $lineTax = $taxRate > 0 ? ($lineRaw * $taxRate) / (100 + $taxRate) : 0.0;
                 $lineSubtotal = $lineRaw - $lineTax;
@@ -2101,6 +2312,8 @@ class FrontendController extends Controller
             $subtotal += $lineSubtotal;
             $taxTotal += $lineTax;
             $grandWithoutDelivery += $lineTotal;
+            $discountTotal += (float) ($offerMeta['discount_amount'] ?? 0);
+            $cashbackTotal += (float) ($offerMeta['cashback_amount'] ?? 0);
 
             $lines[] = [
                 'product_id' => $productId,
@@ -2108,6 +2321,15 @@ class FrontendController extends Controller
                 'name' => (string) ($item->name ?? 'Product'),
                 'qty' => $qty,
                 'unit_price' => $unitPrice,
+                'base_amount' => round($unitPrice * $qty, 2),
+                'discount_amount' => round((float) ($offerMeta['discount_amount'] ?? 0), 2),
+                'offer_id' => $offerMeta['offer_id'],
+                'offer_title' => $offerMeta['offer_title'],
+                'offer_type' => $offerMeta['offer_type'],
+                'offer_applied' => (bool) ($offerMeta['offer_applied'] ?? false),
+                'free_qty' => (int) ($offerMeta['free_qty'] ?? 0),
+                'cashback_amount' => round((float) ($offerMeta['cashback_amount'] ?? 0), 2),
+                'stock_reduction_qty' => $qty + (int) ($offerMeta['free_qty'] ?? 0),
                 'line_subtotal' => round($lineSubtotal, 2),
                 'tax_rate' => round($taxRate, 2),
                 'tax_type' => $taxType,
@@ -2121,7 +2343,9 @@ class FrontendController extends Controller
         return [
             'lines' => $lines,
             'subtotal' => round($subtotal, 2),
+            'discount_total' => round($discountTotal, 2),
             'tax_total' => round($taxTotal, 2),
+            'cashback_total' => round($cashbackTotal, 2),
             'delivery_charge' => round($deliveryCharge, 2),
             'grand_total' => round($grandWithoutDelivery + $deliveryCharge, 2),
         ];
@@ -2970,7 +3194,21 @@ class FrontendController extends Controller
     {
         $customer_id = Session::get('customer_id');
 
-        return view('frontend.wallet');
+        if (!$customer_id) {
+            return redirect('/home');
+        }
+
+        $transactions = DB::table('ecom_customer_wallet_transactions')
+            ->where('customer_id', $customer_id)
+            ->orderByDesc('id')
+            ->get();
+
+        $walletBalance = (float) $transactions->sum(function ($transaction) {
+            $amount = (float) ($transaction->amount ?? 0);
+            return in_array((string) ($transaction->type ?? ''), ['cashback_credit', 'credit'], true) ? $amount : ($amount * -1);
+        });
+
+        return view('frontend.wallet', compact('transactions', 'walletBalance'));
     }
 
     public function myWishlist(Request $request)

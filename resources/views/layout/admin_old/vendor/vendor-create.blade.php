@@ -562,7 +562,7 @@
                                                             <input class="form-control" id="bank_name" type="text"
                                                                 name="bank_name">
                                                         </div>
-                                                    </div>
+                                                    </div> 
 
                                                     <div class="form-group row">
                                                         <label for="validationCustom0" class="col-xl-3 col-md-3"> Account
