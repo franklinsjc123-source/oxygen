@@ -164,6 +164,20 @@
      <i class="fas fa-times"></i>
      <span class="product-quantity">{{ $item['qty'] }}</span>
      </div>
+     @if (!empty($item['offer_applied']))
+     <div class="mt-1 small text-success">
+     {{ $item['offer_title'] ?: $item['offer_type'] }}
+     @if (!empty($item['free_qty']))
+     | Free Qty: {{ $item['free_qty'] }}
+     @endif
+     @if (!empty($item['discount_amount']))
+     | Saved: &#8377;{{ number_format($item['discount_amount'], 2) }}
+     @endif
+     @if (!empty($item['cashback_amount']))
+     | Cashback: &#8377;{{ number_format($item['cashback_amount'], 2) }}
+     @endif
+     </div>
+     @endif
      </td>
      <td class="product-total">
      &#8377;{{ number_format($item['line_total'], 2) }}
@@ -176,6 +190,13 @@
      <td><b>&#8377;{{ number_format($checkoutSummary['subtotal'] ?? $total, 2) }}</b>
      </td>
      </tr>
+     @if (($checkoutSummary['discount_total'] ?? 0) > 0)
+     <tr class="cart-subtotal bb-no">
+     <td><b>Offer Discount</b></td>
+     <td><b>- &#8377;{{ number_format($checkoutSummary['discount_total'], 2) }}</b>
+     </td>
+     </tr>
+     @endif
      <tr class="cart-subtotal bb-no">
      <td><b>Tax</b></td>
      <td><b>&#8377;{{ number_format($checkoutSummary['tax_total'] ?? 0, 2) }}</b>
@@ -196,6 +217,16 @@
      <b>&#8377;{{ number_format($checkoutSummary['grand_total'] ?? $total, 2) }}</b>
      </td>
      </tr>
+     @if (($checkoutSummary['cashback_total'] ?? 0) > 0)
+     <tr class="order-total">
+     <th>
+     <b>Wallet Cashback</b>
+     </th>
+     <td>
+     <b>&#8377;{{ number_format($checkoutSummary['cashback_total'], 2) }}</b>
+     </td>
+     </tr>
+     @endif
      </tfoot>
      </table>
 
