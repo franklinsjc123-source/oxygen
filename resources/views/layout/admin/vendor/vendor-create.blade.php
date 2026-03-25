@@ -60,11 +60,11 @@
             <div class="container-fluid">
                 <div class="row">
 
-                    <div class="col-xl-10">
+                    <div class="col-xl-12">
                         <div class="card tab2-card">
                             <div class="card-body"
                                 style="font-family: 'Century Gothic',lucida grande, helvetica, verdana, arial, sans-serif;">
-                                <ul class="nav nav-tabs nav-material" id="top-tab" role="tablist">
+                                <ul class="nav nav-tabs nav-material pb-5" id="top-tab" role="tablist">
                                     <li class="nav-item"><a class="nav-link active" id="top-profile-tab"
                                             data-bs-toggle="tab" href="#top-profile" role="tab"
                                             aria-controls="top-profile" aria-selected="true"><i data-feather="user"
