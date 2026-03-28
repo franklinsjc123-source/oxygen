@@ -551,6 +551,7 @@ class FrontendController extends Controller
             ->leftJoin('category_main as cm', 'cm.id', '=', 'p.category_main')
             ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
             ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
+            ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers')
             ->where('p.status', 1)
             ->where('p.flag', 1);
         if ($id != '') {
@@ -575,7 +576,8 @@ class FrontendController extends Controller
             'pd.attributevalue1 as color',
             'pd.retail_price as retail_amount',
             'pd.selling_price as selling_amount',
-            'pd.product_detail_image'
+            'pd.product_detail_image',
+            'o.offer_logo'
         )->get();
         $resultArr = [];
         foreach ($productsData as $val) {
@@ -595,6 +597,7 @@ class FrontendController extends Controller
                     'shop_name' => $val->shop_name,
                     'profile_image' => $val->profile_image,
                     'retail_price' => $val->retail_price,
+                    'offer_image' => $val->offer_logo,
                     'colors' => [],
                     'size' => [],
                     'images' => [],
