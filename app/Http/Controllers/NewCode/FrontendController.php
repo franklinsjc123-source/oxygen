@@ -937,6 +937,7 @@ class FrontendController extends Controller
         $products = DB::table('products')
             ->leftJoin('products_details', 'products.product_id', '=', 'products_details.products_id')
             ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
+            ->leftJoin('master_offers as o', 'o.id', '=', 'products.offers')
             ->leftJoin('ratings', function ($join) {
                 $join->on('ratings.products_id', '=', 'products.id')
                     ->where('ratings.status', 1);
@@ -946,6 +947,7 @@ class FrontendController extends Controller
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
+                'o.offer_logo as offer_image',
 
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
@@ -959,7 +961,8 @@ class FrontendController extends Controller
                 'products.id',
                 'products.product_name',
                 'products.product_image',
-                'category_sub.category_sub_name'
+                'category_sub.category_sub_name',
+                'o.offer_logo'
             )
             ->limit('4')
             ->inRandomOrder()
@@ -975,6 +978,7 @@ class FrontendController extends Controller
         $products = DB::table('products')
             ->leftJoin('products_details', 'products.product_id', '=', 'products_details.products_id')
             ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
+            ->leftJoin('master_offers as o', 'o.id', '=', 'products.offers')
             ->leftJoin('ratings', function ($join) {
                 $join->on('ratings.products_id', '=', 'products.id')
                     ->where('ratings.status', 1);
@@ -984,6 +988,7 @@ class FrontendController extends Controller
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
+                'o.offer_logo as offer_image',
 
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
@@ -997,7 +1002,8 @@ class FrontendController extends Controller
                 'products.id',
                 'products.product_name',
                 'products.product_image',
-                'category_sub.category_sub_name'
+                'category_sub.category_sub_name',
+                'o.offer_logo'
             )
             ->limit('4')
             ->inRandomOrder()
