@@ -4,6 +4,14 @@
             <a href="{{ url('/productVar/'.$product->id) }}">
                 <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product" />
             </a>
+            @php
+                $offer_image = isset($product->offer_image) ? $product->offer_image : (isset($product['offer_image']) ? $product['offer_image'] : null);
+            @endphp
+            @if($offer_image)
+                <div class="product-label-group" style="position: absolute; top: 10px; left: 10px; z-index: 10;">
+                    <img src="{{ asset('assets/images/offer_logo/'.$offer_image) }}" alt="Offer" style="width: 45px; height: 45px; object-fit: contain; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));  border-radius: 5px;">
+                </div>
+            @endif
             <div class="product-action-vertical">
                 <a href="{{ url('/productVar/'.$product->id) }}" class="btn-product-icon btn-cart w-icon-cart"></a>
                 <a href="#" class="btn-product-icon btn-wishlist w-icon-heart"></a>

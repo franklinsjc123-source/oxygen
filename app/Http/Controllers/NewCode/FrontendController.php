@@ -267,24 +267,24 @@ class FrontendController extends Controller
             Ecom_Customer_Shipping::where('id', $request->address_id)
                 ->update([
                     'customer_firstname' => $request->customer_firstname,
-                    'customer_mobileno'  => $request->customer_mobileno,
-                    'customer_email'     => $request->customer_email,
-                    'customer_address'   => $request->customer_address,
-                    'customer_state'     => $request->customer_state,
-                    'customer_pincode'   => $request->customer_pincode,
+                    'customer_mobileno' => $request->customer_mobileno,
+                    'customer_email' => $request->customer_email,
+                    'customer_address' => $request->customer_address,
+                    'customer_state' => $request->customer_state,
+                    'customer_pincode' => $request->customer_pincode,
                 ]);
 
             return redirect()->back()->with('success', 'Address updated  successfully');
         } else {
             // ADD NEW
             Ecom_Customer_Shipping::create([
-                'customer_id'        =>  Session::get('customer_id'),
+                'customer_id' => Session::get('customer_id'),
                 'customer_firstname' => $request->customer_firstname,
-                'customer_mobileno'  => $request->customer_mobileno,
-                'customer_email'     => $request->customer_email,
-                'customer_address'   => $request->customer_address,
-                'customer_state'     => $request->customer_state,
-                'customer_pincode'   => $request->customer_pincode,
+                'customer_mobileno' => $request->customer_mobileno,
+                'customer_email' => $request->customer_email,
+                'customer_address' => $request->customer_address,
+                'customer_state' => $request->customer_state,
+                'customer_pincode' => $request->customer_pincode,
             ]);
 
             return redirect()->back()->with('success', 'Address saved successfully');
@@ -463,13 +463,13 @@ class FrontendController extends Controller
         $Categorysub = count($subid) > 0 ? CategorySub::whereIn('id', $subid)->get() : collect();
         return view('frontend/vendor_doken_store')
             ->with([
-                "products"          => $products,
-                "topCollection"     => $topCollection,
-                "newCollection"     => $collectionProducts,
-                "featuredProducts"  => $featuredProducts,
-                "offerList"         => $offerList,
-                "Categorysub"       => $Categorysub,
-                "vendordetails"     => $vendorcreate,
+                "products" => $products,
+                "topCollection" => $topCollection,
+                "newCollection" => $collectionProducts,
+                "featuredProducts" => $featuredProducts,
+                "offerList" => $offerList,
+                "Categorysub" => $Categorysub,
+                "vendordetails" => $vendorcreate,
             ]);
     }
 
@@ -486,6 +486,7 @@ class FrontendController extends Controller
             ->leftJoin('category_main as cm', 'cm.id', '=', 'p.category_main')
             ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
             ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
+            ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers')
             ->where('p.status', 1)
             ->where('p.flag', 1);
         if ($id != '') {
@@ -507,26 +508,28 @@ class FrontendController extends Controller
             'vp.profile_image',
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
-            'pd.product_detail_image'
+            'pd.product_detail_image',
+            'o.offer_logo'
         )->get();
         $resultArr = [];
         foreach ($productsData as $val) {
             $productId = $val->id;
-            if (! isset($resultArr[$productId])) {
+            if (!isset($resultArr[$productId])) {
                 $resultArr[$productId] = [
-                    'id'                 => $val->id,
-                    'vendor_id'          => $val->vendor_id,
-                    'product_name'       => $val->product_name,
-                    'product_image'      => $val->product_image,
-                    'description'        => $val->description,
-                    'specification'      => $val->specification,
-                    'selling_price'      => $val->selling_price,
-                    'retail_price'       => $val->retail_price,
-                    'category_name'      => $val->category_name,
-                    'category_sub_name'  => $val->category_sub_name,
+                    'id' => $val->id,
+                    'vendor_id' => $val->vendor_id,
+                    'product_name' => $val->product_name,
+                    'product_image' => $val->product_image,
+                    'description' => $val->description,
+                    'specification' => $val->specification,
+                    'selling_price' => $val->selling_price,
+                    'retail_price' => $val->retail_price,
+                    'category_name' => $val->category_name,
+                    'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
-                    'shop_name'          => $val->shop_name,
-                    'profile_image'      => $val->profile_image,
+                    'shop_name' => $val->shop_name,
+                    'profile_image' => $val->profile_image,
+                    'offer_image' => $val->offer_logo,
                 ];
             }
         }
@@ -578,33 +581,33 @@ class FrontendController extends Controller
         foreach ($productsData as $val) {
             $productId = $val->id;
 
-            if (! isset($resultArr[$productId])) {
+            if (!isset($resultArr[$productId])) {
                 $resultArr[$productId] = [
-                    'id'                 => $val->id,
-                    'product_name'       => $val->product_name,
-                    'description'        => $val->description,
-                    'specification'      => $val->specification,
-                    'product_image'      => $val->product_image,
-                    'selling_price'      => $val->selling_price,
-                    'category_name'      => $val->category_name,
-                    'category_sub_name'  => $val->category_sub_name,
+                    'id' => $val->id,
+                    'product_name' => $val->product_name,
+                    'description' => $val->description,
+                    'specification' => $val->specification,
+                    'product_image' => $val->product_image,
+                    'selling_price' => $val->selling_price,
+                    'category_name' => $val->category_name,
+                    'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
-                    'shop_name'          => $val->shop_name,
-                    'profile_image'      => $val->profile_image,
-                    'retail_price'       => $val->retail_price,
-                    'colors'             => [],
-                    'size'               => [],
-                    'images'             => [],
-                    'retail_amount'      => [],
-                    'selling_amount'     => [],
-                    'color_options'      => [],
-                    'variants'           => [],
-                    'images'             => [],
+                    'shop_name' => $val->shop_name,
+                    'profile_image' => $val->profile_image,
+                    'retail_price' => $val->retail_price,
+                    'colors' => [],
+                    'size' => [],
+                    'images' => [],
+                    'retail_amount' => [],
+                    'selling_amount' => [],
+                    'color_options' => [],
+                    'variants' => [],
+                    'images' => [],
                 ];
             }
 
-            if (!empty($val->color) && ! in_array($val->color, $resultArr[$productId]['colors'])) {
-                $color                             = ProductColor::Where('color_name', $val->color)->value('color_code');
+            if (!empty($val->color) && !in_array($val->color, $resultArr[$productId]['colors'])) {
+                $color = ProductColor::Where('color_name', $val->color)->value('color_code');
                 $resultArr[$productId]['colors'][] = isset($color) ? $color : '';
             }
 
@@ -627,19 +630,19 @@ class FrontendController extends Controller
                 ];
             }
 
-            if (! in_array($val->retail_amount, $resultArr[$productId]['retail_amount'])) {
+            if (!in_array($val->retail_amount, $resultArr[$productId]['retail_amount'])) {
                 $resultArr[$productId]['retail_amount'][] = $val->retail_amount;
             }
 
-            if (! in_array($val->selling_amount, $resultArr[$productId]['selling_amount'])) {
+            if (!in_array($val->selling_amount, $resultArr[$productId]['selling_amount'])) {
                 $resultArr[$productId]['selling_amount'][] = $val->selling_amount;
             }
 
-            if (! in_array($val->size, $resultArr[$productId]['size'])) {
+            if (!in_array($val->size, $resultArr[$productId]['size'])) {
                 $resultArr[$productId]['size'][] = $val->size;
             }
 
-            if (! in_array($val->product_detail_image, $resultArr[$productId]['images'])) {
+            if (!in_array($val->product_detail_image, $resultArr[$productId]['images'])) {
                 $resultArr[$productId]['images'][] = $val->product_detail_image;
             }
 
@@ -673,6 +676,7 @@ class FrontendController extends Controller
             ->leftJoin('category_main as cm', 'cm.id', '=', 'p.category_main')
             ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
             ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
+            ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers')
             ->limit(12)
             ->where('cm.id', 1)
             ->where('p.status', 1)
@@ -694,26 +698,28 @@ class FrontendController extends Controller
             'vp.profile_image',
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
-            'pd.product_detail_image'
+            'pd.product_detail_image',
+            'o.offer_logo'
         )->get();
         $resultArr = [];
         foreach ($productsData as $val) {
             $productId = $val->id;
-            if (! isset($resultArr[$productId])) {
+            if (!isset($resultArr[$productId])) {
                 $resultArr[$productId] = [
-                    'id'                 => $val->id,
-                    'vendor_id'          => $val->vendor_id,
-                    'product_name'       => $val->product_name,
-                    'product_image'      => $val->product_image,
-                    'description'        => $val->description,
-                    'specification'      => $val->specification,
-                    'selling_price'      => $val->selling_price,
-                    'retail_price'       => $val->retail_price,
-                    'category_name'      => $val->category_name,
-                    'category_sub_name'  => $val->category_sub_name,
+                    'id' => $val->id,
+                    'vendor_id' => $val->vendor_id,
+                    'product_name' => $val->product_name,
+                    'product_image' => $val->product_image,
+                    'description' => $val->description,
+                    'specification' => $val->specification,
+                    'selling_price' => $val->selling_price,
+                    'retail_price' => $val->retail_price,
+                    'category_name' => $val->category_name,
+                    'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
-                    'shop_name'          => $val->shop_name,
-                    'profile_image'      => $val->profile_image,
+                    'shop_name' => $val->shop_name,
+                    'profile_image' => $val->profile_image,
+                    'offer_image' => $val->offer_logo,
                 ];
             }
         }
@@ -731,6 +737,7 @@ class FrontendController extends Controller
             ->leftJoin('category_main as cm', 'cm.id', '=', 'p.category_main')
             ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
             ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
+            ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers')
             ->limit(12)
             ->where('cm.id', 3)
             ->where('p.status', 1)
@@ -752,26 +759,28 @@ class FrontendController extends Controller
             'vp.profile_image',
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
-            'pd.product_detail_image'
+            'pd.product_detail_image',
+            'o.offer_logo'
         )->get();
         $resultArr = [];
         foreach ($productsData as $val) {
             $productId = $val->id;
-            if (! isset($resultArr[$productId])) {
+            if (!isset($resultArr[$productId])) {
                 $resultArr[$productId] = [
-                    'id'                 => $val->id,
-                    'vendor_id'          => $val->vendor_id,
-                    'product_name'       => $val->product_name,
-                    'product_image'      => $val->product_image,
-                    'description'        => $val->description,
-                    'specification'      => $val->specification,
-                    'selling_price'      => $val->selling_price,
-                    'retail_price'       => $val->retail_price,
-                    'category_name'      => $val->category_name,
-                    'category_sub_name'  => $val->category_sub_name,
+                    'id' => $val->id,
+                    'vendor_id' => $val->vendor_id,
+                    'product_name' => $val->product_name,
+                    'product_image' => $val->product_image,
+                    'description' => $val->description,
+                    'specification' => $val->specification,
+                    'selling_price' => $val->selling_price,
+                    'retail_price' => $val->retail_price,
+                    'category_name' => $val->category_name,
+                    'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
-                    'shop_name'          => $val->shop_name,
-                    'profile_image'      => $val->profile_image,
+                    'shop_name' => $val->shop_name,
+                    'profile_image' => $val->profile_image,
+                    'offer_image' => $val->offer_logo,
                 ];
             }
         }
@@ -788,6 +797,7 @@ class FrontendController extends Controller
             ->leftJoin('category_main as cm', 'cm.id', '=', 'p.category_main')
             ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
             ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
+            ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers')
             ->limit(12)
             ->where('cm.id', 2)
             ->where('p.status', 1)
@@ -809,26 +819,28 @@ class FrontendController extends Controller
             'vp.profile_image',
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
-            'pd.product_detail_image'
+            'pd.product_detail_image',
+            'o.offer_logo'
         )->get();
         $resultArr = [];
         foreach ($productsData as $val) {
             $productId = $val->id;
-            if (! isset($resultArr[$productId])) {
+            if (!isset($resultArr[$productId])) {
                 $resultArr[$productId] = [
-                    'id'                 => $val->id,
-                    'vendor_id'          => $val->vendor_id,
-                    'product_name'       => $val->product_name,
-                    'product_image'      => $val->product_image,
-                    'description'        => $val->description,
-                    'specification'      => $val->specification,
-                    'selling_price'      => $val->selling_price,
-                    'retail_price'       => $val->retail_price,
-                    'category_name'      => $val->category_name,
-                    'category_sub_name'  => $val->category_sub_name,
+                    'id' => $val->id,
+                    'vendor_id' => $val->vendor_id,
+                    'product_name' => $val->product_name,
+                    'product_image' => $val->product_image,
+                    'description' => $val->description,
+                    'specification' => $val->specification,
+                    'selling_price' => $val->selling_price,
+                    'retail_price' => $val->retail_price,
+                    'category_name' => $val->category_name,
+                    'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
-                    'shop_name'          => $val->shop_name,
-                    'profile_image'      => $val->profile_image,
+                    'shop_name' => $val->shop_name,
+                    'profile_image' => $val->profile_image,
+                    'offer_image' => $val->offer_logo,
                 ];
             }
         }
@@ -994,6 +1006,40 @@ class FrontendController extends Controller
 
 
 
+    public function offerProducts($vendor_id, $offer_id)
+    {
+
+        $products = DB::table('products')
+            ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
+            ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
+            ->leftJoin('master_offers', 'master_offers.id', '=', 'products.offers')
+            ->select(
+                'products.id',
+                'products.product_name',
+                'products.product_image',
+                'category_sub.category_sub_name',
+                'master_offers.offer_logo as offer_image',
+                DB::raw('MIN(products_details.retail_price) as retail_price'),
+                DB::raw('MIN(products_details.selling_price) as selling_price')
+            )
+            ->where('products.vendor_id', $vendor_id)
+            ->where('products.offers', $offer_id)
+            ->where('products.status', 1)
+            ->groupBy(
+                'products.id',
+                'products.product_name',
+                'products.product_image',
+                'category_sub.category_sub_name',
+                'master_offers.offer_logo'
+            )
+            ->inRandomOrder()
+            ->limit('6')
+            ->get();
+
+        return $products;
+    }
+
+
 
     public function relatedProducts($category_sub)
     {
@@ -1021,7 +1067,7 @@ class FrontendController extends Controller
             ->limit('6')
             ->get();
 
-        return  $products;
+        return $products;
     }
 
 
@@ -1043,22 +1089,33 @@ class FrontendController extends Controller
             ->get();
 
         $prouctsList = $this->getProduct($id);
-        $imageList   = $this->getProductImageList($id);
+        $imageList = $this->getProductImageList($id);
 
         $getSpecificProduct = ProductsDetails::with('product', 'product.CategoryChild')
             ->where('id', $id)
             ->first();
 
-        $getProduct = Products::where('product_id', $getSpecificProduct->products_id)->first();
-        $ProductSpecs = ProductSpecs::where('products_id', $getSpecificProduct->products_id)->get();
+        if (!$getSpecificProduct) {
+            return redirect('home');
+        }
+
+        $getProduct = Products::where('id', $getSpecificProduct->products_id)->first();
+        if (!$getProduct) {
+            return redirect('home');
+        }
+
+        $ProductSpecs = ProductSpecs::where('products_id', $getProduct->id)->get();
 
         $vendor_name = Vendor::where('id', $getProduct->vendor_id)->value('shop_name');
         $vendorProducts = $this->vendorProducts($getProduct->vendor_id);
         $vendorProducts2 = $this->vendorProducts2($getProduct->vendor_id);
 
-
-
         $relatedProducts = $this->relatedProducts($getProduct->category_sub);
+        
+        $offerProducts = collect([]);
+        if ($getProduct->offers) {
+            $offerProducts = $this->offerProducts($getProduct->vendor_id, $getProduct->offers);
+        }
 
         $vendor_details = vendorcreate::where('id', $getProduct->created_by)->first();
 
@@ -1141,13 +1198,13 @@ class FrontendController extends Controller
             ->orderByDesc('ratings.id')
             ->get();
 
-        return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts', 'vendorProducts2', 'relatedProducts', 'percent', 'reviewCount', 'canRate', 'myRating', 'ratings', 'avg',  'mostHelpfulPositive', 'mostHelpfulNegative', 'highestRatingList', 'lowestRatingList'));
+        return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts', 'offerProducts', 'vendorProducts2', 'relatedProducts', 'percent', 'reviewCount', 'canRate', 'myRating', 'ratings', 'avg', 'mostHelpfulPositive', 'mostHelpfulNegative', 'highestRatingList', 'lowestRatingList'));
     }
 
     public function quickView($id)
     {
         $prouctsList = $this->getSpecificProduct($id);
-        $imageList   = $this->getProductImageList($id);
+        $imageList = $this->getProductImageList($id);
 
         $avg = Rating::where('products_id', $id)->avg('star_rating');
         $percent = $avg > 0 ? ($avg / 5) * 100 : 0;
@@ -1160,10 +1217,10 @@ class FrontendController extends Controller
     public function customCart(Request $request)
     {
         $input = $request->all();
-        $size  = $input['size'];
+        $size = $input['size'];
         $color = $input['color'];
-        $id    = $input['id'];
-        $qty   = max(1, (int) ($input['qty'] ?? 1));
+        $id = $input['id'];
+        $qty = max(1, (int) ($input['qty'] ?? 1));
         $variantKey = $id . '|' . $size . '|' . $color;
         [$cart, $cookie] = $this->cartSession($request);
         $stockQty = $this->getAvailableStock((int) $id, $size, $color);
@@ -1189,15 +1246,15 @@ class FrontendController extends Controller
 
         $prouctsList = $this->getSpecificProduct($id)[$id];
         $cartArray = array(
-            'id'        => $variantKey,
-            'name'      => $prouctsList['product_name'],
-            'price'     => $prouctsList['selling_price'],
-            'quantity'  => $qty,
+            'id' => $variantKey,
+            'name' => $prouctsList['product_name'],
+            'price' => $prouctsList['selling_price'],
+            'quantity' => $qty,
             'attributes' => array(
                 'product_id' => $prouctsList['id'],
-                'image'     => isset($prouctsList['product_image']) ? $prouctsList['product_image'] : '',
-                'size'      => $size,
-                'color'      => $color,
+                'image' => isset($prouctsList['product_image']) ? $prouctsList['product_image'] : '',
+                'size' => $size,
+                'color' => $color,
             )
         );
         $cart->add($cartArray);
@@ -1205,7 +1262,7 @@ class FrontendController extends Controller
         $response = response()->json([
             'status' => 'success',
             'message' => 'Item added to cart successfully.',
-            'count'   => $count,
+            'count' => $count,
             'cart' => $cart->getContent()
         ]);
 
@@ -1234,7 +1291,7 @@ class FrontendController extends Controller
 
 
 
-    public function getProductByCategory($category_id  = '', $sub_category_id = '')
+    public function getProductByCategory($category_id = '', $sub_category_id = '')
     {
         $productsData = Products::from('products as p')
             ->leftJoin('category as c', 'c.id', '=', 'p.category')
@@ -1272,19 +1329,19 @@ class FrontendController extends Controller
         $resultArr = [];
         foreach ($productsData as $val) {
             $productId = $val->id;
-            if (! isset($resultArr[$productId])) {
+            if (!isset($resultArr[$productId])) {
                 $resultArr[$productId] = [
-                    'id'                 => $val->id,
-                    'vendor_id'          => $val->vendor_id,
-                    'product_name'       => $val->product_name,
-                    'product_image'      => $val->product_image,
-                    'selling_price'      => $val->selling_price,
-                    'retail_price'       => $val->retail_price,
-                    'category_name'      => $val->category_name,
-                    'category_sub_name'  => $val->category_sub_name,
+                    'id' => $val->id,
+                    'vendor_id' => $val->vendor_id,
+                    'product_name' => $val->product_name,
+                    'product_image' => $val->product_image,
+                    'selling_price' => $val->selling_price,
+                    'retail_price' => $val->retail_price,
+                    'category_name' => $val->category_name,
+                    'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
-                    'shop_name'          => $val->shop_name,
-                    'profile_image'      => $val->profile_image,
+                    'shop_name' => $val->shop_name,
+                    'profile_image' => $val->profile_image,
                 ];
             }
         }
@@ -1297,14 +1354,15 @@ class FrontendController extends Controller
 
 
 
-    public function getProductByVendorOffers($vendor_id  = '', $offer_id = '')
+    public function getProductByVendorOffers($vendor_id = '', $offer_id = '')
     {
         $productsData = Products::from('products as p')
             ->leftJoin('category as c', 'c.id', '=', 'p.category')
             ->leftJoin('category_sub as cs', 'cs.id', '=', 'p.category_sub')
             ->leftJoin('category_main as cm', 'cm.id', '=', 'p.category_main')
             ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
-            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id');
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
+            ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers');
 
         if ($vendor_id != '') {
             $productsData = $productsData->where('p.vendor_id', $vendor_id);
@@ -1333,26 +1391,28 @@ class FrontendController extends Controller
             'pd.attributevalue1 as color',
             'pd.product_detail_image',
             'pd.quantity as stock_qty',
-            'pd.low_stock_limit as low_stock_limit'
+            'pd.low_stock_limit as low_stock_limit',
+            'o.offer_logo'
         )->get();
         $resultArr = [];
         foreach ($productsData as $val) {
             $productId = $val->id;
-            if (! isset($resultArr[$productId])) {
+            if (!isset($resultArr[$productId])) {
                 $resultArr[$productId] = [
-                    'id'                 => $val->id,
-                    'vendor_id'          => $val->vendor_id,
-                    'product_name'       => $val->product_name,
-                    'product_image'      => $val->product_image,
-                    'selling_price'      => $val->selling_price,
-                    'retail_price'       => $val->retail_price,
-                    'category_name'      => $val->category_name,
-                    'category_sub_name'  => $val->category_sub_name,
+                    'id' => $val->id,
+                    'vendor_id' => $val->vendor_id,
+                    'product_name' => $val->product_name,
+                    'product_image' => $val->product_image,
+                    'selling_price' => $val->selling_price,
+                    'retail_price' => $val->retail_price,
+                    'category_name' => $val->category_name,
+                    'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
-                    'shop_name'          => $val->shop_name,
-                    'profile_image'      => $val->profile_image,
-                    'stock_qty'          => (int) ($val->stock_qty ?? 0),
-                    'low_stock_limit'    => isset($val->low_stock_limit) ? (int) $val->low_stock_limit : null,
+                    'shop_name' => $val->shop_name,
+                    'profile_image' => $val->profile_image,
+                    'stock_qty' => (int) ($val->stock_qty ?? 0),
+                    'low_stock_limit' => isset($val->low_stock_limit) ? (int) $val->low_stock_limit : null,
+                    'offer_image' => $val->offer_logo,
                 ];
             } else {
                 $resultArr[$productId]['stock_qty'] += (int) ($val->stock_qty ?? 0);
@@ -1410,20 +1470,20 @@ class FrontendController extends Controller
         $resultArr = [];
         foreach ($productsData as $val) {
             $productId = $val->id;
-            if (! isset($resultArr[$productId])) {
+            if (!isset($resultArr[$productId])) {
                 $resultArr[$productId] = [
-                    'id'                 => $val->id,
-                    'category_id'        => $val->category_main,
-                    'vendor_id'          => $val->vendor_id,
-                    'product_name'       => $val->product_name,
-                    'product_image'      => $val->product_image,
-                    'selling_price'      => $val->selling_price,
-                    'retail_price'       => $val->retail_price,
-                    'category_name'      => $val->category_name,
-                    'category_sub_name'  => $val->category_sub_name,
+                    'id' => $val->id,
+                    'category_id' => $val->category_main,
+                    'vendor_id' => $val->vendor_id,
+                    'product_name' => $val->product_name,
+                    'product_image' => $val->product_image,
+                    'selling_price' => $val->selling_price,
+                    'retail_price' => $val->retail_price,
+                    'category_name' => $val->category_name,
+                    'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
-                    'shop_name'          => $val->shop_name,
-                    'profile_image'      => $val->profile_image,
+                    'shop_name' => $val->shop_name,
+                    'profile_image' => $val->profile_image,
                 ];
             }
         }
@@ -1452,7 +1512,7 @@ class FrontendController extends Controller
 
         $colors = $productcolors->toArray();
 
-        $maincolors   = array("Black", "White", "Gray", "Silver", "Maroon", "Red", "Purple", "Fuchsia", "Green", "Lime", "Olive", "Yellow", "Navy", "Blue", "Teal");
+        $maincolors = array("Black", "White", "Gray", "Silver", "Maroon", "Red", "Purple", "Fuchsia", "Green", "Lime", "Olive", "Yellow", "Navy", "Blue", "Teal");
 
         $mergedColors = array_unique(array_merge($maincolors, $colors));
 
@@ -1466,8 +1526,8 @@ class FrontendController extends Controller
     {
 
         $category = Category::where('id', $category_id)->first();
-        $main_category = CategoryMain::where('id',  $category->main_category_id)->first();
-        $sub_category = CategorySub::where('id',  $sub_category_id)->first();
+        $main_category = CategoryMain::where('id', $category->main_category_id)->first();
+        $sub_category = CategorySub::where('id', $sub_category_id)->first();
 
 
         $product = Products::where('status', 1)
@@ -1496,7 +1556,7 @@ class FrontendController extends Controller
 
         $colors = $productcolors->pluck('color')->toArray();
 
-        $maincolors   = array("Black", "White", "Gray", "Silver", "Maroon", "Red", "Purple", "Fuchsia", "Green", "Lime", "Olive", "Yellow", "Navy", "Blue", "Teal");
+        $maincolors = array("Black", "White", "Gray", "Silver", "Maroon", "Red", "Purple", "Fuchsia", "Green", "Lime", "Olive", "Yellow", "Navy", "Blue", "Teal");
 
         $mergedColors = array_unique(array_merge($maincolors, $colors));
 
@@ -1509,7 +1569,7 @@ class FrontendController extends Controller
     public function offers()
     {
 
-        $offer_id  = isset($_GET['id']) ? $_GET['id'] : 0;
+        $offer_id = isset($_GET['id']) ? $_GET['id'] : 0;
         if ($offer_id != '') {
             $offer_name = Offer::where('id', $offer_id)->value('title');
         } else {
@@ -1613,9 +1673,9 @@ class FrontendController extends Controller
     public function getSideCart(Request $request)
     {
         [$cart, $cookie] = $this->cartSession($request);
-        $count   = $cart->getContent()->count();
+        $count = $cart->getContent()->count();
         $records = $cart->getContent();
-        $total   = $cart->getTotal();
+        $total = $cart->getTotal();
         $response = response()->view('frontend.side_cart', compact('count', 'records', 'total'));
         return $this->attachCartCookies($response, $cookie, $cart);
     }
@@ -1624,9 +1684,9 @@ class FrontendController extends Controller
     public function showCarts(Request $request)
     {
         [$cart, $cookie] = $this->cartSession($request);
-        $count   = $cart->getContent()->count();
+        $count = $cart->getContent()->count();
         $records = $cart->getContent();
-        $total   = $cart->getTotal();
+        $total = $cart->getTotal();
         $response = response()->view('frontend.view_cart', compact('count', 'records', 'total'));
         return $this->attachCartCookies($response, $cookie, $cart);
     }
@@ -1635,9 +1695,9 @@ class FrontendController extends Controller
     public function checkoutPage(Request $request)
     {
         [$cart, $cookie] = $this->cartSession($request);
-        $count   = $cart->getContent()->count();
+        $count = $cart->getContent()->count();
         $records = $cart->getContent();
-        $total   = $cart->getTotal();
+        $total = $cart->getTotal();
         $checkoutSummary = $this->buildCheckoutSummary($records);
 
         $customer = null;
@@ -1767,14 +1827,14 @@ class FrontendController extends Controller
     {
         $request->validate([
             'billing_first_name' => 'required',
-            'billing_last_name'  => 'required',
-            'billing_phone'      => 'required',
-            'billing_email'      => 'required|email',
-            'billing_address'    => 'required',
-            'billing_city'       => 'required',
-            'billing_state'      => 'required',
-            'billing_country'    => 'required',
-            'billing_postcode'   => 'required',
+            'billing_last_name' => 'required',
+            'billing_phone' => 'required',
+            'billing_email' => 'required|email',
+            'billing_address' => 'required',
+            'billing_city' => 'required',
+            'billing_state' => 'required',
+            'billing_country' => 'required',
+            'billing_postcode' => 'required',
         ]);
 
         [$cart, $cookie] = $this->cartSession($request);
@@ -1822,30 +1882,30 @@ class FrontendController extends Controller
                 $isNewCustomer = true;
 
                 $customer = Ecom_Customer_info::create([
-                    'customer_id'        => $customerCode,
+                    'customer_id' => $customerCode,
                     'customer_firstname' => $request->billing_first_name,
-                    'customer_lastname'  => $request->billing_last_name,
-                    'customer_email'     => $request->billing_email,
-                    'customer_mobileno'  => $request->billing_phone,
-                    'customer_password'  => base64_encode(base64_encode('welcome@123')),
-                    'customer_address'   => $request->billing_address,
-                    'customer_address1'  => $request->billing_address,
-                    'customer_city'      => $request->billing_city,
-                    'customer_state'     => $request->billing_state,
-                    'customer_pincode'   => $request->billing_postcode,
-                    'customer_type'      => 'Customer',
+                    'customer_lastname' => $request->billing_last_name,
+                    'customer_email' => $request->billing_email,
+                    'customer_mobileno' => $request->billing_phone,
+                    'customer_password' => base64_encode(base64_encode('welcome@123')),
+                    'customer_address' => $request->billing_address,
+                    'customer_address1' => $request->billing_address,
+                    'customer_city' => $request->billing_city,
+                    'customer_state' => $request->billing_state,
+                    'customer_pincode' => $request->billing_postcode,
+                    'customer_type' => 'Customer',
                 ]);
             } else {
                 $customer->update([
                     'customer_firstname' => $request->billing_first_name,
-                    'customer_lastname'  => $request->billing_last_name,
-                    'customer_email'     => $request->billing_email,
-                    'customer_mobileno'  => $request->billing_phone,
-                    'customer_address'   => $request->billing_address,
-                    'customer_address1'  => $request->billing_address,
-                    'customer_city'      => $request->billing_city,
-                    'customer_state'     => $request->billing_state,
-                    'customer_pincode'   => $request->billing_postcode,
+                    'customer_lastname' => $request->billing_last_name,
+                    'customer_email' => $request->billing_email,
+                    'customer_mobileno' => $request->billing_phone,
+                    'customer_address' => $request->billing_address,
+                    'customer_address1' => $request->billing_address,
+                    'customer_city' => $request->billing_city,
+                    'customer_state' => $request->billing_state,
+                    'customer_pincode' => $request->billing_postcode,
                 ]);
             }
 
@@ -1955,45 +2015,45 @@ class FrontendController extends Controller
                 $vendorIds[] = (int) $lineInvoice['vendor_id'];
 
                 DB::table('ecom_invoice')->insert([
-                    'invoice_id'         => $invoiceId,
-                    'customer_id'        => $customerCode,
-                    'vendor_id'          => (int) $lineInvoice['vendor_id'],
+                    'invoice_id' => $invoiceId,
+                    'customer_id' => $customerCode,
+                    'vendor_id' => (int) $lineInvoice['vendor_id'],
                     'product_detail_ids' => implode(',', array_unique($lineInvoice['product_detail_ids'])),
-                    'status'             => 'Pending',
-                    'line_discount'      => (float) ($lineInvoice['line_discount'] ?? 0),
-                    'line_qty'           => (int) ($lineInvoice['line_qty'] ?? 1),
-                    'free_qty'           => (int) ($lineInvoice['free_qty'] ?? 0),
-                    'line_subtotal'      => (float) ($lineInvoice['line_subtotal'] ?? 0),
-                    'tax_rate'           => (float) ($lineInvoice['tax_rate'] ?? 0),
-                    'tax_type'           => (string) ($lineInvoice['tax_type'] ?? 'NA'),
-                    'tax_amount'         => (float) ($lineInvoice['tax_amount'] ?? 0),
-                    'offer_id'           => !empty($lineInvoice['offer_id']) ? (int) $lineInvoice['offer_id'] : null,
-                    'offer_title'        => (string) ($lineInvoice['offer_title'] ?? ''),
-                    'offer_type'         => (string) ($lineInvoice['offer_type'] ?? ''),
-                    'cashback_amount'    => (float) ($lineInvoice['cashback_amount'] ?? 0),
-                    'total_amount'       => $lineInvoice['line_total'],
-                    'created_at'         => now(),
-                    'updated_at'         => now(),
+                    'status' => 'Pending',
+                    'line_discount' => (float) ($lineInvoice['line_discount'] ?? 0),
+                    'line_qty' => (int) ($lineInvoice['line_qty'] ?? 1),
+                    'free_qty' => (int) ($lineInvoice['free_qty'] ?? 0),
+                    'line_subtotal' => (float) ($lineInvoice['line_subtotal'] ?? 0),
+                    'tax_rate' => (float) ($lineInvoice['tax_rate'] ?? 0),
+                    'tax_type' => (string) ($lineInvoice['tax_type'] ?? 'NA'),
+                    'tax_amount' => (float) ($lineInvoice['tax_amount'] ?? 0),
+                    'offer_id' => !empty($lineInvoice['offer_id']) ? (int) $lineInvoice['offer_id'] : null,
+                    'offer_title' => (string) ($lineInvoice['offer_title'] ?? ''),
+                    'offer_type' => (string) ($lineInvoice['offer_type'] ?? ''),
+                    'cashback_amount' => (float) ($lineInvoice['cashback_amount'] ?? 0),
+                    'total_amount' => $lineInvoice['line_total'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
             }
 
             $orderId = $this->generateUniqueOrderId();
 
             DB::table('ecom_order')->insert([
-                'order_id'        => $orderId,
-                'customer_id'     => $customerCode,
-                'invoice_ids'     => implode(',', $invoiceIds),
-                'vendor_ids'      => implode(',', array_unique($vendorIds)),
-                'status'          => 'Pending',
-                'payment_type'    => $request->payment_method ?? 'Cash On Delivery',
-                'total_discount'  => (float) ($checkoutSummary['discount_total'] ?? 0),
-                'sub_total'       => (float) ($checkoutSummary['subtotal'] ?? 0),
-                'tax_amount'      => (float) ($checkoutSummary['tax_total'] ?? 0),
+                'order_id' => $orderId,
+                'customer_id' => $customerCode,
+                'invoice_ids' => implode(',', $invoiceIds),
+                'vendor_ids' => implode(',', array_unique($vendorIds)),
+                'status' => 'Pending',
+                'payment_type' => $request->payment_method ?? 'Cash On Delivery',
+                'total_discount' => (float) ($checkoutSummary['discount_total'] ?? 0),
+                'sub_total' => (float) ($checkoutSummary['subtotal'] ?? 0),
+                'tax_amount' => (float) ($checkoutSummary['tax_total'] ?? 0),
                 'delivery_charge' => (float) ($checkoutSummary['delivery_charge'] ?? 0),
-                'total_amount'    => $grandTotal,
-                'order_notes'     => $request->input('order_notes', $request->input('order-notes')),
-                'created_at'      => now(),
-                'updated_at'      => now(),
+                'total_amount' => $grandTotal,
+                'order_notes' => $request->input('order_notes', $request->input('order-notes')),
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
 
             $legacyOrder = new Ecom_Orders();
@@ -2423,16 +2483,16 @@ class FrontendController extends Controller
 
             $detailRows = $productDetailIds->isNotEmpty()
                 ? DB::table('products_details as pd')
-                ->leftJoin('products as p', 'p.id', '=', 'pd.products_id')
-                ->whereIn('pd.id', $productDetailIds)
-                ->select(
-                    'pd.id as detail_id',
-                    'p.product_name',
-                    'pd.selling_price',
-                    'pd.attributevalue2 as product_size'
-                )
-                ->get()
-                ->keyBy('detail_id')
+                    ->leftJoin('products as p', 'p.id', '=', 'pd.products_id')
+                    ->whereIn('pd.id', $productDetailIds)
+                    ->select(
+                        'pd.id as detail_id',
+                        'p.product_name',
+                        'pd.selling_price',
+                        'pd.attributevalue2 as product_size'
+                    )
+                    ->get()
+                    ->keyBy('detail_id')
                 : collect();
 
             $mappedItems = [];
@@ -2450,15 +2510,15 @@ class FrontendController extends Controller
 
                 if ($lineDetails->isEmpty()) {
                     $mappedItems[] = [
-                        'name'     => 'Order Item',
-                        'hsn'      => '-',
-                        'price'    => $lineQty > 0 ? ($lineTotal / $lineQty) : $lineTotal,
-                        'qty'      => $lineQty,
-                        'net'      => $lineSubtotal,
+                        'name' => 'Order Item',
+                        'hsn' => '-',
+                        'price' => $lineQty > 0 ? ($lineTotal / $lineQty) : $lineTotal,
+                        'qty' => $lineQty,
+                        'net' => $lineSubtotal,
                         'tax_rate' => $lineTaxRate,
                         'tax_type' => $lineTaxType,
-                        'tax_amt'  => $lineTaxAmount,
-                        'total'    => $lineTotal,
+                        'tax_amt' => $lineTaxAmount,
+                        'total' => $lineTotal,
                     ];
                     continue;
                 }
@@ -2474,15 +2534,15 @@ class FrontendController extends Controller
                     }
 
                     $mappedItems[] = [
-                        'name'     => $name,
-                        'hsn'      => '-',
-                        'price'    => $amount,
-                        'qty'      => $lineQty,
-                        'net'      => $lineSubtotal,
+                        'name' => $name,
+                        'hsn' => '-',
+                        'price' => $amount,
+                        'qty' => $lineQty,
+                        'net' => $lineSubtotal,
                         'tax_rate' => $lineTaxRate,
                         'tax_type' => $lineTaxType,
-                        'tax_amt'  => $lineTaxAmount,
-                        'total'    => $lineTotal,
+                        'tax_amt' => $lineTaxAmount,
+                        'total' => $lineTotal,
                     ];
                 }
             }
@@ -2500,28 +2560,28 @@ class FrontendController extends Controller
                     'gst' => '-',
                 ],
                 'invoice' => [
-                    'order_no'     => $newOrder->order_id,
-                    'invoice_no'   => $invoiceIds->first() ?? $newOrder->order_id,
-                    'order_date'   => $orderDate->format('d-m-Y'),
+                    'order_no' => $newOrder->order_id,
+                    'invoice_no' => $invoiceIds->first() ?? $newOrder->order_id,
+                    'order_date' => $orderDate->format('d-m-Y'),
                     'invoice_date' => now()->format('d-m-Y'),
                 ],
                 'billing' => [
-                    'name'       => trim((string) (($customer->customer_firstname ?? '') . ' ' . ($customer->customer_lastname ?? ''))),
-                    'address'    => (string) ($customer->customer_address ?? ''),
-                    'city'       => (string) ($customer->customer_city ?? ''),
-                    'pincode'    => (string) ($customer->customer_pincode ?? ''),
+                    'name' => trim((string) (($customer->customer_firstname ?? '') . ' ' . ($customer->customer_lastname ?? ''))),
+                    'address' => (string) ($customer->customer_address ?? ''),
+                    'city' => (string) ($customer->customer_city ?? ''),
+                    'pincode' => (string) ($customer->customer_pincode ?? ''),
                     'state_code' => (string) ($customer->customer_state ?? ''),
                 ],
                 'shipping' => [
-                    'name'       => trim((string) (($customer->customer_firstname ?? '') . ' ' . ($customer->customer_lastname ?? ''))),
-                    'address'    => (string) ($customer->customer_address1 ?? $customer->customer_address ?? ''),
-                    'city'       => (string) ($customer->customer_city ?? ''),
-                    'pincode'    => (string) ($customer->customer_pincode ?? ''),
+                    'name' => trim((string) (($customer->customer_firstname ?? '') . ' ' . ($customer->customer_lastname ?? ''))),
+                    'address' => (string) ($customer->customer_address1 ?? $customer->customer_address ?? ''),
+                    'city' => (string) ($customer->customer_city ?? ''),
+                    'pincode' => (string) ($customer->customer_pincode ?? ''),
                     'state_code' => (string) ($customer->customer_state ?? ''),
                 ],
                 'items' => $mappedItems,
                 'summary' => [
-                    'tax'   => $taxTotal,
+                    'tax' => $taxTotal,
                     'grand' => $grandTotal,
                     'words' => $this->amountInWords($grandTotal),
                 ],
@@ -2542,15 +2602,15 @@ class FrontendController extends Controller
             $net = (float) $item->product_price * (int) $item->product_quantity;
 
             return [
-                'name'     => $item->product_name,
-                'hsn'      => $item->product_gstin ?? '-',
-                'price'    => (float) $item->product_price,
-                'qty'      => (int) $item->product_quantity,
-                'net'      => $net,
+                'name' => $item->product_name,
+                'hsn' => $item->product_gstin ?? '-',
+                'price' => (float) $item->product_price,
+                'qty' => (int) $item->product_quantity,
+                'net' => $net,
                 'tax_rate' => 0,
                 'tax_type' => 'NA',
-                'tax_amt'  => 0,
-                'total'    => $net,
+                'tax_amt' => 0,
+                'total' => $net,
             ];
         });
 
@@ -2563,28 +2623,28 @@ class FrontendController extends Controller
                 'gst' => '-',
             ],
             'invoice' => [
-                'order_no'     => $order->order_id,
-                'invoice_no'   => $order->order_id,
-                'order_date'   => Carbon::parse($order->order_date)->format('d-m-Y'),
+                'order_no' => $order->order_id,
+                'invoice_no' => $order->order_id,
+                'order_date' => Carbon::parse($order->order_date)->format('d-m-Y'),
                 'invoice_date' => now()->format('d-m-Y'),
             ],
             'billing' => [
-                'name'       => trim((string) (($customer->customer_firstname ?? '') . ' ' . ($customer->customer_lastname ?? ''))),
-                'address'    => (string) ($order->customer_address ?? ''),
-                'city'       => (string) ($order->customer_city ?? ''),
-                'pincode'    => (string) ($order->customer_pincode ?? ''),
+                'name' => trim((string) (($customer->customer_firstname ?? '') . ' ' . ($customer->customer_lastname ?? ''))),
+                'address' => (string) ($order->customer_address ?? ''),
+                'city' => (string) ($order->customer_city ?? ''),
+                'pincode' => (string) ($order->customer_pincode ?? ''),
                 'state_code' => (string) ($order->customer_state ?? ''),
             ],
             'shipping' => [
-                'name'       => trim((string) (($order->customer_firstname ?? '') . ' ' . ($order->customer_lastname ?? ''))),
-                'address'    => (string) ($order->customer_address1 ?? ''),
-                'city'       => (string) ($order->customer_city ?? ''),
-                'pincode'    => (string) ($order->customer_pincode ?? ''),
+                'name' => trim((string) (($order->customer_firstname ?? '') . ' ' . ($order->customer_lastname ?? ''))),
+                'address' => (string) ($order->customer_address1 ?? ''),
+                'city' => (string) ($order->customer_city ?? ''),
+                'pincode' => (string) ($order->customer_pincode ?? ''),
                 'state_code' => (string) ($order->customer_state ?? ''),
             ],
             'items' => $mappedItems,
             'summary' => [
-                'tax'   => 0,
+                'tax' => 0,
                 'grand' => $grandTotal,
                 'words' => $this->amountInWords($grandTotal),
             ],
@@ -2794,9 +2854,9 @@ class FrontendController extends Controller
 
             $invoiceRows = $allInvoiceIds->isNotEmpty()
                 ? DB::table('ecom_invoice')
-                ->whereIn('invoice_id', $allInvoiceIds)
-                ->get()
-                ->keyBy('invoice_id')
+                    ->whereIn('invoice_id', $allInvoiceIds)
+                    ->get()
+                    ->keyBy('invoice_id')
                 : collect();
 
             $allProductDetailIds = $invoiceRows->flatMap(function ($invoice) {
@@ -2807,20 +2867,20 @@ class FrontendController extends Controller
 
             $productDetails = $allProductDetailIds->isNotEmpty()
                 ? DB::table('products_details as pd')
-                ->leftJoin('products as p', 'p.id', '=', 'pd.products_id')
-                ->whereIn('pd.id', $allProductDetailIds)
-                ->select(
-                    'pd.id as detail_id',
-                    'p.product_name',
-                    'pd.product_detail_image',
-                    'pd.selling_price',
-                    'pd.attributevalue1 as product_color',
-                    'pd.attributevalue2 as product_size',
-                    'pd.return_replace',
-                    'pd.r_days'
-                )
-                ->get()
-                ->keyBy('detail_id')
+                    ->leftJoin('products as p', 'p.id', '=', 'pd.products_id')
+                    ->whereIn('pd.id', $allProductDetailIds)
+                    ->select(
+                        'pd.id as detail_id',
+                        'p.product_name',
+                        'pd.product_detail_image',
+                        'pd.selling_price',
+                        'pd.attributevalue1 as product_color',
+                        'pd.attributevalue2 as product_size',
+                        'pd.return_replace',
+                        'pd.r_days'
+                    )
+                    ->get()
+                    ->keyBy('detail_id')
                 : collect();
 
             $legacyOrderProducts = DB::table('ecom_order_product')
@@ -2843,45 +2903,45 @@ class FrontendController extends Controller
                         continue;
                     }
 
-                      $normalizeReturnReplace = function ($value): int {
-                          $raw = is_null($value) ? '' : (string) $value;
-                          if (is_numeric($raw)) {
-                              return (int) $raw;
-                          }
-                          $normalized = strtolower(trim($raw));
-                          if ($normalized === 'return') {
-                              return 2;
-                          }
-                          if ($normalized === 'replacement') {
-                              return 3;
-                          }
-                          if (in_array($normalized, ['return/replacement', 'return & replacement', 'return and replacement'], true)) {
-                              return 1;
-                          }
-                          if (in_array($normalized, ['na', 'n/a', 'none'], true)) {
-                              return 4;
-                          }
-                          return 1;
-                      };
+                    $normalizeReturnReplace = function ($value): int {
+                        $raw = is_null($value) ? '' : (string) $value;
+                        if (is_numeric($raw)) {
+                            return (int) $raw;
+                        }
+                        $normalized = strtolower(trim($raw));
+                        if ($normalized === 'return') {
+                            return 2;
+                        }
+                        if ($normalized === 'replacement') {
+                            return 3;
+                        }
+                        if (in_array($normalized, ['return/replacement', 'return & replacement', 'return and replacement'], true)) {
+                            return 1;
+                        }
+                        if (in_array($normalized, ['na', 'n/a', 'none'], true)) {
+                            return 4;
+                        }
+                        return 1;
+                    };
 
-                      $lineProducts = collect(explode(',', (string) $invoice->product_detail_ids))
-                          ->map(fn($val) => (int) trim($val))
-                          ->filter()
-                          ->map(function ($detailId) use ($productDetails, $normalizeReturnReplace) {
-                              $detail = $productDetails->get($detailId);
-                              if (!$detail) {
-                                  return null;
-                              }
-                              $productImage = '';
-                              $rawImage = $detail->product_detail_image ?? '';
-                              if (is_string($rawImage) && $rawImage !== '') {
-                                  $decodedImage = json_decode($rawImage, true);
-                                  if (is_array($decodedImage)) {
-                                      $productImage = (string) (collect($decodedImage)->first() ?? '');
-                                  } else {
-                                      $productImage = trim((string) $rawImage, '[]"\'' . " \t\n\r\0\x0B");
-                                  }
-                              }
+                    $lineProducts = collect(explode(',', (string) $invoice->product_detail_ids))
+                        ->map(fn($val) => (int) trim($val))
+                        ->filter()
+                        ->map(function ($detailId) use ($productDetails, $normalizeReturnReplace) {
+                            $detail = $productDetails->get($detailId);
+                            if (!$detail) {
+                                return null;
+                            }
+                            $productImage = '';
+                            $rawImage = $detail->product_detail_image ?? '';
+                            if (is_string($rawImage) && $rawImage !== '') {
+                                $decodedImage = json_decode($rawImage, true);
+                                if (is_array($decodedImage)) {
+                                    $productImage = (string) (collect($decodedImage)->first() ?? '');
+                                } else {
+                                    $productImage = trim((string) $rawImage, '[]"\'' . " \t\n\r\0\x0B");
+                                }
+                            }
 
                             return (object) [
                                 'detail_id' => (int) $detailId,
@@ -2890,11 +2950,11 @@ class FrontendController extends Controller
                                 'product_color' => (string) ($detail->product_color ?? ''),
                                 'product_size' => (string) ($detail->product_size ?? ''),
                                 'product_price' => (float) ($detail->selling_price ?? 0),
-                                  'return_replace' => $normalizeReturnReplace($detail->return_replace ?? 0),
-                                  'return_days' => (int) ($detail->r_days ?? 0),
-                              ];
-                          })
-                          ->filter()
+                                'return_replace' => $normalizeReturnReplace($detail->return_replace ?? 0),
+                                'return_days' => (int) ($detail->r_days ?? 0),
+                            ];
+                        })
+                        ->filter()
                         ->values();
 
                     $status = (string) ($invoice->status ?? 'Pending');
@@ -2962,14 +3022,14 @@ class FrontendController extends Controller
                         }
                     }
 
-                      $deliveryDate = null;
-                      if ($isDelivered) {
-                          if (!empty($invoice->delivered_at)) {
-                              $deliveryDate = Carbon::parse($invoice->delivered_at);
-                          } elseif (!empty($invoice->updated_at)) {
-                              $deliveryDate = Carbon::parse($invoice->updated_at);
-                          }
-                      }
+                    $deliveryDate = null;
+                    if ($isDelivered) {
+                        if (!empty($invoice->delivered_at)) {
+                            $deliveryDate = Carbon::parse($invoice->delivered_at);
+                        } elseif (!empty($invoice->updated_at)) {
+                            $deliveryDate = Carbon::parse($invoice->updated_at);
+                        }
+                    }
                     $returnDeadline = null;
                     $isReturnAllowed = false;
                     if ($isDelivered && $maxReturnDays > 0 && $deliveryDate) {
@@ -2992,36 +3052,36 @@ class FrontendController extends Controller
                     ];
                 }
 
-                  $invoiceStatuses = collect($invoiceDetails)
-                      ->pluck('status')
-                      ->map(fn($s) => strtolower((string) $s))
-                      ->values();
+                $invoiceStatuses = collect($invoiceDetails)
+                    ->pluck('status')
+                    ->map(fn($s) => strtolower((string) $s))
+                    ->values();
 
-                  $derivedOrderStatus = (string) ($order->status ?? 'Pending');
-                  if ($invoiceStatuses->isNotEmpty()) {
-                      if ($invoiceStatuses->every(fn($s) => in_array($s, ['cancel', 'return'], true))) {
-                          $derivedOrderStatus = 'Closed';
-                      } elseif ($invoiceStatuses->contains('pending')) {
-                          $derivedOrderStatus = 'Pending';
-                      } elseif ($invoiceStatuses->contains(fn($s) => in_array($s, ['accept', 'accepted'], true))) {
-                          $derivedOrderStatus = 'Accept';
-                      } elseif ($invoiceStatuses->contains(fn($s) => in_array($s, ['dispatch', 'dispatched'], true))) {
-                          $derivedOrderStatus = 'Dispatch';
-                      } elseif ($invoiceStatuses->every(fn($s) => in_array($s, ['delivery', 'delivered'], true))) {
-                          $derivedOrderStatus = 'Delivered';
-                      }
-                  }
+                $derivedOrderStatus = (string) ($order->status ?? 'Pending');
+                if ($invoiceStatuses->isNotEmpty()) {
+                    if ($invoiceStatuses->every(fn($s) => in_array($s, ['cancel', 'return'], true))) {
+                        $derivedOrderStatus = 'Closed';
+                    } elseif ($invoiceStatuses->contains('pending')) {
+                        $derivedOrderStatus = 'Pending';
+                    } elseif ($invoiceStatuses->contains(fn($s) => in_array($s, ['accept', 'accepted'], true))) {
+                        $derivedOrderStatus = 'Accept';
+                    } elseif ($invoiceStatuses->contains(fn($s) => in_array($s, ['dispatch', 'dispatched'], true))) {
+                        $derivedOrderStatus = 'Dispatch';
+                    } elseif ($invoiceStatuses->every(fn($s) => in_array($s, ['delivery', 'delivered'], true))) {
+                        $derivedOrderStatus = 'Delivered';
+                    }
+                }
 
-                  return (object) [
-                      'id' => (int) $order->id,
-                      'order_id' => (string) $order->order_id,
-                      'order_date' => $order->created_at,
-                      'order_status' => $derivedOrderStatus,
-                      'grand_total' => (float) ($order->total_amount ?? 0),
-                      'invoice_details' => collect($invoiceDetails),
-                  ];
-              });
-          }
+                return (object) [
+                    'id' => (int) $order->id,
+                    'order_id' => (string) $order->order_id,
+                    'order_date' => $order->created_at,
+                    'order_status' => $derivedOrderStatus,
+                    'grand_total' => (float) ($order->total_amount ?? 0),
+                    'invoice_details' => collect($invoiceDetails),
+                ];
+            });
+        }
 
         $oldOrders = Ecom_orders::where('customer_id', $customerId)
             ->orderBy('id', 'desc')
@@ -3165,22 +3225,22 @@ class FrontendController extends Controller
             }
             if (!isset($resultArr[$productId])) {
                 $resultArr[$productId] = [
-                    'id'                 => $val->id,
-                    'category_id'        => $val->category_main,
-                    'vendor_id'          => $val->vendor_id,
-                    'product_name'       => $val->product_name,
-                    'product_image'      => $val->product_image,
-                    'selling_price'      => $val->selling_price,
-                    'retail_price'       => $val->retail_price,
-                    'category_name'      => $val->category_name,
-                    'category_sub_name'  => $val->category_sub_name,
+                    'id' => $val->id,
+                    'category_id' => $val->category_main,
+                    'vendor_id' => $val->vendor_id,
+                    'product_name' => $val->product_name,
+                    'product_image' => $val->product_image,
+                    'selling_price' => $val->selling_price,
+                    'retail_price' => $val->retail_price,
+                    'category_name' => $val->category_name,
+                    'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
-                    'shop_name'          => $val->shop_name,
-                    'profile_image'      => $val->profile_image,
-                    'size'               => $val->size,
-                    'color'              => $val->color,
+                    'shop_name' => $val->shop_name,
+                    'profile_image' => $val->profile_image,
+                    'size' => $val->size,
+                    'color' => $val->color,
                     'product_detail_image' => $val->product_detail_image,
-                    'discount'           => $discount_percentage,
+                    'discount' => $discount_percentage,
                 ];
             }
         }
@@ -3246,9 +3306,9 @@ class FrontendController extends Controller
 
             $wishlist = new wishlist;
 
-            $wishlist->ecom_wishlist_ipaddress =  $ip;
+            $wishlist->ecom_wishlist_ipaddress = $ip;
             $wishlist->ecom_product_id = $id;
-            $wishlist->customer_id =  $customer_id;
+            $wishlist->customer_id = $customer_id;
             $wishlist->ecom_product_name = $productview->product_name;
             $wishlist->save();
         }
@@ -3288,11 +3348,11 @@ class FrontendController extends Controller
         }
 
         $rating = Rating::create([
-            'products_id'   => $request->product_id,
+            'products_id' => $request->product_id,
             'customer_name' => $customerName,
-            'star_rating'   => $request->star_rating,
-            'comments'      => $request->comment,
-            'status'        => 1
+            'star_rating' => $request->star_rating,
+            'comments' => $request->comment,
+            'status' => 1
         ]);
 
         // 🖼️ multiple images

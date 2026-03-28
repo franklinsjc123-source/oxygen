@@ -9,6 +9,15 @@
                                          <img id="firstImg" src="<?php echo asset('assets') ?>/images/products/<?= $prouctsList[$id]['product_image']?>"
                                              data-zoom-image="<?php echo asset('assets') ?>/images/products/<?= $prouctsList[$id]['product_image']?>"
                                              alt="Water Boil Black Utensil" width="800" height="900">
+
+                                         @php
+                                             $offer_image = $prouctsList[$id]['offer_image'] ?? null;
+                                         @endphp
+                                         @if($offer_image)
+                                             <div class="product-label-group" style="position: absolute; top: 10px; left: 10px; z-index: 10;">
+                                                 <img src="{{ asset('assets/images/offer_logo/'.$offer_image) }}" alt="Offer" style="width: 50px; height: 50px; object-fit: contain; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); border-radius: 5px;">
+                                             </div>
+                                         @endif
                                      </figure>
                                  </div>
                          <?php

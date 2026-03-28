@@ -601,6 +601,8 @@
                                                  
                                              </ul>
                                          </div>
+
+
                                          <div class="tab-pane" id="helpful-positive">
                                              <ul class="comments list-style-none">
                                                  @forelse($mostHelpfulPositive as $mostHelpRating)
@@ -890,13 +892,98 @@
                                                 @endforelse
                                              </ul>
                                          </div>
+
+
+
+
                                      </div>
                                  </div>
                              </div>
                          </div>
                      </div>
+
+
+
+                 
+                      <section class="related-product-section">
+                         <div class="title-link-wrapper mb-4">
+                             <h4 class="title">Related Offer Products</h4>
+                             <a href="#" class="btn btn-dark btn-link btn-slide-right btn-icon-right">More
+                                 Products<i class="w-icon-long-arrow-right"></i></a>
+                         </div>
+                            <div class="swiper-container swiper-theme" data-swiper-options="{
+                                    'spaceBetween': 20,
+                                    'slidesPerView': 2,
+                                    'breakpoints': {
+                                        '576': {
+                                            'slidesPerView': 3
+                                        },
+                                        '768': {
+                                            'slidesPerView': 4
+                                        },
+                                        '992': {
+                                            'slidesPerView': 3
+                                        }
+                                    }
+                                }">
+                                <div class="swiper-wrapper row cols-lg-3 cols-md-4 cols-sm-3 cols-2">
+                                    @foreach ($offerProducts as $product)
+                                        <div class="col-md-2 swiper-slide product">
+                                            <figure class="product-media">
+                                                <a href="{{ url('productVar').'/'.$product->id }}">
+                                                    <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product"/>
+                                                </a>
+
+                                                @if(isset($product->offer_image) && $product->offer_image != '')
+                                                    <div class="product-label-group" style="position: absolute; top: 10px; left: 10px;">
+                                                        <img src="{{ asset('assets/images/offer_logo/'.$product->offer_image) }}" alt="Offer" style="width: 45px; height: 45px; object-fit: contain; border-radius: 5px;">
+                                                    </div>
+                                                @endif
+
+                                                <div class="product-action-vertical">
+                                                    <a href="#" class="btn-product-icon btn-cart w-icon-cart"
+                                                        title="Add to cart"></a>
+                                                    <a href="#" class="btn-product-icon btn-wishlist w-icon-heart"
+                                                        title="Add to wishlist"></a>
+                                                  
+                                                </div>
+                                                <div class="product-action">
+                                                    <a   onclick="showQuickView('{{ $product->id }}')" data-id="{{ $product->id }}" class="btn-product btn-quickview" title="Quick View">Quick
+                                                        View</a>
+                                                </div>
+                                            </figure>
+                                            <div class="product-details">
+                                                <h4 class="product-name"><a href="{{ url('productVar').'/'.$product->id }}">{{ $product->product_name }}</a></h4>
+                                                <div class="ratings-container">
+                                                    <div class="ratings-full">
+                                                        <span class="ratings" style="width: 100%;"></span>
+                                                        <span class="tooltiptext tooltip-top"></span>
+                                                    </div>
+                                                    <a href="product-default.html" class="rating-reviews">(3 reviews)</a>
+                                                </div>
+                                                <div class="product-pa-wrapper">
+                                                        <div class="product-price">₹{{ $product->selling_price }}</div>
+                                                            <div class="product-price-discount">₹{{ $product->retail_price }}</div>
+                                                            @php
+                                                                $discount = number_format((($product->retail_price - $product->selling_price) / $product->retail_price) * 100);
+                                                            @endphp
+                                                            <div class="product-offer-percentage">{{ $discount }}% Off</div>
+                                                        </div>
+                                            </div>
+                                        </div>
+                                    
+                                    @endforeach
+                                </div>
+                            </div>
+                     </section> 
                     
                  </div>
+
+
+
+
+
+
                  <!-- End of Main Content -->
                  <aside class="sidebar product-sidebar sidebar-fixed right-sidebar sticky-sidebar-wrapper">
                      <div class="sidebar-overlay"></div>
