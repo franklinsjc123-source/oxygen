@@ -37,15 +37,8 @@
                      </div>
 
 
-                     <button class="swiper-button-next"></button>
-                     <button class="swiper-button-prev"></button>
                  </div>
-                 <div class="product-thumbs-wrap swiper-container" data-swiper-options="{
-                        'navigation': {
-                            'nextEl': '.swiper-button-next',
-                            'prevEl': '.swiper-button-prev'
-                        }
-                    }">
+                 <div class="product-thumbs-wrap swiper-container">
                      <div class="product-thumbs swiper-wrapper row cols-4 gutter-sm">
                          <?php
 
