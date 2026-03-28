@@ -945,12 +945,35 @@ class HomeController extends Controller
             ->leftjoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
             ->leftjoin('products_details', 'products.id', '=', 'products_details.products_id')
             ->leftjoin('master_offers', 'products.offers', '=', 'master_offers.id')
-            ->select('products.*', 'products_details.*', 'master_offers.offer_logo as offer_image')
+            ->select(
+                'products.id',
+                'products.product_id',
+                'products.product_name',
+                'products.product_image',
+                'products.created_by',
+                'products.category_main',
+                'products.category',
+                'products.category_sub',
+                'master_offers.offer_logo as offer_image',
+                DB::raw('MIN(products_details.retail_price) as retail_price'),
+                DB::raw('MIN(products_details.selling_price) as selling_price')
+            )
             ->where('products.product_name', "LIKE", "%{$request->keywords}%")
             ->orWhere("products.category_main", "LIKE", "%{$request->keywords}%")
             ->orWhere("products.category", "LIKE", "%{$request->keywords}%")
             ->orWhere("products.category_sub", "LIKE", "%{$request->keywords}%")
             ->orWhere("products_details.size", "LIKE", "%{$request->keywords}%")
+            ->groupBy(
+                'products.id',
+                'products.product_id',
+                'products.product_name',
+                'products.product_image',
+                'products.created_by',
+                'products.category_main',
+                'products.category',
+                'products.category_sub',
+                'master_offers.offer_logo'
+            )
             ->get();
 
         $categorymain = CategoryMain::where('status', 1)->limit(7)->get();
@@ -1013,12 +1036,34 @@ class HomeController extends Controller
             ->leftJoin('products_details as pd', 'products.id', '=', 'pd.products_id')
             ->leftJoin('master_offers as o', 'products.offers', '=', 'o.id')
             ->select(
-                'products.*',
-                'pd.*',
+                'products.id',
+                'products.product_id',
+                'products.product_name',
+                'products.product_image',
+                'products.created_by',
+                'products.category_main',
+                'products.category',
+                'products.category_sub',
                 'cm.category_main_name as main_category_name',
                 'c.category_name as category_name',
                 'cs.category_sub_name as sub_category_name',
-                'o.offer_logo as offer_image'
+                'o.offer_logo as offer_image',
+                DB::raw('MIN(pd.retail_price) as retail_price'),
+                DB::raw('MIN(pd.selling_price) as selling_price')
+            )
+            ->groupBy(
+                'products.id',
+                'products.product_id',
+                'products.product_name',
+                'products.product_image',
+                'products.created_by',
+                'products.category_main',
+                'products.category',
+                'products.category_sub',
+                'cm.category_main_name',
+                'c.category_name',
+                'cs.category_sub_name',
+                'o.offer_logo'
             )
             ->where('products.status', 1)
             ->where(function ($query) use ($keyword, $matchedColorNames) {
