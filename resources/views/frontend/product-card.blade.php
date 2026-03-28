@@ -1,3 +1,8 @@
+@php
+    if (is_array($product)) {
+        $product = (object) $product;
+    }
+@endphp
 <div class="product-wrap">
     <div class="product text-center">
         <figure class="product-media">
@@ -5,11 +10,11 @@
                 <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product" />
             </a>
             @php
-                $offer_image = isset($product->offer_image) ? $product->offer_image : (isset($product['offer_image']) ? $product['offer_image'] : null);
+                $offer_image = $product->offer_image ?? null;
             @endphp
             @if($offer_image)
                 <div class="product-label-group" style="position: absolute; top: 10px; left: 10px; z-index: 10;">
-                    <img src="{{ asset('assets/images/offer_logo/'.$offer_image) }}" alt="Offer" style="width: 45px; height: 45px; object-fit: contain; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));  border-radius: 5px;">
+                    <img src="{{ asset('assets/images/offer_logo/'.$offer_image) }}" alt="Offer" style="width: 45px; height: 45px; object-fit: contain; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); border-radius: 5px;">
                 </div>
             @endif
             <div class="product-action-vertical">

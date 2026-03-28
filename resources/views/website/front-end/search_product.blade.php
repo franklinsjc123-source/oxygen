@@ -112,6 +112,11 @@
                                     <a href="{{ route('addtocart', $product->product_id ) }}">
                                         <img src="{{ asset('assets/images/products') . '/' . $product->product_image }}" class="img-fluid blur-up lazyload bg-img" alt="">
                                     </a>
+                                    @if(isset($product->offer_image) && $product->offer_image != '')
+                                       <div class="product-label-group" style="position: absolute; top: 10px; left: 10px; z-index: 10;">
+                                           <img src="{{ asset('assets/images/offer_logo/'.$product->offer_image) }}" alt="Offer" style="width: 45px; height: 45px; object-fit: contain; border-radius: 5px; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));">
+                                       </div>
+                                    @endif
                                 </div>
                             </div>
                             <div class="product-detail">

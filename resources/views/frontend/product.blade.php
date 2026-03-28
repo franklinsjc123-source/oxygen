@@ -916,7 +916,7 @@
                       <section class="related-product-section">
                          <div class="title-link-wrapper mb-4">
                              <h4 class="title">Related Offer Products</h4>
-                             <a href="#" class="btn btn-dark btn-link btn-slide-right btn-icon-right">More
+                             <a href="{{ route('offer-products', ['id' => $getProduct->vendor_id]) }}?id={{ $getProduct->offers }}" class="btn btn-dark btn-link btn-slide-right btn-icon-right">More
                                  Products<i class="w-icon-long-arrow-right"></i></a>
                          </div>
                             <div class="swiper-container swiper-theme" data-swiper-options="{

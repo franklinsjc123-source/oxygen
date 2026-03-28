@@ -323,8 +323,8 @@
                                                     </a>
 
                                                     @if(isset($products['offer_image']) && $products['offer_image'] != '')
-                                                        <div class="product-label-group" style="position: absolute; top: 10px; left: 10px;">
-                                                            <img src="{{ asset('assets/images/offer_logo/'.$products['offer_image']) }}" alt="Offer" style="width: 45px; height: 45px; object-fit: contain; border-radius: 5px;">
+                                                        <div class="product-label-group" style="position: absolute; top: 10px; left: 10px; z-index: 10;">
+                                                            <img src="{{ asset('assets/images/offer_logo/'.$products['offer_image']) }}" alt="Offer" style="width: 45px; height: 45px; object-fit: contain; border-radius: 5px; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));">
                                                         </div>
                                                     @endif
                                                     <div class="product-action-horizontal">

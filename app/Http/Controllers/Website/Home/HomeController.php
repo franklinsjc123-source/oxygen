@@ -944,7 +944,8 @@ class HomeController extends Controller
             ->leftjoin('category', 'products.category', '=', 'category.id')
             ->leftjoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
             ->leftjoin('products_details', 'products.id', '=', 'products_details.products_id')
-            ->select('products.*', 'products_details.*')
+            ->leftjoin('master_offers', 'products.offers', '=', 'master_offers.id')
+            ->select('products.*', 'products_details.*', 'master_offers.offer_logo as offer_image')
             ->where('products.product_name', "LIKE", "%{$request->keywords}%")
             ->orWhere("products.category_main", "LIKE", "%{$request->keywords}%")
             ->orWhere("products.category", "LIKE", "%{$request->keywords}%")
@@ -1010,12 +1011,14 @@ class HomeController extends Controller
             ->leftJoin('category as c', 'products.category', '=', 'c.id')
             ->leftJoin('category_sub as cs', 'products.category_sub', '=', 'cs.id')
             ->leftJoin('products_details as pd', 'products.id', '=', 'pd.products_id')
+            ->leftJoin('master_offers as o', 'products.offers', '=', 'o.id')
             ->select(
                 'products.*',
                 'pd.*',
                 'cm.category_main_name as main_category_name',
                 'c.category_name as category_name',
-                'cs.category_sub_name as sub_category_name'
+                'cs.category_sub_name as sub_category_name',
+                'o.offer_logo as offer_image'
             )
             ->where('products.status', 1)
             ->where(function ($query) use ($keyword, $matchedColorNames) {

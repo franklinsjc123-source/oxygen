@@ -354,11 +354,13 @@ class FrontendController extends Controller
         $products = DB::table('products')
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
             ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
+            ->leftJoin('master_offers as o', 'o.id', '=', 'products.offers')
             ->select(
                 'products.id',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
+                'o.offer_logo as offer_image',
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
                 DB::raw('SUM(products_details.quantity) as stock_qty'),
@@ -370,17 +372,20 @@ class FrontendController extends Controller
                 'products.id',
                 'products.product_name',
                 'products.product_image',
-                'category_sub.category_sub_name'
+                'category_sub.category_sub_name',
+                'o.offer_logo'
             )
             ->get();
         $featuredProducts = DB::table('products')
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
             ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
+            ->leftJoin('master_offers as o', 'o.id', '=', 'products.offers')
             ->select(
                 'products.id',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
+                'o.offer_logo as offer_image',
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
                 DB::raw('SUM(products_details.quantity) as stock_qty'),
@@ -393,18 +398,21 @@ class FrontendController extends Controller
                 'products.id',
                 'products.product_name',
                 'products.product_image',
-                'category_sub.category_sub_name'
+                'category_sub.category_sub_name',
+                'o.offer_logo'
             )
             ->get();
 
         $collectionProducts = DB::table('products')
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
             ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
+            ->leftJoin('master_offers as o', 'o.id', '=', 'products.offers')
             ->select(
                 'products.id',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
+                'o.offer_logo as offer_image',
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
                 DB::raw('SUM(products_details.quantity) as stock_qty'),
@@ -417,7 +425,8 @@ class FrontendController extends Controller
                 'products.id',
                 'products.product_name',
                 'products.product_image',
-                'category_sub.category_sub_name'
+                'category_sub.category_sub_name',
+                'o.offer_logo'
             )
             ->get();
 
@@ -430,11 +439,13 @@ class FrontendController extends Controller
         $topCollection = DB::table('products')
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
             ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
+            ->leftJoin('master_offers as o', 'o.id', '=', 'products.offers')
             ->select(
                 'products.id',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
+                'o.offer_logo as offer_image',
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
                 DB::raw('SUM(products_details.quantity) as stock_qty'),
@@ -446,7 +457,8 @@ class FrontendController extends Controller
                 'products.id',
                 'products.product_name',
                 'products.product_image',
-                'category_sub.category_sub_name'
+                'category_sub.category_sub_name',
+                'o.offer_logo'
             )
             ->get();
 
@@ -605,7 +617,6 @@ class FrontendController extends Controller
                     'selling_amount' => [],
                     'color_options' => [],
                     'variants' => [],
-                    'images' => [],
                 ];
             }
 
@@ -1307,7 +1318,8 @@ class FrontendController extends Controller
             ->leftJoin('category_sub as cs', 'cs.id', '=', 'p.category_sub')
             ->leftJoin('category_main as cm', 'cm.id', '=', 'p.category_main')
             ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
-            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id');
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
+            ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers');
 
         if ($category_id != '') {
             $productsData = $productsData->where('p.category', $category_id);
@@ -1333,7 +1345,8 @@ class FrontendController extends Controller
             'vp.profile_image',
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
-            'pd.product_detail_image'
+            'pd.product_detail_image',
+            'o.offer_logo'
         )->get();
         $resultArr = [];
         foreach ($productsData as $val) {
@@ -1351,6 +1364,7 @@ class FrontendController extends Controller
                     'category_main_name' => $val->category_main_name,
                     'shop_name' => $val->shop_name,
                     'profile_image' => $val->profile_image,
+                    'offer_image' => $val->offer_logo,
                 ];
             }
         }
@@ -1449,7 +1463,8 @@ class FrontendController extends Controller
             ->leftJoin('category_sub as cs', 'cs.id', '=', 'p.category_sub')
             ->leftJoin('category_main as cm', 'cm.id', '=', 'p.category_main')
             ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
-            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id');
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
+            ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers');
 
         if ($main_category_id != '') {
             $productsData = $productsData->where('p.category_main', $main_category_id);
@@ -1472,7 +1487,8 @@ class FrontendController extends Controller
             'vp.profile_image',
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
-            'pd.product_detail_image'
+            'pd.product_detail_image',
+            'o.offer_logo'
         )->get();
 
 
@@ -1493,6 +1509,7 @@ class FrontendController extends Controller
                     'category_main_name' => $val->category_main_name,
                     'shop_name' => $val->shop_name,
                     'profile_image' => $val->profile_image,
+                    'offer_image' => $val->offer_logo,
                 ];
             }
         }
@@ -3170,6 +3187,7 @@ class FrontendController extends Controller
             ->leftJoin('category_main as cm', 'cm.id', '=', 'p.category_main')
             ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
             ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
+            ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers')
             ->where('p.status', 1);
 
         if (!empty($main_category_id)) {
@@ -3220,7 +3238,8 @@ class FrontendController extends Controller
             'vp.profile_image',
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
-            'pd.product_detail_image'
+            'pd.product_detail_image',
+            'o.offer_logo'
         )->get();
 
         $resultArr = [];
@@ -3250,6 +3269,7 @@ class FrontendController extends Controller
                     'color' => $val->color,
                     'product_detail_image' => $val->product_detail_image,
                     'discount' => $discount_percentage,
+                    'offer_image' => $val->offer_logo,
                 ];
             }
         }
