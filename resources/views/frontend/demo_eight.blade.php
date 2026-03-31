@@ -642,31 +642,120 @@
 
      </div>
 <style>
+.vendor-figure {
+    display: block;
+    margin: 15px auto 10px auto;
+    text-align: center;
+}
+
+.vendor-img-wrap {
+    display: block;
+}
+
 .vendor-profile-img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-top: 20px;
+    width: 120px !important;
+    height: 120px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    margin: 0 auto;
+    display: block;
+    
+    /* Premium initial look */
+    border: 3px solid #ffffff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+}
 
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+/* Background Section */
+.custom-shops-section {
+    background: linear-gradient(180deg, #f8f9fa 0%, #edf1f5 100%);
+    padding: 60px 0;
+    border-top: 1px solid #eaeaea;
+    margin-top: 40px;
 }
-.vendor-figure{
-    border-radius: 50%;
-    background-color: #0088dd;
-    /* width: 8rem;
-    height: 8rem; */
+
+.vendor-name {
+    font-weight: 600;
+    font-size: 15px;
+    color: #333;
+    transition: color 0.3s ease;
+    margin-top: 8px;
+    letter-spacing: 0.3px;
+    padding: 0 5px;
 }
-/* hover */
+
+/* Hover effects */
+.swiper-slide-vendor {
+    cursor: pointer;
+    text-align: center;
+}
+
 .swiper-slide-vendor:hover .vendor-profile-img {
-    transform: translateY(-6px);
+    transform: translateY(-8px) scale(1.05); /* Lift up and scale slightly */
+    box-shadow: 0 15px 30px rgba(0, 136, 221, 0.25);
+    border-color: #0088dd; /* Ring highlight */
+}
 
-   
+.swiper-slide-vendor:hover .vendor-name {
+    color: #0088dd; /* Highlight text */
+}
+
+/* --- MOBILE SPECIFIC MEDIA QUERIES --- */
+@media (max-width: 991px) {
+    .custom-shops-section {
+        padding: 40px 0 !important;
+        margin-top: 25px !important;
+    }
+    .vendor-profile-img {
+        width: 100px !important;
+        height: 100px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .custom-shops-section {
+        padding: 30px 0 !important;
+        margin-top: 20px !important;
+    }
+    .custom-shops-section h2.title {
+        font-size: 22px !important;
+        margin-bottom: 20px !important;
+    }
+    /* Strictly force the images to be round circles */
+    .vendor-profile-img {
+        width: 80px !important;
+        height: 80px !important;
+        border-width: 2px;
+    }
+    .vendor-name {
+        font-size: 13px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .custom-shops-section {
+        padding: 15px 0 !important;
+        margin-top: 15px !important;
+    }
+    .custom-shops-section h2.title {
+        font-size: 18px !important;
+        margin-bottom: 15px !important;
+    }
+    /* Very strict exact pixels to override any global resizing */
+    .vendor-profile-img {
+        width: 65px !important;
+        height: 65px !important;
+    }
+    .vendor-name {
+        font-size: 11px !important;
+        margin-top: 6px;
+    }
 }
 </style>
 
-     <div>
-         <h2 class="title text-left mb-5 appear-animate"> Shops</h2>
+     <div class="custom-shops-section">
+         <div class="container">
+             <h2 class="title text-left mb-5 appear-animate"> Shops</h2>
          <div class="swiper-container swiper-theme  brands-wrapper br-sm mb-9 appear-animate"
              data-swiper-options="{
                     'autoplay': {
