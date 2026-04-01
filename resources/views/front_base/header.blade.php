@@ -293,16 +293,13 @@
             border: 1px solid rgba(0,0,0,0.04);
             border-radius: 0 12px 12px 0;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.03);
-            padding: 24px 10px 24px 20px;
+            padding: 15px !important;
             margin-top: 0 !important;
-            max-height: 70vh;
-            max-width: 910px !important; /* Approx width for exactly 4 columns */
-            width: max-content;
+            max-width: 880px !important; /* Approx width for exactly 4 columns */
+            width: 880px !important;
             display: flex !important;
-            flex-wrap: nowrap !important;
-            overflow: auto !important;
-            scrollbar-width: thin;
-            scrollbar-color: #cbd5e1 #f8fafc;
+            flex-wrap: wrap !important;
+            overflow: visible !important;
         }
         
         @keyframes fadeInMenu {
@@ -318,22 +315,6 @@
             animation: fadeInMenu 0.3s ease-out forwards;
         }
 
-        .category-menu > li > .megamenu::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        .category-menu > li > .megamenu::-webkit-scrollbar-track {
-            background: #f8fafc;
-            border-radius: 10px;
-        }
-        .category-menu > li > .megamenu::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
-        }
-        .category-menu > li > .megamenu::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
         /* Hide hr dividers */
         .category-menu > li > .megamenu .divider {
             display: none;
@@ -341,16 +322,16 @@
 
         /* Each category column */
         .category-menu > li > .megamenu > li {
-            flex: 0 0 220px !important; /* Force exact uniform column width */
-            max-width: 220px !important;
+            flex: 0 0 210px !important; /* Force exact uniform column width */
+            max-width: 210px !important;
             border-right: 1px solid #f1f5f9 !important;
-            padding: 10px 24px !important;
+            padding: 8px 15px !important;
             margin: 0 !important;
             transition: transform 0.3s ease;
         }
         .category-menu > li > .megamenu > li:last-child {
             border-right: none !important;
-            padding: 10px 24px !important;
+            padding: 8px 15px !important;
             margin: 0 !important;
         }
         .category-menu > li > .megamenu > li:hover {
@@ -359,11 +340,11 @@
 
         /* Category heading — Bold & Elegant */
         .category-menu > li > .megamenu > li > a {
-            font-size: 14px !important;
+            font-size: 13px !important;
             font-weight: 700 !important;
             color: #1e293b !important;
-            padding: 0 0 10px 0 !important;
-            margin: 0 0 12px 0 !important;
+            padding: 0 0 8px 0 !important;
+            margin: 0 0 10px 0 !important;
             border-bottom: 2px solid #e2e8f0 !important;
             display: block !important;
             text-transform: uppercase;
@@ -389,9 +370,9 @@
 
         /* Subcategory child links */
         .category-menu > li > .megamenu > li ul li a {
-            padding: 6px 10px !important;
+            padding: 4px 8px !important;
             margin-bottom: 2px;
-            font-size: 12.5px !important;
+            font-size: 11.5px !important;
             font-weight: 500 !important;
             color: #475569 !important;
             border-radius: 6px;
