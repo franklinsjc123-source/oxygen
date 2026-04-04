@@ -425,19 +425,19 @@
                         <div class="header-left mr-md-4">
                             <a href="#" class="mobile-menu-toggle  w-icon-hamburger" aria-label="menu-toggle">
                             </a>
-                            <a href="{{ url('home') }}" class="logo ml-lg-0 ">
+                            <a href="{{ url('home') }}" class="logo ml-lg-0  d-none">
                                 <img src="<?= asset('frontend') ?>/images/header-logo.png" alt="logo" width="144"
                                     height="45" />
                             </a>
 
-                            {{-- <form method="get" action="{{ route('productsearchdetails') }}"
+                             <form method="get" action="{{ route('productsearchdetails') }}"
                                 class="header-search hs-expanded hs-round d-flex d-md-none input-wrapper home-mobile-search">
                                 <input type="text" class="form-control" name="keywords" id="search_mobile"
                                     autocomplete="off" placeholder="Search in..." />
                                 <button class="btn btn-search" type="submit"><i class="w-icon-search"></i>
                                 </button>
                                 <div class="search-suggest-box" id="search_suggest_mobile"></div>
-                            </form> --}}
+                            </form> 
                             <form method="get" action="{{ route('productsearchdetails') }}"
                                 class="header-search hs-expanded hs-round d-none d-md-flex input-wrapper">
                                 <?php  
