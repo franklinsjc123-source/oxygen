@@ -235,7 +235,7 @@ trait CartHelperTrait
                 'color' => $color
             ];
             
-            if ($offer && (string)$offer->type === 'Buy X Get Y Free') {
+            if ($offer && in_array((string)$offer->type, ['Buy X Get Y Free', 'Buy X @ Y'])) {
                 $oid = $offer->id;
                 if (!isset($offerGroups[$oid])) {
                     $offerGroups[$oid] = ['offer' => $offer, 'indices' => [], 'totalQty' => 0];
@@ -258,38 +258,81 @@ trait CartHelperTrait
 
         foreach ($offerGroups as $oid => $group) {
             $offer = $group['offer'];
-            $buy = max(1, (int)($offer->buy ?? 0));
-            $get = max(0, (int)($offer->getoffer ?? 0));
+            $offerType = (string)($offer->type ?? '');
             
-            // Formula: Pay for 'buy' units, get 'get' units free. Total group size = buy + get.
-            $bundleCount = intdiv($group['totalQty'], $buy + $get);
-            $totalFreeAllowed = $bundleCount * $get;
-            
-            if ($totalFreeAllowed > 0) {
-                // Flatten units to pick cheapest ones across the group to be free
-                $units = [];
-                foreach ($group['indices'] as $idx) {
-                    for ($i = 0; $i < $tempLines[$idx]['qty']; $i++) {
-                        $units[] = ['idx' => $idx, 'price' => $tempLines[$idx]['unitPrice']];
+            if ($offerType === 'Buy X Get Y Free') {
+                $buy = max(1, (int)($offer->buy ?? 0));
+                $get = max(0, (int)($offer->getoffer ?? 0));
+                $groupSize = $buy + $get;
+                $bundleCount = intdiv($group['totalQty'], $groupSize);
+                $totalToMakeFree = $bundleCount * $get;
+                
+                if ($totalToMakeFree > 0) {
+                    $units = [];
+                    foreach ($group['indices'] as $idx) {
+                        for ($i = 0; $i < $tempLines[$idx]['qty']; $i++) {
+                            $units[] = ['idx' => $idx, 'price' => $tempLines[$idx]['unitPrice']];
+                        }
+                    }
+                    usort($units, function($a, $b) { return $a['price'] <=> $b['price']; });
+                    
+                    for ($i = 0; $i < min($totalToMakeFree, count($units)); $i++) {
+                        $lIdx = $units[$i]['idx'];
+                        if ($units[$i]['price'] > 0) {
+                            $adjustments[$lIdx]['discount_amount'] += (float)$units[$i]['price'];
+                            $adjustments[$lIdx]['offer_applied'] = true;
+                        }
+                        $adjustments[$lIdx]['free_qty']++;
                     }
                 }
-                // Sort by price ASC
-                usort($units, function($a, $b) { return $a['price'] <=> $b['price']; });
+            } elseif ($offerType === 'Buy X @ Y') {
+                $bundleQty = max(1, (int)($offer->buyproduct ?? $offer->buy ?? 0));
+                $bundlePriceTotal = max(0, (float)($offer->getamt ?? 0));
+                $bundleCount = intdiv($group['totalQty'], $bundleQty);
                 
-                for ($i = 0; $i < min($totalFreeAllowed, count($units)); $i++) {
-                    $lIdx = $units[$i]['idx'];
-                    // Only apply discount if the unit price is > 0
-                    if ($units[$i]['price'] > 0) {
-                        $adjustments[$lIdx]['discount_amount'] += $units[$i]['price'];
-                        $adjustments[$lIdx]['offer_applied'] = true;
+                if ($bundleCount > 0) {
+                    $units = [];
+                    foreach ($group['indices'] as $idx) {
+                        for ($i = 0; $i < $tempLines[$idx]['qty']; $i++) {
+                            $units[] = ['idx' => $idx, 'price' => $tempLines[$idx]['unitPrice']];
+                        }
                     }
-                    $adjustments[$lIdx]['free_qty']++;
+                    // Sort descending: bundle most expensive items to give best discount
+                    usort($units, function($a, $b) { return $b['price'] <=> $a['price']; });
+                    
+                    $totalDiscount = 0.0;
+                    for ($b = 0; $b < $bundleCount; $b++) {
+                        $start = $b * $bundleQty;
+                        $bundleCurrentOriginalTotal = 0.0;
+                        for ($i = 0; $i < $bundleQty; $i++) {
+                            $uIdx = $start + $i;
+                            if (isset($units[$uIdx])) {
+                                $bundleCurrentOriginalTotal += (float)$units[$uIdx]['price'];
+                            }
+                        }
+                        
+                        $bundleDiscount = max(0, $bundleCurrentOriginalTotal - $bundlePriceTotal);
+                        if ($bundleDiscount > 0) {
+                            // Assign discount proportionally to each item in bundle
+                            for ($i = 0; $i < $bundleQty; $i++) {
+                                $uIdx = $start + $i;
+                                if (isset($units[$uIdx]) && $bundleCurrentOriginalTotal > 0) {
+                                    $lIdx = $units[$uIdx]['idx'];
+                                    $itemPortion = $units[$uIdx]['price'] / $bundleCurrentOriginalTotal;
+                                    $itemDiscount = round($bundleDiscount * $itemPortion, 4);
+                                    $adjustments[$lIdx]['discount_amount'] += $itemDiscount;
+                                    $adjustments[$lIdx]['offer_applied'] = true;
+                                }
+                            }
+                        }
+                    }
                 }
-                
-                foreach ($group['indices'] as $idx) {
-                    $lineBase = round($tempLines[$idx]['unitPrice'] * $tempLines[$idx]['qty'], 2);
-                    $adjustments[$idx]['payable_override'] = round(max(0, $lineBase - $adjustments[$idx]['discount_amount']), 2);
-                }
+            }
+            
+            // Common finish for the group: final override
+            foreach ($group['indices'] as $idx) {
+                $lineBase = round($tempLines[$idx]['unitPrice'] * $tempLines[$idx]['qty'], 2);
+                $adjustments[$idx]['payable_override'] = round(max(0, $lineBase - $adjustments[$idx]['discount_amount']), 2);
             }
         }
 
