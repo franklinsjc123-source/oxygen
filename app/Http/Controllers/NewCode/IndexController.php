@@ -38,6 +38,8 @@ use Illuminate\Support\Str;
 
 class IndexController extends Controller
 {
+    use \App\Traits\CartHelperTrait;
+
     private function resolveCartKey(Request $request): array
     {
         $key = (string) ($request->cookie('oxy_cart_key') ?? '');
@@ -295,14 +297,15 @@ class IndexController extends Controller
             'value' => $newQty
         ]]);
 
-        $updatedItem = $cart->get($id);
+        $summary = $this->buildCheckoutSummary($cart->getContent());
+        $summaryLine = collect($summary['lines'])->firstWhere('id', $id);
 
         $response = response()->json([
             'status' => 'success',
             'message' => 'Qty Updated successfully.',
-            'quantity' => (int) ($updatedItem->quantity ?? $newQty),
-            'item_subtotal' => (float) ($updatedItem->price ?? 0) * (int) ($updatedItem->quantity ?? $newQty),
-            'total' => (float) $cart->getTotal(),
+            'quantity' => $summaryLine ? $summaryLine['qty'] : $newQty,
+            'item_subtotal' => $summaryLine ? $summaryLine['payable_amount'] : 0,
+            'total' => $summary['grand_total'],
             'count' => $cart->getContent()->count(),
         ]);
         return $this->attachCartCookies($response, $cookie, $cart);
@@ -312,9 +315,10 @@ class IndexController extends Controller
     {
         [$cart, $cookie] = $this->cartSession($request);
         $count   = $cart->getContent()->count();
-        $records = $cart->getContent();
-        $total   = $cart->getTotal();
-        $response = response()->view('frontend.show_cart', compact('count', 'records', 'total'));
+        $summary = $this->buildCheckoutSummary($cart->getContent());
+        $records = $summary['lines'];
+        $total   = $summary['grand_total'];
+        $response = response()->view('frontend.show_cart', compact('count', 'records', 'total', 'summary'));
         return $this->attachCartCookies($response, $cookie, $cart);
     }
 

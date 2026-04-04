@@ -216,6 +216,7 @@ Route::get('getcart1', [CartController::class,'getcart'])->name('getcart1');
 Route::get('cartdelete', [CartController::class,'delete'])->name('cartdelete');
 Route::get('updatecart', [CartController::class,'updatecart'])->name('updatecart');
 Route::get('clear_cart', [CartController::class, 'clear_cart'])->name('clear_cart');
+Route::get('getOfferProducts', [CartController::class, 'getOfferProducts'])->name('getOfferProducts');
 Route::get('AjaxPincode', [CartController::class,'GetCity']);
 
 Route::get('/Cuslogin', [CustomerController::class,'loginverify']);

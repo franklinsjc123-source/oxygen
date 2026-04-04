@@ -236,6 +236,59 @@
              transform: translateY(-2px);
              box-shadow: 0 8px 25px rgba(0, 136, 221, 0.4) !important;
          }
+          /* Modern Enhanced Sidebar Styling */
+          .order-summary-wrapper.sticky-sidebar {
+              border: 1px solid rgba(0,0,0,0.06) !important;
+              border-radius: 20px !important;
+              box-shadow: 0 15px 45px rgba(0,0,0,0.06) !important;
+              padding: 30px !important;
+              background: linear-gradient(to bottom, #ffffff, #fcfdfe) !important;
+          }
+          .order-summary-wrapper .title {
+              font-family: 'Poppins', sans-serif;
+              font-weight: 800 !important;
+              font-size: 1.45rem !important;
+              color: #0f172a !important;
+              display: flex !important;
+              align-items: center;
+              gap: 12px;
+          }
+          .order-summary-wrapper .title::before {
+              content: '';
+              display: block;
+              width: 5px;
+              height: 28px;
+              background: #0088dd;
+              border-radius: 5px;
+          }
+          .order-table th {
+              text-transform: uppercase !important;
+              font-size: 0.8rem !important;
+              letter-spacing: 0.8px !important;
+              color: #64748b !important;
+              padding: 15px 0 !important;
+          }
+          .order-table td {
+              padding: 20px 0 !important;
+              border-bottom: 1px solid #f1f5f9 !important;
+              font-size: 1.05rem !important;
+          }
+          .order-table .product-name {
+              color: #334155 !important;
+              font-weight: 600 !important;
+          }
+          .order-table .product-total {
+              font-weight: 800 !important;
+              color: #1e293b !important;
+          }
+          .order-total {
+              border-top: 2px solid #e2e8f0 !important;
+              padding-top: 24px !important;
+          }
+          .order-total b {
+              font-size: 1.6rem !important;
+              color: #0088dd !important;
+          }
      </style>
      <div class="page-content">
      <div class="container">
@@ -312,28 +365,45 @@
      <h4 class="mb-0">Items in Your Order</h4>
      </div>
      <div class="card-body">
-     @foreach ($records as $item)
+     @foreach ($checkoutSummary['lines'] ?? [] as $item)
      <div class="product product-list d-flex align-items-center">
      <figure class="product-media">
-     <img src="{{ asset('assets/images/products/' . ($item['attributes']['image'] ?? '')) }}" alt="product">
+     <img src="{{ asset('assets/images/products/' . ($item['image'] ?? '')) }}" alt="product">
      </figure>
      <div class="product-details flex-grow-1">
      <div class="product-name">{{ $item['name'] }}</div>
-     @if (!empty($item['attributes']['size']) || !empty($item['attributes']['color']))
+     @if (!empty($item['size']) || !empty($item['color']))
      <div class="product-meta">
-     @if (!empty($item['attributes']['size']))
-     Size: <b>{{ $item['attributes']['size'] }}</b>
+     @if (!empty($item['size']))
+     Size: <b>{{ $item['size'] }}</b>
      @endif
-     @if (!empty($item['attributes']['color']))
-     <span class="mx-1">|</span> Color: <b>{{ $item['attributes']['color'] }}</b>
+     @if (!empty($item['size']) && !empty($item['color']))
+     <span class="mx-1">|</span> 
+     @endif
+     @if (!empty($item['color']))
+     Color: <b>{{ $item['color'] }}</b>
      @endif
      </div>
      @endif
-     <div class="product-meta mt-1">Qty: <b>{{ $item['quantity'] }}</b></div>
+     <div class="product-meta mt-1">Qty: <b>{{ $item['qty'] }}</b></div>
+     @if (!empty($item['offer_applied']))
+     <div class="product-meta mt-1 text-success font-weight-bold">
+     <i class="fas fa-tags"></i> {{ $item['offer_title'] ?: $item['offer_type'] }}
+     @if (!empty($item['free_qty']))
+     (Free Qty: {{ $item['free_qty'] }})
+     @endif
+     </div>
+     @endif
      </div>
      <div class="product-price-block">
-     <div class="price">&#8377;{{ number_format($item['price'], 2) }}</div>
-     <div class="total">Total: <b>&#8377;{{ number_format($item['price'] * $item['quantity'], 2) }}</b></div>
+     @php
+         $displayPrice = $item['effective_unit_price'] ?? $item['unit_price'];
+         if (($item['offer_type'] ?? '') === 'Buy X Get Y Free') {
+             $displayPrice = $item['unit_price'];
+         }
+     @endphp
+     <div class="price">&#8377;{{ number_format($displayPrice, 2) }}</div>
+     <div class="total">Total: <b>&#8377;{{ number_format($item['payable_amount'], 2) }}</b></div>
      </div>
      </div>
      @endforeach
@@ -348,13 +418,13 @@
      </div>
      <div class="col-lg-4 mb-4 sticky-sidebar-wrapper">
      <div class="order-summary-wrapper sticky-sidebar">
-     <h3 class="title text-uppercase ls-10">Your Order</h3>
+     <h3 class="title text-uppercase ls-10"><i class="w-icon-cart"></i> Your Order</h3>
      <div class="order-summary">
      <table class="order-table">
      <thead>
      <tr>
-     <th colspan="2">
-     <b>Product</b>
+     <th colspan="2" style="border-bottom: 2px solid #f1f5f9; padding-bottom: 12px;">
+     <b class="text-uppercase" style="letter-spacing: 1px; font-size: 0.85rem; color: #64748b;">Selected Products</b>
      </th>
      </tr>
      </thead>
@@ -389,24 +459,24 @@
 
      <tr class="cart-subtotal bb-no">
      <td><b>Subtotal</b></td>
-     <td><b>&#8377;{{ number_format($checkoutSummary['subtotal'] ?? $total, 2) }}</b>
+     <td class="product-total"><b style="white-space: nowrap;">&#8377;{{ number_format($checkoutSummary['subtotal'] ?? $total, 2) }}</b>
      </td>
      </tr>
      @if (($checkoutSummary['discount_total'] ?? 0) > 0)
      <tr class="cart-subtotal bb-no">
      <td><b>Offer Discount</b></td>
-     <td><b>- &#8377;{{ number_format($checkoutSummary['discount_total'], 2) }}</b>
+     <td class="product-total"><b style="color: #10b981; white-space: nowrap;">-&#8377;{{ number_format($checkoutSummary['discount_total'], 2) }}</b>
      </td>
      </tr>
      @endif
      <tr class="cart-subtotal bb-no">
      <td><b>Tax</b></td>
-     <td><b>&#8377;{{ number_format($checkoutSummary['tax_total'] ?? 0, 2) }}</b>
+     <td class="product-total"><b style="white-space: nowrap;">&#8377;{{ number_format($checkoutSummary['tax_total'] ?? 0, 2) }}</b>
      </td>
      </tr>
      <tr class="cart-subtotal bb-no">
      <td><b>Delivery Charge</b></td>
-     <td><b>&#8377;{{ number_format($checkoutSummary['delivery_charge'] ?? 0, 2) }}</b>
+     <td class="product-total"><b style="white-space: nowrap;">&#8377;{{ number_format($checkoutSummary['delivery_charge'] ?? 0, 2) }}</b>
      </td>
      </tr>
      </tbody>
@@ -435,23 +505,10 @@
      <div class="payment-methods" id="payment_method">
      <h4 class="title font-weight-bold ls-25 pb-0 mb-1">Payment Methods</h4>
      <div class="accordion payment-accordion">
+   
      <div class="card">
      <div class="card-header">
-     <a href="#cash-on-delivery" class="collapse">Direct Bank
-     Transfor</a>
-     </div>
-     <div id="cash-on-delivery" class="card-body expanded">
-     <p class="mb-0">
-     Make your payment directly into our bank account.
-     Please use your Order ID as the payment reference.
-     Your order will not be shipped until the funds have cleared in our
-     account.
-     </p>
-     </div>
-     </div>
-     <div class="card">
-     <div class="card-header">
-     <a href="#payment" class="expand">Check Payments</a>
+     <a href="#payment" class="expand">Online Payments</a>
      </div>
      <div id="payment" class="card-body collapsed">
      <p class="mb-0">

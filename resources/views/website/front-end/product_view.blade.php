@@ -682,104 +682,15 @@
                                     
                                         <li>{{ $offertitle }}</li>
                                         
-                                        {{-- <h5 class="price-detail"> {{ $offers[0]->title }}</h5> --}}
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                                            {{-- {{ $offers[0]->title }} --}}
-                                            Similar Offer Products
+                                        <?php
+                                        $p_id_for_js = $product_det[0]->id;
+                                        $offer_id_for_js = $product_det[0]->offers;
+                                        $buy_val = !$offers->isEmpty() ? $offers[0]->buy : 1;
+                                        $get_val = !$offers->isEmpty() ? $offers[0]->getoffer : 1;
+                                        ?>
+                                        <button type="button" class="btn btn-solid btn-sm mt-2" onclick="showOfferProductsModal({{ $offer_id_for_js }}, {{ $p_id_for_js }}, 'Explore products eligible for this offer', {{ $buy_val }}, {{ $get_val }})">
+                                            View Offer Products
                                         </button>
-                                        <!-- Button trigger modal -->
-        
-                                            <!-- Modal -->
-                                            <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog modal-lg" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Offer Products</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <section class="pt-0 section-b-space ratio_asos">
-                                                            <div class="container-fuild">
-                                                                <div class="row game-product grid-products px-5">
-                                                    
-                                                                    
-                                                                        <?php
-                                                                        //  dd($productdetailid);
-                                                                        $product = App\Models\Products\Products::where('id',$productdetailid)->get();
-                                                                        //dd($product);
-                                                                        $products_Ids = Products::where('offers', $product[0]->offers)->get();
-                                                                       
-                                                                         $offs = App\Models\Offer\Offer::where('id',$products_Ids[0]->offers)->where('status',1)->get();
-                                                                         foreach($offs as $off)
-                                                                            {
-                                                                            $off1 = DB::table('products')
-                                                                                    ->select('products.*', 'master_offers.*')
-                                                                                    ->join('master_offers', 'products.offers', '=', 'master_offers.id')
-                                                                                    ->where('products.offers', $product[0]->offers)
-                                                                                    ->when($off->buy, function ($query) use ($off) {
-                                                                                        $query->where('master_offers.buy', $off->buy)
-                                                                                            ->where('master_offers.getoffer', $off->getoffer);
-                                                                                    }, function ($query) use ($off) {
-                                                                                        $query->where('master_offers.buyproduct', $off->buyproduct)
-                                                                                            ->where('master_offers.getamt', $off->getamt);
-                                                                                    })
-                                                                                    ->where('master_offers.status', 1)
-                                                                                    ->get();
-                                                                            }
-
-                                                                        // dd($off1);
-                                                                        foreach($off1 as $products_Id)
-                                                                        {
-                                                                    
-                                                                        ?>
-                                                                        <div class="product-box col-xl-2 col-lg-3 col-sm-4 col-6">
-                                                                                <div class="img-wrapper">
-                                                                                    <div class="front">
-                                                                                            
-                                                                                        <div class="img">
-                                                                                            <a href="{{ route('addtocart', $products_Id->id ) }}"><img
-                                                                                                src="{{ asset('assets/images/products/') . '/' . $products_Id->product_image  }}"
-                                                                                                class="img-fluid blur-up lazyload" alt=""></a>
-                                                                                        </div>
-                                                                                        
-                                                                                    </div>
-                                                                                    <div class="cart-info cart-wrap">
-                                                                                        <a href="javascript:void(0)" title="Add to Wishlist" tabindex="0"><i
-                                                                                                class="ti-heart" aria-hidden="true"></i></a>
-                                                                                        <a href="#" data-bs-toggle="modal" data-bs-target="#quick-view" title="Quick View"
-                                                                                            tabindex="0"><i class="ti-search" aria-hidden="true"></i></a>
-                                                                                        <a href="compare.html" title="Compare" tabindex="0"><i class="ti-reload"
-                                                                                                aria-hidden="true"></i></a>
-                                                                                    </div>
-                                                                                    {{-- <div class="add-button" data-bs-toggle="modal" data-bs-target="#addtocart">add to
-                                                                                        cart</div> --}}
-                                                                                </div>
-                                                                                <div class="product-detail">
-                                                    
-                                                                                    <a href="{{ route('addtocart', $products_Id->id ) }}">
-                                                                                    
-                                                                                    </a>
-                                                    
-                                                                                </div>
-                                                                            </div>     
-
-                                                                    <?php
-                                                                    }
-                                                                    ?>
-                                                    
-                                                                </div>
-                                                            </div>
-                                                        </section>
-                                                    </div>
-                                                    {{-- <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                    <button type="button" class="btn btn-primary">Save changes</button>
-                                                    </div> --}}
-                                                </div>
-                                                </div>
-                                            </div>
                                             <?php
                                             
                                             ?>

@@ -158,6 +158,7 @@
                 else{
                 $('#bidbtn'+data).removeAttr("type").attr("type", "button");
                 }
+                
             });
            
         }

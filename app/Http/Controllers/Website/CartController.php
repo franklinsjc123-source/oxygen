@@ -30,6 +30,159 @@ use DB;
 
 class CartController extends Controller
 {
+    public function getAdjustedCartPrices($cartData) {
+        $prices = [];
+        $offerGroups = [];
+        
+        if (!is_array($cartData)) return $prices;
+        
+        foreach ($cartData as $pid => $item) {
+            $product = ProductsDetails::where('id', '=', $pid)->first();
+            $offer_id = null;
+            if ($product) {
+                $productMain = Products::where('product_id', '=', $product->products_id)->first();
+                if ($productMain && $productMain->offers) {
+                    $offer_id = $productMain->offers;
+                }
+            }
+            if ($offer_id) {
+                $offerGroups[$offer_id][] = [
+                    'pid' => $pid,
+                    'qty' => $item['qty'],
+                    'price' => $item['price'],
+                    'raw_total' => $item['qty'] * $item['price']
+                ];
+            }
+            $prices[$pid] = $item['qty'] * $item['price'];
+        }
+        
+        foreach ($offerGroups as $oid => $items) {
+            $offer = Offers::find($oid);
+            if (!$offer || $offer->status != 1) continue;
+            
+            if ($offer->type == 'Fixed Discount') {
+                foreach ($items as $itm) {
+                    $discount = 0;
+                    if ($offer->discount_type == 'Percentage') {
+                        $discount = ($itm['raw_total'] * $offer->value) / 100;
+                    } else {
+                        $discount = $offer->value * $itm['qty'];
+                    }
+                    $prices[$itm['pid']] = max(0, $itm['raw_total'] - $discount);
+                }
+            } elseif ($offer->type == 'Buy X @ Y') {
+                $buyproduct = max(1, (int)$offer->buyproduct);
+                $getamt = (float)$offer->getamt;
+                
+                $flatItems = [];
+                foreach ($items as $itm) {
+                    for ($i=0; $i<$itm['qty']; $i++) $flatItems[] = ['pid' => $itm['pid'], 'price' => $itm['price']];
+                }
+                usort($flatItems, function($a, $b) { return $b['price'] <=> $a['price']; });
+                
+                $finalMap = [];
+                $totalItems = count($flatItems);
+                $bundles = intdiv($totalItems, $buyproduct);
+                
+                foreach ($flatItems as $index => $fItem) {
+                    if (!isset($finalMap[$fItem['pid']])) $finalMap[$fItem['pid']] = 0;
+                    if ($index < $bundles * $buyproduct) {
+                        $finalMap[$fItem['pid']] += ($getamt / $buyproduct);
+                    } else {
+                        $finalMap[$fItem['pid']] += $fItem['price'];
+                    }
+                }
+                foreach ($items as $itm) {
+                    $prices[$itm['pid']] = $finalMap[$itm['pid']];
+                }
+            } elseif ($offer->type == 'Buy X Get Y Free') {
+                $buy = max(1, (int)$offer->buy);
+                $getoffer = max(1, (int)$offer->getoffer);
+                
+                // Separate items into two categories: "Requested as Free" and "Normal Added"
+                $paidItemsFlat = [];
+                $freeItemsFlat = [];
+                
+                foreach ($items as $itm) {
+                    $itemData = $cartData[$itm['pid']];
+                    $isFree = isset($itemData['is_free_offer']) && $itemData['is_free_offer'] == 1;
+                    
+                    for ($i=0; $i<$itm['qty']; $i++) {
+                        if ($isFree) {
+                            $freeItemsFlat[] = ['pid' => $itm['pid'], 'price' => $itm['price']];
+                        } else {
+                            $paidItemsFlat[] = ['pid' => $itm['pid'], 'price' => $itm['price']];
+                        }
+                    }
+                }
+                
+                // Group units of 'buy' items from paid pool to 'unlock' slots from free pool
+                $numPaid = count($paidItemsFlat);
+                $maxPossibleFree = intdiv($numPaid, $buy) * $getoffer;
+                $allowedFreeSlots = min($maxPossibleFree, count($freeItemsFlat));
+                
+                // The most expensive items in the FREE pool that fit in slots become free (0 price)
+                usort($freeItemsFlat, function($a, $b) { return $b['price'] <=> $a['price']; });
+                
+                $finalMap = [];
+                foreach ($paidItemsFlat as $fItem) {
+                    $finalMap[$fItem['pid']] = ($finalMap[$fItem['pid']] ?? 0) + $fItem['price'];
+                }
+                
+                // Only first allowedFreeSlots items in free pool get 0 price
+                foreach ($freeItemsFlat as $index => $fItem) {
+                    if ($index >= $allowedFreeSlots) {
+                        $finalMap[$fItem['pid']] = ($finalMap[$fItem['pid']] ?? 0) + $fItem['price'];
+                    } else {
+                        $finalMap[$fItem['pid']] = ($finalMap[$fItem['pid']] ?? 0) + 0;
+                    }
+                }
+                
+                foreach ($items as $itm) {
+                    $prices[$itm['pid']] = $finalMap[$itm['pid']] ?? 0;
+                }
+            }
+        }
+        return $prices;
+    }
+
+    public function getAlertMessage($totalQty, $offer_id) {
+        if (!$offer_id) return '';
+        $offer = Offers::find($offer_id);
+        if (!$offer || $offer->status != 1) return '';
+        
+        if ($offer->type == 'Buy X Get Y Free') {
+            $buy = max(1, (int)$offer->buy);
+            $getoffer = max(1, (int)$offer->getoffer);
+            $groupSize = $buy + $getoffer;
+            // The user wants an alert when they choose the X product.
+            if ($totalQty > 0 && ($totalQty % $groupSize) == $buy) {
+                return "This product is in offer. Kindly please choose $getoffer product free of cost.";
+            }
+        }
+        return '';
+    }
+
+    public function calculateCashbackAmount($pid, $qty, $raw_price) {
+        $product = ProductsDetails::where('id', '=', $pid)->first();
+        if (!$product) return 0;
+        $productMain = Products::where('product_id', '=', $product->products_id)->first();
+        if (!$productMain || !$productMain->offers) return 0;
+        $offer = Offers::find($productMain->offers);
+        if (!$offer || $offer->status != 1) return 0;
+        
+        $cashback = 0;
+        if ($offer->type == 'Cashback Offer') {
+            $total_price = $qty * $raw_price;
+            if ($offer->cashbacktype == 'Percentage') {
+                $cashback = ($total_price * $offer->cashbackvalue) / 100;
+            } else {
+                $cashback = max(0, (float)$offer->cashbackvalue);
+            }
+        }
+        return $cashback;
+    }
+
 	public function index(Request $request)
 	{
 		$cartData = $request->session()->get('cart');
@@ -110,6 +263,7 @@ class CartController extends Controller
 		$qnty = $request->input('product_qnty');
 		$size = $request->input('product_size');
 		$color = $request->input('product_color', '');
+		$is_free_offer = $request->input('is_free_offer', 0);
 
 		$session = $request->session();
 		$cartData = ($session->get('cart')) ? $session->get('cart') : array();
@@ -126,6 +280,7 @@ class CartController extends Controller
 			$cartData[$id]['name'] = $name;
 			$cartData[$id]['price'] = $price;
 			$cartData[$id]['gst'] = $productMain ? $productMain->gst_id : 0;
+			$cartData[$id]['is_free_offer'] = $is_free_offer;
 			
 			$cartData[$id]['mrp'] = $product['0']['retail_price'];
 		} else {
@@ -140,6 +295,7 @@ class CartController extends Controller
 			$cartData[$id]['name'] = $name;
 			$cartData[$id]['price'] = $price;
 			$cartData[$id]['gst'] = $productMain ? $productMain->gst_id : 0;
+			$cartData[$id]['is_free_offer'] = $is_free_offer;
 			$cartData[$id]['mrp'] = $product['0']['retail_price'];
 		}
 		$n = 0;
@@ -150,9 +306,58 @@ class CartController extends Controller
 		}
 		$request->session()->put('cart', $cartData);
 		$cart_qty =  Session::get('cart') ? array_sum(array_column(Session::get('cart'), 'qty')) : 0;
-		//return redirect()->back()->with('message', 'product Added Successfully!');
 
-		return response()->json(['msg' => $cart_qty], 200);
+		// Determine offer_id and total qty across all cart items sharing this offer
+		$offer_id = null;
+		$current_products_id = null;
+		$productDetail = ProductsDetails::where('id', '=', $id)->first();
+		if ($productDetail) {
+			$current_products_id = $productDetail->products_id;
+			$pMain = Products::where('product_id', '=', $productDetail->products_id)->first();
+			if ($pMain && $pMain->offers) {
+				$offer_id = $pMain->offers;
+			}
+		}
+
+		// Calculate total qty of all cart items that share this offer, separated by paid vs free-choice
+		$paidQtyInOffer = 0;
+		$freeQtyInOffer = 0;
+		if ($offer_id) {
+			foreach ($cartData as $cpid => $citem) {
+				$cpd = ProductsDetails::where('id', '=', $cpid)->first();
+				if ($cpd) {
+					$cpm = Products::where('product_id', '=', $cpd->products_id)->first();
+					if ($cpm && $cpm->offers == $offer_id) {
+						if (isset($citem['is_free_offer']) && $citem['is_free_offer'] == 1) {
+							$freeQtyInOffer += $citem['qty'];
+						} else {
+							$paidQtyInOffer += $citem['qty'];
+						}
+					}
+				}
+			}
+		}
+
+		$free_msg = '';
+		$offer = Offers::find($offer_id);
+		if ($offer && $offer->status == 1 && $offer->type == 'Buy X Get Y Free') {
+			$buy = max(1, (int)$offer->buy);
+			$getoffer = max(1, (int)$offer->getoffer);
+			$neededFreeTotal = intdiv($paidQtyInOffer, $buy) * $getoffer;
+			
+			if ($neededFreeTotal > $freeQtyInOffer && $is_free_offer == 0) {
+				$free_msg = "This product is in offer. You are eligible for ".($neededFreeTotal - $freeQtyInOffer)." free product(s)! Kindly please choose your free product(s).";
+			}
+		}
+
+		return response()->json([
+			'msg' => $cart_qty,
+			'free_alert' => $free_msg,
+			'offer_id' => $offer_id,
+			'products_id' => $current_products_id,
+			'buy' => $offer ? $offer->buy : 1,
+			'getoffer' => $offer ? $offer->getoffer : 1
+		], 200);
 	}
 	public function clear_cart()
 	{
@@ -167,6 +372,7 @@ class CartController extends Controller
 		$sum = 0;
 
 		if ($request->session()->has('cart')) {
+			$adjustedPrices = $this->getAdjustedCartPrices($cartData);
 			foreach ($cartData as $key => $value) {
 				$product = ProductsDetails::where('id', '=', $key)->get()->toArray();
 				$images=explode(',',$product['0']['product_detail_image']);
@@ -176,7 +382,7 @@ class CartController extends Controller
 				$cart_item['name'] =  $value['name'];
 				$cart_item['price'] = $value['price'];
 				$cart_item['size'] = $value['size'];
-				$cart_item['total_price'] = $value['qty'] * $value['price'];
+				$cart_item['total_price'] = isset($adjustedPrices[$key]) ? $adjustedPrices[$key] : ($value['qty'] * $value['price']);
 				$cart_item['qty'] = $value['qty'];
 				$cart_item['mrp'] = $product['0']['retail_price'];
 				$sum = $sum + $cart_item['total_price'];
@@ -365,6 +571,7 @@ class CartController extends Controller
 		$sum = 0;
 
 		if ($request->session()->has('cart')) {
+			$adjustedPrices = $this->getAdjustedCartPrices($cartData);
 			foreach ($cartData as $key => $value) {
 
 				$product =  ProductsDetails::where('id', '=', $key)->first();
@@ -383,9 +590,27 @@ class CartController extends Controller
 				$order_product->product_size = $value['size'];
 				$order_product->product_quantity = $value['qty'];
 				$order_product->product_price = $value['price'];
-				$order_product->total_price = $value['qty'] * $value['price'];
+				$order_product->total_price = isset($adjustedPrices[$key]) ? $adjustedPrices[$key] : ($value['qty'] * $value['price']);
 				$order_product->order_status = 'Pending';
 				$order_product->save();
+
+				$cashback_amt = $this->calculateCashbackAmount($value['pid'], $value['qty'], $value['price']);
+				if ($cashback_amt > 0) {
+				    \DB::table('ecom_customer_wallet_transactions')->insert([
+				        'customer_id' => $customer_id,
+				        'order_id' => $order_id,
+				        'product_id' => $product->products_id,
+				        'product_detail_id' => $value['pid'],
+				        'offer_id' => $products->offers,
+				        'offer_title' => 'Cashback Offer',
+				        'amount' => $cashback_amt,
+				        'type' => 'Credit',
+				        'status' => 'Pending',
+				        'remarks' => 'Cashback for order '.$order_id,
+				        'created_at' => now(),
+				        'updated_at' => now(),
+				    ]);
+				}
 			}
 		}
 
@@ -413,5 +638,88 @@ class CartController extends Controller
 		$orderlist = Ecom_Orders::where('order_status', '=', 'Pending')->orderBy('id', 'DESC')->get();
 		$neworder = $orderlist->count();
 		return response()->json(['neworder' => $neworder], 200);
+	}
+
+	/**
+	 * Get all offer products (excluding the current product) with their variants (sizes, colors).
+	 * Used by the Buy X Get Y Free modal so user can choose a DIFFERENT product.
+	 */
+	public function getOfferProducts(Request $request)
+	{
+		$offer_id = $request->input('offer_id');
+		$exclude_products_id = $request->input('exclude_products_id'); // the product user already added
+
+		if (!$offer_id) {
+			return response()->json(['products' => [], 'offer' => null], 200);
+		}
+
+		$offer = Offers::find($offer_id);
+		if (!$offer || $offer->status != 1) {
+			return response()->json(['products' => [], 'offer' => null], 200);
+		}
+
+		// Get all products that have this offer, EXCLUDING the one user already added
+		$query = Products::where('offers', $offer_id)->where('status', 1);
+		if ($exclude_products_id) {
+			$query->where('product_id', '!=', $exclude_products_id);
+		}
+		$offerProducts = $query->get();
+
+		$result = [];
+		foreach ($offerProducts as $prod) {
+			$details = ProductsDetails::where('products_id', $prod->product_id)->get();
+			
+			$sizes = [];
+			$colors = [];
+			$variants = [];
+			
+			foreach ($details as $det) {
+				$sizeVal = $det->attributevalue2 ?? '';
+				$colorVal = $det->attributevalue1 ?? '';
+				
+				if ($sizeVal && !in_array($sizeVal, $sizes)) {
+					$sizes[] = $sizeVal;
+				}
+				if ($colorVal && !in_array($colorVal, $colors)) {
+					$colors[] = $colorVal;
+				}
+				
+				$images = explode(',', $det->product_detail_image);
+				$firstImage = '';
+				if (is_array($images) && count($images) > 0) {
+					$firstImage = trim($images[0]);
+				}
+				
+				$variants[] = [
+					'detail_id' => $det->id,
+					'size' => $sizeVal,
+					'color' => $colorVal,
+					'selling_price' => $det->selling_price,
+					'retail_price' => $det->retail_price,
+					'quantity' => $det->quantity,
+					'image' => $firstImage
+				];
+			}
+			
+			$result[] = [
+				'product_id' => $prod->product_id,
+				'product_name' => $prod->product_name,
+				'product_image' => $prod->product_image,
+				'sizes' => $sizes,
+				'colors' => $colors,
+				'variants' => $variants
+			];
+		}
+
+		return response()->json([
+			'products' => $result,
+			'offer' => [
+				'id' => $offer->id,
+				'title' => $offer->title,
+				'type' => $offer->type,
+				'buy' => $offer->buy,
+				'getoffer' => $offer->getoffer
+			]
+		], 200);
 	}
 }

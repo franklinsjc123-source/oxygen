@@ -92,6 +92,9 @@ $(document).on('click','#cartEffect', function(e){
                         getcart();
                         $('#cartEffect').text('ADDED TO CART');
                         
+                        if (response.free_alert && response.free_alert !== '') {
+                            showOfferProductsModal(response.offer_id, response.products_id, response.free_alert, response.buy, response.getoffer);
+                        }
                     },
                     error: function (xhr) {
                         console.log(xhr);
@@ -148,6 +151,12 @@ $.ajax({
               success: function(response) {
                   console.log(response);
                   getcart();
+                  
+                  if (response.free_alert && response.free_alert !== '') {
+                      showOfferProductsModal(response.offer_id, response.products_id, response.free_alert, response.buy, response.getoffer);
+                      return; // don't redirect yet, let user pick free product
+                  }
+                  
                   window.location.href = "{{route('viewcart')}}";
                   //viewcart();
                   
@@ -297,5 +306,142 @@ return false;
 
 }
 
+function showOfferProductsModal(offer_id, exclude_products_id, alertMsg, buyQty, getQty) {
+    buyQty = buyQty || 1;
+    getQty = getQty || 1;
+    
+    $.ajax({
+        url: '{{route("getOfferProducts")}}',
+        type: 'GET',
+        data: {
+            offer_id: offer_id,
+            exclude_products_id: exclude_products_id
+        },
+        dataType: 'json',
+        success: function(data) {
+            var offer = data.offer;
+            var products = data.products;
+            var modalBody = '';
+            
+            // Premium Alert banner
+            modalBody += '<div class="alert alert-warning text-center shadow-sm" style="border-radius: 12px; background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%); margin-bottom: 25px; border: none;">';
+            modalBody += '  <h4 style="color: #856404; font-weight: 700; margin-bottom: 5px;">🔥 EXCLUSIVE OFFER!</h4>';
+            modalBody += '  <p style="font-size: 16px; margin: 0; color: #533f03;">This product is in a <b>Buy ' + buyQty + ' Get ' + getQty + ' Free</b> deal! Enjoy selecting your free gift below.</p>';
+            modalBody += '</div>';
+            
+            if (products.length === 0) {
+                modalBody += '<p class="text-center">No other offer products available.</p>';
+            } else {
+                modalBody += '<div class="row">';
+                $.each(products, function(i, prod) {
+                    modalBody += '<div class="col-md-4 col-sm-6 col-12 mb-4">';
+                    modalBody += '<div class="card h-100 shadow-sm">';
+                    modalBody += '<img src="{{ asset("assets/images/products") }}/' + prod.product_image + '" class="card-img-top" style="height:200px; object-fit:contain; padding:10px;" alt="' + prod.product_name + '">';
+                    modalBody += '<div class="card-body text-center">';
+                    modalBody += '<h6 class="card-title">' + prod.product_name + '</h6>';
+                    
+                    // Color dropdown
+                    if (prod.colors.length > 0) {
+                        modalBody += '<div class="form-group mt-2"><label class="small">Color:</label>';
+                        modalBody += '<select class="form-control form-control-sm offer-color-select" data-product-index="' + i + '" id="offer_color_' + i + '">';
+                        $.each(prod.colors, function(ci, clr) {
+                            modalBody += '<option value="' + clr + '">' + clr + '</option>';
+                        });
+                        modalBody += '</select></div>';
+                    }
+                    
+                    // Size dropdown
+                    if (prod.sizes.length > 0) {
+                        modalBody += '<div class="form-group mt-2"><label class="small">Size:</label>';
+                        modalBody += '<select class="form-control form-control-sm offer-size-select" data-product-index="' + i + '" id="offer_size_' + i + '">';
+                        $.each(prod.sizes, function(si, sz) {
+                            modalBody += '<option value="' + sz + '">' + sz + '</option>';
+                        });
+                        modalBody += '</select></div>';
+                    }
+                    
+                    // Hidden data
+                    modalBody += '<input type="hidden" id="offer_variants_' + i + '" value=\'' + JSON.stringify(prod.variants) + '\'>';
+                    modalBody += '<input type="hidden" id="offer_prodname_' + i + '" value="' + prod.product_name.replace(/"/g, '&quot;') + '">';
+                    
+                    modalBody += '<button type="button" class="btn btn-solid btn-sm mt-3" onclick="addFreeOfferProduct(' + i + ')">Add Free Product</button>';
+                    modalBody += '</div></div></div>';
+                });
+                modalBody += '</div>';
+            }
+            
+            // Build the modal
+            var existingModal = document.getElementById('dynamicOfferModal');
+            if (existingModal) existingModal.remove();
+            
+            var modalHtml = '<div class="modal fade" id="dynamicOfferModal" tabindex="-1" role="dialog" style="background: rgba(0,0,0,0.4);">';
+            modalHtml += '<div class="modal-dialog modal-lg modal-dialog-centered" role="document">';
+            modalHtml += '<div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden; box-shadow: 0 15px 50px rgba(0,0,0,0.2);">';
+            modalHtml += '<div class="modal-header" style="background: #f87d11; color: white; padding: 20px 30px;">';
+            modalHtml += '  <h4 class="modal-title" style="font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">🎁 Choose Your FREE Gift</h4>';
+            modalHtml += '  <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white; opacity: 1; text-shadow: none;" onclick="$(\x27#dynamicOfferModal\x27).modal(\x27hide\x27)"><span>&times;</span></button></div>';
+            modalHtml += '<div class="modal-body" style="padding: 30px; background: #fafafa;">' + modalBody + '</div>';
+            modalHtml += '</div></div></div>';
+            
+            $('body').append(modalHtml);
+            $('#dynamicOfferModal').modal('show');
+        },
+        error: function() {
+            swal("Error", "Unable to load offer products.", "error");
+        }
+    });
+}
+
+function addFreeOfferProduct(index) {
+    var variants = JSON.parse($('#offer_variants_' + index).val());
+    var selectedColor = $('#offer_color_' + index).val() || '';
+    var selectedSize = $('#offer_size_' + index).val() || '';
+    var prodName = $('#offer_prodname_' + index).val();
+    
+    // Find the matching variant based on selected color + size
+    var matchedVariant = null;
+    $.each(variants, function(vi, v) {
+        var colorMatch = (selectedColor === '' || v.color === selectedColor);
+        var sizeMatch = (selectedSize === '' || v.size === selectedSize);
+        if (colorMatch && sizeMatch) {
+            matchedVariant = v;
+            return false;
+        }
+    });
+    
+    // Fallback to first variant if no exact match
+    if (!matchedVariant && variants.length > 0) {
+        matchedVariant = variants[0];
+    }
+    
+    if (!matchedVariant) {
+        swal("Error", "No variant found for the selected size/color.", "error");
+        return;
+    }
+    
+    $.ajax({
+        url: '{{route("ajaxAdd")}}',
+        type: "POST",
+        data: {
+            "_token": "{{ csrf_token() }}",
+            "product_id": matchedVariant.detail_id,
+            "product_name": prodName,
+            "product_size": selectedSize,
+            "product_color": selectedColor,
+            "product_qnty": 1,
+            "product_price": matchedVariant.selling_price,
+            "is_free_offer": 1
+        },
+        dataType: "json",
+        success: function(response) {
+            swal("Success!", "Free offer product added to cart!", "success");
+            getcart();
+            $('#dynamicOfferModal').modal('hide');
+        },
+        error: function(xhr) {
+            swal("Error", "Unable to add product to cart.", "error");
+        }
+    });
+}
 
 </script>

@@ -1430,6 +1430,41 @@
                  $.notify(data.message, "success");
              }
 
+             @if(isset($offerDetails) && strcasecmp($offerDetails->type, 'Buy X Get Y Free') == 0)
+                 setTimeout(function() {
+                     var buyAmt = {{ (int)($offerDetails->buy ?? 1) }};
+                     var getAmt = {{ (int)($offerDetails->getoffer ?? 1) }};
+                     var offerId = {{ (int)$offerDetails->id }};
+                     var totalQtyInGroup = 0;
+                     
+                     // data.cart might be an object or array depending on PHP's json_encode of the collection
+                     var cartItems = data.cart;
+                     if (typeof cartItems === 'object' && cartItems !== null) {
+                         Object.values(cartItems).forEach(function(item) {
+                             if (item.attributes && item.attributes.offer_id == offerId) {
+                                 totalQtyInGroup += parseInt(item.quantity);
+                             }
+                         });
+                     }
+                     
+                      // If they have just reached the threshold (e.g. 2 for a Buy 2 Get 1)
+                      var groupSize = buyAmt + getAmt;
+                      if (totalQtyInGroup % groupSize >= buyAmt && totalQtyInGroup % groupSize < groupSize) {
+                          var msg = "This is an offer product! You are now eligible to add " + getAmt + " more product(s) free of cost!";
+                          if (typeof swal === 'function') {
+                              swal({
+                                  title: "Special Offer Unlocked! 🎁",
+                                  text: msg,
+                                  icon: "success",
+                                  button: "Got it!",
+                              });
+                          } else {
+                              alert(msg);
+                          }
+                      }
+                  }, 500);
+             @endif
+
              if (typeof window.syncCartCount === 'function') {
                  window.syncCartCount(data.count || 0);
              } else {
