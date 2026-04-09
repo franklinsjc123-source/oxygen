@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Session;
 // use App\Models\User;
 
 
+use Illuminate\Support\Facades\DB;
+
+
 class DashboardController extends Controller
 {
     public function admindashboard()
@@ -24,8 +27,26 @@ class DashboardController extends Controller
        // return $id;
     //    $login_id = session()->get('login_id','status') == 1;
     //    dd($login_id);
+        $productCount = DB::table('products')->where('created_by', $id)->count();
+        
+        $orderCount = DB::table('ecom_order_product')
+            ->join('products', 'ecom_order_product.product_id', '=', 'products.id')
+            ->where('products.created_by', $id)
+            ->distinct('ecom_order_product.order_id')
+            ->count('ecom_order_product.order_id');
+            
+        $customerCount = DB::table('ecom_order_info')
+            ->join('ecom_order_product', 'ecom_order_info.order_id', '=', 'ecom_order_product.order_id')
+            ->join('products', 'ecom_order_product.product_id', '=', 'products.id')
+            ->where('products.created_by', $id)
+            ->distinct('ecom_order_info.customer_id')
+            ->count('ecom_order_info.customer_id');
+
         return view('layout.vendor.dashboard.dashboard')->with([
-            'vendorid' => $id  
+            'vendorid' => $id,
+            'productCount' => $productCount,
+            'orderCount' => $orderCount,
+            'customerCount' => $customerCount
         ]);
     }
 
