@@ -52,10 +52,10 @@
                                 <div class="bg-warning card-body">
                                     <div class="media static-top-widget row">
                                         <div class="icons-widgets col-4">
-                                            <div class="align-self-center text-center"><i data-feather="navigation" class="font-warning"></i></div>
+                                            <div class="align-self-center text-center"><i data-feather="shopping-bag" class="font-warning"></i></div>
                                         </div>
                                         <div class="media-body col-8"><span class="m-0">Orders</span>
-                                            <h3 class="mt-2 mb-2"> <span class="counter">6659</span><small> </small></h3>
+                                            <h3 class="mt-2 mb-2"> <span class="counter">{{ $orderCount }}</span><small> </small></h3>
                                         </div>
                                     </div>
                                 </div>
@@ -69,7 +69,7 @@
                                             <div class="align-self-center text-center"><i data-feather="box" class="font-secondary"></i></div>
                                         </div>
                                         <div class="media-body col-8"><span class="m-0">Products</span>
-                                            <h3 class="mt-0 mb-0"><span class="counter">9856</span></h3>
+                                            <h3 class="mt-0 mb-0"><span class="counter">{{ $productCount }}</span></h3>
                                         </div>
                                     </div>
                                 </div>
@@ -80,10 +80,10 @@
                                 <div class="bg-primary card-body">
                                     <div class="media static-top-widget row">
                                         <div class="icons-widgets col-4">
-                                            <div class="align-self-center text-center"><i data-feather="message-square" class="font-primary"></i></div>
+                                            <div class="align-self-center text-center"><i data-feather="users" class="font-primary"></i></div>
                                         </div>
                                         <div class="media-body col-8"><span class="m-0">Customers</span>
-                                            <h3 class="mt-0 mb-0"> <span class="counter">893</span><small></small></h3>
+                                            <h3 class="mt-0 mb-0"> <span class="counter">{{ $customerCount }}</span><small></small></h3>
                                         </div>
                                     </div>
                                 </div>
@@ -94,10 +94,10 @@
                                 <div class="bg-danger card-body">
                                     <div class="media static-top-widget row">
                                         <div class="icons-widgets col-4">
-                                            <div class="align-self-center text-center"><i data-feather="users" class="font-danger"></i></div>
+                                            <div class="align-self-center text-center"><i data-feather="briefcase" class="font-danger"></i></div>
                                         </div>
                                         <div class="media-body col-8"><span class="m-0"> Vendors</span>
-                                            <h3 class="mt-0 mb-0"><span class="counter">45631</span><small> </small></h3>
+                                            <h3 class="mt-0 mb-0"><span class="counter">{{ $vendorCount }}</span><small> </small></h3>
                                         </div>
                                     </div>
                                 </div>

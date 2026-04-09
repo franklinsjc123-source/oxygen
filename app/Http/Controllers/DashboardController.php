@@ -18,8 +18,17 @@ class DashboardController extends Controller
 {
     public function admindashboard()
     {
-        // $login_id = session()->get('login_id','status') == 1;
-        return view('layout.admin.dashboard.dashboard');
+        $productCount = DB::table('products')->count();
+        $orderCount = DB::table('ecom_order_info')->count();
+        $customerCount = DB::table('ecom_customer_info')->count();
+        $vendorCount = DB::table('vendor_details')->count();
+
+        return view('layout.admin.dashboard.dashboard')->with([
+            'productCount' => $productCount,
+            'orderCount' => $orderCount,
+            'customerCount' => $customerCount,
+            'vendorCount' => $vendorCount
+        ]);
     }
 
     public function vendordashboard($id)
