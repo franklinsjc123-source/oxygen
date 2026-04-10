@@ -199,7 +199,7 @@
                                                         <label for="validationCustom0" class="col-xl-4 col-md-4">Alternate
                                                             Number</label>
                                                         <div class="col-xl-8 col-md-8">
-                                                            <input class="form-control" id="alter_no" type="text" value={{$vendorcreate->mobile_number2}}
+                                                            <input class="form-control" id="alter_no" type="text" value="{{$vendorcreate->mobile_number2}}"
                                                                 name="mobile_number2">
                                                         </div>
                                                     </div>
@@ -538,7 +538,7 @@
                                                         <label for="validationCustom0" class="col-xl-3 col-md-3"> Account
                                                             Number</label>
                                                         <div class="col-xl-9 col-md-9">
-                                                            <input class="form-control" id="ac_no" type="password" value={{$vendorcreate->ac_no}}
+                                                            <input class="form-control" id="ac_no" type="password" value="{{ $vendorcreate->ac_no }}"
                                                                 name="ac_no" inputmode="numeric" pattern="[0-9]*"
                                                                 autocomplete="off" spellcheck="false">
                                                         </div>
@@ -548,7 +548,7 @@
                                                         <label for="validationCustom0" class="col-xl-3 col-md-3"> Confirm
                                                             Account Number</label>
                                                         <div class="col-xl-9 col-md-9">
-                                                            <input class="form-control" id="ac_no1" type="password" value={{$vendorcreate->ac_no1}}
+                                                            <input class="form-control" id="ac_no1" type="text" value="{{ $vendorcreate->ac_no1 }}"
                                                                 name="ac_no1"
                                                                 inputmode="numeric" pattern="[0-9]*"
                                                                 autocomplete="off" spellcheck="false">
@@ -559,8 +559,8 @@
                                                         <label for="validationCustom0" class="col-xl-3 col-md-3"> IFSC
                                                             Code </label>
                                                         <div class="col-xl-9 col-md-9">
-                                                            <input class="form-control" id="ifsc" type="text" value={{$vendorcreate->ifsc}}
-                                                                name="ifsc">
+                                                            <input class="form-control" id="ifsc" type="text" value="{{ $vendorcreate->ifsc }}"
+                                                                name="ifsc" maxlength="11" minlength="11">
                                                         </div>
                                                     </div>
                                                     <hr>
@@ -571,10 +571,9 @@
                                                                 width="100px">
                                                         </div>
                                                         <div class="col-xl-9 col-md-9">
-                                                            <input class="form-control" id="upi" type="text" value={{$vendorcreate->upi}}
+                                                            <input class="form-control" id="upi" type="text" value="{{ $vendorcreate->upi }}"
                                                                 name="upi" maxlength="10" inputmode="numeric"
-                                                                pattern="[0-9]{10}" autocomplete="off"
-                                                                spellcheck="false">
+                                                                autocomplete="off" spellcheck="false">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -757,6 +756,7 @@
 
 $(document).ready(function() {
     const accountFields = $('#ac_no, #ac_no1');
+    const ifscField = $('#ifsc');
     accountFields.on('copy cut paste contextmenu', function(e) {
         e.preventDefault();
     });
@@ -767,6 +767,10 @@ $(document).ready(function() {
     const upiField = $('#upi');
     upiField.on('input', function() {
         this.value = this.value.replace(/\D/g, '').slice(0, 10);
+    });
+
+    ifscField.on('input', function() {
+        this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11);
     });
 });
     </script>

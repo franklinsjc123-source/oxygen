@@ -227,7 +227,7 @@
                                                             Number</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="alter_no" type="text"
-                                                                value={{ $vendorcreate->mobile_number2 }}
+                                                                value="{{ $vendorcreate->mobile_number2 }}"
                                                                 name="mobile_number2">
                                                         </div>
                                                     </div>
@@ -325,11 +325,17 @@
                                                         <label for="validationCustom0" class="col-xl-4 col-md-4">
                                                             Zone</label>
                                                         <div class="col-xl-8 col-md-8">
-
+                                                            @php
+                                                                $currentZoneLabel = $vendorcreate->zone;
+                                                                if (is_numeric($vendorcreate->zone ?? null)) {
+                                                                    $matchedZone = collect($zone)->firstWhere('id', (int) $vendorcreate->zone);
+                                                                    $currentZoneLabel = $matchedZone->name ?? $vendorcreate->zone;
+                                                                }
+                                                            @endphp
                                                             <select class="form-control" name="zone" id="zone">
 
                                                                 <option value="{{ $vendorcreate->zone }}" selected hidden>
-                                                                    {{ $vendorcreate->zone }}</option>
+                                                                    {{ $currentZoneLabel }}</option>
                                                                 <option>Select Item</option>
 
                                                                 @foreach ($zone as $zo)
@@ -694,7 +700,7 @@
                                                             Number</label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no" name="ac_no"
-                                                                type="password" value={{ $vendorcreate->ac_no }}
+                                                                type="password" value="{{ $vendorcreate->ac_no }}"
                                                                 name="ac_no" inputmode="numeric" pattern="[0-9]*"
                                                                 autocomplete="off" spellcheck="false"
                                                                 oncopy="return false" oncut="return false"
@@ -709,7 +715,7 @@
                                                             Account Number</label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no1" name="ac_no1"
-                                                                type="password" value={{ $vendorcreate->ac_no1 }}
+                                                                type="text" value="{{ $vendorcreate->ac_no1 }}"
                                                                 name="ac_no1" onkeyup="validate_acno()"
                                                                 inputmode="numeric" pattern="[0-9]*"
                                                                 autocomplete="off" spellcheck="false"
@@ -726,7 +732,7 @@
                                                             Code </label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ifsc" name="ifsc"
-                                                                type="text" value={{ $vendorcreate->ifsc }}>
+                                                                type="text" value="{{ $vendorcreate->ifsc }}" maxlength="11" minlength="11">
                                                         </div>
                                                     </div>
                                                     <hr>
@@ -738,10 +744,9 @@
                                                         </div>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="upi" name="upi"
-                                                                type="text" value={{ $vendorcreate->upi }}
-                                                                name="upi" maxlength="10" inputmode="numeric"
-                                                                pattern="[0-9]{10}" autocomplete="off"
-                                                                spellcheck="false">
+                                                                type="text" value="{{ $vendorcreate->upi }}"
+                                                                maxlength="10" inputmode="numeric"
+                                                                autocomplete="off" spellcheck="false">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1052,6 +1057,9 @@
 
         $(document).ready(function() {
             const accountFields = $('#ac_no, #ac_no1');
+            const maskedAccountField = $('#ac_no');
+            const ifscField = $('#ifsc');
+
             accountFields.on('copy cut paste contextmenu selectstart', function(e) {
                 e.preventDefault();
             });
@@ -1063,7 +1071,7 @@
             accountFields.on('input', function() {
                 this.value = this.value.replace(/\D/g, '');
             });
-            accountFields.on('focus blur', function() {
+            maskedAccountField.on('focus blur', function() {
                 this.type = 'password';
             });
 
@@ -1085,6 +1093,10 @@
             const upiField = $('#upi');
             upiField.on('input', function() {
                 this.value = this.value.replace(/\D/g, '').slice(0, 10);
+            });
+
+            ifscField.on('input', function() {
+                this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11);
             });
         });
 

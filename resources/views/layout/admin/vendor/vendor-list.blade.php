@@ -79,6 +79,12 @@
                                     <tbody>
 
                                         @foreach ($vendorlist as $vendor_list)
+                                            @php
+                                                $zoneLabel = $vendor_list->zone;
+                                                if (isset($zoneMap) && is_numeric($vendor_list->zone)) {
+                                                    $zoneLabel = $zoneMap[(int) $vendor_list->zone] ?? $vendor_list->zone;
+                                                }
+                                            @endphp
                                             
                                             @php
                                                 $vendor_id = DB::table('users')
@@ -98,7 +104,7 @@
                                             </td>
                                              <td><b>{{$vendor_list->shop_name}}</b> <br>
                                                 {{str_pad($vendor_id ? $vendor_id->login_id : 'N/A' , 4, '0', STR_PAD_LEFT)}}<br>
-                                                <span>{{ $vendor_list->zone . '/ ' . $vendor_list->route}}</span></br></td>
+                                                <span>{{ $zoneLabel . '/ ' . $vendor_list->route}}</span></br></td>
 
                                             
 
@@ -154,7 +160,7 @@
                                                 <span>{{ $vendor_list->address2 }} </span><br>
                                                 <span> {{ $vendor_list->city }}</span><Br>
                                                     <span>  {{ $vendor_list->pincode  }} </span> <br>
-                                             <span> Zone / Route:  {{ $vendor_list->zone}} /  {{ $vendor_list->route}} </span>
+                                             <span> Zone / Route:  {{ $zoneLabel }} /  {{ $vendor_list->route}} </span>
                                             </td>
 
 

@@ -607,7 +607,7 @@
                                                         <label for="validationCustom0" class="col-xl-3 col-md-3"> Confirm
                                                             Account Number</label>
                                                         <div class="col-xl-9 col-md-9">
-                                                            <input class="form-control" id="ac_no1"   name="ac_no1" type="password" value={{$vendorcreate->ac_no1}}
+                                                            <input class="form-control" id="ac_no1"   name="ac_no1" type="text" value={{$vendorcreate->ac_no1}}
                                                                 name="ac_no1" onkeyup="validate_acno()"
                                                                 inputmode="numeric" pattern="[0-9]*"
                                                                 autocomplete="off" spellcheck="false"
