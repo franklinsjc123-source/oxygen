@@ -95,9 +95,14 @@
                          ₹<?= $prouctsList[$id]['retail_price'] ?>
                      </div>
 
-                     <div class="product-offer-percentage">
-                         60% Off
-                     </div>
+                      <?php 
+                         $retailPrice = (float)($prouctsList[$id]['retail_price'] ?? 0);
+                         $sellingPrice = (float)($prouctsList[$id]['selling_price'] ?? 0);
+                         $discount = $retailPrice > 0 ? round((($retailPrice - $sellingPrice) / $retailPrice) * 100) : 0;
+                      ?>
+                      <div class="product-offer-percentage">
+                          <?= $discount ?>% Off
+                      </div>
                  </div>
 
                     <div class="ratings-container">

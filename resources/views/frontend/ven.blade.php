@@ -280,60 +280,8 @@
 
                                 @if(!empty($products))                              
                                 @foreach ($products as $product)  
-                                    <div class="product-wrap">
-                                        <div class="product text-center">
-                                            <figure class="product-media">
-                                                <a href="<?= url('/productVar/'.$product->id) ?>">
-                                                    <img src="{{ asset('assets/images/products') . '/' . $product->product_image }}" alt="Product" 
-                                                         />
-                                                </a>
-                                                @if(isset($product->offer_image) && $product->offer_image != '')
-                                                   <div class="product-label-group" style="position: absolute; top: 10px; left: 10px; z-index: 10;">
-                                                       <img src="{{ asset('assets/images/offer_logo/'.$product->offer_image) }}" alt="Offer" style="width: 45px; height: 45px; object-fit: contain; border-radius: 5px; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));">
-                                                   </div>
-                                                @endif
-                                                <div class="product-action-vertical">
-                                                    <a href="<?= url('/productVar/'.$product->id) ?>" class="btn-product-icon btn-cart w-icon-cart"
-                                                        title="Add to cart"></a>
-                                                    <a href="#" class="btn-product-icon btn-wishlist w-icon-heart"
-                                                        title="Wishlist"></a>
-                                                   
-                                                    <a href="#" onclick="showQuickView('<?= $product->id ?>')" data-id='<?= $product->id ?>'   class="btn-product-icon btn-quickview w-icon-search"
-                                                        title="Quick View"></a>
-                                                </div>
-                                            </figure>
-                                            <div class="product-details">
-                                                <h3 class="product-name">
-                                                    <a href="<?= url('/productVar/'.$product->id) ?>">{{ $product->product_name }}</a>
-                                                </h3>
-                                                <div class="ratings-container">
-                                                    <div class="ratings-full">
-                                                        <span class="ratings" style="width: 100%;"></span>
-                                                        <span class="tooltiptext tooltip-top"></span>
-                                                    </div>
-                                                    <a href="product-default.html" class="rating-reviews">(3 reviews)</a>
-                                                </div>
-                                                <div class="product-pa-wrapper">
-                                                    <div class="product-price">
-                                                       ₹{{ $product->selling_price }} 
-                                                    </div>
-                                                    <div  class="product-price-discount" >
-                                                         ₹{{ $product->retail_price }} 
-                                                    </div>
-                                                    <?php 
-                                                        $discount_percentage = (($product->retail_price - $product->selling_price) / $product->retail_price) * 100;
-                                                        $discount_formatted = number_format($discount_percentage, 0);
-                                                    ?>
-
-                                                    <div  class="product-offer-percentage" >
-                                                            {{ $discount_formatted }}% Off
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                 @endforeach 
+                                    @include('frontend/product-card', ['product' => $product, 'showStockCount' => true])
+                                @endforeach 
                                 @endif
                                
                             

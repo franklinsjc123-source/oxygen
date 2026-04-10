@@ -214,73 +214,11 @@
                                 </div>
                             </nav>
                                  <div class="product-wrapper row cols-md-5 cols-sm-2 cols-2"  id="productslist">
-                                @if(count($prouctsList) > 0)
-                                    @foreach($prouctsList as $products )
-
-                                        <div class="product-wrap">
-                                            <div class="product text-center">
-                                                <figure class="product-media">
-                                                    <a href="<?= url('/productVar/'.$products['id'] ) ?>">
-                                                        <img src="<?php echo asset('assets') ?>/images/products/<?= $products['product_image']  ?>" alt="Product" width="300"
-                                                            height="200" />
-                                                    </a>
-                                                    @if(isset($products['offer_image']) && $products['offer_image'] != '')
-                                                       <div class="product-label-group" style="position: absolute; top: 10px; left: 10px; z-index: 10;">
-                                                           <img src="{{ asset('assets/images/offer_logo/'.$products['offer_image']) }}" alt="Offer" style="width: 45px; height: 45px; object-fit: contain; border-radius: 5px; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));">
-                                                       </div>
-                                                    @endif
-                                                    <div class="product-action-horizontal">
-                                                        <a href="" class="btn-product-icon btn-cart w-icon-cart"
-                                                            title="Add to cart"></a>
-                                                        <a href="#" class="btn-product-icon btn-wishlist w-icon-heart"
-                                                            title="Wishlist"></a>
-                                                    
-                                                        <a href="javascript:void(0)" onclick="showQuickView('<?= $products['id']  ?>')" data-id='<?=  $products['id']  ?>' class="btn-product-icon btn-quickview w-icon-search"
-                                                            title="Quick View"></a>
-                                                    </div>
-                                                </figure>
-                                                <div class="product-details">
-                                                    <div class="product-cat">
-                                                        <a href="<?= url('/shop-details/'.$products['vendor_id']) ?>">{{ $products['shop_name']  }}</a>
-                                                    </div>
-                                                    <h3 class="product-name">
-                                                        <a href="">{{ $products['product_name']  }}</a>
-                                                    </h3>
-                                                    <div class="ratings-container">
-                                                        <div class="ratings-full">
-                                                            <span class="ratings" style="width: 100%;"></span>
-                                                            <span class="tooltiptext tooltip-top"></span>
-                                                        </div>
-                                                        <a href="product-default.html" class="rating-reviews">(3 reviews)</a>
-                                                    </div>
-                                                    {{-- <div class="product-pa-wrapper">
-                                                        <div class="product-price">
-                                                            $220.00 - $230.00
-                                                        </div>
-                                                    </div> --}}
-
-                                                    <div class="product-pa-wrapper">
-                                                        <div class="product-price">
-                                                            ₹{{ $products['selling_price'] }} 
-                                                        </div>
-                                                        <div  class="product-price-discount" >
-                                                                ₹{{ $products['retail_price'] }} 
-                                                        </div>
-                                                        <?php 
-                                                        $discount_percentage = (($products['retail_price'] - $products['selling_price']) / $products['retail_price']) * 100;
-                                                            $discount_rounded = round($discount_percentage / 10) * 10;
-                                                        ?>
-
-                                                        <div  class="product-offer-percentage" >
-                                                                {{ $discount_rounded }}% Off
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    @endforeach
-				                @endif
+                                 @if(count($prouctsList) > 0)
+                                     @foreach($prouctsList as $product)
+                                         @include('frontend/product-card', ['product' => $product, 'showStockCount' => true])
+                                     @endforeach
+                                 @endif
                             
 
                             </div>
@@ -440,7 +378,7 @@
                                             ` : ''}
                                             <div class="product-action-horizontal">
                                                 <a href="#" class="btn-product-icon btn-cart w-icon-cart" title="Add to cart"></a>
-                                                <a href="#" class="btn-product-icon btn-wishlist w-icon-heart" title="Wishlist"></a>
+                                                <a href="#" onclick="addwishlist('${product.id}')" class="btn-product-icon btn-wishlist w-icon-heart" title="Wishlist"></a>
                                                 <a href="javascript:void(0)" onclick="showQuickView('${product.id}')" class="btn-product-icon btn-quickview w-icon-search" title="Quick View"></a>
                                             </div>
                                         </figure>
