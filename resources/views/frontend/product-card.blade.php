@@ -19,7 +19,7 @@
             @endif
             <div class="product-action-vertical">
                 <a href="{{ url('/productVar/'.$product->id) }}" class="btn-product-icon btn-cart w-icon-cart"></a>
-                <a href="#" class="btn-product-icon btn-wishlist w-icon-heart"></a>
+                <a href="#" onclick="addwishlist('{{ $product->id }}')" class="btn-product-icon btn-wishlist w-icon-heart"><span></span></a>
                 <a href="#" onclick="showQuickView('{{ $product->id }}')" data-id="{{ $product->id }}" class="btn-product-icon btn-quickview w-icon-search"></a>
             </div>
         </figure>

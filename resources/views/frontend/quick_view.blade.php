@@ -140,7 +140,7 @@
                      </div>
                      <span class="divider d-xs-show"></span>
                      <div class="product-link-wrapper d-flex">
-                         <a href="#" class="btn-product-icon btn-wishlist w-icon-heart"><span></span></a>
+                         <a href="#" onclick="addwishlist('{{ $id }}')" class="btn-product-icon btn-wishlist w-icon-heart"><span></span></a>
                      </div>
                  </div>
              </div>

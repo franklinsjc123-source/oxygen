@@ -598,8 +598,8 @@
 
            var user_id = '<?= session()->get('customer_id') ?>';
 
-           if (user_id == 0 && user_id == '') {
-               $.notify("Please Login", "error");
+           if (user_id == 0 || user_id == '') {
+               showCenterMessage("Please Login", "error");
                return false;
            }
 
