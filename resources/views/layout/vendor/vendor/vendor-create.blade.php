@@ -536,7 +536,7 @@
                                                         <label for="validationCustom0" class="col-xl-3 col-md-3"> Confirm
                                                             Account Number</label>
                                                         <div class="col-xl-9 col-md-9">
-                                                            <input class="form-control" id="ac_no1" type="password"
+                                                            <input class="form-control" id="ac_no1" type="text"
                                                                 name="ac_no1"
                                                                 inputmode="numeric" pattern="[0-9]*"
                                                                 autocomplete="off" spellcheck="false">
@@ -548,7 +548,7 @@
                                                             Code </label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ifsc" type="text"
-                                                                name="ifsc">
+                                                                name="ifsc" maxlength="11" minlength="11">
                                                         </div>
                                                     </div>
                                                     <hr>
@@ -750,6 +750,7 @@
 
 $(document).ready(function() {
     const accountFields = $('#ac_no, #ac_no1');
+    const ifscField = $('#ifsc');
     accountFields.on('copy cut paste contextmenu', function(e) {
         e.preventDefault();
     });
@@ -760,6 +761,10 @@ $(document).ready(function() {
     const upiField = $('#upi');
     upiField.on('input', function() {
         this.value = this.value.replace(/\D/g, '').slice(0, 10);
+    });
+
+    ifscField.on('input', function() {
+        this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11);
     });
 });
     </script>

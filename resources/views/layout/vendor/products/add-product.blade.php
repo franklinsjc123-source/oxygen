@@ -603,6 +603,7 @@
                                                 @foreach( $colors as $color)
                                                 <option value='{{ $color->color_name }}' style="background-color: {{ $color->color_code }}"> {{ $color->color_name }} </option>
                                                 @endforeach
+                                                <option value='Multicolor'> Multicolor </option>
                                             </select>
                                         </div>
                                         @php $j=0; @endphp

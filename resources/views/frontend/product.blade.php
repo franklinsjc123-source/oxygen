@@ -3,6 +3,30 @@
  @section('content')
  <!-- Start of Main -->
  <main class="main mb-10 pb-1">
+    <style>
+        .product-color-option.multicolor-option {
+            width: 56px;
+            height: 56px;
+            padding: 3px;
+            border-radius: 14px;
+            background: #fff;
+            border: 1px solid #d9d9d9;
+            overflow: hidden;
+        }
+
+        .product-color-option.multicolor-option img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+            display: block;
+        }
+
+        .product-color-option.multicolor-option.active {
+            border-color: #222;
+            box-shadow: 0 0 0 2px rgba(34, 34, 34, 0.12);
+        }
+    </style>
      <!-- Start of Breadcrumb -->
      <nav class="breadcrumb-nav container">
          <ul class="breadcrumb bb-no">
@@ -168,10 +192,27 @@
                                      <label>Color:</label>
                                      <div class="d-flex align-items-center product-variations" id="product-color-options">
                                          @foreach (($prouctsList['color_options'] ?? []) as $colorOption)
-                                            <a href="#" class="color product-color-option"
+                                            @php
+                                                $multicolorImage = $colorOption['image'] ?? '';
+                                                $isMainProductImage = $multicolorImage === ($prouctsList['product_image'] ?? null);
+                                                $multicolorImageUrl = $multicolorImage
+                                                    ? asset(($isMainProductImage ? 'assets/images/products/' : 'assets/images/products/detail/') . $multicolorImage)
+                                                    : null;
+                                            @endphp
+                                            <a href="#"
+                                                class="color product-color-option{{ !empty($colorOption['is_multicolor']) ? ' multicolor-option' : '' }}"
                                                 data-color-name="{{ $colorOption['name'] }}"
+                                                data-is-multicolor="{{ !empty($colorOption['is_multicolor']) ? 1 : 0 }}"
                                                 title="{{ $colorOption['name'] }}"
-                                                style="background-color: {{ $colorOption['code'] }};"></a>
+                                                @if(empty($colorOption['is_multicolor']) && !empty($colorOption['code']))
+                                                    style="background-color: {{ $colorOption['code'] }};"
+                                                @endif>
+                                                @if(!empty($colorOption['is_multicolor']) && !empty($multicolorImageUrl))
+                                                    <img src="{{ $multicolorImageUrl }}" alt="{{ $colorOption['name'] }}">
+                                                @elseif(!empty($colorOption['is_multicolor']))
+                                                    <span class="d-flex align-items-center justify-content-center h-100 w-100 small text-dark">MC</span>
+                                                @endif
+                                            </a>
                                          @endforeach
                                      </div>
                                  </div>

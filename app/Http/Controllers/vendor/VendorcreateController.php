@@ -92,9 +92,13 @@ class VendorcreateController extends Controller
     public function list()
     {
         $vendorlist = vendorcreate::All();
+        $zoneMap = Zonal::pluck('name', 'id');
         // dd($vendorlist);
         //    return view('layout.admin.vendor.list')->with("vendorlist");
-        return view('layout.admin.vendor.vendor-list')->with("vendorlist", $vendorlist);
+        return view('layout.admin.vendor.vendor-list', [
+            'vendorlist' => $vendorlist,
+            'zoneMap' => $zoneMap,
+        ]);
     }
     public function Ajaxpackage(Request $request)
     {

@@ -582,7 +582,7 @@
                                                         <label for="validationCustom0" class="col-xl-3 col-md-3"> Confirm
                                                             Account Number</label>
                                                         <div class="col-xl-9 col-md-9">
-                                                            <input class="form-control" id="ac_no1" type="password"
+                                                            <input class="form-control" id="ac_no1" type="text"
                                                                 name="ac_no1" onkeyup="validate_acno()"
                                                                 inputmode="numeric" pattern="[0-9]*" autocomplete="off"
                                                                 spellcheck="false" oncopy="return false"
@@ -900,14 +900,14 @@
         $(document).ready(function() {
       $('#pincode').on('change', function(){
         var pincode = $(this).val();
-         alert(pincode);
+        //  alert(pincode);
        
         $.ajax({
             url: "{{route('picodedetailsreceived')}}", 
             method: 'POST',
             data: {pincode: pincode},
             success: function(response){
-                alert()
+                // alert()
                 // Handle the response from the server
                 // $('#result').html(response);
                 $('#zone').html('<option value="' + response[0].id + '">' + response[0].name + '</option>');

@@ -599,6 +599,9 @@ class FrontendController extends Controller
         $resultArr = [];
         foreach ($productsData as $val) {
             $productId = $val->id;
+            $normalizedColorName = strtolower(trim((string) ($val->color ?? '')));
+            $isMulticolor = $normalizedColorName === 'multicolor';
+            $previewImage = $this->resolveVariantPreviewImage($val->product_detail_image, $val->product_image);
 
             if (!isset($resultArr[$productId])) {
                 $resultArr[$productId] = [
@@ -632,7 +635,7 @@ class FrontendController extends Controller
             }
 
             $colorCode = ProductColor::where('color_name', $val->color)->value('color_code');
-            $colorCode = !empty($colorCode) ? $colorCode : $val->color;
+            $colorCode = !empty($colorCode) ? $colorCode : ($isMulticolor ? null : $val->color);
 
             $colorExists = false;
             if (!empty($val->color)) {
@@ -647,6 +650,8 @@ class FrontendController extends Controller
                 $resultArr[$productId]['color_options'][] = [
                     'name' => $val->color,
                     'code' => $colorCode,
+                    'is_multicolor' => $isMulticolor,
+                    'image' => $previewImage,
                 ];
             }
 
@@ -671,6 +676,8 @@ class FrontendController extends Controller
                     'detail_id' => (int) ($val->product_detail_id ?? 0),
                     'color_name' => $val->color,
                     'color_code' => $colorCode,
+                    'is_multicolor' => $isMulticolor,
+                    'preview_image' => $previewImage,
                     'size' => $val->size,
                     'selling_amount' => (float) ($val->selling_amount ?? 0),
                     'retail_amount' => (float) ($val->retail_amount ?? 0),
@@ -683,6 +690,25 @@ class FrontendController extends Controller
         } else {
             return $resultArr;
         }
+    }
+
+    private function resolveVariantPreviewImage($productDetailImage, $fallbackImage = null): ?string
+    {
+        $decoded = json_decode($productDetailImage, true);
+
+        if (is_array($decoded)) {
+            foreach ($decoded as $image) {
+                if (!empty($image)) {
+                    return $image;
+                }
+            }
+        }
+
+        if (!empty($productDetailImage) && is_string($productDetailImage) && $productDetailImage !== '-') {
+            return $productDetailImage;
+        }
+
+        return !empty($fallbackImage) ? $fallbackImage : null;
     }
 
 

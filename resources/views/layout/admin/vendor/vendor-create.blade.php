@@ -636,7 +636,7 @@
                                                         <label for="validationCustom0" class="col-xl-3 col-md-3"> Confirm
                                                             Account Number</label>
                                                         <div class="col-xl-9 col-md-9">
-                                                            <input class="form-control" id="ac_no1" type="password"
+                                                            <input class="form-control" id="ac_no1" type="text"
                                                                 name="ac_no1" onkeyup="validate_acno()"
                                                                 inputmode="numeric" pattern="[0-9]*"
                                                                 autocomplete="off" spellcheck="false"
@@ -653,7 +653,7 @@
                                                             Code </label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ifsc" type="text"
-                                                                name="ifsc">
+                                                                name="ifsc" maxlength="11" minlength="11">
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -988,6 +988,9 @@
 
         $(document).ready(function() {
             const accountFields = $('#ac_no, #ac_no1');
+            const maskedAccountField = $('#ac_no');
+            const ifscField = $('#ifsc');
+
             accountFields.on('copy cut paste contextmenu selectstart', function(e) {
                 e.preventDefault();
             });
@@ -999,7 +1002,7 @@
             accountFields.on('input', function() {
                 this.value = this.value.replace(/\D/g, '');
             });
-            accountFields.on('focus blur', function() {
+            maskedAccountField.on('focus blur', function() {
                 this.type = 'password';
             });
 
@@ -1021,6 +1024,10 @@
             const upiField = $('#upi');
             upiField.on('input', function() {
                 this.value = this.value.replace(/\D/g, '').slice(0, 10);
+            });
+
+            ifscField.on('input', function() {
+                this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11);
             });
         });
 
@@ -1078,7 +1085,7 @@
         $(document).ready(function() {
             $('#pincode').on('change', function() {
                 var pincode = $(this).val();
-                alert(pincode);
+                // alert(pincode);
 
                 $.ajax({
                     url: "{{ route('picodedetailsreceived') }}",
@@ -1087,7 +1094,7 @@
                         pincode: pincode
                     },
                     success: function(response) {
-                        alert()
+                        // alert()
                         // Handle the response from the server
                         // $('#result').html(response);
                         $('#zone').html('<option value="' + response[0].id + '">' + response[0]

@@ -113,7 +113,7 @@
              max-height: 75px !important;
              max-width: 75px !important;
              object-fit: cover !important;
-         }
+         } 
          .checkout .product-details {
              flex: 1 1 auto !important;
              min-width: 0 !important;
