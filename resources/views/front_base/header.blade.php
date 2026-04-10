@@ -389,6 +389,50 @@
             background-color: #f1f6fa !important;
             padding-left: 16px !important;
         }
+
+        /* ── Stock Badge Design ── */
+        .product-stock-status {
+            display: flex;
+            justify-content: center;
+            margin: 8px 0 2px 0;
+            min-height: 24px;
+        }
+        .stock-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            transition: all 0.3s ease;
+        }
+        .stock-label i {
+            font-size: 12px;
+        }
+        .stock-label.in-stock {
+            background-color: #ecfdf5;
+            color: #059669;
+            border: 1px solid #d1fae5;
+        }
+        .stock-label.low-stock {
+            background-color: #fffbeb;
+            color: #d97706;
+            border: 1px solid #fef3c7;
+            animation: pulse-low-stock 2s infinite ease-in-out;
+        }
+        .stock-label.out-of-stock {
+            background-color: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fee2e2;
+        }
+        @keyframes pulse-low-stock {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.02); }
+        }
     </style>
 
     <body>

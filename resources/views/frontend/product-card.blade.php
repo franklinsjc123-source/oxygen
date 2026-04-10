@@ -54,10 +54,19 @@
                 $lowStockLimit = isset($product->low_stock_limit) ? (int) $product->low_stock_limit : null;
             @endphp
             @if($showStockCount && $stockQty !== null)
-                <div class="small mt-1 {{ ($lowStockLimit !== null && $stockQty <= $lowStockLimit) ? 'text-danger' : 'text-muted' }}">
-                    Stock: {{ $stockQty }}
-                    @if($lowStockLimit !== null && $stockQty <= $lowStockLimit)
-                        <span class="ms-1">Low stock</span>
+                <div class="product-stock-status">
+                    @if($stockQty > ($lowStockLimit ?? 5))
+                        <span class="stock-label in-stock">
+                            <i class="fas fa-check-circle"></i> In Stock: {{ $stockQty }}
+                        </span>
+                    @elseif($stockQty > 0)
+                        <span class="stock-label low-stock">
+                            <i class="fas fa-exclamation-triangle"></i> Only {{ $stockQty }} Left
+                        </span>
+                    @else
+                        <span class="stock-label out-of-stock">
+                            <i class="fas fa-times-circle"></i> Out of Stock
+                        </span>
                     @endif
                 </div>
             @endif
