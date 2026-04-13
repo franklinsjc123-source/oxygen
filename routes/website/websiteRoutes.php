@@ -110,6 +110,7 @@ Route::get('/myWishlist', [FrontendController::class, 'myWishlist'])->name('myWi
 Route::get('/add-wishlist', [FrontendController::class,'addWishlist'])->name('add-wishlist');
 Route::get('/offers', [FrontendController::class, 'offers'])->name('offers');
 Route::get('/offer-products/{id}', [FrontendController::class, 'offers_products'])->name('offer-products');
+Route::get('/vendor-offer-products/{id}', [FrontendController::class, 'vendor_offer_products'])->name('vendor-offer-products');
 
 Route::get('/customer-logout', [FrontendController::class, 'customer_logout'])->name('customer-logout');
 

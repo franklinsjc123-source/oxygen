@@ -469,7 +469,7 @@
                         <div class="header-left mr-md-4">
                             <a href="#" class="mobile-menu-toggle  w-icon-hamburger" aria-label="menu-toggle">
                             </a>
-                            <a href="{{ url('home') }}" class="logo ml-lg-0  d-none">
+                            <a href="{{ url('home') }}" class="logo ml-lg-0 ">
                                 <img src="<?= asset('frontend') ?>/images/header-logo.png" alt="logo" width="144"
                                     height="45" />
                             </a>

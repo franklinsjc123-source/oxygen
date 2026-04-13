@@ -150,13 +150,13 @@
 
                              
                                 <div class="swiper-slide category-wrap">
-                                    <div class="category category-ellipse {{ ($offer_id == $o->id) ? 'sc-active' : '' }}">
+                                    <div class="category category-ellipse {{ ($selectedGroupKey == $o->group_key) ? 'sc-active' : '' }}">
                                        <center>
 
                                          <figure class="category-media">
                                             <a href="{{ url( 'offers?id='.$o->id ) }}">
                                                 
-                                                <img src="{{ asset('assets/images/offer_logo/'.$o->offer_logo) }}" alt="Categroy"
+                                                <img src="{{ asset('assets/images/offer_logo/'.$o->offer_type) }}" alt="Categroy"
                                                    style="background-color: #5C92C0;" />
                                             </a>
                                         </figure>
@@ -183,9 +183,6 @@
                             <div class="toolbox vendor-toolbox pb-0">
                             
                                 <div class="toolbox-left mb-4 mb-md-0">
-                                    {{-- <a href="#" class="btn btn-primary btn-outline btn-rounded btn-icon-left "><i class="w-icon-category"></i>VENDORS</a> --}}
-                                    {{-- <label class="d-block">Total Store Showing 6</label> --}}
-                                    <!-- <h2><label class="d-block">Offer  </label></h3><h4><?=  $offer_name ? '( ' . $offer_name. ' )' :''  ?></h4> -->
                                 </div>
                                
                             </div>
@@ -196,99 +193,69 @@
                                     <button class="btn btn-primary btn-rounded" type="submit">Apply</button>
                                 </form>
                             </div>
-                            <div class="row cols-lg-3 cols-md-2 cols-sm-2 cols-1 mt-4">
 
-                            @foreach($vendorcreate as $vendorcreate )
-
-                                    <!-- <div class="store-wrap mb-4">
+                            @foreach($groupedOffers as $groupKey => $vendors)
+                            <div class="mt-5 mb-2">
+                                <h3 class="title title-center title-underline">{{ $groupLabels[$groupKey] ?? $groupKey }}</h3>
+                            </div>
+                            <div class="row cols-lg-3 cols-md-2 cols-sm-2 cols-1 mt-2">
+                                @foreach($vendors as $vendor)
+                                    <div class="store-wrap mb-4">
                                         <div class="store store-grid">
-                                            <div class="store-header" style="position: relative; overflow: hidden;">
-                                                <figure class="store-banner" style="margin: 0;">
-                                                    <img 
-                                                        src="{{ asset('assets/images/vendor/profile/' . $vendorcreate->profile_image) }}"
-                                                        alt="Vendor"
-                                                        style="width: 100%; height: auto; object-fit: cover; display: block;" />
-                                                </figure>
-                                                <div class="banner-overlay"></div>
-                                            </div>
-                                            <div class="store-content">
-                                                <h4 class="store-title">
-                                                    <a href=" {{ url('/offer-products/'.$vendorcreate->id) }}">{{ $vendorcreate->shop_name }}</a>
-                                                </h4>
-                                                <div class="ratings-container">
-                                                    <div class="ratings-full">
-                                                        <span class="ratings" style="width: 100%;"></span>
-                                                        <span class="tooltiptext tooltip-top"></span>
+                                           <div class="store-header custom-split">
+                                                <div class="store-left">
+                                                    <h4 class="store-title">
+                                                        <a href="{{ url('/vendor-offer-products/'.$vendor->id.'?ids='.($groupOfferIds[$groupKey] ?? '')) }}">
+                                                            {{ $vendor->shop_name }}
+                                                        </a>
+                                                    </h4>
+
+                                                    <div class="ratings-container">
+                                                        <div class="ratings-full">
+                                                            <span class="ratings" style="width:100%;"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="store-address-grid">
+                                                            {{ $vendor->address }} , <br>
+                                                            {{ $vendor->city }} - {{ $vendor->pincode }} , <br>
+                                                            {{ $vendor->state }} . <br>
+                                                            <i class="w-icon-phone"></i> {{ $vendor->mobile_number1 }}
                                                     </div>
                                                 </div>
-                                                <div class="store-address-grid">
-                                                    <b>
-                                                    {{ $vendorcreate->address }} , <br>
-                                                    {{-- {{ $vendorcreate->address }} , <br> --}}
-                                                    {{ $vendorcreate->city }}  - {{ $vendorcreate->pincode }} ,  <br>
-                                                    {{ $vendorcreate->state }} . <br>
-                                                    <i class="w-icon-phone"></i> {{ $vendorcreate->mobile_number1 }}
-                                                    </b>
+
+                                             
+
+                                                <div class="store-right">
+                                                       <a  href="{{ url('/vendor-offer-products/'.$vendor->id.'?ids='.($groupOfferIds[$groupKey] ?? '')) }}" >
+                                                    <img src="{{ asset('assets/images/vendor/profile/' . $vendor->profile_image) }}" alt="">
+                                                    </a>
                                                 </div>
                                             
                                             </div>
+
                                             <div class="store-footer">
                                                 <figure class="seller-brand">
-                                                    <img src="{{ asset('assets/images/vendor/profile/' . $vendorcreate->profile_image) }}" alt="Brand" width="80" height="80" />
+                                                       <a  href="{{ url('/vendor-offer-products/'.$vendor->id.'?ids='.($groupOfferIds[$groupKey] ?? '')) }}" >
+
+                                                    <img src="{{ asset('assets/images/vendor/profile/' . $vendor->profile_image) }}" alt="Brand" width="80" height="80" />
+                                                    
                                                 </figure>
-                                                <a href=" {{ url('/offer-products/'.$vendorcreate->id) }}" class="btn btn-dark btn-link btn-underline btn-icon-right btn-visit">
-                                                <b>Visit Store</b> <i class="w-icon-long-arrow-right"></i></a>
+                                                <a href="{{ url('/vendor-offer-products/'.$vendor->id.'?ids='.($groupOfferIds[$groupKey] ?? '')) }}" class="btn btn-dark btn-link btn-underline btn-icon-right btn-visit">
+                                                   <b></b></a>
                                             </div>
                                         </div>
-                                    </div> -->
-                                    <div class="store-wrap mb-4">
-                            <div class="store store-grid">
-                               <div class="store-header custom-split">
-                                    <div class="store-left">
-                                        <h4 class="store-title">
-                                            <a href="{{ url('/shop-details/'.$vendorcreate->id) }}">
-                                                {{ $vendorcreate->shop_name }}
-                                            </a>
-                                        </h4>
-
-                                        <div class="ratings-container">
-                                            <div class="ratings-full">
-                                                <span class="ratings" style="width:100%;"></span>
-                                            </div>
-                                        </div>
-
-                                        <div class="store-address-grid">
-                                            
-                                                {{ $vendorcreate->address }} , <br>
-                                                {{ $vendorcreate->city }} - {{ $vendorcreate->pincode }} , <br>
-                                                {{ $vendorcreate->state }} . <br>
-                                                <i class="w-icon-phone"></i> {{ $vendorcreate->mobile_number1 }}
-                                            
-                                        </div>
-                                <!-- 
-                                        <a href="{{ url('/shop-details/'.$vendorcreate->id) }}" class="btn btn-dark mt-3">
-                                            VISIT STORE
-                                        </a> -->
                                     </div>
-
-                                    <div class="store-right">
-                                        <img src="{{ asset('assets/images/vendor/profile/' . $vendorcreate->profile_image) }}" alt="">
-                                    </div>
-                                </div>
-
-                                
-                                <div class="store-footer">
-                                    <figure class="seller-brand">
-                                        <img src="{{ asset('assets/images/vendor/profile/' . $vendorcreate->profile_image) }}" alt="Brand" width="80" height="80" />
-                                    </figure>
-                                    <a href=" {{ url('/shop-details/'.$vendorcreate->id) }}" class="btn btn-dark btn-link btn-underline btn-icon-right btn-visit">
-                                       <b>Visit Store</b> <i class="w-icon-long-arrow-right"></i></a>
-                                </div>
+                                @endforeach
                             </div>
-                        </div>
                             @endforeach
-                            
+
+                            @if(empty($groupedOffers) || count($groupedOffers) == 0)
+                            <div class="text-center mt-5 mb-5">
+                                <h4>No offers available at the moment.</h4>
                             </div>
+                            @endif
+
                         </div>
                     </div>
                 </div>

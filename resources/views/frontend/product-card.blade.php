@@ -11,6 +11,16 @@
             </a>
             @php
                 $offer_image = $product->offer_image ?? null;
+                $offer_type = $product->offer_type ?? null;
+                $discount_type = $product->discount_type ?? null;
+                
+                if (empty($offer_image) && !empty($offer_type)) {
+                    if ($offer_type == 'Fixed Discount' && $discount_type == 'Percentage') {
+                        $offer_image = 'Fixed Discount Percentage';
+                    } else {
+                        $offer_image = $offer_type;
+                    }
+                }
             @endphp
             @if($offer_image)
                 <div class="product-label-group" style="position: absolute; top: 10px; left: 10px; z-index: 10;">

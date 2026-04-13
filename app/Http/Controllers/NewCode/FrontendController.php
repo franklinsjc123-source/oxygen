@@ -41,6 +41,21 @@ class FrontendController extends Controller
 {
     use \App\Traits\CartHelperTrait;
 
+    /**
+     * Resolve the correct offer image filename.
+     * Falls back to offer type, handling Fixed Discount Percentage distinction.
+     */
+    private function resolveOfferImage($offerLogo, $offerType, $discountType = null)
+    {
+        if (!empty($offerLogo)) {
+            return $offerLogo;
+        }
+        if ($offerType == 'Fixed Discount' && $discountType == 'Percentage') {
+            return 'Fixed Discount Percentage';
+        }
+        return $offerType;
+    }
+
     private function resolveCartKey(Request $request): array
     {
         $key = (string) ($request->cookie('oxy_cart_key') ?? '');
@@ -363,6 +378,8 @@ class FrontendController extends Controller
                 'products.product_image',
                 'category_sub.category_sub_name',
                 'o.offer_logo as offer_image',
+                'o.type as offer_type',
+                'o.discount_type',
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
                 DB::raw('SUM(products_details.quantity) as stock_qty'),
@@ -388,6 +405,8 @@ class FrontendController extends Controller
                 'products.product_image',
                 'category_sub.category_sub_name',
                 'o.offer_logo as offer_image',
+                'o.type as offer_type',
+                'o.discount_type',
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
                 DB::raw('SUM(products_details.quantity) as stock_qty'),
@@ -415,6 +434,8 @@ class FrontendController extends Controller
                 'products.product_image',
                 'category_sub.category_sub_name',
                 'o.offer_logo as offer_image',
+                'o.type as offer_type',
+                'o.discount_type',
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
                 DB::raw('SUM(products_details.quantity) as stock_qty'),
@@ -448,6 +469,8 @@ class FrontendController extends Controller
                 'products.product_image',
                 'category_sub.category_sub_name',
                 'o.offer_logo as offer_image',
+                'o.type as offer_type',
+                'o.discount_type',
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
                 DB::raw('SUM(products_details.quantity) as stock_qty'),
@@ -524,6 +547,8 @@ class FrontendController extends Controller
             'pd.attributevalue1 as color',
             'pd.product_detail_image',
             'o.offer_logo',
+            'o.type as offer_type',
+            'o.discount_type',
             'p.offers as offer_id'
         )->get();
         $resultArr = [];
@@ -544,7 +569,7 @@ class FrontendController extends Controller
                     'category_main_name' => $val->category_main_name,
                     'shop_name' => $val->shop_name,
                     'profile_image' => $val->profile_image,
-                    'offer_image' => $val->offer_logo,
+                    'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
                     'offer_id' => $val->offer_id,
                 ];
             }
@@ -594,6 +619,8 @@ class FrontendController extends Controller
             'pd.selling_price as selling_amount',
             'pd.product_detail_image',
             'o.offer_logo',
+            'o.type as offer_type',
+            'o.discount_type',
             'p.offers as offer_id'
         )->get();
         $resultArr = [];
@@ -617,7 +644,7 @@ class FrontendController extends Controller
                     'shop_name' => $val->shop_name,
                     'profile_image' => $val->profile_image,
                     'retail_price' => $val->retail_price,
-                    'offer_image' => $val->offer_logo,
+                    'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
                     'offer_id' => $val->offer_id,
                     'colors' => [],
                     'size' => [],
@@ -745,7 +772,9 @@ class FrontendController extends Controller
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
             'pd.product_detail_image',
-            'o.offer_logo'
+            'o.offer_logo',
+            'o.type as offer_type',
+            'o.discount_type'
         )->get();
         $resultArr = [];
         foreach ($productsData as $val) {
@@ -765,7 +794,7 @@ class FrontendController extends Controller
                     'category_main_name' => $val->category_main_name,
                     'shop_name' => $val->shop_name,
                     'profile_image' => $val->profile_image,
-                    'offer_image' => $val->offer_logo,
+                    'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
                 ];
             }
         }
@@ -806,7 +835,9 @@ class FrontendController extends Controller
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
             'pd.product_detail_image',
-            'o.offer_logo'
+            'o.offer_logo',
+            'o.type as offer_type',
+            'o.discount_type'
         )->get();
         $resultArr = [];
         foreach ($productsData as $val) {
@@ -826,7 +857,7 @@ class FrontendController extends Controller
                     'category_main_name' => $val->category_main_name,
                     'shop_name' => $val->shop_name,
                     'profile_image' => $val->profile_image,
-                    'offer_image' => $val->offer_logo,
+                    'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
                 ];
             }
         }
@@ -866,7 +897,9 @@ class FrontendController extends Controller
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
             'pd.product_detail_image',
-            'o.offer_logo'
+            'o.offer_logo',
+            'o.type as offer_type',
+            'o.discount_type'
         )->get();
         $resultArr = [];
         foreach ($productsData as $val) {
@@ -886,7 +919,7 @@ class FrontendController extends Controller
                     'category_main_name' => $val->category_main_name,
                     'shop_name' => $val->shop_name,
                     'profile_image' => $val->profile_image,
-                    'offer_image' => $val->offer_logo,
+                    'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
                 ];
             }
         }
@@ -991,6 +1024,8 @@ class FrontendController extends Controller
                 'products.product_image',
                 'category_sub.category_sub_name',
                 'o.offer_logo as offer_image',
+                'o.type as offer_type',
+                'o.discount_type',
 
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
@@ -1071,6 +1106,8 @@ class FrontendController extends Controller
                 'products.product_image',
                 'category_sub.category_sub_name',
                 'master_offers.offer_logo as offer_image',
+                'master_offers.type as offer_type',
+                'master_offers.discount_type as discount_type',
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price')
             )
@@ -1407,7 +1444,9 @@ class FrontendController extends Controller
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
             'pd.product_detail_image',
-            'o.offer_logo'
+            'o.offer_logo',
+            'o.type as offer_type',
+            'o.discount_type'
         )->get();
         $resultArr = [];
         foreach ($productsData as $val) {
@@ -1425,7 +1464,7 @@ class FrontendController extends Controller
                     'category_main_name' => $val->category_main_name,
                     'shop_name' => $val->shop_name,
                     'profile_image' => $val->profile_image,
-                    'offer_image' => $val->offer_logo,
+                    'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
                 ];
             }
         }
@@ -1475,8 +1514,11 @@ class FrontendController extends Controller
             'pd.attributevalue1 as color',
             'pd.product_detail_image',
             'pd.quantity as stock_qty',
+            'pd.quantity as stock_qty',
             'pd.low_stock_limit as low_stock_limit',
-            'o.offer_logo'
+            'o.offer_logo',
+            'o.type as offer_type',
+            'o.discount_type'
         )->get();
         $resultArr = [];
         foreach ($productsData as $val) {
@@ -1496,7 +1538,7 @@ class FrontendController extends Controller
                     'profile_image' => $val->profile_image,
                     'stock_qty' => (int) ($val->stock_qty ?? 0),
                     'low_stock_limit' => isset($val->low_stock_limit) ? (int) $val->low_stock_limit : null,
-                    'offer_image' => $val->offer_logo,
+                    'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
                 ];
             } else {
                 $resultArr[$productId]['stock_qty'] += (int) ($val->stock_qty ?? 0);
@@ -1549,7 +1591,10 @@ class FrontendController extends Controller
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
             'pd.product_detail_image',
-            'o.offer_logo'
+            'pd.product_detail_image',
+            'o.offer_logo',
+            'o.type as offer_type',
+            'o.discount_type'
         )->get();
 
 
@@ -1655,7 +1700,6 @@ class FrontendController extends Controller
 
     public function offers()
     {
-
         $offer_id = isset($_GET['id']) ? $_GET['id'] : 0;
         if ($offer_id != '') {
             $offer_name = Offer::where('id', $offer_id)->value('title');
@@ -1663,11 +1707,93 @@ class FrontendController extends Controller
             $offer_name = '';
         }
 
-        $offer = Offer::get();
+        // Get all offers with their details
+        $allOffers = Offer::where('status', 1)->get();
 
+        // Build a group key for each offer based on type + value
+        $offerGroupMap = []; // offer_id => group_key
+        $groupLabels = [];   // group_key => display label
+        $groupLogos = [];    // group_key => first logo found
+
+        foreach ($allOffers as $o) {
+            $groupKey = '';
+            $label = '';
+
+            switch ($o->type) {
+                case 'Cashback Offer':
+                    $groupKey = 'cashback_' . strtolower($o->cashbacktype) . '_' . $o->cashbackvalue;
+                    if ($o->cashbacktype == 'Percentage') {
+                        $label = 'Cashback ' . $o->cashbackvalue . '% Off';
+                    } else {
+                        $label = 'Cashback ₹' . $o->cashbackvalue . ' Off';
+                    }
+                    break;
+
+                case 'Buy X Get Y Free':
+                    $groupKey = 'buyxgety_' . $o->buy . '_' . $o->getoffer;
+                    $label = 'Buy ' . $o->buy . ' Get ' . $o->getoffer . ' Free';
+                    break;
+
+                case 'Buy X @ Y':
+                    $groupKey = 'buyxaty_' . $o->buyproduct . '_' . $o->getamt;
+                    $label = 'Buy ' . $o->buyproduct . ' @ ₹' . number_format($o->getamt) . '/-';
+                    break;
+
+                case 'Fixed Discount':
+                    if ($o->discount_type == 'Percentage') {
+                        $groupKey = 'fixed_percent_' . $o->value;
+                        $label = 'Flat ' . $o->value . '% Off';
+                    } else {
+                        $groupKey = 'fixed_amount_' . $o->value;
+                        $label = 'Flat ₹' . number_format($o->value) . ' Off';
+                    }
+                    break;
+
+                default:
+                    $groupKey = 'other_' . $o->id;
+                    $label = $o->title;
+                    break;
+            }
+
+            $offerGroupMap[$o->id] = $groupKey;
+            $groupLabels[$groupKey] = $label;
+            if (!isset($groupLogos[$groupKey]) && $o->offer_logo) {
+                $groupLogos[$groupKey] = $o->offer_logo;
+            }
+        }
+
+        // Build unique offer list for the slider (one per group)
+        $sliderOffers = [];
+        $seenGroups = [];
+        foreach ($allOffers as $o) {
+            $gk = $offerGroupMap[$o->id] ?? null;
+            if ($gk && !isset($seenGroups[$gk])) {
+                $seenGroups[$gk] = true;
+                $sliderOffers[] = (object)[
+                    'id'         => $o->id,
+                    'title'      => $groupLabels[$gk],
+                    'offer_logo' => $groupLogos[$gk] ?? $o->offer_logo,
+                    'offer_type' => ($o->type == 'Fixed Discount' && $o->discount_type == 'Percentage') ? 'Fixed Discount Percentage' : $o->type,
+                    'group_key'  => $gk,
+                ];
+            }
+        }
+
+        // Determine which group key is selected
+        $selectedGroupKey = '';
+        if ($offer_id && isset($offerGroupMap[$offer_id])) {
+            $selectedGroupKey = $offerGroupMap[$offer_id];
+        }
+
+        // Get offer IDs for the selected group (all offers matching the same type+value)
+        $filterOfferIds = [];
+        if ($selectedGroupKey) {
+            $filterOfferIds = array_keys(array_filter($offerGroupMap, fn($gk) => $gk === $selectedGroupKey));
+        }
+
+        // Query vendors who created these offers
         $query = DB::table('vendor_details as vd')
-            ->leftJoin('products as p', 'p.vendor_id', '=', 'vd.id')
-            ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers')
+            ->join('master_offers as o', 'o.created_by_id', '=', 'vd.user_id')
             ->select(
                 'vd.id',
                 'vd.shop_name',
@@ -1676,55 +1802,94 @@ class FrontendController extends Controller
                 'vd.address',
                 'vd.city',
                 'vd.profile_image',
-                'vd.city',
                 'vd.state',
                 'vd.pincode',
-                DB::raw('GROUP_CONCAT(DISTINCT p.product_name) as products'),
-                DB::raw('GROUP_CONCAT(DISTINCT o.title) as offers'),
-                DB::raw('GROUP_CONCAT(DISTINCT o.id) as offer_ids')
+                'o.id as oid',
+                'o.type as offer_type',
+                'o.discount_type',
+                'o.value as offer_value',
+                'o.cashbacktype',
+                'o.cashbackvalue',
+                'o.buy',
+                'o.getoffer',
+                'o.buyproduct',
+                'o.getamt'
             )
-            ->whereNotNull('o.id')
-            ->where('p.status', 1)
-            ->groupBy(
-                'vd.id',
-                'vd.shop_name',
-                'vd.owner_name',
-                'vd.mobile_number1',
-                'vd.city',
-                'vd.profile_image',
-                'vd.address',
-                'vd.city',
-                'vd.state',
-                'vd.pincode'
-            );
+            ->where('o.status', 1)
+            ->where('vd.status', 1);
 
-        $vendorcreate = $query->get();
-
-        if ($offer_id) {
-            $query->where('o.id', $offer_id);
-        } else {
-            $query->whereNotNull('o.id');
+        if (!empty($filterOfferIds)) {
+            $query->whereIn('o.id', $filterOfferIds);
         }
 
-        $vendorcreate = $query->get();
+        $results = $query->groupBy(
+            'vd.id', 'vd.shop_name', 'vd.owner_name', 'vd.mobile_number1',
+            'vd.address', 'vd.city', 'vd.profile_image', 'vd.state', 'vd.pincode',
+            'o.id', 'o.type', 'o.discount_type', 'o.value',
+            'o.cashbacktype', 'o.cashbackvalue', 'o.buy', 'o.getoffer', 'o.buyproduct', 'o.getamt'
+        )->get();
 
-        return view('frontend/offers', compact('offer', 'vendorcreate', 'offer_id', 'offer_name'));
+        // Group the results by group key
+        $groupedOffers = [];
+        $seenVendorsInGroup = [];
+        foreach ($results as $row) {
+            $gk = $offerGroupMap[$row->oid] ?? 'other_' . $row->oid;
+            $vendorKey = $gk . '_' . $row->id;
+            if (isset($seenVendorsInGroup[$vendorKey])) {
+                continue; // skip duplicate vendor in same group
+            }
+            $seenVendorsInGroup[$vendorKey] = true;
+            $groupedOffers[$gk][] = $row;
+        }
+
+        // Build a map of group_key => comma-separated offer IDs
+        $groupOfferIds = [];
+        foreach ($offerGroupMap as $oid => $gk) {
+            $groupOfferIds[$gk][] = $oid;
+        }
+        foreach ($groupOfferIds as $gk => $ids) {
+            $groupOfferIds[$gk] = implode(',', $ids);
+        }
+
+        return view('frontend/offers', [
+            'offer'          => $sliderOffers,
+            'groupedOffers'  => $groupedOffers,
+            'groupLabels'    => $groupLabels,
+            'groupOfferIds'  => $groupOfferIds,
+            'offer_id'       => $offer_id,
+            'offer_name'     => $offer_name,
+            'selectedGroupKey' => $selectedGroupKey,
+            'offerGroupMap'  => $offerGroupMap,
+        ]);
     }
 
 
 
-    public function offers_products($vendor_id)
+    public function vendor_offer_products($vendor_id)
     {
         $offer = Offer::get();
 
+        // Accept comma-separated offer IDs (e.g. ?ids=8,13)
+        $offer_ids_param = isset($_GET['ids']) ? $_GET['ids'] : '';
         $offer_id = isset($_GET['id']) ? $_GET['id'] : '';
-        if ($offer_id != '') {
+
+        if ($offer_ids_param != '') {
+            $offerIds = array_filter(explode(',', $offer_ids_param));
+            $offer_name = Offer::whereIn('id', $offerIds)->value('title');
+        } elseif ($offer_id != '') {
+            $offerIds = [$offer_id];
             $offer_name = Offer::where('id', $offer_id)->value('title');
         } else {
+            $offerIds = [];
             $offer_name = '';
         }
 
-        $prouctsList = $this->getProductByVendorOffers($vendor_id, $offer_id);
+        // Get products for this vendor matching any of the offer IDs
+        if (!empty($offerIds)) {
+            $prouctsList = $this->getProductByVendorMultipleOffers($vendor_id, $offerIds);
+        } else {
+            $prouctsList = $this->getProductByVendorOffers($vendor_id, '');
+        }
 
         $attachRatings = function (&$products) {
             foreach ($products as &$product) {
@@ -1736,7 +1901,70 @@ class FrontendController extends Controller
 
         $attachRatings($prouctsList);
 
-        return view('frontend/offers-products', compact('offer', 'prouctsList', 'offer_id', 'vendor_id', 'offer_name'));
+        return view('frontend/vendor-offers-products', compact('offer', 'prouctsList', 'offer_id', 'vendor_id', 'offer_name'));
+    }
+
+    /**
+     * Get products for a vendor matching multiple offer IDs.
+     */
+    private function getProductByVendorMultipleOffers($vendor_id, array $offerIds)
+    {
+        $productsData = Products::from('products as p')
+            ->leftJoin('category as c', 'c.id', '=', 'p.category')
+            ->leftJoin('category_sub as cs', 'cs.id', '=', 'p.category_sub')
+            ->leftJoin('category_main as cm', 'cm.id', '=', 'p.category_main')
+            ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
+            ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers')
+            ->where('p.vendor_id', $vendor_id)
+            ->whereIn('p.offers', $offerIds)
+            ->where('p.status', 1)
+            ->select(
+                'p.id',
+                'p.vendor_id',
+                'p.product_name',
+                'p.product_image',
+                'pd.selling_price',
+                'pd.retail_price',
+                'c.category_name',
+                'cs.category_sub_name',
+                'cm.category_main_name',
+                'vp.shop_name',
+                'vp.profile_image',
+                'pd.attributevalue2 as size',
+                'pd.attributevalue1 as color',
+                'pd.product_detail_image',
+                'pd.quantity as stock_qty',
+                'pd.low_stock_limit as low_stock_limit',
+                'o.offer_logo'
+            )->get();
+
+        $resultArr = [];
+        foreach ($productsData as $val) {
+            $productId = $val->id;
+            if (!isset($resultArr[$productId])) {
+                $resultArr[$productId] = [
+                    'id' => $val->id,
+                    'vendor_id' => $val->vendor_id,
+                    'product_name' => $val->product_name,
+                    'product_image' => $val->product_image,
+                    'selling_price' => $val->selling_price,
+                    'retail_price' => $val->retail_price,
+                    'category_name' => $val->category_name,
+                    'category_sub_name' => $val->category_sub_name,
+                    'category_main_name' => $val->category_main_name,
+                    'shop_name' => $val->shop_name,
+                    'profile_image' => $val->profile_image,
+                    'stock_qty' => (int) ($val->stock_qty ?? 0),
+                    'low_stock_limit' => isset($val->low_stock_limit) ? (int) $val->low_stock_limit : null,
+                    'offer_image' => $val->offer_logo,
+                ];
+            } else {
+                $resultArr[$productId]['stock_qty'] += (int) ($val->stock_qty ?? 0);
+            }
+        }
+
+        return $resultArr;
     }
 
 
