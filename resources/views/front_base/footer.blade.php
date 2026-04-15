@@ -203,46 +203,31 @@
            <p>Home</p>
        </a>
        <a href="{{ url('shops') }}" class="sticky-link">
-           <i class="w-icon-category"></i>
-           <p>Shop</p>
+           <i class="w-icon-vendor-store"></i>
+           <p>Shops</p>
        </a>
 
        <?php  if(session('customer_id')){ ?>
-
        <a href="{{ route('myAccount') }}" class="sticky-link">
            <i class="w-icon-account"></i>
            <p>Account</p>
        </a>
-
        <?php  }else{ ?>
-
        <a onclick="showLoginPopup()" class="sticky-link">
            <i class="w-icon-account"></i>
            <p>Login</p>
        </a>
-
        <?php } ?>
 
-       <a href="javascript:void(0)" onclick="showSideCart()" class="cart-toggle label-down sticky-link ">
-           <i class="w-icon-cart"></i>
-           <p>Cart</p>
+       <a href="{{ url('offers') }}" class="sticky-link">
+           <i class="w-icon-sale"></i>
+           <p>Offers</p>
        </a>
 
-
-
-       <div class="header-search hs-toggle dir-up">
-           <a href="#" class="search-toggle sticky-link">
-               <i class="w-icon-search"></i>
-               <p>Search</p>
-           </a>
-           <form action="#" class="input-wrapper">
-               <input type="text" class="form-control" name="search" autocomplete="off" placeholder="Search"
-                    />
-               <button class="btn btn-search" type="submit">
-                   <i class="w-icon-search"></i>
-               </button>
-           </form>
-       </div>
+       <a href="{{ url('mainCategoryShop/1') }}" class="sticky-link">
+           <i class="w-icon-grid"></i>
+           <p>Products</p>
+       </a>
    </div>
    <!-- End of Sticky Footer -->
 
@@ -279,7 +264,8 @@
                    <ul class="mobile-menu">
                        <li><a href="{{ url('home') }}">Home</a></li>
                        <li><a href="{{ url('shops') }}">Shops</a></li>
-
+                       <li><a href="{{ url('offers') }}">Offer Products</a></li>
+                       <li><a href="#">Track Order</a></li>
                    </ul>
                </div>
                <div class="tab-pane" id="categories">
