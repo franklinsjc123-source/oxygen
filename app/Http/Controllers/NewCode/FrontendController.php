@@ -392,7 +392,7 @@ class FrontendController extends Controller
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
-                'o.offer_logo'
+                'o.offer_logo', 'o.type', 'o.discount_type'
             )
             ->get();
         $featuredProducts = DB::table('products')
@@ -420,7 +420,7 @@ class FrontendController extends Controller
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
-                'o.offer_logo'
+                'o.offer_logo', 'o.type', 'o.discount_type'
             )
             ->get();
 
@@ -449,7 +449,7 @@ class FrontendController extends Controller
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
-                'o.offer_logo'
+                'o.offer_logo', 'o.type', 'o.discount_type'
             )
             ->get();
 
@@ -483,7 +483,7 @@ class FrontendController extends Controller
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
-                'o.offer_logo'
+                'o.offer_logo', 'o.type', 'o.discount_type'
             )
             ->get();
 
