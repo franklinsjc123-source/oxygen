@@ -281,6 +281,79 @@
                 } ?>
          </div>
 
+        <div class="title-link-wrapper mb-3">
+            <h2 class="title mb-0 pt-2 pb-2">Offer Products</h2>
+            <a href="{{ url('offers') }}" class="mb-0">More Products<i
+                    class="w-icon-long-arrow-right"></i></a>
+        </div>
+
+        <div class="row grid banner-product-wrapper mb-6">
+            <?php if (isset($offerProducts)) {
+                   foreach ($offerProducts as $row) { ?>
+                    <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
+                        <div class="product product-simple text-center">
+                            <figure class="product-media">
+                                <a href="<?= url('/productVar/' . $row['id']) ?>">
+                                    <img src="<?php echo asset('assets') ?>/images/products/<?= $row['product_image'] ?>" alt="Product" width="260"
+                                        height="291" />
+                                </a>
+
+                                @if(isset($row['offer_image']) && $row['offer_image'] != '')
+                                   <div class="product-label-group" style="position: absolute; top: 10px; left: 10px; z-index: 10;">
+                                       <img src="{{ asset('assets/images/offer_logo/'.$row['offer_image']) }}" alt="Offer" style="width: 45px; height: 45px; object-fit: contain; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); border-radius: 5px;">
+                                   </div>
+                                @endif
+
+                                <div class="product-action-vertical">
+                                    <a href="#" onclick="addwishlist('{{  $row['id'] }}')" class="btn-product-icon btn-wishlist w-icon-heart"
+                                        title="Add to wishlist"></a>
+                                </div>
+                                <div class="product-action">
+                                    <a href="javascript:void(0)" onclick="showQuickView('<?= $row['id'] ?>')" data-id='<?= $row['id'] ?>' class="btn-product btnquickview" title="Quick View">Quick
+                                        View</a>
+                                </div>
+                            </figure>
+                            <div class="product-details">
+                                <div class="sold-by">
+                                    <b><a href="<?= url('/shop-details/' . $row['vendor_id']) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
+                                </div>
+                                <h4 class="product-name"><a href="<?= url('/productVar/' . $row['id']) ?>"><?= ucwords($row['product_name']) ?></a></h4>
+
+                            </div>
+                            <div class="ratings-container">
+                                <div class="ratings-full">
+                                    <span class="ratings" style="width: {{ $row['rating_percent'] ?? 0 }}%"></span>
+                                </div>
+                                <a>({{ $row['review_count'] ?? 0 }} Reviews)</a>
+                            </div>
+                            <div class="product-pa-wrapper">
+                                <div class="product-price-home">
+                                    ₹{{ $row['selling_price'] }}
+                                </div>
+                                <div class="product-price-discount">
+                                    ₹{{ $row['retail_price'] }}
+                                </div>
+                                <?php
+                                   $retailPrice = (float) ($row['retail_price'] ?? 0);
+                                   $sellingPrice = (float) ($row['selling_price'] ?? 0);
+                                   if ($retailPrice > 0) {
+                                       $discount_percentage = (($retailPrice - $sellingPrice) / $retailPrice) * 100;
+                                       $discount_rounded = round($discount_percentage / 10) * 10;
+                                   } else {
+                                       $discount_rounded = 0;
+                                   }
+                                   ?>
+
+                                <div class="product-offer-percentage">
+                                    {{ $discount_rounded }}% Off
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+            <?php }
+               } ?>
+        </div>
 
          <div class="row cols-md-2 category-banner-2cols mb-5">
              <div class="banner banner-fixed mb-4">

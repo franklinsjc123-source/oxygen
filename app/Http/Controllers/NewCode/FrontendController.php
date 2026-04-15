@@ -525,7 +525,8 @@ class FrontendController extends Controller
             ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
             ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers')
             ->where('p.status', 1)
-            ->where('p.flag', 1);
+            ->where('p.flag', 1)
+            ->inRandomOrder();
         if ($id != '') {
             $productsData = $productsData->where('p.id', $id);
         }
@@ -753,7 +754,8 @@ class FrontendController extends Controller
             ->limit(12)
             ->where('cm.id', 1)
             ->where('p.status', 1)
-            ->where('p.flag', 1);
+            ->where('p.flag', 1)
+            ->inRandomOrder();
 
         $productsData = $productsData->select(
             'p.id',
@@ -816,7 +818,8 @@ class FrontendController extends Controller
             ->limit(12)
             ->where('cm.id', 3)
             ->where('p.status', 1)
-            ->where('p.flag', 1);
+            ->where('p.flag', 1)
+            ->inRandomOrder();
 
         $productsData = $productsData->select(
             'p.id',
@@ -878,7 +881,70 @@ class FrontendController extends Controller
             ->limit(12)
             ->where('cm.id', 2)
             ->where('p.status', 1)
-            ->where('p.flag', 1);
+            ->where('p.flag', 1)
+            ->inRandomOrder();
+
+        $productsData = $productsData->select(
+            'p.id',
+            'p.vendor_id',
+            'p.product_name',
+            'p.product_image',
+            'p.description',
+            'p.specification',
+            'pd.selling_price',
+            'pd.retail_price',
+            'c.category_name',
+            'cs.category_sub_name',
+            'cm.category_main_name',
+            'vp.shop_name',
+            'vp.profile_image',
+            'pd.attributevalue2 as size',
+            'pd.attributevalue1 as color',
+            'pd.product_detail_image',
+            'o.offer_logo',
+            'o.type as offer_type',
+            'o.discount_type'
+        )->get();
+        $resultArr = [];
+        foreach ($productsData as $val) {
+            $productId = $val->id;
+            if (!isset($resultArr[$productId])) {
+                $resultArr[$productId] = [
+                    'id' => $val->id,
+                    'vendor_id' => $val->vendor_id,
+                    'product_name' => $val->product_name,
+                    'product_image' => $val->product_image,
+                    'description' => $val->description,
+                    'specification' => $val->specification,
+                    'selling_price' => $val->selling_price,
+                    'retail_price' => $val->retail_price,
+                    'category_name' => $val->category_name,
+                    'category_sub_name' => $val->category_sub_name,
+                    'category_main_name' => $val->category_main_name,
+                    'shop_name' => $val->shop_name,
+                    'profile_image' => $val->profile_image,
+                    'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
+                ];
+            }
+        }
+
+        return $resultArr;
+    }
+
+    public function getOfferProductsHome()
+    {
+        $productsData = Products::from('products as p')
+            ->leftJoin('category as c', 'c.id', '=', 'p.category')
+            ->leftJoin('category_sub as cs', 'cs.id', '=', 'p.category_sub')
+            ->leftJoin('category_main as cm', 'cm.id', '=', 'p.category_main')
+            ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
+            ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers')
+            ->limit(12)
+            ->whereNotNull('p.offers')
+            ->where('p.status', 1)
+            ->where('p.flag', 1)
+            ->inRandomOrder();
 
         $productsData = $productsData->select(
             'p.id',
@@ -931,7 +997,8 @@ class FrontendController extends Controller
     {
         $mainslider = mainslider::where('status', 1)->get();
 
-        $topRatedProducts = $this->getSpecificProduct('');
+        $topRatedProducts = array_slice($this->getSpecificProduct(''), 0, 12);
+        $offerProducts = $this->getOfferProductsHome();
         $mensProducts = $this->getMensProduct();
         $womensProducts = $this->getWomensProduct();
         $kidsProducts = $this->getKidsProduct();
@@ -949,6 +1016,7 @@ class FrontendController extends Controller
         $attachRatings($womensProducts);
         $attachRatings($kidsProducts);
         $attachRatings($topRatedProducts);
+        $attachRatings($offerProducts);
 
         $vendorcreate = vendorcreate::get();
 
@@ -970,6 +1038,7 @@ class FrontendController extends Controller
         return view('frontend/demo_eight', compact(
             'mainslider',
             'topRatedProducts',
+            'offerProducts',
             'mensProducts',
             'womensProducts',
             'kidsProducts',
