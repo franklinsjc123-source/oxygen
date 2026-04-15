@@ -633,15 +633,16 @@
 
                 <!-- New Mobile Search Row -->
                 <div class="mobile-search-row d-md-none">
+                    @if(Session::has('pincode'))
                     <div class="mobile-location" onclick="showPicodePopup()" title="Change Location">
                         <img src="<?= asset('frontend') ?>/images/location_icon.svg" alt="loc" style="width:16px; height:16px;">
                         <marquee behavior="scroll" direction="left" scrollamount="2">
                             <span>
-                                {{ Session::get('pincode_area') ?: 'Set Area' }} 
-                                @if(Session::has('pincode')) - {{ Session::get('pincode') }} @endif
+                                {{ Session::get('pincode_area') ?: 'Area' }} - {{ Session::get('pincode') }}
                             </span>
                         </marquee>
                     </div>
+                    @endif
 
                     <form method="get" action="{{ route('productsearchdetails') }}" class="mobile-search-form">
                         <div class="search-input-group">
