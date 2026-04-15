@@ -263,14 +263,7 @@
        <!-- End of .mobile-menu-close -->
 
        <div class="mobile-menu-container scrollable">
-           <form action="#" method="get" class="input-wrapper">
-               <input type="text" class="form-control" name="search" autocomplete="off" placeholder="Search"
-                    />
-               <button class="btn btn-search" type="submit">
-                   <i class="w-icon-search"></i>
-               </button>
-           </form>
-           <!-- End of Search Form -->
+           <!-- Search Form Removed -->
            <div class="tab">
                <ul class="nav nav-tabs" role="tablist">
                    <li class="nav-item">

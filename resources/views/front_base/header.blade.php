@@ -169,32 +169,9 @@
                 overflow: hidden;
             }
 
+            /* Hide existing small search if we use the new row */
             .header.header-border .header-middle .header-left .home-mobile-search {
-                display: inline-flex !important;
-                align-items: center;
-                justify-content: space-between;
-                flex: 0 1 auto;
-                min-width: 0;
-                width: 280px !important;
-                flex-basis: 280px !important;
-                /* margin-left: 111px; */
-                max-width: 280px !important;
-            }
-
-            .header.header-border .header-middle .header-left .home-mobile-search .form-control {
-                height: 32px;
-                border-radius: 5px 0 0 5px;
-                border: 1px solid #d9d9d9;
-                font-size: 12px;
-                padding: 4px 8px;
-                width: calc(100% - 34px) !important;
-            }
-
-            .header.header-border .header-middle .header-left .home-mobile-search .btn-search {
-                border-radius: 0 5px 5px 0;
-                min-width: 34px;
-                height: 32px;
-                padding: 0 8px;
+                display: none !important;
             }
 
             .header-middle .container .header-right {
@@ -209,6 +186,62 @@
             .header-middle .container .header-right .compare-label,
             .header-middle .container .header-right .wishlist-label {
                 display: none !important;
+            }
+
+            /* New Mobile Sub Header Styles */
+            .mobile-search-row {
+                background: #e1f3ff; /* Light blue based on user image */
+                padding: 10px 15px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                border-bottom: 1px solid #c8e5f9;
+            }
+            .mobile-search-row .back-btn {
+                font-size: 18px;
+                color: #333;
+                width: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .mobile-search-row .mobile-search-form {
+                flex: 1;
+                position: relative;
+            }
+            .mobile-search-row .search-input-group {
+                background: #fff;
+                border: 1px solid #0088dd; /* Blue border like the image */
+                border-radius: 25px; /* Pill shape */
+                padding: 8px 15px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .mobile-search-row .search-input-group i {
+                font-size: 16px;
+                color: #666;
+            }
+            .mobile-search-row .search-input-group input {
+                border: none;
+                width: 100%;
+                outline: none;
+                font-size: 14px;
+                background: transparent;
+                height: 26px;
+            }
+            .mobile-search-row .clear-search-btn {
+                font-size: 18px;
+                color: #666;
+                width: 35px;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: color 0.2s;
+            }
+            .mobile-search-row .clear-search-btn:hover {
+                color: #ff0000;
             }
         }
 
@@ -476,11 +509,11 @@
 
                              <form method="get" action="{{ route('productsearchdetails') }}"
                                 class="header-search hs-expanded hs-round d-flex d-md-none input-wrapper home-mobile-search">
-                                <input type="text" class="form-control" name="keywords" id="search_mobile"
+                                <input type="text" class="form-control" name="keywords" id="search_mobile_old"
                                     autocomplete="off" placeholder="Search in..." />
                                 <button class="btn btn-search" type="submit"><i class="w-icon-search"></i>
                                 </button>
-                                <div class="search-suggest-box" id="search_suggest_mobile"></div>
+                                <div class="search-suggest-box" id="search_suggest_mobile_old"></div>
                             </form> 
                             <form method="get" action="{{ route('productsearchdetails') }}"
                                 class="header-search hs-expanded hs-round d-none d-md-flex input-wrapper">
@@ -578,6 +611,45 @@
                     </div>
                 </div>
                 <!-- End of Header Middle -->
+
+                <!-- New Mobile Search Row -->
+                <div class="mobile-search-row d-md-none">
+                    <a href="javascript:history.back()" class="back-btn">
+                        <i class="w-icon-long-arrow-left"></i>
+                    </a>
+                    <form method="get" action="{{ route('productsearchdetails') }}" class="mobile-search-form">
+                        <div class="search-input-group">
+                            <i class="w-icon-search"></i>
+                            <input type="text" name="keywords" id="search_mobile" 
+                                autocomplete="off" placeholder="Search for products..." />
+                        </div>
+                        <div class="search-suggest-box" id="search_suggest_mobile"></div>
+                    </form>
+                    <a href="javascript:void(0)" id="clear_mobile_search" class="clear-search-btn">
+                        <i class="w-icon-times-solid"></i>
+                    </a>
+                </div>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var mobileInput = document.getElementById('search_mobile');
+                        var clearBtn = document.getElementById('clear_mobile_search');
+                        
+                        if (mobileInput && clearBtn) {
+                            mobileInput.addEventListener('input', function() {
+                                clearBtn.style.display = (this.value.length > 0) ? 'flex' : 'none';
+                            });
+                            
+                            clearBtn.addEventListener('click', function() {
+                                mobileInput.value = '';
+                                clearBtn.style.display = 'none';
+                                mobileInput.focus();
+                                // Trigger an input event to hide suggestions
+                                mobileInput.dispatchEvent(new Event('input'));
+                            });
+                        }
+                    });
+                </script>
 
                 <div class="header-bottom sticky-content fix-top sticky-header">
                     <div class="container">
