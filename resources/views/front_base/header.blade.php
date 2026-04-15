@@ -224,14 +224,6 @@
                 white-space: nowrap;
             }
             
-            .mobile-search-row .back-btn {
-                font-size: 18px;
-                color: #333;
-                width: 25px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
             .mobile-search-row .mobile-search-form {
                 flex: 1;
                 position: relative;
