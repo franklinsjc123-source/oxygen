@@ -202,19 +202,19 @@
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                min-width: 35px;
-                max-width: 50px;
+                flex: 0 0 50px; /* Fixed width to prevent squishing */
+                width: 50px;
                 cursor: pointer;
                 gap: 0;
-                padding-right: 3px;
-                border-right: 1px solid rgba(0, 136, 221, 0.2);
-                margin-right: 2px;
+                padding-right: 8px;
+                margin-right: 5px;
                 overflow: hidden;
             }
             .mobile-search-row .mobile-location marquee {
                 width: 100%;
+                display: block;
                 line-height: 1;
-                margin-top: -2px;
+                margin-top: -1px;
             }
             .mobile-search-row .mobile-location span {
                 font-size: 8px;
@@ -222,10 +222,12 @@
                 color: #0088dd;
                 text-transform: uppercase;
                 white-space: nowrap;
+                display: block;
             }
             
             .mobile-search-row .mobile-search-form {
                 flex: 1;
+                min-width: 0; /* Important for flex children with marquee/absolute kids */
                 position: relative;
             }
             .mobile-search-row .search-input-group {
