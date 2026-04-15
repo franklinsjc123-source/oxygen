@@ -191,16 +191,43 @@
             /* New Mobile Sub Header Styles */
             .mobile-search-row {
                 background: #e1f3ff; /* Light blue based on user image */
-                padding: 10px 15px;
+                padding: 8px 10px;
                 display: flex;
                 align-items: center;
-                gap: 12px;
+                gap: 6px;
                 border-bottom: 1px solid #c8e5f9;
             }
+            .mobile-search-row .mobile-location {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-width: 35px;
+                max-width: 50px;
+                cursor: pointer;
+                gap: 0;
+                padding-right: 3px;
+                border-right: 1px solid rgba(0, 136, 221, 0.2);
+                margin-right: 2px;
+                overflow: hidden;
+            }
+            .mobile-search-row .mobile-location marquee {
+                width: 100%;
+                line-height: 1;
+                margin-top: -2px;
+            }
+            .mobile-search-row .mobile-location span {
+                font-size: 8px;
+                font-weight: 800;
+                color: #0088dd;
+                text-transform: uppercase;
+                white-space: nowrap;
+            }
+            
             .mobile-search-row .back-btn {
                 font-size: 18px;
                 color: #333;
-                width: 30px;
+                width: 25px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -614,9 +641,16 @@
 
                 <!-- New Mobile Search Row -->
                 <div class="mobile-search-row d-md-none">
-                    <a href="javascript:history.back()" class="back-btn">
-                        <i class="w-icon-long-arrow-left"></i>
-                    </a>
+                    <div class="mobile-location" onclick="showPicodePopup()" title="Change Location">
+                        <img src="<?= asset('frontend') ?>/images/location_icon.svg" alt="loc" style="width:16px; height:16px;">
+                        <marquee behavior="scroll" direction="left" scrollamount="2">
+                            <span>
+                                {{ Session::get('pincode_area') ?: 'Set Area' }} 
+                                @if(Session::has('pincode')) - {{ Session::get('pincode') }} @endif
+                            </span>
+                        </marquee>
+                    </div>
+
                     <form method="get" action="{{ route('productsearchdetails') }}" class="mobile-search-form">
                         <div class="search-input-group">
                             <i class="w-icon-search"></i>
