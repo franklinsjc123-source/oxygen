@@ -188,33 +188,30 @@
                 display: none !important;
             }
 
-            /* New Mobile Sub Header Styles */
             .mobile-search-row {
-                background: #e1f3ff; /* Light blue based on user image */
-                padding: 8px 10px;
+                background: #e1f3ff;
+                padding: 10px 12px; /* Increased padding */
                 display: flex;
                 align-items: center;
-                gap: 6px;
-                border-bottom: 1px solid #c8e5f9;
+                gap: 8px;
+                border-bottom: 1px solid #cce8f9;
+                min-height: 50px; /* Ensure enough height */
             }
             .mobile-search-row .mobile-location {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                flex: 0 0 50px; /* Fixed width to prevent squishing */
-                width: 50px;
+                flex: 0 0 55px;
+                width: 55px;
                 cursor: pointer;
-                gap: 0;
-                padding-right: 8px;
-                margin-right: 5px;
+                gap: 1px;
                 overflow: hidden;
             }
             .mobile-search-row .mobile-location marquee {
                 width: 100%;
                 display: block;
                 line-height: 1;
-                margin-top: -1px;
             }
             .mobile-search-row .mobile-location span {
                 font-size: 8px;
@@ -227,42 +224,45 @@
             
             .mobile-search-row .mobile-search-form {
                 flex: 1;
-                min-width: 0; /* Important for flex children with marquee/absolute kids */
+                min-width: 0;
                 position: relative;
+                margin: 0; /* Remove potential margins */
             }
             .mobile-search-row .search-input-group {
                 background: #fff;
-                border: 1px solid #0088dd; /* Blue border like the image */
-                border-radius: 25px; /* Pill shape */
-                padding: 8px 15px;
+                border: 1px solid #0088dd;
+                border-radius: 25px;
+                padding: 6px 15px; /* Better internal padding */
                 display: flex;
                 align-items: center;
                 gap: 10px;
+                height: 38px; /* Fixed height for pill */
             }
             .mobile-search-row .search-input-group i {
                 font-size: 16px;
-                color: #666;
+                color: #0088dd;
+                flex-shrink: 0;
             }
             .mobile-search-row .search-input-group input {
-                border: none;
+                border: none !important;
                 width: 100%;
-                outline: none;
+                outline: none !important;
                 font-size: 14px;
                 background: transparent;
-                height: 26px;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+                box-shadow: none !important;
             }
             .mobile-search-row .clear-search-btn {
                 font-size: 18px;
                 color: #666;
-                width: 35px;
+                width: 30px;
+                height: 38px; /* Match input height */
                 display: none;
                 align-items: center;
                 justify-content: center;
-                cursor: pointer;
-                transition: color 0.2s;
-            }
-            .mobile-search-row .clear-search-btn:hover {
-                color: #ff0000;
+                flex-shrink: 0;
             }
         }
 
