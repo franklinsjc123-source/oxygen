@@ -1109,7 +1109,7 @@ class FrontendController extends Controller
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
-                'o.offer_logo'
+                'o.offer_logo', 'o.type', 'o.discount_type'
             )
             ->limit('4')
             ->inRandomOrder()
@@ -1188,7 +1188,7 @@ class FrontendController extends Controller
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
-                'master_offers.offer_logo'
+                'master_offers.offer_logo', 'master_offers.type', 'master_offers.discount_type'
             )
             ->inRandomOrder()
             ->limit('6')
