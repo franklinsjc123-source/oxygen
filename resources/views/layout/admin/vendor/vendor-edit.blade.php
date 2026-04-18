@@ -807,18 +807,13 @@
                                                             </div>
                                                         </div><br>
 
-                                                        <div class="d-flex justify-content-between align-items-center mt-4 vendor-final-actions"
-                                                            style="display:none;">
+                                                        <div class="justify-content-end align-items-center gap-2 mt-4 vendor-final-actions d-none"
+                                                            id="final-wizard-controls">
                                                             <button type="button" class="btn btn-secondary px-4"
                                                                 id="wizard-prev-last-btn">Previous</button>
-                                                            <div class="d-flex gap-2">
-                                                                <button class="btn px-5 btn-lg btn-primary"
-                                                                    type="submit">Update</button>
-                                                                <a href="{{ url('vendor/list') }}">
-                                                                    <button class="btn btn-lg btn-secondary px-5"
-                                                                        type="button" id="close"
-                                                                        name="close">Close</button>
-                                                                </a>
+                                                            <button class="btn btn-primary px-4"
+                                                                type="submit">Update</button>
+
                                                             </div>
                                                         </div>
                                                     </div>
