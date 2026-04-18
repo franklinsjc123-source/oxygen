@@ -129,7 +129,7 @@
                                     ->join('vendor_details  as vendor_details', 'vendor_details.package_id', '=', 'packages.id')->where('package_id',$vendor_list->package_id )->first();
                                             @endphp
                                             <td> 
-                                            <span><b> {{$userlist->name }}</b></span>
+                                            <span><b> {{ $userlist->name ?? 'No Package' }}</b></span>
                                                 <br><span>Expired Date :  {{$vendor_list->expired_date }}</span>
                                                 <br><span>Grace Days :  {{$vendor_list->grace_days }}</span><br>
                                                 <span>Renewal Date :  {{$vendor_list->next_renewal_date }}</span>
@@ -156,8 +156,8 @@
 
 
 
-                                            <td><span>{{ $vendor_list->address1 }}</span><br>
-                                                <span>{{ $vendor_list->address2 }} </span><br>
+                                            <td><span>{{ $vendor_list->address }}</span><br>
+                                                <span>{{ $vendor_list->address1 }} </span><br>
                                                 <span> {{ $vendor_list->city }}</span><Br>
                                                     <span>  {{ $vendor_list->pincode  }} </span> <br>
                                              <span> Zone / Route:  {{ $zoneLabel }} /  {{ $vendor_list->route}} </span>

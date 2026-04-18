@@ -61,21 +61,24 @@
   }
   
   .category-media {
-      width: 110px;
-      height: 110px;
+      width: 100px;
+      height: 100px;
       margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 50%;
+      border-radius: 50% !important;
       transition: all 0.3s ease;
+      aspect-ratio: 1 / 1;
+      flex-shrink: 0;
   }
 
   .category-media img {
-      width: 100px;
-      height: 100px;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
       border-radius: 50%;
+      display: block;
   }
 
   /* Hover effect for non-active items */
@@ -143,9 +146,8 @@
                             <div class="swiper-wrapper row gutter-lg cols-xl-8 cols-lg-7 cols-md-6 cols-sm-4 cols-xs-3 cols-2">
                               
 
-                                  <div class="swiper-slide category-wrap">
-                                    <div class="category category-ellipse {{ ($offer_id == 0) ? 'sc-active' : '' }}">
-                                       <center>
+                                   <div class="swiper-slide category-wrap">
+                                     <div class="category category-ellipse {{ ($offer_id == 0) ? 'sc-active' : '' }}">
 
                                          <figure class="category-media">
                                             <a href="{{ url( 'offers' ) }}">
@@ -154,7 +156,6 @@
                                                    style="background-color: #5C92C0;" />
                                             </a>
                                         </figure>
-                                       </center>
                                         <div class="category-content">
                                             <h4 class="category-name">
                                                 <a href="{{ url( 'offers' ) }}">All Offers</a>
@@ -168,8 +169,7 @@
 
                              
                                 <div class="swiper-slide category-wrap">
-                                    <div class="category category-ellipse {{ ($selectedGroupKey == $o->group_key) ? 'sc-active' : '' }}">
-                                       <center>
+                                     <div class="category category-ellipse {{ ($selectedGroupKey == $o->group_key) ? 'sc-active' : '' }}">
 
                                          <figure class="category-media">
                                             <a href="{{ url( 'offers?id='.$o->id ) }}">
@@ -178,7 +178,6 @@
                                                    style="background-color: #5C92C0;" />
                                             </a>
                                         </figure>
-                                       </center>
                                         <div class="category-content">
                                             <h4 class="category-name">
                                                 <a href="{{ url( 'offers?id='.$o->id ) }}">{{$o->title}}</a>

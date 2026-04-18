@@ -4,8 +4,8 @@
         .gothic{
             font-family:'Century Gothic',lucida grande, helvetica, verdana, arial, sans-serif;
         }
-        .vendor-final-actions{
-            padding-right:102px;
+        .vendor-final-actions {
+            /* padding-right removed to allow proper right alignment */
         }
         #ac_no,
         #ac_no1 {
@@ -66,31 +66,31 @@
                                 style="font-family: 'Century Gothic',lucida grande, helvetica, verdana, arial, sans-serif;">
                                 <ul class="nav nav-tabs nav-material pb-5" id="top-tab" role="tablist">
                                     <li class="nav-item"><a class="nav-link active" id="top-profile-tab"
-                                            data-bs-toggle="tab" href="#top-profile" role="tab"
+                                            href="#top-profile" role="tab"
                                             aria-controls="top-profile" aria-selected="true"><i data-feather="user"
                                                 class="me-2"></i><span class="fw-bold">Personal Information</span></a>
                                     </li>
-                                    <li class="nav-item"><a class="nav-link " id="top-product-tab" data-bs-toggle="tab"
+                                    <li class="nav-item"><a class="nav-link " id="top-product-tab"
                                             href="#top-product" role="tab" aria-controls="top-product"
                                             aria-selected="true"><i data-feather="user" class="me-2"></i><span
                                                 class="fw-bold">Product Category </span></a>
                                     </li>
 
-                                    <li class="nav-item"><a class="nav-link" id="upload-top-tab" data-bs-toggle="tab"
+                                    <li class="nav-item"><a class="nav-link" id="upload-top-tab" 
                                             href="#top-upload" role="tab" aria-controls="top-upload"
                                             aria-selected="false"><i data-feather="edit" class="me-2"></i><span
                                                 class="fw-bold">Documents & Package</span> </a>
                                     </li>
 
 
-                                    <li class="nav-item"><a class="nav-link" id="top-bank-upload" data-bs-toggle="tab"
+                                    <li class="nav-item"><a class="nav-link" id="top-bank-upload" 
                                             href="#top-bank" role="tab" aria-controls="top-upload"
                                             aria-selected="false"><i data-feather="bank" class="me-2"></i><span
                                                 class="fa fa-bank "><span class="fw-bold mx-2 gothic">Bank
                                                     Details</span></span></a>
                                     </li>
 
-                                    <li class="nav-item"><a class="nav-link" id="upload-setting-tab" data-bs-toggle="tab"
+                                    <li class="nav-item"><a class="nav-link" id="upload-setting-tab" 
                                             href="#top-setting" role="tab" aria-controls="top-upload"
                                             aria-selected="false"><i data-feather="settings" class="me-2"></i><span
                                                 class=" fa fa-solid fa-gear"><span
@@ -122,11 +122,11 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"> User
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> User
                                                             Name</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom0"
-                                                                type="text" name="username">
+                                                                type="text" name="username" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -135,21 +135,21 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"> Password
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Password
                                                         </label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="pass" type="text"
-                                                                name="pass">
+                                                                name="pass" required>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"> Confirm
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Confirm
                                                             Password</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="confirm_pass" type="text"
-                                                                name="pass1" onkeyup="validate_password()">
+                                                                name="pass1" onkeyup="validate_password()" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -160,23 +160,23 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"> Shop
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Shop
                                                             Name</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom0"
                                                                 type="text" name="shop_name"
-                                                                value="{{ old('shop_name', @$tracker->shop_name) }}">
+                                                                value="{{ old('shop_name', @$tracker->shop_name) }}" required>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"> Owner
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Owner
                                                             Name</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="" type="text"
                                                                 name="owner_name"
-                                                                value="{{ old('owner_name', @$tracker->owner_name) }}">
+                                                                value="{{ old('owner_name', @$tracker->owner_name) }}" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -198,11 +198,11 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
                                                         <label for="validationCustom2"
-                                                            class="col-xl-4 col-md-4">E.Mail</label>
-                                                        <div class="col-xl-8 col-md-7">
+                                                            class="col-xl-4 col-md-4"><span>*</span> E.Mail</label>
+                                                        <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="email" type="email"
                                                                 name="email"
-                                                                value="{{ old('email', @$tracker->email) }}">
+                                                                value="{{ old('email', @$tracker->email) }}" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -212,12 +212,12 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"> Mobile
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Mobile
                                                             Number</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="m_number" type="text"
                                                                 name="mobile_number1"
-                                                                value="{{ old('mobile_number1', @$tracker->mobile_number) }}">
+                                                                value="{{ old('mobile_number1', @$tracker->mobile_number) }}" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -237,12 +237,12 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"> Address
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Address
                                                             I</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom0"
                                                                 type="text" name="address1"
-                                                                value="{{ old('address1', @$tracker->address) }}">
+                                                                value="{{ old('address1', @$tracker->address) }}" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -262,7 +262,7 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom01" class="col-xl-4 col-md-4">State
+                                                        <label for="validationCustom01" class="col-xl-4 col-md-4"><span>*</span> State
                                                             :</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <select class="custom-select w-100 form-control"
@@ -282,7 +282,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
                                                         <label for="validationCustom01"
-                                                            class="col-xl-4 col-md-4">City:</label>
+                                                            class="col-xl-4 col-md-4"><span>*</span> City:</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <select class="custom-select w-100 form-control"
                                                                 name="city" required="">
@@ -304,11 +304,12 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
                                                         <label for="validationCustom0" class="col-xl-4 col-md-4">
-                                                            Pincode</label>
+                                                            <span>*</span> Pincode</label>
                                                         <div class="col-xl-8 col-md-8">
-                                                            <input class="form-control" id="pincode" type="text"
-                                                                name="pincode"
-                                                                value="{{ old('pincode', @$tracker->pincode) }}">
+                                                             <input class="form-control" id="pincode" type="text"
+                                                                name="pincode" maxlength="6" minlength="6"
+                                                                pattern="[0-9]{6}" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                                                value="{{ old('pincode', @$tracker->pincode) }}" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -330,10 +331,10 @@
 
                                                     <div class="form-group row">
                                                         <label for="validationCustom0" class="col-xl-4 col-md-4">
-                                                            Zone</label>
+                                                            <span>*</span> Zone</label>
                                                         <div class="col-xl-8 col-md-8">
 
-                                                            <select class="form-control" name="zone" id="zone">
+                                                            <select class="form-control" name="zone" id="zone" required>
 
                                                                 <option value=''>Select zone</option>
 
@@ -352,11 +353,11 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
                                                         <label for="validationCustom2"
-                                                            class="col-xl-4 col-md-4">Area</label>
-                                                        <div class="col-xl-8 col-md-7">
+                                                            class="col-xl-4 col-md-4"><span>*</span> Area</label>
+                                                        <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" type="text" id="route"
                                                                 name="route"
-                                                                value="{{ old('route', @$tracker->area) }}">
+                                                                value="{{ old('route', @$tracker->area) }}" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -366,19 +367,20 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"> AADHAR
-                                                            NUMBER</label>
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Aadhar
+                                                            Number</label>
                                                         <div class="col-xl-8 col-md-8">
-                                                            <input class="form-control" id="validationCustom0"
-                                                                type="text" name="aadhar_no" id="aadharcard">
+                                                            <input class="form-control"
+                                                                type="text" name="aadhar_no" id="aadharcard" required 
+                                                                maxlength="16" minlength="16" pattern="[0-9]{16}" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
                                                         <label for="validationCustom2" class="col-xl-4 col-md-4">GST
-                                                            NUMBER</label>
-                                                        <div class="col-xl-8 col-md-7">
+                                                            number</label>
+                                                        <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom2"
                                                                 type="text" name="gst_number">
                                                         </div>
@@ -460,13 +462,13 @@
                                                     class="col-xl-2 col-md-2"><span>*</span>Profile Image</label>
                                                 <div class="col-xl-10 col-md-10">
                                                     <input class="form-control" id="fileUpload" type="file"
-                                                        name="profile_image" multiple accept="image/*,.pdf" />
+                                                        name="profile_image" multiple accept="image/*,.pdf" required />
                                                     <div id="image-holder"></div>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="validationCustom1"
-                                                    class="col-xl-2 col-md-2"><span>*</span>GST</label>
+                                                    class="col-xl-2 col-md-2">GST</label>
                                                 <div class="col-xl-10 col-md-10">
                                                     <input class="form-control" id="fileUpload1" type="file"
                                                         name="gst" multiple accept="image/*,.pdf" />
@@ -500,7 +502,7 @@
                                                             @endphp
 
                                                             <select class="custom-select w-100 form-control"
-                                                                name="package" id="package" required>
+                                                                name="package" id="package">
                                                                 <option value="" selected hidden>Select Package
                                                                 </option>
 
@@ -610,20 +612,21 @@
                                                 <div class="col-md-12">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-3 col-md-3"> Account
+                                                        <label for="validationCustom0" class="col-xl-3 col-md-3"><span>*</span> Account
                                                             Holder Name</label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="bank_name" type="text"
-                                                                name="bank_name">
+                                                                name="bank_name" required>
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-3 col-md-3"> Account
+                                                        <label for="validationCustom0" class="col-xl-3 col-md-3"><span>*</span> Account
                                                             Number</label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no" type="password"
                                                                 name="ac_no" inputmode="numeric" pattern="[0-9]*"
+                                                                required
                                                                 autocomplete="off" spellcheck="false"
                                                                 oncopy="return false" oncut="return false"
                                                                 onpaste="return false" oncontextmenu="return false"
@@ -633,12 +636,13 @@
                                                     </div>
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-3 col-md-3"> Confirm
+                                                        <label for="validationCustom0" class="col-xl-3 col-md-3"><span>*</span> Confirm
                                                             Account Number</label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no1" type="text"
                                                                 name="ac_no1" onkeyup="validate_acno()"
                                                                 inputmode="numeric" pattern="[0-9]*"
+                                                                required
                                                                 autocomplete="off" spellcheck="false"
                                                                 oncopy="return false" oncut="return false"
                                                                 onpaste="return false" oncontextmenu="return false"
@@ -649,11 +653,11 @@
                                                     </div>
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-3 col-md-3"> IFSC
+                                                        <label for="validationCustom0" class="col-xl-3 col-md-3"><span>*</span> IFSC
                                                             Code </label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ifsc" type="text"
-                                                                name="ifsc" maxlength="11" minlength="11">
+                                                                name="ifsc" maxlength="11" minlength="11" required>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -671,14 +675,14 @@
 
                                                     <div class="form-group row">
                                                         <div class="col-xl-3 col-md-3">
-                                                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/UPI-Logo-vector.svg/1200px-UPI-Logo-vector.svg.png"
+                                                            <span>*</span> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/UPI-Logo-vector.svg/1200px-UPI-Logo-vector.svg.png"
                                                                 width="100px">
                                                         </div>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="upi" type="text"
                                                                 name="upi" maxlength="10" inputmode="numeric"
                                                                 pattern="[0-9]{10}" autocomplete="off"
-                                                                spellcheck="false">
+                                                                spellcheck="false" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -715,17 +719,6 @@
                                                                 <textarea class="form-control" rows="3" id="validationCustom1" type="text" name="comments"></textarea>
                                                             </div>
                                                         </div><br>
-
-                                                        <div class="d-flex justify-content-between align-items-center mt-4 vendor-final-actions" style="display:none;">
-                                                            <button type="button" class="btn btn-secondary px-4"
-                                                                id="wizard-prev-last-btn">Previous</button>
-                                                            <div class="d-flex gap-2">
-                                                                <button class="btn px-5 btn-lg btn-primary" id="create"
-                                                                    type="submit" onclick="wrong_ac_no_alert()">Save</button>
-                                                                <button class="btn btn-lg btn-secondary px-5"
-                                                                    type="button" onclick="window.location.href='{{ url('admin/vendor/list') }}'">Close</button>
-                                                            </div>
-                                                        </div>
                                                     </div>
 
                                                 </div>
@@ -733,11 +726,19 @@
                                         </div>
 
                                     </div>
-                                    <div class="d-flex justify-content-end gap-2 mt-4" id="vendor-wizard-controls">
+                                    <div class="justify-content-end gap-2 mt-4 d-flex" id="vendor-wizard-controls">
                                         <button type="button" class="btn btn-secondary px-4"
                                             id="wizard-prev-btn">Previous</button>
                                         <button type="button" class="btn btn-primary px-4"
                                             id="wizard-next-btn">Next</button>
+                                    </div>
+                                    <div class="justify-content-end align-items-center gap-2 mt-4 vendor-final-actions d-none" id="final-wizard-controls">
+                                        <button type="button" class="btn btn-secondary px-4"
+                                            id="wizard-prev-last-btn">Previous</button>
+                                        <button class="btn btn-primary px-4" id="create"
+                                            type="submit" onclick="wrong_ac_no_alert()">Save</button>
+                                        {{-- <button class="btn btn-secondary px-4"
+                                            type="button" onclick="window.location.href='{{ url('admin/vendor/list') }}'">Close</button> --}}
                                     </div>
                                 </form>
                             </div>
@@ -829,6 +830,59 @@
                 return idx >= 0 ? idx : 0;
             }
 
+            function isCurrentTabValid() {
+                const currentTab = $('#top-tabContent .tab-pane.active');
+                const inputs = currentTab.find('input[required], select[required], textarea[required], [required]');
+                let valid = true;
+
+                inputs.each(function() {
+                    if (!this.checkValidity()) {
+                        valid = false;
+                        this.reportValidity();
+                        // Focus the first invalid element
+                        $(this).focus();
+                        return false;
+                    }
+                });
+
+                if (!valid) return false;
+
+                // Extra check for password match if in step 1 (Personal Information)
+                if (currentTab.attr('id') === 'top-profile') {
+                    var pass = $('#pass').val();
+                    var confirm_pass = $('#confirm_pass').val();
+                    if (pass !== confirm_pass) {
+                        valid = false;
+                        $('#confirm_pass').focus();
+                        document.getElementById('wrong_pass_alert').style.color = 'red';
+                        document.getElementById('wrong_pass_alert').innerHTML = '☒ Use same password';
+                    }
+                }
+
+                // Extra check for step 2 (Product Category)
+                if (currentTab.attr('id') === 'top-product') {
+                    const checkedCategories = $('.category-cat:checked').length;
+                    if (checkedCategories === 0) {
+                        valid = false;
+                        alert('Please select at least one Product Category');
+                    }
+                }
+
+                // Extra check for step 4 (Bank Details)
+                if (currentTab.attr('id') === 'top-bank') {
+                    var ac_no = $('#ac_no').val();
+                    var ac_no1 = $('#ac_no1').val();
+                    if (ac_no !== ac_no1) {
+                        valid = false;
+                        $('#ac_no1').focus();
+                        document.getElementById('wrong_ac_no_alert').style.color = 'red';
+                        document.getElementById('wrong_ac_no_alert').innerHTML = '☒ Use same account number';
+                    }
+                }
+
+                return valid;
+            }
+
             function showTab(index) {
                 if (index < 0 || index >= tabCount) return;
                 $tabLinks.removeClass('active').attr('aria-selected', 'false');
@@ -837,19 +891,29 @@
                 const targetSelector = $($tabLinks.get(index)).attr('href');
                 $(targetSelector).addClass('show active');
                 syncWizardButtons();
+                window.scrollTo(0, 0);
             }
 
             function syncWizardButtons() {
                 const index = getActiveIndex();
                 const isLastTab = index === tabCount - 1;
-                $('#vendor-wizard-controls').toggle(!isLastTab);
-                $('#wizard-prev-btn').toggle(index > 0 && !isLastTab);
-                $('#wizard-next-btn').toggle(index < tabCount - 1 && !isLastTab);
-                $('.vendor-final-actions').toggle(isLastTab);
+
+                if (isLastTab) {
+                    $('#vendor-wizard-controls').removeClass('d-flex').addClass('d-none');
+                    $('.vendor-final-actions').removeClass('d-none').addClass('d-flex');
+                } else {
+                    $('#vendor-wizard-controls').removeClass('d-none').addClass('d-flex');
+                    $('.vendor-final-actions').removeClass('d-flex').addClass('d-none');
+                }
+
+                $('#wizard-prev-btn').toggle(index > 0);
+                $('#wizard-next-btn').toggle(index < tabCount - 1);
             }
 
             $('#wizard-next-btn').on('click', function() {
-                showTab(getActiveIndex() + 1);
+                if (isCurrentTabValid()) {
+                    showTab(getActiveIndex() + 1);
+                }
             });
 
             $('#wizard-prev-btn').on('click', function() {
@@ -862,7 +926,16 @@
 
             $tabLinks.on('click', function(e) {
                 e.preventDefault();
-                showTab($tabLinks.index(this));
+                const targetIdx = $tabLinks.index(this);
+                const currentIdx = getActiveIndex();
+
+                if (targetIdx > currentIdx) {
+                    // Only allow moving to the next tab if it's the immediate next one AND current tab is valid
+                    if (targetIdx !== currentIdx + 1 || !isCurrentTabValid()) {
+                        return;
+                    }
+                }
+                showTab(targetIdx);
             });
 
             showTab(getActiveIndex());
@@ -1028,6 +1101,14 @@
 
             ifscField.on('input', function() {
                 this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11);
+            });
+
+            $('#aadharcard').on('input', function() {
+                this.value = this.value.replace(/\D/g, '').slice(0, 16);
+            });
+
+            $('#pincode').on('input', function() {
+                this.value = this.value.replace(/\D/g, '').slice(0, 6);
             });
         });
 
