@@ -237,7 +237,7 @@ class ProductsController extends Controller
         }
 
         $attributes = AttributeGroup::whereIn('id', $attributeIds)
-            ->get(['id', 'attribute_group_name']);
+            ->get(['id', 'attribute_group_name', 'attribute_group_refname']);
 
         return response()->json($attributes);
     }

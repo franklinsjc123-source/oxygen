@@ -413,10 +413,25 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
+                                                        <h5 class="fw-bold">Attribute</h5>
+                                                        <div id="clothing">
+                                                            <select class="js-select2 form-control" name="selected_attribute_id1"
+                                                                id="selected_attribute_summary" disabled required>
+                                                                @foreach ($attribute as $attr)
+                                                                    <option value="{{ $attr->id }}" {{ $selectedAttributeId == $attr->id ? 'selected' : '' }}>
+                                                                        {{ $attr->attribute_group_refname }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
                                                         <h5 class="fw-bold">No.of Products</h5>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="nproduct1"
-                                                                id="sub_category" disabled required>
+                                                                id="nproduct_summary" disabled required>
 
                                                                 <option value="1" {{(@$nproduct=="1")?'Selected':'';}}> 1</option>
                                                                 <option value="2" {{(@$nproduct=="2")?'Selected':'';}}>2</option>
@@ -615,11 +630,11 @@
                                         @endphp
                                         <div class="form-group col-md-3">
                                             <label><span
-                                                                        class="text-danger">*</span> {{ $attri->attribute_group_name}} </label>
-                                            <input type="hidden" name="attributename[{{ $i }}][{{ $j }}][]" value="{{ $attri->attribute_group_name}}">
+                                                                        class="text-danger">*</span> {{ $attri->attribute_group_refname}} </label>
+                                            <input type="hidden" name="attributename[{{ $i }}][{{ $j }}][]" value="{{ $attri->attribute_group_refname}}">
                                             <select class="form-select form-select-lg text-secondary attrsize"
                                                 name="attributeval[{{ $i }}][{{ $j }}][]" id="attrsize" required>
-                                                <option selected value='' hidden> --Select {{ $attri->attribute_group_name}}--</option>
+                                                <option selected value='' hidden> --Select {{ $attri->attribute_group_refname}}--</option>
                                                 @foreach( $attri_val as $attval)
                                                 <option value='{{ $attval }}'> {{ $attval }}</option>
                                                 @endforeach
@@ -926,7 +941,7 @@
             success: function(data) {
                 if (Array.isArray(data) && data.length > 0) {
                     data.forEach(function(attr) {
-                        $attribute.append('<option value="' + attr.id + '">' + attr.attribute_group_name + '</option>');
+                        $attribute.append('<option value="' + attr.id + '">' + attr.attribute_group_refname + '</option>');
                     });
                     $attribute.prop('disabled', false);
                     $attribute.prop('required', true);
