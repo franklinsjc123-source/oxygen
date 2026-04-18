@@ -60,6 +60,24 @@
       letter-spacing: 0.2px;
   }
   
+  .category-media {
+      width: 110px;
+      height: 110px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+  }
+
+  .category-media img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+  }
+
   /* Hover effect for non-active items */
   .category-ellipse:not(.sc-active):hover {
       transform: translateY(-3px);
@@ -156,7 +174,7 @@
                                          <figure class="category-media">
                                             <a href="{{ url( 'offers?id='.$o->id ) }}">
                                                 
-                                                <img src="{{ asset('assets/images/offer_logo/'.$o->offer_type) }}" alt="Categroy"
+                                                <img src="{{ asset('assets/images/offer_logo/'.$o->offer_logo) }}" alt="Categroy"
                                                    style="background-color: #5C92C0;" />
                                             </a>
                                         </figure>

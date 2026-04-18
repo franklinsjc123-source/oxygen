@@ -50,10 +50,13 @@ class FrontendController extends Controller
         if (!empty($offerLogo)) {
             return $offerLogo;
         }
-        if ($offerType == 'Fixed Discount' && $discountType == 'Percentage') {
-            return 'Fixed Discount Percentage';
+        if (empty($offerType)) {
+            return null;
         }
-        return $offerType;
+        if ($offerType == 'Fixed Discount' && $discountType == 'Percentage') {
+            return 'Fixed Discount Percentage.png';
+        }
+        return $offerType . '.jpeg';
     }
 
     private function resolveCartKey(Request $request): array
@@ -1838,10 +1841,19 @@ class FrontendController extends Controller
             $gk = $offerGroupMap[$o->id] ?? null;
             if ($gk && !isset($seenGroups[$gk])) {
                 $seenGroups[$gk] = true;
+                
+                $resolvedLogo = $groupLogos[$gk] ?? $o->offer_logo;
+                if (empty($resolvedLogo)) {
+                    $resolvedLogo = ($o->type == 'Fixed Discount' && $o->discount_type == 'Percentage') 
+                        ? 'Fixed Discount Percentage.png' 
+                        : $o->type . '.jpeg';
+                }
+
                 $sliderOffers[] = (object)[
                     'id'         => $o->id,
                     'title'      => $groupLabels[$gk],
-                    'offer_logo' => $groupLogos[$gk] ?? $o->offer_logo,
+                    'offer_logo' => $resolvedLogo,
+                    'type'       => $o->type,
                     'offer_type' => ($o->type == 'Fixed Discount' && $o->discount_type == 'Percentage') ? 'Fixed Discount Percentage' : $o->type,
                     'group_key'  => $gk,
                 ];

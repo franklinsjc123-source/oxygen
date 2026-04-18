@@ -16,9 +16,9 @@
                 
                 if (empty($offer_image) && !empty($offer_type)) {
                     if ($offer_type == 'Fixed Discount' && $discount_type == 'Percentage') {
-                        $offer_image = 'Fixed Discount Percentage';
+                        $offer_image = 'Fixed Discount Percentage.png';
                     } else {
-                        $offer_image = $offer_type;
+                        $offer_image = $offer_type . '.jpeg';
                     }
                 }
             @endphp
