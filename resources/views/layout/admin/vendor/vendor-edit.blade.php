@@ -1071,9 +1071,8 @@
         });
         $(document).ready(function() {
 
-            $('#package').on('click', function() {
+            $('#package').on('change', function() {
                 var package = $(this).val();
-                //alert(package);
                 if (package) {
                     $.ajax({
                         url: "{{ route('Ajaxpackage') }}",
@@ -1082,7 +1081,6 @@
                             "_token": "{{ csrf_token() }}",
                             "id": package
                         },
-
                         dataType: "json",
                         success: function(data) {
                             if (data.msg == 'Success') {
@@ -1091,30 +1089,20 @@
                                 $('#validity').val(data.validity);
                                 $('#wallet').val(data.wallet);
                                 $('#commission').val(data.commission);
-                                $('#description').val(data.description);
-                                // $('#price ').val(data.price);
-                                ///$('#price ').val(data.price);
+                                $('#description').text($(data.description).text());
+
                                 const expired_date = new Date();
-                                expired_date.setDate(expired_date.getDate() + Number(data
-                                    .validity));
+                                expired_date.setDate(expired_date.getDate() + Number(data.validity));
 
                                 const next_renewal_date = new Date();
-                                next_renewal_date.setDate(next_renewal_date.getDate() + (Number(
-                                    data
-                                    .validity) + Number(data.days)));
-                                $('#expired_date').val(expired_date.toISOString().split('T')[
-                                    0]);
-                                $('#next_renewal_date').val(next_renewal_date.toISOString()
-                                    .split('T')[0]);
-                            } else {
-                                $('#totalwin').val('');
-                                $('#totalloss').val('');
-
-                                //	$('#name').val('');
-                                //	$('#id').val('');
-                                //	$('#roles').val('');
-                                //swal("Warning!", "Shipping Not Available Your Area.", "error");
+                                next_renewal_date.setDate(next_renewal_date.getDate() + (Number(data.validity) + Number(data.days)));
+                                
+                                $('#expired_date').val(expired_date.toISOString().split('T')[0]);
+                                $('#next_renewal_date').val(next_renewal_date.toISOString().split('T')[0]);
                             }
+                        },
+                        error: function() {
+                            alert("error");
                         }
                     });
                 }

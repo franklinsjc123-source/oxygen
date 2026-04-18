@@ -26,7 +26,7 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="page-header-left">
-                                <h3>User's Listings
+                                <h3>Vendor's Listings
 
                                 </h3>
                             </div>
