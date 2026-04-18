@@ -55,11 +55,11 @@
                  <a class="rating-reviews" style="font-size: 1.1rem; color: #0088dd;">({{ $product->review_count ?? 0 }} Reviews)</a>
              </div>
  
-             <div class="product-pa-wrapper" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                 <div class="product-price-home" style="font-family: monospace; font-size: 1.7rem; font-weight: 700; color: #000;">
+             <div class="product-pa-wrapper" style="display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; flex-wrap: nowrap;">
+                 <div class="product-price-home" style="font-family: monospace; font-size: 1.5rem; font-weight: 700; color: #000;">
                     ₹{{ $product->selling_price }}
                  </div>
-                 <div class="product-price-discount" style="text-decoration: line-through; color: #888; font-size: 1.3rem; font-weight: 600;">
+                 <div class="product-price-discount" style="text-decoration: line-through; color: #888; font-size: 1.1rem; font-weight: 600;">
                     ₹{{ $product->retail_price }}
                  </div>
                  @php
@@ -72,7 +72,7 @@
                          $discount_rounded = 0;
                      }
                  @endphp
-                 <div class="product-offer-percentage" style="color: #27ae60; font-weight: 700; font-size: 1.3rem;">
+                 <div class="product-offer-percentage" style="color: #27ae60; font-weight: 700; font-size: 1.1rem;">
                     {{ $discount_rounded }}% Off
                  </div>
              </div>
