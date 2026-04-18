@@ -185,6 +185,7 @@ class ProductsController extends Controller
                     "subcategoryid" => $request->category_sub,
                     "selectedAttributeId" => $selectedAttributeId,
                     "nproduct" => $request->nproduct,
+                    "is_color" => $request->is_color,
                     "category_data" => $category_data,
                     "category_sub_data" => $category_sub_data
                 ]);
@@ -201,6 +202,7 @@ class ProductsController extends Controller
                 "categoryid" => $request->category,
                 "subcategoryid" => $request->category_sub,
                 "nproduct" => $request->nproduct,
+                "is_color" => $request->is_color,
                 "attribute" => collect(),
                 "productcollection" => $productcollection,
                 "specification" => $specification,

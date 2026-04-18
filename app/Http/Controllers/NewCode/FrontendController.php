@@ -1256,6 +1256,13 @@ class FrontendController extends Controller
             ->where('id', $id)
             ->first();
 
+        // If not found by detail ID, try searching by product ID (from listing pages)
+        if (!$getSpecificProduct) {
+            $getSpecificProduct = ProductsDetails::with('product', 'product.CategoryChild')
+                ->where('products_id', $id)
+                ->first();
+        }
+
         if (!$getSpecificProduct) {
             return redirect('home');
         }

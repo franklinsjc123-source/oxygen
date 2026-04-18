@@ -210,6 +210,17 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
+                                                        <h5 class="fw-bold">Is Color Available?</h5>
+                                                        <div id="clothing">
+                                                            <select class="form-control" name="is_color" id="is_color" required>
+                                                                <option value="yes" selected>Yes</option>
+                                                                <option value="no">No</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
                                                         <h5 class="fw-bold">No.of Products</h5>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="nproduct"
@@ -360,7 +371,7 @@
                                     <div class="card-body">
                                         <div class="col-md-12">
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
                                                         <h5 class="fw-bold"> Primary / Main Category</h5>
                                                         <div class="form-group">
@@ -379,7 +390,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
                                                         <h5 class="fw-bold">Category</h5>
                                                         <div id="clothing">
@@ -395,7 +406,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
                                                         <h5 class="fw-bold">Sub Category</h5>
                                                         <div id="clothing">
@@ -428,6 +439,17 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
+                                                        <h5 class="fw-bold">Color Available?</h5>
+                                                        <div id="clothing">
+                                                            <select class="form-control" name="is_color_summary" id="is_color_summary" disabled required>
+                                                                <option value="yes" {{(@$is_color=="yes")?'Selected':'';}}>Yes</option>
+                                                                <option value="no" {{(@$is_color=="no")?'Selected':'';}}>No</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
                                                         <h5 class="fw-bold">No.of Products</h5>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="nproduct1"
@@ -443,13 +465,16 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="col-md-3 d-flex align-items-end">
+                                                    <div class="form-group w-100">
+                                                        <a href="{{ url('vendor/productscreate') }}" class="btn btn-warning w-100 fw-bold py-2 mb-1"> CLEAR </a>
+                                                    </div>
+                                                </div>
                                                 <input type="hidden" name="category_main" value="{{@$maincategoryid}}">
                                                 <input type="hidden" name="category" value="{{@$categoryid}}">
                                                 <input type="hidden" name="category_sub" value="{{@$subcategoryid}}">
                                                 <input type="hidden" name="nproduct" value="{{@$nproduct}}">
-                                                <div class="col-md-3">
-                                                    <a href="{{ url('vendor/productscreate') }}" class="btn btn-warning"> Clear </a>
-                                                </div>
+                                                <input type="hidden" name="is_color" value="{{@$is_color}}">
                                             </div>
                                         </div>
                                     </div>
@@ -608,19 +633,23 @@
                                 <div id="productinfo{{ $i }}">
                                     <hr>
                                     <div class="row">
-                                    <div class="form-group col-md-3">
-                                            <label><span
-                                                                        class="text-danger">*</span> Color </label>
+                                        @if(@$is_color != 'no')
+                                        <div class="form-group col-md-3">
+                                                <label><span
+                                                                            class="text-danger">*</span> Color </label>
+                                                <input type="hidden" name="attributecolorname[{{ $i }}][]" value="Color">
+                                                <select class="form-select form-select-lg text-secondary attrcolor{{ $i }}"
+                                                    name="attributecolorval[{{ $i }}][]" id="attrcolor{{ $i }}" required>
+                                                    <option selected value='' hidden> --Select Color--</option>
+                                                    @foreach( $colors as $color)
+                                                    <option value='{{ $color->color_name }}' style="background-color: {{ $color->color_code }}"> {{ $color->color_name }} </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        @else
                                             <input type="hidden" name="attributecolorname[{{ $i }}][]" value="Color">
-                                            <select class="form-select form-select-lg text-secondary attrcolor{{ $i }}"
-                                                name="attributecolorval[{{ $i }}][]" id="attrcolor{{ $i }}" required>
-                                                <option selected value='' hidden> --Select Color--</option>
-                                                @foreach( $colors as $color)
-                                                <option value='{{ $color->color_name }}' style="background-color: {{ $color->color_code }}"> {{ $color->color_name }} </option>
-                                                @endforeach
-                                                <option value='Multicolor'> Multicolor </option>
-                                            </select>
-                                        </div>
+                                            <input type="hidden" name="attributecolorval[{{ $i }}][]" value="Multicolor">
+                                        @endif
                                         @php $j=0; @endphp
                                         @foreach ($attribute as $attri)
                                         @php
