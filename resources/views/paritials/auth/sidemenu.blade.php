@@ -57,7 +57,7 @@
 			
 			$staff =  App\Models\Staffcreates::where('employee_id', '=', $staffid)->first();
 			
-			$staffroless = App\Models\StaffRole::where('department', '=', $staff->department)->where('designation', '=', $staff->designation)->first();
+			$staffroless = $staff ? App\Models\StaffRole::where('department', '=', $staff->department)->where('designation', '=', $staff->designation)->first() : null;
         @endphp 
 		
 

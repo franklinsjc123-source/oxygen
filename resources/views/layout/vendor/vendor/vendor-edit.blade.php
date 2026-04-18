@@ -389,14 +389,11 @@
 
                                                             <select class="custom-select w-100 form-control"
                                                                 name="package" id="package">
-                                                                <option value="{{$vendorcreate->package_id}}" selected hidden>
-                                                                    {{$vendorcreate->package_id}}
-                                                                </option>
-                                                                <option value=""  hidden>Select Package
-                                                                </option>
+                                                                <option value="" {{ !$vendorcreate->package_id ? 'selected' : '' }} hidden>Select Package</option>
 
-                                                                @foreach ($pack as $pack)
-                                                                    <option value="{{ $pack->id }}">{{ $pack->name }}
+                                                                @foreach ($pack as $p)
+                                                                    <option value="{{ $p->id }}" {{ $vendorcreate->package_id == $p->id ? 'selected' : '' }}>
+                                                                        {{ $p->name }}
                                                                     </option>
                                                                 @endforeach
                                                             </select>
@@ -683,7 +680,7 @@
         });
         $(document).ready(function() {
 
-            $('#package').on('click', function() {
+            $('#package').on('change', function() {
                 var package = $(this).val();
                 //alert(package);
                 if (package) {

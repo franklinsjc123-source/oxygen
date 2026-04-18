@@ -433,7 +433,7 @@
                                                 <input type="hidden" name="category_sub" value="{{@$subcategoryid}}">
                                                 <input type="hidden" name="nproduct" value="{{@$nproduct}}">
                                                 <div class="col-md-3">
-                                                    <a href="{{ url('admin/products_crud') }}" class="btn btn-warning"> Clear </a>
+                                                    <a href="{{ url('vendor/productscreate') }}" class="btn btn-warning"> Clear </a>
                                                 </div>
                                             </div>
                                         </div>

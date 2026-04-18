@@ -328,16 +328,16 @@ $(function() {
 
             $(document).ready(function() {
             if (window.File && window.FileList && window.FileReader) {
-                $(".add_prgfngfhgfhoduct").on("change", function(e) {
+                $(".add_product").on("change", function(e) {
                     var id = $(this).attr('id');
                      const myArray = id.split("im");
             let myid=   myArray;
             const iterator = myid.length;
             //alert (id);
 
-                var files = e.target.files,
-                    filesLength = files.length;
-                for (var i = 0; i < 4; i++) {
+                var files = e.target.files;
+                var filesLength = files.length;
+                for (var i = 0; i < filesLength; i++) {
                     var f = files[i]
                     var fileReader = new FileReader();
                     fileReader.onload = (function(e) {
@@ -353,7 +353,6 @@ $(function() {
                     });
                     fileReader.readAsDataURL(f);
                 }
-                console.log(files);
                 });
             } else {
                 alert("Your browser doesn't support to File API")
@@ -364,8 +363,6 @@ $(function() {
             $(document).ready(function() {
             if (window.File && window.FileList && window.FileReader) {
                 $("#p_mainimg").on("change", function(e) {
-                    var lll = $(this);
-                    alert(lll);
                     var id = $(this).attr('id');
                     var img = document.getElementById('mainr1');
                     if (this.files && this.files[0]) {                      

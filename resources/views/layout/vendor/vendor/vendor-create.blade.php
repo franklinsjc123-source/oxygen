@@ -389,8 +389,8 @@
                                                                 <option value="" selected hidden>Select Package
                                                                 </option>
 
-                                                                @foreach ($pack as $pack)
-                                                                    <option value="{{ $pack->id }}">{{ $pack->name }}
+                                                                @foreach ($pack as $p)
+                                                                    <option value="{{ $p->id }}">{{ $p->name }}
                                                                     </option>
                                                                 @endforeach
                                                             </select>
@@ -677,7 +677,7 @@
         });
         $(document).ready(function() {
 
-            $('#package').on('click', function() {
+            $('#package').on('change', function() {
                 var package = $(this).val();
                // alert(package);
                 if (package) {
