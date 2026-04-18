@@ -103,7 +103,10 @@
                                                 </div>
                                             </td>
                                              <td><b>{{$vendor_list->shop_name}}</b> <br>
-                                                {{str_pad($vendor_id ? $vendor_id->login_id : 'N/A' , 4, '0', STR_PAD_LEFT)}}<br>
+
+                                                    <span>{{  str_pad($vendor_list->id, 4, '0', STR_PAD_LEFT) }}</span>
+                                              <br>
+
                                                 <span>{{ $zoneLabel . '/ ' . $vendor_list->route}}</span></br></td>
 
                                             
@@ -160,7 +163,7 @@
                                                 <span>{{ $vendor_list->address1 }} </span><br>
                                                 <span> {{ $vendor_list->city }}</span><Br>
                                                     <span>  {{ $vendor_list->pincode  }} </span> <br>
-                                             <span> Zone / Route:  {{ $zoneLabel }} /  {{ $vendor_list->route}} </span>
+                                             {{-- <span> Zone / Route:  {{ $zoneLabel }} /  {{ $vendor_list->route}} </span> --}}
                                             </td>
 
 
