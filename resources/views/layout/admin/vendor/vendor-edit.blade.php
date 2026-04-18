@@ -66,30 +66,30 @@
                                 style="font-family: 'Century Gothic',lucida grande, helvetica, verdana, arial, sans-serif;">
                                 <ul class="nav nav-tabs nav-material pb-5" id="top-tab" role="tablist">
                                     <li class="nav-item"><a class="nav-link active" id="top-profile-tab"
-                                            data-bs-toggle="tab" href="#top-profile" role="tab"
+                                            href="#top-profile" role="tab"
                                             aria-controls="top-profile" aria-selected="true"><i data-feather="user"
                                                 class="me-2"></i><span class="fw-bold">Personal Information</span></a>
                                     </li>
-                                    <li class="nav-item"><a class="nav-link " id="top-product-tab" data-bs-toggle="tab"
+                                    <li class="nav-item"><a class="nav-link " id="top-product-tab"
                                             href="#top-product" role="tab" aria-controls="top-product"
                                             aria-selected="true"><i data-feather="user" class="me-2"></i><span
                                                 class="fw-bold">Product Category </span></a>
                                     </li>
-                                    <li class="nav-item"><a class="nav-link" id="upload-top-tab" data-bs-toggle="tab"
+                                    <li class="nav-item"><a class="nav-link" id="upload-top-tab" 
                                             href="#top-upload" role="tab" aria-controls="top-upload"
                                             aria-selected="false"><i data-feather="edit" class="me-2"></i><span
                                                 class="fw-bold">Documents & Package</span> </a>
                                     </li>
 
 
-                                    <li class="nav-item"><a class="nav-link" id="top-bank-upload" data-bs-toggle="tab"
+                                    <li class="nav-item"><a class="nav-link" id="top-bank-upload" 
                                             href="#top-bank" role="tab" aria-controls="top-upload"
                                             aria-selected="false"><i data-feather="bank" class="me-2"></i><span
                                                 class="fa fa-bank "><span class="fw-bold mx-2 gothic">Bank
                                                     Details</span></span></a>
                                     </li>
 
-                                    <li class="nav-item"><a class="nav-link" id="upload-setting-tab" data-bs-toggle="tab"
+                                    <li class="nav-item"><a class="nav-link" id="upload-setting-tab" 
                                             href="#top-setting" role="tab" aria-controls="top-upload"
                                             aria-selected="false"><i data-feather="settings" class="me-2"></i><span
                                                 class=" fa fa-solid fa-gear"><span
@@ -121,12 +121,12 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"> User
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> User
                                                             Name</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom0"
-                                                                value={{ $vendorcreate->username }} type="text"
-                                                                name="username">
+                                                                value="{{ $vendorcreate->username }}" type="text"
+                                                                name="username" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -135,23 +135,23 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"> Password
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Password
                                                         </label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="pass"
-                                                                value={{ $vendorcreate->pass }} type="text"
-                                                                name="pass">
+                                                                value="{{ $vendorcreate->pass }}" type="text"
+                                                                name="pass" required>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"> Confirm
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Confirm
                                                             Password</label>
                                                         <div class="col-xl-8 col-md-8">
-                                                            <input class="form-control" id="confirm_pass" type="password"
-                                                                value={{ $vendorcreate->pass1 }} name="pass1"
-                                                                onkeyup="validate_password()">
+                                                            <input class="form-control" id="confirm_pass" type="text"
+                                                                value="{{ $vendorcreate->pass1 }}" name="pass1"
+                                                                onkeyup="validate_password()" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -162,22 +162,22 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"> Shop
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Shop
                                                             Name</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom0"
-                                                                value={{ $vendorcreate->shop_name }} type="text"
-                                                                name="shop_name">
+                                                                value="{{ $vendorcreate->shop_name }}" type="text"
+                                                                name="shop_name" required>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"> Owner
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Owner
                                                             Name</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="" type="text"
-                                                                value={{ $vendorcreate->owner_name }} name="owner_name">
+                                                                value="{{ $vendorcreate->owner_name }}" name="owner_name" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -191,7 +191,7 @@
                                                             Category</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="business_category"
-                                                                value={{ $vendorcreate->business_category }} type="text"
+                                                                value="{{ $vendorcreate->business_category }}" type="text"
                                                                 name="business_category">
                                                         </div>
                                                     </div>
@@ -199,10 +199,10 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
                                                         <label for="validationCustom2"
-                                                            class="col-xl-4 col-md-4">E.Mail</label>
+                                                            class="col-xl-4 col-md-4"><span>*</span> E.Mail</label>
                                                         <div class="col-xl-8 col-md-7">
                                                             <input class="form-control" id="email" type="email"
-                                                                value={{ $vendorcreate->email }} name="email">
+                                                                value="{{ $vendorcreate->email }}" name="email" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -212,12 +212,12 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"> Mobile
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Mobile
                                                             Number</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="m_number" type="text"
-                                                                value={{ $vendorcreate->mobile_number1 }}
-                                                                name="mobile_number1">
+                                                                value="{{ $vendorcreate->mobile_number1 }}"
+                                                                name="mobile_number1" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -237,12 +237,12 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"> Address
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Address
                                                             I</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom0"
-                                                                value={{ $vendorcreate->address }} type="text"
-                                                                name="address1">
+                                                                value="{{ $vendorcreate->address }}" type="text"
+                                                                name="address1" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -252,7 +252,7 @@
                                                             II</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom0"
-                                                                value={{ $vendorcreate->address1 }} type="text"
+                                                                value="{{ $vendorcreate->address1 }}" type="text"
                                                                 name="address2">
                                                         </div>
                                                     </div>
@@ -262,11 +262,11 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom01" class="col-xl-4 col-md-4">State
+                                                        <label for="validationCustom01" class="col-xl-4 col-md-4"><span>*</span> State
                                                             :</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <select class="custom-select w-100 form-control"
-                                                                name="state">
+                                                                name="state" required>
                                                                 <option value="{{ $vendorcreate->state }}" selected
                                                                     hidden>{{ $vendorcreate->state }}</option>
                                                                 <option value="">--Select--</option>
@@ -279,10 +279,10 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
                                                         <label for="validationCustom01"
-                                                            class="col-xl-4 col-md-4">City:</label>
+                                                            class="col-xl-4 col-md-4"><span>*</span> City:</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <select class="custom-select w-100 form-control"
-                                                                name="city">
+                                                                name="city" required>
                                                                 <option value="{{ $vendorcreate->city }}" selected hidden>
                                                                     {{ $vendorcreate->city }}</option>
                                                                 <option value="">--Select--</option>
@@ -298,10 +298,11 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
                                                         <label for="validationCustom0" class="col-xl-4 col-md-4">
-                                                            Pincode</label>
+                                                            <span>*</span> Pincode</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="pincode" type="text"
-                                                                value={{ $vendorcreate->pincode }} name="pincode">
+                                                                value="{{ $vendorcreate->pincode }}" name="pincode"
+                                                                maxlength="6" minlength="6" pattern="[0-9]{6}" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -311,7 +312,7 @@
                                                             Map</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom0"
-                                                                value={{ $vendorcreate->location_map }} type="text"
+                                                                value="{{ $vendorcreate->location_map }}" type="text"
                                                                 name="location_map">
                                                         </div>
                                                     </div>
@@ -323,7 +324,7 @@
 
                                                     <div class="form-group row">
                                                         <label for="validationCustom0" class="col-xl-4 col-md-4">
-                                                            Zone</label>
+                                                            <span>*</span> Zone</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             @php
                                                                 $currentZoneLabel = $vendorcreate->zone;
@@ -332,32 +333,28 @@
                                                                     $currentZoneLabel = $matchedZone->name ?? $vendorcreate->zone;
                                                                 }
                                                             @endphp
-                                                            <select class="form-control" name="zone" id="zone">
+                                                            <select class="form-control" name="zone" id="zone" required>
 
                                                                 <option value="{{ $vendorcreate->zone }}" selected hidden>
                                                                     {{ $currentZoneLabel }}</option>
-                                                                <option>Select Item</option>
+                                                                <option value="">Select Item</option>
 
                                                                 @foreach ($zone as $zo)
                                                                     <option value="{{ $zo->id }}">
                                                                         {{ $zo->name }} </option>
                                                                 @endforeach
                                                             </select>
-
-
-                                                            {{-- <input class="form-control" id="validationCustom0"
-                                                                type="text" name="zone"> --}}
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
                                                         <label for="validationCustom2"
-                                                            class="col-xl-4 col-md-4">Area</label>
+                                                            class="col-xl-4 col-md-4"><span>*</span> Area</label>
                                                         <div class="col-xl-8 col-md-7">
                                                             <input class="form-control" id="route"
-                                                                value={{ $vendorcreate->route }} type="text"
-                                                                name="route">
+                                                                value="{{ $vendorcreate->route }}" type="text"
+                                                                name="route" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -367,12 +364,12 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"> AADHAR
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"> <span>*</span> AADHAR
                                                             NUMBER</label>
                                                         <div class="col-xl-8 col-md-8">
-                                                            <input class="form-control" id="validationCustom0"
-                                                                value={{ $vendorcreate->aadhar_no }} type="text"
-                                                                name="aadhar_no" id="aadharcard">
+                                                            <input class="form-control" id="aadharcard"
+                                                                value="{{ $vendorcreate->aadhar_no }}" type="text"
+                                                                name="aadhar_no" maxlength="16" minlength="16" pattern="[0-9]{16}" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -382,7 +379,7 @@
                                                             NUMBER</label>
                                                         <div class="col-xl-8 col-md-7">
                                                             <input class="form-control" id="validationCustom2"
-                                                                value={{ $vendorcreate->gst_number }} type="text"
+                                                                value="{{ $vendorcreate->gst_number }}" type="text"
                                                                 name="gst_number">
                                                         </div>
                                                     </div>
@@ -482,34 +479,56 @@
                                                 <div class="col-xl-10 col-md-10">
                                                     <input class="form-control" id="fileUpload" type="file"
                                                         name="profile_image" multiple accept="image/*,.pdf" />
-                                                    <input type="hiden" id="oldprofile_image" name="oldprofile_image"
-                                                        value={{ $vendorcreate->profile_image }}>
+                                                    <input type="hidden" id="oldprofile_image" name="oldprofile_image"
+                                                        value="{{ $vendorcreate->profile_image }}">
+                                                    
+                                                    @if($vendorcreate->profile_image)
+                                                        <div class="mt-2">
+                                                            <img src="{{ asset('assets/images/vendor/profile/' . $vendorcreate->profile_image) }}" 
+                                                                 alt="Profile" class="img-fluid img-60 blur-up lazyloaded border p-1" style="max-height: 100px;">
+                                                        </div>
+                                                    @endif
 
                                                     <div id="image-holder"></div>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="validationCustom1"
-                                                    class="col-xl-2 col-md-2"><span>*</span>GST</label>
+                                                    class="col-xl-2 col-md-2">GST</label>
                                                 <div class="col-xl-10 col-md-10">
                                                     <input class="form-control" id="fileUpload1" type="file"
                                                         name="gst" multiple accept="image/*,.pdf" />
-                                                    <input type="hiden" id="oldgst" name="oldgst"
-                                                        value={{ $vendorcreate->gst }}>
+                                                    <input type="hidden" id="oldgst" name="oldgst"
+                                                        value="{{ $vendorcreate->gst }}">
+                                                    
+                                                    @if($vendorcreate->gst)
+                                                        <div class="mt-2">
+                                                            <img src="{{ asset('assets/images/vendor/gst/' . $vendorcreate->gst) }}" 
+                                                                 alt="GST" class="img-fluid img-60 blur-up lazyloaded border p-1" style="max-height: 100px;">
+                                                        </div>
+                                                    @endif
 
                                                     <div id="image-holder1"></div>
                                                 </div>
                                             </div>
 
-                                            <div class="form-group row">
+                                             <div class="form-group row">
                                                 <label for="validationCustom1"
-                                                    class="col-xl-2 col-md-2"><span>*</span>Other Documents</label>
+                                                    class="col-xl-2 col-md-2">Other Documents</label>
                                                 <div class="col-xl-10 col-md-10">
                                                     <input class="form-control" id="fileUpload1" type="file"
                                                         name="other_documents" multiple accept="image/*,.pdf" />
-                                                    <input type="hiden" id="oldother_documents"
+                                                    <input type="hidden" id="oldother_documents"
                                                         name="oldother_documents"
-                                                        value={{ $vendorcreate->other_documents }}>
+                                                        value="{{ $vendorcreate->other_documents }}">
+                                                    
+                                                    @if($vendorcreate->other_documents)
+                                                        <div class="mt-2">
+                                                            <img src="{{ asset('assets/images/vendor/other/' . $vendorcreate->other_documents) }}" 
+                                                                 alt="Other" class="img-fluid img-60 blur-up lazyloaded border p-1" style="max-height: 100px;">
+                                                        </div>
+                                                    @endif
+
                                                     <div id="image-holder1"></div>
                                                 </div>
                                             </div>
@@ -555,7 +574,7 @@
                                                             Date</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input id="datePicker" type="date"
-                                                                value={{ $vendorcreate->purchase_date }}
+                                                                value="{{ $vendorcreate->purchase_date }}"
                                                                 class="form-control " name="purchase_date"
                                                                 placeholder="dd/mm/yy" />
                                                         </div>
@@ -569,7 +588,7 @@
                                                             Validity</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validity" type="text"
-                                                                value={{ $vendorcreate->validity }} readonly
+                                                                value="{{ $vendorcreate->validity }}" readonly
                                                                 name="validity">
                                                         </div>
                                                     </div>
@@ -580,7 +599,7 @@
                                                             Days</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="grace_days" type="text"
-                                                                value={{ $vendorcreate->grace_days }} name="grace_days">
+                                                                value="{{ $vendorcreate->grace_days }}" name="grace_days">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -594,7 +613,7 @@
                                                             Date</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input id="expired_date" type="date" class="form-control "
-                                                                value={{ $vendorcreate->expired_date }}
+                                                                value="{{ $vendorcreate->expired_date }}"
                                                                 name="expired_date" placeholder="dd/mm/yy" />
                                                         </div>
                                                     </div>
@@ -605,7 +624,7 @@
                                                             Renewal Date</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input id="next_renewal_date" type="date"
-                                                                value={{ $vendorcreate->next_renewal_date }}
+                                                                value="{{ $vendorcreate->next_renewal_date }}"
                                                                 class="form-control " name="next_renewal_date"
                                                                 placeholder="dd/mm/yy" />
                                                         </div>
@@ -619,7 +638,7 @@
                                                             Wallets</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="wallet" type="text"
-                                                                value={{ $vendorcreate->wallet }} name="wallet">
+                                                                value="{{ $vendorcreate->wallet }}" name="wallet">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -631,7 +650,7 @@
                                                             class="col-xl-4 col-md-4">Commission %</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="commission"
-                                                                value={{ $vendorcreate->commission }} type="text"
+                                                                value="{{ $vendorcreate->commission }}" type="text"
                                                                 name="commission">
                                                         </div>
                                                     </div>
@@ -687,21 +706,21 @@
                                                 <div class="col-md-12">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-3 col-md-3"> Account
+                                                        <label for="bank_name" class="col-xl-3 col-md-3"><span>*</span>Account
                                                             Holder Name</label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="bank_name" name="bank_name"
-                                                                type="text" value={{ $vendorcreate->bank_name }}>
+                                                                type="text" value="{{ $vendorcreate->bank_name }}" required>
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-3 col-md-3"> Account
+                                                        <label for="ac_no" class="col-xl-3 col-md-3"><span>*</span>Account
                                                             Number</label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no" name="ac_no"
                                                                 type="password" value="{{ $vendorcreate->ac_no }}"
-                                                                name="ac_no" inputmode="numeric" pattern="[0-9]*"
+                                                                required inputmode="numeric" pattern="[0-9]*"
                                                                 autocomplete="off" spellcheck="false"
                                                                 oncopy="return false" oncut="return false"
                                                                 onpaste="return false" oncontextmenu="return false"
@@ -711,12 +730,12 @@
                                                     </div>
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-3 col-md-3"> Confirm
+                                                        <label for="ac_no1" class="col-xl-3 col-md-3"><span>*</span>Confirm
                                                             Account Number</label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no1" name="ac_no1"
                                                                 type="text" value="{{ $vendorcreate->ac_no1 }}"
-                                                                name="ac_no1" onkeyup="validate_acno()"
+                                                                required onkeyup="validate_acno()"
                                                                 inputmode="numeric" pattern="[0-9]*"
                                                                 autocomplete="off" spellcheck="false"
                                                                 oncopy="return false" oncut="return false"
@@ -728,24 +747,24 @@
                                                     </div>
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-3 col-md-3"> IFSC
-                                                            Code </label>
+                                                        <label for="ifsc" class="col-xl-3 col-md-3"><span>*</span>IFSC Code</label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ifsc" name="ifsc"
-                                                                type="text" value="{{ $vendorcreate->ifsc }}" maxlength="11" minlength="11">
+                                                                type="text" value="{{ $vendorcreate->ifsc }}" 
+                                                                required maxlength="11" minlength="11">
                                                         </div>
                                                     </div>
                                                     <hr>
 
                                                     <div class="form-group row">
                                                         <div class="col-xl-3 col-md-3">
-                                                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/UPI-Logo-vector.svg/1200px-UPI-Logo-vector.svg.png"
-                                                                width="100px">
+                                                            <label><span>*</span><img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg"
+                                                                width="80px" alt="UPI Logo"></label>
                                                         </div>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="upi" name="upi"
                                                                 type="text" value="{{ $vendorcreate->upi }}"
-                                                                maxlength="10" inputmode="numeric"
+                                                                required maxlength="10" inputmode="numeric"
                                                                 autocomplete="off" spellcheck="false">
                                                         </div>
                                                     </div>
@@ -905,6 +924,58 @@
                 return idx >= 0 ? idx : 0;
             }
 
+            function isCurrentTabValid() {
+                const currentTab = $('#top-tabContent .tab-pane.active');
+                const inputs = currentTab.find('input[required], select[required], textarea[required], [required]');
+                let valid = true;
+
+                inputs.each(function() {
+                    if (!this.checkValidity()) {
+                        valid = false;
+                        this.reportValidity();
+                        $(this).focus();
+                        return false;
+                    }
+                });
+
+                if (!valid) return false;
+
+                // Password match check
+                if (currentTab.attr('id') === 'top-profile') {
+                    var pass = $('#pass').val();
+                    var confirm_pass = $('#confirm_pass').val();
+                    if (pass !== confirm_pass) {
+                        valid = false;
+                        $('#confirm_pass').focus();
+                        document.getElementById('wrong_pass_alert').style.color = 'red';
+                        document.getElementById('wrong_pass_alert').innerHTML = '☒ Use same password';
+                    }
+                }
+
+                // Step 2 (Product Category) check
+                if (currentTab.attr('id') === 'top-product') {
+                    const checkedCategories = $('.category-cat:checked').length;
+                    if (checkedCategories === 0) {
+                        valid = false;
+                        alert('Please select at least one Product Category');
+                    }
+                }
+
+                // Step 4 (Bank Details) check
+                if (currentTab.attr('id') === 'top-bank') {
+                    var ac_no = $('#ac_no').val();
+                    var ac_no1 = $('#ac_no1').val();
+                    if (ac_no !== ac_no1) {
+                        valid = false;
+                        $('#ac_no1').focus();
+                        document.getElementById('wrong_ac_no_alert').style.color = 'red';
+                        document.getElementById('wrong_ac_no_alert').innerHTML = '☒ Use same account number';
+                    }
+                }
+
+                return valid;
+            }
+
             function showTab(index) {
                 if (index < 0 || index >= tabCount) return;
                 $tabLinks.removeClass('active').attr('aria-selected', 'false');
@@ -913,19 +984,29 @@
                 const targetSelector = $($tabLinks.get(index)).attr('href');
                 $(targetSelector).addClass('show active');
                 syncWizardButtons();
+                window.scrollTo(0, 0);
             }
 
             function syncWizardButtons() {
                 const index = getActiveIndex();
                 const isLastTab = index === tabCount - 1;
-                $('#vendor-wizard-controls').toggle(!isLastTab);
-                $('#wizard-prev-btn').toggle(index > 0 && !isLastTab);
-                $('#wizard-next-btn').toggle(index < tabCount - 1 && !isLastTab);
-                $('.vendor-final-actions').toggle(isLastTab);
+
+                if (isLastTab) {
+                    $('#vendor-wizard-controls').removeClass('d-flex').addClass('d-none');
+                    $('.vendor-final-actions').removeClass('d-none').addClass('d-flex');
+                } else {
+                    $('#vendor-wizard-controls').removeClass('d-none').addClass('d-flex');
+                    $('.vendor-final-actions').removeClass('d-flex').addClass('d-none');
+                }
+
+                $('#wizard-prev-btn').toggle(index > 0);
+                $('#wizard-next-btn').toggle(index < tabCount - 1);
             }
 
             $('#wizard-next-btn').on('click', function() {
-                showTab(getActiveIndex() + 1);
+                if (isCurrentTabValid()) {
+                    showTab(getActiveIndex() + 1);
+                }
             });
 
             $('#wizard-prev-btn').on('click', function() {
@@ -938,7 +1019,15 @@
 
             $tabLinks.on('click', function(e) {
                 e.preventDefault();
-                showTab($tabLinks.index(this));
+                const targetIdx = $tabLinks.index(this);
+                const currentIdx = getActiveIndex();
+
+                if (targetIdx > currentIdx) {
+                    if (targetIdx !== currentIdx + 1 || !isCurrentTabValid()) {
+                        return;
+                    }
+                }
+                showTab(targetIdx);
             });
 
             showTab(getActiveIndex());
@@ -1097,6 +1186,14 @@
 
             ifscField.on('input', function() {
                 this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11);
+            });
+
+            $('#aadharcard').on('input', function() {
+                this.value = this.value.replace(/\D/g, '').slice(0, 16);
+            });
+
+            $('#pincode').on('input', function() {
+                this.value = this.value.replace(/\D/g, '').slice(0, 6);
             });
         });
 

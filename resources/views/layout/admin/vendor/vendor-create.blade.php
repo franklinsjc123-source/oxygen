@@ -675,8 +675,8 @@
 
                                                     <div class="form-group row">
                                                         <div class="col-xl-3 col-md-3">
-                                                            <span>*</span> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/UPI-Logo-vector.svg/1200px-UPI-Logo-vector.svg.png"
-                                                                width="100px">
+                                                            <span>*</span> <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg"
+                                                                width="80px">
                                                         </div>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="upi" type="text"
