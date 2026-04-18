@@ -30,6 +30,7 @@ use App\Models\vendor\Category\CategorySub as vendorcategorysub;
 use App\Models\vendor\vendorcreate;
 
 use App\Models\CMSPage;
+use App\Models\Rating;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -1044,6 +1045,8 @@ class HomeController extends Controller
                 'products.category_main',
                 'products.category',
                 'products.category_sub',
+                'products.vendor_id',
+                'v.shop_name',
                 'cm.category_main_name as main_category_name',
                 'c.category_name as category_name',
                 'cs.category_sub_name as sub_category_name',
@@ -1051,6 +1054,7 @@ class HomeController extends Controller
                 DB::raw('MIN(pd.retail_price) as retail_price'),
                 DB::raw('MIN(pd.selling_price) as selling_price')
             )
+            ->leftJoin('vendor_details as v', 'products.vendor_id', '=', 'v.id')
             ->groupBy(
                 'products.id',
                 'products.product_id',
@@ -1060,6 +1064,8 @@ class HomeController extends Controller
                 'products.category_main',
                 'products.category',
                 'products.category_sub',
+                'products.vendor_id',
+                'v.shop_name',
                 'cm.category_main_name',
                 'c.category_name',
                 'cs.category_sub_name',
@@ -1110,6 +1116,12 @@ class HomeController extends Controller
             ->orderBy('products.created_at', 'desc')
             ->limit(120)
             ->get();
+
+        foreach ($product as $p) {
+            $avg = Rating::where('products_id', $p->id)->avg('star_rating');
+            $p->rating_percent = $avg ? ($avg / 5) * 100 : 0;
+            $p->review_count = Rating::where('products_id', $p->id)->count();
+        }
 
         return view('website.front-end.search_product_new')->with([
             "products" => $product,

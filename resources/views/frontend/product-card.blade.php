@@ -34,30 +34,48 @@
             </div>
         </figure>
 
-        <div class="product-details">
-            <h3 class="product-name">
-                <a href="{{ url('/productVar/'.$product->id) }}">{{ $product->product_name }}</a>
-            </h3>
-
-            <div class="ratings-container">
-                <div class="ratings-full">
-                    <span class="ratings" style="width:100%"></span>
+         <div class="product-details">
+             @if(isset($product->vendor_id) || isset($product->shop_name))
+                <div class="sold-by" style="margin-bottom: 2px;">
+                    <a href="{{ url('/shop-details/' . ($product->vendor_id ?? '#')) }}" style="color: #0088dd; font-weight: 700; font-size: 1.3rem;">
+                        {{ $product->shop_name ?? 'N/A' }}
+                    </a>
                 </div>
-                <a class="rating-reviews">(3 Reviews)</a>
-            </div>
-
-            <div class="product-pa-wrapper">
-                <div class="product-price">₹{{ $product->selling_price }}</div>
-                <div class="product-price-discount">₹{{ $product->retail_price }}</div>
-                @php
-                    $retailPrice = (float) ($product->retail_price ?? 0);
-                    $sellingPrice = (float) ($product->selling_price ?? 0);
-                    $discount = $retailPrice > 0
-                        ? number_format((($retailPrice - $sellingPrice) / $retailPrice) * 100)
-                        : 0;
-                @endphp
-                <div class="product-offer-percentage">{{ $discount }}% Off</div>
-            </div>
+             @endif
+             <h4 class="product-name" style="margin-bottom: 5px; font-weight: 500; font-size: 1.4rem;">
+                 <a href="{{ url('/productVar/'.$product->id) }}" style="color: #333 text-decoration: none;">
+                    {{ $product->product_name }}
+                 </a>
+             </h4>
+ 
+             <div class="ratings-container" style="margin-bottom: 5px;">
+                 <div class="ratings-full">
+                     <span class="ratings" style="width: {{ $product->rating_percent ?? 0 }}%"></span>
+                 </div>
+                 <a class="rating-reviews" style="font-size: 1.1rem; color: #0088dd;">({{ $product->review_count ?? 0 }} Reviews)</a>
+             </div>
+ 
+             <div class="product-pa-wrapper" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                 <div class="product-price-home" style="font-family: monospace; font-size: 1.7rem; font-weight: 700; color: #000;">
+                    ₹{{ $product->selling_price }}
+                 </div>
+                 <div class="product-price-discount" style="text-decoration: line-through; color: #888; font-size: 1.3rem; font-weight: 600;">
+                    ₹{{ $product->retail_price }}
+                 </div>
+                 @php
+                     $retailPrice = (float) ($product->retail_price ?? 0);
+                     $sellingPrice = (float) ($product->selling_price ?? 0);
+                     if ($retailPrice > 0) {
+                         $discount_percentage = (($retailPrice - $sellingPrice) / $retailPrice) * 100;
+                         $discount_rounded = round($discount_percentage / 10) * 10;
+                     } else {
+                         $discount_rounded = 0;
+                     }
+                 @endphp
+                 <div class="product-offer-percentage" style="color: #27ae60; font-weight: 700; font-size: 1.3rem;">
+                    {{ $discount_rounded }}% Off
+                 </div>
+             </div>
             @php
                 $showStockCount = $showStockCount ?? false;
                 $stockQty = isset($product->stock_qty) ? (int) $product->stock_qty : null;

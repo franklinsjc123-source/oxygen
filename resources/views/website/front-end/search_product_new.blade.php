@@ -42,40 +42,67 @@
                  transform: rotate(360deg);
              }
          }
+
+         .product-price-home {
+             font-family: monospace;
+             font-size: 1.6rem;
+             font-weight: 600;
+             color: #333;
+         }
+
+         .product-price-discount {
+             text-decoration: line-through;
+             color: #999;
+             font-size: 1.3rem;
+             margin-left: 5px;
+         }
+
+         .product-offer-percentage {
+             color: #2ecc71;
+             font-weight: 600;
+             font-size: 1.3rem;
+             margin-left: 5px;
+         }
+
+         .product-pa-wrapper {
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             flex-wrap: wrap;
+             margin-top: 5px;
+         }
      </style>
 
-     <body style="background-color:#F0F0F0" class="theme-color-29">
-         <div class="page-content" style="margin:0px 40px">
+     <body class="theme-color-29">
+         <main class="main" style="background-color: #fff;">
+         <div class="page-content mb-10">
 
              <div id="loading-container">
                  <div class="loader"></div>
              </div>
 
-             {{-- @include('paritials.website.menu') --}}
-
-             <div class="title1 section-t-space pt-5">
-                 <h4 class="title-inner1 text-left">Search Results for "{{ $keyword }}"</h4>
-             </div>
-
-             <section style="background-color:#f7f1f2" class="pt-0 section-b-space ratio_asos">
-                 <div class="container-fuild"  style="background-color:#FFF; padding:0px 20px;">
-                     <div class="row game-product grid-products px-5">
-                         @if (($products ?? collect())->count() === 0)
-                             <div class="col-12 pt-4 pb-4">
-                                 <h5>No products found.</h5>
-                             </div>
-                         @endif
-
-                         @foreach ($products as $product)
-                             <div class="gallery_product product-box col-xl-2 col-lg-3 col-sm-4 col-6 default">
-                                 @include('frontend/product-card', ['product' => $product])
-
-                             </div>
-                         @endforeach
-                     </div>
+             <div class="container">
+                 <div class="title-link-wrapper mt-6 mb-3">
+                     <h2 class="title">Search Results for "{{ $keyword }}"</h2>
+                     <a href="{{ url('shops') }}" class="mb-0">More Products<i class="w-icon-long-arrow-right"></i></a>
                  </div>
-             </section>
+
+                 <div class="row banner-product-wrapper mb-6">
+                     @if (($products ?? collect())->count() === 0)
+                         <div class="col-12 pt-4 pb-4">
+                             <h5>No products found.</h5>
+                         </div>
+                     @endif
+
+                     @foreach ($products as $product)
+                         <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6 mb-4">
+                             @include('frontend/product-card', ['product' => $product])
+                         </div>
+                     @endforeach
+                 </div>
+             </div>
          </div>
+         </main>
 
          <script>
              document.addEventListener("DOMContentLoaded", function() {
