@@ -503,8 +503,7 @@
 
                                                             <select class="custom-select w-100 form-control"
                                                                 name="package" id="package">
-                                                                <option value="" selected hidden>Select Package
-                                                                </option>
+                                                                <option value="" disabled selected>Select Package</option>
 
                                                                 @foreach ($pack as $pack)
                                                                     <option value="{{ $pack->id }}">

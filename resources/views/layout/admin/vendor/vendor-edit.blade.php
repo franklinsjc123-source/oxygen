@@ -552,11 +552,7 @@
 
                                                             <select class="custom-select w-100 form-control"
                                                                 name="package" id="package">
-                                                                {{-- <option value="{{$vendorcreate->package_id}}" selected hidden>
-                                                                    {{$vendorcreate->package_id}}
-                                                                </option> --}}
-                                                                {{-- <option value=""  hidden>Select Package
-                                                                </option> --}}
+                                                                <option value="" disabled {{ is_null($vendorcreate->package_id) ? 'selected' : '' }}>Select Package</option>
 
                                                                 @foreach ($pack as $pack)
                                                                     <option value="{{ $pack->id }}"
