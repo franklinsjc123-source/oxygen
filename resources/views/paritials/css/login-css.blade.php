@@ -1,6 +1,6 @@
 <style>
 body
 {
-background-image: url('assets/images/banners/bg.jpg');
+background-color: #f4f7f6;
 }
 </style>
