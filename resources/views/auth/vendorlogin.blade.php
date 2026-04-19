@@ -22,22 +22,22 @@
                                 <form action="{{ route('vendorlogin') }}" method="post">
                                     @csrf
                                     <div class="form-group mb-3">
-                                        <label for="username" style="font-weight: 500; opacity: 0.9; margin-bottom: 5px; display: block; font-size: 0.9rem;">Username</label>
-                                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required style="border-radius: 10px; padding: 10px 15px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff;">
+                                        <label for="username" style="font-weight: 500; opacity: 0.9; margin-bottom: 5px; display: block; font-size: 1.2rem;">Username</label>
+                                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required style="border-radius: 10px; padding: 12px 15px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 1.2rem;">
                                     </div>
 
                                     <div class="form-group mb-3 position-relative">
-                                        <label for="pwd" style="font-weight: 500; opacity: 0.9; margin-bottom: 5px; display: block; font-size: 0.9rem;">Password</label>
+                                        <label for="pwd" style="font-weight: 500; opacity: 0.9; margin-bottom: 5px; display: block; font-size: 1.2rem;">Password</label>
                                         <div style="position: relative;">
-                                            <input type="password" class="form-control" id="pwd" name="password" placeholder="Enter your password" required style="border-radius: 10px; padding: 10px 45px 10px 15px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff;">
+                                            <input type="password" class="form-control" id="pwd" name="password" placeholder="Enter your password" required style="border-radius: 10px; padding: 12px 45px 12px 15px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; font-size: 1.2rem;">
                                             <i class="fa fa-eye-slash" id="togglePassword" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: rgba(255,255,255,0.6);"></i>
                                         </div>
                                     </div>
 
                                     <div class="form-terms d-flex justify-content-between align-items-center mb-3">
                                         <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" id="remember" name="remember" style="background-color: transparent; border-color: rgba(255,255,255,0.3);">
-                                            <label class="form-check-label" for="remember" style="font-size: 0.85rem; opacity: 0.8;">Remember me</label>
+                                            <input type="checkbox" class="form-check-input" id="remember" name="remember" style="background-color: transparent; border-color: rgba(255,255,255,0.3); transform: scale(1.2); margin-right: 8px;">
+                                            <label class="form-check-label" for="remember" style="font-size: 1.2rem; opacity: 0.8;"> Remember me</label>
                                         </div>
                                     </div>
 
