@@ -33,9 +33,12 @@
                                         <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required style="border-radius: 10px; padding: 12px 15px; border: 1px solid #ddd; background: #f9f9f9; color: #333; font-size: 1.2rem;">
                                     </div>
 
-                                    <div class="form-group mb-3">
+                                    <div class="form-group mb-3 position-relative">
                                         <label for="pwd" style="font-weight: 500; opacity: 0.9; margin-bottom: 5px; display: block; font-size: 1.2rem; color: #555;">Password</label>
-                                        <input type="password" class="form-control" id="pwd" name="password" placeholder="Enter password" required style="border-radius: 10px; padding: 12px 15px; border: 1px solid #ddd; background: #f9f9f9; color: #333; font-size: 1.2rem;">
+                                        <div style="position: relative;">
+                                            <input type="password" class="form-control" id="pwd" name="password" placeholder="Enter password" required style="border-radius: 10px; padding: 12px 45px 12px 15px; border: 1px solid #ddd; background: #f9f9f9; color: #333; font-size: 1.2rem;">
+                                            <i class="fa fa-eye-slash" id="togglePassword" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888;"></i>
+                                        </div>
                                     </div>
 
                                     <div class="form-terms d-flex justify-content-between align-items-center mb-3">
@@ -48,7 +51,7 @@
 
                                     <div class="form-button text-center mt-4">
                                         <button type="submit" name="submit" class="btn w-100 mb-2" style="background: linear-gradient(90deg, #4834d4 0%, #686de0 100%); color: #fff; font-weight: 700; border-radius: 12px; padding: 12px; border: none; box-shadow: 0 4px 15px rgba(72, 52, 212, 0.4); text-transform: uppercase;">Login</button>
-                                        <button type="button" onclick="window.history.back();" class="btn w-100" style="background: #eee; color: #444; font-weight: 600; border-radius: 12px; padding: 10px; border: none; font-size: 0.9rem;">Cancel</button>
+                                        <button type="button" onclick="window.location.href='/admin';" class="btn w-100" style="background: #eee; color: #444; font-weight: 600; border-radius: 12px; padding: 10px; border: none; font-size: 0.9rem;">Cancel</button>
                                     </div>
                                 </form>
                             </div>
@@ -59,4 +62,15 @@
             </div>
         </div>
     </div>
+
+    <!-- Show/Hide Password Script -->
+    <script>
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const pwdField = document.getElementById('pwd');
+            const type = pwdField.getAttribute('type') === 'password' ? 'text' : 'password';
+            pwdField.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    </script>
 @endsection

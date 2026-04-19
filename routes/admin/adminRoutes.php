@@ -67,9 +67,14 @@ use App\Http\Controllers\PageController;
 
 Route::get('/register', [AuthController::class, 'register']);
 Route::get('/', function () {
-    return view('auth.adminlogin');
-});
+    return view('auth.portal_selection');
+})->name('portal_selection');
+
 Route::get('/login', function () {
+    return view('auth.adminlogin');
+})->name('admin_login_form');
+
+Route::get('/login/error', function () {
     $viewBag['error'] = '';
     return view('auth.adminlogin');
 })->name('adminerror');

@@ -22,26 +22,18 @@ class AuthController extends Controller
     }
     public function adminlogin(Request $request)
     {
-//$status = $id;
-
-        // echo Hash::make('Password!23');
-        // die();
-
         $data['username'] = $request->username;
         $data['password'] = $request->password;
-        //$data['status'] = $status;
-        // dd($request);
         
-            if (auth()->attempt($data)) {
-                $userId = Auth::user()->id;
-                //return $userId;
-                $userLevel = Auth::user()->status;
-                $login_id = Auth::user()->login_id;                  
-                $log_name   = Auth::user()->name;                   
-                $status   = Auth::user()->status;                   
-                $log_type   = Auth::user()->log_type;
-                $routename = Route::currentRouteName();
-                if($status == 1){
+        if (auth()->attempt($data)) {
+            $user = Auth::user();
+            if ($user->status == 1) {
+                $userId = $user->id;
+                $login_id = $user->login_id;                  
+                $log_name   = $user->name;                   
+                $status   = $user->status;                   
+                $log_type   = $user->log_type;
+
                 FacadesSession::put('log_name', $log_name);
                 FacadesSession::put('username', $data['username']);
                 FacadesSession::put('userId', $userId);
@@ -49,95 +41,37 @@ class AuthController extends Controller
                 FacadesSession::put('log_type', $log_type);
                 FacadesSession::put('login_id', $login_id);
 
-                    $id   = Auth::user()->admin_id;
-                    //return $id;
-                return redirect()->route('admindashboard', $id);
-                }
-                // elseif($status == 2)
-                // {   
-                //     $id   = Auth::user()->vendor_id;
-                //    // return $id;
-                //     return redirect()->route('vendordashboard', $id);
-                
-                // } 
-                     else {
-                return redirect()->route('adminerror');
-                    return view('auth.adminlogin');
-                }                
-
-        }       
-         
-         else {
-            return view('auth.adminlogin');
-            //return redirect('adminerror');
-            $decrypted = Crypt::decryptString('$2y$10$bRNXTmZ9.kCorxD9SPIaw.hrRsme48WT/GOW6QnkNsIjTrTZKzSjW');
-            //$decrypted = Crypt::decryptString('YTo0OntzOjY6Il90b2tlbiI7czo0MDoicW5oMTZDcGJRUGRmRm');
-			dd($decrypted);
-            try {
-                $decrypted = decrypt('$2y$10$bRNXTmZ9.kCorxD9SPIaw.hrRsme48WT/GOW6QnkNsIjTrTZKzSjW');
-				//$decrypted = decrypt('YTo0OntzOjY6Il90b2tlbiI7czo0MDoicW5oMTZDcGJRUGRmRm');
-            } catch (DecryptException $e) {
-                //
-            }
-
-            $viewBag['error'] = $decrypted;
-            return view('auth.adminlogin', $viewBag);
+                return redirect()->route('admindashboard', $user->admin_id);
+            } else {
+                Auth::logout();
+                return view('auth.adminlogin', ['error' => 'You do not have admin access.']);
+            }                
+        } else {
+            return view('auth.adminlogin', ['error' => 'Invalid username or password.']);
         }
     }
 
 
     public function vendorlogin(Request $request)
     {
-        //$status = $id;
-
         $data['username'] = $request->username;
         $data['password'] = $request->password;
-        //$data['status'] = $status;
-        // dd($request);
         
-            if (auth()->attempt($data)) {
-                $userId = Auth::user()->id;
-                //return $userId;
-                $userLevel = Auth::user()->level;
-                $login_id = Auth::user()->login_id; 
-                $status   = Auth::user()->status;
+        if (auth()->attempt($data)) {
+            $user = Auth::user();
+            if ($user->status == 2) {
+                FacadesSession::put('username', $data['username']);
+                FacadesSession::put('userId', $user->id);
+                FacadesSession::put('status', $user->status);
+                FacadesSession::put('login_id', $user->login_id);
                 
-                $routename = Route::currentRouteName();
-                // if($status == 1){
-                //     //return $id;
-                // return redirect()->route('admindashboard');
-                // }  vendorerror
-                if($status == 2){   
-                    FacadesSession::put('username', $data['username']);
-                FacadesSession::put('userId', $userId);
-                FacadesSession::put('status', $status);
-                FacadesSession::put('login_id', $login_id);
-                $id   = Auth::user()->login_id;
-                //return $id;
-                return redirect()->route('vendordashboard', $id);
-                return 'vendor';
-                }else {
-                    return redirect()->route('vendorerror');
-                    return view('auth.vendorlogin');
-                }
-
-        }       
-         
-         else {
-            return view('auth.vendorlogin');
-            //return redirect('/login');
-            $decrypted = Crypt::decryptString('$2y$10$bRNXTmZ9.kCorxD9SPIaw.hrRsme48WT/GOW6QnkNsIjTrTZKzSjW');
-            //$decrypted = Crypt::decryptString('YTo0OntzOjY6Il90b2tlbiI7czo0MDoicW5oMTZDcGJRUGRmRm');
-			dd($decrypted);
-            try {
-                $decrypted = decrypt('$2y$10$bRNXTmZ9.kCorxD9SPIaw.hrRsme48WT/GOW6QnkNsIjTrTZKzSjW');
-				//$decrypted = decrypt('YTo0OntzOjY6Il90b2tlbiI7czo0MDoicW5oMTZDcGJRUGRmRm');
-            } catch (DecryptException $e) {
-                //
+                return redirect()->route('vendordashboard', $user->login_id);
+            } else {
+                Auth::logout();
+                return view('auth.vendorlogin', ['error' => 'You do not have vendor access.']);
             }
-
-            $viewBag['error'] = $decrypted;
-            return view('auth.vendorlogin', $viewBag);
+        } else {
+            return view('auth.vendorlogin', ['error' => 'Invalid username or password.']);
         }
     }
 
@@ -161,93 +95,51 @@ class AuthController extends Controller
                 $user = $user->fresh();
             }
 
-            $userId = $user->id;
-            $userLevel = $user->level;
-            $login_id = $user->login_id;
-            $status = $user->status;
-            $log_type = $user->log_type ?? 'Staff';
-
-            FacadesSession::put('username', $data['username']);
-            FacadesSession::put('userId', $userId);
-            FacadesSession::put('level', $userLevel);
-            FacadesSession::put('login_id', $login_id);
-            FacadesSession::put('status', $status);
-            FacadesSession::put('log_type', $log_type);
-
-            if ($status == 3) {
-                return redirect()->route('staffdashboard', $login_id);
+            if ($user->status == 3) {
+                FacadesSession::put('username', $data['username']);
+                FacadesSession::put('userId', $user->id);
+                FacadesSession::put('level', $user->level);
+                FacadesSession::put('login_id', $user->login_id);
+                FacadesSession::put('status', $user->status);
+                FacadesSession::put('log_type', $user->log_type ?? 'Staff');
+                
+                return redirect()->route('staffdashboard', $user->login_id);
             }
 
             Auth::logout();
-            return redirect()->route('stafferror');
+            return view('auth.stafflogin', ['error' => 'You do not have staff access.']);
         }
 
-        return view('auth.stafflogin');
+        return view('auth.stafflogin', ['error' => 'Invalid username or password.']);
     }
 
     
     public function userlogin(Request $request)
     {
-    //$status = $id;
-
         $data['username'] = $request->username;
         $data['password'] = $request->password;
-        //$data['status'] = $status;
-        // dd($request);
         
-            if (auth()->attempt($data)) {
-                $userId = Auth::user()->id;
-                //return $userId;
-                $userLevel = Auth::user()->level;
-                $userstatus = Auth::user()->status;
-                FacadesSession::put('username', $data['username']);
-                FacadesSession::put('userId', $userId);
-                FacadesSession::put('level', $userLevel);
-                FacadesSession::put('status', $userstatus);
-                //return 'admin';
-                $status   = Auth::user()->status;
-                //$routename = Route::currentRouteName();
-                // if($status == 1){
-                //     //return $id;
-                // return redirect()->route('admindashboard');
-                // }  
-                if($status == 4){   
-               $id   = Auth::user()->login_id;
-               // return 'user';
-               if($id)
-               {
-                return redirect()->route('home');
-                //return view('website.front-end.index');
+        if (auth()->attempt($data)) {
+            $user = Auth::user();
+            if ($user->status == 4) {
+                FacadesSession::put([
+                    'username' => $data['username'],
+                    'userId' => $user->id,
+                    'level' => $user->level,
+                    'status' => $user->status,
+                ]);
 
-                // return redirect()->route('authhome',$id);
-               
-               }
-               else{
-                return redirect()->route('home');
-                return 'user';
-               }
-                
-                }else {
-                    return view('auth.userlogin');
+                if ($user->login_id) {
+                    return redirect()->route('home');
+                } else {
+                    return redirect()->route('home');
                 }
-
-        }       
-         
-         else {
-            return view('auth.userlogin');
-            //return redirect('/login');
-            $decrypted = Crypt::decryptString('$2y$10$bRNXTmZ9.kCorxD9SPIaw.hrRsme48WT/GOW6QnkNsIjTrTZKzSjW');
-            //$decrypted = Crypt::decryptString('YTo0OntzOjY6Il90b2tlbiI7czo0MDoicW5oMTZDcGJRUGRmRm');
-			dd($decrypted);
-            try {
-                $decrypted = decrypt('$2y$10$bRNXTmZ9.kCorxD9SPIaw.hrRsme48WT/GOW6QnkNsIjTrTZKzSjW');
-				//$decrypted = decrypt('YTo0OntzOjY6Il90b2tlbiI7czo0MDoicW5oMTZDcGJRUGRmRm');
-            } catch (DecryptException $e) {
-                //
+            } else {
+                Auth::logout();
+                return view('auth.userlogin', ['error' => 'Unauthorized access.']);
             }
-
-            $viewBag['error'] = $decrypted;
-            return view('auth.userlogin', $viewBag);
+        } else {
+            return view('auth.userlogin', ['error' => 'Invalid username or password.']);
         }
     }
 
