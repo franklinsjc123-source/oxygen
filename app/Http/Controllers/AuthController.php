@@ -159,8 +159,20 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        $redirect = '/admin/login';
+        
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($user->status == 2) {
+                $redirect = '/vendor/login';
+            } elseif ($user->status == 3) {
+                $redirect = '/staff/login';
+            }
+        }
+        
         Auth::logout();
-        return redirect('/');
+        FacadesSession::flush();
+        return redirect($redirect);
     }
     
     public function register(Request $request)
