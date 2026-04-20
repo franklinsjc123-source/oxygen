@@ -46,20 +46,11 @@
             $('.page-main-header').toggleClass('open');
         }
 
-        // Use delegated binding so feather icon replacement does not break click handling.
-        // Also bind 'touchend' for WebView mobile apps where click may not fire reliably.
-        $(document).on('click touchend', '.sidebar-toggle-btn, #sidebar-toggle, .mobile-sidebar', function(e) {
-            // Only handle .mobile-sidebar if the actual touch/click was on the toggle area
-            if ($(this).hasClass('mobile-sidebar')) {
-                if (!$(e.target).closest('.sidebar-toggle-btn, #sidebar-toggle').length) return;
-            }
-            e.preventDefault();
-            e.stopPropagation();
-            toggleSidebar();
-        });
+        // Sidebar toggle is now handled by inline ontouchstart/onclick on the HTML element.
+        // Do NOT add a jQuery handler here — it would cause a double-toggle conflict in WebView.
 
-        // Close sidebar on outside click in mobile view
-        $(document).on('click touchstart', function(e) {
+        // Close sidebar on outside click in mobile view (click only, NOT touchstart)
+        $(document).on('click', function(e) {
             if (!isMobileSidebar()) return;
             if ($('.page-sidebar').hasClass('open')) return; // already hidden
             if ($(e.target).closest('.page-sidebar, .sidebar-toggle-btn, #sidebar-toggle').length) return;
