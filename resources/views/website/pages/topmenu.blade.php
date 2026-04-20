@@ -10,7 +10,7 @@
             </div>
             <div class="mobile-sidebar w-auto">
                 <div class="media-body text-end switch-sm">
-                    <label class="switch"><a href="#" class="sidebar-toggle-btn" aria-label="Toggle sidebar"><i id="sidebar-toggle" data-feather="align-left"></i></a></label>
+                    <div class="switch"><a href="#" class="sidebar-toggle-btn" aria-label="Toggle sidebar"><i id="sidebar-toggle" data-feather="align-left"></i></a></div>
                 </div>
             </div>
             <div class="nav-right col">
