@@ -1,6 +1,7 @@
 (function($) {
     "use strict";
-    $(".mobile-toggle").click(function(){
+    $(document).on('click touchstart', '.mobile-toggle', function(e){
+        e.preventDefault();
         $(".nav-menus").toggleClass("open");
     });
     $(".mobile-search").click(function(){

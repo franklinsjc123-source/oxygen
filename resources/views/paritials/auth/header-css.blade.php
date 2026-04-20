@@ -4,14 +4,20 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 32px;
-        min-height: 32px;
+        width: 100%;
+        height: 100%;
     }
 
-    .mobile-sidebar #sidebar-toggle {
+    .mobile-sidebar #sidebar-toggle, .mobile-toggle {
         cursor: pointer;
-        z-index: 12;
+        z-index: 999;
         position: relative;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px; /* standard mobile touch target */
+        min-height: 44px;
+        pointer-events: auto !important;
     }
 
     /* Remove blue focus outlines globally from links and buttons */
@@ -19,4 +25,5 @@
         outline: none !important;
         box-shadow: none !important;
     }
+    
 </style>

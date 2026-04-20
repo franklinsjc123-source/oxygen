@@ -45,7 +45,7 @@ function toggleSidebar() {
 }
 
 // Use delegated binding so feather icon replacement does not break click handling
-$(document).on('click', '.sidebar-toggle-btn, #sidebar-toggle', function(e) {
+$(document).on('click touchstart', '.sidebar-toggle-btn, #sidebar-toggle', function(e) {
     e.preventDefault();
     e.stopPropagation();
     toggleSidebar();
