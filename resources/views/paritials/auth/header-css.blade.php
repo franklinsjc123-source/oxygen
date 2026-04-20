@@ -18,6 +18,18 @@
         min-width: 44px; /* standard mobile touch target */
         min-height: 44px;
         pointer-events: auto !important;
+        touch-action: manipulation; /* prevents 300ms delay in WebView */
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Ensure all clickable elements in header respond in WebView */
+    .main-header-right a,
+    .main-header-right button,
+    .nav-menus a,
+    .sidebar-toggle-btn,
+    .onhover-dropdown {
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
     }
 
     /* Remove blue focus outlines globally from links and buttons */

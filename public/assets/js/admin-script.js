@@ -1,7 +1,12 @@
 (function($) {
     "use strict";
-    $(document).on('click touchstart', '.mobile-toggle', function(e){
+    // Guard against double-firing in Android WebView
+    var _mobileToggleLast = 0;
+    $(document).on('click touchend', '.mobile-toggle', function(e){
         e.preventDefault();
+        var now = Date.now();
+        if (now - _mobileToggleLast < 400) return;
+        _mobileToggleLast = now;
         $(".nav-menus").toggleClass("open");
     });
     $(".mobile-search").click(function(){

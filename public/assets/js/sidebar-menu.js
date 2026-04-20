@@ -45,14 +45,19 @@ function toggleSidebar() {
 }
 
 // Use delegated binding so feather icon replacement does not break click handling
-$(document).on('click touchstart', '.sidebar-toggle-btn, #sidebar-toggle', function(e) {
+// Guard against double-firing in Android WebView (touchstart + click both fire on a single tap)
+var _sidebarLastToggle = 0;
+$(document).on('click touchend', '.sidebar-toggle-btn, #sidebar-toggle', function(e) {
     e.preventDefault();
     e.stopPropagation();
+    var now = Date.now();
+    if (now - _sidebarLastToggle < 400) return; // ignore duplicate event
+    _sidebarLastToggle = now;
     toggleSidebar();
 });
 
 // Close sidebar on outside click in mobile view
-$(document).on('click touchstart', function(e) {
+$(document).on('click touchend', function(e) {
     if (!isMobileSidebar()) return;
     if ($nav.hasClass('open')) return; // already hidden
     if ($(e.target).closest('.page-sidebar, .sidebar-toggle-btn, #sidebar-toggle').length) return;
