@@ -1,17 +1,35 @@
 <style>
-    /* Keep mobile sidebar toggle visible/clickable */
-    .mobile-sidebar .switch a {
+    /* ── Sidebar Toggle Button Fix ──
+       The .switch class is designed for CSS toggle switches (25×16px).
+       We must override it when used as a sidebar toggle icon button
+       to make the click/touch area large enough (44×44px per mobile guidelines). */
+    .mobile-sidebar .switch-sm .switch {
+        width: auto !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    .mobile-sidebar .sidebar-toggle-btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 32px;
-        min-height: 32px;
-    }
-
-    .mobile-sidebar #sidebar-toggle {
+        min-width: 44px;
+        min-height: 44px;
+        padding: 8px;
         cursor: pointer;
         z-index: 12;
         position: relative;
+        touch-action: manipulation;    /* Prevents 300ms delay in WebView */
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    .mobile-sidebar .sidebar-toggle-btn svg,
+    .mobile-sidebar .sidebar-toggle-btn i {
+        width: 22px;
+        height: 22px;
+        pointer-events: none;  /* Clicks pass through to the <a> parent */
     }
 
     /* Remove blue focus outlines globally from links and buttons */

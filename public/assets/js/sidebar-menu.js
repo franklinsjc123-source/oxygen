@@ -46,8 +46,13 @@
             $('.page-main-header').toggleClass('open');
         }
 
-        // Use delegated binding so feather icon replacement does not break click handling
-        $(document).on('click', '.sidebar-toggle-btn, #sidebar-toggle', function(e) {
+        // Use delegated binding so feather icon replacement does not break click handling.
+        // Also bind 'touchend' for WebView mobile apps where click may not fire reliably.
+        $(document).on('click touchend', '.sidebar-toggle-btn, #sidebar-toggle, .mobile-sidebar', function(e) {
+            // Only handle .mobile-sidebar if the actual touch/click was on the toggle area
+            if ($(this).hasClass('mobile-sidebar')) {
+                if (!$(e.target).closest('.sidebar-toggle-btn, #sidebar-toggle').length) return;
+            }
             e.preventDefault();
             e.stopPropagation();
             toggleSidebar();
