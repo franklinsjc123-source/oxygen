@@ -9,7 +9,7 @@
 
  
     <!-- Bootstrap js-->
-    <script src="{{asset('assets/js/jquery-3.3.1.min.js')}}"></script>
+    <!-- <script src="{{asset('assets/js/jquery-3.3.1.min.js')}}"></script> -->
     <script src="{{asset('assets/js/sidebar-menu.js')}}"></script>
         <script src="{{asset('assets/js/Datepicker1/dist/mc-calendar.min.js')}}"></script>
 
