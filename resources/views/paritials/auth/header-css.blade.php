@@ -13,4 +13,10 @@
         z-index: 12;
         position: relative;
     }
+
+    /* Remove blue focus outlines globally from links and buttons */
+    a:focus, button:focus, .btn:focus, .sidebar-header:focus, .profile-dropdown a:focus {
+        outline: none !important;
+        box-shadow: none !important;
+    }
 </style>
