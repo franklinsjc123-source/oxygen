@@ -29,13 +29,12 @@ $.sidebarMenu = function(menu) {
 $.sidebarMenu($('.sidebar-menu'))
 $nav = $('.page-sidebar');
 $header = $('.page-main-header');
-$toggle_nav_top = $('#sidebar-toggle');
-$toggle_nav_top.click(function() {
-  $this = $(this);
-  $nav = $('.page-sidebar');
+$(document).on('click', '#sidebar-toggle, .sidebar-toggle-btn', function(e) {
+  e.preventDefault();
+  var $nav = $('.page-sidebar');
+  var $header = $('.page-main-header');
   $nav.toggleClass('open');
   $header.toggleClass('open');
-
 });
 $body_part_side = $('.body-part');
 $body_part_side.click(function(){

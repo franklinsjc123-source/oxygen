@@ -9,8 +9,9 @@
             </div>
             <div class="mobile-sidebar w-auto">
                 <div class="media-body text-end switch-sm">
-                    <label class="switch"><a href="#" class="sidebar-toggle-btn" aria-label="Toggle sidebar"><i id="sidebar-toggle"
-                                data-feather="align-left"></i></a></label>
+                    <a href="javascript:void(0)" class="sidebar-toggle-btn" id="sidebar-toggle" aria-label="Toggle sidebar">
+                        <i data-feather="align-left"></i>
+                    </a>
                 </div>
             </div>
             <div class="nav-right col">

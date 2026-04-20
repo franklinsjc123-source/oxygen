@@ -40,6 +40,8 @@ function openSidebar() {
 }
 
 function toggleSidebar() {
+    var $nav = $('.page-sidebar');
+    var $header = $('.page-main-header');
     $nav.toggleClass('open');
     $header.toggleClass('open');
 }
