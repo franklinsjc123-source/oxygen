@@ -9,11 +9,8 @@
             </div>
             <div class="mobile-sidebar w-auto">
                 <div class="media-body text-end switch-sm">
-                    <div id="sidebar-toggle" class="sidebar-toggle-btn" 
-                         onclick="var n=document.querySelector('.page-sidebar');var h=document.querySelector('.page-main-header');if(n){n.classList.toggle('open');}if(h){h.classList.toggle('open');}" 
-                         style="cursor:pointer;padding:10px;display:inline-block;z-index:999;position:relative;touch-action:manipulation;">
-                        <i data-feather="align-left"></i>
-                    </div>
+                    <label class="switch"><a href="#" class="sidebar-toggle-btn" aria-label="Toggle sidebar"><i id="sidebar-toggle"
+                                data-feather="align-left"></i></a></label>
                 </div>
             </div>
             
@@ -370,7 +367,7 @@
                         </ul>
                     </li>
                 </ul>
-                <div class="d-lg-none mobile-toggle pull-right" onclick="document.querySelector('.nav-menus').classList.toggle('open');" style="cursor:pointer;padding:10px;touch-action:manipulation;"><i data-feather="more-horizontal"></i></div>
+                <div class="d-lg-none mobile-toggle pull-right"><i data-feather="more-horizontal"></i></div>
             </div>
         </div>
     </div>
