@@ -16,8 +16,8 @@
                 <img class="img-60 rounded-circle lazyloaded blur-up"
                     src="{{ asset('assets/images/dashboard/man.jpeg') }}" alt="#">
             </div>
-            <h6 class="mt-3 f-14">{{session()->get('log_name')}}</h6>
-            <p> {{session()->get('log_type')}}</p>
+            <h6 class="mt-3 f-14">{{session()->get('log_name') ?? 'ADMIN'}}</h6>
+            <p> {{session()->get('log_type') ?? 'Administrator'}}</p>
         </div>
         <ul class="sidebar-menu">
      @if (session()->get('log_type') == 'Admin') 
@@ -32,7 +32,7 @@
             @php
                 $sub_menus = App\Models\Submenus::where('main_menu', '=', $mainmenu->id)->get();
             @endphp
-            <li><a class="sidebar-header" href="#"><i data-feather="{{$mainmenu->font_icon}}"></i> <span>{{$mainmenu->title}}</span><i class="fa fa-angle-right pull-right"></i></a>
+            <li><a class="sidebar-header" href="#"><i data-feather="{{$mainmenu->font_icon}}"></i> <span>{{$mainmenu->title}}</span><i class="fa fa-angle-right pull-right" style="float: right;"></i></a>
                 <ul class="sidebar-submenu">
                     @foreach($sub_menus as $submenu)
 						@if($submenu->type=='route')
@@ -66,7 +66,7 @@
             @php
                 $sub_menus = App\Models\Submenus::where('main_menu', '=', $mainmenu->id)->get();
             @endphp
-            <li><a class="sidebar-header" href="#"><i data-feather="{{$mainmenu->font_icon}}"></i> <span>{{$mainmenu->title}}</span><i class="fa fa-angle-right pull-right"></i></a>
+            <li><a class="sidebar-header" href="#"><i data-feather="{{$mainmenu->font_icon}}"></i> <span>{{$mainmenu->title}}</span><i class="fa fa-angle-right pull-right" style="float: right;"></i></a>
                 <ul class="sidebar-submenu">
                     @foreach($sub_menus as $submenu)
 					@if(isset($staffroless) && in_array($submenu->id, explode(',', $staffroless->submenus)))
