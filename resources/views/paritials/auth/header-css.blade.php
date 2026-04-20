@@ -13,13 +13,13 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 44px;
-        min-height: 44px;
-        padding: 8px;
+        min-width: 50px;
+        min-height: 50px;
+        padding: 5px;
         cursor: pointer;
-        z-index: 12;
+        z-index: 9999 !important; /* Ensure it stays above any overlays */
         position: relative;
-        touch-action: manipulation;    /* Prevents 300ms delay in WebView */
+        touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
         user-select: none;
         -webkit-user-select: none;

@@ -41,20 +41,35 @@
             $('.page-main-header').removeClass('open');
         }
 
-        function toggleSidebar() {
+        // Robust Toggle Function
+        function toggleSidebar(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
             $('.page-sidebar').toggleClass('open');
             $('.page-main-header').toggleClass('open');
+            // Also toggle a class on body as a fallback/overlay help
+            $('body').toggleClass('sidebar-open');
         }
 
-        // Sidebar toggle is now handled by inline ontouchstart/onclick on the HTML element.
-        // Do NOT add a jQuery handler here — it would cause a double-toggle conflict in WebView.
+        // Use direct binding with stopPropagation to ensure no conflicts
+        $(document).on('click touchstart', '.sidebar-toggle-btn, #sidebar-toggle', function(e) {
+            toggleSidebar(e);
+        });
 
-        // Close sidebar on outside click in mobile view (click only, NOT touchstart)
-        $(document).on('click', function(e) {
+        // Close sidebar on outside click in mobile view
+        $(document).on('click touchstart', function(e) {
             if (!isMobileSidebar()) return;
-            if ($('.page-sidebar').hasClass('open')) return; // already hidden
+            // If sidebar is hidden (has .open class), do nothing
+            if ($('.page-sidebar').hasClass('open')) return;
+            
+            // If the click is on the toggle button or sidebar itself, let it happen
             if ($(e.target).closest('.page-sidebar, .sidebar-toggle-btn, #sidebar-toggle').length) return;
+            
+            // Otherwise, close it
             closeSidebar();
+            $('body').removeClass('sidebar-open');
         });
 
         // Close sidebar after selecting a leaf menu item in mobile

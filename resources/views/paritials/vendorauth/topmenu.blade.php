@@ -9,12 +9,9 @@
             </div>
             <div class="mobile-sidebar w-auto">
                 <div class="media-body text-end switch-sm">
-                    <div class="sidebar-toggle-btn" id="sidebar-toggle"
-                         style="display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;cursor:pointer;padding:8px;touch-action:manipulation;-webkit-tap-highlight-color:rgba(0,0,0,0.1);user-select:none;-webkit-user-select:none;"
-                         ontouchstart="event.preventDefault();document.querySelector('.page-sidebar').classList.toggle('open');document.querySelector('.page-main-header').classList.toggle('open');"
-                         onclick="document.querySelector('.page-sidebar').classList.toggle('open');document.querySelector('.page-main-header').classList.toggle('open');">
+                    <a href="javascript:void(0)" class="sidebar-toggle-btn" id="sidebar-toggle" aria-label="Toggle sidebar">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none;"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
-                    </div>
+                    </a>
                 </div>
             </div>
             <div class="nav-right col">
