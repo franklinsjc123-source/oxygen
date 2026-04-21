@@ -41,25 +41,38 @@
             $('.page-main-header').removeClass('open');
         }
 
+        // Debounce flag to prevent dual touchstart + click firing
+        var sidebarToggleLock = false;
+
         // Robust Toggle Function
         function toggleSidebar(e) {
             if (e) {
                 e.preventDefault();
                 e.stopPropagation();
             }
+            // Prevent dual-fire: if touchend just handled it, skip the click
+            if (sidebarToggleLock) return;
+            sidebarToggleLock = true;
+            setTimeout(function() { sidebarToggleLock = false; }, 400);
+
             $('.page-sidebar').toggleClass('open');
             $('.page-main-header').toggleClass('open');
             // Also toggle a class on body as a fallback/overlay help
             $('body').toggleClass('sidebar-open');
         }
 
-        // Use direct binding with stopPropagation to ensure no conflicts
-        $(document).on('click touchstart', '.sidebar-toggle-btn, #sidebar-toggle', function(e) {
+        // Bind to click only (works on both desktop and mobile)
+        $(document).on('click', '.sidebar-toggle-btn, #sidebar-toggle', function(e) {
             toggleSidebar(e);
         });
 
-        // Close sidebar on outside click in mobile view
-        $(document).on('click touchstart', function(e) {
+        // Also bind touchend for faster response on touch devices
+        $(document).on('touchend', '.sidebar-toggle-btn, #sidebar-toggle', function(e) {
+            toggleSidebar(e);
+        });
+
+        // Close sidebar on outside click in mobile view (click only, no touchstart)
+        $(document).on('click', function(e) {
             if (!isMobileSidebar()) return;
             // If sidebar is hidden (has .open class), do nothing
             if ($('.page-sidebar').hasClass('open')) return;

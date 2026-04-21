@@ -8,7 +8,7 @@
                             src="{{ asset('assets/images/dashboard/logo/newlogo.png') }}" alt=""></a></div>
             </div>
             <div class="mobile-sidebar w-auto">
-                <div class="media-body text-end switch-sm">
+                <div class="media-body text-end switch-sm ">
                     <a href="javascript:void(0)" class="sidebar-toggle-btn" id="sidebar-toggle" aria-label="Toggle sidebar">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none;"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
                     </a>
