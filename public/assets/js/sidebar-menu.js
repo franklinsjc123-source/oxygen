@@ -50,7 +50,7 @@
                 e.preventDefault();
                 e.stopPropagation();
             }
-            // Prevent dual-fire: if touchend just handled it, skip the click
+            // Prevent dual-fire: if touchend/touchstart just handled it, skip the click
             if (sidebarToggleLock) return;
             sidebarToggleLock = true;
             setTimeout(function() { sidebarToggleLock = false; }, 400);
@@ -61,7 +61,16 @@
             $('body').toggleClass('sidebar-open');
         }
 
-        // Bind to click only (works on both desktop and mobile)
+        // EXPOSE globally so inline onclick/ontouchstart in HTML works in Android WebView
+        window.toggleSidebarMenu = function(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            toggleSidebar(e);
+        };
+
+        // Bind to click (works on both desktop and mobile browser)
         $(document).on('click', '.sidebar-toggle-btn, #sidebar-toggle', function(e) {
             toggleSidebar(e);
         });
