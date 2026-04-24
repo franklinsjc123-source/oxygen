@@ -333,7 +333,6 @@
                                                             <option value="3" {{(@$nproduct=="3")?'Selected':'';}}>3</option>
                                                             <option value="4" {{(@$nproduct=="4")?'Selected':'';}}>4</option>
                                                             <option value="5" {{(@$nproduct=="5")?'Selected':'';}}>5</option>
-
                                                         </select>
                                                     </div>
                                                 </div>

@@ -622,6 +622,7 @@ class FrontendController extends Controller
             'pd.retail_price as retail_amount',
             'pd.selling_price as selling_amount',
             'pd.product_detail_image',
+            'pd.common_product',
             'o.offer_logo',
             'o.type as offer_type',
             'o.discount_type',
@@ -660,29 +661,38 @@ class FrontendController extends Controller
                 ];
             }
 
-            if (!empty($val->color) && !in_array($val->color, $resultArr[$productId]['colors'])) {
-                $color = ProductColor::Where('color_name', $val->color)->value('color_code');
-                $resultArr[$productId]['colors'][] = isset($color) ? $color : '';
+            $rawColor = trim((string)($val->color ?? ''));
+            // If color is empty or just a dash, treat it as "As Shown"
+            $displayColorName = ($rawColor === '' || $rawColor === '-') ? 'As Shown' : $rawColor;
+            
+            $dbColor = ProductColor::where('color_name', $displayColorName)->first();
+            $colorCode = $dbColor ? $dbColor->color_code : null;
+            
+            // If it's explicitly "multicolor" OR we have no color code in the DB, treat it as imaging-based
+            $isMulticolorVariant = ($isMulticolor || empty($colorCode));
+
+            if (!in_array($displayColorName, $resultArr[$productId]['colors'])) {
+                $resultArr[$productId]['colors'][] = $displayColorName;
             }
 
-            $colorCode = ProductColor::where('color_name', $val->color)->value('color_code');
-            $colorCode = !empty($colorCode) ? $colorCode : ($isMulticolor ? null : $val->color);
-
             $colorExists = false;
-            if (!empty($val->color)) {
-                foreach ($resultArr[$productId]['color_options'] as $opt) {
-                    if (($opt['name'] ?? '') === $val->color) {
+            foreach ($resultArr[$productId]['color_options'] as $opt) {
+                if (($opt['name'] ?? '') === $displayColorName) {
+                    // For multicolor/imaging variants, we show different options if images or common_product IDs differ
+                    if (!$isMulticolorVariant || (($opt['image'] ?? '') === $previewImage && ($opt['common_product'] ?? '') === $val->common_product)) {
                         $colorExists = true;
                         break;
                     }
                 }
             }
-            if (!empty($val->color) && !$colorExists) {
+            
+            if (!$colorExists) {
                 $resultArr[$productId]['color_options'][] = [
-                    'name' => $val->color,
+                    'name' => $displayColorName,
                     'code' => $colorCode,
-                    'is_multicolor' => $isMulticolor,
+                    'is_multicolor' => $isMulticolorVariant,
                     'image' => $previewImage,
+                    'common_product' => $val->common_product,
                 ];
             }
 
@@ -702,13 +712,14 @@ class FrontendController extends Controller
                 $resultArr[$productId]['images'][] = $val->product_detail_image;
             }
 
-            if (!empty($val->color) && !empty($val->size)) {
+            if (!empty($val->size)) {
                 $resultArr[$productId]['variants'][] = [
                     'detail_id' => (int) ($val->product_detail_id ?? 0),
-                    'color_name' => $val->color,
+                    'color_name' => $displayColorName,
                     'color_code' => $colorCode,
-                    'is_multicolor' => $isMulticolor,
+                    'is_multicolor' => $isMulticolorVariant,
                     'preview_image' => $previewImage,
+                    'common_product' => $val->common_product,
                     'size' => $val->size,
                     'selling_amount' => (float) ($val->selling_amount ?? 0),
                     'retail_amount' => (float) ($val->retail_amount ?? 0),
@@ -1234,24 +1245,6 @@ class FrontendController extends Controller
 
     public function productVar($id = '')
     {
-        $ratings = Rating::withCount([
-            'helpfulVotes',
-            'unhelpfulVotes'
-        ])
-            ->where('ratings.products_id', $id)
-            ->where('ratings.status', 1)
-            ->orderBy('ratings.id', 'desc')
-            ->select('ratings.*')
-            ->selectSub(function ($q) {
-                $q->from('review_images')
-                    ->whereColumn('review_images.rating_id', 'ratings.id')
-                    ->selectRaw('GROUP_CONCAT(review_images.image_path)');
-            }, 'images')
-            ->get();
-
-        $prouctsList = $this->getProduct($id);
-        $imageList = $this->getProductImageList($id);
-
         $getSpecificProduct = ProductsDetails::with('product', 'product.CategoryChild')
             ->where('id', $id)
             ->first();
@@ -1266,6 +1259,26 @@ class FrontendController extends Controller
         if (!$getSpecificProduct) {
             return redirect('home');
         }
+
+        $mainProductId = $getSpecificProduct->products_id;
+
+        $ratings = Rating::withCount([
+            'helpfulVotes',
+            'unhelpfulVotes'
+        ])
+            ->where('ratings.products_id', $mainProductId)
+            ->where('ratings.status', 1)
+            ->orderBy('ratings.id', 'desc')
+            ->select('ratings.*')
+            ->selectSub(function ($q) {
+                $q->from('review_images')
+                    ->whereColumn('review_images.rating_id', 'ratings.id')
+                    ->selectRaw('GROUP_CONCAT(review_images.image_path)');
+            }, 'images')
+            ->get();
+
+        $prouctsList = $this->getProduct($mainProductId);
+        $imageList = $this->getProductImageList($mainProductId);
 
         $getProduct = Products::where('id', $getSpecificProduct->products_id)->first();
         if (!$getProduct) {

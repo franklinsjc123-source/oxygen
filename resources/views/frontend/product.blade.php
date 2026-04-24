@@ -4,27 +4,97 @@
  <!-- Start of Main -->
  <main class="main mb-10 pb-1">
     <style>
+        /* Global override for product variations to ensure they display correctly */
+        .product-single .product-color-swatch .color {
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        /* Base color option style */
+        .product-color-option {
+            width: 36px !important;
+            height: 36px !important;
+            border-radius: 50% !important;
+            margin-right: 14px !important;
+            position: relative;
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid #fff !important;
+            box-shadow: 0 0 0 1px #e5e5e5;
+            cursor: pointer;
+            overflow: hidden !important;
+            text-decoration: none !important;
+            box-sizing: border-box !important;
+            background-image: none !important; /* Prevent theme background ticks */
+        }
+
+        .product-color-option::before {
+            display: none !important; /* Hide theme's default tick icons */
+            content: "" !important;
+        }
+
+        .product-color-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.12), 0 0 0 1px #ccc;
+        }
+
+        .product-color-option.active {
+            box-shadow: 0 0 0 2px #222 !important;
+            transform: scale(1.1);
+        }
+
+        /* Aesthetic Checkmark (Tick) indicator */
+        .product-color-option.active::after {
+            content: "\f00c" !important;
+            font-family: "Font Awesome 5 Free", "Font Awesome 6 Free", "FontAwesome", sans-serif !important;
+            font-weight: 900 !important;
+            font-size: 14px !important;
+            color: #fff !important;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            animation: tickPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            display: block !important;
+            margin: auto;
+            line-height: 1;
+        }
+
+        @keyframes tickPop {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Special handling for multicolor/image variants */
         .product-color-option.multicolor-option {
-            width: 56px;
-            height: 56px;
-            padding: 3px;
-            border-radius: 14px;
+            padding: 0;
             background: #fff;
-            border: 1px solid #d9d9d9;
-            overflow: hidden;
         }
 
         .product-color-option.multicolor-option img {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            border-radius: 10px;
+            object-fit: cover !important;
+            object-position: center !important;
             display: block;
+            border-radius: 50%;
         }
 
-        .product-color-option.multicolor-option.active {
-            border-color: #222;
-            box-shadow: 0 0 0 2px rgba(34, 34, 34, 0.12);
+        /* Dark tick for light color backgrounds to ensure visibility */
+        .product-color-option[style*="background-color: #ffffff"].active::after,
+        .product-color-option[style*="background-color: white"].active::after,
+        .product-color-option[style*="background-color: rgb(255, 255, 255)"].active::after,
+        .product-color-option[title*="White"].active::after,
+        .product-color-option[title*="white"].active::after {
+            color: #222 !important;
+            text-shadow: none !important;
         }
     </style>
      <!-- Start of Breadcrumb -->
@@ -193,23 +263,25 @@
                                      <div class="d-flex align-items-center product-variations" id="product-color-options">
                                          @foreach (($prouctsList['color_options'] ?? []) as $colorOption)
                                             @php
-                                                $multicolorImage = $colorOption['image'] ?? '';
-                                                $isMainProductImage = $multicolorImage === ($prouctsList['product_image'] ?? null);
-                                                $multicolorImageUrl = $multicolorImage
+                                                $multicolorImage = !empty($colorOption['image']) ? $colorOption['image'] : ($prouctsList['product_image'] ?? null);
+                                                $isMainProductImage = (!empty($multicolorImage) && $multicolorImage === ($prouctsList['product_image'] ?? null));
+                                                $multicolorImageUrl = !empty($multicolorImage)
                                                     ? asset(($isMainProductImage ? 'assets/images/products/' : 'assets/images/products/detail/') . $multicolorImage)
                                                     : null;
                                             @endphp
                                             <a href="#"
-                                                class="color product-color-option{{ !empty($colorOption['is_multicolor']) ? ' multicolor-option' : '' }}"
+                                                class="color product-color-option{{ (!empty($colorOption['is_multicolor']) || empty($colorOption['code'])) ? ' multicolor-option' : '' }}"
                                                 data-color-name="{{ $colorOption['name'] }}"
+                                                data-color-image="{{ $colorOption['image'] }}"
+                                                data-common-product="{{ $colorOption['common_product'] }}"
                                                 data-is-multicolor="{{ !empty($colorOption['is_multicolor']) ? 1 : 0 }}"
                                                 title="{{ $colorOption['name'] }}"
-                                                @if(empty($colorOption['is_multicolor']) && !empty($colorOption['code']))
+                                                @if(!empty($colorOption['code']) && empty($colorOption['is_multicolor']))
                                                     style="background-color: {{ $colorOption['code'] }};"
                                                 @endif>
-                                                @if(!empty($colorOption['is_multicolor']) && !empty($multicolorImageUrl))
-                                                    <img src="{{ $multicolorImageUrl }}" alt="{{ $colorOption['name'] }}">
-                                                @elseif(!empty($colorOption['is_multicolor']))
+                                                @if((!empty($colorOption['is_multicolor']) || empty($colorOption['code'])) && !empty($multicolorImageUrl))
+                                                    <img src="{{ $multicolorImageUrl }}" data-src="{{ $multicolorImageUrl }}" alt="{{ $colorOption['name'] }}" style="opacity: 1 !important; visibility: visible !important;" onerror="this.src='{{ asset('assets/images/products/'.($prouctsList['product_image'] ?? 'default.jpg')) }}';">
+                                                @elseif(!empty($colorOption['is_multicolor']) || empty($colorOption['code']))
                                                     <span class="d-flex align-items-center justify-content-center h-100 w-100 small text-dark">MC</span>
                                                 @endif
                                             </a>
@@ -1244,9 +1316,14 @@
          });
      }
 
-     function renderSizesForColor(colorName) {
+     function renderSizesForColor(colorName, colorImage, commonProduct) {
          const filtered = productVariants.filter(function(v) {
-             return String(v.color_name || '') === String(colorName || '');
+             const nameMatch = String(v.color_name || '') === String(colorName || '');
+             // Use optional imaging/id matching to distinguish between same-named options (like "As Shown")
+             const imageMatch = !colorImage || String(v.preview_image || '') === String(colorImage || '');
+             const commonMatch = !commonProduct || String(v.common_product || '') === String(commonProduct || '');
+             
+             return nameMatch && imageMatch && commonMatch;
          });
 
          const sizeMap = {};
@@ -1285,16 +1362,29 @@
          }
      }
 
-     function setColor(colorName) {
+     function setColor(colorName, colorImage, commonProduct, element) {
          $('#product-color').val(colorName);
          $('.product-color-option').removeClass('active');
-         $('.product-color-option[data-color-name="' + String(colorName).replace(/"/g, '\\"') + '"]').addClass('active');
-         renderSizesForColor(colorName);
+         
+         if (element) {
+             $(element).addClass('active');
+         } else {
+             // Precise selector for initial load
+             const $match = $('.product-color-option').filter(function() {
+                 return $(this).data('color-name') === colorName && 
+                        $(this).data('color-image') === colorImage &&
+                        $(this).data('common-product') === commonProduct;
+             }).first();
+             ($match.length ? $match : $('.product-color-option').first()).addClass('active');
+         }
+         
+         renderSizesForColor(colorName, colorImage, commonProduct);
      }
 
      $(document).on('click', '.product-color-option', function(e) {
          e.preventDefault();
-         setColor($(this).data('color-name'));
+         const $el = $(this);
+         setColor($el.data('color-name'), $el.data('color-image'), $el.data('common-product'), this);
      });
 
      $(document).on('click', '.product-size-option', function(e) {
@@ -1303,9 +1393,9 @@
      });
 
      $(function() {
-         const $firstColor = $('.product-color-option').first();
-         if ($firstColor.length) {
-             setColor($firstColor.data('color-name'));
+         const $first = $('.product-color-option').first();
+         if ($first.length) {
+             setColor($first.data('color-name'), $first.data('color-image'), $first.data('common-product'), $first.get(0));
          }
      });
 
