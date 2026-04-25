@@ -1300,7 +1300,7 @@ class FrontendController extends Controller
             $offerDetails = \DB::table('master_offers')->where('id', $getProduct->offers)->first();
         }
 
-        $vendor_details = vendorcreate::where('id', $getProduct->created_by)->first() ?? new vendorcreate();
+        $vendor_details = vendorcreate::where('id', $getProduct->vendor_id)->first() ?? new vendorcreate();
 
         $prouctdata = $getProduct;
 

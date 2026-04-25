@@ -155,7 +155,7 @@
                                                           $offer_image = $prouctsList['offer_image'] ?? null;
                                                       @endphp
                                                       @if($offer_image)
-                                                          <div class="product-label-group" style="position: absolute; top: 10px; left: 10px; z-index: 10;">
+                                                          <div class="product-label-group offer-scroll-trigger" style="position: absolute; top: 10px; left: 10px; z-index: 10; cursor: pointer;">
                                                               <img src="{{ asset('assets/images/offer_logo/'.$offer_image) }}" alt="Offer" style="width: 100px; height: 100px; object-fit: contain; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); border-radius: 5px;">
                                                           </div>
                                                       @endif
@@ -1032,7 +1032,7 @@
 
 
                  
-                      <section class="related-product-section">
+                      <section class="related-product-section" id="related-offer-products">
                          <div class="title-link-wrapper mb-4">
                              <h4 class="title">Related Offer Products</h4>
                              <a href="{{ route('offer-products', ['id' => $getProduct->vendor_id]) }}?id={{ $getProduct->offers }}" class="btn btn-dark btn-link btn-slide-right btn-icon-right">More
@@ -1607,8 +1607,43 @@
              } else {
                  $('.cart-count').html(data.count || 0);
              }
+
+             @if($getProduct->offers)
+                 setTimeout(function() {
+                     var msg = "This is an offer product! Add some more to complete this offer.";
+                     if (typeof swal === 'function') {
+                         swal({
+                             title: "Offer Product Added!",
+                             text: msg,
+                             icon: "info",
+                             buttons: {
+                                 cancel: "Close",
+                                 viewOffers: {
+                                     text: "View Offers",
+                                     value: "view",
+                                 },
+                             },
+                         }).then((value) => {
+                             if (value === "view") {
+                                 document.querySelector('#related-offer-products').scrollIntoView({ behavior: 'smooth' });
+                             }
+                         });
+                     } else {
+                         if (confirm(msg + "\n\nClick OK to view more offer products.")) {
+                             document.querySelector('#related-offer-products').scrollIntoView({ behavior: 'smooth' });
+                         }
+                     }
+                 }, 800);
+             @endif
          });
      }
+
+     $(document).on('click', '.offer-scroll-trigger', function() {
+         const target = document.querySelector('#related-offer-products');
+         if (target) {
+             target.scrollIntoView({ behavior: 'smooth' });
+         }
+     });
  </script>
  <script>
     
