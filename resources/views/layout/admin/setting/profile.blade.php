@@ -110,11 +110,11 @@
                                                 <tbody>
                                                 <tr>
                                                     <td>First Name:</td>
-                                                    <td>{{$data['details']->firstName}}</td>
+                                                    <td>{{ $data['details']->firstName ?? $data['user']->firstName ?? '' }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Last Name:</td>
-                                                    <td>{{$data['details']->lastName}}</td>
+                                                    <td>{{ $data['details']->lastName ?? $data['user']->lastName ?? '' }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Email:</td>
@@ -122,28 +122,28 @@
                                                 </tr>
                                                 <tr>
                                                     <td>Gender:</td>
-                                                    <td>{{$data['details']->gender}}</td>
+                                                    <td>{{ $data['details']->gender ?? '' }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Adhar Card:</td>
-                                                    <td>{{$data['details']->adharcard}}</td>
+                                                    <td>{{ $data['details']->adharcard ?? '' }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Pan Card:</td>
-                                                    <td>{{$data['details']->pancard}}</td>
+                                                    <td>{{ $data['details']->pancard ?? '' }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Mobile Number:</td>
-                                                    <td>{{$data['details']->mobile}}</td>
+                                                    <td>{{ $data['details']->mobile ?? '' }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Phone Number:</td>
-                                                    <td>{{$data['details']->phone}}</td>
+                                                    <td>{{ $data['details']->phone ?? '' }}</td>
                                                 </tr>
                                                
                                                 <tr>
                                                     <td>address:</td>
-                                                    <td>{{$data['details']->address}}</td>
+                                                    <td>{{ $data['details']->address ?? '' }}</td>
                                                 </tr>
                                                 </tbody>
                                             </table>

@@ -20,8 +20,14 @@ class SettingController extends Controller
     }
     public function profile()
     {
-        $userId=Session::get('userId');
+        $userId = Session::get('userId');
+        $status = Session::get('status');
         $viewBag['data'] = $this->profileRepo->getRecords($userId); 
-        return view('layout.admin.setting.profile',$viewBag);
+        
+        if ($status == 2) {
+            return view('layout.vendor.setting.profile', $viewBag);
+        }
+        
+        return view('layout.admin.setting.profile', $viewBag);
     }
 }
