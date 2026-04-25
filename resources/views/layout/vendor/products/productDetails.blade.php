@@ -147,9 +147,9 @@
                                                                
                                                                 <div class="col-md-2">
                                                                     <select class="form-select form-select-lg text-secondary"
-                                                                        name="return_replace[]" required>
+                                                                        name="return_replace[]">
                                                                         
-                                                                        <option selected value="" hidden>Select Return</option>
+                                                                        <option selected value="">Select</option>
                                                                         <option value="Return">
                                                                             Return
                                                                         </option>
@@ -161,7 +161,7 @@
                                 
                                                                 <div class="col-md-2">
                                                                     <input type="text" name="r_days[]" placeholder="Days"
-                                                                        class="form-control" required>
+                                                                        class="form-control">
                                                                 </div> 
 
                                                                 <div class="col-md-2">

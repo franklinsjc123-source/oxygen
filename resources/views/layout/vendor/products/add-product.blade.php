@@ -600,12 +600,11 @@
                                     </div>
 
                                     <div class="form-group col-md-3">
-                                        <label><span
-                                                                        class="text-danger">*</span> Return </label>
+                                        <label> Return </label>
                                         <select class="form-select form-select-lg text-secondary"
-                                            name="return_replace[{{ $i }}]" required>
+                                            name="return_replace[{{ $i }}]">
 
-                                            <option selected value="" hidden>Select Return</option>
+                                            <option selected value="">Select</option>
                                             <option value="Return">
                                                 Return
                                             </option>
@@ -618,10 +617,9 @@
                                     </div>
 
                                     <div class="form-group col-md-2">
-                                        <label> <span
-                                                                        class="text-danger">*</span>Return Days</label>
+                                        <label> Return Days</label>
                                         <input type="text" name="r_days[{{ $i }}]" placeholder="Days"
-                                            class="form-control" required>
+                                            class="form-control">
                                     </div>
                                     <div class="col-md-12">
                                         <div id="previewContainer{{ $i }}" class="row"></div>

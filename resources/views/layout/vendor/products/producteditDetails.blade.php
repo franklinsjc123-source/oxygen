@@ -283,8 +283,8 @@
                                                                
                                                                 <div class="col-md-2">
                                                                     <label style="color:gray"for="javascript">Return</label><br>
-                                                                    <select class="form-select form-select-lg text-secondary" name="return_replace[]" required>
-                                                                        <option value="" hidden>Select Return</option>
+                                                                    <select class="form-select form-select-lg text-secondary" name="return_replace[]">
+                                                                        <option value="">Select</option>
                                                                         <option value="Return" {{ $productdetails->return_replace == 'Return' ? 'selected' : '' }}>
                                                                             Return
                                                                         </option>
@@ -299,7 +299,7 @@
                                                                 <div class="col-md-2">
                                                                     <label style="color:gray"for="javascript">Return Days</label><br>
                                                                     <input type="text" name="r_days[]" placeholder="Days"
-                                                                        class="form-control" required value="{{ $productdetails->r_days }}">
+                                                                        class="form-control" value="{{ $productdetails->r_days }}">
                                                                 </div>  
                                                                 {{$inc=$key + 1;}}
                                                                 <div class="col-md-2">
