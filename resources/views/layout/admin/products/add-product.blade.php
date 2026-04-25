@@ -821,19 +821,19 @@
                                                             <option value="">Select</option>
 
                                                             @foreach ($offers as $offer)
-                                                            @php
-                                                                $offerLabel = "";
-                                                                if($offer->type == "Buy X Get Y Free") {
-                                                                    $offerLabel = 'Buy ' . $offer->buy . ' get ' . $offer->getoffer . ' free';
-                                                                } elseif($offer->type == "Buy X @ Y") {
-                                                                    $offerLabel = 'Buy ' . $offer->buyproduct . ' get amount ' . $offer->getamt;
-                                                                }
-                                                            @endphp
-                                                            @if($offerLabel)
-                                                            <option value="{{ $offerLabel }}">
-                                                                {{ $offerLabel }}
-                                                            </option>
-                                                            @endif
+                                                                @php
+                                                                    $offerLabel = "";
+                                                                    if($offer->type == "Buy X Get Y Free") {
+                                                                        $offerLabel = 'Buy ' . $offer->buy . ' get ' . $offer->getoffer . ' free';
+                                                                    } elseif($offer->type == "Buy X @ Y") {
+                                                                        $offerLabel = 'Buy ' . $offer->buyproduct . ' get amount ' . $offer->getamt;
+                                                                    } else {
+                                                                        $offerLabel = $offer->type;
+                                                                    }
+                                                                @endphp
+                                                                <option value="{{ $offer->id }}">
+                                                                    {{ $offerLabel }}
+                                                                </option>
                                                             @endforeach
                                                             {{-- <option value="Buy 3 Get 1 Free">Buy 3 Get 1 Free
                                                                     </option>

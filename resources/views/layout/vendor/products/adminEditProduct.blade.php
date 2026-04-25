@@ -364,7 +364,7 @@
                                                                                         $offerLabel = $offer->type;
                                                                                     }
                                                                                 @endphp
-                                                                                <option value="{{ $offerLabel }}" {{ ($offerLabel == $product->offers || $offer->id == $product->offers)?'selected':'' }}>
+                                                                                <option value="{{ $offer->id }}" {{ ($offerLabel == $product->offers || $offer->id == $product->offers)?'selected':'' }}>
                                                                                     {{ $offerLabel }}
                                                                                 </option>
                                                                                  @endforeach

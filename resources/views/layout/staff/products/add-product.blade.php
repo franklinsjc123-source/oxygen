@@ -328,7 +328,7 @@
                                                                             $offerLabel = $offer->type;
                                                                         }
                                                                     @endphp
-                                                                    <option value="{{ $offerLabel }}">
+                                                                    <option value="{{ $offer->id }}">
                                                                         {{ $offerLabel }}
                                                                     </option>
                                                                      @endforeach
