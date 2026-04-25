@@ -345,7 +345,6 @@
                                                                                             @foreach ($specValues as $specify_value)
                                                                                                 <option value="{{ $specify_value }}" {{ ($specify_value == $selectedValue)?'selected':'';}}>{{ $specify_value }}</option>
                                                                                             @endforeach
-                                                                                            <option value="Others" {{ ('Others' == $selectedValue)?'selected':'';}}>Others</option>
                                                                                         </select>
                                                                                     </td>
                                                                                 </tr>

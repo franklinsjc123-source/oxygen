@@ -319,7 +319,7 @@
                                                                                 <select class="js-select2 form-control"    name="speci_value[]" id="speci_value"                                                                              id="speci_value[]" >                                                                               
                                                                                 <option value="{{ $prspec->specify_value }}">
                                                                                     {{ $prspec->specify_value }} </option >
-                                                                                    <option value="1001">Others</option>
+
                                                                                 </select>
                                                                                 {{-- <input type="text" list="speci_value[]" class="js-select2 form-control" name="speci_value[]" id="speci_value" > --}}                                                                                
                                                                             {{-- </select> --}}                                                                              

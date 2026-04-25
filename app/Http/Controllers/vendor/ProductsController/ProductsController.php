@@ -152,23 +152,27 @@ class ProductsController extends Controller
 
         $selectedAttributeId = (int) ($request->selected_attribute_id ?? 0);
 
-        if (!empty($attbutesdata) || !empty($specdata)) {
-            $attribute = !empty($attbutesdata)
-                ? AttributeGroup::whereIn('id', $attbutesdata)->get()
-                : collect();
+        $attribute = !empty($attbutesdata)
+            ? AttributeGroup::whereIn('id', $attbutesdata)->get()
+            : collect();
 
-            if ($selectedAttributeId > 0 && $attribute->isNotEmpty()) {
-                $attribute = $attribute->where('id', $selectedAttributeId)->values();
-            } elseif ($attribute->count() === 1) {
-                $selectedAttributeId = (int) ($attribute->first()->id ?? 0);
-            }
+        if ($selectedAttributeId > 0 && $attribute->isNotEmpty()) {
+            $attribute = $attribute->where('id', $selectedAttributeId)->values();
+        } elseif ($attribute->count() === 1) {
+            $selectedAttributeId = (int) ($attribute->first()->id ?? 0);
+        }
 
-            $combinedSpecifications = !empty($specdata)
-                ? SpecificationGroup::whereIn('id', $specdata)
-                    ->whereIn('created_byid', [1, $login_id])
-                    ->get()
-                : collect();
+        $combinedSpecifications = SpecificationGroup::where(function($q) use ($specdata, $login_id) {
+                if (!empty($specdata)) {
+                    $q->whereIn('id', $specdata);
+                }
+                $q->orWhere('created_byid', $login_id);
+            })
+            ->whereIn('created_byid', [1, $login_id])
+            ->where('status', 'Active')
+            ->get();
 
+        if ($attribute->isNotEmpty() || $combinedSpecifications->isNotEmpty()) {
             return view('layout.vendor.products.add-product')
                 ->with([
                     "CategorySub" => $CategorySub,
@@ -191,21 +195,20 @@ class ProductsController extends Controller
                 ]);
         }
 
-        $specification = collect();
         return view('layout.vendor.products.add-product')
             ->with([
                 "CategorySub" => $CategorySub,
                 "category_main_data" => $category_main_data,
                 "category_data" => $category_data,
                 "category_sub_data" => $category_sub_data,
-                "maincategoryid" => $request->category_main,
-                "categoryid" => $request->category,
+                "maincategoryid" => $category_sub->category_main_id,
+                "categoryid" => $category_sub->category_id,
                 "subcategoryid" => $request->category_sub,
                 "nproduct" => $request->nproduct,
                 "is_color" => $request->is_color,
                 "attribute" => collect(),
                 "productcollection" => $productcollection,
-                "specification" => $specification,
+                "specification" => collect(),
                 "offers" => $offer,
                 "error" => "Attributes & Specifications Not Assign in this Sub Category.",
             ]);
@@ -662,9 +665,15 @@ public function store(Request $request, FlasherInterface $flasher)
             ? AttributeGroup::whereIn('id', $attributeIds)->get()
             : collect();
 
-        $specification = !empty($specificationIds)
-            ? SpecificationGroup::whereIn('id', $specificationIds)->get()
-            : collect();
+        $specification = SpecificationGroup::where(function($q) use ($specificationIds, $login_id) {
+                if (!empty($specificationIds)) {
+                    $q->whereIn('id', $specificationIds);
+                }
+                $q->orWhere('created_byid', $login_id);
+            })
+            ->whereIn('created_byid', [1, $login_id])
+            ->where('status', 'Active')
+            ->get();
 
         $productdetails = ProductsDetails::where('products_id', $id)->get();        
         $productspecs = ProductSpecs::where('products_id', $id)->get();
