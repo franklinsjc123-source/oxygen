@@ -225,25 +225,37 @@
                                                 ?>
                                                 <td>{{$products->collection}}</td>
                                                 
-                                                <td> <?php
-                                                $off = count($offers);
-                                               
-                                                for($i=0; $i< $off; $i++){
-                                                   // dd($offers[$i]->id);
-                                                    if($offers[$i]->id == $products->offers)
-                                                    {
-                                                ?>
-                                                <a href="#" class="text-danger" data-bs-toggle="modal"
-                                                        data-original-title="test1" data-bs-target="#offerModal">
-                                                         {{-- {{$products->offers}} --}}
-                                                        {{$offers[$i]->type}}
-                                                        {{-- Buy 3
-                                                        Get 1 Free --}}
-                                                    </a>
-                                                 <?php
-                                                   }
-                                                }
-                                                ?></td>
+                                                <td>
+                                                    @php
+                                                        $displayOffer = "";
+                                                        foreach ($offers as $offerItem) {
+                                                            $offerLabel = "";
+                                                            if($offerItem->type == "Buy X Get Y Free") {
+                                                                $offerLabel = 'Buy ' . $offerItem->buy . ' get ' . $offerItem->getoffer . ' free';
+                                                            } elseif($offerItem->type == "Buy X @ Y") {
+                                                                $offerLabel = 'Buy ' . $offerItem->buyproduct . ' get amount ' . $offerItem->getamt;
+                                                            } else {
+                                                                $offerLabel = $offerItem->type;
+                                                            }
+
+                                                            if ($offerItem->id == $products->offers || $offerLabel == $products->offers) {
+                                                                $displayOffer = $offerLabel;
+                                                                break;
+                                                            }
+                                                        }
+                                                        
+                                                        if (!$displayOffer && $products->offers) {
+                                                            $displayOffer = $products->offers;
+                                                        }
+                                                    @endphp
+                                                    
+                                                    @if($displayOffer)
+                                                        <a href="#" class="text-danger" data-bs-toggle="modal"
+                                                           data-original-title="test1" data-bs-target="#offerModal">
+                                                            {{ $displayOffer }}
+                                                        </a>
+                                                    @endif
+                                                </td>
                                                     {{-- <td>{{ $products->selling_price }}</td> --}}
                                                   
                                                 <!--<td class="">11-June-2022</td>-->
