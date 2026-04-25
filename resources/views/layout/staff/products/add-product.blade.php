@@ -315,8 +315,7 @@
 
                                                                 <select class="form-select form-select-lg text-secondary"
                                                                     id="offtype" name="offers">
-                                                                    <option selected hidden value="">Select Here
-                                                                    </option>
+                                                                    <option value="">Select</option>
 
                                                                     @foreach ($offers as $offer)
                                                                     <option value="{{ $offer->id }}">

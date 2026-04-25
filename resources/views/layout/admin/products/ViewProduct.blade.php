@@ -337,6 +337,7 @@
                                                                         <div class="col-md-3 ">
                                                                             <select class="form-select form-select-lg text-secondary"
                                                                                 id="offtype" name="offer">
+                                                                                <option value="">Select</option>
                                                                                 {{-- <option selected hidden value="">Select Here
                                                                                 </option>
                                                                                 <option value="Buy 3 Get 1 Free">Buy 3 Get 1 Free
