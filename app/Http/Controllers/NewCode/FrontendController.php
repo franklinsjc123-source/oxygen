@@ -728,7 +728,7 @@ class FrontendController extends Controller
             }
         }
         if ($id != '') {
-            return $resultArr[$id];
+            return $resultArr[$id] ?? [];
         } else {
             return $resultArr;
         }
@@ -1280,7 +1280,7 @@ class FrontendController extends Controller
         $prouctsList = $this->getProduct($mainProductId);
         $imageList = $this->getProductImageList($mainProductId);
 
-        $getProduct = Products::where('id', $getSpecificProduct->products_id)->first();
+        $getProduct = Products::where('id', $getSpecificProduct->products_id)->where('status', 1)->first();
         if (!$getProduct) {
             return redirect('home');
         }
@@ -1300,9 +1300,9 @@ class FrontendController extends Controller
             $offerDetails = \DB::table('master_offers')->where('id', $getProduct->offers)->first();
         }
 
-        $vendor_details = vendorcreate::where('id', $getProduct->created_by)->first();
+        $vendor_details = vendorcreate::where('id', $getProduct->created_by)->first() ?? new vendorcreate();
 
-        $prouctdata = Products::find($id);
+        $prouctdata = $getProduct;
 
         // ⭐ rating logic
         $canRate = false;
@@ -1312,7 +1312,7 @@ class FrontendController extends Controller
 
             $customer_id = session('customer_id');
             $customerInfo = Ecom_Customer_info::where('customer_id', $customer_id)->first();
-            $customerName = trim((string) (($customerInfo->customer_firstname ?? session('customer_name', '')) . ' ' . ($customerInfo->customer_lastname ?? '')));
+            $customerName = trim((string) (($customerInfo?->customer_firstname ?? session('customer_name', '')) . ' ' . ($customerInfo?->customer_lastname ?? '')));
             if ($customerName === '') {
                 $customerName = (string) session('customer_name', $customer_id);
             }
