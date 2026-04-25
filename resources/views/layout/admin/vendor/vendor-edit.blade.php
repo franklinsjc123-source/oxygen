@@ -307,15 +307,22 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4">Location
-                                                            Map</label>
-                                                        <div class="col-xl-8 col-md-8">
-                                                            <input class="form-control" id="validationCustom0"
-                                                                value="{{ $vendorcreate->location_map }}" type="text"
-                                                                name="location_map">
+                                                        <div class="form-group row">
+                                                            <label for="validationCustom0" class="col-xl-4 col-md-4">Location Map</label>
+                                                            <div class="col-xl-8 col-md-8">
+                                                                <div class="input-group mb-2">
+                                                                    <input class="form-control" id="location_map"
+                                                                        value="{{ $vendorcreate->location_map }}" type="text"
+                                                                        name="location_map" placeholder="Select location on map" readonly>
+                                                                    <button class="btn btn-primary" id="btn_open_map" type="button" data-bs-toggle="modal" data-bs-target="#vendorMapModal">
+                                                                        <i class="fa fa-map-marker"></i> Pick on Map
+                                                                    </button>
+                                                                </div>
+                                                                <input type="hidden" name="latitude" id="latitude" value="{{ $vendorcreate->latitude }}">
+                                                                <input type="hidden" name="longitude" id="longitude" value="{{ $vendorcreate->longitude }}">
+                                                                <small class="text-muted">Stored Coordinates: <span id="coords_display">{{ $vendorcreate->latitude ?? 'N/A' }}, {{ $vendorcreate->longitude ?? 'N/A' }}</span></small>
+                                                            </div>
                                                         </div>
-                                                    </div>
                                                 </div>
                                             </div>
 
@@ -843,7 +850,84 @@
 
     </div>
 @endsection
+
+
+
+<!-- Location Map Modal -->
+<div class="modal fade" id="vendorMapModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="vendorMapModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="vendorMapModalLabel">Select Location on Map</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="map" style="height: 450px; width: 100%; border-radius: 8px;"></div>
+                <p class="mt-2 text-muted">Click on the map or drag the blue marker to set the vendor's precise location.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Confirm & Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @push('scripts')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        $(document).ready(function() {
+            var mapInitialized = false;
+            var map, marker;
+            var defaultLat = {{ $vendorcreate->latitude ?? 13.0827 }};
+            var defaultLng = {{ $vendorcreate->longitude ?? 80.2707 }};
+
+            function initMap() {
+                if (mapInitialized) return;
+                
+                map = L.map('map').setView([defaultLat, defaultLng], 13);
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+
+                marker = L.marker([defaultLat, defaultLng], {
+                    draggable: true
+                }).addTo(map);
+
+                function updateInputs(lat, lng) {
+                    $('#latitude').val(lat.toFixed(8));
+                    $('#longitude').val(lng.toFixed(8));
+                    $('#location_map').val(lat.toFixed(8) + ', ' + lng.toFixed(8));
+                    $('#coords_display').text(lat.toFixed(8) + ', ' + lng.toFixed(8));
+                }
+
+                marker.on('dragend', function(event) {
+                    var position = marker.getLatLng();
+                    updateInputs(position.lat, position.lng);
+                });
+
+                map.on('click', function(e) {
+                    marker.setLatLng(e.latlng);
+                    updateInputs(e.latlng.lat, e.latlng.lng);
+                });
+
+                mapInitialized = true;
+            }
+
+            // Initialize map when modal is opened
+            $('#vendorMapModal').on('shown.bs.modal', function() {
+                initMap();
+                setTimeout(function(){ map.invalidateSize(); }, 200);
+            });
+
+            /* Redundant manual trigger removed to prevent double-triggering BS5 modals */
+            /* $('#btn_open_map').on('click', function() {
+                var myModal = new bootstrap.Modal(document.getElementById('vendorMapModal'));
+                myModal.show();
+            }); */
+        });
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 
     <script>

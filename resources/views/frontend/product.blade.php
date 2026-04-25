@@ -207,14 +207,20 @@
                                                 <?php echo $vendor_details['shop_name'] ?></a></span></b> 
                                          </div>
                                          <div class="product-categories">
-                                             <i class="fa-solid fa-location-dot"></i>
-                                                                                         <span class="product-category">
-                                                <a href="#">
+                                             @php
+                                                 $mapQuery = (!empty($vendor_details->latitude) && !empty($vendor_details->longitude)) 
+                                                     ? $vendor_details->latitude . ',' . $vendor_details->longitude 
+                                                     : urlencode($vendor_details->address . ', ' . $vendor_details->city . ', ' . $vendor_details->state . ' ' . $vendor_details->pincode);
+                                                 $mapUrl = "https://www.google.com/maps/search/?api=1&query=" . $mapQuery;
+                                             @endphp
+                                             <a href="{{ $mapUrl }}" target="_blank" class="text-primary hover-underline">
+                                                <i class="fa-solid fa-location-dot me-1"></i>
+                                                <span class="product-category">
                                                     {{ $vendor_details->address }},
                                                     {{ $vendor_details->city }},
                                                     {{ $vendor_details->state }} - {{ $vendor_details->pincode }}
-                                                </a>
-                                            </span>
+                                                </span>
+                                             </a>
                                          </div>
                                          <div class="product-categories">
                                             Contact no:

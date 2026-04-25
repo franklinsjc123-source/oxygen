@@ -142,6 +142,9 @@ class VendorcreateController extends Controller
             $vendor->zone = $request->zone;
             $vendor->route = $request->route;
             $vendor->location_map = $request->location_map;
+            $vendor->latitude = $request->latitude;
+            $vendor->longitude = $request->longitude;
+            $vendor->aadhar_no = $request->aadhar_no;
             $vendor->aadhar_no = $request->aadhar_no;
             $vendor->gst_number = $request->gst_number;
 
@@ -341,6 +344,9 @@ class VendorcreateController extends Controller
             $vendor->zone = $request->zone;
             $vendor->route = $request->route;
             $vendor->location_map = $request->location_map;
+            $vendor->latitude = $request->latitude;
+            $vendor->longitude = $request->longitude;
+            $vendor->aadhar_no = $request->aadhar_no;
             $vendor->aadhar_no = $request->aadhar_no;
             $vendor->gst_number = $request->gst_number;
 
