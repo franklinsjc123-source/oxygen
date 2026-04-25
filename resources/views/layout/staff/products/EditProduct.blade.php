@@ -141,7 +141,7 @@
                                                                     {{-- <option value="" selected hidden>Select Main
                                                                         Category</option> --}}
 
-                                                                        <option value="{{ $product->category }}"> {{$cates['0']->category_name}}</option>
+                                                                        <option value="{{ $product->category }}"> {{ optional($cates->first())->category_name }}</option>
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -156,7 +156,7 @@
                                                                         Category
                                                                     </option> --}}
 
-                                                                    <option value="  {{ $product->category_sub }}"> {{ $cates['0']->category_sub_name }}</option>
+                                                                    <option value="  {{ $product->category_sub }}"> {{ optional($cates->first())->category_sub_name }}</option>
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -305,27 +305,39 @@
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody class="spectable">                                                                          
-                                                                            @foreach ($productspecs as $prspec)
-                                                                                {{-- @dd($prspec->specify_value) --}}
-                                                                            <tr>
-                                                                                <td>
-                                                                                     <select type="readonly"  class="js-select2 form-control" name="speci_value[]"
-                                                                                id="speci_value">
-                                                                                 <option value="{{ $prspec->specify_attribute }}">{{ $prspec->specify_attribute }}</option>
-                                                                                </select>                                                                               
-                                                                                </td>
-                                                                                <td>
-                                                                                     {{-- {{ $prspec->specify_value }}</td> --}}
-                                                                                <select class="js-select2 form-control"    name="speci_value[]" id="speci_value"                                                                              id="speci_value[]" >                                                                               
-                                                                                <option value="{{ $prspec->specify_value }}">
-                                                                                    {{ $prspec->specify_value }} </option >
-
-                                                                                </select>
-                                                                                {{-- <input type="text" list="speci_value[]" class="js-select2 form-control" name="speci_value[]" id="speci_value" > --}}                                                                                
-                                                                            {{-- </select> --}}                                                                              
-                                                                             </td>
-                                                                            </tr>
-                                                                        @endforeach
+                                                                             @php
+                                                                                 $specById = [];
+                                                                                 $specByName = [];
+                                                                                 foreach ($productspecs as $ps) {
+                                                                                     if (!empty($ps->spec_id)) {
+                                                                                         $specById[$ps->spec_id] = $ps->specify_value;
+                                                                                     }
+                                                                                     if (!empty($ps->specify_attribute)) {
+                                                                                         $specByName[$ps->specify_attribute] = $ps->specify_value;
+                                                                                     }
+                                                                                 }
+                                                                             @endphp
+                                                                             @foreach ($specification as $spec)
+                                                                                 @php
+                                                                                     $specValues = json_decode($spec->specification_values ?? '[]', true) ?: [];
+                                                                                     $selectedValue = $specById[$spec->id] ?? ($specByName[$spec->specification_group_name] ?? '');
+                                                                                 @endphp
+                                                                                 <tr>
+                                                                                     <td>
+                                                                                         {{ $spec->specification_group_name }}
+                                                                                         <input type="hidden" name="spec_id[]" value="{{ $spec->id }}">
+                                                                                         <input type="hidden" name="specify_attribute[{{ $spec->id }}]" value="{{ $spec->specification_group_name }}">
+                                                                                     </td>
+                                                                                     <td>
+                                                                                         <select class="js-select2 form-control" name="specify_value[{{ $spec->id }}]" id="specify_value_{{ $spec->id }}">
+                                                                                             <option value="" hidden {{ $selectedValue === '' ? 'selected' : '' }}> --Select {{ $spec->specification_group_name }}--</option>
+                                                                                             @foreach ($specValues as $specify_val)
+                                                                                                 <option value="{{ $specify_val }}" {{ $specify_val == $selectedValue ? 'selected' : '' }}>{{ $specify_val }}</option>
+                                                                                             @endforeach
+                                                                                         </select>
+                                                                                     </td>
+                                                                                 </tr>
+                                                                             @endforeach
                                                                         </tbody>
                                                                     </table>
                                                                 </div>

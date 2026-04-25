@@ -167,7 +167,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                @include('layout.admin.products.productDetails')
+                                                @include('layout.staff.products.productDetails')
                                                 <div class="card">
                                                     <div class="card-header"> 
                                                         <h5><span style="color: red;">*</span>Product Images</h5>

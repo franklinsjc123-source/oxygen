@@ -141,7 +141,7 @@
                                                                     {{-- <option value="" selected hidden>Select Main
                                                                         Category</option> --}}
 
-                                                                        <option value="{{ $product->category }}" selected> {{$cates['0']->category_name}}</option>
+                                                                        <option value="{{ $product->category }}" selected> {{ optional($cates->first())->category_name }}</option>
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -156,7 +156,7 @@
                                                                         Category
                                                                     </option> --}}
 
-                                                                    <option value="{{ $product->category_sub }}" selected> {{ $cates['0']->category_sub_name }}</option>
+                                                                    <option value="{{ $product->category_sub }}" selected> {{ optional($cates->first())->category_sub_name }}</option>
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -333,17 +333,16 @@
                                                                                                 <input type="checkbox" id="spec_id_{{ $spec->id }}" name="spec_id[]" value="{{ $spec->id }}" {{ $selectedValue !== '' ? 'checked' : '' }}>
                                                                                             </div>
                                                                                             <div class="col-md-11">
-                                                                                                <select class="form-control" name="speci_attri[{{ $spec->id }}]" id="speci_attri_{{ $spec->id }}">
-                                                                                                    <option value="{{ $spec->specification_group_name }}">{{ $spec->specification_group_name }}</option>
-                                                                                                </select>
+                                                                                                {{ $spec->specification_group_name }}
+                                                                                                <input type="hidden" name="specify_attribute[{{ $spec->id }}]" value="{{ $spec->specification_group_name }}">
                                                                                             </div>
                                                                                         </div>
                                                                                     </td>
                                                                                     <td>
-                                                                                        <select class="form-select form-select-lg text-secondary" name="speci_value[{{ $spec->id }}]" id="speci_value_{{ $spec->id }}">
+                                                                                        <select class="form-select form-select-lg text-secondary" name="specify_value[{{ $spec->id }}]" id="specify_value_{{ $spec->id }}">
                                                                                             <option value="" hidden {{ $selectedValue === '' ? 'selected' : '' }}> --Select {{ $spec->specification_group_name }}--</option>
-                                                                                            @foreach ($specValues as $specify_value)
-                                                                                                <option value="{{ $specify_value }}" {{ ($specify_value == $selectedValue)?'selected':'';}}>{{ $specify_value }}</option>
+                                                                                            @foreach ($specValues as $specify_val)
+                                                                                                <option value="{{ $specify_val }}" {{ $specify_val == $selectedValue ? 'selected' : '' }}>{{ $specify_val }}</option>
                                                                                             @endforeach
                                                                                         </select>
                                                                                     </td>

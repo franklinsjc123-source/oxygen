@@ -180,22 +180,6 @@
                                                                             ?? (($productdetails->attributename2 ?? '') === 'Size' ? ($productdetails->attributevalue2 ?? null) : null)
                                                                             ?? (($productdetails->attributename3 ?? '') === 'Size' ? ($productdetails->attributevalue3 ?? null) : null)
                                                                             ?? ($productdetails->attributevalue2 ?? null);
-                                                                        $returnRaw = (string)($productdetails->return_replace ?? '1');
-                                                                        $returnReplace = $returnRaw;
-                                                                        if (!is_numeric($returnReplace)) {
-                                                                            $normalized = strtolower(trim($returnRaw));
-                                                                            if ($normalized === 'return') {
-                                                                                $returnReplace = '2';
-                                                                            } elseif ($normalized === 'replacement') {
-                                                                                $returnReplace = '3';
-                                                                            } elseif (in_array($normalized, ['return/replacement', 'return & replacement', 'return and replacement'], true)) {
-                                                                                $returnReplace = '1';
-                                                                            } elseif (in_array($normalized, ['na', 'n/a', 'none'], true)) {
-                                                                                $returnReplace = '4';
-                                                                            } else {
-                                                                                $returnReplace = '1';
-                                                                            }
-                                                                        }
                                                                     @endphp
                                                                     <div class="col-md-2">
                                                                     <label style="color:gray"for="javascript">Color</label><br>
@@ -299,19 +283,13 @@
                                                                
                                                                 <div class="col-md-2">
                                                                     <label style="color:gray"for="javascript">Return</label><br>
-                                                                    <select class="form-select form-select-lg text-secondary"
-                                                                    value="{{ $productdetails->return_replace }}" name="return_replace[]" required>
-                                                                        <option value="1" {{ $returnReplace === '1' ? 'selected' : '' }}>
-                                                                            Return / Replacement
-                                                                        </option>
-                                                                        <option value="2" {{ $returnReplace === '2' ? 'selected' : '' }}>
+                                                                    <select class="form-select form-select-lg text-secondary" name="return_replace[]" required>
+                                                                        <option value="" hidden>Select Return</option>
+                                                                        <option value="Return" {{ $productdetails->return_replace == 'Return' ? 'selected' : '' }}>
                                                                             Return
                                                                         </option>
-                                                                        <option value="3" {{ $returnReplace === '3' ? 'selected' : '' }}>
+                                                                        <option value="Replacement" {{ $productdetails->return_replace == 'Replacement' ? 'selected' : '' }}>
                                                                             Replacement
-                                                                        </option>
-                                                                        <option value="4" {{ $returnReplace === '4' ? 'selected' : '' }}>
-                                                                            NA
                                                                         </option>
                                                                     </select>
                                                                 </div>

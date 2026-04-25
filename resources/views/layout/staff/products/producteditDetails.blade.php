@@ -222,70 +222,16 @@
                                                                         class="form-control" required  value="{{ $productsAttri->id }}"> --}}
                                                                 </div> 
                                                                
-                                                                <div class="col-md-2">
+                                                                <div class="col-md-2" style="margin-right: 5%;">
                                                                     <label style="color:gray"for="javascript">Return</label><br>
-                                                                    <select class="form-select form-select-lg text-secondary"
-                                                                    value="{{ $productdetails->return_replace }}" name="return_replace[]" required>
-                                                                        <?php if($productdetails->return_replace == 1) { ?>
-                                                                        <option selected value="1">
-                                                                            Return /
-                                                                            Replacement
-                                                                        </option>
-                                                                        <option value="2">
+                                                                    <select class="form-select form-select-lg text-secondary" name="return_replace[]" required>
+                                                                        <option value="" hidden>Select Return</option>
+                                                                        <option value="Return" {{ $productdetails->return_replace == 'Return' ? 'selected' : '' }}>
                                                                             Return
                                                                         </option>
-                                                                        <option value="3">
+                                                                        <option value="Replacement" {{ $productdetails->return_replace == 'Replacement' ? 'selected' : '' }}>
                                                                             Replacement
                                                                         </option>
-                                                                        <option value="4">
-                                                                            NA
-                                                                        </option>
-                                                                        <?php } ?>
-                                                                        <?php if($productdetails->return_replace == 2) { ?>
-                                                                        <option selected value="2">
-                                                                            Return
-                                                                        </option>
-                                                                        <option value="1">
-                                                                            Return /
-                                                                            Replacement
-                                                                        </option>
-                                                                        <option value="3">
-                                                                            Replacement
-                                                                        </option>
-                                                                        <option value="4">
-                                                                            NA
-                                                                        </option>
-                                                                        <?php } ?>
-                                                                        <?php if($productdetails->return_replace == 3) { ?>
-                                                                        <option selected value="3">
-                                                                            Replacement
-                                                                        </option>
-                                                                        <option value="1">
-                                                                            Return /
-                                                                            Replacement
-                                                                        </option>
-                                                                        <option value="2">
-                                                                            Return
-                                                                        </option>
-                                                                        <option value="4">
-                                                                            NA
-                                                                        </option>
-                                                                        <?php } ?>
-                                                                        <?php if($productdetails->return_replace == 4) { ?>
-                                                                            <option  value="3">
-                                                                                Replacement
-                                                                            </option>
-                                                                            <option value="1">
-                                                                                Return /
-                                                                                Replacement
-                                                                            </option>
-                                                                            <option value="2">
-                                                                                Return
-                                                                            </option>
-                                                                            <option selected value="4">
-                                                                                NA
-                                                                            </option>
-                                                                            <?php } ?>
                                                                     </select>
                                                                 </div>
                                 

@@ -134,7 +134,7 @@
                                                                                                     id="category"  required>
                                                                                                     {{-- <option value="" selected hidden>Select Main
                                                                         Category</option> --}}
-                                                                                                        <option value="{{ $product->category }}" selected> {{ $cates['0']->category_name }}</option>
+                                                                                                        <option value="{{ $product->category }}" selected> {{ optional($cates->first())->category_name }}</option>
                                                                                                 </select>
                                                                                             </div>
                                                                                         </div>
@@ -148,7 +148,7 @@
                                                                                                     {{-- <option selected hidden value="">Select
                                                                         Category
                                                                     </option> --}}
-                                                                                                    <option value="{{ $product->category_sub }}" selected> {{ $cates['0']->category_sub_name }}</option>
+                                                                                                    <option value="{{ $product->category_sub }}" selected> {{ optional($cates->first())->category_sub_name }}</option>
                                                                                                 </select>
                                                                                             </div>
                                                                                         </div>
@@ -323,28 +323,28 @@
                                                                                                                 }
                                                                                                             @endphp
                                                                                                             @foreach ($specification as $spec)
-        @php
-            $specValues = json_decode($spec->specification_values ?? '[]', true) ?: [];
-            $selectedValue = $specById[$spec->id] ?? ($specByName[$spec->specification_group_name] ?? '');
-        @endphp
+                                                                                                                @php
+                                                                                                                    $specValues = json_decode($spec->specification_values ?? '[]', true) ?: [];
+                                                                                                                    $selectedValue = $specById[$spec->id] ?? ($specByName[$spec->specification_group_name] ?? '');
+                                                                                                                @endphp
                                                                                                                 <tr>
                                                                                                                     <td>
-                                                                                                                        <select class="js-select2 form-control" name="speci_attri[{{ $spec->id }}]" id="speci_attri">
-                                                                                                                            <option value="{{ $spec->specification_group_name }}">{{ $spec->specification_group_name }}</option>
-                                                                                                                        </select>
+                                                                                                                        {{ $spec->specification_group_name }}
+                                                                                                                        <input type="hidden" name="spec_id[]" value="{{ $spec->id }}">
+                                                                                                                        <input type="hidden" name="specify_attribute[{{ $spec->id }}]" value="{{ $spec->specification_group_name }}">
                                                                                                                     </td>
                                                                                                                     <td>
-                                                                                                                        <select class="js-select2 form-control" name="speci_value[{{ $spec->id }}]" id="speci_value_{{ $spec->id }}">
+                                                                                                                        <select class="js-select2 form-control" name="specify_value[{{ $spec->id }}]" id="specify_value_{{ $spec->id }}">
                                                                                                                             <option value="" hidden {{ $selectedValue === '' ? 'selected' : '' }}> --Select {{ $spec->specification_group_name }}--</option>
-                                                                                                                            @foreach ($specValues as $specify_value)
-        <option value="{{ $specify_value }}" {{ $specify_value == $selectedValue ? 'selected' : '' }}>
-                                                                                                                                    {{ $specify_value }}
+                                                                                                                            @foreach ($specValues as $specify_val)
+                                                                                                                                <option value="{{ $specify_val }}" {{ $specify_val == $selectedValue ? 'selected' : '' }}>
+                                                                                                                                    {{ $specify_val }}
                                                                                                                                 </option>
-        @endforeach
+                                                                                                                            @endforeach
                                                                                                                         </select>
                                                                                                                     </td>
                                                                                                                 </tr>
-        @endforeach
+                                                                                                            @endforeach
                                                                                                         </tbody>
                                                                                                     </table>
                                                                                                 </div>
@@ -710,25 +710,28 @@
                                             getAjaxValue(url1, method1, function(data) {
                                                 $('.spectable').empty();
 
-                                                let specifications;
-
-
+                                                let specifications = '';
                                                 $.each(data, function(key, spec) {
+                                                    let options = '';
+                                                    let specValues = JSON.parse(spec.value || '[]');
+                                                    for (let index = 0; index < specValues.length; index++) {
+                                                        options += `<option value='${specValues[index]}'> ${specValues[index]}</option>`;
+                                                    }
 
-                                                    let options;
                                                     specifications +=
-                                                        `<tr><td>${spec.name}</td><td>
-                            <select class='form-select form-select-lg text-secondary' name='specify_value[]'>
-                            <option selected value='' hidden> --Select ${spec.name}--</option>
-                            ${(function fun(array) {
-                                for (let index = 0; index < array.length; index++) {
-                                    options += `<option value='${array[index]}'> ${array[index]}</option>`;
-                                }
-                                return options;
-                            })(JSON.parse(spec.value))}
-                        </select>
-                        <input type="hidden" name="specify_attribute[]" value="${spec.name}">
-                        </td></tr>`;
+                                                        `<tr>
+                                                            <td>
+                                                                ${spec.name}
+                                                                <input type="hidden" name="spec_id[]" value="${spec.id}">
+                                                                <input type="hidden" name="specify_attribute[${spec.id}]" value="${spec.name}">
+                                                            </td>
+                                                            <td>
+                                                                <select class='form-select form-select-lg text-secondary' name='specify_value[${spec.id}]'>
+                                                                    <option selected value='' hidden> --Select ${spec.name}--</option>
+                                                                    ${options}
+                                                                </select>
+                                                            </td>
+                                                        </tr>`;
                                                 });
                                                 $(".spectable").append(specifications);
                                             });

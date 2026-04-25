@@ -149,19 +149,12 @@
                                                                     <select class="form-select form-select-lg text-secondary"
                                                                         name="return_replace[]" required>
                                                                         
-                                                                        <option selected value="1">
-                                                                            Return /
-                                                                            Replacement
-                                                                        </option>
-                                                                        <option value="2">
+                                                                        <option selected value="" hidden>Select Return</option>
+                                                                        <option value="Return">
                                                                             Return
                                                                         </option>
-                                
-                                                                        <option value="3">
+                                                                        <option value="Replacement">
                                                                             Replacement
-                                                                        </option>
-                                                                        <option  value="4">
-                                                                            NA
                                                                         </option>
                                                                     </select>
                                                                 </div>

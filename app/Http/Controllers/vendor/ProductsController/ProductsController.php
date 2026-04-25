@@ -378,7 +378,18 @@ public function store(Request $request, FlasherInterface $flasher)
                 }
             }
 
-            $variantCount = count($request->retail_price[$i] ?? []);
+            $retailPriceArray = $request->input('retail_price') ?: [];
+            $sellingPriceArray = $request->input('selling_price') ?: [];
+            $skuArray = $request->input('sku') ?: [];
+            $returnReplaceArray = $request->input('return_replace') ?: [];
+            $rDaysArray = $request->input('r_days') ?: [];
+            $qtyArray = $request->input('quantity') ?: [];
+            $lowStockArray = $request->input('low_stock_limit') ?: [];
+            $colorValArray = $request->input('attributecolorval') ?: [];
+            $attrValArray = $request->input('attributeval') ?: [];
+            $attrNameArray = $request->input('attributename') ?: [];
+
+            $variantCount = count($retailPriceArray[$i] ?? []);
 
             for ($k = 0; $k < $variantCount; $k++) {
 
@@ -386,23 +397,23 @@ public function store(Request $request, FlasherInterface $flasher)
                 $detail->products_id = $productId; // CONNECT HERE
                 $detail->common_product = $i;
                 $detail->product_detail_image = !empty($imagesArray) ? json_encode($imagesArray) : null;
-                $detail->sku = $request->sku[$i] ?? null;
-                $detail->return_replace = $request->return_replace[$i] ?? 1;
-                $detail->r_days = $request->r_days[$i] ?? null;
+                $detail->sku = $skuArray[$i] ?? null;
+                $detail->return_replace = $returnReplaceArray[$i] ?? 'Return';
+                $detail->r_days = $rDaysArray[$i] ?? null;
 
-                $detail->attributevalue1 = $request->attributecolorval[$i][$k] ?? null;
+                $detail->attributevalue1 = $colorValArray[$i][$k] ?? null;
                 $detail->attributename1 = 'Color';
 
-                $detail->attributevalue2 = $request->attributeval[$i][0][$k] ?? null;
-                $detail->attributename2 = $request->attributename[$i][0][$k] ?? null;
+                $detail->attributevalue2 = $attrValArray[$i][0][$k] ?? null;
+                $detail->attributename2 = $attrNameArray[$i][0][$k] ?? null;
 
-                $detail->attributevalue3 = $request->attributeval[$i][1][$k] ?? null;
-                $detail->attributename3 = $request->attributename[$i][1][$k] ?? null;
+                $detail->attributevalue3 = $attrValArray[$i][1][$k] ?? null;
+                $detail->attributename3 = $attrNameArray[$i][1][$k] ?? null;
 
-                $detail->quantity = $request->quantity[$i][$k] ?? 0;
-                $detail->retail_price = $request->retail_price[$i][$k];
-                $detail->selling_price = $request->selling_price[$i][$k];
-                $detail->low_stock_limit = $request->low_stock_limit[$i][$k] ?? 0;
+                $detail->quantity = $qtyArray[$i][$k] ?? 0;
+                $detail->retail_price = $retailPriceArray[$i][$k] ?? 0;
+                $detail->selling_price = $sellingPriceArray[$i][$k] ?? 0;
+                $detail->low_stock_limit = $lowStockArray[$i][$k] ?? 0;
 
                 $detail->save();
             }
@@ -621,12 +632,15 @@ public function store(Request $request, FlasherInterface $flasher)
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id, $category_sub, FlasherInterface $flasher)
+    public function edit($id, $category_sub = null, FlasherInterface $flasher)
     {
-       // try{
         $login_id = session()->get('login_id');
         //  echo $id;exit();
-        $products = Products::where('flag',1)->where('product_id', $id)->first();
+        $products = Products::where('flag', 1)->where('product_id', $id)->first();
+        if (!$products) {
+            $flasher->addError('Product not found!');
+            return redirect()->route('vendorproducts.crud.listing');
+        }
         $category = Category::where('status',1)->get();
         $category_main_data = CategoryMain::where('status',1)->get();
         $CategorySub = CategorySub::where('status',1)->get();
@@ -712,11 +726,11 @@ public function store(Request $request, FlasherInterface $flasher)
         ->groupBy('name')
         ->get();
 // dd($productcollection);
-       $cate = Products::join('category', 'category.id', '=', 'products.category')
-       ->join('category_main','category_main.id','=','products.category_main')
-       ->join('category_sub','category_sub.id','=','products.category_sub')
-       ->where('products.product_id', $id)
-       ->get();
+        $cate = Products::leftJoin('category', 'category.id', '=', 'products.category')
+        ->leftJoin('category_main','category_main.id','=','products.category_main')
+        ->leftJoin('category_sub','category_sub.id','=','products.category_sub')
+        ->where('products.product_id', $id)
+        ->get();
      //  print_r($cate);exit();
 
 
@@ -773,408 +787,197 @@ public function store(Request $request, FlasherInterface $flasher)
      */
     public function update(Request $request, $id, FlasherInterface $flasher)
     {      
+        try {
+            $login_id = session()->get('login_id');
+            $Products = Products::find($id);
+            if (!$Products) {
+                $flasher->addError('Product not found!');
+                return redirect()->route('vendorproducts.crud.listing');
+            }
 
-        try{
-        //
-        $login_id = session()->get('login_id');
-         $Products = Products::find($id);
-         //$input = $request->all();
-         //print_r($input);exit;
-         //$login_id = session()->get('login_id');
-         // return ($Products);
-         $filename = '';
-    
-            if(isset($request->mainImage))
-            {
+            $filename = '';
+            if ($request->hasFile('mainImage')) {
                 $file = $request->mainImage;
-                if ($file !== null) {
                 $filename = ImageUploadHelper::storeImage($file, $this->main_image_path);
-                }
-            }else{
-                $filename = $request->oldmainImage;
+            } else {
+                $filename = $request->input('oldmainImage');
             }
-        $Products->login_id = $login_id ;
-        $Products->category = $request->input('category');
-        $Products->category_main = $request->input('category_main');
-       
-        $Products->category_sub = $request->input('category_sub');
-        $Products->product_name = $request->input('product_name');
-        $Products->tax_id = $request->input('tax_id');
-        $Products->gst_id = $request->input('gst_id');
-        $Products->product_image = $filename ?? "-";
 
-        $Products->description = $request->input('description');
-        $Products->weight = $request->input('weight');
-        $Products->length = $request->input('length');
-        $Products->width = $request->input('width');
-        $Products->height = $request->input('height');
-        $Products->offers = $request->input('offer');
-        $Products->collection = $request->input('collection');
-        $Products->flag = 1;
-        $Products->status = 1;
-        $Products->created_by = 1;
-        $Products->save();
+            $Products->login_id = $login_id;
+            $Products->category = $request->input('category');
+            $Products->category_main = $request->input('category_main');
+            $Products->category_sub = $request->input('category_sub');
+            $Products->product_name = $request->input('product_name');
+            $Products->tax_id = $request->input('tax_id');
+            $Products->gst_id = $request->input('gst_id');
+            $Products->product_image = $filename ?? "-";
+            $Products->description = $request->input('description');
+            $Products->weight = $request->input('weight');
+            $Products->length = $request->input('length');
+            $Products->width = $request->input('width');
+            $Products->height = $request->input('height');
+            $Products->offers = $request->input('offer');
+            $Products->collection = $request->input('collection');
+            $Products->flag = 1;
+            $Products->status = 1;
+            $Products->created_by = 1;
+            $Products->save();
 
-        $filename1 = '';
-    
-       
-        $np = count($request->product_details_id);
-       
-        if($np > 0){
-
-           //foreach ($request->nproducts as $key => $value) {
-            for ($key = 0; $key < $np; $key++) {
-
-
-               
-               $details_id =$request->product_details_id[$key];
-                // $products_details = new ProductsDetails();
-            //if($details_id>0)
-            // {
-                if($details_id != null){
-                    $products_details = ProductsDetails::find($details_id);
-                    $pr_id = $login_id;
-                
-                    $prarr=[];
-
-                    //if (isset($request->mainimg[$key])) {
-    
-                       // $products_details_file = $request->nproducts[$key]; 
-                       $products_details_filename  = '';
-                       $products_details_filename1 = '';
-                       $products_details_filename2 = '';
-                       $products_details_filename3 = '';
-    
-                        $products_details_file =  isset($request->mainimg[$key]) ? $request->mainimg[$key] :NULL;
-                        
-                        $products_details_file1 = isset($request->subimg1[$key]) ? $request->subimg1[$key] :NULL;
-                        
-                        $products_details_file2 = isset($request->subimg2[$key]) ? $request->subimg2[$key] :NULL;
-                        
-                        $products_details_file3 = isset($request->subimg3[$key]) ? $request->subimg3[$key] :NULL;
-                       // dd($products_details_file3);
-    
-    
-                             if ($products_details_file !=null) {
-                          $products_details_filename = $details_id.'.'.time().'.'.$products_details_file->getClientOriginalName();
-
-                          //   $products_details_file->move('assets/images/products/detail', $products_details_filename);       
-                            
-                            $img = Image::make($products_details_file->getRealPath());
-                    
-                            $img->resize(500, 300, function ($constraint) {
-                                
-                                $constraint->aspectRatio();
-                                
-                            })->save('assets/images/products/detail'.'/'.$products_details_filename);
-                            
-                            $filename =  $products_details_filename;
-
-
-                          }else{
-                            $products_details_filename = $request->old_mainimg[$key];
-                          }  
-                        
-                        if ($products_details_file1 != null) {
-                            $products_details_filename1 = $details_id.'.'.$products_details_file1->getClientOriginalName();
-                            $img = Image::make($products_details_file1->getRealPath());
-                    
-                            $img->resize(500, 300, function ($constraint) {
-                                
-                                $constraint->aspectRatio();
-                                
-                            })->save('assets/images/products/detail'.'/'.$products_details_filename1);
-                            
-                            $filename =  $products_details_filename1;
-                            // $products_details_file1->move('assets/images/products/detail', $products_details_filename1);       
-                          }else{
-                            $products_details_filename1 = $request->old_subimg1[$key];
-                          } 
-                          
-                        if ($products_details_file2 != null) {
-                            $products_details_filename2 = $details_id.'.'.$products_details_file2->getClientOriginalName();
-                            $img = Image::make($products_details_file2->getRealPath());
-                    
-                            $img->resize(500, 300, function ($constraint) {
-                                
-                                $constraint->aspectRatio();
-                                
-                            })->save('assets/images/products/detail'.'/'.$products_details_filename2);
-                            
-                            $filename =  $products_details_filename2;
-
-                            // $products_details_file2->move('assets/images/products/detail', $products_details_file2);       
-                          }else{
-
-                            $products_details_filename2 = $request->old_subimg2[$key];
-                          } 
-    
-                        if ($products_details_file3 != null) {
-                            $products_details_filename3 = $details_id.'.'.$products_details_file3->getClientOriginalName();
-                            $img = Image::make($products_details_file3->getRealPath());
-                    
-                            $img->resize(500, 300, function ($constraint) {
-                                
-                                $constraint->aspectRatio();
-                                
-                            })->save('assets/images/products/detail'.'/'.$products_details_filename3);
-                            
-                            $filename =  $products_details_filename3;
-
-                            // $products_details_file3->move('assets/images/products/detail', $products_details_filename3);       
-                          }else{
-                            $products_details_filename3 = $request->old_subimg3[$key];
-                          } 
-                        // if ($products_details_file !=null) {
-                        //     $dlt_img = json_decode($products_details->product_detail_image);
-                        //     //dd($dlt_img);
-                        //     foreach($dlt_img as $dl=>$item){
-                        //         if($dl == 0){
-                        //             $file = 'assets/images/products/detai1/'.$item;
-                        //             if (file_exists($file)) unlink($file);                                    
-                        //         }                               
-                        //     }
-                        //   $products_details_filename = time().'.'.$products_details_file->getClientOriginalName().'.'.$details_id;
-                        //   $products_details_file->move('assets/images/products/detai1', $products_details_filename);       
-                        //   }else{
-                        //     $products_details_filename = $request->old_mainimg[$key];
-                        //   }  
-                        
-                        // if ($products_details_file1 != null) {
-                        //     $dlt_img = json_decode($products_details->product_detail_image);
-                        //     foreach($dlt_img as $dl=>$item){
-                        //         if($dl == 1){
-                        //             $file = 'assets/images/products/detai1/'.$item;
-                        //             if (file_exists($file)) unlink($file);                                    
-                        //         }                               
-                        //     }
-                        //     $products_details_filename1 = $products_details_file1->getClientOriginalName().'.'.$details_id;
-                        //     $products_details_file1->move('assets/images/products/detai1', $products_details_filename1);       
-                            
-                        // }else{
-                        //     $products_details_filename1 = $request->old_subimg1[$key];
-                        //   } 
-                          
-                        // if ($products_details_file2 != null) {
-                        //     $dlt_img = json_decode($products_details->product_detail_image);
-                        //     foreach($dlt_img as $dl=>$item){
-                        //         if($dl == 2){
-                        //             $file = 'assets/images/products/detai1/'.$item;
-                        //             if (file_exists($file)) unlink($file);                                    
-                        //         }                               
-                        //     }
-                        //     $products_details_filename2 = $products_details_file2->getClientOriginalName().'.'.$details_id;
-                        //     $products_details_file2->move('assets/images/products/detai1', $products_details_file2);       
-                            
-                        // }else{
-
-                        //     $products_details_filename2 = $request->old_subimg2[$key];
-                        // } 
-    
-                        // if ($products_details_file3 != null) {
-                        //     $dlt_img = json_decode($products_details->product_detail_image);
-                        //     foreach($dlt_img as $dl=>$item){
-                        //         if($dl == 3){
-                        //             $file = 'assets/images/products/detai1/'.$item;
-                        //             if (file_exists($file)) unlink($file);                                    
-                        //         }                               
-                        //     }
-                        //     $products_details_filename3 = $products_details_file3->getClientOriginalName().'.'.$details_id;
-                        //     $products_details_file3->move('assets/images/products/detai1', $products_details_filename3);       
-                           
-                        // }else{
-                        //     $products_details_filename3 = $request->old_subimg3[$key];
-                        //   } 
-    
-                        array_push($prarr,$products_details_filename,$products_details_filename1,$products_details_filename2,$products_details_filename3);
-                   // }
-                  // dd($prarr);
-                   $products_details->product_detail_image = json_encode($prarr) ?? "-";
-
-                
-                }else{
-                    $products_details = new ProductsDetails();
-                    $pr_id = $login_id;
-
-                     $nprarr=[];
-                // if (isset($request->mainimg[$key])) {
-                   // $products_details_file = $request->nproducts[$key]; 
-                   $newproducts_details_filename  = '';
-                   $newproducts_details_filename1 = '';
-                   $newproducts_details_filename2 = '';
-                   $newproducts_details_filename3 = '';
-                   
-                    $products_details_file  = $request->mainimg[$key];
-                    $products_details_file1 = isset($request->subimg1[$key]) ? $request->subimg1[$key]: NULL;
-                    $products_details_file2 = isset($request->subimg2[$key]) ? $request->subimg2[$key]: NULL;
-                    $products_details_file3 = isset($request->subimg3[$key]) ? $request->subimg3[$key]: NULL;
-                    
-                    if ($products_details_file !=null) {
-                      $newproducts_details_filename = time().'.'.$products_details_file->getClientOriginalName().'.'.$pr_id;
-                      $products_details_file->move('assets/images/products/detai1', $newproducts_details_filename);       
-                      }  
-                    
-                    if ($products_details_file1 != null) {
-                        $newproducts_details_filename1 = $products_details_file1->getClientOriginalName().'.'.$pr_id;
-                        $products_details_file1->move('assets/images/products/detai1', $newproducts_details_filename1);       
-                      }
-                      
-                    if ($products_details_file2 != null) {
-                        $newproducts_details_filename2 = $products_details_file2->getClientOriginalName().'.'.$pr_id;
-                        $products_details_file2->move('assets/images/products/detai1', $products_details_file2);       
-                      }
-
-                    if ($products_details_file3 != null) {
-                        $newproducts_details_filename3 = $products_details_file3->getClientOriginalName().'.'.$pr_id;
-                        $products_details_file3->move('assets/images/products/detai1', $newproducts_details_filename3);       
-                      }
-
-                    array_push($nprarr,$newproducts_details_filename,$newproducts_details_filename1,$newproducts_details_filename2,$newproducts_details_filename3);
-                // } 
-               // dd($nprarr);
-                $products_details->product_detail_image = json_encode($nprarr) ?? "-";
-                $products_details->products_id = $id;
-             
-                }
-             
-                $products_details->attributevalue1 = isset($request->attrcolor[$key]) ? $request->attrcolor[$key] : null;
-                $products_details->attributename1 = 'Color';
-                $products_details->attributevalue2 = isset($request->attrsize[$key]) ? $request->attrsize[$key] : null;
-                if (!empty($products_details->attributevalue2)) {
-                    $products_details->attributename2 = $products_details->attributename2 ?: 'Size';
-                }
-                // $products_details->size = $request->attrsize[$key];
-                $products_details->quantity = $request->quantity[$key];
-                $products_details->retail_price = $request->retail_price[$key];
-                $products_details->selling_price = $request->selling_price[$key];
-                $products_details->sku = $request->sku[$key];
-                $products_details->return_replace = $request->return_replace[$key] ?? 1;
-                $products_details->r_days = $request->r_days[$key];
-                $products_details->low_stock_limit = $request->low_stock_limit[$key];
-                //$products_details->threshold = $request->threshold[$key];
-
-                $products_details->save();
-            // }
-            }            
-        }
-
-
-
-        
-            if(isset($request->speci_attri)){
-             // spec_value
-             // dd($request->all());
-             //print_r($request->speci_value);exit;
-                $ischanged= false;
-                
-                 foreach ($request->speci_attri as $key => $value)                
-                {  
-                    // echo $key;
-                    // echo $value;
-                    // exit();
-                   
-                    if(!is_null($request->speci_attri[$key])){
-                        
-                        $ischanged= true;
-                        
-                        $products_spec = ProductSpecs::where('products_id',$id)->delete();
-                        foreach ($request->speci_attri as $key => $value)  {  
-                        $products_spec = new ProductSpecs();
-        
-                        $products_spec->products_id = $id;
-                        $products_spec->category_sub_id = $request->category_sub;
-                       
-                        $products_spec->specify_attribute = $request->speci_attri[$key];
-                        
-                        $products_spec->specify_value = $request->speci_value[$key];
-                        $products_spec->save();
-                         }
-                                   
-                     }	
-               
-                }
-
-                //print_r($request->specify_attribute);exit();    
-                //  ProductSpecs::where("products_id", $id)->delete();
-
-                        //     foreach ($request->specify_attribute as $key => $value) {
-                        //         // echo $key;
-                        //         // echo $key;
-                        //         // exit();
-                            
-                        //         //dd($request->all());
-                        //         // dd($products_spec);
-                            
-                        //         // echo $value;
-                        //         // echo $key;exit();
-                        //         // $products_spec = new ProductSpecs();
-                        //         // print_r($products_spec);exit();
-                        //         //print_r($products_spec);exit();
-                        //        // $products_spec->products_id = $next_product_id;
-                            
-                        //      $products_spec->category_sub_id = $request->category_sub;
-
-                        //       $products_spec->specify_attribute = $request->specify_attribute[$key];
-                        //       $products_spec->specify_value = $request->specify_value[$key];
-                        //    //  print_r($products_spec);exit();
-                        //   //  dd($products_spec);
-                        //       $products_spec->save();
-                        //     }	
-                
-             }
-           // print_r($request->specify_attri);exit();
-             if(isset($request->specify_attri)){
-                
-            //  dd($request->all());
+            $detailsIds = $request->input('product_details_id') ?: [];
+            $np = count($detailsIds);
             
-                $ischange= false;
-              
-               foreach ($request->specify_attri as $k => $v)
-              // for ($k = 0; $k < $res; $k++) 
-                {
-                     if(!is_null($request->specify_attri)){
-                        $ischange= true;
-                        $productsAttri = new productsAttri();
-    
-                        $productsAttri->products_id = $id;
-                        $productsAttri->category_sub_id = $request->category_sub;
-                        $productsAttri->spec_attribute = $request->specify_attri[$k];
-                        $productsAttri->spec_value = $request->atttibute_value[$k];
-                        
-                         $productsAttri->save();
-                    }
-                    if($ischange){
-                       // $productsAttri->products_id = $id;
-                         $productsAttri = productsAttri::where('products_id',$id)->delete();
-                         foreach ($request->specify_attri as $ke => $va)
-                          {
-                            
-                            $productsAttri = new productsAttri();
-    
-                            $productsAttri->products_id = $id;
-                            $productsAttri->category_sub_id = $request->category_sub;
-                            $productsAttri->spec_attribute = $request->specify_attri[$ke];
-                            $productsAttri->spec_value = $request->atttibute_value[$ke] ?? null;
-                            $productsAttri->flag = 1;
-                            $productsAttri->status = 1;
-                            $productsAttri->created_by = "1";
-                        
-                            $productsAttri->save();
+            if ($np > 0) {
+                // Pre-fetch all array inputs to avoid multiple input() calls and offset errors
+                $mainimgs = $request->file('mainimg') ?: [];
+                $subimg1s = $request->file('subimg1') ?: [];
+                $subimg2s = $request->file('subimg2') ?: [];
+                $subimg3s = $request->file('subimg3') ?: [];
+                
+                $oldMainImgs = $request->input('old_mainimg') ?: [];
+                $oldSubImg1s = $request->input('old_subimg1') ?: [];
+                $oldSubImg2s = $request->input('old_subimg2') ?: [];
+                $oldSubImg3s = $request->input('old_subimg3') ?: [];
+                
+                $attrColors = $request->input('attrcolor') ?: [];
+                $attrSizes = $request->input('attrsize') ?: [];
+                $quantities = $request->input('quantity') ?: [];
+                $retailPrices = $request->input('retail_price') ?: [];
+                $sellingPrices = $request->input('selling_price') ?: [];
+                $skus = $request->input('sku') ?: [];
+                $returnReplaces = $request->input('return_replace') ?: [];
+                $rDays = $request->input('r_days') ?: [];
+                $lowStockLimits = $request->input('low_stock_limit') ?: [];
+
+                for ($key = 0; $key < $np; $key++) {
+                    $details_id = $detailsIds[$key] ?? null;
+                    if ($details_id != null) {
+                        $products_details = ProductsDetails::where('id', $details_id)->first();
+                        if (!$products_details) {
+                            $products_details = new ProductsDetails();
+                            $products_details->products_id = $id;
                         }
+                    
+                        $prarr = [];
+                        
+                        // Process Images for existing details
+                        $file = $mainimgs[$key] ?? null;
+                        if ($file) {
+                            $fname = $details_id . '.' . time() . '.' . $file->getClientOriginalName();
+                            Image::make($file->getRealPath())->resize(500, 300, function ($c) {
+                                $c->aspectRatio();
+                            })->save($this->detail_image_path . '/' . $fname);
+                            $products_details_filename = $fname;
+                        } else {
+                            $products_details_filename = $oldMainImgs[$key] ?? '';
+                        }
+
+                        $file1 = $subimg1s[$key] ?? null;
+                        if ($file1) {
+                            $fname1 = $details_id . '.' . $file1->getClientOriginalName();
+                            Image::make($file1->getRealPath())->resize(500, 300, function ($c) {
+                                $c->aspectRatio();
+                            })->save($this->detail_image_path . '/' . $fname1);
+                            $products_details_filename1 = $fname1;
+                        } else {
+                            $products_details_filename1 = $oldSubImg1s[$key] ?? '';
+                        }
+
+                        $file2 = $subimg2s[$key] ?? null;
+                        if ($file2) {
+                            $fname2 = $details_id . '.' . $file2->getClientOriginalName();
+                            Image::make($file2->getRealPath())->resize(500, 300, function ($c) {
+                                $c->aspectRatio();
+                            })->save($this->detail_image_path . '/' . $fname2);
+                            $products_details_filename2 = $fname2;
+                        } else {
+                            $products_details_filename2 = $oldSubImg2s[$key] ?? '';
+                        }
+
+                        $file3 = $subimg3s[$key] ?? null;
+                        if ($file3) {
+                            $fname3 = $details_id . '.' . $file3->getClientOriginalName();
+                            Image::make($file3->getRealPath())->resize(500, 300, function ($c) {
+                                $c->aspectRatio();
+                            })->save($this->detail_image_path . '/' . $fname3);
+                            $products_details_filename3 = $fname3;
+                        } else {
+                            $products_details_filename3 = $oldSubImg3s[$key] ?? '';
+                        }
+
+                        $prarr = [$products_details_filename, $products_details_filename1, $products_details_filename2, $products_details_filename3];
+                        $products_details->product_detail_image = json_encode($prarr);
+
+                    } else {
+                        // Handle New Product Details (if any - though usually handled by separate add more)
+                        $products_details = new ProductsDetails();
+                        $products_details->products_id = $id;
+                        $prarr = ['', '', '', ''];
+                        $products_details->product_detail_image = json_encode($prarr);
                     }
-               }
+                 
+                    $products_details->attributevalue1 = $attrColors[$key] ?? null;
+                    $products_details->attributename1 = 'Color';
+                    $products_details->attributevalue2 = $attrSizes[$key] ?? null;
+                    if (!empty($products_details->attributevalue2)) {
+                        $products_details->attributename2 = 'Size';
+                    }
+                    $products_details->quantity = $quantities[$key] ?? 0;
+                    $products_details->retail_price = $retailPrices[$key] ?? 0;
+                    $products_details->selling_price = $sellingPrices[$key] ?? 0;
+                    $products_details->sku = $skus[$key] ?? '';
+                    $products_details->return_replace = $returnReplaces[$key] ?? 'Return';
+                    $products_details->r_days = $rDays[$key] ?? 0;
+                    $products_details->low_stock_limit = $lowStockLimits[$key] ?? 0;
+                    $products_details->save();
+                }            
             }
 
-             $flasher->addSuccess('Product Updated successfully!');
+            // SPECIFICATIONS (Using unified spec_id/specify_attribute/specify_value)
+            if ($request->has('spec_id')) {
+                $specIds = $request->input('spec_id');
+                $specifyAttributes = $request->input('specify_attribute') ?: [];
+                $specifyValues = $request->input('specify_value') ?: [];
+
+                ProductSpecs::where('products_id', $id)->delete();
+                foreach ($specIds as $valIdx) {
+                    $spec = new ProductSpecs();
+                    $spec->products_id = $id;
+                    $spec->category_sub_id = $request->input('category_sub');
+                    $spec->spec_id = $valIdx;
+                    $spec->specify_attribute = $specifyAttributes[$valIdx] ?? null;
+                    $spec->specify_value = $specifyValues[$valIdx] ?? null;
+                    $spec->save();
+                }
+            }
+
+            // Legacy Attributes (specify_attri) - If still used
+            if ($request->has('specify_attri')) {
+                productsAttri::where('products_id', $id)->delete();
+                $attriNames = $request->input('specify_attri') ?: [];
+                $attriValues = $request->input('atttibute_value') ?: [];
+                foreach ($attriNames as $k => $v) {
+                    if (!empty($v)) {
+                        $pa = new productsAttri();
+                        $pa->products_id = $id;
+                        $pa->category_sub_id = $request->input('category_sub');
+                        $pa->spec_attribute = $v;
+                        $pa->spec_value = $attriValues[$k] ?? null;
+                        $pa->flag = 1;
+                        $pa->status = 1;
+                        $pa->created_by = "1";
+                        $pa->save();
+                    }
+                }
+            }
+
+            $flasher->addSuccess('Product Updated successfully!');
             return redirect()->route('vendorproducts.crud.listing');
            
-        } catch(\Throwable $th) {
+        } catch (\Throwable $th) {
             Log::error('Vendor product update failed', [
                 'product_id' => $id,
-                'vendor_login_id' => session()->get('login_id'),
                 'message' => $th->getMessage(),
-                'file' => $th->getFile(),
-                'line' => $th->getLine(),
+                'line' => $th->getLine()
             ]);
             $flasher->addError('Something Error! ' . $th->getMessage());
             return redirect()->route('vendorproducts.crud.listing');

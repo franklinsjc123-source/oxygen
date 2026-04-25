@@ -575,12 +575,11 @@
                                     </div>
 
                                     <div class="form-group col-md-3">
-                                        <label> Return /
-                                            Replacement</label>
+                                        <label> Return </label>
                                         <select class="form-select form-select-lg text-secondary"
                                             name="return_replace[{{ $i }}]" required>
 
-                                            <option selected value="" hidden>Select Return / Replacement</option>
+                                            <option selected value="" hidden>Select Return</option>
                                             <option value="Return">
                                                 Return
                                             </option>
