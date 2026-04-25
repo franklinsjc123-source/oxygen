@@ -821,16 +821,18 @@
                                                             <option value="">Select</option>
 
                                                             @foreach ($offers as $offer)
-                                                            @if($offer->type =="Buy X Get Y Free")
-                                                            <option value="{{ $offer->ids }}">
-                                                                {{ 'Buy ' . $offer->buy . ' get ' . $offer->getoffer . ' free' }}
+                                                            @php
+                                                                $offerLabel = "";
+                                                                if($offer->type == "Buy X Get Y Free") {
+                                                                    $offerLabel = 'Buy ' . $offer->buy . ' get ' . $offer->getoffer . ' free';
+                                                                } elseif($offer->type == "Buy X @ Y") {
+                                                                    $offerLabel = 'Buy ' . $offer->buyproduct . ' get amount ' . $offer->getamt;
+                                                                }
+                                                            @endphp
+                                                            @if($offerLabel)
+                                                            <option value="{{ $offerLabel }}">
+                                                                {{ $offerLabel }}
                                                             </option>
-                                                            @elseif($offer->type == "Buy X @ Y")
-
-                                                            <option value="{{ $offer->ids }}">
-                                                                {{ 'Buy ' . $offer->buyproduct . ' get amount ' . $offer->getamt }}
-                                                            </option>
-
                                                             @endif
                                                             @endforeach
                                                             {{-- <option value="Buy 3 Get 1 Free">Buy 3 Get 1 Free

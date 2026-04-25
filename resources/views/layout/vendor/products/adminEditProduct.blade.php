@@ -354,8 +354,18 @@
                                                                                 <option value="None">None</option> --}}
             
                                                                                 @foreach ($offers as $offer)
-                                                                                <option value="{{ $offer->id }}" {{ ($offer->id == $product->offers)?'selected':'';}}>
-                                                                                    {{ $offer->type }}
+                                                                                @php
+                                                                                    $offerLabel = "";
+                                                                                    if($offer->type == "Buy X Get Y Free") {
+                                                                                        $offerLabel = 'Buy ' . $offer->buy . ' get ' . $offer->getoffer . ' free';
+                                                                                    } elseif($offer->type == "Buy X @ Y") {
+                                                                                        $offerLabel = 'Buy ' . $offer->buyproduct . ' get amount ' . $offer->getamt;
+                                                                                    } else {
+                                                                                        $offerLabel = $offer->type;
+                                                                                    }
+                                                                                @endphp
+                                                                                <option value="{{ $offerLabel }}" {{ ($offerLabel == $product->offers || $offer->id == $product->offers)?'selected':'' }}>
+                                                                                    {{ $offerLabel }}
                                                                                 </option>
                                                                                  @endforeach
             
