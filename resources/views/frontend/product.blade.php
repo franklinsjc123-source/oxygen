@@ -240,7 +240,7 @@
                                         </div>
                                         <?php 
                                         $discount_percentage = (($prouctsList['retail_price'] - $prouctsList['selling_price']) / $prouctsList['retail_price']) * 100;
-                                            $discount_rounded = round($discount_percentage / 10) * 10;
+                                            $discount_rounded = round($discount_percentage);
                                         ?>
 
                                         <div  class="product-offer-percentage  mt-2" id="product-discount-percentage">
@@ -1294,7 +1294,7 @@
          const retail = Number(variant.retail_amount || 0);
          let discount = 0;
          if (retail > 0) {
-             discount = Math.round((((retail - selling) / retail) * 100) / 10) * 10;
+             discount = Math.round(((retail - selling) / retail) * 100);
          }
 
          $('#product-selling-price').text(formatINR(selling));
