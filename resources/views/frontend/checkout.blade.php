@@ -431,13 +431,13 @@
      <tbody>
      @foreach ($checkoutSummary['lines'] ?? [] as $item)
      <tr class="bb-no">
-     <td class="product-name">
+     <td class="product-name" style="word-break: break-word; white-space: normal; padding-right: 10px !important;">
      {{ $item['name'] }}
      <i class="fas fa-times"></i>
      <span class="product-quantity">{{ $item['qty'] }}</span>
-     </div>
+     
      @if (!empty($item['offer_applied']))
-     <div class="mt-1 small text-success">
+     <div class="mt-1 small text-success" style="word-break: break-word; white-space: normal; line-height: 1.4;">
      {{ $item['offer_title'] ?: $item['offer_type'] }}
      @if (!empty($item['free_qty']))
      | Free Qty: {{ $item['free_qty'] }}
