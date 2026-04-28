@@ -14,8 +14,25 @@
                                              $offer_image = $prouctsList[$id]['offer_image'] ?? null;
                                          @endphp
                                          @if($offer_image)
-                                             <div class="product-label-group" style="position: absolute; top: 10px; left: 10px; z-index: 10;">
-                                                 <img src="{{ asset('assets/images/offer_logo/'.$offer_image) }}" alt="Offer" style="width: 50px; height: 50px; object-fit: contain; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); border-radius: 5px;">
+                                             <div class="product-label-group" style="position: absolute; top: 10px; left: 10px; z-index: 10; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                                                 <img src="{{ asset('assets/images/offer_logo/'.$offer_image) }}" alt="Offer" style="width: 60px; height: 60px; object-fit: contain; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); border-radius: 5px;">
+                                                 @if(isset($offerDetails) && $offerDetails)
+                                                     @php
+                                                         $offerText = '';
+                                                         if ($offerDetails->type == "Buy X Get Y Free") {
+                                                             $offerText = 'Buy ' . $offerDetails->buy . ' Get ' . $offerDetails->getoffer . ' Free';
+                                                         } elseif ($offerDetails->type == "Buy X @ Y") {
+                                                             $offerText = 'Buy ' . $offerDetails->buyproduct . ' @ ₹' . $offerDetails->getamt;
+                                                         } else {
+                                                             $offerText = $offerDetails->title ?: $offerDetails->type;
+                                                         }
+                                                     @endphp
+                                                     @if($offerText)
+                                                         <div style="background: rgba(255, 60, 32, 0.95); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); white-space: nowrap;">
+                                                             {{ $offerText }}
+                                                         </div>
+                                                     @endif
+                                                 @endif
                                              </div>
                                          @endif
                                      </figure>

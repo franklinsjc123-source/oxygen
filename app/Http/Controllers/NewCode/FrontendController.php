@@ -1409,7 +1409,12 @@ class FrontendController extends Controller
 
         $reviewCount = Rating::where('products_id', $id)->count();
 
-        return view('frontend/quick_view', compact('id', 'prouctsList', 'imageList', 'percent', 'reviewCount'));
+        $offerDetails = null;
+        if (isset($prouctsList[$id]['offer_id']) && $prouctsList[$id]['offer_id']) {
+            $offerDetails = \DB::table('master_offers')->where('id', $prouctsList[$id]['offer_id'])->first();
+        }
+
+        return view('frontend/quick_view', compact('id', 'prouctsList', 'imageList', 'percent', 'reviewCount', 'offerDetails'));
     }
 
     public function customCart(Request $request)
