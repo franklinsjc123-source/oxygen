@@ -1128,6 +1128,11 @@ class FrontendController extends Controller
             ->limit('4')
             ->inRandomOrder()
             ->get();
+            
+        foreach($products as $product) {
+            $product->offer_image = $this->resolveOfferImage($product->offer_image, $product->offer_type ?? null, $product->discount_type ?? null);
+        }
+        
         return $products;
     }
 
@@ -1150,6 +1155,8 @@ class FrontendController extends Controller
                 'products.product_image',
                 'category_sub.category_sub_name',
                 'o.offer_logo as offer_image',
+                'o.type as offer_type',
+                'o.discount_type',
 
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
@@ -1164,11 +1171,15 @@ class FrontendController extends Controller
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
-                'o.offer_logo'
+                'o.offer_logo', 'o.type', 'o.discount_type'
             )
             ->limit('4')
             ->inRandomOrder()
             ->get();
+
+        foreach($products as $product) {
+            $product->offer_image = $this->resolveOfferImage($product->offer_image, $product->offer_type ?? null, $product->discount_type ?? null);
+        }
 
         return $products;
     }
@@ -1207,6 +1218,10 @@ class FrontendController extends Controller
             ->inRandomOrder()
             ->limit('6')
             ->get();
+
+        foreach($products as $product) {
+            $product->offer_image = $this->resolveOfferImage($product->offer_image, $product->offer_type ?? null, $product->discount_type ?? null);
+        }
 
         return $products;
     }
@@ -1974,15 +1989,26 @@ class FrontendController extends Controller
         $offer_ids_param = isset($_GET['ids']) ? $_GET['ids'] : '';
         $offer_id = isset($_GET['id']) ? $_GET['id'] : '';
 
+        $offer_name = '';
         if ($offer_ids_param != '') {
             $offerIds = array_filter(explode(',', $offer_ids_param));
-            $offer_name = Offer::whereIn('id', $offerIds)->value('title');
+            $offerObj = Offer::whereIn('id', $offerIds)->first();
         } elseif ($offer_id != '') {
             $offerIds = [$offer_id];
-            $offer_name = Offer::where('id', $offer_id)->value('title');
+            $offerObj = Offer::where('id', $offer_id)->first();
         } else {
             $offerIds = [];
-            $offer_name = '';
+            $offerObj = null;
+        }
+
+        if ($offerObj) {
+            if ($offerObj->type == "Buy X Get Y Free") {
+                $offer_name = 'Buy ' . $offerObj->buy . ' get ' . $offerObj->getoffer . ' free';
+            } elseif ($offerObj->type == "Buy X @ Y") {
+                $offer_name = 'Buy ' . $offerObj->buyproduct . ' @ amount ' . $offerObj->getamt;
+            } else {
+                $offer_name = $offerObj->title ?: $offerObj->type;
+            }
         }
 
         // Get products for this vendor matching any of the offer IDs
