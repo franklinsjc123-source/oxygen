@@ -382,12 +382,12 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label for="validationCustom2" class="col-xl-4 col-md-4">GST
+                                                        <label for="validationCustom2" class="col-xl-4 col-md-4"><span>*</span> GST
                                                             NUMBER</label>
                                                         <div class="col-xl-8 col-md-7">
                                                             <input class="form-control" id="validationCustom2"
                                                                 value="{{ $vendorcreate->gst_number }}" type="text"
-                                                                name="gst_number">
+                                                                name="gst_number" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -545,7 +545,7 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom01" class="col-xl-4 col-md-4">Pack
+                                                        <label for="validationCustom01" class="col-xl-4 col-md-4"><span>*</span> Pack
                                                             :</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             @php
@@ -558,7 +558,7 @@
                                                             @endphp
 
                                                             <select class="custom-select w-100 form-control"
-                                                                name="package" id="package">
+                                                                name="package" id="package" required>
                                                                 <option value="" disabled {{ is_null($vendorcreate->package_id) ? 'selected' : '' }}>Select Package</option>
 
                                                                 @foreach ($pack as $pack)
@@ -682,25 +682,7 @@
                                                     @endif --}}
                                                 </div>
                                             </div>
-                                            <div class="modal-footer">
-                                                <button class="btn btn-lg btn-secondary px-5" type="button">Send
-                                                    OTP</button>
-                                            </div>
 
-                                            <div class="row pt-2 mt-2 px-4">
-                                                <div class="col-md-9">
-                                                    <div class="form-group row">
-                                                        <label for="validationCustom0"
-                                                            class="col-xl-6 col-md-6 text-right"><span
-                                                                calss="text-right">Enter OTP (Mobile Number)</span></label>
-                                                        <div class="col-xl-6 col-md-6">
-                                                            <input class="form-control" id="validationCustom0"
-                                                                type="text" name="graceperiod">
-                                                        </div>
-                                                    </div>
-                                                    <br>
-                                                </div>
-                                            </div>
                                         </div>
 
                                         <div class="tab-pane fade show " id="top-bank" role="tabpanel"
@@ -755,6 +737,17 @@
                                                             <input class="form-control" id="ifsc" name="ifsc"
                                                                 type="text" value="{{ $vendorcreate->ifsc }}" 
                                                                 required maxlength="11" minlength="11">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label for="vendor_otp" class="col-xl-3 col-md-3">Enter OTP (Mobile Number)</label>
+                                                        <div class="col-xl-6 col-md-6">
+                                                            <input class="form-control" id="vendor_otp"
+                                                                type="text" name="graceperiod">
+                                                        </div>
+                                                        <div class="col-xl-3 col-md-3">
+                                                            <button class="btn btn-secondary w-100" type="button">Send
+                                                                OTP</button>
                                                         </div>
                                                     </div>
                                                     <hr>

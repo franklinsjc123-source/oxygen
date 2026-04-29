@@ -140,8 +140,7 @@ class VendorcreateController extends Controller
      */
     public function store(Request $request, FlasherInterface $flasher)
     {
-
-
+      
         $vendor = new vendorcreate();
         $statement = FacadesDB::select("SHOW TABLE STATUS LIKE 'vendor_details'");
         $stmt = FacadesDB::select("SHOW TABLE STATUS LIKE 'users'");
@@ -354,6 +353,7 @@ class VendorcreateController extends Controller
      */
     public function update(Request $request, $id,  FlasherInterface $flasher)
     {
+       
         //    $vendorupdate = vendorcreate::find($id);
 
         //    $vendor = $request->all();

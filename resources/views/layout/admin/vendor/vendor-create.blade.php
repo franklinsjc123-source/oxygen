@@ -384,11 +384,11 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label for="validationCustom2" class="col-xl-4 col-md-4">GST
+                                                        <label for="validationCustom2" class="col-xl-4 col-md-4"><span>*</span> GST
                                                             number</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom2"
-                                                                type="text" name="gst_number">
+                                                                type="text" name="gst_number" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -496,7 +496,7 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom01" class="col-xl-4 col-md-4">Pack
+                                                        <label for="validationCustom01" class="col-xl-4 col-md-4"><span>*</span> Pack
                                                             :</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             @php
@@ -508,7 +508,7 @@
                                                             @endphp
 
                                                             <select class="custom-select w-100 form-control"
-                                                                name="package" id="package">
+                                                                name="package" id="package" required>
                                                                 <option value="" disabled selected>Select Package</option>
 
                                                                 @foreach ($pack as $pack)
@@ -666,7 +666,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label for="vendor_otp" class="col-xl-3 col-md-3">OTP</label>
+                                                        <label for="vendor_otp" class="col-xl-3 col-md-3">Enter OTP (Mobile Number)</label>
                                                         <div class="col-xl-6 col-md-6">
                                                             <input class="form-control" id="vendor_otp"
                                                                 type="text" name="graceperiod">
