@@ -14,6 +14,7 @@ class AttributeGroup extends Model
         'attribute_group_name',
         'attribute_group_refname',
         'attribute_values',
+        'sub_category_ids',
         'status',
         'created_by',
         'created_byid'

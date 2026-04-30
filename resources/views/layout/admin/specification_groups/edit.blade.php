@@ -62,8 +62,62 @@
             <input type="text" class="form-control" id="specification_group_refname" name="specification_group_refname" value="{{ $group->specification_group_refname }}" required>
         </div>
         <div class="mb-3">
+            <label class="form-label">Select Category</label>
+            <div class="border p-3 rounded" style="max-height: 400px; overflow-y: auto;">
+                @php
+                    $selectedSubIds = explode(',', (string)($group->sub_category_ids ?? ''));
+                    $selectedSubIds = array_filter($selectedSubIds);
+                @endphp
+                @foreach ($CategoryMain as $main)
+                    <div class="main-category-item mb-2">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input main-cat" 
+                                   id="main_{{ $main->id }}" 
+                                   data-main-id="{{ $main->id }}">
+                            <label class="form-check-label fw-bold" for="main_{{ $main->id }}">
+                                {{ $main->category_main_name }}
+                            </label>
+                        </div>
+                        <div class="sub-categories ms-4">
+                            @php
+                                $categories = $Category->where('main_category_id', $main->id);
+                            @endphp
+                            @foreach ($categories as $cat)
+                                <div class="form-check">
+                                    @php
+                                        $currentSubIds = $CategorySub->where('category_id', $cat->id)->pluck('id')->map(fn($id) => (string)$id)->toArray();
+                                        $isChecked = !empty(array_intersect($currentSubIds, $selectedSubIds));
+                                    @endphp
+                                    <input type="checkbox" class="form-check-input category-cat" 
+                                           id="category_{{ $cat->id }}" 
+                                           data-main-id="{{ $main->id }}" 
+                                           data-main-name="{{ $main->category_main_name }}"
+                                           data-category-id="{{ $cat->id }}"
+                                           data-category-name="{{ $cat->category_name }}"
+                                           data-sub-ids="{{ implode(',', $currentSubIds) }}"
+                                           {{ $isChecked ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="category_{{ $cat->id }}">
+                                        {{ $cat->category_name }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            <div id="selected_subcategory_inputs">
+                <input type="hidden" name="sub_category_ids_csv" id="sub_category_ids_csv" value="{{ $group->sub_category_ids }}">
+            </div>
+            <div id="selected_subcategory_tags" class="mt-2 d-flex flex-wrap gap-1"></div>
+        </div>
+
+        <div class="mb-3">
             <label for="status" class="form-label">Status</label>
-            <input type="text" class="form-control" id="status" name="status" value="{{ $group->status }}">
+            <select class="custom-select w-100 form-control"
+                name="status"  id="status" required>
+                <option value="1" {{ $group->status == 1 ? 'selected' : '' }}>Active</option>
+                <option value="0" {{ $group->status == 0 ? 'selected' : '' }}>Inactive</option>
+            </select>
         </div>
         
         <button type="submit" class="btn btn-primary">Update</button>
@@ -112,6 +166,58 @@
     		}
     
     	</script>
+
+        <script>
+            $(function() {
+                function syncParentStates() {
+                    $('.main-cat').each(function() {
+                        const mainId = $(this).data('main-id');
+                        const allCategories = $(`.category-cat[data-main-id="${mainId}"]`);
+                        const checkedCategories = allCategories.filter(':checked');
+                        $(this).prop('checked', allCategories.length > 0 && checkedCategories.length === allCategories.length);
+                    });
+                }
+
+                function renderSelections() {
+                    const $inputs = $('#selected_subcategory_inputs');
+                    const $tags = $('#selected_subcategory_tags');
+                    $inputs.empty();
+                    $tags.empty();
+                    $inputs.append('<input type="hidden" name="sub_category_ids_csv" id="sub_category_ids_csv" value="">');
+
+                    const subIds = new Set();
+                    $('.category-cat:checked').each(function() {
+                        const mainName = $(this).data('main-name');
+                        const categoryName = $(this).data('category-name');
+                        const rawSubIds = ($(this).data('sub-ids') || '').toString();
+                        if (rawSubIds.length > 0) {
+                            rawSubIds.split(',').forEach(id => {
+                                if (id) subIds.add(id);
+                            });
+                        }
+                        $tags.append(`<span class="badge bg-light text-dark border">${mainName} | ${categoryName}</span>`);
+                    });
+
+                    $('#sub_category_ids_csv').val(Array.from(subIds).join(','));
+                }
+
+                $(document).on('change', '.main-cat', function() {
+                    const mainId = $(this).data('main-id');
+                    const checked = $(this).is(':checked');
+                    $(`.category-cat[data-main-id="${mainId}"]`).prop('checked', checked);
+                    syncParentStates();
+                    renderSelections();
+                });
+
+                $(document).on('change', '.category-cat', function() {
+                    syncParentStates();
+                    renderSelections();
+                });
+
+                syncParentStates();
+                renderSelections();
+            });
+        </script>
 
 
 @endsection

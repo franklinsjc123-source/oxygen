@@ -47,23 +47,31 @@ class CategorySubController extends Controller
 
                 $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $viewId)->first();
 
+                $attributegroup = AttributeGroup::whereRaw("FIND_IN_SET(?, sub_category_ids)", [$viewId])
+                    ->orWhereIn('id', $defaultAttributeIds)
+                    ->orderBy('attribute_group_name', 'asc')
+                    ->get();
+
+                $mappedAttributeIds = $attributegroup->pluck('id')->toArray();
+
                 $selectedAttributeIds = ($mapping && $mapping->category_sub_attribute_ids)
                     ? array_values(array_filter(array_map('intval', json_decode($mapping->category_sub_attribute_ids, true) ?: [])))
-                    : $defaultAttributeIds;
+                    : array_values(array_unique(array_merge($defaultAttributeIds, $mappedAttributeIds)));
 
-                $selectedSpecificationIds = ($mapping && $mapping->category_sub_specification_ids)
-                    ? array_values(array_filter(array_map('intval', json_decode($mapping->category_sub_specification_ids, true) ?: [])))
-                    : $defaultSpecificationIds;
-
-                $attributegroup = AttributeGroup::orderBy('attribute_group_name', 'asc')->get();
-
-                $specificationgroup = SpecificationGroup::whereIn('id', $defaultSpecificationIds)
+                $specificationgroup = SpecificationGroup::whereRaw("FIND_IN_SET(?, sub_category_ids)", [$viewId])
+                    ->orWhereIn('id', $defaultSpecificationIds)
                     ->orWhere(function ($query) use ($login_id) {
                         $query->where('created_byid', $login_id)
                             ->where('created_by', 'Vendor');
                     })
                     ->orderBy('specification_group_name', 'asc')
                     ->get();
+
+                $mappedSpecificationIds = $specificationgroup->pluck('id')->toArray();
+
+                $selectedSpecificationIds = ($mapping && $mapping->category_sub_specification_ids)
+                    ? array_values(array_filter(array_map('intval', json_decode($mapping->category_sub_specification_ids, true) ?: [])))
+                    : array_values(array_unique(array_merge($defaultSpecificationIds, $mappedSpecificationIds)));
 
                 return view('layout.vendor.category.category_sub')->with([
                     "sub_category_data" => $sub_category_data,
@@ -77,7 +85,8 @@ class CategorySubController extends Controller
             }
         }
 
-        $attributegroup = AttributeGroup::all();
+        $attributegroup = AttributeGroup::all(); // Keep all for main table or filter if needed, but for now focus on the modal filter above.
+        // Actually, let's keep all here as it's not the modal view.
         $specificationgroup = SpecificationGroup::all();
         return view('layout.vendor.category.category_sub')->with([
             "sub_category_data" => $sub_category_data,

@@ -14,6 +14,7 @@ class SpecificationGroup extends Model
         'specification_group_name',
         'specification_group_refname',
         'specification_values',
+        'sub_category_ids',
         'status',
         'created_by',
         'created_byid'
