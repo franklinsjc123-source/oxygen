@@ -112,6 +112,28 @@
         </div>
 
         <div class="mb-3">
+            <label class="form-label">Select Vendors</label>
+            <div class="border p-3 rounded" style="max-height: 200px; overflow-y: auto;">
+                @php
+                    $selectedVendorIds = explode(',', (string)($group->vendor_ids ?? ''));
+                    $selectedVendorIds = array_filter($selectedVendorIds);
+                @endphp
+                @foreach ($Vendors as $vendor)
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" 
+                               name="vendor_ids[]" 
+                               id="vendor_{{ $vendor->id }}" 
+                               value="{{ $vendor->id }}"
+                               {{ in_array($vendor->id, $selectedVendorIds) ? 'checked' : '' }}>
+                        <label class="form-check-label" for="vendor_{{ $vendor->id }}">
+                            {{ $vendor->shop_name }}
+                        </label>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="mb-3">
             <label for="status" class="form-label">Status</label>
             <select class="custom-select w-100 form-control"
                 name="status"  id="status" required>

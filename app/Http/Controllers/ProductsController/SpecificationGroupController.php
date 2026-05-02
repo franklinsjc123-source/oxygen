@@ -9,6 +9,7 @@ use App\Models\Master\Specification\SpecificationGroup;
 use App\Models\Category\CategorySub;
 use App\Models\Category\Category;
 use App\Models\Category\CategoryMain;
+use App\Models\Vendor;
 use DB;
 use Session;
 
@@ -30,7 +31,8 @@ class SpecificationGroupController extends Controller
             ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
             ->where('t1.status', 1)
             ->get();
-        return view('layout.admin.specification_groups.create', compact('CategoryMain', 'Category', 'CategorySub'));
+        $Vendors = Vendor::select('id', 'shop_name')->get();
+        return view('layout.admin.specification_groups.create', compact('CategoryMain', 'Category', 'CategorySub', 'Vendors'));
     }
 
     public function store(Request $request)
@@ -41,6 +43,7 @@ class SpecificationGroupController extends Controller
             'specification_group_refname' => 'required|string|max:255',
             'specification_values' => 'nullable|string|max:255',
             'sub_category_ids_csv' => 'nullable|string',
+            'vendor_ids' => 'nullable|array',
             'status' => 'nullable|string|max:255',
             'created_by' => 'nullable|string|max:255',
             'created_byid' => 'nullable|integer',
@@ -57,6 +60,7 @@ class SpecificationGroupController extends Controller
             'specification_group_refname' => $validated['specification_group_refname'],
             'specification_values' => "",
             'sub_category_ids' => !empty($selectedSubCategoryIds) ? implode(',', $selectedSubCategoryIds) : '',
+            'vendor_ids' => $request->has('vendor_ids') ? implode(',', $request->vendor_ids) : '',
             'status' => $validated['status'] ?? 1,
             'created_by' => "Admin",
             'created_byid' => $login_id,
@@ -78,7 +82,8 @@ class SpecificationGroupController extends Controller
             ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
             ->where('t1.status', 1)
             ->get();
-        return view('layout.admin.specification_groups.edit', compact('group', 'CategoryMain', 'Category', 'CategorySub'));
+        $Vendors = Vendor::select('id', 'shop_name')->get();
+        return view('layout.admin.specification_groups.edit', compact('group', 'CategoryMain', 'Category', 'CategorySub', 'Vendors'));
     }
 
     public function update(Request $request, $id)
@@ -89,6 +94,7 @@ class SpecificationGroupController extends Controller
             'specification_group_refname' => 'required|string|max:255',
             'specification_values' => 'nullable|string|max:255',
             'sub_category_ids_csv' => 'nullable|string',
+            'vendor_ids' => 'nullable|array',
             'status' => 'nullable|string|max:255',
             'created_by' => 'nullable|string|max:255',
             'created_byid' => 'nullable|integer',
@@ -105,6 +111,7 @@ class SpecificationGroupController extends Controller
             'specification_group_name' => $validated['specification_group_name'],
             'specification_group_refname' => $validated['specification_group_refname'],
             'sub_category_ids' => !empty($selectedSubCategoryIds) ? implode(',', $selectedSubCategoryIds) : '',
+            'vendor_ids' => $request->has('vendor_ids') ? implode(',', $request->vendor_ids) : '',
             'status' => $validated['status'] ?? 1,
             'created_by' => "Admin",
             'created_byid' => $login_id,

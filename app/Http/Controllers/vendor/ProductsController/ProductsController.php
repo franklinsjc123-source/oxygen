@@ -172,6 +172,7 @@ class ProductsController extends Controller
                     $q->whereIn('id', $specdata);
                 }
                 $q->orWhere('created_byid', $login_id);
+                $q->orWhereRaw("FIND_IN_SET(?, vendor_ids)", [$login_id]);
             })
             ->whereIn('created_byid', [1, $login_id])
             ->where('status', 'Active')
@@ -708,6 +709,7 @@ public function store(Request $request, FlasherInterface $flasher)
                     $q->whereIn('id', $specificationIds);
                 }
                 $q->orWhere('created_byid', $login_id);
+                $q->orWhereRaw("FIND_IN_SET(?, vendor_ids)", [$login_id]);
             })
             ->whereIn('created_byid', [1, $login_id])
             ->where('status', 'Active')
