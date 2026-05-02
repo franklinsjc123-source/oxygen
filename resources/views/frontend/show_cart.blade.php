@@ -6,16 +6,15 @@ if (isset($records) && count($records) > 0) {
 <tr>
     <td class="product-thumbnail align-middle">
         <div class="p-relative">
-            <a href="javascript:void(0)">
+            <a href="{{ url('/productVar/' . $row['product_id']) }}">
                 <figure>
                     <img src="<?= asset('assets/images/products/' . $image) ?>" alt="product" width="90" height="100">
                 </figure>
             </a>
-            <button type="button" class="btn btn-close" onclick="removeCart('<?= $row['id'] ?>')"><i class="fas fa-times"></i></button>
         </div>
     </td>
     <td class="product-name align-middle">
-        <a href="#">
+        <a href="{{ url('/productVar/' . $row['product_id']) }}">
             {{ $row['name'] }}
         </a>
         @php
@@ -66,6 +65,11 @@ if (isset($records) && count($records) > 0) {
     <td class="product-subtotal text-center align-middle">
         <span class="amount">Rs.{{ number_format($row['payable_amount'], 2) }}</span>
     </td>
+    <td class="product-remove text-center align-middle">
+        <button type="button" class="btn btn-sm btn-rounded btn-action-remove" onclick="removeCart('<?= $row['id'] ?>')" style="min-width: 100px; font-size: 11px; padding: 8px 12px; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0 auto;">
+            <i class="fas fa-trash-alt"></i> Remove
+        </button>
+    </td>
 </tr>
 
 <?php /* if (!empty($row['free_qty'])) { ?>
@@ -103,7 +107,7 @@ if (isset($records) && count($records) > 0) {
 } else {
 ?>
 <tr data-id="1">
-    <td colspan="5">
+    <td colspan="6">
         <center><i class="d-icon-bag"></i> Your Cart is Empty</center>
     </td>
 </tr>

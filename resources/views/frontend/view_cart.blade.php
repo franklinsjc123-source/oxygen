@@ -12,9 +12,19 @@
         width: 120px;
     }
 
-    .shop-table.cart-table .product-name {
-        padding-left: 16px;
-        text-align: left;
+    .shop-table.cart-table .product-remove {
+        width: 140px;
+    }
+
+    .btn-action-remove {
+        border: 1px solid #ff4b4b !important;
+        color: #ff4b4b !important;
+        background: transparent !important;
+        transition: all 0.3s ease !important;
+    }
+    .btn-action-remove:hover {
+        background: #ff4b4b !important;
+        color: #fff !important;
     }
 </style>
  <!-- Start of Main -->
@@ -44,6 +54,7 @@
                                         <th class="product-price text-center"><span>Price</span></th>
                                         <th class="product-quantity text-center"><span>Quantity</span></th>
                                         <th class="product-subtotal text-center"><span>Subtotal</span></th>
+                                        <th class="product-remove"><span>Action</span></th>
                                     </tr>
                                 </thead>
                                 <tbody id="cartView">
