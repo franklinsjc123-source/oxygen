@@ -303,27 +303,145 @@
         .cart-dropdown.cart-offcanvas .dropdown-box.sideCart {
             display: flex;
             flex-direction: column;
-            max-height: calc(100vh - 80px);
-            height: 100%;
-        }
-
-        .cart-dropdown.cart-offcanvas .dropdown-box.sideCart .products {
-            flex: 1 1 auto;
-            min-height: 0;
-            overflow-y: auto;
-            padding-right: 6px;
-        }
-
-        .cart-dropdown.cart-offcanvas .dropdown-box.sideCart .cart-total,
-        .cart-dropdown.cart-offcanvas .dropdown-box.sideCart .cart-action {
-            flex: 0 0 auto;
+            max-height: 100vh;
+            height: 100vh;
+            width: 350px;
+            padding: 0;
             background: #fff;
         }
 
-        .cart-dropdown.cart-offcanvas .dropdown-box.sideCart .cart-action {
-            position: sticky;
-            bottom: 0;
-            padding-top: 12px;
+        .sideCart .cart-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f9f9f9;
+        }
+
+        .sideCart .cart-header span {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .sideCart .products {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+            padding: 10px 20px;
+        }
+
+        .sideCart .product-cart {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f1f1f1;
+            position: relative;
+            gap: 12px;
+        }
+
+        .sideCart .product-media {
+            width: 70px;
+            height: 70px;
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+        .sideCart .product-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .sideCart .product-detail {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .sideCart .product-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sideCart .price-box {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .sideCart .product-quantity::after {
+            content: ' x ';
+            margin: 0 4px;
+        }
+
+        .sideCart .product-price {
+            font-weight: 700;
+            color: #0088dd;
+        }
+
+        .sideCart .btn-close {
+            position: absolute;
+            right: -5px;
+            top: 10px;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .sideCart .cart-total {
+            padding: 15px 20px;
+            background: #fdfdfd;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sideCart .cart-total label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .sideCart .cart-total .price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .sideCart .cart-action {
+            padding: 15px 20px 25px;
+            display: flex;
+            gap: 10px;
+            background: #fff;
+        }
+
+        .sideCart .cart-action .btn {
+            flex: 1;
+            padding: 12px 5px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 767px) {
+            .cart-dropdown.cart-offcanvas .dropdown-box.sideCart {
+                width: 300px;
+                max-width: 85vw;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .cart-dropdown.cart-offcanvas .dropdown-box.sideCart {
+                width: 320px;
+                max-width: 90vw;
+            }
         }
 
         /* ── Megamenu Premium Design ── */
