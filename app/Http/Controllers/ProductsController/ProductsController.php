@@ -1025,7 +1025,7 @@ class ProductsController extends Controller
     public function listing()
     {
         //return'rgdrf';
-        $products_list = Products::where('logintype', "Admin")->where('flag',1)->get();
+        $products_list = Products::where('flag',1)->get();
          $categorySub = CategorySub::where('status',1)->get();
          $products_details = ProductsDetails::get();
         // $offer = offer::get();
@@ -1033,7 +1033,6 @@ class ProductsController extends Controller
 
         $productDetailsCount = Products::select(DB::raw('COUNT(products.id) as product_details_cnt'))
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
-			->where('products.logintype', "Admin")
 			  ->where('products.flag',1)
             ->groupBy('products.id')
             ->get();

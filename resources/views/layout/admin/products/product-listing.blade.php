@@ -160,6 +160,7 @@
                                             <!--<th style="width: 10%" data-field="startDate" data-sortable="true">START DATE </th>-->
                                             <!--<th style="width: 10%" data-field="endDate" data-sortable="true">END DATE </th>-->
                                             <th style="width: 5%" data-field="status" data-sortable="true">STATUS</th>
+                                            <th style="width: 10%" data-field="created_by" data-sortable="true">CREATED BY</th>
                                             <th style="width: 20%" data-field="action" data-sortable="true">Action</th>
                                         </tr>
                                     </thead>
@@ -285,6 +286,16 @@
                                                          </div>
                                                      </label>
 
+                                                </td>
+                                                <td>
+                                                    @if($products->logintype == 'Vendor')
+                                                        @php
+                                                            $vendorName = App\Models\vendor\vendorcreate::where('user_id', $products->login_id)->value('shop_name') ?? 'Vendor';
+                                                        @endphp
+                                                        {{ $vendorName }}
+                                                    @else
+                                                        Admin
+                                                    @endif
                                                 </td>
                                                 <td>
                                                     <div class="mt-2 d-flex">
