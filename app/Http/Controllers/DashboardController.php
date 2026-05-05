@@ -36,23 +36,23 @@ class DashboardController extends Controller
        // return $id;
     //    $login_id = session()->get('login_id','status') == 1;
     //    dd($login_id);
-        $productCount = DB::table('products')->where('created_by', $id)->count();
+        $productCount = DB::table('products')->where('vendor_id', $id)->count();
         
         $orderCount = DB::table('ecom_order_product')
             ->join('products', 'ecom_order_product.product_id', '=', 'products.id')
-            ->where('products.created_by', $id)
+            ->where('products.vendor_id', $id)
             ->distinct('ecom_order_product.order_id')
             ->count('ecom_order_product.order_id');
             
         $customerCount = DB::table('ecom_order_info')
             ->join('ecom_order_product', 'ecom_order_info.order_id', '=', 'ecom_order_product.order_id')
             ->join('products', 'ecom_order_product.product_id', '=', 'products.id')
-            ->where('products.created_by', $id)
+            ->where('products.vendor_id', $id)
             ->distinct('ecom_order_info.customer_id')
             ->count('ecom_order_info.customer_id');
 
         $vendorProfileViews = DB::table('vendor_details')->where('id', $id)->value('view_count') ?? 0;
-        $productViews = DB::table('products')->where('created_by', $id)->sum('view_count') ?? 0;
+        $productViews = DB::table('products')->where('vendor_id', $id)->sum('view_count') ?? 0;
         $totalViews = $vendorProfileViews + $productViews;
 
         return view('layout.vendor.dashboard.dashboard')->with([
