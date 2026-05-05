@@ -48,7 +48,7 @@
 
                 <div class="col-md-12">
                     <div class="row">
-                        <div class="col-xl-4 col-md-4">
+                        <div class="col-xl-3 col-md-3">
                             <div class="card o-hidden widget-cards">
                                 <div class="bg-warning card-body">
                                     <div class="media static-top-widget row">
@@ -62,7 +62,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-4 col-md-4">
+                        <div class="col-xl-3 col-md-3">
                             <div class="card o-hidden  widget-cards">
                                 <div class="bg-secondary card-body">
                                     <div class="media static-top-widget row">
@@ -76,7 +76,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-4 col-md-4">
+                        <div class="col-xl-3 col-md-3">
                             <div class="card o-hidden widget-cards">
                                 <div class="bg-primary card-body">
                                     <div class="media static-top-widget row">
@@ -85,6 +85,20 @@
                                         </div>
                                         <div class="media-body col-8"><span class="m-0">Customers</span>
                                             <h3 class="mt-0 mb-0"> <span class="counter">{{ $customerCount }}</span><small></small></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-3">
+                            <div class="card o-hidden widget-cards">
+                                <div class="bg-info card-body">
+                                    <div class="media static-top-widget row">
+                                        <div class="icons-widgets col-4">
+                                            <div class="align-self-center text-center"><i data-feather="eye" class="font-info"></i></div>
+                                        </div>
+                                        <div class="media-body col-8"><span class="m-0">Total Views</span>
+                                            <h3 class="mt-0 mb-0"> <span class="counter">{{ $totalViews ?? 0 }}</span><small></small></h3>
                                         </div>
                                     </div>
                                 </div>

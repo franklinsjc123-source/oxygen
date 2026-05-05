@@ -499,6 +499,14 @@ class FrontendController extends Controller
             return redirect()->route('shops')->with('error', 'Vendor details not found.');
         }
 
+        // Increment view count
+        // Increment view count if not already viewed in this session
+        $viewedVendors = session()->get('viewed_vendors', []);
+        if (!in_array($vendorcreate->id, $viewedVendors)) {
+            DB::table('vendor_details')->where('id', $vendorcreate->id)->increment('view_count');
+            session()->push('viewed_vendors', $vendorcreate->id);
+        }
+
         $subid = array_filter(explode(',', (string) $vendorcreate->sub_category_ids));
         $Categorysub = count($subid) > 0 ? CategorySub::whereIn('id', $subid)->get() : collect();
         return view('frontend/vendor_doken_store')
@@ -1276,6 +1284,14 @@ class FrontendController extends Controller
         }
 
         $mainProductId = $getSpecificProduct->products_id;
+
+        // Increment view count
+        // Increment view count if not already viewed in this session
+        $viewedProducts = session()->get('viewed_products', []);
+        if (!in_array($mainProductId, $viewedProducts)) {
+            DB::table('products')->where('id', $mainProductId)->increment('view_count');
+            session()->push('viewed_products', $mainProductId);
+        }
 
         $ratings = Rating::withCount([
             'helpfulVotes',

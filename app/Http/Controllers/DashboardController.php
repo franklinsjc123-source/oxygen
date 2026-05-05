@@ -51,11 +51,16 @@ class DashboardController extends Controller
             ->distinct('ecom_order_info.customer_id')
             ->count('ecom_order_info.customer_id');
 
+        $vendorProfileViews = DB::table('vendor_details')->where('id', $id)->value('view_count') ?? 0;
+        $productViews = DB::table('products')->where('created_by', $id)->sum('view_count') ?? 0;
+        $totalViews = $vendorProfileViews + $productViews;
+
         return view('layout.vendor.dashboard.dashboard')->with([
             'vendorid' => $id,
             'productCount' => $productCount,
             'orderCount' => $orderCount,
-            'customerCount' => $customerCount
+            'customerCount' => $customerCount,
+            'totalViews' => $totalViews
         ]);
     }
 
