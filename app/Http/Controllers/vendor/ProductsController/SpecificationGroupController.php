@@ -17,10 +17,7 @@ class SpecificationGroupController extends Controller
     public function index()
     {
         $login_id = session()->get('login_id');
-        $groups = SpecificationGroup::where(function($q) use ($login_id) {
-            $q->where('created_byid', $login_id)->where('created_by', 'Vendor');
-            $q->orWhereRaw("FIND_IN_SET(?, vendor_ids)", [$login_id]);
-        })->get();
+        $groups = SpecificationGroup::where('created_byid', $login_id)->where('created_by', 'Vendor')->get();
         return view('layout.vendor.specification_groups.index', compact('groups'));
     }
 

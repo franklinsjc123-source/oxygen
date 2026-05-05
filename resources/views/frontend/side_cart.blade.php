@@ -7,13 +7,18 @@
     $baseUrl = url('/');
     foreach ($records as $row) {  ?>
         <div class="product product-cart">
+            <figure class="product-media">
+                <a href="<?= route('productVar', [$row['product_id']]) ?>">
+                    <img src="<?= $baseUrl ?>/assets/images/products/<?= $row['image'] ?>" alt="product" height="80" width="80">
+                </a>
+            </figure>
             <div class="product-detail">
                 <a href="<?= route('productVar', [$row['product_id']]) ?>" class="product-name"><?= $row['name'] ?></a>
                 <?php
                     $size = $row['size'] ?? '';
                     $color = $row['color'] ?? '';
                 ?>
-                <div class="small text-muted">
+                <div class="small text-muted" style="font-size: 11px;">
                     <?php if ($size !== '') { ?>
                         <span>Size: <?= $size ?></span>
                     <?php } ?>
@@ -26,7 +31,7 @@
                 </div>
 
                 <?php if ($row['offer_applied']) { ?>
-                    <div class="small text-success mb-1">
+                    <div class="small text-success mb-1" style="font-size: 11px;">
                         <strong><?= $row['offer_title'] ?></strong>
                     </div>
                 <?php } ?>
@@ -42,11 +47,6 @@
                     <span class="product-price">₹<?= number_format($displayPrice, 2) ?></span>
                 </div>
             </div>
-            <figure class="product-media">
-                <a href="<?= route('productVar', [$row['product_id']]) ?>">
-                    <img src="<?= $baseUrl ?>/assets/images/products/<?= $row['image'] ?>" alt="product" height="84" width="94">
-                </a>
-            </figure>
             <button onclick="removeCart('<?= $row['id'] ?>')" class="btn btn-link btn-close" aria-label="button">
                 <i class="fas fa-times"></i>
             </button>
@@ -73,6 +73,6 @@
     <span class="price">₹<?= $total ?? 0 ?></span>
 </div>
 <div class="cart-action">
-    <a href="<?= route('shopping-cart') ?>" class="btn btn-dark btn-outline btn-rounded">View Cart</a>
-    <a href="<?= route('checkoutPage') ?>" class="btn btn-primary  btn-rounded">Checkout</a>
+    <a href="<?= route('shopping-cart') ?>" class="btn btn-dark btn-rounded">View Cart</a>
+    <a href="<?= route('checkoutPage') ?>" class="btn btn-primary btn-rounded">Checkout</a>
 </div>

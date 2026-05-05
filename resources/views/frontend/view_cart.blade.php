@@ -34,8 +34,7 @@
                 <div class="container">
                     <ul class="breadcrumb shop-breadcrumb bb-no">
                         <li class="active"><a href="#">Shopping Cart</a></li>
-                        <li><a href="checkout.html">Checkout</a></li>
-                        <li><a href="order.html">Order Complete</a></li>
+                        <li><a href="{{url('/checkoutPage')}}">Checkout</a></li>
                     </ul>
                 </div>
             </nav>
