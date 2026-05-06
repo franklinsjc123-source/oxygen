@@ -388,7 +388,7 @@ public function store(Request $request, FlasherInterface $flasher)
 
                 foreach ($images as $index => $img) {
 
-                    $imageName = $productId . '_' . time() . '_' . $index . '.' . $img->getClientOriginalExtension();
+                    $imageName = $productId . '_p' . $i . '_' . time() . '_' . $index . '.' . $img->getClientOriginalExtension();
 
                     Image::make($img->getRealPath())
                         ->fit(800, 900)

@@ -1300,6 +1300,17 @@
  <!-- End of Main -->
  <script>
           const productVariants = @json($prouctsList['variants'] ?? []);
+     const colorImageMap = @json($colorImageMap ?? []);
+     const detailImageBase = '{{ asset("assets/images/products/detail") }}/';
+     const mainImageBase = '{{ asset("assets/images/products") }}/';
+     @php
+         $offerHtmlStr = '';
+         if (isset($prouctsList['offer_image']) && $prouctsList['offer_image']) {
+             $offerSrc = asset('assets/images/offer_logo/'.$prouctsList['offer_image']);
+             $offerHtmlStr = '<div class="product-label-group offer-scroll-trigger" style="position: absolute; top: 10px; left: 10px; z-index: 10; cursor: pointer; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 5px;"><img src="' . $offerSrc . '" alt="Offer" style="width: 100px; height: 100px; object-fit: contain; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); border-radius: 5px;"></div>';
+         }
+     @endphp
+     const offerImageHtml = @json($offerHtmlStr);
 
      function formatINR(value) {
          return '₹' + Number(value || 0);
@@ -1385,6 +1396,76 @@
          }
      }
 
+     function updateGalleryForColor(commonProduct) {
+         var images = colorImageMap[commonProduct] || colorImageMap[Object.keys(colorImageMap)[0]] || [];
+         if (!images.length) return;
+
+         var $mainSwiper = $('.product-single-swiper');
+         var $thumbSwiper = $('.product-thumbs-wrap');
+
+         // Destroy existing swiper instances first
+         if ($mainSwiper[0] && $mainSwiper[0].swiper) {
+             $mainSwiper[0].swiper.destroy(true, true);
+         }
+         if ($thumbSwiper[0] && $thumbSwiper[0].swiper) {
+             $thumbSwiper[0].swiper.destroy(true, true);
+         }
+
+         // Rebuild main swiper slides
+         var mainWrapper = $mainSwiper.find('.swiper-wrapper');
+         mainWrapper.empty();
+         images.forEach(function(img) {
+             var slideHtml = '<div class="swiper-slide">' +
+                 '<figure class="product-image">' +
+                 '<img src="' + detailImageBase + img + '" data-zoom-image="' + detailImageBase + img + '" alt="Product Image" width="800" height="900">' +
+                 offerImageHtml +
+                 '</figure></div>';
+             mainWrapper.append(slideHtml);
+         });
+
+         // Rebuild thumb slides
+         var thumbWrapper = $thumbSwiper.find('.product-thumbs');
+         thumbWrapper.empty();
+         images.forEach(function(img) {
+             var thumbHtml = '<div class="product-thumb swiper-slide">' +
+                 '<img src="' + detailImageBase + img + '" alt="Product Thumb" width="800" height="900">' +
+                 '</div>';
+             thumbWrapper.append(thumbHtml);
+         });
+
+         // Init thumb swiper first
+         var thumbSwiperInstance = new Swiper($thumbSwiper[0], {
+             slidesPerView: 4,
+             spaceBetween: 10,
+             watchSlidesProgress: true,
+             navigation: {
+                 nextEl: $thumbSwiper.find('.swiper-button-next')[0],
+                 prevEl: $thumbSwiper.find('.swiper-button-prev')[0]
+             }
+         });
+
+         // Init main swiper linked to thumb swiper
+         var mainSwiperInstance = new Swiper($mainSwiper[0], {
+             slidesPerView: 1,
+             spaceBetween: 0,
+             navigation: {
+                 nextEl: $mainSwiper.find('.swiper-button-next')[0],
+                 prevEl: $mainSwiper.find('.swiper-button-prev')[0]
+             },
+             thumbs: {
+                 swiper: thumbSwiperInstance
+             }
+         });
+
+         // Add manual click handler on thumbs to navigate main swiper
+         $thumbSwiper.find('.product-thumb').off('click').on('click', function() {
+             var idx = $(this).index();
+             if (mainSwiperInstance) {
+                 mainSwiperInstance.slideTo(idx);
+             }
+         });
+     }
+
      function setColor(colorName, colorImage, commonProduct, element) {
          $('#product-color').val(colorName);
          $('.product-color-option').removeClass('active');
@@ -1402,6 +1483,7 @@
          }
          
          renderSizesForColor(colorName, colorImage, commonProduct);
+         updateGalleryForColor(commonProduct);
      }
 
      $(document).on('click', '.product-color-option', function(e) {

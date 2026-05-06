@@ -1311,6 +1311,19 @@ class FrontendController extends Controller
         $prouctsList = $this->getProduct($mainProductId);
         $imageList = $this->getProductImageList($mainProductId);
 
+        // Build a mapping of common_product -> images for color-based gallery filtering
+        $colorImageMap = [];
+        $allDetails = ProductsDetails::where('products_id', $mainProductId)->get();
+        foreach ($allDetails as $detail) {
+            $cp = $detail->common_product ?? 0;
+            if (!isset($colorImageMap[$cp])) {
+                $decoded = json_decode($detail->product_detail_image, true);
+                if (is_array($decoded)) {
+                    $colorImageMap[$cp] = array_values(array_filter($decoded));
+                }
+            }
+        }
+
         $getProduct = Products::where('id', $getSpecificProduct->products_id)->where('status', 1)->first();
         if (!$getProduct) {
             return redirect('home');
@@ -1412,7 +1425,7 @@ class FrontendController extends Controller
             ->orderByDesc('ratings.id')
             ->get();
 
-        return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts', 'offerProducts', 'vendorProducts2', 'relatedProducts', 'percent', 'reviewCount', 'canRate', 'myRating', 'ratings', 'avg', 'mostHelpfulPositive', 'mostHelpfulNegative', 'highestRatingList', 'lowestRatingList', 'offerDetails'));
+        return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'colorImageMap', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts', 'offerProducts', 'vendorProducts2', 'relatedProducts', 'percent', 'reviewCount', 'canRate', 'myRating', 'ratings', 'avg', 'mostHelpfulPositive', 'mostHelpfulNegative', 'highestRatingList', 'lowestRatingList', 'offerDetails'));
     }
 
     public function quickView($id)

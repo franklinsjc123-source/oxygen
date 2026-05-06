@@ -370,7 +370,7 @@ class ProductsController extends Controller
             
                     foreach ($images as $index => $sub_image) {
                         // Create a unique image name
-                        $imageName = $next_product_id . '_' . time() . '_' . $index . '_' . $sub_image->getClientOriginalName();
+                        $imageName = $next_product_id . '_p' . $i . '_' . time() . '_' . $index . '_' . $sub_image->getClientOriginalName();
                         
                         // Resize and save the image
                         $img = Image::make($sub_image->getRealPath());
