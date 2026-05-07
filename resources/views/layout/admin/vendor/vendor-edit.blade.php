@@ -315,7 +315,10 @@
                                                                         value="{{ $vendorcreate->location_map }}" type="text"
                                                                         name="location_map" placeholder="Select location on map" readonly>
                                                                     <button class="btn btn-primary" id="btn_open_map" type="button" data-bs-toggle="modal" data-bs-target="#vendorMapModal">
-                                                                        <i class="fa fa-map-marker"></i> Pick on Map
+                                                                         <i class="fa fa-map-marker"></i> Pick on Map
+                                                                    </button>
+                                                                    <button class="btn btn-info ms-2" id="btn_current_location" type="button">
+                                                                        <i class="fa fa-crosshairs"></i> Current Location
                                                                     </button>
                                                                 </div>
                                                                 <input type="hidden" name="latitude" id="latitude" value="{{ $vendorcreate->latitude }}">
@@ -875,6 +878,13 @@
             var defaultLat = {{ $vendorcreate->latitude ?? 13.0827 }};
             var defaultLng = {{ $vendorcreate->longitude ?? 80.2707 }};
 
+            function updateInputs(lat, lng) {
+                $('#latitude').val(lat.toFixed(8));
+                $('#longitude').val(lng.toFixed(8));
+                $('#location_map').val(lat.toFixed(8) + ', ' + lng.toFixed(8));
+                $('#coords_display').text(lat.toFixed(8) + ', ' + lng.toFixed(8));
+            }
+
             function initMap() {
                 if (mapInitialized) return;
                 
@@ -888,13 +898,6 @@
                     draggable: true
                 }).addTo(map);
 
-                function updateInputs(lat, lng) {
-                    $('#latitude').val(lat.toFixed(8));
-                    $('#longitude').val(lng.toFixed(8));
-                    $('#location_map').val(lat.toFixed(8) + ', ' + lng.toFixed(8));
-                    $('#coords_display').text(lat.toFixed(8) + ', ' + lng.toFixed(8));
-                }
-
                 marker.on('dragend', function(event) {
                     var position = marker.getLatLng();
                     updateInputs(position.lat, position.lng);
@@ -907,6 +910,51 @@
 
                 mapInitialized = true;
             }
+
+            // Current Location Logic
+            $('#btn_current_location').on('click', function() {
+                if (navigator.geolocation) {
+                    var $btn = $(this);
+                    var originalHtml = $btn.html();
+                    $btn.html('<i class="fa fa-spinner fa-spin"></i> Getting Location...').prop('disabled', true);
+
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        var lat = position.coords.latitude;
+                        var lng = position.coords.longitude;
+                        
+                        updateInputs(lat, lng);
+                        
+                        // If map is initialized, update it
+                        if (map && marker) {
+                            marker.setLatLng([lat, lng]);
+                            map.setView([lat, lng], 15);
+                        } else {
+                            // Pre-set defaults for when map is eventually opened
+                            defaultLat = lat;
+                            defaultLng = lng;
+                        }
+                        
+                        $btn.html(originalHtml).prop('disabled', false);
+                        alert('Location updated successfully!');
+                    }, function(error) {
+                        $btn.html(originalHtml).prop('disabled', false);
+                        let msg = 'Error getting location: ';
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED: msg += "User denied Geolocation."; break;
+                            case error.POSITION_UNAVAILABLE: msg += "Location information is unavailable."; break;
+                            case error.TIMEOUT: msg += "The request to get user location timed out."; break;
+                            case error.UNKNOWN_ERROR: msg += "An unknown error occurred."; break;
+                        }
+                        alert(msg);
+                    }, {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    });
+                } else {
+                    alert('Geolocation is not supported by this browser.');
+                }
+            });
 
             // Initialize map when modal is opened
             $('#vendorMapModal').on('shown.bs.modal', function() {
