@@ -460,11 +460,11 @@ public function orderscancel($id)
 			$gst = $orders->gst_charge = $request->input('gst');
 			if(is_int($disc))
 				{
-			$orders->grandtotal = $orderstot+$shipping - $disc;
+			$orders->grandtotal = $orderstot+$shipping + 10 - $disc;
 				}
 				else
 				{
-					$orders->grandtotal = $orderstot+$shipping;
+					$orders->grandtotal = $orderstot+$shipping + 10;
 				}
 			// $orders->grandtotal = $request->input('grandtotal');
 			$orders->payment_status = $request->input('payment-group');
@@ -563,11 +563,11 @@ public function orderscancel($id)
 				$gst = $request->input('gst');
 				if(is_int($disc))
 				{
-					$ordersproduct->total_price = $orderstot+$shipping+$gst - $disc;
+					$ordersproduct->total_price = $orderstot+$shipping+$gst + 10 - $disc;
 				}
 				else
 				{
-					$ordersproduct->total_price = $orderstot+$shipping+$gst;
+					$ordersproduct->total_price = $orderstot+$shipping+$gst + 10;
 				}
 				$ordersproduct->order_status = 'New';
 				$ordersproduct->save();

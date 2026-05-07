@@ -261,11 +261,12 @@
                                                 <span class="count"><input type="text" style ="border: 0px solid; color:grey" class="discount1" name="discount1" id="discount1" value="0"></span>
                                                 {{-- <span class="count"></span> --}}
                                                 </li>
+                                            <li>Platform Fee <span class="count">Rs 10</span></li>
                                         </ul>
                                         <ul class="total">
                                             <li>Total 
                                                 
-                                                <span class="count1"><input type="text" style ="border: 0px solid; color:grey" class="count1" id="count1" value="Rs {{ $gtot1 +  $shipping}}"><span>
+                                                <span class="count1"><input type="text" style ="border: 0px solid; color:grey" class="count1" id="count1" value="Rs {{ $gtot1 +  $shipping + 10}}"><span>
                                                 {{-- <span class="count" id ="count">Rs {{ $total +  $shipping }}</span>  --}}
                                             </li>
                                         </ul>
@@ -317,7 +318,7 @@
                                         <input type="hidden" value="{{$gtot1}}" name="total" id="total">
                                         <input type="hidden" value="{{$total1}}" name="total1" id="total1">
                                         <input type="hidden" value="{{$shipping}}" name="shipping" id="shipping">
-                                        <input type="hidden" value="{{ $gtot1 +  $shipping }}" name="grandtotal" id="grandtotal">
+                                        <input type="hidden" value="{{ $gtot1 +  $shipping + 10 }}" name="grandtotal" id="grandtotal">
                                         <input type="hidden" value="" name="discount2" id="discount2">
                                         <input type="hidden" value="{{$gst}}" name="gst" id="gst">
                                         <input type="hidden" value="{{$toto}}" name="price" id="price">

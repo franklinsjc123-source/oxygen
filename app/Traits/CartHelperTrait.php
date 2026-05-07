@@ -418,6 +418,7 @@ trait CartHelperTrait
         }
 
         $deliveryCharge = $this->calculateDeliveryCharge($grandWithoutDelivery);
+        $platformFee = 10.0;
 
         return [
             'lines' => $lines,
@@ -426,7 +427,8 @@ trait CartHelperTrait
             'tax_total' => round($taxTotal, 2),
             'cashback_total' => round($cashbackTotal, 2),
             'delivery_charge' => round($deliveryCharge, 2),
-            'grand_total' => round($grandWithoutDelivery + $deliveryCharge, 2),
+            'platform_fee' => round($platformFee, 2),
+            'grand_total' => round($grandWithoutDelivery + $deliveryCharge + $platformFee, 2),
         ];
     }
 }

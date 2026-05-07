@@ -479,6 +479,11 @@
      <td class="product-total"><b style="white-space: nowrap;">&#8377;{{ number_format($checkoutSummary['delivery_charge'] ?? 0, 2) }}</b>
      </td>
      </tr>
+     <tr class="cart-subtotal bb-no">
+     <td><b>Platform Fee</b></td>
+     <td class="product-total"><b style="white-space: nowrap;">&#8377;{{ number_format($checkoutSummary['platform_fee'] ?? 10.0, 2) }}</b>
+     </td>
+     </tr>
      </tbody>
      <tfoot>
      <tr class="order-total">
