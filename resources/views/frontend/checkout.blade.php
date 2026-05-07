@@ -406,9 +406,9 @@
      <div class="total">Total: <b>&#8377;{{ number_format($item['payable_amount'], 2) }}</b></div>
      </div>
      </div>
-     @endforeach
-     </div>
-     </div>
+      @endforeach
+      </div>
+      </div>
 
      <div class="form-group mt-3">
      <label for="order-notes">Order notes (optional)</label>

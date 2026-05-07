@@ -197,7 +197,7 @@ trait CartHelperTrait
         return $detail ? (int) $detail->id : null;
     }
 
-    protected function buildCheckoutSummary($cartItems): array
+    protected function buildCheckoutSummary($cartItems, bool $includePlatformFee = false): array
     {
         $lines = [];
         $subtotal = 0.0;
@@ -418,7 +418,7 @@ trait CartHelperTrait
         }
 
         $deliveryCharge = $this->calculateDeliveryCharge($grandWithoutDelivery);
-        $platformFee = 10.0;
+        $platformFee = $includePlatformFee ? 10.0 : 0.0;
 
         return [
             'lines' => $lines,
@@ -428,6 +428,7 @@ trait CartHelperTrait
             'cashback_total' => round($cashbackTotal, 2),
             'delivery_charge' => round($deliveryCharge, 2),
             'platform_fee' => round($platformFee, 2),
+            'items_total' => round($grandWithoutDelivery, 2),
             'grand_total' => round($grandWithoutDelivery + $deliveryCharge + $platformFee, 2),
         ];
     }

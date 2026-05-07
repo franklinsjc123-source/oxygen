@@ -2152,7 +2152,7 @@ class FrontendController extends Controller
         $count = $cart->getContent()->count();
         $summary = $this->buildCheckoutSummary($cart->getContent());
         $records = $summary['lines'];
-        $total = $summary['grand_total'];
+        $total = $summary['items_total'];
         $response = response()->view('frontend.side_cart', compact('count', 'records', 'total', 'summary'));
         return $this->attachCartCookies($response, $cookie, $cart);
     }
@@ -2164,7 +2164,7 @@ class FrontendController extends Controller
         $count = $cart->getContent()->count();
         $summary = $this->buildCheckoutSummary($cart->getContent());
         $records = $summary['lines'];
-        $total = $summary['grand_total'];
+        $total = $summary['items_total'];
         $response = response()->view('frontend.view_cart', compact('count', 'records', 'total', 'summary'));
         return $this->attachCartCookies($response, $cookie, $cart);
     }
@@ -2176,7 +2176,7 @@ class FrontendController extends Controller
         $count = $cart->getContent()->count();
         $records = $cart->getContent();
         $total = $cart->getTotal();
-        $checkoutSummary = $this->buildCheckoutSummary($records);
+        $checkoutSummary = $this->buildCheckoutSummary($records, true);
 
         $customer = null;
         $customer_id = Session::get('customer_id');
@@ -2322,7 +2322,7 @@ class FrontendController extends Controller
             return $this->attachCartCookies($response, $cookie, $cart);
         }
 
-        $checkoutSummary = $this->buildCheckoutSummary($cartItems);
+        $checkoutSummary = $this->buildCheckoutSummary($cartItems, true);
         if (empty($checkoutSummary['lines'])) {
             $response = redirect()->back()->with('error', 'No valid items found in cart.');
             return $this->attachCartCookies($response, $cookie, $cart);
