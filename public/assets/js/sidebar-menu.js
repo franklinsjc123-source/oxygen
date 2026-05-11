@@ -28,17 +28,41 @@
         $.sidebarMenu($('.sidebar-menu'));
 
         function isMobileSidebar() {
-            return ($(window).width() + 17) <= 991;
+            if (window.matchMedia) {
+                return window.matchMedia('(max-width: 991px)').matches;
+            }
+
+            var viewportWidth = window.innerWidth || document.documentElement.clientWidth || $(window).width();
+            return viewportWidth <= 991;
         }
 
-        function closeSidebar() {
+        function hideSidebar() {
             $('.page-sidebar').addClass('open');
             $('.page-main-header').addClass('open');
+            $('body').removeClass('sidebar-open');
         }
 
-        function openSidebar() {
+        function showSidebar() {
             $('.page-sidebar').removeClass('open');
             $('.page-main-header').removeClass('open');
+            $('body').addClass('sidebar-open');
+        }
+
+        function syncSidebarState(forceVisible) {
+            if (typeof forceVisible === 'boolean') {
+                if (forceVisible) {
+                    showSidebar();
+                } else {
+                    hideSidebar();
+                }
+                return;
+            }
+
+            if ($('.page-sidebar').hasClass('open')) {
+                showSidebar();
+            } else {
+                hideSidebar();
+            }
         }
 
         // Debounce flag to prevent dual touchstart + click firing
@@ -55,10 +79,7 @@
             sidebarToggleLock = true;
             setTimeout(function() { sidebarToggleLock = false; }, 400);
 
-            $('.page-sidebar').toggleClass('open');
-            $('.page-main-header').toggleClass('open');
-            // Also toggle a class on body as a fallback/overlay help
-            $('body').toggleClass('sidebar-open');
+            syncSidebarState();
         }
 
         // EXPOSE globally so inline onclick/ontouchstart in HTML works in Android WebView
@@ -80,6 +101,23 @@
             toggleSidebar(e);
         });
 
+        // Some WebViews are inconsistent with delegated jQuery touch/click events.
+        // Bind native listeners directly as a fallback for the toggle button.
+        function bindNativeSidebarToggle() {
+            var toggleEl = document.getElementById('sidebar-toggle');
+            if (!toggleEl || toggleEl.dataset.nativeSidebarBound === 'true') return;
+
+            toggleEl.dataset.nativeSidebarBound = 'true';
+
+            ['pointerup', 'touchend', 'click'].forEach(function(eventName) {
+                toggleEl.addEventListener(eventName, function(e) {
+                    window.toggleSidebarMenu(e);
+                }, { passive: false });
+            });
+        }
+
+        bindNativeSidebarToggle();
+
         // Close sidebar on outside click in mobile view (click only, no touchstart)
         $(document).on('click', function(e) {
             if (!isMobileSidebar()) return;
@@ -90,8 +128,7 @@
             if ($(e.target).closest('.page-sidebar, .sidebar-toggle-btn, #sidebar-toggle').length) return;
             
             // Otherwise, close it
-            closeSidebar();
-            $('body').removeClass('sidebar-open');
+            hideSidebar();
         });
 
         // Close sidebar after selecting a leaf menu item in mobile
@@ -99,24 +136,24 @@
             if (!isMobileSidebar()) return;
             var hasSubmenu = $(this).next('.sidebar-submenu').length > 0;
             if (!hasSubmenu) {
-                closeSidebar();
+                hideSidebar();
             }
         });
 
         // initial state
-        var widthwindow = $(window).width();
-        if (widthwindow + 17 <= 991) {
-            closeSidebar();
+        if (isMobileSidebar()) {
+            hideSidebar();
         } else {
-            openSidebar();
+            showSidebar();
         }
 
         $(window).resize(function() {
-            var widthwindaw = $(window).width();
-            if (widthwindaw + 17 <= 991) {
-                closeSidebar();
+            bindNativeSidebarToggle();
+
+            if (isMobileSidebar()) {
+                hideSidebar();
             } else {
-                openSidebar();
+                showSidebar();
             }
         });
 
