@@ -119,13 +119,13 @@
              min-width: 0 !important;
          }
          .checkout .product-name {
-             font-size: 1.15rem !important;
+             font-size: 1.25rem !important;
              font-weight: 700 !important;
              color: #1e293b !important;
              margin-bottom: 6px !important;
          }
          .checkout .product-meta {
-             font-size: 0.95rem !important;
+             font-size: 1.05rem !important;
              color: #64748b !important;
              line-height: 1.4 !important;
          }
@@ -168,7 +168,7 @@
          .order-table th, .order-table td {
              padding: 14px 0 !important;
              border-bottom: 1px dashed #e2e8f0 !important;
-             font-size: 0.95rem;
+             font-size: 1.05rem;
          }
          .order-table .product-name {
              color: #475569;
@@ -271,7 +271,7 @@
           .order-table td {
               padding: 20px 0 !important;
               border-bottom: 1px solid #f1f5f9 !important;
-              font-size: 1.05rem !important;
+              font-size: 1.15rem !important;
           }
           .order-table .product-name {
               color: #334155 !important;
@@ -288,6 +288,11 @@
           .order-total b {
               font-size: 1.6rem !important;
               color: #0088dd !important;
+          }
+          #delivery-summary {
+              font-size: 1.1rem !important;
+              line-height: 1.6 !important;
+              color: #334155 !important;
           }
      </style>
      <div class="page-content">
@@ -368,10 +373,16 @@
      @foreach ($checkoutSummary['lines'] ?? [] as $item)
      <div class="product product-list d-flex align-items-center">
      <figure class="product-media">
+     <a href="{{ route('productVar', [$item['product_id']]) }}">
      <img src="{{ asset('assets/images/products/' . ($item['image'] ?? '')) }}" alt="product">
+     </a>
      </figure>
      <div class="product-details flex-grow-1">
-     <div class="product-name">{{ $item['name'] }}</div>
+     <div class="product-name">
+         <a href="{{ route('productVar', [$item['product_id']]) }}" class="text-dark">
+             {{ $item['name'] }}
+         </a>
+     </div>
      @if (!empty($item['size']) || !empty($item['color']))
      <div class="product-meta">
      @if (!empty($item['size']))
@@ -432,7 +443,9 @@
      @foreach ($checkoutSummary['lines'] ?? [] as $item)
      <tr class="bb-no">
      <td class="product-name" style="word-break: break-word; white-space: normal; padding-right: 10px !important;">
-     {{ $item['name'] }}
+     <a href="{{ route('productVar', [$item['product_id']]) }}" class="text-dark">
+         {{ $item['name'] }}
+     </a>
      <i class="fas fa-times"></i>
      <span class="product-quantity">{{ $item['qty'] }}</span>
      
