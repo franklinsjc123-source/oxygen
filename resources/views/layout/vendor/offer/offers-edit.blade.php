@@ -530,9 +530,8 @@
                                 <div class="form-group mt-2">
                                     <label for="validationCustom01" class="mb-1 fw-bold">Status</label>
                                     <select name="editstatus" class="custom-select w-100 form-control" required="">
-                                        <option value="1">Active</option>
-                                        <option value="0">Deactive</option>
-    
+                                        <option value="1" {{ $offer->status == 1 ? 'selected' : '' }}>Active</option>
+                                        <option value="0" {{ $offer->status == 0 ? 'selected' : '' }}>Deactive</option>
                                     </select>
     
                                 </div>
@@ -629,27 +628,17 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label class="d-block mb-2" for="">
-                                    @if ($offer->types == "None")
-                                    <input class="radio_animated" checked="" type="radio" onchange="nonetype();" name="types" value="None" checked="">
+                                    <input class="radio_animated" type="radio" onchange="nonetype();" name="types" value="None" {{ $offer->types == "None" ? 'checked' : '' }}>
                                     None
-                                    @else
-                                    <input class="radio_animated" checked="" type="radio" onchange="nonetype();" name="types" value="None">
-                                    None
-                                    @endif
                                 </label>
 
                                 <label class="d-block mb-2" for="">
-                                    @if ($offer->types == "Minimum Purchase Amount")
-                                    <input class="radio_animated" type="radio" onchange="minimum_pusrchase_amt();" name="types" value="Minimum Purchase Amount" checked="">
+                                    <input class="radio_animated" type="radio" onchange="minimum_pusrchase_amt();" name="types" value="Minimum Purchase Amount" {{ $offer->types == "Minimum Purchase Amount" ? 'checked' : '' }}>
                                     Minimum Purchase Amount
-                                    @else
-                                    <input class="radio_animated" type="radio" onchange="minimum_pusrchase_amt();" name="types" value="Minimum Purchase Amount">
-                                    Minimum Purchase Amount
-                                    @endif
                                 </label>
                                 <div id="minimum_pusrchase_amt">
                                     <div class="col-md-6 px-5">
-                                        <input class="form-control" id="m_p_a" name="m_p_a" type="text"value="{{$offer->m_p_a}}" style="display:none;">
+                                        <input class="form-control" id="m_p_a" name="m_p_a" type="text" value="{{$offer->m_p_a}}" style="{{ $offer->types == 'Minimum Purchase Amount' ? 'display:block;' : 'display:none;' }}">
                                     </div>
                                 </div>
                                 {{-- <label class="d-block mb-2" for="">
