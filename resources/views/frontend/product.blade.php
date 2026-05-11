@@ -762,7 +762,7 @@
                                                                 <h4 class="comment-author">
                                                                     <a href="#">{{ $mostHelpRating->customer_name }}</a>
                                                                     <span class="comment-date">
-                                                                       {{ date('M d, Y h:i A', strtotime($rating->created_at)) }}
+                                                                       {{ date('M d, Y h:i A', strtotime($mostHelpRating->created_at)) }}
                                                                     </span>
                                                                 </h4>
 
