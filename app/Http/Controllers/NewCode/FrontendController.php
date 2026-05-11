@@ -1268,14 +1268,16 @@ class FrontendController extends Controller
 
     public function productVar($id = '')
     {
+        // Prioritize checking if the ID passed is a main product ID
+        // This avoids collisions where a variant ID matches a different product's ID
         $getSpecificProduct = ProductsDetails::with('product', 'product.CategoryChild')
-            ->where('id', $id)
+            ->where('products_id', $id)
             ->first();
 
-        // If not found by detail ID, try searching by product ID (from listing pages)
         if (!$getSpecificProduct) {
+            // If not found as product_id, try as a specific variant ID
             $getSpecificProduct = ProductsDetails::with('product', 'product.CategoryChild')
-                ->where('products_id', $id)
+                ->where('id', $id)
                 ->first();
         }
 
@@ -1324,7 +1326,7 @@ class FrontendController extends Controller
             }
         }
 
-        $getProduct = Products::where('id', $getSpecificProduct->products_id)->where('status', 1)->first();
+        $getProduct = Products::where('id', $mainProductId)->where('status', 1)->first();
         if (!$getProduct) {
             return redirect('home');
         }
@@ -1365,12 +1367,15 @@ class FrontendController extends Controller
             $hasPurchased = DB::table('ecom_order_product')
                 ->join('ecom_order_info', 'ecom_order_info.order_id', '=', 'ecom_order_product.order_id')
                 ->where('ecom_order_info.customer_id', $customer_id)
-                ->where('ecom_order_product.product_id', $id)
+                ->where(function($q) use ($id, $mainProductId) {
+                    $q->where('ecom_order_product.product_id', $id)
+                      ->orWhere('ecom_order_product.product_id', $mainProductId);
+                })
                 ->where('ecom_order_product.order_status', 'Delivered')
                 ->exists();
 
             // already rated check
-            $myRating = Rating::where('products_id', $id)
+            $myRating = Rating::where('products_id', $mainProductId)
                 ->where('customer_name', $customerName)
                 ->first();
 
@@ -1381,49 +1386,26 @@ class FrontendController extends Controller
         }
 
         // ⭐ rating summary
-        $avg = Rating::where('products_id', $prouctdata->id)->avg('star_rating');
+        $avg = Rating::where('products_id', $mainProductId)->avg('star_rating');
         $percent = $avg > 0 ? ($avg / 5) * 100 : 0;
 
-        $reviewCount = Rating::where('products_id', $prouctdata->id)->count();
+        $reviewCount = Rating::where('products_id', $mainProductId)->count();
 
         // ⭐ MOST HELPFUL POSITIVE
-        $mostHelpfulPositive = Rating::withCount(['helpfulVotes'])
-            ->where('ratings.products_id', $id)
-            ->where('ratings.status', 1)
-            ->orderByDesc('helpful_votes_count')
-            ->orderByDesc('ratings.star_rating')
-            ->get();
-
+        $mostHelpfulPositive = Rating::withCount(['helpfulVotes'])->where('ratings.products_id', $mainProductId)->where('ratings.status', 1)
+            ->orderByDesc('helpful_votes_count')->limit(3)->get();
 
         // ⭐ MOST HELPFUL NEGATIVE
-        $mostHelpfulNegative = Rating::with([
-            'helpfulVotes',
-            'unhelpfulVotes'
-        ])
-            ->withCount('unhelpfulVotes')
-            ->where('ratings.products_id', $id)
-            ->where('ratings.status', 1)
-            ->having('unhelpful_votes_count', '>', 0)
-            ->orderByDesc('unhelpful_votes_count')
-            ->orderBy('ratings.star_rating')
-            ->orderByDesc('ratings.id')
-            ->get();
-
+        $mostHelpfulNegative = Rating::withCount(['unhelpfulVotes'])->where('ratings.products_id', $mainProductId)->where('ratings.status', 1)
+            ->orderByDesc('unhelpful_votes_count')->limit(3)->get();
 
         // ⭐ HIGHEST RATING
-        $highestRatingList = Rating::where('ratings.products_id', $id)
-            ->where('ratings.status', 1)
-            ->orderByDesc('ratings.star_rating')
-            ->orderByDesc('ratings.id')
-            ->get();
-
+        $highestRatingList = Rating::where('ratings.products_id', $mainProductId)->where('ratings.status', 1)
+            ->orderByDesc('star_rating')->limit(5)->get();
 
         // ⭐ LOWEST RATING
-        $lowestRatingList = Rating::where('ratings.products_id', $id)
-            ->where('ratings.status', 1)
-            ->orderBy('ratings.star_rating')
-            ->orderByDesc('ratings.id')
-            ->get();
+        $lowestRatingList = Rating::where('ratings.products_id', $mainProductId)->where('ratings.status', 1)
+            ->orderBy('star_rating')->limit(5)->get();
 
         return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'colorImageMap', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts', 'offerProducts', 'vendorProducts2', 'relatedProducts', 'percent', 'reviewCount', 'canRate', 'myRating', 'ratings', 'avg', 'mostHelpfulPositive', 'mostHelpfulNegative', 'highestRatingList', 'lowestRatingList', 'offerDetails'));
     }

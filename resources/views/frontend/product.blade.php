@@ -793,7 +793,7 @@
                                                                     </a>
                                                                 </div>
                                                                 @php
-                                                                    $images = $mostHelpRating->images ? explode(',', $rating->images) : [];
+                                                                    $images = $mostHelpRating->images ? explode(',', $mostHelpRating->images) : [];
                                                                 @endphp
 
                                                                 @if(count($images))
@@ -866,7 +866,7 @@
                                                                     </a>
                                                                 </div>
                                                                 @php
-                                                                    $images = $mostUnhelpRating->images ? explode(',', $rating->images) : [];
+                                                                    $images = $mostUnhelpRating->images ? explode(',', $mostUnhelpRating->images) : [];
                                                                 @endphp
 
                                                                 @if(count($images))
