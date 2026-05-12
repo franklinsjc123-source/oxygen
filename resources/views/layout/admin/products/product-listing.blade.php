@@ -65,7 +65,27 @@
 
                 /*.btn-primary { background-color: #009dda; }*/
 
-                /*.btn-primary:hover, .btn-primary:focus { background-color: #0486b9;*/
+                /*.btn-primary:hover, .btn-primary:focus { background-color: #0486b9; }*/
+                
+                .action-buttons-container {
+                    display: flex;
+                    gap: 8px;
+                    overflow-x: auto;
+                    white-space: nowrap;
+                    padding-bottom: 10px;
+                    margin-left: 15px;
+                    margin-right: 15px;
+                }
+                
+                .action-buttons-container .btn {
+                    white-space: nowrap;
+                }
+                
+                @media (max-width: 768px) {
+                    .action-buttons-container .btn {
+                        padding: 4px 8px;
+                        font-size: 12px;
+                    }
                 }
             </style>
 
@@ -100,7 +120,7 @@
                     <div class="col-sm-12">
 
                         <div class="card">
-                            <div class="mt-3">
+                            <div class="mt-3 action-buttons-container">
                                 <a href="{{ route('products.crud.index') }}">
                                     <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add
                                         Product

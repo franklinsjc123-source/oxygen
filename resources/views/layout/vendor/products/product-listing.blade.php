@@ -52,20 +52,41 @@
                 border-right: none;
                 }
 
-                .btn {
-                padding: 6px 12px;
-                border: 1px solid transparent;
-                color: #fff;
+                /*.btn {*/
+                /*padding: 6px 12px;*/
+                /*border: 1px solid transparent;*/
+                /*color: #fff;*/
+                /*}*/
+
+                /*.btn:disabled, .btn:disabled:hover {*/
+                /*background-color: darkgrey;*/
+                /*cursor: not-allowed;*/
+                /*}*/
+
+                /*.btn-primary { background-color: #009dda; }*/
+
+                /*.btn-primary:hover, .btn-primary:focus { background-color: #0486b9; }*/
+                
+                .action-buttons-container {
+                    display: flex;
+                    gap: 8px;
+                    overflow-x: auto;
+                    white-space: nowrap;
+                    padding-bottom: 10px;
+                    margin-left: 15px;
+                    margin-right: 15px;
                 }
-
-                .btn:disabled, .btn:disabled:hover {
-                background-color: darkgrey;
-                cursor: not-allowed;
+                
+                .action-buttons-container .btn {
+                    white-space: nowrap;
                 }
-
-                .btn-primary { background-color: #009dda; }
-
-                .btn-primary:hover, .btn-primary:focus { background-color: #0486b9; }
+                
+                @media (max-width: 768px) {
+                    .action-buttons-container .btn {
+                        padding: 4px 8px;
+                        font-size: 12px;
+                    }
+                }
             </style>
 
         <div class="page-body">
@@ -99,7 +120,7 @@
                     <div class="col-sm-12">
 
                         <div class="card">
-                            <div class="mt-3">
+                            <div class="mt-3 action-buttons-container">
                                 <a href="{{ route('vendorproducts.crud.index') }}">
                                     <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add
                                         Product
