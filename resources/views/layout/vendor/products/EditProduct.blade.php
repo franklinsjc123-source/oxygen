@@ -328,12 +328,12 @@
                                                                                                                     $selectedValue = $specById[$spec->id] ?? ($specByName[$spec->specification_group_name] ?? '');
                                                                                                                 @endphp
                                                                                                                 <tr>
-                                                                                                                    <td>
+                                                                                                                    <td style="width: 40%; vertical-align: middle;">
                                                                                                                         {{ $spec->specification_group_name }}
                                                                                                                         <input type="hidden" name="spec_id[]" value="{{ $spec->id }}">
                                                                                                                         <input type="hidden" name="specify_attribute[{{ $spec->id }}]" value="{{ $spec->specification_group_name }}">
                                                                                                                     </td>
-                                                                                                                    <td>
+                                                                                                                    <td style="width: 60%;">
                                                                                                                         <select class="js-select2 form-control" name="specify_value[{{ $spec->id }}]" id="specify_value_{{ $spec->id }}">
                                                                                                                             <option value="" hidden {{ $selectedValue === '' ? 'selected' : '' }}> --Select {{ $spec->specification_group_name }}--</option>
                                                                                                                             @foreach ($specValues as $specify_val)
@@ -369,14 +369,6 @@
                                                                                                             <select class="form-select form-select-lg text-secondary"
                                                                                                                 id="offtype" name="offer">
                                                                                                                 <option value="">Select</option>
-                                                                                                                {{-- <option selected hidden value="">Select Here
-                                                                                </option>
-                                                                                <option value="Buy 3 Get 1 Free">Buy 3 Get 1 Free
-                                                                                </option>
-                                                                                <option value="Buy 1 Get 1 Free">Buy 1 Get 1 Free
-                                                                                </option>
-                                                                                <option value="Buy 3 @ 999">Buy 3 @ 999</option>
-                                                                                <option value="None">None</option> --}}
                                             
                                                                                                                 @foreach ($offers as $offer)
                                                                                                                 @php
@@ -394,7 +386,6 @@
                                                                                                                 </option>
                                                                                                                  @endforeach
                                             
-                                                                                                                {{-- <option>{{ $product->offers }}</option> --}}
                                                                                                             </select>
                                                                                                         </div>
                                                                                                         <div class="col-md-1">
@@ -449,50 +440,6 @@
                                                                 <div class="row">
                                                                     <div class="col-xl-12">
                                                                         <div class="card p-3">
-                                                                            {{-- <div class="card-head ">
-                                                <div class="form-group">
-                                                    <div class="row">
-                                                        <h4 class="text-start fw-bold ">Shipping</h4>
-                                                        <div class="card-body">
-                                                            <div class="row">
-                                                                <div class="col-md-3">
-                                                                    <div class="next-input--stylized">
-                                                                        <input type="number" class="form-control"
-                                                                            name="weight" placeholder="Weight (g)" value="{{$product->weight}}">
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group mb-3">
-                                                                        <div class="next-input--stylized">
-                                                                            <input type="number" class="form-control"
-                                                                                placeholder="Length (cm)" name="length"
-                                                                                value="{{ $product->length }}">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group mb-3">
-                                                                        <div class="next-input--stylized">
-                                                                            <input type="number" class="form-control"
-                                                                                name="width" placeholder="Width (cm)" value="{{ $product->width }}">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-3 ">
-                                                                    <div class="form-group mb-3">
-                                                                        <div class="next-input--stylized">
-
-                                                                            <input type="number" class="form-control"
-                                                                                name="height" placeholder="Height (cm)" value="{{$product->height}}">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div> --}}
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -568,153 +515,6 @@
                                             })
                                         });
 
-                                        // Get Specification
-                                        // $('.specification').on('change', function() {
-                                        //     let specification_id = $(this).find(":selected").attr("id");
-                                        //     let url = '{{ route('getSpecValue') }}?specification_id=' + specification_id;
-                                        //     let method = 'GET';
-                                        //     getAjaxValue(url, method, function(data) {
-                                        //         let specData = JSON.parse(data[0]);
-                                        //         $('#specify_value').empty();
-
-                                        //         $('#specify_value').append(
-                                        //             `<option value=""selected hidden>Select Value</option>`
-                                        //         );
-                                        //         $.each(specData, function(key, spec) {
-                                        //             $('#specify_value').append(
-                                        //                 `<option value="${spec}">${spec}</option>`
-                                        //             );
-                                        //         });
-
-                                        //         $('#specify_value').removeAttr('disabled');
-                                        //     })
-                                        // })
-
-
-                                        // Get Attr
-                                        // $('#sub_category').on('change', function() {
-                                        //     let sub_category_id = $(this).find(":selected").attr("id");
-                                        //     let url = '{{ route('getAttributes') }}?sub_category_id=' + sub_category_id;
-                                        //     let method = 'GET';
-                                        //     getAjaxValue(url, method, function(data) {
-
-
-                                        // });
-                                        // });
-                                        // $('#sub_category').on('change', function() {
-                                        //     let sub_category_id = $(this).find(":selected").attr("id");
-                                        //     let url = '{{ route('getAttributes') }}?sub_category_id=' + sub_category_id;
-                                        //     let method = 'GET';
-                                        //     getAjaxValue(url, method, function(data) {
-
-                                        //         $('#product_details').empty();
-                                        //         let attributes;
-
-                                        //         var nat = 0;
-
-                                        //         $.each(data, function(key, attr) {
-                                        //             nat++;
-                                        //             let options;
-                                        //             attributes +=
-                                        //                 `<div class='col-md-2'>
-    //                 <select class='form-select form-select-lg text-secondary' name='attributeDetails` + nat + `[]'>
-    //                 <option selected value='' hidden> --Select ${attr.attribute_name}--</option>
-    //                 ${(function fun(array) {
-    //                     for (let index = 0; index < array.length; index++) {
-    //                         options += `<option value='${array[index]}'> ${array[index]}</option>`;
-    //                     }
-    //                     return options;
-    //                 })(JSON.parse(attr.value))}
-    //             </select>
-    //             <input type="hidden" name="attributename` + nat + `[]" value="${attr.attribute_name}">
-    //             </div>`
-                                        //         });
-
-
-                                        //         // $('#product_details').append(`<div class="row">
-    //         //         <div class="col-md-1">
-    //         //             <label class="text-center border text-dark p-2" style="cursor: pointer"><span
-    //         //                     class="">Add<br>
-    //         //                     Product
-    //         //                     <br>Image</span>
-    //         //                 <input type="file" style="display:none "
-    //         //                     onchange="img(this)" id="im1"
-    //         //                     name="product_detail_image[]" accept="image/*">
-    //         //                     <input type="hidden" name="nproducts[]" value="1" >
-    //         //             </label>
-    //         //         </div>
-
-    //         //         <div class="col-md-11">
-
-    //         //             <div class="row">
-
-    //         //                 ${attributes}
-    //         //                 <div class="col-md-2">
-    //         //                     <input type="number" name="retail_price[]"
-    //         //                         placeholder="Retail Price" class="form-control" required>
-    //         //                 </div>
-    //         //                 <div class="col-md-2">
-    //         //                     <input type="number" name="selling_price[]"
-    //         //                         placeholder="Selling Price" class="form-control" required>
-    //         //                 </div>
-    //         //                 <div class="col-md-2">
-    //         //                     <input type="number" class="form-control"
-    //         //                         placeholder="Qty" name="quantity[]" required>
-    //         //                 </div>
-
-
-    //         //     </div></div></div><div class="col-md-11">
-
-    //         //             <div class="row">
-    //         //                 <div class="col-md-2">
-
-    //         //                 </div>
-
-
-
-
-    //         //                 <div class="col-md-2">
-    //         //                     <input type="text" name="sku[]" placeholder="SKU"
-    //         //                         class="form-control" required  >
-    //         //                 </div> 
-    //         //                 <div class="col-md-2">
-    //         //                     <select class="form-select form-select-lg text-secondary"
-    //         //                         name="return_replace[]" required>
-    //         //                         <option selected value="" hidden>
-    //         //                             Return /
-    //         //                             Replacement
-    //         //                         </option>
-    //         //                         <option value="1">
-    //         //                             Return
-    //         //                         </option>
-
-    //         //                         <option value="2">
-    //         //                             Replacement
-    //         //                         </option>
-    //         //                     </select>
-    //         //                 </div>
-
-
-
-    //         //                 <div class="col-md-2">
-    //         //                     <input type="text" name="r_days[]" placeholder="Days"
-    //         //                         class="form-control" required>
-    //         //                 </div>  
-    //         //                 <div class="col-md-2">
-    //         //                     <input type="number" name="low_stock_limit[]"
-    //         //                         placeholder="Low Stock Limit" class="form-control" required>
-    //         //                 </div>  
-    //         //             </div>               
-    //         //         </div>                  
-    //         //     </div><br><br>`);
-
-                                        //         // $('#specify_value').removeAttr('disabled');
-                                        //     })
-                                        // })
-
-
-
-
                                         $('#sub_category').on('change', function() {
                                             let sub_category_id = $(this).find(":selected").attr("id");
                                             let url1 = '{{ route('getSpecifications') }}?sub_category_id=' + sub_category_id;
@@ -732,12 +532,12 @@
 
                                                     specifications +=
                                                         `<tr>
-                                                            <td>
+                                                            <td style="width: 40%; vertical-align: middle;">
                                                                 ${spec.name}
                                                                 <input type="hidden" name="spec_id[]" value="${spec.id}">
                                                                 <input type="hidden" name="specify_attribute[${spec.id}]" value="${spec.name}">
                                                             </td>
-                                                            <td>
+                                                            <td style="width: 60%;">
                                                                 <select class='form-select form-select-lg text-secondary' name='specify_value[${spec.id}]'>
                                                                     <option selected value='' hidden> --Select ${spec.name}--</option>
                                                                     ${options}

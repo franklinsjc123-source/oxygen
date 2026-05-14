@@ -793,8 +793,8 @@
                                                             @php
                                                             $spec_val = json_decode($spec->specification_values, true) ?: [];
                                                             @endphp
-                                                            <td>{{ $spec->specification_group_name }}</td>
-                                                            <td>
+                                                            <td style="width: 20%; vertical-align: middle;">{{ $spec->specification_group_name }}</td>
+                                                            <td style="width: 30%;">
                                                                 <input type="hidden" name="spec_id[]" value="{{ $spec->id }}">
                                                                 <select class='form-select form-select-lg text-secondary' name='specify_value[{{ $spec->id}}]'>
                                                                     <option selected value='' hidden> --Select {{ $spec->specification_group_name}}--</option>

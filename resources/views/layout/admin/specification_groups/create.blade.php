@@ -109,14 +109,21 @@
 
         <div class="mb-3">
             <label class="form-label">Select Vendors</label>
+            <div class="d-flex mb-2 gap-2 align-items-center">
+                <input type="text" id="vendorSearch" class="form-control form-control-sm" style="max-width: 250px;" placeholder="Search Vendor...">
+                <div class="form-check ms-3">
+                    <input type="checkbox" id="selectAllVendors" class="form-check-input">
+                    <label class="form-check-label" for="selectAllVendors">Select All</label>
+                </div>
+            </div>
             <div class="border p-3 rounded" style="max-height: 200px; overflow-y: auto;">
                 @foreach ($Vendors as $vendor)
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" 
+                    <div class="form-check vendor-item">
+                        <input type="checkbox" class="form-check-input vendor-checkbox" 
                                name="vendor_ids[]" 
                                id="vendor_{{ $vendor->id }}" 
                                value="{{ $vendor->id }}">
-                        <label class="form-check-label" for="vendor_{{ $vendor->id }}">
+                        <label class="form-check-label vendor-name" for="vendor_{{ $vendor->id }}">
                             {{ $vendor->shop_name }}
                         </label>
                     </div>
@@ -225,6 +232,19 @@
                 $(document).on('change', '.category-cat', function() {
                     syncParentStates();
                     renderSelections();
+                });
+
+                // Vendor Search and Select All
+                $('#vendorSearch').on('keyup', function() {
+                    var value = $(this).val().toLowerCase();
+                    $('.vendor-item').filter(function() {
+                        $(this).toggle($(this).find('.vendor-name').text().toLowerCase().indexOf(value) > -1);
+                    });
+                });
+
+                $('#selectAllVendors').on('change', function() {
+                    var isChecked = $(this).is(':checked');
+                    $('.vendor-checkbox:visible').prop('checked', isChecked);
                 });
 
                 syncParentStates();
