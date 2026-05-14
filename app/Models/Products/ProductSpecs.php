@@ -16,7 +16,7 @@ class ProductSpecs extends Model
 	
 	
 
-    protected $fillable = ["products_id", "category_sub_id", "specify_attribute", "specify_value"];
+    protected $fillable = ["products_id", "category_sub_id", "spec_id", "specify_attribute", "specify_value"];
 	
 	
 }

@@ -170,6 +170,7 @@
                                             <th>Name</th>
                                             <th>Reference Name</th>
                                             <th>Values</th>
+                                            <th>Created By</th>
                                         </tr>
                                         @foreach ($specificationgroup as $group)
                                         @php
@@ -187,6 +188,13 @@
                                                 @foreach ($spec_val as $value)
                                                 <span class="p-1 border border-dark px-3 mx-1 rounded">{{ $value }}</span>
                                                 @endforeach
+                                            </td>
+                                            <td>
+                                                @if($group->created_by == 'Admin')
+                                                    <span class="badge badge-primary">Admin</span>
+                                                @else
+                                                    <span class="badge badge-success">Self</span>
+                                                @endif
                                             </td>
                                         </tr>
                                         @endforeach

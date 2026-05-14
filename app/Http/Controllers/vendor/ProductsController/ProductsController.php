@@ -126,10 +126,14 @@ class ProductsController extends Controller
 
         $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $category_sub->id)->first();
         $hasMapping = !is_null($mapping);
-        $adminMappedAttributeIds = AttributeGroup::whereRaw("FIND_IN_SET(?, sub_category_ids)", [$category_sub->id])
-            ->pluck('id')->toArray();
-        $adminMappedSpecIds = SpecificationGroup::whereRaw("FIND_IN_SET(?, sub_category_ids)", [$category_sub->id])
-            ->pluck('id')->toArray();
+        $adminMappedAttributeIds = AttributeGroup::where(function($q) use ($category_sub, $login_id) {
+                $q->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$category_sub->id])
+                  ->orWhere('created_byid', $login_id);
+            })->pluck('id')->toArray();
+        $adminMappedSpecIds = SpecificationGroup::where(function($q) use ($category_sub, $login_id) {
+                $q->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$category_sub->id])
+                  ->orWhere('created_byid', $login_id);
+            })->pluck('id')->toArray();
 
         $defaultAttrIds = ($category_sub->category_sub_attributes != '') ? explode(',', $category_sub->category_sub_attributes) : [];
         $validAttributeIds = array_unique(array_map('intval', array_merge($defaultAttrIds, $adminMappedAttributeIds)));
@@ -167,12 +171,12 @@ class ProductsController extends Controller
             $selectedAttributeId = (int) ($attribute->first()->id ?? 0);
         }
 
-        $combinedSpecifications = SpecificationGroup::where(function($q) use ($specdata, $login_id) {
+        $combinedSpecifications = SpecificationGroup::where(function($q) use ($specdata) {
                 if (!empty($specdata)) {
                     $q->whereIn('id', $specdata);
+                } else {
+                    $q->whereRaw('1=0'); // Force empty if mapping exists but is empty
                 }
-                $q->orWhere('created_byid', $login_id);
-                $q->orWhereRaw("FIND_IN_SET(?, vendor_ids)", [$login_id]);
             })
             ->whereIn('created_byid', [1, $login_id])
             ->where('status', 'Active')
@@ -670,10 +674,14 @@ public function store(Request $request, FlasherInterface $flasher)
 
         $subCategoryId = (int) ($products->category_sub ?? $category_sub);
         $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $subCategoryId)->first();
-        $adminMappedAttributeIds = AttributeGroup::whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subCategoryId])
-            ->pluck('id')->toArray();
-        $adminMappedSpecIds = SpecificationGroup::whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subCategoryId])
-            ->pluck('id')->toArray();
+        $adminMappedAttributeIds = AttributeGroup::where(function($q) use ($subCategoryId, $login_id) {
+                $q->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subCategoryId])
+                  ->orWhere('created_byid', $login_id);
+            })->pluck('id')->toArray();
+        $adminMappedSpecIds = SpecificationGroup::where(function($q) use ($subCategoryId, $login_id) {
+                $q->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subCategoryId])
+                  ->orWhere('created_byid', $login_id);
+            })->pluck('id')->toArray();
 
         $subCategory = CategorySub::find($subCategoryId);
         $defaultAttrIds = ($subCategory && !empty($subCategory->category_sub_attributes)) ? explode(',', $subCategory->category_sub_attributes) : [];
@@ -704,12 +712,12 @@ public function store(Request $request, FlasherInterface $flasher)
             ? AttributeGroup::whereIn('id', $attributeIds)->get()
             : collect();
 
-        $specification = SpecificationGroup::where(function($q) use ($specificationIds, $login_id) {
+        $specification = SpecificationGroup::where(function($q) use ($specificationIds) {
                 if (!empty($specificationIds)) {
                     $q->whereIn('id', $specificationIds);
+                } else {
+                    $q->whereRaw('1=0');
                 }
-                $q->orWhere('created_byid', $login_id);
-                $q->orWhereRaw("FIND_IN_SET(?, vendor_ids)", [$login_id]);
             })
             ->whereIn('created_byid', [1, $login_id])
             ->where('status', 'Active')

@@ -841,9 +841,9 @@ class ProductsController extends Controller
                             $products_spec->spec_id = $value;
                             $products_spec->category_sub_id = $request->category_sub;
                         
-                            $products_spec->specify_attribute = $request->speci_attri[$value];
+                            $products_spec->specify_attribute = $request->specify_attribute[$value] ?? null;
                             
-                            $products_spec->specify_value = $request->speci_value[$value];
+                            $products_spec->specify_value = $request->specify_value[$value] ?? null;
                             
                             $products_spec->save();
                         

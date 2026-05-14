@@ -75,6 +75,9 @@ class SpecificationGroupController extends Controller
     public function edit($id)
     {
         $group = SpecificationGroup::findOrFail($id);
+        if ($group->created_by !== 'Vendor' || $group->created_byid != session()->get('login_id')) {
+            return redirect()->route('specification_groups.index')->with('error', 'Unauthorized access.');
+        }
         $login_id = session()->get('login_id');
         $vendorcreate = vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
         $subcategoryarray = array_values(array_filter(array_map('intval', array_map('trim', explode(',', (string) optional($vendorcreate)->sub_category_ids)))));
@@ -98,6 +101,10 @@ class SpecificationGroupController extends Controller
 
     public function update(Request $request, $id)
     {
+        $group = SpecificationGroup::findOrFail($id);
+        if ($group->created_by !== 'Vendor' || $group->created_byid != session()->get('login_id')) {
+            return redirect()->route('specification_groups.index')->with('error', 'Unauthorized access.');
+        }
         $login_id = session()->get('login_id');
         $validated=$request->validate([
             'specification_group_name' => 'required|string|max:255',
@@ -127,6 +134,9 @@ class SpecificationGroupController extends Controller
     {
         $id = $request->id;
         $group = SpecificationGroup::findOrFail($id);
+        if ($group->created_by !== 'Vendor' || $group->created_byid != session()->get('login_id')) {
+            return redirect()->route('specification_groups.index')->with('error', 'Unauthorized access.');
+        }
         $group->update([
             'specification_values' => json_encode($request->value)
         ]);
@@ -136,6 +146,9 @@ class SpecificationGroupController extends Controller
     public function destroy($id)
     {
         $group = SpecificationGroup::findOrFail($id);
+        if ($group->created_by !== 'Vendor' || $group->created_byid != session()->get('login_id')) {
+            return redirect()->route('specification_groups.index')->with('error', 'Unauthorized access.');
+        }
         $group->delete();
 
         return redirect()->route('specification_groups.index')->with('success', 'Specification Group deleted successfully.');

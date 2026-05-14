@@ -50,11 +50,12 @@ class AttributeController extends Controller
             'category_main.category_main_name','category_main.category_main_image',
             'category.main_category_id','category.category_name','category.category_image',
             'category_sub.category_sub_name','category_sub.category_sub_image')
-
             ->join('category_sub', 'category_sub.id', '=', 'master_attribute.category_sub_id')
             ->join('category', 'category.id', '=', 'category_sub.category_id')
             ->join('category_main', 'category_main.id', '=', 'category.main_category_id')
-            ->whereIn('master_attribute.created_byid', [$login_id, 1])->get();
+            ->where('master_attribute.created_byid', $login_id)
+            ->where('master_attribute.created_by', 'vendor')
+            ->get();
             
             // ->where('master_attribute.created_by','vendor')
           
@@ -136,7 +137,16 @@ class AttributeController extends Controller
         ->where('master_attribute.id', $id)
         ->where('master_attribute.created_byid', $login_id)
         ->where('master_attribute.created_by', 'vendor')
-        ->get();
+        ->first();
+        
+        if(!$subcategory) {
+            return response()->json([
+                'status'=>403,
+                'message'=>'Unauthorized access',
+            ]);
+        }
+        
+        $subcategory = [$subcategory];
             // dd($subcategory);
         if($subcategory)
         {
@@ -162,6 +172,10 @@ class AttributeController extends Controller
         $login_id = session()->get('login_id');
         try {
              $Attribute =  Attribute::find($id);
+             if (!$Attribute || $Attribute->created_by !== 'vendor' || $Attribute->created_byid != $login_id) {
+                 $flasher->addError('Unauthorized access!!');
+                 return redirect()->route('vendorattribute.master.index');
+             }
              $Attribute->category_sub_id = $request->editcategory_sub_name;
              $Attribute->attribute_name = $request->editname;
              $Attribute->value = json_encode($request->value);
@@ -221,8 +235,14 @@ class AttributeController extends Controller
      */
     public function destroy($id, FlasherInterface $flasher)
     {
+        $login_id = session()->get('login_id');
         try {
-            Attribute::where("id", $id)->delete();
+            $Attribute = Attribute::find($id);
+            if (!$Attribute || $Attribute->created_by !== 'vendor' || $Attribute->created_byid != $login_id) {
+                $flasher->addError('Unauthorized access!!');
+                return redirect()->route('vendorattribute.master.index');
+            }
+            $Attribute->delete();
             $flasher->addsuccess('Product Attribute Removed!');
             return redirect()->route('vendorattribute.master.index');
         } catch (\Throwable $th) {

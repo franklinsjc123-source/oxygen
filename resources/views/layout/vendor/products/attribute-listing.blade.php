@@ -193,10 +193,6 @@
                                                          }
                                                         
                                                     @endphp
-
-
-                                                    {{-- <span class="p-1 border border-danger mx-2 px-3 rounded more"
-                                                        onclick="myFunction()" id="myBtn">more</span> --}}
                                                 </td>
 
                                                 <td>
@@ -224,22 +220,21 @@
 
                                                 <td>
                                                     <span class="d-flex">
-                                                    <button type="button" class="edit_attribute btn btn-secondary mx-1" data-bs-toggle="modal" data-original-title="Edit" value="{{$attribute->id}}" id="edit_attribute">
-                                                        <i class="fa fa-pencil"></i> </button>
-                                                    
-                                                	<form action="{{ route('vendorattribute.master.destroy', $attribute->id) }}"
-																method="post">
-																@method('DELETE')
-																@csrf
-																<button type="submit" class="btn btn-warning mx-1"
-																	onclick="return confirm('Are you sure, you want to delete it?')"><i
-																		class="fa fa-trash"></i>
-																</button>
-
-                        
-													</form>
-													</span>
-												</td>						
+                                                        @if($attribute->created_by == 'vendor' && $attribute->created_byid == session()->get('login_id'))
+                                                            <button type="button" class="edit_attribute btn btn-secondary mx-1" data-bs-toggle="modal" data-original-title="Edit" value="{{$attribute->id}}" id="edit_attribute">
+                                                                <i class="fa fa-pencil"></i> 
+                                                            </button>
+                                                        
+                                                            <form action="{{ route('vendorattribute.master.destroy', $attribute->id) }}" method="post">
+                                                                @method('DELETE')
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-warning mx-1" onclick="return confirm('Are you sure, you want to delete it?')">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                        @endif
+                                                    </span>
+                                                </td>						
 
                                             </tr>
                                         @endforeach
