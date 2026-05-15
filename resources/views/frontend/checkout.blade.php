@@ -611,10 +611,6 @@
      <div class="select-box">
      <select id="modal_billing_country" class="form-control form-control-md">
      <option value="India" {{ ($customer->customer_country ?? 'India') == 'India' ? 'selected' : '' }}>India</option>
-     <option value="United States">United States</option>
-     <option value="United Kingdom">United Kingdom</option>
-     <option value="France">France</option>
-     <option value="Australia">Australia</option>
      </select>
      </div>
      </div>
