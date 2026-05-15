@@ -15,6 +15,7 @@
   
 
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
         #loading-container {
        display: none;
@@ -77,7 +78,7 @@
                     
                     @endphp
                     
-                    <form action="{{ route('placeorder') }}" method="post">
+                    <form action="{{ route('placeorder') }}" method="post" id="checkout-form">
                         @csrf
                         <div class="row">
                             <div class="col-lg-6 col-sm-12 col-xs-12">
@@ -322,6 +323,8 @@
                                         <input type="hidden" value="" name="discount2" id="discount2">
                                         <input type="hidden" value="{{$gst}}" name="gst" id="gst">
                                         <input type="hidden" value="{{$toto}}" name="price" id="price">
+                                        <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+                                        <input type="hidden" name="razorpay_signature" id="razorpay_signature">
                                         <div class="text-end">
                                             {{-- <a href="order-success.php" class="btn-solid btn">Place Order</a> --}}
                                             <input class="btn-solid btn" type="submit" value="Place Order">
@@ -449,3 +452,46 @@
 
 @include('website.front-end.newfooter')
 @endsection
+
+<script>
+    $(document).ready(function() {
+        $('#checkout-form').on('submit', function(e) {
+            var paymentMethod = $('input[name="payment-group"]:checked').val();
+            
+            if (paymentMethod === 'onlinepayment') {
+                if ($('#razorpay_payment_id').val() === '') {
+                    e.preventDefault();
+                    
+                    var totalAmount = $('#grandtotal').val();
+                    var customerName = $('input[name="firstname"]').val() + ' ' + $('input[name="lastname"]').val();
+                    var customerEmail = $('input[name="email"]').val();
+                    var customerPhone = $('input[name="phone"]').val();
+                    
+                    var options = {
+                        "key": "{{ config('services.razorpay.key') }}",
+                        "amount": totalAmount * 100,
+                        "currency": "INR",
+                        "name": "Oxygen Store",
+                        "description": "Order Payment",
+                        "image": "{{ asset('assets/images/logo.png') }}",
+                        "handler": function (response){
+                            $('#razorpay_payment_id').val(response.razorpay_payment_id);
+                            $('#razorpay_signature').val(response.razorpay_signature);
+                            $('#checkout-form').off('submit').submit();
+                        },
+                        "prefill": {
+                            "name": customerName,
+                            "email": customerEmail,
+                            "contact": customerPhone
+                        },
+                        "theme": {
+                            "color": "#3399cc"
+                        }
+                    };
+                    var rzp1 = new Razorpay(options);
+                    rzp1.open();
+                }
+            }
+        });
+    });
+</script>

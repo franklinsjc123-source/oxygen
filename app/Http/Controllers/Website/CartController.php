@@ -24,6 +24,7 @@ use App\Models\Ecom_Orders;
 use App\Models\Ecom_Order_product;
 use App\Models\Ecom_Customer_info;
 use App\Models\wishlist;
+use App\Models\Payment;
 
 use Illuminate\Support\Facades\Session;
 use DB;
@@ -612,6 +613,23 @@ class CartController extends Controller
 				    ]);
 				}
 			}
+		}
+
+		// Razorpay Payment Handling
+		if ($paymentType === 'onlinepayment' && $request->has('razorpay_payment_id')) {
+			$payment = new Payment();
+			$payment->order_id = $order_id;
+			$payment->razorpay_payment_id = $request->razorpay_payment_id;
+			$payment->razorpay_signature = $request->razorpay_signature;
+			$payment->amount = $grandTotal;
+			$payment->status = 'Captured';
+			$payment->payment_data = json_encode($request->all());
+			$payment->save();
+
+			// Update Order Payment Status
+			$order->payment_status = 'Completed';
+			$order->order_status = 'Processing';
+			$order->save();
 		}
 
 		Session::forget('cart');
