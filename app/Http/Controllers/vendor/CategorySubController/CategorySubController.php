@@ -22,7 +22,7 @@ class CategorySubController extends Controller
     {
         $login_id = session()->get('login_id');
         $vendorcreate = vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
-        $subcategoryarray = ($vendorcreate->sub_category_ids) ? explode(',', $vendorcreate->sub_category_ids) : 0;
+        $subcategoryarray = ($vendorcreate && $vendorcreate->sub_category_ids) ? explode(',', $vendorcreate->sub_category_ids) : [];
 
         $sub_category_data = CategorySub::join('category', 'category_sub.category_id', '=', 'category.id')
             ->join('category_main', 'category_sub.category_main_id', '=', 'category_main.id')
