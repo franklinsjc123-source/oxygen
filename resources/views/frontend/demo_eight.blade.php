@@ -643,7 +643,7 @@
      <div class="container">
 
          <div class="title-link-wrapper mb-3">
-             <h2 class="title mb-0 pt-2 pb-2">Auction Product</h2>
+             <h2 class="title mb-0 pt-2 pb-2">Auction Products</h2>
              <a href="shop-boxed-banner.html" class="mb-0">More Products<i
                      class="w-icon-long-arrow-right"></i></a>
          </div>
