@@ -12,4 +12,4 @@ auth.json
 npm-debug.log
 yarn-error.log
 /.idea
-/.vscode
+/.vscode.env
