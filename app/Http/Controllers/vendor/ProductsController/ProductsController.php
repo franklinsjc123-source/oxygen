@@ -124,46 +124,46 @@ class ProductsController extends Controller
         $offer = Offer::where('created_by_id', $login_id)->where('status', 1)->get();
 
 
-        $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $category_sub->id)->first();
+        $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $category_sub->id)->where('vendor_id', $login_id)->first();
         $hasMapping = !is_null($mapping);
-        $adminMappedAttributeIds = AttributeGroup::where(function($q) use ($category_sub, $login_id) {
-                $q->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$category_sub->id])
-                  ->orWhere('created_byid', $login_id);
-            })->pluck('id')->toArray();
         $adminMappedSpecIds = SpecificationGroup::where(function($q) use ($category_sub, $login_id) {
                 $q->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$category_sub->id])
                   ->orWhere('created_byid', $login_id);
             })->pluck('id')->toArray();
 
-        $defaultAttrIds = ($category_sub->category_sub_attributes != '') ? explode(',', $category_sub->category_sub_attributes) : [];
-        $validAttributeIds = array_unique(array_map('intval', array_merge($defaultAttrIds, $adminMappedAttributeIds)));
-
         $defaultSpecIds = ($category_sub->category_sub_specifications != '') ? explode(',', $category_sub->category_sub_specifications) : [];
         $validSpecificationIds = array_unique(array_map('intval', array_merge($defaultSpecIds, $adminMappedSpecIds)));
 
         if ($hasMapping) {
-            $attbutesdata = ($mapping->category_sub_attribute_ids)
-                ? (json_decode($mapping->category_sub_attribute_ids, true) ?: [])
-                : [];
-            $attbutesdata = array_intersect(array_map('intval', $attbutesdata), $validAttributeIds);
-
             $specdata = ($mapping->category_sub_specification_ids)
                 ? (json_decode($mapping->category_sub_specification_ids, true) ?: [])
                 : [];
             $specdata = array_intersect(array_map('intval', $specdata), $validSpecificationIds);
         } else {
-            $attbutesdata = $validAttributeIds;
-            $specdata = $validSpecificationIds;
+            $specdata = [];
         }
 
-        $attbutesdata = array_values(array_filter(array_map('intval', $attbutesdata)));
         $specdata = array_values(array_filter(array_map('intval', $specdata)));
 
-        $selectedAttributeId = (int) ($request->selected_attribute_id ?? 0);
+        if ($mapping && $mapping->category_sub_attribute_ids) {
+            $vendorAttrs = array_map('intval', json_decode($mapping->category_sub_attribute_ids, true) ?: []);
+            $attribute = AttributeGroup::where(function ($q) use ($vendorAttrs, $category_sub, $login_id) {
+                    $q->whereIn('id', $vendorAttrs)
+                      ->where(function ($subQ) use ($category_sub, $login_id) {
+                          $subQ->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$category_sub->id])
+                               ->orWhere('created_byid', $login_id);
+                      });
+                })
+                ->orWhere('created_byid', $login_id)
+                ->orderBy('attribute_group_name', 'asc')
+                ->get();
+        } else {
+            $attribute = AttributeGroup::where('created_byid', $login_id)
+                ->orderBy('attribute_group_name', 'asc')
+                ->get();
+        }
 
-        $attribute = !empty($attbutesdata)
-            ? AttributeGroup::whereIn('id', $attbutesdata)->get()
-            : collect();
+        $selectedAttributeId = (int) ($request->selected_attribute_id ?? 0);
 
         if ($selectedAttributeId > 0 && $attribute->isNotEmpty()) {
             $attribute = $attribute->where('id', $selectedAttributeId)->values();
@@ -226,47 +226,36 @@ class ProductsController extends Controller
 
     public function getSubCategoryAttributes(Request $request)
     {
+        $login_id = session()->get('login_id');
         $subCategoryId = (int) ($request->sub_category_id ?? 0);
 
         if ($subCategoryId <= 0) {
             return response()->json([]);
         }
 
-        $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $subCategoryId)->first();
-        $adminMappedAttributeIds = AttributeGroup::whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subCategoryId])
-            ->pluck('id')->toArray();
-        $adminMappedSpecIds = SpecificationGroup::whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subCategoryId])
-            ->pluck('id')->toArray();
+        $mapping = DB::table('sub_category_mapping')
+            ->where('sub_category_id', $subCategoryId)
+            ->where('vendor_id', $login_id)
+            ->first();
 
-        $subCategory = CategorySub::find($subCategoryId);
-        $defaultAttrIds = ($subCategory && !empty($subCategory->category_sub_attributes)) ? explode(',', $subCategory->category_sub_attributes) : [];
-        $validAttrIds = array_unique(array_map('intval', array_merge($defaultAttrIds, $adminMappedAttributeIds)));
-
-        $defaultSpecIds = ($subCategory && !empty($subCategory->category_sub_specifications)) ? explode(',', $subCategory->category_sub_specifications) : [];
-        $validSpecIds = array_unique(array_map('intval', array_merge($defaultSpecIds, $adminMappedSpecIds)));
-
-        if ($mapping) {
-            $attributeIds = $mapping->category_sub_attribute_ids
-                ? (json_decode($mapping->category_sub_attribute_ids, true) ?: [])
-                : [];
-            $attributeIds = array_intersect(array_map('intval', (array)$attributeIds), $validAttrIds);
-
-            $specificationIds = $mapping->category_sub_specification_ids
-                ? (json_decode($mapping->category_sub_specification_ids, true) ?: [])
-                : [];
-            $specificationIds = array_intersect(array_map('intval', (array)$specificationIds), $validSpecIds);
+        if ($mapping && $mapping->category_sub_attribute_ids) {
+            $vendorAttrs = array_map('intval', json_decode($mapping->category_sub_attribute_ids, true) ?: []);
+            
+            $attributes = AttributeGroup::where(function ($q) use ($vendorAttrs, $subCategoryId, $login_id) {
+                    $q->whereIn('id', $vendorAttrs)
+                      ->where(function ($subQ) use ($subCategoryId, $login_id) {
+                          $subQ->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subCategoryId])
+                               ->orWhere('created_byid', $login_id);
+                      });
+                })
+                ->orWhere('created_byid', $login_id)
+                ->orderBy('attribute_group_name', 'asc')
+                ->get(['id', 'attribute_group_name', 'attribute_group_refname']);
         } else {
-            $attributeIds = $validAttrIds;
-            $specificationIds = $validSpecIds;
+            $attributes = AttributeGroup::where('created_byid', $login_id)
+                ->orderBy('attribute_group_name', 'asc')
+                ->get(['id', 'attribute_group_name', 'attribute_group_refname']);
         }
-
-        $attributeIds = array_values(array_filter(array_map('intval', (array) $attributeIds)));
-        if (empty($attributeIds)) {
-            return response()->json([]);
-        }
-
-        $attributes = AttributeGroup::whereIn('id', $attributeIds)
-            ->get(['id', 'attribute_group_name', 'attribute_group_refname']);
 
         return response()->json($attributes);
     }

@@ -177,6 +177,7 @@
 	/*Edit Attribute*/
 	Route::get('editattribute/{id}/edit', [AttributeController::class, 'editattribute']);
 	Route::post('attributeupdate/{id}/update', [AttributeController::class, 'updateattribute'])->name('vendorattributeupdate');
+	Route::post('vendor_update_attributevalues', [AttributeController::class, 'update_attributevalues'])->name('vendor_update_attributevalues');
 
 	
 	/*Edit specification*/

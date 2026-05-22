@@ -41,209 +41,188 @@ class AttributeController extends Controller
         //     ]);
          $login_id = session()->get('login_id');
          
-         $category_main_data = CategoryMain::whereIn('created_byid', [$login_id, 1])->get();
-         $Category  = Category::whereIn('created_byid', [$login_id, 1])->get();
-         $subcategory = CategorySub::whereIn('created_byid', [$login_id, 1])->get();
-         
-         $attribute = DB::table('master_attribute')
-            ->select('master_attribute.id','master_attribute.category_main_id','master_attribute.category_id','master_attribute.category_sub_id','master_attribute.attribute_name','master_attribute.value','master_attribute.status','master_attribute.created_byid','master_attribute.created_by',
-            'category_main.category_main_name','category_main.category_main_image',
-            'category.main_category_id','category.category_name','category.category_image',
-            'category_sub.category_sub_name','category_sub.category_sub_image')
-            ->join('category_sub', 'category_sub.id', '=', 'master_attribute.category_sub_id')
-            ->join('category', 'category.id', '=', 'category_sub.category_id')
-            ->join('category_main', 'category_main.id', '=', 'category.main_category_id')
-            ->where('master_attribute.created_byid', $login_id)
-            ->where('master_attribute.created_by', 'vendor')
-            ->get();
-            
-            // ->where('master_attribute.created_by','vendor')
-          
-            
+         $groups = \App\Models\Master\Attribute\AttributeGroup::whereIn('created_byid', [$login_id, 1])->get();
 
         return view('layout.vendor.products.attribute-listing')
             ->with([
-                'category_main_data' => $category_main_data,
-                'subcategory' => $subcategory,
-                'category' =>$Category,
-                'subcategory1' => $subcategory,
-                'attribute' => $attribute
+                'groups' => $groups
             ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        //
+        $CategoryMain = CategoryMain::where('status', 1)->select('id', 'category_main_name')->get();
+        $Category = Category::where('status', 1)->select('id', 'main_category_id', 'category_name')->get();
+        $CategorySub = DB::table('category_sub as t1')
+            ->join('category as t2', 't1.category_id', '=', 't2.id')
+            ->join('category_main as t3', 't1.category_main_id', '=', 't3.id')
+            ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
+            ->where('t1.status', 1)
+            ->get();
+        return view('layout.vendor.products.attribute_groups_create', compact('CategoryMain', 'Category', 'CategorySub'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request, FlasherInterface $flasher)
     {
-        
-          
-        $attribute = new Attribute;
         $login_id = session()->get('login_id');
-        try {
-            $attribute->category_main_id = $request->sscategory_main;
-            $attribute->category_id = $request->sscategory;
-            $attribute->category_sub_id = $request->category_sub_id;
-            $attribute->attribute_name = $request->name;
-            $attribute->value = json_encode($request->value);
-            $attribute->status = $request->status ?? 1;
-            $attribute->created_by = 'vendor';
-			$attribute->created_byid = $login_id;
-            $attribute->save();
+        $validated = $request->validate([
+            'attribute_group_name' => 'required|string|max:255',
+            'attribute_group_refname' => 'required|string|max:255',
+            'attribute_values' => 'nullable|string|max:255',
+            'sub_category_ids_csv' => 'nullable|string',
+            'status' => 'nullable|string|max:255',
+        ]);
 
-            $flasher->addSuccess('New Attribute Added successfully!');
+        $selectedSubCategoryIds = [];
+        if ($request->filled('sub_category_ids_csv')) {
+            $selectedSubCategoryIds = explode(',', (string) $request->sub_category_ids_csv);
+        }
+        $selectedSubCategoryIds = array_values(array_unique(array_filter($selectedSubCategoryIds)));
+        
+        $data = [
+            'attribute_group_name' => $validated['attribute_group_name'],
+            'attribute_group_refname' => $validated['attribute_group_refname'],
+            'attribute_values' => "",
+            'sub_category_ids' => !empty($selectedSubCategoryIds) ? implode(',', $selectedSubCategoryIds) : '',
+            'status' => $validated['status'] ?? 1,
+            'created_by' => "vendor",
+            'created_byid' => $login_id,
+        ];
+
+        \App\Models\Master\Attribute\AttributeGroup::create($data);
+
+        $flasher->addSuccess('Attribute Group created successfully.');
+        return redirect()->route('vendorattribute.master.index');
+    }
+
+    public function edit($id, FlasherInterface $flasher)
+    {
+        $login_id = session()->get('login_id');
+        $group = \App\Models\Master\Attribute\AttributeGroup::findOrFail($id);
+        
+        $CategoryMain = CategoryMain::where('status', 1)->select('id', 'category_main_name')->get();
+        $Category = Category::where('status', 1)->select('id', 'main_category_id', 'category_name')->get();
+        $CategorySub = DB::table('category_sub as t1')
+            ->join('category as t2', 't1.category_id', '=', 't2.id')
+            ->join('category_main as t3', 't1.category_main_id', '=', 't3.id')
+            ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
+            ->where('t1.status', 1)
+            ->get();
+            
+        $vendorSelectedSubIds = [];
+        if ($group->created_byid != $login_id) {
+            foreach ($CategorySub as $sub) {
+                $subId = $sub->id;
+                $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $subId)->where('vendor_id', $login_id)->first();
+                if ($mapping) {
+                    $attrs = json_decode($mapping->category_sub_attribute_ids, true) ?: [];
+                    if (in_array($id, $attrs)) {
+                        $vendorSelectedSubIds[] = $subId;
+                    }
+                } else {
+                    $adminMapping = DB::table('sub_category_mapping')->where('sub_category_id', $subId)->whereNull('vendor_id')->first();
+                    $attrs = $adminMapping ? (json_decode($adminMapping->category_sub_attribute_ids, true) ?: []) : [];
+                    $globalAttrs = explode(',', $group->sub_category_ids ?? '');
+                    if (in_array($id, $attrs) || in_array($id, $globalAttrs)) {
+                        $vendorSelectedSubIds[] = $subId;
+                    }
+                }
+            }
+        } else {
+            $vendorSelectedSubIds = array_filter(explode(',', $group->sub_category_ids ?? ''));
+        }
+        
+        return view('layout.vendor.products.attribute_groups_edit', compact('group', 'CategoryMain', 'Category', 'CategorySub', 'vendorSelectedSubIds'));
+    }
+
+    public function update(Request $request, $id, FlasherInterface $flasher)
+    {
+        $login_id = session()->get('login_id');
+        $validated = $request->validate([
+            'attribute_group_name' => 'required|string|max:255',
+            'attribute_group_refname' => 'required|string|max:255',
+            'attribute_values' => 'nullable|string|max:255',
+            'sub_category_ids_csv' => 'nullable|string',
+            'status' => 'nullable|string|max:255',
+        ]);
+
+        $selectedSubCategoryIds = [];
+        if ($request->filled('sub_category_ids_csv')) {
+            $selectedSubCategoryIds = explode(',', (string) $request->sub_category_ids_csv);
+        }
+        $selectedSubCategoryIds = array_values(array_unique(array_filter($selectedSubCategoryIds)));
+
+        $group = \App\Models\Master\Attribute\AttributeGroup::findOrFail($id);
+
+        if ($group->created_byid != $login_id) {
+            $vendorcreate = \App\Models\vendor\vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
+            $vendorSubCategoryIds = ($vendorcreate && $vendorcreate->sub_category_ids) ? explode(',', $vendorcreate->sub_category_ids) : [];
+            
+            foreach ($vendorSubCategoryIds as $subId) {
+                $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $subId)->where('vendor_id', $login_id)->first();
+                if (!$mapping) {
+                    $adminMapping = DB::table('sub_category_mapping')->where('sub_category_id', $subId)->whereNull('vendor_id')->first();
+                    $attrs = $adminMapping ? json_decode($adminMapping->category_sub_attribute_ids, true) : [];
+                    $specs = $adminMapping ? json_decode($adminMapping->category_sub_specification_ids, true) : [];
+                    if (!is_array($attrs)) $attrs = [];
+                    if (!is_array($specs)) $specs = [];
+                    
+                    $globalAttrs = \App\Models\Master\Attribute\AttributeGroup::whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subId])->pluck('id')->toArray();
+                    $attrs = array_unique(array_merge($attrs, $globalAttrs));
+                } else {
+                    $attrs = json_decode($mapping->category_sub_attribute_ids, true);
+                    if (!is_array($attrs)) $attrs = [];
+                    $specs = json_decode($mapping->category_sub_specification_ids, true);
+                    if (!is_array($specs)) $specs = [];
+                }
+                
+                $attrs = array_map('intval', $attrs);
+                
+                if (in_array($subId, $selectedSubCategoryIds)) {
+                    if (!in_array($id, $attrs)) {
+                        $attrs[] = $id;
+                    }
+                } else {
+                    $attrs = array_values(array_diff($attrs, [$id]));
+                }
+                
+                DB::table('sub_category_mapping')->updateOrInsert(
+                    ['sub_category_id' => $subId, 'vendor_id' => $login_id],
+                    [
+                        'category_sub_attribute_ids' => json_encode($attrs),
+                        'category_sub_specification_ids' => json_encode($specs),
+                        'updated_at' => now(),
+                    ]
+                );
+            }
+
+            $flasher->addSuccess('Attribute Category mapping updated specifically for your profile.');
             return redirect()->route('vendorattribute.master.index');
-        } catch (\Throwable $th) {
-            $flasher->addError('Something Error!! =>' . $th);
-            return redirect()->route('vendorattribute.master.index');
         }
-         
+
+        $data = [
+            'attribute_group_name' => $validated['attribute_group_name'],
+            'attribute_group_refname' => $validated['attribute_group_refname'],
+            'sub_category_ids' => !empty($selectedSubCategoryIds) ? implode(',', $selectedSubCategoryIds) : '',
+            'status' => $validated['status'] ?? 1,
+        ];
+        $group->update($data);
+
+        $flasher->addSuccess('Attribute Group updated successfully.');
+        return redirect()->route('vendorattribute.master.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-     
-     public function editattribute($id)
-    {
-        
-        $login_id = session()->get('login_id');
-        // $subcategory = CategorySub::find($id);
-          $subcategory = DB::table('master_attribute')
-        // ->select('master_attribute.id', 'master_attribute.category_sub_id', 'master_attribute.attribute_name', 'master_attribute.value','master_attribute.status', 'category_sub.category_sub_name','category_sub.category_id')
-        ->select('master_attribute.id','master_attribute.category_main_id','master_attribute.category_id','master_attribute.category_sub_id','master_attribute.attribute_name','master_attribute.value','master_attribute.status',
-        'category_main.category_main_name','category_main.category_main_image',
-        'category.main_category_id','category.category_name','category.category_image',
-        'category_sub.category_sub_name','category_sub.category_sub_image')
-        ->join('category_sub', 'category_sub.id', '=', 'master_attribute.category_sub_id')
-        ->join('category', 'category.id', '=', 'category_sub.category_id')
-        ->join('category_main', 'category_main.id', '=', 'category.main_category_id')
-        ->where('master_attribute.id', $id)
-        ->where('master_attribute.created_byid', $login_id)
-        ->where('master_attribute.created_by', 'vendor')
-        ->first();
-        
-        if(!$subcategory) {
-            return response()->json([
-                'status'=>403,
-                'message'=>'Unauthorized access',
-            ]);
-        }
-        
-        $subcategory = [$subcategory];
-            // dd($subcategory);
-        if($subcategory)
-        {
-            return response()->json([
-
-                'status'=>200,
-                'subcategory'=>$subcategory
-               
-            ]);
-        }
-        else
-        {
-            return response()->json([
-
-                'status'=>404,
-                'message'=>'Package not found',
-            ]);
-        }
-    }
-
-    public function updateattribute(Request $request, $id, FlasherInterface $flasher)
-    {
-        $login_id = session()->get('login_id');
-        try {
-             $Attribute =  Attribute::find($id);
-             if (!$Attribute || $Attribute->created_by !== 'vendor' || $Attribute->created_byid != $login_id) {
-                 $flasher->addError('Unauthorized access!!');
-                 return redirect()->route('vendorattribute.master.index');
-             }
-             $Attribute->category_sub_id = $request->editcategory_sub_name;
-             $Attribute->attribute_name = $request->editname;
-             $Attribute->value = json_encode($request->value);
-             $Attribute->status = $request->editstatus;
-             $Attribute->created_by = 'vendor';
-		  	 $Attribute->created_byid = $login_id;
-             //dd($Attribute);
-             $Attribute->update();
-             //return ($id);
-            $flasher->addSuccess('New Attribute Updated successfully!');
-            //  return response()->json([
-
-            //           'Category'=>'stored'
-                   
-            //       ]);
-             return redirect()->route('vendorattribute.master.index');
-          } catch (\Throwable $th) {
-             // dd($th);
-              $flasher->addError('Something Error!!');
-              return redirect()->route('vendorattribute.master.index');
-          }
-              
-    }
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id, FlasherInterface $flasher)
     {
         $login_id = session()->get('login_id');
         try {
-            $Attribute = Attribute::find($id);
-            if (!$Attribute || $Attribute->created_by !== 'vendor' || $Attribute->created_byid != $login_id) {
-                $flasher->addError('Unauthorized access!!');
+            $group = \App\Models\Master\Attribute\AttributeGroup::find($id);
+            if (!$group) {
+                $flasher->addError('Group not found!');
                 return redirect()->route('vendorattribute.master.index');
             }
-            $Attribute->delete();
-            $flasher->addsuccess('Product Attribute Removed!');
+            $group->delete();
+            $flasher->addSuccess('Attribute Group Removed!');
             return redirect()->route('vendorattribute.master.index');
         } catch (\Throwable $th) {
             $flasher->addError('Something Error!!');
@@ -277,18 +256,20 @@ class AttributeController extends Controller
     {
      
         $scate = $request->category_sub;
+        $login_id = session()->get('login_id');
         // exit;
         $category_main_data = CategoryMain::get();
         $Category  = Category::get();
         $subcategory = CategorySub::get();
         
-         $attribute = CategorySub::join(
-            'master_attribute',
+         $attribute = DB::table('master_attribute')->leftJoin(
+            'category_sub',
             'category_sub.id',
             '=',
             'master_attribute.category_sub_id'
         )
         ->where('category_sub_id', $scate)
+        ->whereIn('master_attribute.created_byid', [$login_id, 1])
             ->get();
      
         return view('layout.vendor.products.attribute-listing')
@@ -299,5 +280,22 @@ class AttributeController extends Controller
             'subcategory1' => $subcategory,
             'attribute' => $attribute
         ]);
+    }
+
+    public function update_attributevalues(Request $request)
+    {
+        $id = $request->id;
+        $login_id = session()->get('login_id');
+        $group = \App\Models\Master\Attribute\AttributeGroup::findOrFail($id);
+        
+        // Only allow editing if the vendor owns this group
+        if ($group->created_byid != $login_id && $group->created_byid != 1) {
+            return redirect()->route('vendorattribute.master.index')->with('error', 'Unauthorized access');
+        }
+
+        $group->attribute_values = json_encode($request->value);
+        $group->update();
+
+        return redirect()->route('vendorattribute.master.index')->with('success', 'Attributes updated successfully.');
     }
 }

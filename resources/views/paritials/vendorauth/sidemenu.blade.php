@@ -47,8 +47,7 @@
                         class="fa fa-angle-right pull-right"></i></a>
                 <ul class="sidebar-submenu">
                     <li><a href="{{ route('vendorproductscreate') }}"><i class="fa fa-circle"></i>Add Product</a></li>
-                    <!--<li><a href=" {{ route('vendorattribute.master.index') }}"><i class="fa fa-circle"></i> Attributes</a>
-                    </li>-->
+                    <li><a href="{{ route('vendorattribute.master.index') }}"><i class="fa fa-circle"></i> Attributes</a></li>
                  <li><a href="{{ route('vendorproducts.crud.listing') }}"><i class="fa fa-circle"></i>Product List</a>
                     </li>
                     <li><a href="{{ url('vendor/specification_groups') }}"><i class="fa fa-circle"></i>

@@ -45,18 +45,31 @@ class CategorySubController extends Controller
                     ? array_values(array_filter(array_map('intval', explode(',', $sub_category_viewdata->category_sub_specifications))))
                     : [];
 
-                $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $viewId)->first();
+                $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $viewId)->where('vendor_id', $login_id)->first();
 
-                $attributegroup = AttributeGroup::whereRaw("FIND_IN_SET(?, sub_category_ids)", [$viewId])
-                    ->orWhereIn('id', $defaultAttributeIds)
-                    ->orderBy('attribute_group_name', 'asc')
-                    ->get();
+                if ($mapping && $mapping->category_sub_attribute_ids) {
+                    $vendorAttrs = array_map('intval', json_decode($mapping->category_sub_attribute_ids, true) ?: []);
+                    $attributegroup = AttributeGroup::where(function ($q) use ($vendorAttrs, $viewId, $login_id) {
+                            $q->whereIn('id', $vendorAttrs)
+                              ->where(function ($subQ) use ($viewId, $login_id) {
+                                  $subQ->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$viewId])
+                                       ->orWhere('created_byid', $login_id);
+                              });
+                        })
+                        ->orWhere('created_byid', $login_id)
+                        ->orderBy('attribute_group_name', 'asc')
+                        ->get();
+                } else {
+                    $attributegroup = AttributeGroup::where('created_byid', $login_id)
+                        ->orderBy('attribute_group_name', 'asc')
+                        ->get();
+                }
 
                 $mappedAttributeIds = $attributegroup->pluck('id')->toArray();
 
                 $selectedAttributeIds = ($mapping && $mapping->category_sub_attribute_ids)
                     ? array_values(array_filter(array_map('intval', json_decode($mapping->category_sub_attribute_ids, true) ?: [])))
-                    : array_values(array_unique(array_merge($defaultAttributeIds, $mappedAttributeIds)));
+                    : [];
 
                 $specificationgroup = SpecificationGroup::whereRaw("FIND_IN_SET(?, sub_category_ids)", [$viewId])
                     ->orWhereIn('id', $defaultSpecificationIds)
@@ -71,7 +84,7 @@ class CategorySubController extends Controller
 
                 $selectedSpecificationIds = ($mapping && $mapping->category_sub_specification_ids)
                     ? array_values(array_filter(array_map('intval', json_decode($mapping->category_sub_specification_ids, true) ?: [])))
-                    : array_values(array_unique(array_merge($defaultSpecificationIds, $mappedSpecificationIds)));
+                    : [];
 
                 return view('layout.vendor.category.category_sub')->with([
                     "sub_category_data" => $sub_category_data,
@@ -103,6 +116,7 @@ class CategorySubController extends Controller
 
     public function updateMapping(Request $request, $id)
     {
+        $login_id = session()->get('login_id');
         $request->validate([
             'category_sub_attribute_ids' => 'nullable|array',
             'category_sub_attribute_ids.*' => 'integer',
@@ -114,7 +128,7 @@ class CategorySubController extends Controller
         $specificationIds = array_values(array_unique(array_map('intval', $request->input('category_sub_specification_ids', []))));
 
         DB::table('sub_category_mapping')->updateOrInsert(
-            ['sub_category_id' => $id],
+            ['sub_category_id' => $id, 'vendor_id' => $login_id],
             [
                 'category_sub_attribute_ids' => json_encode($attributeIds),
                 'category_sub_specification_ids' => json_encode($specificationIds),
