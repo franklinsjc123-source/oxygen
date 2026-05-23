@@ -48,7 +48,7 @@
             <div class="container-fluid">
                 <div class="row">
                    
-                    <div class="col-xl-10">
+                    <div class="col-xl-12">
                         <div class="card tab2-card">
                             <div class="card-body">
                                 <ul class="nav nav-tabs nav-material" id="top-tab" role="tablist">

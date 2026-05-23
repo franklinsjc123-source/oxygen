@@ -12,6 +12,7 @@ use App\Models\vendor\packages;
 use App\Models\vendor\vendorcreate;
 use App\Models\Route;
 use App\Models\Zonal;
+use App\Models\Staffcreates;
 
 use App\Models\State;
 use App\Models\City;
@@ -74,6 +75,7 @@ class VendorcreateController extends Controller
             ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
             ->where('t1.status', 1)
             ->get();
+        $staffs = Staffcreates::where('flag', 1)->get();
         return view('layout.admin.vendor.vendor-create')->with(
             [
                 "package",
@@ -84,7 +86,8 @@ class VendorcreateController extends Controller
                 "City" => $City,
                 "CategoryMain" => $CategoryMain,
                 "Category" => $Category,
-                "CategorySub" => $CategorySub
+                "CategorySub" => $CategorySub,
+                "staffs" => $staffs
             ]
         );
     }
@@ -203,6 +206,7 @@ class VendorcreateController extends Controller
             $vendor->longitude = $request->longitude;
             $vendor->aadhar_no = $request->aadhar_no;
             $vendor->gst_number = $this->sanitizeGstNumber($request->gst_number);
+            $vendor->staff_id = $request->staff_id;
 
 
             $vendor->profile_image = $profilename;
@@ -295,6 +299,7 @@ class VendorcreateController extends Controller
             ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
             ->where('t1.status', 1)
             ->get();
+        $staffs = Staffcreates::where('flag', 1)->get();
         return view('layout.admin.vendor.vendor-create')->with(
             [
                 "package",
@@ -306,7 +311,8 @@ class VendorcreateController extends Controller
                 "CategorySub" => $CategorySub,
                 "tracker" => $tracker,
                 'State' => $State,
-                'City' => $City
+                'City' => $City,
+                'staffs' => $staffs
             ]
         );
     }
@@ -332,6 +338,7 @@ class VendorcreateController extends Controller
             ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
             ->where('t1.status', 1)
             ->get();
+        $staffs = Staffcreates::all();
         return view('layout.admin.vendor.vendor-edit')
             ->with([
                 "vendorcreate" => $vendorcreate,
@@ -340,7 +347,8 @@ class VendorcreateController extends Controller
                 "zone" => $Zonal,
                 "CategoryMain" => $CategoryMain,
                 "Category" => $Category,
-                "CategorySub" => $CategorySub
+                "CategorySub" => $CategorySub,
+                "staffs" => $staffs
             ]);
     }
 
@@ -442,6 +450,7 @@ class VendorcreateController extends Controller
             $vendor->longitude = $request->longitude;
             $vendor->aadhar_no = $request->aadhar_no;
             $vendor->gst_number = $this->sanitizeGstNumber($request->gst_number);
+            $vendor->staff_id = $request->staff_id;
 
             $selectedSubCategoryIds = $request->input('sub_category_ids', []);
             if (empty($selectedSubCategoryIds) && $request->filled('sub_category_ids_csv')) {

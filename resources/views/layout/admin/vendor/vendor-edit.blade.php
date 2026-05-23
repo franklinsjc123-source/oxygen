@@ -395,6 +395,24 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-xl-4 col-md-4"><span>*</span> Staff (RM)</label>
+                                                        <div class="col-xl-8 col-md-8">
+                                                            <select class="form-control" name="staff_id" required>
+                                                                <option value="">Select Staff</option>
+                                                                @foreach ($staffs as $staff)
+                                                                    <option value="{{ $staff->id }}" {{ $vendorcreate->staff_id == $staff->id ? 'selected' : '' }}>
+                                                                        {{ $staff->fullname ?? $staff->username }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="tab-pane fade" id="top-product" role="tabpanel"
                                             aria-labelledby="top-product-tab">

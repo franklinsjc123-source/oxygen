@@ -1,9 +1,17 @@
 @php
     $vendorProfile = null;
+    $staffName = '';
     if (session()->get('login_id')) {
-        $vendorProfile = App\Models\vendor\vendorcreate::select('shop_name', 'owner_name', 'profile_image')
+        $vendorProfile = App\Models\vendor\vendorcreate::select('shop_name', 'owner_name', 'profile_image', 'staff_id')
             ->where('id', session()->get('login_id'))
             ->first();
+            
+        if (isset($vendorProfile->staff_id)) {
+            $staff = App\Models\Staffcreates::find($vendorProfile->staff_id);
+            if ($staff) {
+                $staffName = 'RM: ' . ($staff->fullname ?? $staff->username);
+            }
+        }
     }
     $vendorName = optional($vendorProfile)->shop_name ?: (optional($vendorProfile)->owner_name ?: (session()->get('username') ?: 'Vendor'));
     $vendorRole = optional($vendorProfile)->owner_name ?: 'Vendor Panel';
@@ -149,6 +157,25 @@
                 </li>
             @endif
             @endif
+            
+            @if(isset($staff) && $staff)
+            <li class="mt-4 pb-4 px-3">
+                <div class="d-flex align-items-center" style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 15px;">
+                    <div style="margin-right: 12px;">
+                        @if($staff->profileimage && $staff->profileimage != '-')
+                            <img class="rounded-circle lazyloaded blur-up" src="{{ asset('assets/images/staffcreate/' . $staff->profileimage) }}" alt="Profile Image" style="object-fit: cover; width: 45px; height: 45px;">
+                        @else
+                            <img class="rounded-circle lazyloaded blur-up" src="{{ asset('assets/images/dashboard/man.jpeg') }}" alt="#" style="object-fit: cover; width: 45px; height: 45px;">
+                        @endif
+                    </div>
+                    <div class="text-start">
+                        <h6 class="mb-1 text-white" style="font-size: 13px; font-weight: 600; text-transform: uppercase;">RM: {{ $staff->fullname ?? $staff->username }}</h6>
+                        <p class="mb-0 text-white" style="font-size: 11px;"><i class="fa fa-phone me-1"></i>{{ $staff->mobileno }}</p>
+                    </div>
+                </div>
+            </li>
+            @endif
+            
         </ul>
     </div>
 </div>

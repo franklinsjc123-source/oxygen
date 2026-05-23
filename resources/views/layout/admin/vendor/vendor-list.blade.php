@@ -1,7 +1,10 @@
 @extends('layout.auth.master')
 @section('contents')
-
-
+<style>
+    .table td, .table th {
+        white-space: nowrap !important;
+    }
+</style>
     <!-- page-wrapper Start-->
     @include('paritials.auth.topmenu');
     <!-- Page Header Ends -->
@@ -65,14 +68,14 @@
 
                                     <thead>
                                         <tr>
-                                            <th data-field="image">Profile Pic</th>
-                                            <th data-field="storeinfo"> Store Information</th>
-                                            <th data-field="contactdetail" data-sortable="true">Contact Details</th>
-                                            {{-- <th data-field="empdetails" data-sortable="true"> Shop Details</th> --}}
-                                            <th data-field="package" data-sortable="true"> Package Information </th>
-                                            
-                                            <th data-field="documents" data-sortable="true">Business Information </th>
-                                            <th data-field="personal" data-sortable="true">Address </th>
+                                            <th data-field="sno" data-sortable="true">S.No.</th>
+                                            <th data-field="image">IMAGE</th>
+                                            <th data-field="shopdetails">SHOP DETAILS</th>
+                                            <th data-field="vendordetails" data-sortable="true">VENDOR DETAILS</th>
+                                            <th data-field="package" data-sortable="true">PACKAGE DETAILS</th>
+                                            <th data-field="business" data-sortable="true">BUSINESS DETAILS</th>
+                                            <th data-field="rm_sales" data-sortable="true">RM & SALES DETAILS</th>
+                                            <th data-field="address" data-sortable="true">SHOP ADDRESS</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -95,6 +98,11 @@
                                              
                                             @endphp
                                         <tr>
+                                            <td style="white-space: nowrap;">
+                                                <b>{{ str_pad($vendor_list->id, 4, '0', STR_PAD_LEFT) }}</b><br>
+                                                <span class="text-secondary">{{ $zoneLabel }}</span><br>
+                                                <span class="text-secondary">{{ $vendor_list->route }}</span>
+                                            </td>
                                             <td>
                                                 <div class="d-flex">
                                                     <img src="{{ asset('assets/images/vendor/profile') . '/' . $vendor_list->profile_image  }}"
@@ -102,68 +110,60 @@
                                                         class="img-fluid img-40 me-2 blur-up lazyloaded">
                                                 </div>
                                             </td>
-                                             <td><b>{{$vendor_list->shop_name}}</b> <br>
-
-                                                    <span>{{  str_pad($vendor_list->id, 4, '0', STR_PAD_LEFT) }}</span>
-                                              <br>
-
-                                                <span>{{ $zoneLabel . '/ ' . $vendor_list->route}}</span></br></td>
-
-                                            
-
-                                           
-                                            {{-- <td><span><b>{{$vendor_list->shop_name}}</b></span>
-                                                <br><span>{{$vendor_list->owner_name}}</span>
-                                                <br><span>{{$vendor_list->business_category }}</span>
-
-
-                                            </td> --}}
-                                            {{-- <td> <span><b>{{$vendor_list->username}}</b></span> --}}
-                                            <td> <span><b>{{$vendor_list->owner_name}}</b></span>
-
-                                                <br><span>{{$vendor_list->email }}</span><br>
-                                                 <span>+91</span> <span>{{$vendor_list->mobile_number1 }}</span><br>
+                                            <td style="white-space: nowrap;">
+                                                <b>{{$vendor_list->shop_name}}</b><br>
+                                                <span class="text-secondary">{{$vendor_list->owner_name}}</span><br>
+                                                <span class="text-secondary">{{$vendor_list->business_category}}</span>
                                             </td>
-
-                                             
+                                            <td style="white-space: nowrap;"> 
+                                                <span><b>{{$vendor_list->username ?? $vendor_list->owner_name}}</b></span><br>
+                                                <span>{{$vendor_list->email }}</span><br>
+                                                @if($vendor_list->mobile_number1)<span>+91 {{$vendor_list->mobile_number1 }}</span>@endif 
+                                                @if($vendor_list->mobile_number2)<span> / +91 {{$vendor_list->mobile_number2 }}</span>@endif
+                                            </td>
                                             
                                             @php 
-                                            $userlist=DB::table('packages as packages')
-                                    ->join('vendor_details  as vendor_details', 'vendor_details.package_id', '=', 'packages.id')->where('package_id',$vendor_list->package_id )->first();
+                                                $userlist=DB::table('packages as packages')
+                                                    ->join('vendor_details  as vendor_details', 'vendor_details.package_id', '=', 'packages.id')->where('package_id',$vendor_list->package_id )->first();
                                             @endphp
-                                            <td> 
-                                            <span><b> {{ $userlist->name ?? 'No Package' }}</b></span>
-                                                <br><span>Expired Date :  {{$vendor_list->expired_date }}</span>
-                                                <br><span>Grace Days :  {{$vendor_list->grace_days }}</span><br>
-                                                <span>Renewal Date :  {{$vendor_list->next_renewal_date }}</span>
+                                            <td style="white-space: nowrap;"> 
+                                                <span><b> {{ $userlist->name ?? 'No Package' }}</b></span><br>
+                                                <span>Partner since : {{ date('M d, Y', strtotime($vendor_list->created_at)) }}</span><br>
+                                                <span>Renewal Date : {{ $vendor_list->next_renewal_date ? date('M d, Y', strtotime($vendor_list->next_renewal_date)) : '' }}</span>
                                             </td>
-                                             
-                                             
-                                            <td><span> <div class="d-flex">
-                                                <img src="{{ asset('assets/images/vendor/gst') . '/' . $vendor_list->gst   }}"
-                                                    alt=""
-                                                    class="img-fluid img-40 me-2 blur-up lazyloaded">
-                                                    <img src="{{ asset('assets/images/vendor/other') . '/' . $vendor_list->other_documents   }}"
-                                                    alt=""
-                                                    class="img-fluid img-40 me-2 blur-up lazyloaded">
-                                            </div>
-                                           
-                                        </span><br>
-                                                <span>
-                                                    Aadhar_Number:{{ $vendor_list->aadhar_no  }}
-                                                </span><br>
-                                                <span>
-                                                    GST:{{ $vendor_list->gst_number }}
-                                                </span>
+                                            
+                                            @php
+                                                $in_stock = DB::table('products')->where('vendor_id', $vendor_list->id)->count();
+                                            @endphp
+                                            <td style="white-space: nowrap;">
+                                                <span>In-Stock : <b>{{ $in_stock }}</b></span><br>
+                                                <span>Viewers : <b>{{ $vendor_list->view_count ?? 0 }}</b></span>
                                             </td>
 
+                                            @php
+                                                $rm_staff = DB::table('staffother')->where('id', $vendor_list->staff_id)->first();
+                                                
+                                                $total_orders = DB::table('ecom_order_product')
+                                                    ->join('products', 'products.id', '=', 'ecom_order_product.product_id')
+                                                    ->where('products.vendor_id', $vendor_list->id)
+                                                    ->count();
+                                                    
+                                                $return_cancel = DB::table('ecom_order_product')
+                                                    ->join('products', 'products.id', '=', 'ecom_order_product.product_id')
+                                                    ->where('products.vendor_id', $vendor_list->id)
+                                                    ->whereIn('ecom_order_product.order_status', ['Returned', 'Cancelled', 'Canceled', 'Cancel'])
+                                                    ->count();
+                                            @endphp
+                                            <td style="white-space: nowrap;">
+                                                <span>RM : <b>{{ $rm_staff->fullname ?? ($rm_staff->username ?? 'N/A') }}</b></span><br>
+                                                <span>Total Orders : <b>{{ $total_orders }}</b></span><br>
+                                                <span>Return / Cancel : <b>{{ $return_cancel }}</b></span>
+                                            </td>
 
-
-                                            <td><span>{{ $vendor_list->address }}</span><br>
-                                                <span>{{ $vendor_list->address1 }} </span><br>
-                                                <span> {{ $vendor_list->city }}</span><Br>
-                                                    <span>  {{ $vendor_list->pincode  }} </span> <br>
-                                             {{-- <span> Zone / Route:  {{ $zoneLabel }} /  {{ $vendor_list->route}} </span> --}}
+                                            <td style="white-space: nowrap;">
+                                                <span>{{ $vendor_list->address }}</span><br>
+                                                <span>{{ $vendor_list->address1 }}</span><br>
+                                                <span>{{ $vendor_list->state }}, {{ $vendor_list->city }}, {{ $vendor_list->pincode }}</span>
                                             </td>
 
 

@@ -7,13 +7,13 @@
         </div>
     </div>
     <div class="sidebar custom-scrollbar mt-3">
-        <div class="sidebar-user text-center d-none">
+        <div class="sidebar-user text-center">
             <div>
                 <img class="img-60 rounded-circle lazyloaded blur-up"
-                    src="{{ asset('assets/images/dashboard/man.png') }}" alt="#">
+                    src="{{ asset('assets/images/dashboard/man.jpeg') }}" alt="#">
             </div>
-            <h6 class="mt-3 f-14">JOHN</h6>
-            <p>general manager.</p>
+            <h6 class="mt-3 f-14">{{ session()->get('log_name') ?? 'STAFF' }}</h6>
+            <p>{{ session()->get('log_type') ?? 'Staff' }}</p>
         </div>
         <ul class="sidebar-menu">
  
@@ -214,6 +214,29 @@ use Illuminate\Support\Facades\Session;
               @endif
               @endif
                 @endforeach
+
+              @php
+                  $staffid = session()->get('login_id');
+                  $staffDetails = App\Models\Staffcreates::where('employee_id', $staffid)->first();
+              @endphp
+              
+              @if($staffDetails)
+              <li class="mt-4 pb-4 px-3">
+                  <div class="d-flex align-items-center" style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 15px;">
+                      <div style="margin-right: 12px;">
+                          @if($staffDetails->profileimage && $staffDetails->profileimage != '-')
+                              <img class="rounded-circle lazyloaded blur-up" src="{{ asset('assets/images/staffcreate/' . $staffDetails->profileimage) }}" alt="Profile Image" style="object-fit: cover; width: 45px; height: 45px;">
+                          @else
+                              <img class="rounded-circle lazyloaded blur-up" src="{{ asset('assets/images/dashboard/man.jpeg') }}" alt="#" style="object-fit: cover; width: 45px; height: 45px;">
+                          @endif
+                      </div>
+                      <div class="text-start">
+                          <h6 class="mb-1 text-white" style="font-size: 13px; font-weight: 600; text-transform: uppercase;">{{ $staffDetails->fullname }}</h6>
+                          <p class="mb-0 text-white" style="font-size: 11px;"><i class="fa fa-phone me-1"></i>{{ $staffDetails->mobileno }}</p>
+                      </div>
+                  </div>
+              </li>
+              @endif
           </ul>
     </div>
 </div>

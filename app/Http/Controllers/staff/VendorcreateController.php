@@ -12,6 +12,11 @@ use App\Models\vendor\packages;
 use App\Models\vendor\vendorcreate;
 use App\Models\Route;
 use App\Models\Zonal;
+use App\Models\State;
+use App\Models\City;
+use App\Models\Category\CategoryMain;
+use App\Models\Category\Category;
+use App\Models\Staffcreates;
 use App\Helper\ImageUploadHelper\ImageUploadHelper;
 use Flasher\Prime\FlasherInterface;
 use DB;
@@ -31,18 +36,36 @@ class VendorcreateController extends Controller
     public function index()
     {
         $package = packages::All();
-        $route=Route::all();
-        $Zonal=Zonal::all();
+        $route = Route::all();
+        $Zonal = Zonal::all();
+        $State = State::all();
+        $City = City::all();
+        $CategoryMain = CategoryMain::where('status', 1)->select('id', 'category_main_name')->get();
+        $Category = Category::where('status', 1)->select('id', 'main_category_id', 'category_name')->get();
+        $CategorySub = DB::table('category_sub as t1')
+            ->join('category as t2', 't1.category_id', '=', 't2.id')
+            ->join('category_main as t3', 't1.category_main_id', '=', 't3.id')
+            ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
+            ->where('t1.status', 1)
+            ->get();
+        $staffs = Staffcreates::where('flag', 1)->get();
         return view('layout.staff.vendor.vendor-create')->with(
-        [
-                "package", $package,
+            [
+                "package",
+                $package,
                 "route" => $route,
-                "zone" =>$Zonal
-        ]
+                "zone" => $Zonal,
+                "State" => $State,
+                "City" => $City,
+                "CategoryMain" => $CategoryMain,
+                "Category" => $Category,
+                "CategorySub" => $CategorySub,
+                "staffs" => $staffs
+            ]
         );
     }
 
-     public function list()
+    public function list()
      {
         $vendorlist = vendorcreate::All();
        // return view('layout.admin.vendor.list')->with("vendorlist");
