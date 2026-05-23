@@ -69,6 +69,7 @@
                
                 
                 <th>Specifications</th> 
+                <th>Created By</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -112,6 +113,13 @@
                             }
                         }
                     @endphp
+                    </td>
+                    <td>
+                        @if ($group->created_by == 'Vendor')
+                            <span class="badge bg-warning text-dark">{{ $group->vendor_name ?? 'Vendor' }}</span>
+                        @else
+                            <span class="badge bg-success">Admin</span>
+                        @endif
                     </td>
                     <td>{{ $group->status }}</td>
                    

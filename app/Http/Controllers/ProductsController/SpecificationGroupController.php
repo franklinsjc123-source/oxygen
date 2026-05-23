@@ -17,7 +17,13 @@ class SpecificationGroupController extends Controller
 {
     public function index()
     {
-        $groups = SpecificationGroup::all();
+        $groups = SpecificationGroup::leftJoin('vendor_details', function ($join) {
+                $join->on('specification_group.created_byid', '=', 'vendor_details.id')
+                     ->where('specification_group.created_by', '=', 'Vendor');
+            })
+            ->select('specification_group.*', 'vendor_details.shop_name as vendor_name')
+            ->orderBy('specification_group.id', 'desc')
+            ->get();
         return view('layout.admin.specification_groups.index', compact('groups'));
     }
 

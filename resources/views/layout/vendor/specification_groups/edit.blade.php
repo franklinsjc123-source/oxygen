@@ -58,18 +58,17 @@
         @method('PUT')
         <div class="mb-3">
             <label for="specification_group_name" class="form-label">Group Name</label>
-            <input type="text" class="form-control" id="specification_group_name" name="specification_group_name" value="{{ $group->specification_group_name }}" required>
+            <input type="text" class="form-control" id="specification_group_name" name="specification_group_name" value="{{ $group->specification_group_name }}" {{ $group->created_by === 'Admin' ? 'readonly' : '' }} required>
         </div>
         <div class="mb-3">
             <label for="specification_group_refname" class="form-label">Reference Name</label>
-            <input type="text" class="form-control" id="specification_group_refname" name="specification_group_refname" value="{{ $group->specification_group_refname }}" required>
+            <input type="text" class="form-control" id="specification_group_refname" name="specification_group_refname" value="{{ $group->specification_group_refname }}" {{ $group->created_by === 'Admin' ? 'readonly' : '' }} required>
         </div>
         <div class="mb-3">
             <label class="form-label">Select Category</label>
             <div class="border p-3 rounded" style="max-height: 400px; overflow-y: auto;">
                 @php
-                    $selectedSubIds = explode(',', (string)($group->sub_category_ids ?? ''));
-                    $selectedSubIds = array_filter($selectedSubIds);
+                    $selectedSubIds = isset($vendorSelectedSubIds) ? $vendorSelectedSubIds : array_filter(explode(',', (string)($group->sub_category_ids ?? '')));
                 @endphp
                 @foreach ($CategoryMain as $main)
                     <div class="main-category-item mb-2">
@@ -115,11 +114,18 @@
         </div>
         <div class="mb-3">
             <label for="status" class="form-label">Status</label>
-            <select class="custom-select w-100 form-control"
-                name="status"  id="status" required>
-                <option value="1" {{ $group->status == 1 ? 'selected' : '' }}>Active</option>
-                <option value="0" {{ $group->status == 0 ? 'selected' : '' }}>Inactive</option>
-            </select>
+            @if ($group->created_by === 'Admin')
+                <input type="hidden" name="status" value="{{ $group->status }}">
+                <select class="custom-select w-100 form-control" disabled>
+                    <option value="1" {{ $group->status == 1 ? 'selected' : '' }}>Active</option>
+                    <option value="0" {{ $group->status == 0 ? 'selected' : '' }}>Inactive</option>
+                </select>
+            @else
+                <select class="custom-select w-100 form-control" name="status" id="status" required>
+                    <option value="1" {{ $group->status == 1 ? 'selected' : '' }}>Active</option>
+                    <option value="0" {{ $group->status == 0 ? 'selected' : '' }}>Inactive</option>
+                </select>
+            @endif
         </div>
         
         <button type="submit" class="btn btn-primary">Update</button>

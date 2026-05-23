@@ -67,6 +67,7 @@
                 <th>Name</th>
                 <th>Reference Name</th>
                 <th>Specifications</th> 
+                <th>Created By</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -111,6 +112,13 @@
                         }
                     @endphp
                     </td>
+                    <td>
+                        @if ($group->created_by == 'Vendor')
+                            <span class="badge bg-warning text-dark">Self</span>
+                        @else
+                            <span class="badge bg-success">Admin</span>
+                        @endif
+                    </td>
                     <td>{{ $group->status }}</td>
                    
                     <td>
@@ -126,6 +134,8 @@
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm" title="Delete">X</button>
                         </form>
+                    @elseif($group->created_by == 'Admin')
+                        <a href="{{ route('specification_groups.edit', $group->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i></a>
                     @endif
                     </td>
                 </tr>
