@@ -223,16 +223,16 @@ use Illuminate\Support\Facades\Session;
               @if($staffDetails)
               <li class="mt-4 pb-4 px-3">
                   <div class="d-flex align-items-center" style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 15px;">
-                      <div style="margin-right: 12px;">
+                      <div style="margin-right: 12px; flex-shrink: 0;">
                           @if($staffDetails->profileimage && $staffDetails->profileimage != '-')
-                              <img class="rounded-circle lazyloaded blur-up" src="{{ asset('assets/images/staffcreate/' . $staffDetails->profileimage) }}" alt="Profile Image" style="object-fit: cover; width: 45px; height: 45px;">
+                              <img class="rounded-circle lazyloaded blur-up" src="{{ asset('assets/images/staffcreate/' . $staffDetails->profileimage) }}" alt="RM" style="object-fit: cover; width: 30px; height: 30px; min-width: 30px;">
                           @else
-                              <img class="rounded-circle lazyloaded blur-up" src="{{ asset('assets/images/dashboard/man.jpeg') }}" alt="#" style="object-fit: cover; width: 45px; height: 45px;">
+                              <img class="rounded-circle lazyloaded blur-up" src="{{ asset('assets/images/dashboard/man.jpeg') }}" alt="RM" style="object-fit: cover; width: 30px; height: 30px; min-width: 30px;">
                           @endif
                       </div>
-                      <div class="text-start">
-                          <h6 class="mb-1 text-white" style="font-size: 13px; font-weight: 600; text-transform: uppercase;">{{ $staffDetails->fullname }}</h6>
-                          <p class="mb-0 text-white" style="font-size: 11px;"><i class="fa fa-phone me-1"></i>{{ $staffDetails->mobileno }}</p>
+                      <div class="text-start text-truncate">
+                          <h6 class="mb-1 text-white text-truncate" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">{{ $staffDetails->fullname }}</h6>
+                          <p class="mb-0 text-white text-truncate" style="font-size: 10px;"><i class="fa fa-phone me-1"></i>{{ $staffDetails->mobileno }}</p>
                       </div>
                   </div>
               </li>
