@@ -20,9 +20,13 @@
             <?php
 use Illuminate\Support\Facades\Session; 
             $roll= Session::get('roll');
-            // dd($roll);
-
-            $staffs = json_decode($roll[0]->permission_id);
+            $staffs = [];
+            if ($roll && count($roll) > 0 && !empty($roll[0]->permission_id)) {
+                $decoded = json_decode($roll[0]->permission_id, true);
+                if (is_array($decoded) || is_object($decoded)) {
+                    $staffs = $decoded;
+                }
+            }
            //  print_r($roll[0]->permission_id);
             // foreach($staffs as $x => $val) {
                 
@@ -33,7 +37,7 @@ use Illuminate\Support\Facades\Session;
                 @foreach ( $staffs as $key => $val)
                @if($val == 1)
                 
-                <li id="{{$val}}"><a class="sidebar-header" href="{{ url('dashboard') }}"><i
+                <li id="{{$val}}"><a class="sidebar-header" href="{{ route('staffdashboard', Session::get('login_id')) }}"><i
                     data-feather="home"></i><span>Dashboard</span></a></li>
          
             @elseif ($val ==2)             

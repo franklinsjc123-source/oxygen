@@ -70,11 +70,14 @@ class DashboardController extends Controller
 
         
        $Staffcreates    = Staffcreates::where('employee_id',$id )->get();
-         $department =  ($Staffcreates[0]->department);
-            $roll   =  Roll::where('roll', $department)->get();
-                //   $roll =  ($role[0]->permission_id);
-                    Session::put('roll', $roll);
-                //   $staffs = json_decode($roll->permission_id);
+       if ($Staffcreates->isEmpty()) {
+           return redirect()->route('stafflogin')->with('error', 'Staff details not found.');
+       }
+       $department =  ($Staffcreates[0]->department);
+       $roll   =  Roll::where('roll', $department)->get();
+       //   $roll =  ($role[0]->permission_id);
+       Session::put('roll', $roll);
+       //   $staffs = json_decode($roll->permission_id);
         //return ($roll);
         return view('layout.staff.dashboard.dashboard')->with([
             'vendorid' => $id,

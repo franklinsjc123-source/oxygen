@@ -38,6 +38,10 @@
         box-shadow: none !important;
     }
     
+    .pull-right {
+        float: right !important;
+    }
+    
     /* Ensure breadcrumb is visible and aligned in mobile view */
     @media only screen and (max-width: 767px) {
         .page-wrapper .page-body-wrapper .page-header .row .col {
