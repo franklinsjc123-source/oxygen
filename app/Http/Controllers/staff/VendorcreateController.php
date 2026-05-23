@@ -131,14 +131,23 @@ class VendorcreateController extends Controller
 
        
 
-        $profile_file = $request->profile_image;
-        $profilename = ImageUploadHelper::storeImage($profile_file, $this->PROFILE_IMAGE_PATH);
+        $profilename = '';
+        if ($request->hasFile('profile_image')) {
+            $profile_file = $request->profile_image;
+            $profilename = ImageUploadHelper::storeImage($profile_file, $this->PROFILE_IMAGE_PATH);
+        }
 
-        $gst_file = $request->gst;
-        $gst_file_name = ImageUploadHelper::storeImage($gst_file, $this->GST_IMAGE_PATH);
+        $gst_file_name = '';
+        if ($request->hasFile('gst')) {
+            $gst_file = $request->gst;
+            $gst_file_name = ImageUploadHelper::storeImage($gst_file, $this->GST_IMAGE_PATH);
+        }
 
-        $other_file = $request->other_documents;
-        $othername = ImageUploadHelper::storeImage($other_file, $this->OTHER_IMAGE_PATH);
+        $othername = '';
+        if ($request->hasFile('other_documents')) {
+            $other_file = $request->other_documents;
+            $othername = ImageUploadHelper::storeImage($other_file, $this->OTHER_IMAGE_PATH);
+        }
 
         try {
            /// $vendor->shop_name = $request->shop_name;
