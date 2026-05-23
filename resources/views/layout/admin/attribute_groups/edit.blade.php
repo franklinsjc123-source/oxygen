@@ -68,40 +68,45 @@
                     $selectedSubIds = array_filter($selectedSubIds);
                 @endphp
                 @foreach ($CategoryMain as $main)
-                    <div class="main-category-item mb-2">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input main-cat" 
-                                   id="main_{{ $main->id }}" 
-                                   data-main-id="{{ $main->id }}">
-                            <label class="form-check-label fw-bold" for="main_{{ $main->id }}">
-                                {{ $main->category_main_name }}
-                            </label>
+                    @php
+                        $categories = $Category->where('main_category_id', $main->id);
+                    @endphp
+                    @foreach ($categories as $cat)
+                        @php
+                            $subs = $CategorySub->where('category_id', $cat->id);
+                            if ($subs->isEmpty()) continue;
+                        @endphp
+                        <div class="category-group-item mb-3">
+                            <div class="form-check border-bottom pb-1 mb-2">
+                                <input type="checkbox" class="form-check-input group-cat mt-1" 
+                                       id="group_{{ $cat->id }}" 
+                                       data-category-id="{{ $cat->id }}">
+                                <label class="form-check-label fw-bold text-dark ms-2" for="group_{{ $cat->id }}">
+                                    {{ $main->category_main_name }} &rarr; {{ $cat->category_name }}
+                                </label>
+                            </div>
+                            <div class="sub-categories ms-4">
+                                @foreach ($subs as $sub)
+                                    <div class="form-check mb-1">
+                                        @php
+                                            $isChecked = in_array((string)$sub->id, $selectedSubIds);
+                                        @endphp
+                                        <input type="checkbox" class="form-check-input sub-cat mt-1" 
+                                               id="sub_{{ $sub->id }}" 
+                                               data-category-id="{{ $cat->id }}"
+                                               data-sub-id="{{ $sub->id }}"
+                                               data-sub-name="{{ $sub->category_sub_name }}"
+                                               data-main-name="{{ $main->category_main_name }}"
+                                               data-category-name="{{ $cat->category_name }}"
+                                               {{ $isChecked ? 'checked' : '' }}>
+                                        <label class="form-check-label text-secondary ms-2" for="sub_{{ $sub->id }}">
+                                            {{ $sub->category_sub_name }}
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
-                        <div class="sub-categories ms-4">
-                            @php
-                                $categories = $Category->where('main_category_id', $main->id);
-                            @endphp
-                            @foreach ($categories as $cat)
-                                <div class="form-check">
-                                    @php
-                                        $currentSubIds = $CategorySub->where('category_id', $cat->id)->pluck('id')->map(fn($id) => (string)$id)->toArray();
-                                        $isChecked = !empty(array_intersect($currentSubIds, $selectedSubIds));
-                                    @endphp
-                                    <input type="checkbox" class="form-check-input category-cat" 
-                                           id="category_{{ $cat->id }}" 
-                                           data-main-id="{{ $main->id }}" 
-                                           data-main-name="{{ $main->category_main_name }}"
-                                           data-category-id="{{ $cat->id }}"
-                                           data-category-name="{{ $cat->category_name }}"
-                                           data-sub-ids="{{ implode(',', $currentSubIds) }}"
-                                           {{ $isChecked ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="category_{{ $cat->id }}">
-                                        {{ $cat->category_name }}
-                                    </label>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
+                    @endforeach
                 @endforeach
             </div>
             <div id="selected_subcategory_inputs">
@@ -169,11 +174,11 @@
         <script>
             $(function() {
                 function syncParentStates() {
-                    $('.main-cat').each(function() {
-                        const mainId = $(this).data('main-id');
-                        const allCategories = $(`.category-cat[data-main-id="${mainId}"]`);
-                        const checkedCategories = allCategories.filter(':checked');
-                        $(this).prop('checked', allCategories.length > 0 && checkedCategories.length === allCategories.length);
+                    $('.group-cat').each(function() {
+                        const catId = $(this).data('category-id');
+                        const allSubs = $(`.sub-cat[data-category-id="${catId}"]`);
+                        const checkedSubs = allSubs.filter(':checked');
+                        $(this).prop('checked', allSubs.length > 0 && checkedSubs.length === allSubs.length);
                     });
                 }
 
@@ -185,30 +190,28 @@
                     $inputs.append('<input type="hidden" name="sub_category_ids_csv" id="sub_category_ids_csv" value="">');
 
                     const subIds = new Set();
-                    $('.category-cat:checked').each(function() {
+                    $('.sub-cat:checked').each(function() {
                         const mainName = $(this).data('main-name');
                         const categoryName = $(this).data('category-name');
-                        const rawSubIds = ($(this).data('sub-ids') || '').toString();
-                        if (rawSubIds.length > 0) {
-                            rawSubIds.split(',').forEach(id => {
-                                if (id) subIds.add(id);
-                            });
-                        }
-                        $tags.append(`<span class="badge bg-light text-dark border">${mainName} | ${categoryName}</span>`);
+                        const subName = $(this).data('sub-name');
+                        const subId = $(this).data('sub-id');
+                        
+                        subIds.add(subId);
+                        $tags.append(`<span class="badge bg-light text-dark border">${mainName} &rarr; ${categoryName} &rarr; ${subName}</span>`);
                     });
 
                     $('#sub_category_ids_csv').val(Array.from(subIds).join(','));
                 }
 
-                $(document).on('change', '.main-cat', function() {
-                    const mainId = $(this).data('main-id');
+                $(document).on('change', '.group-cat', function() {
+                    const catId = $(this).data('category-id');
                     const checked = $(this).is(':checked');
-                    $(`.category-cat[data-main-id="${mainId}"]`).prop('checked', checked);
+                    $(`.sub-cat[data-category-id="${catId}"]`).prop('checked', checked);
                     syncParentStates();
                     renderSelections();
                 });
 
-                $(document).on('change', '.category-cat', function() {
+                $(document).on('change', '.sub-cat', function() {
                     syncParentStates();
                     renderSelections();
                 });
