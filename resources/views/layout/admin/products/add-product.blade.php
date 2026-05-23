@@ -155,7 +155,7 @@
                                     <div class="card-body">
                                         <div class="col-md-12">
                                             <div class="row">
-												<div class="col-md-6">
+                                                <div class="col-md-3">
                                                     <div class="form-group">
                                                         <h5 class="fw-bold">Vendor</h5>
                                                         <div id="clothing">
@@ -198,11 +198,35 @@
                                                         <h5 class="fw-bold">Sub Category</h5>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="category_sub"
-                                                                id="sub_category" disabled required>
+                                                                id="sub_category_initial_vendor" disabled required>
                                                                 <option selected  value="">Select
                                                                     Category
                                                                 </option>
                                                                
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <h5 class="fw-bold">Attribute</h5>
+                                                        <div id="clothing">
+                                                            <select class="js-select2 form-control" name="selected_attribute_id"
+                                                                id="attribute_group_initial_vendor" disabled required>
+                                                                <option selected value="">Select Attribute</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <h5 class="fw-bold">Is Color Available?</h5>
+                                                        <div id="clothing">
+                                                            <select class="form-control" name="is_color" id="is_color" required>
+                                                                <option value="yes" selected>Yes</option>
+                                                                <option value="no">No</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -341,9 +365,11 @@
         </div>
         @endif
         @if(@$addinformation)
-        <form action="{{ route('products.crud.store') }}" method="post" enctype="multipart/form-data" onsubmit="return confirm('Are you sure, you want to Save it?')"
-        >
+        <form action="{{ route('products.crud.store') }}" method="post" enctype="multipart/form-data">
             @csrf
+            @if(!empty($selectedAttributeId))
+                <input type="hidden" name="selected_attribute_id" value="{{ $selectedAttributeId }}">
+            @endif
             
             <div class="container-fluid fcolor">
                 <div class="row product-adding">
@@ -426,10 +452,36 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
+                                                        <h5 class="fw-bold">Attribute</h5>
+                                                        <div id="clothing">
+                                                            <select class="js-select2 form-control" name="selected_attribute_id1"
+                                                                id="selected_attribute_summary" disabled required>
+                                                                @foreach ($attribute as $attr)
+                                                                    <option value="{{ $attr->id }}" {{ (@$selectedAttributeId == $attr->id) ? 'selected' : '' }}>
+                                                                        {{ $attr->attribute_group_refname }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <h5 class="fw-bold">Color Available?</h5>
+                                                        <div id="clothing">
+                                                            <select class="form-control" name="is_color_summary" id="is_color_summary" disabled required>
+                                                                <option value="yes" {{(@$is_color=="yes")?'Selected':'';}}>Yes</option>
+                                                                <option value="no" {{(@$is_color=="no")?'Selected':'';}}>No</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
                                                         <h5 class="fw-bold">No.of Products</h5>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="nproduct1"
-                                                                id="sub_category" disabled required>
+                                                                id="nproduct_summary" disabled required>
 
                                                                 <option value="1" {{(@$nproduct=="1")?'Selected':'';}}> 1</option>
                                                                 <option value="2" {{(@$nproduct=="2")?'Selected':'';}}>2</option>
@@ -446,8 +498,11 @@
                                                 <input type="hidden" name="category_sub" value="{{@$subcategoryid}}">
                                                 <input type="hidden" name="nproduct" value="{{@$nproduct}}">
                                                 <input type="hidden" name="vendorid" value="{{@$vendorid}}">
-                                                <div class="col-md-3">
-                                                    <a href="{{ url('admin/products_crud') }}" class="btn btn-warning"> Clear </a>
+                                                <input type="hidden" name="is_color" value="{{@$is_color}}">
+                                                <div class="col-md-3 d-flex align-items-end">
+                                                    <div class="form-group w-100">
+                                                        <a href="{{ url('admin/products_crud') }}" class="btn btn-warning w-100 fw-bold py-2 mb-1"> CLEAR </a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -604,18 +659,23 @@
                                 <div id="productinfo{{ $i }}">
                                     <hr>
                                     <div class="row">
-                                    <div class="form-group col-md-3">
-                                            <label> Color </label>
+                                        @if(@$is_color != 'no')
+                                        <div class="form-group col-md-3">
+                                                <label><span
+                                                                            class="text-danger">*</span> Color </label>
+                                                <input type="hidden" name="attributecolorname[{{ $i }}][]" value="Color">
+                                                <select class="form-select form-select-lg text-secondary attrcolor{{ $i }}"
+                                                    name="attributecolorval[{{ $i }}][]" id="attrcolor{{ $i }}" required>
+                                                    <option selected value='' hidden> --Select Color--</option>
+                                                    @foreach( $colors as $color)
+                                                    <option value='{{ $color->color_name }}' style="background-color: {{ $color->color_code }}"> {{ $color->color_name }} </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        @else
                                             <input type="hidden" name="attributecolorname[{{ $i }}][]" value="Color">
-                                            <select class="form-select form-select-lg text-secondary attrcolor{{ $i }}"
-                                                name="attributecolorval[{{ $i }}][]" id="attrcolor{{ $i }}" required>
-                                                <option selected value='' hidden> --Select Color--</option>
-                                                @foreach( $colors as $color)
-                                                <option value='{{ $color->color_name }}' style="background-color: {{ $color->color_code }}"> {{ $color->color_name }} </option>
-                                                @endforeach
-                                                <option value='Multicolor'> Multicolor </option>
-                                            </select>
-                                        </div>
+                                            <input type="hidden" name="attributecolorval[{{ $i }}][]" value="Multicolor">
+                                        @endif
                                         @php $j=0; @endphp
                                         @foreach ($attribute as $attri)
                                         @php
@@ -624,11 +684,12 @@
 
                                         @endphp
                                         <div class="form-group col-md-3">
-                                            <label> {{ $attri->attribute_group_name}} </label>
-                                            <input type="hidden" name="attributename[{{ $i }}][{{ $j }}][]" value="{{ $attri->attribute_group_name}}">
+                                            <label><span
+                                                                        class="text-danger">*</span> {{ $attri->attribute_group_refname}} </label>
+                                            <input type="hidden" name="attributename[{{ $i }}][{{ $j }}][]" value="{{ $attri->attribute_group_refname}}">
                                             <select class="form-select form-select-lg text-secondary attrsize"
                                                 name="attributeval[{{ $i }}][{{ $j }}][]" id="attrsize" required>
-                                                <option selected value='' hidden> --Select {{ $attri->attribute_group_name}}--</option>
+                                                <option selected value='' hidden> --Select {{ $attri->attribute_group_refname}}--</option>
                                                 @foreach( $attri_val as $attval)
                                                 <option value='{{ $attval }}'> {{ $attval }}</option>
                                                 @endforeach
@@ -641,24 +702,28 @@
                                     </div>
                                     <div class="row">
                                         <div class="form-group col-md-3">
-                                            <label> MRP</label>
-                                            <input type="text" name="retail_price[{{ $i }}][]"
+                                            <label><span
+                                                                        class="text-danger">*</span> MRP</label>
+                                            <input type="number" name="retail_price[{{ $i }}][]"
                                                 placeholder="Retail Price" class="form-control" required>
                                         </div>
 
                                         <div class="form-group col-md-3">
-                                            <label> Selling Price</label>
-                                            <input type="text" name="selling_price[{{ $i }}][]"
+                                            <label><span
+                                                                        class="text-danger">*</span> Selling Price</label>
+                                            <input type="number" name="selling_price[{{ $i }}][]"
                                                 placeholder="Selling Price" class="form-control" required>
                                         </div>
 
                                         <div class="form-group col-md-3">
-                                            <label> Quantity</label>
+                                            <label><span
+                                                                        class="text-danger">*</span> Quantity</label>
                                             <input type="number" class="form-control"
                                                 placeholder="Qty" name="quantity[{{ $i }}][]" required>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label> Low Stock Limit</label>
+                                            <label><span
+                                                                        class="text-danger">*</span> Low Stock Limit</label>
                                             <input type="number" id="low_stock_limit" name="low_stock_limit[{{ $i }}][]"
                                                 placeholder="Low Stock Limit" class="form-control" required>
                                         </div>
@@ -920,10 +985,14 @@
 
         $('#category_main').val(main_category_id);
 
+        const $sub = $('#sub_category_initial_vendor');
+        const $attribute = $('#attribute_group_initial_vendor');
+
         if (!category_id) {
-            $('#sub_category').empty().append(
+            $sub.empty().append(
                 `<option value="" selected hidden>Select Category</option>`
             ).attr('disabled', true);
+            $attribute.empty().append('<option selected value="">Select Attribute</option>').prop('disabled', true);
             return;
         }
 
@@ -932,18 +1001,67 @@
         getAjaxValue(url, method, function(data) {
             $('#attrsize').empty();
             $('#attrcolor').empty();
-            $('#sub_category').empty();
-            $('#sub_category').append(
+            $sub.empty();
+            $attribute.empty().append('<option selected value="">Select Attribute</option>').prop('disabled', true);
+
+            $sub.append(
                 `<option value=""selected hidden>Select Sub Category</option>`
             );
             $.each(data, function(key, subCategory) {
-                $('#sub_category').append(
+                $sub.append(
                     `<option id="${subCategory.id}"  value="${subCategory.id}">${subCategory.category_sub_name}</option>`
                 );
             });
 
-            $('#sub_category').removeAttr('disabled');
+            $sub.removeAttr('disabled');
         });
+    });
+
+    $('#sub_category_initial_vendor').on('change', function() {
+        const subCategoryId = $(this).val();
+        const vendorId = $('#vendorlist').val() || 0;
+        const $attribute = $('#attribute_group_initial_vendor');
+
+        $attribute.empty().append('<option selected value="">Select Attribute</option>');
+        if (!subCategoryId) {
+            $attribute.prop('disabled', true);
+            $attribute.prop('required', false);
+            return;
+        }
+
+        $.ajax({
+            url: "{{ route('admin.getSubCategoryAttributes') }}",
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                sub_category_id: subCategoryId,
+                vendor_id: vendorId
+            },
+            success: function(data) {
+                if (Array.isArray(data) && data.length > 0) {
+                    data.forEach(function(attr) {
+                        $attribute.append('<option value="' + attr.id + '">' + attr.attribute_group_refname + '</option>');
+                    });
+                    $attribute.prop('disabled', false);
+                    $attribute.prop('required', true);
+                } else {
+                    $attribute.append('<option value="">No attributes available</option>');
+                    $attribute.prop('disabled', true);
+                    $attribute.prop('required', false);
+                }
+            },
+            error: function() {
+                $attribute.append('<option value="">Unable to load attributes</option>');
+                $attribute.prop('disabled', true);
+                $attribute.prop('required', false);
+            }
+        });
+    });
+
+    $('#vendorlist').on('change', function() {
+        if ($('#sub_category_initial_vendor').val()) {
+            $('#sub_category_initial_vendor').trigger('change');
+        }
     });
 
     $(document).ready(function() {

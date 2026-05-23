@@ -158,8 +158,14 @@ class ProductsController extends Controller
         }
         $specification = $specQuery->get();
 
-       
-       
+        $selectedAttributeId = (int) ($request->selected_attribute_id ?? 0);
+
+        if ($selectedAttributeId > 0 && $attribute->isNotEmpty()) {
+            $attribute = $attribute->where('id', $selectedAttributeId)->values();
+        } elseif ($attribute->count() === 1) {
+            $selectedAttributeId = (int) ($attribute->first()->id ?? 0);
+        }
+
        
         //dd($login_id);
         return view('layout.admin.products.add-product')
@@ -176,6 +182,8 @@ class ProductsController extends Controller
                 "maincategoryid"=>$selected_main_category_id,                
                 "categoryid"=>$request->category,                
                 "subcategoryid"=>$request->category_sub,                             
+                "selectedAttributeId" => $selectedAttributeId,
+                "is_color" => $request->is_color,
                 "nproduct"=>$request->nproduct,
                 "vendorid"=>$vendorId,
                 "category_data"=>$category_data,
@@ -197,6 +205,7 @@ class ProductsController extends Controller
                 "categoryid"=>$request->category,                
                 "subcategoryid"=>$request->category_sub,                             
                 "nproduct"=>$request->nproduct,
+                "is_color" => $request->is_color,
                  "attribute" => collect(),
                  "productcollection" => $productcollection,
                  "specification" => $specification,
@@ -205,6 +214,50 @@ class ProductsController extends Controller
             ]);
         }
     }
+    public function getSubCategoryAttributes(Request $request)
+    {
+        $subCategoryId = (int) ($request->sub_category_id ?? 0);
+        $vendorId = (int) ($request->vendor_id ?? 0);
+
+        if ($subCategoryId <= 0) {
+            return response()->json([]);
+        }
+
+        $category_sub = CategorySub::find($subCategoryId);
+        if (!$category_sub) {
+            return response()->json([]);
+        }
+
+        $attbutesdata = $category_sub->category_sub_attributes != '' ? explode(',', $category_sub->category_sub_attributes) : [];        
+        $attbutesdata = array_values(array_filter(array_map('intval', $attbutesdata)));
+
+        $mappingQuery = DB::table('sub_category_mapping')->where('sub_category_id', $subCategoryId);
+        if ($vendorId > 0) {
+            $mappingQuery->where('vendor_id', $vendorId);
+        }
+        $mapping = $mappingQuery->first();
+        
+        if (!$mapping && $vendorId > 0) {
+             $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $subCategoryId)->first();
+        }
+
+        if ($mapping) {
+            $mappedAttributes = $mapping->category_sub_attribute_ids
+                ? array_values(array_filter(array_map('intval', json_decode($mapping->category_sub_attribute_ids, true) ?: [])))
+                : [];
+            $attbutesdata = array_values(array_unique(array_merge($attbutesdata, $mappedAttributes)));
+        }
+
+        $attributeQuery = AttributeGroup::query()->whereIn('id', $attbutesdata);
+        if ($vendorId > 0) {
+            $attributeQuery->whereIn('created_byid', [1, $vendorId]);
+        }
+        
+        $attributes = $attributeQuery->orderBy('attribute_group_name', 'asc')->get(['id', 'attribute_group_name', 'attribute_group_refname']);
+
+        return response()->json($attributes);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

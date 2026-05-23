@@ -197,6 +197,7 @@ Route::get('get-attribute', [AttributeController::class, 'getAttributes'])->name
 Route::post('adminsearchdetails', [AttributeController::class, 'adminsearchdetails'])->name('adminsearchdetails');
 Route::get('get-spec-value', [SpecificationController::class, 'getSpecValue'])->name('getSpecValue');
 Route::get('get-specification', [SpecificationController::class, 'getSpecifications'])->name('getSpecifications');
+Route::get('get-subcategory-attributes', [ProductsController::class, 'getSubCategoryAttributes'])->name('admin.getSubCategoryAttributes');
 Route::get('get_product_details', [ProductsController::class, 'getProductDetails'])->name('getProductDetails');
 Route::get('get_zonal', [MasterController::class, 'getZonalById'])->name('getZonal');
 Route::get('get_route', [MasterController::class, 'getrouteById'])->name('getroute');
