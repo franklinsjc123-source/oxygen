@@ -195,7 +195,7 @@ class StaffController extends Controller
         $Zonal=Zonal::all();
         $staff = Staffcreates::find($id);
         $department = Departments::where('status', 1)->get(); 
-        $designation = designation::where('status', 1)->get(); 
+        $designation = designation::where('status', 1)->where('department', $staff->department)->get(); 
 
         return view('layout.admin.staff.staff-edit')
         ->with(

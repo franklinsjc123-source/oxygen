@@ -44,6 +44,14 @@ class StaffRoleController extends Controller
         'submenus' => 'required|array',
     ]);
 
+    $exists = StaffRole::where('department', $request->department)
+        ->where('designation', $request->designation)
+        ->exists();
+
+    if ($exists) {
+        return redirect()->back()->with('error', 'A role mapping for this Department and Designation already exists!')->withInput();
+    }
+
     // Insert into the staff_roles table
     StaffRole::create([
         'department' => $request->department,
@@ -75,6 +83,15 @@ public function update(Request $request, $id)
         'mainmenus' => 'required|array',
         'submenus' => 'required|array',
     ]);
+
+    $exists = StaffRole::where('department', $request->department)
+        ->where('designation', $request->designation)
+        ->where('id', '!=', $id)
+        ->exists();
+
+    if ($exists) {
+        return redirect()->back()->with('error', 'A role mapping for this Department and Designation already exists!')->withInput();
+    }
 
     // Update staff role
     $role = StaffRole::find($id);

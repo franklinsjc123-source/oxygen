@@ -132,18 +132,11 @@
 											<div class="col-xl-8 col-md-8">
 
 
-											<select class="custom-select w-100 form-control" id="department" name="department" value="{{$staff->department}}" required="true">
-																{{-- <option value="">--Select--</option> --}}
-																 {{-- <option  value="{{$staff->department}}" selected>{{$staff->department}}</option>  --}}
-																			
+											<select class="custom-select w-100 form-control" id="department" name="department" required="true">
+																<option value="">--Select--</option>
 																@foreach ($department as $item)
-																<option hidden value="{{$staff->department}}" {{  ($staff->department == $item->id) ? 'selected' : ''}} >{{$item->name}}</option>
-																<option  value="{{$item->id}}">{{$item->name}}</option>
+																<option value="{{$item->id}}" {{  ($staff->department == $item->id) ? 'selected' : ''}} >{{$item->name}}</option>
 																@endforeach
-																
-																{{-- <option value="Sales Executive">Sales Executive</option> --}}
-																
-																
 															</select>
 											
 											</div>
@@ -154,11 +147,10 @@
 											<label for="validationCustom01" class="col-xl-4 col-md-4">Desgination:</label>
 											<div class="col-xl-8 col-md-8">
 												<select class="custom-select w-100 form-control" id="designation" name="designation"  required="true">
-																{{-- <option value="">--Select--</option> --}}
+																<option value="">--Select--</option>
 																@foreach ($designation as $item1)
-																<option  value="{{$staff->designation}}"   {{  ($staff->designation == $item1->id) ? 'selected' : ''}}>{{$item1->designation}}</option>															
-																<option value="{{$item1->id}}"   >{{$item1->name}}</option>
-																@endforeach															
+																<option value="{{$item1->id}}" {{  ($staff->designation == $item1->id) ? 'selected' : ''}}>{{$item1->designation}}</option>
+																@endforeach
 												</select>
 											</div>
 										</div>
