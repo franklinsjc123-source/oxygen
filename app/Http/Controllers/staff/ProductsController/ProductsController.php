@@ -1,31 +1,37 @@
 <?php
 namespace App\Http\Controllers\staff\ProductsController;
-use App\Models\vendor\Products\Products as vendorproducts;
-use App\Models\vendor\Products\ProductsDetails as vendorProductsDetails;
-use App\Models\vendor\Products\productcollection as vendorproductcollection;; 
-
+use App\Exports\ProductList;
 use App\Helper\ImageUploadHelper\ImageUploadHelper;
 use App\Http\Controllers\Controller;
-use App\Models\Category\CategoryMain;
-use App\Models\Products\Products;
-use Flasher\Prime\FlasherInterface;
-use Illuminate\Http\Request;
-use App\Models\Products\productcollection;
+
 use App\Models\Category\Category;
+use App\Models\Category\CategoryMain;
 use App\Models\Category\CategorySub;
 use App\Models\Master\Attribute\Attribute;
 use App\Models\Master\GST\GST;
 use App\Models\Master\Specification\Specification;
-use App\Models\Products\ProductsDetails;
-use App\Models\Products\ProductsSpecs;
-use App\Models\Products\ProductSpecs;
-use App\Models\Products\productsAttri;
-use App\Models\vendor\vendorcreate;
 use App\Models\Offer\Offer;
-use session;
-use DB;
-use Illuminate\Support\Facades\DB as FacadesDB;
+use App\Models\Products\productcollection;
+use App\Models\Products\Products;
+use App\Models\Products\productsAttri;
+use App\Models\Products\ProductsDetails;
+use App\Models\Products\ProductSpecs;
+use App\Models\Products\ProductsSpecs;
+use App\Models\vendor\Products\productcollection as vendorproductcollection;; 
+use App\Models\vendor\Products\Products as vendorproducts;
+use App\Models\vendor\Products\ProductsDetails as vendorProductsDetails;
+use App\Models\vendor\vendorcreate;
+use App\Models\Master\Colors\ProductColor;
+use App\Models\Master\Attribute\AttributeGroup;
+use App\Models\Master\Specification\SpecificationGroup;
+use Flasher\Prime\FlasherInterface;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Intervention\Image\ImageManagerStatic as Image;
+use Maatwebsite\Excel\Facades\Excel;
+use session;
+
 
 class ProductsController extends Controller
 {
@@ -36,27 +42,220 @@ class ProductsController extends Controller
     /**
      * Display a listing of the resource.
      *
+     *
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        $category_main_data = CategoryMain::get();
-        $gst = GST::get();
-        $attribute = Attribute::get();
-        $specification = Specification::get();
-        $productcollection = productcollection::get();
-        $offer = offer::get();
-        $login_id = session()->get('login_id');
+    {  
+        $category_main_data = CategoryMain::where('status', 1)->get();
+        $category_data_all = Category::join('category_main', 'category.main_category_id', '=', 'category_main.id')
+            ->where('category.status', 1)
+            ->where('category_main.status', 1)
+            ->select(
+                'category.id',
+                'category.main_category_id',
+                'category.category_name',
+                'category_main.category_main_name'
+            )
+            ->orderBy('category_main.category_main_name')
+            ->orderBy('category.category_name')
+            ->get();
+        $vendorlist = vendorcreate::All();
+        $gst = GST::where('status', 1)->get();
+           $login_id = session()->get('login_id');
+        $attribute = Attribute::where('status', 1)->get();
+        $specification = Specification::where('status', 49)->get();
+        $productcollection = productcollection::select('name', DB::raw('GROUP_CONCAT(id) as ids'))
+        ->where('status', 1)
+        ->groupBy('name')
+        ->get();
+
+        //dd($productcollection);
+        $offer = Offer::where('status', 1)
+            
+        //     select('type', DB::raw('GROUP_CONCAT(id) as ids'))
+        
+        // ->groupBy('type')
+        ->get();
+        
+        
+     
         //dd($login_id);
         return view('layout.staff.products.add-product')
             ->with([
                 "category_main_data" => $category_main_data,
+                "category_data_all" => $category_data_all,
                 "gst" => $gst,
                 "attribute" => $attribute,
                 "productcollection" => $productcollection,
                 "specification" => $specification,
-                "offers" => $offer
+                "offers" => $offer,
+                "vendorlist"=>$vendorlist
             ]);
+    }
+    public function addinfo(Request $request)
+    { 
+        $category_main_data = CategoryMain::where('status', 1)->get();
+        $category_data_all = Category::join('category_main', 'category.main_category_id', '=', 'category_main.id')
+            ->where('category.status', 1)
+            ->where('category_main.status', 1)
+            ->select(
+                'category.id',
+                'category.main_category_id',
+                'category.category_name',
+                'category_main.category_main_name'
+            )
+            ->orderBy('category_main.category_main_name')
+            ->orderBy('category.category_name')
+            ->get();
+        $vendorlist = vendorcreate::All(); 
+        $selected_main_category_id = $request->category_main;
+        if (empty($selected_main_category_id) && !empty($request->category)) {
+            $selected_main_category_id = Category::where('id', $request->category)->value('main_category_id');
+        }
+        $category_data = Category::where('main_category_id', $selected_main_category_id)->get();
+        $category_sub_data = CategorySub::where('category_id', $request->category)->get();
+        $category_sub = CategorySub::where('id', $request->category_sub)->first();
+        $gst = GST::where('status', 1)->get();
+        $productcollection = productcollection::select('name', DB::raw('GROUP_CONCAT(id) as ids'))
+        ->where('status', 1)
+        ->groupBy('name')
+        ->get();
+        $colors = ProductColor::all();
+        //dd($colors);
+        $offer = Offer::where('status', 1)
+        ->get();
+        if($category_sub && $category_sub->category_sub_attributes!='')
+        {
+        $attbutesdata=explode(',',$category_sub->category_sub_attributes);        
+        $specdata=explode(',',$category_sub->category_sub_specifications);
+        $attbutesdata = array_values(array_filter(array_map('intval', $attbutesdata)));
+        $specdata = array_values(array_filter(array_map('intval', $specdata)));
+        $vendorId = (int) $request->vendorlist;
+
+        $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $request->category_sub)->first();
+        if ($mapping) {
+            $mappedAttributes = $mapping->category_sub_attribute_ids
+                ? array_values(array_filter(array_map('intval', json_decode($mapping->category_sub_attribute_ids, true) ?: [])))
+                : [];
+            $mappedSpecifications = $mapping->category_sub_specification_ids
+                ? array_values(array_filter(array_map('intval', json_decode($mapping->category_sub_specification_ids, true) ?: [])))
+                : [];
+
+            $attbutesdata = array_values(array_unique(array_merge($attbutesdata, $mappedAttributes)));
+            $specdata = array_values(array_unique(array_merge($specdata, $mappedSpecifications)));
+        }
+
+        $attributeQuery = AttributeGroup::query()->whereIn('id', $attbutesdata);
+        if ($vendorId > 0) {
+            $attributeQuery->whereIn('created_byid', [1, $vendorId]);
+        }
+        $attribute = $attributeQuery->get();
+
+        $specQuery = SpecificationGroup::query()->whereIn('id', $specdata);
+        if ($vendorId > 0) {
+            $specQuery->whereIn('created_byid', [1, $vendorId]);
+        }
+        $specification = $specQuery->get();
+
+        $selectedAttributeId = (int) ($request->selected_attribute_id ?? 0);
+
+        if ($selectedAttributeId > 0 && $attribute->isNotEmpty()) {
+            $attribute = $attribute->where('id', $selectedAttributeId)->values();
+        } elseif ($attribute->count() === 1) {
+            $selectedAttributeId = (int) ($attribute->first()->id ?? 0);
+        }
+
+       
+        //dd($login_id);
+        return view('layout.staff.products.add-product')
+            ->with([
+                "category_main_data" => $category_main_data,
+                "category_data_all" => $category_data_all,
+                "gst" => $gst,
+                "colors" => $colors,
+                "attribute" => $attribute,
+                "productcollection" => $productcollection,
+                "specification" => $specification,
+                "offers" => $offer,
+                "addinformation"=>"Add",
+                "maincategoryid"=>$selected_main_category_id,                
+                "categoryid"=>$request->category,                
+                "subcategoryid"=>$request->category_sub,                             
+                "selectedAttributeId" => $selectedAttributeId,
+                "is_color" => $request->is_color,
+                "nproduct"=>$request->nproduct,
+                "vendorid"=>$vendorId,
+                "category_data"=>$category_data,
+                "category_sub_data"=>$category_sub_data,
+                "vendorlist"=>$vendorlist
+            ]);
+        }
+        else
+        {
+            
+        $specification = collect();
+        return view('layout.staff.products.add-product')
+            ->with([
+                "category_main_data" => $category_main_data,
+                "category_data_all" => $category_data_all,
+                "category_data"=>$category_data,
+                "category_sub_data"=>$category_sub_data,
+                "maincategoryid"=>$selected_main_category_id,                
+                "categoryid"=>$request->category,                
+                "subcategoryid"=>$request->category_sub,                             
+                "nproduct"=>$request->nproduct,
+                "is_color" => $request->is_color,
+                 "attribute" => collect(),
+                 "productcollection" => $productcollection,
+                 "specification" => $specification,
+                "vendorlist"=>$vendorlist,
+                "error"=>"Attributes & Specifications Not Assign in this Sub Category.",
+            ]);
+        }
+    }
+    public function getSubCategoryAttributes(Request $request)
+    {
+        $subCategoryId = (int) ($request->sub_category_id ?? 0);
+        $vendorId = (int) ($request->vendor_id ?? 0);
+
+        if ($subCategoryId <= 0) {
+            return response()->json([]);
+        }
+
+        $category_sub = CategorySub::find($subCategoryId);
+        if (!$category_sub) {
+            return response()->json([]);
+        }
+
+        $attbutesdata = $category_sub->category_sub_attributes != '' ? explode(',', $category_sub->category_sub_attributes) : [];        
+        $attbutesdata = array_values(array_filter(array_map('intval', $attbutesdata)));
+
+        $mappingQuery = DB::table('sub_category_mapping')->where('sub_category_id', $subCategoryId);
+        if ($vendorId > 0) {
+            $mappingQuery->where('vendor_id', $vendorId);
+        }
+        $mapping = $mappingQuery->first();
+        
+        if (!$mapping && $vendorId > 0) {
+             $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $subCategoryId)->first();
+        }
+
+        if ($mapping) {
+            $mappedAttributes = $mapping->category_sub_attribute_ids
+                ? array_values(array_filter(array_map('intval', json_decode($mapping->category_sub_attribute_ids, true) ?: [])))
+                : [];
+            $attbutesdata = array_values(array_unique(array_merge($attbutesdata, $mappedAttributes)));
+        }
+
+        $attributeQuery = AttributeGroup::query()->whereIn('id', $attbutesdata);
+        if ($vendorId > 0) {
+            $attributeQuery->whereIn('created_byid', [1, $vendorId]);
+        }
+        
+        $attributes = $attributeQuery->orderBy('attribute_group_name', 'asc')->get(['id', 'attribute_group_name', 'attribute_group_refname']);
+
+        return response()->json($attributes);
     }
 
     /**
@@ -77,7 +276,74 @@ class ProductsController extends Controller
      */
 
 
+    //  public function store(Request $request, FlasherInterface $flasher)
+    //  {
+    //     $products = new Products();
+
+    //     // print_r($products);
+    //     $file = $request->mainImage;
+    //     // $file1 = $request->galleryImages;
+
+    //     if ($file !== null) $filename = ImageUploadHelper::storeImage($file, $this->image_path1);
+    //     // if ($file1 !== null) $filename1 = ImageUploadHelper::storeImage($file1, $this->image_path1);
+
+    //     $statement = DB::select("SHOW TABLE STATUS LIKE 'products'");
+    //     $next_product_id = $statement[0]->Auto_increment;
+    //     //   print_r($next_product_id);exit();
+    //    try {
+            
+    //         $products->product_id = $next_product_id;
+	// 		$products->category = $request->category;
+    //         $products->category_main = $request->category_main;
+    //         $products->category_sub = $request->category_sub;
+    //         $products->product_name = $request->product_name;
+    //         $products->tax_id = $request->tax_id;
+    //         $products->gst_id = $request->gst_id;
+
+    //         $products->product_image = $filename ?? "-";
+    //         // $products->product_gallery_image = $filename1 ?? "-";
+    //         $products->description = $request->description;
+    //         $products->weight = $request->weight;
+    //         $products->length = $request->length;
+    //         $products->width = $request->width;
+    //         $products->height = $request->height;
+
+    //         $products->offers = $request->offer;
+    //         $products->collection = $request->collection;
+    //         $products->flag = 0;
+    //         $products->status = $request->status ?? 1;
+    //         $products->created_by = "1";
+    //         // echo $query;exit();
+    //         if( $products->save()){
+    //             $np = count($request->nproducts);
+    //             echo $np;exit();
+                
+    //             for ($key = 0; $key < $np; $key++) {
+    //             $products_details = new ProductsDetails();
+    //             $products_details->products_id = $next_product_id;
+    //              $products_details->retail_price = $request->retail_price[$key];
+    //             $products_details->save();
+    //             // dd($products_details);
+    //             exit();
+    //             // echo($query1);exit();
+    //             }
+                
+
+    //         //    echo $products_details->products_id = $request->retail_price;
+
+    //         }
+
+
+    //         $flasher->addSuccess('New Product Added successfully!');
+    //         return redirect()->route('staffproducts.crud.listing');
+    //    } catch (\Throwable $th) {
     
+    //         $flasher->addError('Something Error!!');
+    //         return redirect()->route('staffproducts.crud.index');
+    //    }
+
+    
+    //  }
 
      
     public function store(Request $request, FlasherInterface $flasher)
@@ -86,51 +352,31 @@ class ProductsController extends Controller
         // echo 'test';
          $products = new Products();
         // print_r($products);
-        $login_id = session()->get('login_id');
+        $login_id = session()->get('login_id');//Auth::user()->id; // 
         //dd($login_id);
-        $statement = FacadesDB::select("SHOW TABLE STATUS LIKE 'products'");
+        $statement = DB::select("SHOW TABLE STATUS LIKE 'products'");
         $next_product_id = $statement[0]->Auto_increment;
         // // dd($request->specification);
 
         $products = new Products();
         $filename = '';
-        // if (isset($request->mainImage)) {
-        //     $file = $request->mainImage;
-
-        //     if ($file !== null) {
-        //         $filename = ImageUploadHelper::storeImage($file, $this->main_image_path);
-        //     }
-        // }
-
-
-
-        if($request->file('mainImage'))
-        {   
-            $category_image = $request->file('mainImage');
+       
+        if ($request->file('mainImage')) {   
+            $main_image = $request->file('mainImage');
             
-            $image = $next_product_id."_image.".$category_image->getClientOriginalExtension();
+            $image = $next_product_id . "_image." . $main_image->getClientOriginalExtension();
             
-            $img = Image::make($category_image->getRealPath());
+            $img = Image::make($main_image->getRealPath());
+            $image_path = "assets/images/products/";
+            $img->fit(800, 900)->save($image_path . '/' . $image);
             
-            $img->resize(500, 300, function ($constraint) {
-                
-                $constraint->aspectRatio();
-                
-            })->save($this->main_image_path.'/'.$image);
-            
-            
-            
-            $filename =  $image;
+            $filename = $image;
         }
-        else
-        {
-            $filename ="";
-        }
-
-
-
+         
             $products->login_id   =  $login_id; 
+           
             $products->product_id = $next_product_id;
+            $products->vendor_id   = $request->vendorid;
 			$products->category = $request->category;
             $products->category_main = $request->category_main;
             $products->category_sub = $request->category_sub;
@@ -147,175 +393,112 @@ class ProductsController extends Controller
 
             $products->offers = $request->offers;
             $products->collection = $request->collection;
-            $products->flag = 0;
+            $products->flag = 1;
             $products->status = $request->status ?? 1;
 			
-			$products->logintype = "Staff";
+			$products->logintype = "Admin";
             $products->created_by =$login_id;
+            //dd($products);
             $products->save();
-           
-
-
-                  // Loop for product details
+            //
+                
                   
-                  $np = count($request->product_details_id);
+                  $np = $request->nproduct;
           
            
-            for ($key = 0; $key < $np; $key++) {
-                $products_details = new ProductsDetails();                
+            for ($i = 1; $i <= $np; $i++) {
+                        
 
                 $arr=[];
 
-                if (isset($request->mainimg[$key])) {
-
-                   // $products_details_file = $request->nproducts[$key]; 
-                   $products_details_filename  = '';
-                   $products_details_filename1 = '';
-                   $products_details_filename2 = '';
-                   $products_details_filename3 = '';
-                   
-                    $products_details_file = $request->mainimg[$key];
-                    $products_details_file1 = isset($request->subimg1[$key]) ? $request->subimg1[$key]: NULL;
-                    $products_details_file2 = isset($request->subimg2[$key]) ? $request->subimg2[$key]: NULL;
-                    $products_details_file3 = isset($request->subimg3[$key]) ? $request->subimg3[$key]: NULL;
-
-                    if ($products_details_file !=null) {
-                      $products_details_filename = $next_product_id.'.'.time().'.'.$products_details_file->getClientOriginalName();
-                      //dd($products_details_filename);
-                      //$products_details_file->move('assets/images/products/detail', $products_details_filename);       
-                        $img = Image::make($products_details_file->getRealPath());
-                
-                        $img->resize(500, 300, function ($constraint) {
-                            
-                            $constraint->aspectRatio();
-                            
-                        })->save('assets/images/products/detail'.'/'.$products_details_filename);
-                        
-                        
-                        
-                        $filename =  $products_details_filename;
-
-                      }  
-                    
-                    if ($products_details_file1 != null) {
-                        $products_details_filename1 = $next_product_id.'.'.$products_details_file1->getClientOriginalName();
-                       // $products_details_file1->move('assets/images/products/detail', $products_details_filename1);       
-                       $img = Image::make($products_details_file1->getRealPath());
-                
-                       $img->resize(500, 300, function ($constraint) {
-
-                           
-                           $constraint->aspectRatio();
-                           
-                       })->save('assets/images/products/detail'.'/'.$products_details_filename1);
-                       
-                       
-                       
-                       $filename =  $products_details_filename1;
-                      }
-                      
-                    if ($products_details_file2 != null) {
-                        $products_details_filename2 = $next_product_id.'.'.$products_details_file2->getClientOriginalName();
-                        // $products_details_file2->move('assets/images/products/detail', $products_details_file2);       
-                        $img = Image::make($products_details_file2->getRealPath());
-                
-                        $img->resize(500, 300, function ($constraint) {
-                            
-                            $constraint->aspectRatio();
-                            
-                        })->save('assets/images/products/detail'.'/'.$products_details_filename2);
-                        
-                        
-                        
-                        $filename =  $products_details_filename2;
-                      }
-
-                    if ($products_details_file3 != null) {
-                        $products_details_filename3 = $next_product_id.'.'.$products_details_file3->getClientOriginalName();
-                       // $products_details_file3->move('assets/images/products/detail', $products_details_filename3);       
-                       $products_details_filename3 = $next_product_id.'.'.$products_details_file2->getClientOriginalName();
-                       // $products_details_file2->move('assets/images/products/detail', $products_details_file2);       
-                       $img = Image::make($products_details_file3->getRealPath());
-               
-                       $img->resize(500, 300, function ($constraint) {
-                           
-                           $constraint->aspectRatio();
-                           
-                       })->save('assets/images/products/detail'.'/'.$products_details_filename3);
-                       
-                       
-                       
-                       $filename =  $products_details_filename3;
-                      }
-
-                    array_push($arr,$products_details_filename,$products_details_filename1,$products_details_filename2,$products_details_filename3);
-                } 
+                $request->validate([
+                    'imageUpload.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust validation as needed
+                ]);
             
+              
             
-                // dd($arr);
+                if ($request->hasFile('imageUpload'.$i)) {
+                    $images = $request->file('imageUpload'.$i);
+                    $image_path = "assets/images/products/detail/";
             
+                    foreach ($images as $index => $sub_image) {
+                        // Create a unique image name
+                        $imageName = $next_product_id . '_p' . $i . '_' . time() . '_' . $index . '_' . $sub_image->getClientOriginalName();
+                        
+                        // Resize and save the image
+                        $img = Image::make($sub_image->getRealPath());
+                        $img->fit(800, 900)->save($image_path . $imageName);
+                        
+                        // Add the image path to the array
+                        $arr[] = $imageName;
+                    }
+                }
+            
+                // Convert the array to JSON
+                $np1 = count($request->retail_price[$i]);
+                $ac=$request->attributecount;
+                for($k=0;$k<$np1;$k++)
+                {
+                $products_details = new ProductsDetails();       
                 $products_details->products_id = $next_product_id;
+                $products_details->common_product=$i;
                 $products_details->product_detail_image = json_encode($arr) ?? "-";
-                // $products_details->attributevalue1 = isset($request->attributeDetails1[$key]) ? $request->attributeDetails1[$key] : '';
-                // $products_details->attributename1 = isset($request->attributename1[$key]) ? $request->attributename1[$key] : '';
-                // $products_details->attributevalue2 = isset($request->attributeDetails2[$key]) ? $request->attributeDetails2[$key] : '';
-                // $products_details->attributename2 = isset($request->attributename2[$key]) ? $request->attributename2[$key] : '';
-                // $products_details->attributevalue3 = isset($request->attributeDetails3[$key]) ? $request->attributeDetails3[$key] : '';
-                // $products_details->attributename3 = isset($request->attributename3[$key]) ? $request->attributename3[$key] : '';
+                $products_details->sku = $request->sku[$i];
+                $products_details->return_replace = $request->return_replace[$i] ?? 1;
+                $products_details->r_days = $request->r_days[$i];
+               
                 
-                $products_details->color = isset($request->attrcolor[$key]) ? $request->attrcolor[$key] : NULL;
-                $products_details->size = isset($request->attrsize[$key]) ? $request->attrsize[$key] : NULL;
-                                // $products_details->size = $request->attrsize[$key];
-                $products_details->quantity = $request->quantity[$key];
-                //dd($key);
-                $products_details->retail_price = $request->retail_price[$key];
-                $products_details->selling_price = $request->selling_price[$key];
-                $products_details->sku = $request->sku[$key];
-                $products_details->return_replace = $request->return_replace[$key] ?? 'Return';
-                $products_details->r_days = $request->r_days[$key];
-                $products_details->low_stock_limit = $request->low_stock_limit[$key];
-                //$products_details->threshold = $request->threshold[$key];
+                $products_details->attributevalue1 = isset($request->attributecolorval[$i][$k]) ? $request->attributecolorval[$i][$k] : '';
+                $products_details->attributename1 = isset($request->attributecolorname[$i][$k]) ? $request->attributecolorname[$i][$k] : 'Color';
+                $products_details->attributevalue2 = isset($request->attributeval[$i][0][$k]) ? $request->attributeval[$i][0][$k] : '';
+                $products_details->attributename2 = isset($request->attributename[$i][0][$k]) ? $request->attributename[$i][0] [$k]: '';
+                $products_details->attributevalue3 = isset($request->attributeval[$i][1][$k]) ? $request->attributeval[$i][1][$k] : '';
+                $products_details->attributename3 = isset($request->attributename[$i][1][$k]) ? $request->attributename[$i][1][$k] : '';
+                
 
-                $products_details->save();
+                //$products_details->color = isset($request->attrcolor[$k]) ? $request->attrcolor[$k] : NULL;
+                //$products_details->size = isset($request->attrsize[$k]) ? $request->attrsize[$k] : NULL;
+                                
+                $products_details->quantity = $request->quantity[$i][$k];
                 
+                $products_details->retail_price = $request->retail_price[$i][$k];
+                $products_details->selling_price = $request->selling_price[$i][$k];
+              
+                $products_details->low_stock_limit = $request->low_stock_limit[$i][$k];
+               
+                $products_details->threshold = "";
+                // dd($products_details);
+                $products_details->save();
+                }
+               
             }
            
            
-                if(isset($request->specify_attribute)){
+                
+                 if(isset($request->spec_id)){
 
             
-                    foreach ($request->specify_attribute as $key => $value) {
+                    foreach($request->spec_id as $key => $value) {
 
                         $products_spec = new ProductSpecs();
         
                         $products_spec->products_id = $next_product_id;
                         $products_spec->category_sub_id = $request->category_sub;
-                        $products_spec->specify_attribute = $request->specify_attribute[$key];
-                        $products_spec->specify_value = $request->specify_value[$key];
+                        $products_spec->spec_id = $value;
+                        $products_spec->specify_attribute = $request->specify_attribute[$value];
+                        $products_spec->specify_value = $request->specify_value[$value];
+                       // dd($products_spec);
                         $products_spec->save();
                     }	
                
                 }
-                if(isset($request->specify_attri)){
-
-                    foreach($request->specify_attri as $k=>$v){
-                        $productsAttri = new productsAttri();
-                        $productsAttri->products_id = $next_product_id;
-                        $productsAttri->category_sub_id = $request->category_sub;
-                        $productsAttri->spec_attribute = $request->specify_attri[$k];
-                        $productsAttri->spec_value = $request->atttibute_value[$k];
-                        $productsAttri->flag = 0;
-                        $productsAttri->status = $request->status ?? 1;
-                        $productsAttri->created_by = $login_id;
-                        $productsAttri->save();
-                   }
-                }
+                
             $flasher->addSuccess('New Product Added successfully!');
-            return redirect()->route('products.crud.listing');
+            return redirect()->route('staffproducts.crud.listing');
         // } catch (\Throwable $th) {
         // print_r($th);exit();
             $flasher->addError('Something Error!!');
-            return redirect()->route('products.crud.index');
+            return redirect()->route('staffproducts.crud.index');
         // }
     }
 
@@ -348,11 +531,43 @@ class ProductsController extends Controller
         $CategorySub = CategorySub::get();
         
         $gst = GST::get();
-        $attribute = Attribute::where('category_sub_id', $category_sub)->get();
-       // print_r($attribute);exit();
         $offer = offer::get();
-        $specification = Specification::where('category_sub_id', $category_sub)->get();
-        $specifi = Specification::get();
+
+        $subCategoryId = (int) ($products->category_sub ?? $category_sub);
+        $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $subCategoryId)->first();
+        $attributeIds = [];
+        $specificationIds = [];
+
+        if ($mapping) {
+            $attributeIds = $mapping->category_sub_attribute_ids
+                ? (json_decode($mapping->category_sub_attribute_ids, true) ?: [])
+                : [];
+            $specificationIds = $mapping->category_sub_specification_ids
+                ? (json_decode($mapping->category_sub_specification_ids, true) ?: [])
+                : [];
+        } else {
+            $subCategory = CategorySub::find($subCategoryId);
+            if ($subCategory) {
+                if (!empty($subCategory->category_sub_attributes)) {
+                    $attributeIds = explode(',', $subCategory->category_sub_attributes);
+                }
+                if (!empty($subCategory->category_sub_specifications)) {
+                    $specificationIds = explode(',', $subCategory->category_sub_specifications);
+                }
+            }
+        }
+
+        $attributeIds = array_values(array_filter(array_map('intval', $attributeIds)));
+        $specificationIds = array_values(array_filter(array_map('intval', $specificationIds)));
+
+        $attribute = !empty($attributeIds)
+            ? AttributeGroup::whereIn('id', $attributeIds)->get()
+            : collect();
+
+        $specification = !empty($specificationIds)
+            ? SpecificationGroup::whereIn('id', $specificationIds)->get()
+            : collect();
+
         $productdetails = ProductsDetails::where('products_id', $id)->get();        
         $productspecs = ProductSpecs::where('products_id', $id)->get();
         $productsAttri = productsAttri::where('products_id', $id)->get();
@@ -424,7 +639,6 @@ class ProductsController extends Controller
                 "offers" => $offer,
                 "attribute" => $attribute,
                 "specification" => $specification,
-                "specifi" => $specifi,
                 "productspecs"=> $productspecs,
                 "productdetailss"=>$productdetails,
                 "cates" =>$cate,
@@ -434,7 +648,7 @@ class ProductsController extends Controller
     
         } catch(\Throwable $th) {
             $flasher->addError('Something Error!');
-            return redirect()->route('products.crud.listing');
+            return redirect()->route('staffproducts.crud.listing');
         }
     }
 
@@ -450,50 +664,20 @@ class ProductsController extends Controller
 
         try{
         //
-         $login_id = session()->get('login_id');
+        $login_id = session()->get('login_id');
          $Products = Products::find($id);
-         //dd($Products->product_id);
-         //$input = $request->all();
-         //print_r($input);exit;
-         //$login_id = session()->get('login_id');
-         // return ($Products);
+         
          $filename = '';
     
-            // if(isset($request->mainImage))
-            // {
-            //     $file = $request->mainImage;
-            //     if ($file !== null) {
-            //     $filename = ImageUploadHelper::storeImage($file, $this->main_image_path);
-            //     }
-            // }else{
-            //     $filename = $request->oldmainImage;
-            // }
-
-
-            if($request->file('mainImage'))
-            {   
-                $category_image = $request->file('mainImage');
-                
-                $image = $Products->product_id."_image.".$category_image->getClientOriginalExtension();
-                
-                $img = Image::make($category_image->getRealPath());
-                
-                $img->resize(500, 300, function ($constraint) {
-                    
-                    $constraint->aspectRatio();
-                    
-                })->save($this->main_image_path.'/'.$image);
-                
-                
-                
-                $filename =  $image;
-            }
-            else
+            if(isset($request->mainImage))
             {
-                $filename =$request->oldmainImage;
+                $file = $request->mainImage;
+                if ($file !== null) {
+                $filename = ImageUploadHelper::storeImage($file, $this->main_image_path);
+                }
+            }else{
+                $filename = $request->oldmainImage;
             }
-
-
         $Products->login_id = $login_id ;
         $Products->category = $request->input('category');
         $Products->category_main = $request->input('category_main');
@@ -625,7 +809,6 @@ class ProductsController extends Controller
     
                         array_push($prarr,$products_details_filename,$products_details_filename1,$products_details_filename2,$products_details_filename3);
                    // } 
-                  // dd($prarr);
                    $products_details->product_detail_image = json_encode($prarr) ?? "-";
 
                 
@@ -648,65 +831,27 @@ class ProductsController extends Controller
                     
                     if ($products_details_file !=null) {
                       $newproducts_details_filename = time().'.'.$products_details_file->getClientOriginalName().'.'.$pr_id;
-                      $img = Image::make($products_details_file->getRealPath());
-                    
-                            $img->resize(500, 300, function ($constraint) {
-                                
-                                $constraint->aspectRatio();
-                                
-                            })->save('assets/images/products/detail'.'/'.$products_details_filename);
-                            
-                            $filename =  $products_details_filename;
-
-                    //   $products_details_file->move('assets/images/products/detail', $newproducts_details_filename);       
+                      $products_details_file->move('assets/images/products/detail', $newproducts_details_filename);       
                       }  
                     
                     if ($products_details_file1 != null) {
                         $newproducts_details_filename1 = $products_details_file1->getClientOriginalName().'.'.$pr_id;
-                        $img = Image::make($products_details_file1->getRealPath());
-                    
-                            $img->resize(500, 300, function ($constraint) {
-                                
-                                $constraint->aspectRatio();
-                                
-                            })->save('assets/images/products/detail'.'/'.$products_details_filename1);
-                            
-                            $filename =  $products_details_filename1;
-                        // $products_details_file1->move('assets/images/products/detail', $newproducts_details_filename1);       
+                        $products_details_file1->move('assets/images/products/detail', $newproducts_details_filename1);       
                       }
                       
                     if ($products_details_file2 != null) {
                         $newproducts_details_filename2 = $products_details_file2->getClientOriginalName().'.'.$pr_id;
-                        $img = Image::make($products_details_file2->getRealPath());
-                    
-                            $img->resize(500, 300, function ($constraint) {
-                                
-                                $constraint->aspectRatio();
-                                
-                            })->save('assets/images/products/detail'.'/'.$products_details_filename2);
-                            
-                            $filename =  $products_details_filename2;
-                        // $products_details_file2->move('assets/images/products/detail', $products_details_file2);       
+                        $products_details_file2->move('assets/images/products/detail', $products_details_file2);       
                       }
 
                     if ($products_details_file3 != null) {
                         $newproducts_details_filename3 = $products_details_file3->getClientOriginalName().'.'.$pr_id;
-                        $img = Image::make($products_details_file3->getRealPath());
-                    
-                            $img->resize(500, 300, function ($constraint) {
-                                
-                                $constraint->aspectRatio();
-                                
-                            })->save('assets/images/products/detail'.'/'.$products_details_filename3);
-                            
-                            $filename =  $products_details_filename3;
-                        // $products_details_file3->move('assets/images/products/detail', $newproducts_details_filename3);       
+                        $products_details_file3->move('assets/images/products/detail', $newproducts_details_filename3);       
                       }
 
                     array_push($nprarr,$newproducts_details_filename,$newproducts_details_filename1,$newproducts_details_filename2,$newproducts_details_filename3);
                 // } 
                 $products_details->product_detail_image = json_encode($nprarr) ?? "-";
-               //dd($products_details->product_detail_image);
                 $products_details->products_id = $id;
              
                 }
@@ -718,96 +863,77 @@ class ProductsController extends Controller
                 $products_details->retail_price = $request->retail_price[$key];
                 $products_details->selling_price = $request->selling_price[$key];
                 $products_details->sku = $request->sku[$key];
-                $products_details->return_replace = $request->return_replace[$key] ?? 'Return';
+                $products_details->return_replace = $request->return_replace[$key] ?? 1;
                 $products_details->r_days = $request->r_days[$key];
                 $products_details->low_stock_limit = $request->low_stock_limit[$key];
                 //$products_details->threshold = $request->threshold[$key];
-
+                $products_details->login_id =$login_id;
+                $products_details->logintype = "Admin";
+                $products_details->created_by =$login_id;
                 $products_details->save();
             // }
             }            
         }
 
 
-
-        
-            if(isset($request->speci_value)){
-             // spec_value
-             // dd($request->all());
-             //print_r($request->speci_value);exit;
+            if(isset($request->spec_id)){
+             
                 $ischanged= false;
                 
-                 foreach ($request->speci_value as $key => $value)                
+                 foreach ($request->spec_id as $key => $value)                
                 {  
-                    // echo $key;
-                    // echo $value;
-                    // exit();
-                   
-                    if(!is_null($request->speci_value[$key])){
+                    
+                    if($request->spec_id){
                         
-                        $ischanged= true;
-                        //     $products_spec = new ProductSpecs();
-
-                        //     $products_spec->products_id = $id;
-                        //     $products_spec->category_sub_id = $request->category_sub;
-
-                        //    $products_spec->specify_attribute = $request->speci_value[$key];
-                        //    $products_spec->specify_value = $request->spec_value[$key];
-                        //    $products_spec->update();
+                       $ischanged= true;
+                        $products_spec = ProductSpecs::where('products_id',$id)->delete();
+                            foreach ($request->spec_id as $key => $value)  {  
+                            $products_spec = new ProductSpecs();
+            
+                            $products_spec->products_id = $id;
+                            $products_spec->spec_id = $value;
+                            $products_spec->category_sub_id = $request->category_sub;
+                        
+                            $products_spec->specify_attribute = $request->specify_attribute[$value] ?? null;
+                            
+                            $products_spec->specify_value = $request->specify_value[$value] ?? null;
+                            
+                            $products_spec->save();
+                        
+                        }
                     }
-                    if($ischanged){
-                        $ischanged= true;
-                        $products_spec = new ProductSpecs();
-        
-                        $products_spec->products_id = $id;
-                        $products_spec->category_sub_id = $request->category_sub;
-                       
-                        $products_spec->specify_attribute = $request->speci_value[$key];
-                        $products_spec->specify_value = $request->speci_value[$key];
-                        $products_spec->update();
-                       // $products_spec = ProductSpecs::where('products_id',$id)->delete();
-                        // foreach ($request->spec_value as $key => $value) {
-                        // $products_spec = new ProductSpecs();
-    
-                        // $products_spec->products_id = $id;
-                        // $products_spec->category_sub_id = $request->category_sub;
-                        // $products_spec->specify_attribute = $request->spec_value[$key];
-                        // $products_spec->specify_value = $request->specify_value[$key];
-                        // $products_spec->save();
-                        // }
-                    }                   
-                }	
-               
                
 
-                //print_r($request->specify_attribute);exit();    
-                //  ProductSpecs::where("products_id", $id)->delete();
-
-                        //     foreach ($request->specify_attribute as $key => $value) {
-                        //         // echo $key;
-                        //         // echo $key;
-                        //         // exit();
-                            
-                        //         //dd($request->all());
-                        //         // dd($products_spec);
-                            
-                        //         // echo $value;
-                        //         // echo $key;exit();
-                        //         // $products_spec = new ProductSpecs();
-                        //         // print_r($products_spec);exit();
-                        //         //print_r($products_spec);exit();
-                        //        // $products_spec->products_id = $next_product_id;
-                            
-                        //      $products_spec->category_sub_id = $request->category_sub;
-
-                        //       $products_spec->specify_attribute = $request->specify_attribute[$key];
-                        //       $products_spec->specify_value = $request->specify_value[$key];
-                        //    //  print_r($products_spec);exit();
-                        //   //  dd($products_spec);
-                        //       $products_spec->save();
-                        //     }	
+               	
                 
              }
+        
+            // if(isset($request->speci_value)){
+             
+            //     $ischanged= false;
+                
+            //      foreach ($request->speci_value as $key => $value)               
+            //     {  
+            //         if(!is_null($request->speci_value[$key])){
+                        
+            //             $ischanged= true;
+                       
+            //         }
+            //         if($ischanged){
+            //             $ischanged= true;
+            //             $products_spec = new ProductSpecs();
+        
+            //             $products_spec->products_id = $id;
+            //             $products_spec->category_sub_id = $request->category_sub;
+                       
+            //           $products_spec->specify_attribute = $request->speci_value[$key];
+            //           $products_spec->specify_value = $request->speci_value[$key];
+            //             $products_spec->update();
+                      
+            //         }                   
+            //     }	
+                
+              }
            // print_r($request->specify_attri);exit();
              if(isset($request->specify_attri)){
                 
@@ -852,11 +978,11 @@ class ProductsController extends Controller
             }
 
             $flasher->addSuccess('Product Updated successfully!');
-            return redirect()->route('products.crud.listing');
+            return redirect()->route('staffproducts.crud.listing');
            
         } catch(\Throwable $th) {
             $flasher->addError('Something Error!');
-            return redirect()->route('products.crud.listing');
+            return redirect()->route('staffproducts.crud.listing');
         }
         // print_r($category);exit;
 
@@ -898,10 +1024,10 @@ class ProductsController extends Controller
             ProductSpecs::where("products_id", $id)->delete();
         }
             $flasher->addsuccess('Product Removed!');
-            return redirect()->route('products.crud.listing');
+            return redirect()->route('staffproducts.crud.listing');
         } catch(Throwable $th) {
             $flasher->addError('Something Error!');
-            return redirect()->route('products.crud.listing');
+            return redirect()->route('staffproducts.crud.listing');
         }
 		
     }
@@ -939,10 +1065,10 @@ class ProductsController extends Controller
         }
 
             $flasher->addsuccess('Product Removed!');
-            return redirect()->route('vendor_products.crud.listing', $vendor_id);
+            return redirect()->route('staffvendor_products.crud.listing', $vendor_id);
         } catch(Throwable $th) {
             $flasher->addError('Something Error!');
-            return redirect()->route('vendor_products.crud.listing', $vendor_id);
+            return redirect()->route('staffvendor_products.crud.listing', $vendor_id);
         }
 		
     }
@@ -952,15 +1078,15 @@ class ProductsController extends Controller
     public function listing()
     {
         //return'rgdrf';
-        $products_list = Products::where('logintype', "Admin")->get();
-         $categorySub = CategorySub::get();
+        $products_list = Products::where('flag',1)->get();
+         $categorySub = CategorySub::where('status',1)->get();
          $products_details = ProductsDetails::get();
         // $offer = offer::get();
-        $offer = offer::get();
+        $offer = offer::where('status',1)->get();
 
-        $productDetailsCount = Products::select(FacadesDB::raw('COUNT(products.id) as product_details_cnt'))
+        $productDetailsCount = Products::select(DB::raw('COUNT(products.id) as product_details_cnt'))
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
-			->where('products.logintype', "Admin")
+			  ->where('products.flag',1)
             ->groupBy('products.id')
             ->get();
 
@@ -1014,15 +1140,19 @@ class ProductsController extends Controller
     public function vendorlisting()
     {
        //return'rgdrf';
-        $products_list = Products::where('logintype', "Vendor")->get();
-         $categorySub = CategorySub::get();
+        $products_list = Products::where('logintype', "Vendor")->where('flag',1)->get();
+        
+         $categorySub = CategorySub::where('status',1)->get();
+         
          $products_details = ProductsDetails::get();
+         
         // $offer = offer::get();
-        $offer = offer::get();
+        $offer = offer::where('status',1)->get();
 		
-        $productDetailsCount = Products::select(FacadesDB::raw('COUNT(products.id) as vendor_product_details_cnt'))
+        $productDetailsCount = Products::select(DB::raw('COUNT(products.id) as vendor_product_details_cnt'))
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
 			->where('products.logintype', "Vendor")
+		    ->where('products.flag',1)
             ->groupBy('products.id')
             ->get();
 
@@ -1060,7 +1190,7 @@ class ProductsController extends Controller
         // }
         // print_r($ar);exit();
 
-
+        // dd($products_list_arr);
 
         return view("layout.staff.products.vendor_product-listing")->with(
             [
@@ -1084,21 +1214,31 @@ class ProductsController extends Controller
     public function updateProductDetails(Request $request, FlasherInterface $flasher)
     {
 
-        $UpdateProductDetails = ProductsDetails::where("products_id", "=", $request->product_id)->get();
+       
         try {
-            foreach ($UpdateProductDetails as $key => $value) {
-                $UpdateProductDetails[$key]->attributevalue1 = $request->attributevalue1[$key];
-                $UpdateProductDetails[$key]->attributevalue2 = $request->attributevalue2[$key];
-                $UpdateProductDetails[$key]->quantity = $request->quantity[$key];
-                $UpdateProductDetails[$key]->retail_price = $request->retail_price[$key];
-                $UpdateProductDetails[$key]->save();
-            }
+            $productIds = $request->input('prodt_id');
+    $quantities = $request->input('quantity');
+    $lowStockLimits = $request->input('low_stock_limit');
+    $retailPrices = $request->input('retail_price');
+    $sellingPrices = $request->input('selling_price');
+    $productId = $request->input('product_id');
 
+    // Loop through each product and update
+    foreach ($productIds as $index => $id) {
+        ProductsDetails::where('id', $id)->update([
+            'quantity' => $quantities[$index],
+            'retail_price' => $retailPrices[$index],
+            'selling_price' => $sellingPrices[$index],
+            'low_stock_limit' => $lowStockLimits[$index],
+            'updated_at' => now(), // Assuming you want to update the timestamp
+        ]);
+    }
             $flasher->addSuccess('Product Details Updated successfully!');
-            return redirect()->route('products.crud.listing');
-        } catch (\Throwable $th) {
+            return redirect()->route('staffproducts.crud.listing');
+        } 
+        catch (\Throwable $th) {
             $flasher->addError('Something Error!!');
-            return redirect()->route('products.crud.listing');
+            return redirect()->route('staffproducts.crud.listing');
         }
     }
     public function getsubproductdetails(Request $request){
@@ -1261,4 +1401,164 @@ class ProductsController extends Controller
         return response()->json('msg:success');
        //return redirect()->back();
     }
+    
+    /*Export Product report*/
+    public function get_Product_data()
+    {
+        return Excel::download(new ProductList, 'productreport.xlsx');
+    }
+    /*End*/
+    
+    /* Product bulk Delete */
+    public function productbulkdelete(Request $request)
+    {
+
+        // dd($request->all());
+
+    //   echo 'test';   
+      $sts = $request->sts;
+
+          $ids = $request->ids;
+          $id = explode(",",$ids);
+         // print_r( $id );
+    //   $sts = $request->sts;
+    foreach($id as $idr)
+    {
+        Products::where('id',$idr)->update(['flag'=>$sts,'status'=>$sts]);
+        // ProductsDetails::where('id',$id)->update(['status'=>$sts]);
+    //   DB::table("ordersproduct")->whereIn('id',$idr)->update(['order_status'=>$sts]);
+    }
+    
+      return response()->json(['success'=>"Products Updated successfully."]);
+
+    }
+
+    /* Active Product */
+
+    /* Product bulk active */
+    public function productbulkactive(Request $request)
+    {
+
+        // dd($request->all());
+
+    //   echo 'test';   
+      $sts = $request->sts;
+
+          $ids = $request->ids;
+          $id = explode(",",$ids);
+         // print_r( $id );
+    //   $sts = $request->sts;
+    foreach($id as $idr)
+    {
+        Products::where('id',$idr)->update(['status'=>$sts]);
+        // ProductsDetails::where('id',$id)->update(['status'=>$sts]);
+    //   DB::table("ordersproduct")->whereIn('id',$idr)->update(['order_status'=>$sts]);
+    }
+    
+      return response()->json(['success'=>"Products Updated successfully."]);
+
+    }
+    /*End*/
+
+    /* Product bulk deactive */
+    public function productbulkdeactive(Request $request)
+    {
+
+        // dd($request->all());
+
+    //   echo 'test';   
+      $sts = $request->sts;
+
+          $ids = $request->ids;
+          $id = explode(",",$ids);
+         // print_r( $id );
+    //   $sts = $request->sts;
+    foreach($id as $idr)
+    {
+        Products::where('id',$idr)->update(['status'=>$sts]);
+        // ProductsDetails::where('id',$id)->update(['status'=>$sts]);
+    //   DB::table("ordersproduct")->whereIn('id',$idr)->update(['order_status'=>$sts]);
+    }
+    
+      return response()->json(['success'=>"Products Updated successfully."]);
+
+    }
+    /*End*/
+    
+    /*Vendar*/
+    /* Product bulk Delete */
+    public function vendorproductbulkdelete(Request $request)
+    {
+
+        // dd($request->all());
+
+    //   echo 'test';   
+      $sts = $request->sts;
+
+          $ids = $request->ids;
+          $id = explode(",",$ids);
+         // print_r( $id );
+    //   $sts = $request->sts;
+    foreach($id as $idr)
+    {
+        Products::where('id',$idr)->update(['flag'=>$sts,'status'=>$sts,'logintype'=>'Vendor']);
+        // ProductsDetails::where('id',$id)->update(['status'=>$sts]);
+    //   DB::table("ordersproduct")->whereIn('id',$idr)->update(['order_status'=>$sts]);
+    }
+    
+      return response()->json(['success'=>"Products Updated successfully."]);
+
+    }
+
+    /* Active Product */
+
+    /* Product bulk active */
+    public function vendorproductbulkactive(Request $request)
+    {
+
+        // dd($request->all());
+
+    //   echo 'test';   
+      $sts = $request->sts;
+
+          $ids = $request->ids;
+          $id = explode(",",$ids);
+         // print_r( $id );
+    //   $sts = $request->sts;
+    foreach($id as $idr)
+    {
+        Products::where('id',$idr)->update(['status'=>$sts,'logintype'=>'Vendor']);
+        // ProductsDetails::where('id',$id)->update(['status'=>$sts]);
+    //   DB::table("ordersproduct")->whereIn('id',$idr)->update(['order_status'=>$sts]);
+    }
+    
+      return response()->json(['success'=>"Products Updated successfully."]);
+
+    }
+    /*End*/
+
+    /* Product bulk deactive */
+    public function vendorproductbulkdeactive(Request $request)
+    {
+
+        // dd($request->all());
+
+    //   echo 'test';   
+      $sts = $request->sts;
+
+          $ids = $request->ids;
+          $id = explode(",",$ids);
+         // print_r( $id );
+    //   $sts = $request->sts;
+    foreach($id as $idr)
+    {
+        Products::where('id',$idr)->update(['status'=>$sts,'logintype'=>'Vendor']);
+        // ProductsDetails::where('id',$id)->update(['status'=>$sts]);
+    //   DB::table("ordersproduct")->whereIn('id',$idr)->update(['order_status'=>$sts]);
+    }
+    
+      return response()->json(['success'=>"Products Updated successfully."]);
+
+    }
+    /*End*/
 }

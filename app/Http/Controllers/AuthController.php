@@ -102,8 +102,15 @@ class AuthController extends Controller
                 FacadesSession::put('login_id', $user->login_id);
                 FacadesSession::put('status', $user->status);
                 FacadesSession::put('log_type', $user->log_type ?? 'Staff');
+                FacadesSession::put('log_name', $user->name);
                 
-                return redirect()->route('staffdashboard', $user->login_id);
+                $staffCreates = \App\Models\Staffcreates::where('employee_id', $user->login_id)->first();
+                if ($staffCreates) {
+                    $roll = \App\Models\Roll::where('roll', $staffCreates->department)->get();
+                    FacadesSession::put('roll', $roll);
+                }
+                
+                return redirect()->route('admindashboard');
             }
 
             Auth::logout();

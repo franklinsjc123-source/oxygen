@@ -49,34 +49,46 @@
 		
         <li><a class="sidebar-header" href="{{ url('admin/dashboard') }}"><i data-feather="home"></i><span>Dashboard</span></a></li>
       @php
-	 	
-        
         $staffid=session()->get('login_id');
-		
-            $main_menus = App\Models\Mainmenus::where('id', '!=', '1')->get();
-			
-			$staff =  App\Models\Staffcreates::where('employee_id', '=', $staffid)->first();
-			
-			$staffroless = $staff ? App\Models\StaffRole::where('department', '=', $staff->department)->where('designation', '=', $staff->designation)->first() : null;
-        @endphp 
-		
+        $main_menus = App\Models\Mainmenus::where('id', '!=', '1')->get();
+        $staff =  App\Models\Staffcreates::where('employee_id', '=', $staffid)->first();
+        $staffroless = $staff ? App\Models\StaffRole::where('department', '=', $staff->department)->where('designation', '=', $staff->designation)->first() : null;
 
-        @foreach($main_menus as $mainmenu)
-			@if(isset($staffroless) && in_array($mainmenu->id, explode(',', $staffroless->mainmenus)))
+        $rollSession = \Illuminate\Support\Facades\Session::get('roll');
+        $staffMainMenus = [];
+        if ($staffroless) {
+            $staffMainMenus = explode(',', $staffroless->mainmenus);
+        } elseif ($rollSession && count($rollSession) > 0 && !empty($rollSession[0]->permission_id)) {
+            $decoded = json_decode($rollSession[0]->permission_id, true);
+            if (is_array($decoded) || is_object($decoded)) {
+                $staffMainMenus = array_values((array)$decoded);
+            }
+        }
+      @endphp 
+
+      @foreach($main_menus as $mainmenu)
+        @if(in_array($mainmenu->id, $staffMainMenus))
             @php
                 $sub_menus = App\Models\Submenus::where('main_menu', '=', $mainmenu->id)->get();
             @endphp
             <li><a class="sidebar-header" href="#"><i data-feather="{{$mainmenu->font_icon}}"></i> <span>{{$mainmenu->title}}</span><i class="fa fa-angle-right pull-right" style="float: right;"></i></a>
                 <ul class="sidebar-submenu">
                     @foreach($sub_menus as $submenu)
-					@if(isset($staffroless) && in_array($submenu->id, explode(',', $staffroless->submenus)))
-						@if($submenu->type=='route')
+                    @php
+                        $canSeeSubmenu = false;
+                        if ($staffroless) {
+                            $canSeeSubmenu = in_array($submenu->id, explode(',', $staffroless->submenus));
+                        } else {
+                            $canSeeSubmenu = true; 
+                        }
+                    @endphp
+                    @if($canSeeSubmenu)
+                        @if($submenu->type=='route')
                         <li><a href="{{ route($submenu->link) }}"><i class="fa fa-circle"></i>{{$submenu->title}}</a></li>
-						@else
-							
+                        @else
                         <li><a href="{{ url($submenu->link) }}"><i class="fa fa-circle"></i>{{$submenu->title}}</a></li>
-						@endif
-						@endif
+                        @endif
+                    @endif
                     @endforeach
                 </ul>
             </li>

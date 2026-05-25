@@ -109,7 +109,9 @@ Route::resource("products_crud", ProductsController::class, ['names' => 'staffpr
 
 Route::get("products/listing", [ProductsController::class, "listing"])->name('staffproducts.crud.listing');
 Route::get("products/view/{id}", [ProductsController::class, "view"])->name('staffproducts.crud.view');
+Route::post("products/addinfo", [ProductsController::class, "addinfo"])->name('staffproducts.addinfo');
 
+Route::resource('product_colors', \App\Http\Controllers\staff\ProductsController\ProductColorController::class, ['names' => 'staffproduct_colors']);
 
 Route::post("products/productdetailsdelete", [ProductsController::class, "productdetailsdelete"])->name('staffproducts.crud.productdetailsdelete');
 
