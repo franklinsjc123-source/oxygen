@@ -28,6 +28,7 @@
 .admin-mmenu .sub li{border-bottom:1px solid #2a2a2a}
 .admin-mmenu .sub li a{padding-left:30px;font-size:13px;color:#ccc}
 .admin-mmenu .sub li a:hover{color:#336699}
+@media(min-width:992px){.admin-mmenu-wrap{display:none !important}}
 </style>
 
 <div class="admin-mmenu-wrap" id="admMobileMenu">
