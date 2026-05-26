@@ -9,13 +9,69 @@
             </div>
             <div class="mobile-sidebar w-auto">
                 <div class="media-body text-end switch-sm">
-                    <a href="javascript:void(0)" class="sidebar-toggle-btn" id="sidebar-toggle" aria-label="Toggle sidebar"
-                       onclick="if(window.toggleSidebarMenu){window.toggleSidebarMenu(event);return false;}"
-                       ontouchstart="if(window.toggleSidebarMenu){window.toggleSidebarMenu(event);return false;}">
+                    <a href="javascript:void(0)" class="sidebar-toggle-btn" id="sidebar-toggle" aria-label="Toggle sidebar">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none;"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
                     </a>
                 </div>
             </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var toggleBtn = document.getElementById('sidebar-toggle');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('touchend', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (window.toggleSidebarMenu) window.toggleSidebarMenu(e);
+        }, { passive: false });
+        toggleBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (window.toggleSidebarMenu) window.toggleSidebarMenu(e);
+        });
+    }
+    // Sidebar overlay for mobile/app
+    if (!document.getElementById('sidebar-overlay')) {
+        var overlay = document.createElement('div');
+        overlay.id = 'sidebar-overlay';
+        overlay.className = 'sidebar-overlay';
+        document.body.appendChild(overlay);
+        overlay.addEventListener('click', function() {
+            var sidebar = document.querySelector('.page-sidebar');
+            if (sidebar && !sidebar.classList.contains('open')) {
+                sidebar.classList.add('open');
+                var header = document.querySelector('.page-main-header');
+                if (header) header.classList.add('open');
+                document.body.classList.remove('sidebar-open');
+                overlay.classList.remove('active');
+            }
+        });
+        overlay.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            var sidebar = document.querySelector('.page-sidebar');
+            if (sidebar && !sidebar.classList.contains('open')) {
+                sidebar.classList.add('open');
+                var header = document.querySelector('.page-main-header');
+                if (header) header.classList.add('open');
+                document.body.classList.remove('sidebar-open');
+                overlay.classList.remove('active');
+            }
+        }, { passive: false });
+    }
+    var sidebarEl = document.querySelector('.page-sidebar');
+    if (sidebarEl && window.MutationObserver) {
+        var observer = new MutationObserver(function() {
+            var overlay = document.getElementById('sidebar-overlay');
+            if (!overlay) return;
+            if (sidebarEl.classList.contains('open')) {
+                overlay.classList.remove('active');
+            } else {
+                if (window.innerWidth <= 991) overlay.classList.add('active');
+            }
+        });
+        observer.observe(sidebarEl, { attributes: true, attributeFilter: ['class'] });
+    }
+});
+</script>
             <div class="nav-right col">
                 <ul class="nav-menus">
                     <li class="onhover-dropdown"><i data-feather="bell"></i><span
@@ -57,3 +113,4 @@
             </div>
         </div>
     </div>
+

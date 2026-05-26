@@ -72,6 +72,60 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+
+    // ── Sidebar Overlay for Mobile/App ──
+    // Create overlay element if it doesn't exist
+    if (!document.getElementById('sidebar-overlay')) {
+        var overlay = document.createElement('div');
+        overlay.id = 'sidebar-overlay';
+        overlay.className = 'sidebar-overlay';
+        document.body.appendChild(overlay);
+        
+        // Close sidebar when overlay is tapped
+        overlay.addEventListener('click', function() {
+            var sidebar = document.querySelector('.page-sidebar');
+            if (sidebar && !sidebar.classList.contains('open')) {
+                sidebar.classList.add('open');
+                document.querySelector('.page-main-header').classList.add('open');
+                document.body.classList.remove('sidebar-open');
+                overlay.classList.remove('active');
+            }
+        });
+        overlay.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            var sidebar = document.querySelector('.page-sidebar');
+            if (sidebar && !sidebar.classList.contains('open')) {
+                sidebar.classList.add('open');
+                document.querySelector('.page-main-header').classList.add('open');
+                document.body.classList.remove('sidebar-open');
+                overlay.classList.remove('active');
+            }
+        }, { passive: false });
+    }
+
+    // Hook into sidebar state changes to toggle overlay
+    var origToggle = window.toggleSidebarMenu;
+    if (origToggle) {
+        // We'll patch after sidebar-menu.js loads; use MutationObserver as fallback
+    }
+    
+    // Watch for sidebar class changes to sync overlay
+    var sidebarEl = document.querySelector('.page-sidebar');
+    if (sidebarEl && window.MutationObserver) {
+        var observer = new MutationObserver(function() {
+            var overlay = document.getElementById('sidebar-overlay');
+            if (!overlay) return;
+            if (sidebarEl.classList.contains('open')) {
+                overlay.classList.remove('active');
+            } else {
+                // Check if mobile
+                if (window.innerWidth <= 991) {
+                    overlay.classList.add('active');
+                }
+            }
+        });
+        observer.observe(sidebarEl, { attributes: true, attributeFilter: ['class'] });
+    }
 });
 </script>
 
