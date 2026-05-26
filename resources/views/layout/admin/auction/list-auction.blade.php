@@ -70,6 +70,9 @@
                                             <button class="btn btn-success">
                                                   Import Auction Data
                                                </button>
+                                            <a href="{{ asset('assets/sample/auction_sample.csv') }}" class="btn btn-info ms-2" download>
+                                                <i class="fa fa-download"></i> Download Sample Format
+                                            </a>
                                             {{-- <a class="btn btn-warning"
                                                href="{{ url('export') }}">
                                                       Export Auction Data

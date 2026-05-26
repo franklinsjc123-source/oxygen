@@ -31,9 +31,9 @@ class ImportUser implements ToModel, WithStartRow, WithMultipleSheets
                'product_id'   => $row[1],
                'start_price'  => $row[2],
                'slab'         => $row[3],
-               'bid_price'    => $row[4],
-               'start_date'   => $row[5],
-               'end_date'     => $row[6],          
+               'bid_price'    => (int)$row[2] + (int)$row[3],
+               'start_date'   => $row[4],
+               'end_date'     => $row[5],          
     
             ]);
         
