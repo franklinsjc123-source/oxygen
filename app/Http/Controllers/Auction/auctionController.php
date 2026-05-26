@@ -56,7 +56,7 @@ class auctionController extends Controller
             $date    = "$dat$t$time";
 
             $request->validate([
-                'start_date'=> 'required|after_or_equal:' . $date,
+                'start_date'=> 'required',
                 'end_date'=> 'required|after_or_equal:start_date'
             ]);
 
@@ -70,7 +70,7 @@ class auctionController extends Controller
             $auction->product_id   =   $request->product_id  ;
             $auction->start_price  =   $request->start_price ;
             $auction->slab         =   $request->slab        ;
-            $auction->bid_price    =   $request->bid_price   ;
+            $auction->bid_price    =   $request->start_price + $request->slab   ;
             $auction->start_date   =   $request->start_date  ;
             $auction->start_time   =   $request->start_time  ;
             $auction->end_date     =   $request->end_date    ;
@@ -145,7 +145,7 @@ class auctionController extends Controller
             $auction->product_id   =   $request->product_id  ;
             $auction->start_price  =   $request->start_price ;
             $auction->slab         =   $request->slab        ;
-            $auction->bid_price    =   $request->bid_price   ;
+            $auction->bid_price    =   $request->start_price + $request->slab   ;
             $auction->start_date   =   $request->start_date  ;
             //$auction->start_time   =   $request->start_time  ;
             $auction->end_date     =   $request->end_date    ;

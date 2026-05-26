@@ -66,80 +66,72 @@
 										        </ul>
 										    </div>
 										@endif
-										<div class="form-group row">
-											<label for="validationCustom1" class="col-xl-2 col-md-2">Select Product Type</label>
-											<div class="col-md-7">
-												<select class="form-control" id="validationCustom1" type="text" name="product_type"   required="" >
-													
-													@if ($auction->product_type == 1)
-													<option value="{{$auction->product_type}}" selected hidden>Admin Products</option>
-													@else
-													<option value="{{$auction->product_type}}" selected hidden>Vedor Products</option>
-													@endif
-													<option value="1">Admin Products</option>
-													<option value="2">Vedor Products</option>
-												</select>
-											</div>											
-										</div>
-
-										<div class="form-group row">
-											<label for="validationCustom1" class="col-xl-2 col-md-2">Product ID</label>
-											<div class="col-md-7">
-												<input class="form-control" id="validationCustom1" name="product_id" value="{{$auction->product_id}}" type="text" required="" >
-											</div>											
-										</div>
-
-									    <div class="form-group row">
-											<label for="validationCustom1" class="col-xl-2 col-md-2">Starting Price</label>
-											<div class="col-md-7">
-												<input class="form-control" id="start_price" name="start_price" value="{{$auction->start_price}}" type="text"  onkeyup = "add()" value="" required="" >
-											</div>											
-										</div>
-
-										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-2 col-md-2">SLAB</label>
-											<div class="col-md-7">
-												<input class="form-control" id="slab" name="slab" value="{{$auction->slab}}" type="text" onkeyup = "add()" value="" required="">
+									<div class="row ">
+										<div class="col-md-6">
+											<div class="form-group row">
+												<label for="validationCustom1" class="col-xl-4 col-md-4">Select Product
+													Type</label>
+												<div class="col-xl-8 col-md-8">
+													<select class="form-control" id="validationCustom1" type="text" name="product_type"   required="" >
+														@if ($auction->product_type == 1)
+														<option value="{{$auction->product_type}}" selected hidden>Admin Products</option>
+														@else
+														<option value="{{$auction->product_type}}" selected hidden>Vendor Products</option>
+														@endif
+														<option value="1">Admin Products</option>
+														<option value="2">Vendor Products</option>
+													</select>
+												</div>
 											</div>
 										</div>
-									
-																			
-										<div class="form-group row">
-											<label for="validationCustom1" class="col-xl-2 col-md-2">BID Price</label>
-											<div class="col-md-7">
-												<input class="form-control" id="bid_price" name="bid_price" value="{{$auction->bid_price}}" type="text" required="" >
-											</div>											
-										</div>
-										
-
-										
-										
-
-										<div class="form-group row">
-											<label class="col-xl-2 col-md-2">Start Offer</label>
-												<div class="col-md-4">
-											<label class="">Start Date  / Time</label>
-												 <input id="example" type="datetime-local" class="form-control" name="start_date" value="{{$auction->start_date}}" placeholder="dd/mm/yy"  />
-												 </div>
-												 {{-- <div class="col-md-3">
-											<label class="">Start Time</label>
-												 <input id="" type="time" value="00:00" name="start_time" value="{{$auction->start_time}}"  class="form-control"   />
-												 </div> --}}
-											
-										</div>
-										
-								
-										<div class="form-group row">
-											<label class="col-xl-2 col-md-2">End Offer</label>
-												<div class="col-md-4">
-											<label class="">End Date  / Time</label>
-												<input id="example1" type="datetime-local" class="form-control"  name="end_date" value="{{$auction->end_date}}" placeholder="dd/mm/yy"  />
+										<div class="col-md-6">
+											<div class="form-group row ">
+												<label for="validationCustom1" class="col-xl-4 col-md-4">Product ID</label>
+												<div class="col-xl-8 col-md-8">
+													<input class="form-control" id="validationCustom1" name="product_id" value="{{$auction->product_id}}" type="text" required="" >
 												</div>
-												 {{-- <div class="col-md-3">
-											<label class="">End Time</label>
-												<input id="" type="time" value="00:00" name="end_time"  value="{{$auction->end_time}}" class="form-control"   />
-												</div>											 --}}
+											</div>
 										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group row">
+												<label for="validationCustom1" class="col-xl-4 col-md-4">Starting
+													Price</label>
+												<div class="col-xl-8 col-md-8">
+													<input class="form-control" id="start_price" name="start_price" value="{{$auction->start_price}}" type="text"  onkeyup = "add()" value="" required="" >
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group row">
+												<label for="validationCustom0" class="col-xl-4 col-md-4">SLAB</label>
+												<div class="col-xl-8 col-md-8">
+													<input class="form-control" id="slab" name="slab" value="{{$auction->slab}}" type="text" onkeyup = "add()" value="" required="">
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group row">
+												<label class="col-xl-4 col-md-4">Start Offer</label>
+												<div class="col-xl-8 col-md-8">
+													<input id="example" type="datetime-local" class="form-control" name="start_date" value="{{$auction->start_date}}" placeholder="dd/mm/yy" required />
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group row">
+												<label class="col-xl-4 col-md-4">End Offer</label>
+												<div class="col-xl-8 col-md-8">
+													<input id="example1" type="datetime-local" class="form-control"  name="end_date" value="{{$auction->end_date}}" placeholder="dd/mm/yy" required />
+												</div>
+											</div>
+										</div>
+									</div>
 										<div class="form-group row d-none">
 											<label class="col-xl-2 col-md-2">Select Product</label>
 											<div class="col-md-6">
@@ -235,14 +227,10 @@
 									
 										
 									
-									
-										<div class="form-group row ">
-											<div class="text-center">
-										<div class="col-xl-8 col-md-8">
-										<button class="btn btn-primary" type="submit">Save</button>
-                                                    <a href="{{route('auction/list')}}" class="btn btn-secondary" type="button">Close</a>
+									<div class="justify-content-end gap-2 mt-4 d-flex">
+										<button class="btn btn-primary px-4" type="submit">Save</button>
+										<a href="{{route('auction/list')}}" class="btn btn-secondary px-4" type="button">Close</a>
 									</div>
-								</div>
 							</form>
 					
 					

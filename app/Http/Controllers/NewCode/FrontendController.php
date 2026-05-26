@@ -1042,6 +1042,31 @@ class FrontendController extends Controller
 
         $vendorcreate = vendorcreate::get();
 
+        $auctionProducts = DB::table('auctions')
+            ->leftJoin('products', 'products.id', '=', 'auctions.product_id')
+            ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
+            ->leftJoin('vendor_details', 'vendor_details.id', '=', 'products.vendor_id')
+            ->select(
+                'auctions.id as auction_id',
+                'auctions.bid_price as selling_price',
+                'auctions.start_price as retail_price',
+                'auctions.end_date as end_date',
+                'products.id as id',
+                'products.product_name', 
+                'products.product_image',
+                'products.vendor_id',
+                'vendor_details.shop_name'
+            )
+            ->where('auctions.status', 1)
+            ->groupBy('auctions.id', 'products.id', 'products.product_name', 'products.product_image', 'products.vendor_id', 'vendor_details.shop_name', 'auctions.bid_price', 'auctions.start_price', 'auctions.end_date')
+            ->get();
+
+        foreach ($auctionProducts as $auction) {
+            $avg = \App\Models\Rating::where('products_id', $auction->id)->avg('star_rating');
+            $auction->rating_percent = $avg ? ($avg / 5) * 100 : 0;
+            $auction->review_count = \App\Models\Rating::where('products_id', $auction->id)->count();
+        }
+
         $pincode = session('pincode');
 
         if ($pincode) {
@@ -1065,7 +1090,8 @@ class FrontendController extends Controller
             'womensProducts',
             'kidsProducts',
             'vendorcreate',
-            'locations'
+            'locations',
+            'auctionProducts'
         ));
     }
 

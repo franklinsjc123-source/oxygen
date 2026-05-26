@@ -667,46 +667,82 @@
                     }
                 }">
              <div class="swiper-wrapper row cols-xl-6 cols-lg-5 cols-md-4 cols-sm-3 cols-2">
+                 @if(isset($auctionProducts) && count($auctionProducts) > 0)
+                 @foreach($auctionProducts as $auction)
                  <div class="swiper-slide product product-simple text-center">
                      <figure class="product-media">
-                         <a href="product-default.html">
-                             <img src="<?php echo asset('frontend') ?>/images/demos/demo8/product/5-1.jpg" alt="Product" width="260"
+                         <a href="{{ url('/productVar/' . $auction->id) }}">
+                             <img src="{{ asset('assets/images/products/' . $auction->product_image) }}" alt="Product" width="260"
                                  height="291" />
                          </a>
                          <div class="product-action-vertical">
-                             <a href="#" class="btn-product-icon btn-wishlist w-icon-heart"
+                             <a href="#" onclick="addwishlist('{{ $auction->id }}')" class="btn-product-icon btn-wishlist w-icon-heart"
                                  title="Add to wishlist"></a>
                              <a href="#" class="btn-product-icon btn-compare w-icon-compare"
                                  title="Add to Compare"></a>
                          </div>
                          <div class="product-action">
-                             <a href="#" class="btn-product btn-quickview" title="Quick View">Quick
+                             <a href="javascript:void(0)" onclick="showQuickView('{{ $auction->id }}')" data-id='{{ $auction->id }}' class="btn-product btn-quickview" title="Quick View">Quick
                                  View</a>
                          </div>
                          <div class="product-countdown-container">
-                             <div class="product-countdown countdown-compact" data-until="2021, 9, 9"
+                             @php
+                                $endDateStr = str_replace('T', ' ', $auction->end_date);
+                                $parsedDate = \Carbon\Carbon::parse($endDateStr);
+                                $formattedForJs = $parsedDate->format('Y, m, d, H, i, s');
+                                // The js countdown plugin expects months 1-12 or 0-11 depending on version. Usually m-1 for JS Date() but the plugin often accepts standard. 
+                                // Let's use format('Y, n, j, G, i, s'). Note that for jQuery Countdown by Keith Wood (often used here), month is 1-12.
+                                $formattedForJs = $parsedDate->format('Y, n, j, G, i, s');
+                             @endphp
+                             <div class="product-countdown countdown-compact" data-until="{{ $formattedForJs }}"
                                  data-format="DHMS" data-compact="false" data-labels-short="Days, Hours, Mins, Secs">
                                  00:00:00:00</div>
                          </div>
                      </figure>
                      <div class="product-details">
-                         <h4 class="product-name"><a href="product-default.html">Charge &amp; Alarm Machine</a></h4>
-                         <div class="product-pa-wrapper">
-                             <div class="product-price">
-                                 <ins class="new-price">$26.88</ins><del class="old-price">$27.89</del>
-                             </div>
-                             <div class="product-action">
-                                 <a href="#"
-                                     class="btn-cart btn-product btn btn-icon-right btn-link btn-underline">Add
-                                     To Cart</a>
-                             </div>
-                         </div>
                          <div class="sold-by">
-                             Sold By: <a href="#">Vendor 5</a>
+                             <b><a href="{{ url('/shop-details/' . $auction->vendor_id) }}">{{ $auction->shop_name ?? 'Admin' }}</a></b>
+                         </div>
+                         <h4 class="product-name"><a href="{{ url('/productVar/' . $auction->id) }}">{{ ucwords($auction->product_name) }}</a></h4>
+
+                         <div class="ratings-container">
+                             <div class="ratings-full">
+                                 <span class="ratings" style="width: {{ $auction->rating_percent ?? 0 }}%"></span>
+                             </div>
+                             <a>({{ $auction->review_count ?? 0 }} Reviews)</a>
+                         </div>
+
+                         <div class="product-pa-wrapper">
+                             <div class="product-price-home">
+                                 ₹{{ $auction->selling_price }}
+                             </div>
+                             <div class="product-price-discount">
+                                 ₹{{ $auction->retail_price }}
+                             </div>
+                             @php
+                                $retailPrice = (float) ($auction->retail_price ?? 0);
+                                $sellingPrice = (float) ($auction->selling_price ?? 0);
+                                if ($retailPrice > 0) {
+                                    $discount_percentage = (($retailPrice - $sellingPrice) / $retailPrice) * 100;
+                                    $discount_rounded = round($discount_percentage / 10) * 10;
+                                } else {
+                                    $discount_rounded = 0;
+                                }
+                             @endphp
+
+                             <div class="product-offer-percentage">
+                                 {{ $discount_rounded }}% Off
+                             </div>
                          </div>
                      </div>
                  </div>
                  <!-- End of Product Simple -->
+                 @endforeach
+                 @else
+                     <div class="col-12 text-center py-5">
+                         <p>No active auctions at the moment.</p>
+                     </div>
+                 @endif
 
              </div>
              <div class="swiper-pagination"></div>
