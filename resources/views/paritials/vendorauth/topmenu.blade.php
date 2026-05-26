@@ -16,66 +16,48 @@
             </div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    var sidebar = document.querySelector('.page-sidebar');
     var toggleBtn = document.getElementById('sidebar-toggle');
-    var sidebarOpen = false;
-
-    var overlay = document.getElementById('sidebar-overlay');
-    if (!overlay) {
-        overlay = document.createElement('div');
-        overlay.id = 'sidebar-overlay';
-        document.body.appendChild(overlay);
-        overlay.style.cssText = 'display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:99998;opacity:0;transition:opacity 0.3s ease;';
-    }
-
     function isMobile() { return window.innerWidth <= 991; }
+    if (!isMobile()) return;
 
-    function showMobileSidebar() {
-        if (!sidebar || !isMobile()) return;
-        sidebarOpen = true;
-        sidebar.style.cssText = 'position:fixed !important;top:0 !important;left:0 !important;width:260px !important;height:100vh !important;z-index:99999 !important;margin-left:0 !important;overflow-y:auto !important;-webkit-overflow-scrolling:touch;transition:left 0.3s ease !important;background:#183543 !important;display:block !important;';
-        overlay.style.display = 'block';
-        setTimeout(function() { overlay.style.opacity = '1'; }, 10);
-    }
+    var originalSidebar = document.querySelector('.page-sidebar');
+    if (!originalSidebar) return;
+    originalSidebar.style.display = 'none';
 
-    function hideMobileSidebar() {
-        if (!sidebar || !isMobile()) return;
-        sidebarOpen = false;
-        sidebar.style.cssText = 'position:fixed !important;top:0 !important;left:-270px !important;width:260px !important;height:100vh !important;z-index:99999 !important;margin-left:0 !important;overflow-y:auto !important;-webkit-overflow-scrolling:touch;transition:left 0.3s ease !important;background:#183543 !important;display:block !important;';
-        overlay.style.opacity = '0';
-        setTimeout(function() { overlay.style.display = 'none'; }, 300);
-    }
+    var overlay = document.createElement('div');
+    overlay.id = 'mobile-sidebar-overlay';
+    overlay.style.cssText = 'display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:99998;opacity:0;transition:opacity 0.3s ease;';
+    document.body.appendChild(overlay);
 
-    function toggleMobileSidebar(e) {
-        if (e) { e.preventDefault(); e.stopPropagation(); }
-        if (sidebarOpen) { hideMobileSidebar(); } else { showMobileSidebar(); }
-    }
+    var mobileSidebar = document.createElement('div');
+    mobileSidebar.id = 'mobile-sidebar-panel';
+    mobileSidebar.innerHTML = originalSidebar.innerHTML;
+    mobileSidebar.style.cssText = 'position:fixed;top:0;left:-280px;width:260px;height:100vh;z-index:99999;overflow-y:auto;-webkit-overflow-scrolling:touch;transition:left 0.3s ease;background:#183543;display:block;padding:0;';
+    document.body.appendChild(mobileSidebar);
 
-    if (sidebar && isMobile()) { hideMobileSidebar(); }
+    var sidebarOpen = false;
+    function showSidebar() { sidebarOpen = true; mobileSidebar.style.left = '0px'; overlay.style.display = 'block'; setTimeout(function() { overlay.style.opacity = '1'; }, 10); }
+    function hideSidebar() { sidebarOpen = false; mobileSidebar.style.left = '-280px'; overlay.style.opacity = '0'; setTimeout(function() { overlay.style.display = 'none'; }, 300); }
+    function toggleSidebar(e) { if (e) { e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); } if (sidebarOpen) { hideSidebar(); } else { showSidebar(); } }
 
     if (toggleBtn) {
         var touchFired = false;
-        toggleBtn.addEventListener('touchend', function(e) {
-            touchFired = true;
-            toggleMobileSidebar(e);
-            setTimeout(function() { touchFired = false; }, 500);
-        }, { passive: false });
-        toggleBtn.addEventListener('click', function(e) {
-            if (touchFired) return;
-            toggleMobileSidebar(e);
-        });
+        toggleBtn.addEventListener('touchstart', function(e) { e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); touchFired = true; toggleSidebar(e); setTimeout(function() { touchFired = false; }, 800); }, true);
+        toggleBtn.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); if (touchFired) return; toggleSidebar(e); }, true);
     }
+    overlay.addEventListener('click', hideSidebar);
+    overlay.addEventListener('touchstart', function(e) { e.preventDefault(); hideSidebar(); }, { passive: false });
 
-    overlay.addEventListener('click', function() { hideMobileSidebar(); });
-    overlay.addEventListener('touchend', function(e) { e.preventDefault(); hideMobileSidebar(); }, { passive: false });
+    mobileSidebar.addEventListener('click', function(e) {
+        var link = e.target.closest('a.sidebar-header');
+        if (!link) return;
+        var submenu = link.nextElementSibling;
+        if (submenu && submenu.classList.contains('sidebar-submenu')) { e.preventDefault(); if (submenu.style.display === 'block') { submenu.style.display = 'none'; link.parentElement.classList.remove('active'); } else { submenu.style.display = 'block'; link.parentElement.classList.add('active'); } }
+    });
 
     window.addEventListener('resize', function() {
-        if (!isMobile() && sidebar) {
-            sidebar.style.cssText = '';
-            overlay.style.display = 'none';
-            overlay.style.opacity = '0';
-            sidebarOpen = false;
-        }
+        if (!isMobile()) { originalSidebar.style.display = ''; mobileSidebar.style.display = 'none'; overlay.style.display = 'none'; sidebarOpen = false; }
+        else { originalSidebar.style.display = 'none'; mobileSidebar.style.display = 'block'; mobileSidebar.style.left = '-280px'; }
     });
 });
 </script>
@@ -95,8 +77,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                     </div>
                                 </div>
                             </li>
-
-
                             <li class="txt-dark"><a href="#">All</a> notification</li>
                         </ul>
                     </li>
