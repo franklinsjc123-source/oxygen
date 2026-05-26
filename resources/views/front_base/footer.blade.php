@@ -260,14 +260,89 @@
                </ul>
            </div>
            <div class="tab-content">
-               <div class="tab-pane active" id="main-menu">
-                   <ul class="mobile-menu">
-                       <li><a href="{{ url('home') }}">Home</a></li>
-                       <li><a href="{{ url('shops') }}">Shops</a></li>
-                       <li><a href="{{ url('offers') }}">Offer Products</a></li>
-                       <li><a href="#">Track Order</a></li>
-                   </ul>
-               </div>
+                 <div class="tab-pane active" id="main-menu">
+                    <ul class="mobile-menu">
+                        @if (session()->get('log_type') == 'Admin')
+                            <li><a href="{{ url('admin/dashboard') }}">Dashboard</a></li>
+                            @php
+                                $main_menus = App\Models\Mainmenus::where('id', '!=', '1')->get();
+                            @endphp
+                            @foreach($main_menus as $mainmenu)
+                                @php
+                                    $sub_menus = App\Models\Submenus::where('main_menu', '=', $mainmenu->id)->get();
+                                @endphp
+                                <li>
+                                    <a href="#">{{$mainmenu->title}}</a>
+                                    <ul>
+                                        @foreach($sub_menus as $submenu)
+                                            @if($submenu->type=='route')
+                                                <li><a href="{{ route($submenu->link) }}">{{$submenu->title}}</a></li>
+                                            @else
+                                                <li><a href="{{ url($submenu->link) }}">{{$submenu->title}}</a></li>
+                                            @endif
+                                        @endforeach
+                                    </ul>
+                                </li>
+                            @endforeach
+                            <li><a href="{{ url('admin/logout') }}">Logout</a></li>
+                        @elseif (session()->get('login_id'))
+                            <li><a href="{{ url('admin/dashboard') }}">Dashboard</a></li>
+                            @php
+                                $staffid=session()->get('login_id');
+                                $main_menus = App\Models\Mainmenus::where('id', '!=', '1')->get();
+                                $staff =  App\Models\Staffcreates::where('employee_id', '=', $staffid)->first();
+                                $staffroless = $staff ? App\Models\StaffRole::where('department', '=', $staff->department)->where('designation', '=', $staff->designation)->first() : null;
+
+                                $rollSession = \Illuminate\Support\Facades\Session::get('roll');
+                                $staffMainMenus = [];
+                                if ($staffroless) {
+                                    $staffMainMenus = explode(',', $staffroless->mainmenus);
+                                } elseif ($rollSession && count($rollSession) > 0 && !empty($rollSession[0]->permission_id)) {
+                                    $decoded = json_decode($rollSession[0]->permission_id, true);
+                                    if (is_array($decoded) || is_object($decoded)) {
+                                        $staffMainMenus = array_values((array)$decoded);
+                                    }
+                                }
+                            @endphp 
+
+                            @foreach($main_menus as $mainmenu)
+                                @if(in_array($mainmenu->id, $staffMainMenus))
+                                    @php
+                                        $sub_menus = App\Models\Submenus::where('main_menu', '=', $mainmenu->id)->get();
+                                    @endphp
+                                    <li>
+                                        <a href="#">{{$mainmenu->title}}</a>
+                                        <ul>
+                                            @foreach($sub_menus as $submenu)
+                                                @php
+                                                    $canSeeSubmenu = false;
+                                                    if ($staffroless) {
+                                                        $canSeeSubmenu = in_array($submenu->id, explode(',', $staffroless->submenus));
+                                                    } else {
+                                                        $canSeeSubmenu = true; 
+                                                    }
+                                                @endphp
+                                                @if($canSeeSubmenu)
+                                                    @if($submenu->type=='route')
+                                                        <li><a href="{{ route($submenu->link) }}">{{$submenu->title}}</a></li>
+                                                    @else
+                                                        <li><a href="{{ url($submenu->link) }}">{{$submenu->title}}</a></li>
+                                                    @endif
+                                                @endif
+                                            @endforeach
+                                        </ul>
+                                    </li>
+                                @endif
+                            @endforeach
+                            <li><a href="{{ url('admin/logout') }}">Logout</a></li>
+                        @else
+                            <li><a href="{{ url('home') }}">Home</a></li>
+                            <li><a href="{{ url('shops') }}">Shops</a></li>
+                            <li><a href="{{ url('offers') }}">Offer Products</a></li>
+                            <li><a href="#">Track Order</a></li>
+                        @endif
+                    </ul>
+                </div>
                <div class="tab-pane" id="categories">
                    <ul class="mobile-menu">
                        @foreach ($categorymain as $categoriesmain)
