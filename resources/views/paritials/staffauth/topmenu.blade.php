@@ -34,7 +34,8 @@ document.addEventListener('DOMContentLoaded', function () {
         var overlay = document.createElement('div');
         overlay.id = 'sidebar-overlay';
         overlay.className = 'sidebar-overlay';
-        document.body.appendChild(overlay);
+        var wrapper = document.querySelector('.page-body-wrapper') || document.body;
+        wrapper.appendChild(overlay);
         overlay.addEventListener('click', function() {
             var sidebar = document.querySelector('.page-sidebar');
             if (sidebar && !sidebar.classList.contains('open')) {

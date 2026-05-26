@@ -17,7 +17,7 @@
         min-height: 50px;
         padding: 5px;
         cursor: pointer;
-        z-index: 9999 !important; /* Ensure it stays above any overlays */
+        z-index: 9999 !important;
         position: relative;
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
@@ -29,7 +29,7 @@
     .mobile-sidebar .sidebar-toggle-btn i {
         width: 22px;
         height: 22px;
-        pointer-events: none;  /* Clicks pass through to the <a> parent */
+        pointer-events: none;
     }
 
     /* Remove blue focus outlines globally from links and buttons */
@@ -56,20 +56,21 @@
         }
     }
 
-    /* ── Mobile/App Sidebar Overlay Approach ──
-       Uses transform:translateX + overlay backdrop for reliable WebView/app sidebar.
-       This overrides the default margin-left approach which fails in some Android WebViews. */
+    /* ── Mobile/App Sidebar Fix ──
+       On mobile/WebView, the default margin-left toggle fails.
+       We override with left positioning + overlay backdrop.
+       Using very high z-index to break out of any stacking context. */
     @media only screen and (max-width: 991px) {
-        /* Overlay backdrop when sidebar is open */
+        /* Overlay backdrop */
         .sidebar-overlay {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(0, 0, 0, 0.5);
-            z-index: 99;
+            z-index: 99990 !important;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -78,41 +79,40 @@
             opacity: 1;
         }
 
-        /* Override sidebar to use transform instead of margin */
+        /* Force sidebar to use left positioning instead of margin-left */
+        .page-sidebar,
         .page-wrapper .page-body-wrapper .page-sidebar {
             position: fixed !important;
-            left: 0 !important;
             top: 0 !important;
+            left: -270px !important;
             width: 260px !important;
             height: 100vh !important;
-            z-index: 100 !important;
-            transform: translateX(-100%);
-            -webkit-transform: translateX(-100%);
-            transition: transform 0.3s ease !important;
-            -webkit-transition: -webkit-transform 0.3s ease !important;
+            z-index: 99999 !important;
             margin-left: 0 !important;
+            transition: left 0.3s ease !important;
+            -webkit-transition: left 0.3s ease !important;
             overflow-y: auto !important;
             -webkit-overflow-scrolling: touch;
         }
 
-        /* When sidebar is visible (no .open class = visible) */
+        /* When sidebar is VISIBLE (no .open class) */
+        .page-sidebar:not(.open),
         .page-wrapper .page-body-wrapper .page-sidebar:not(.open) {
-            transform: translateX(0) !important;
-            -webkit-transform: translateX(0) !important;
+            left: 0 !important;
+            margin-left: 0 !important;
         }
 
-        /* When sidebar is hidden (.open class = hidden) */
+        /* When sidebar is HIDDEN (.open class) */
+        .page-sidebar.open,
         .page-wrapper .page-body-wrapper .page-sidebar.open {
-            transform: translateX(-100%) !important;
-            -webkit-transform: translateX(-100%) !important;
+            left: -270px !important;
             margin-left: 0 !important;
         }
 
         /* Page body always full width on mobile */
-        .page-wrapper .page-body-wrapper .page-sidebar ~ .page-body {
-            margin-left: 0 !important;
-        }
-
+        .page-sidebar ~ .page-body,
+        .page-sidebar.open ~ .page-body,
+        .page-wrapper .page-body-wrapper .page-sidebar ~ .page-body,
         .page-wrapper .page-body-wrapper .page-sidebar.open ~ .page-body {
             margin-left: 0 !important;
         }

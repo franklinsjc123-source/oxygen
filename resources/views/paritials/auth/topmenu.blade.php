@@ -54,16 +54,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const toggleBtn = document.getElementById('sidebar-toggle');
 
     if (toggleBtn) {
-        // ✅ Passive touch listener - mobile apps la fast & reliable
         toggleBtn.addEventListener('touchend', function (e) {
-            e.preventDefault();  // Prevents ghost click after touch
+            e.preventDefault();
             e.stopPropagation();
             if (window.toggleSidebarMenu) {
                 window.toggleSidebarMenu(e);
             }
         }, { passive: false });
 
-        // ✅ Click fallback - browser & desktop la
         toggleBtn.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -74,41 +72,31 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ── Sidebar Overlay for Mobile/App ──
-    // Create overlay element if it doesn't exist
     if (!document.getElementById('sidebar-overlay')) {
         var overlay = document.createElement('div');
         overlay.id = 'sidebar-overlay';
         overlay.className = 'sidebar-overlay';
-        document.body.appendChild(overlay);
+        // Append to page-body-wrapper so it shares stacking context with sidebar
+        var wrapper = document.querySelector('.page-body-wrapper') || document.body;
+        wrapper.appendChild(overlay);
         
-        // Close sidebar when overlay is tapped
-        overlay.addEventListener('click', function() {
+        function closeSidebar() {
             var sidebar = document.querySelector('.page-sidebar');
             if (sidebar && !sidebar.classList.contains('open')) {
                 sidebar.classList.add('open');
-                document.querySelector('.page-main-header').classList.add('open');
+                var header = document.querySelector('.page-main-header');
+                if (header) header.classList.add('open');
                 document.body.classList.remove('sidebar-open');
                 overlay.classList.remove('active');
             }
-        });
+        }
+        overlay.addEventListener('click', closeSidebar);
         overlay.addEventListener('touchend', function(e) {
             e.preventDefault();
-            var sidebar = document.querySelector('.page-sidebar');
-            if (sidebar && !sidebar.classList.contains('open')) {
-                sidebar.classList.add('open');
-                document.querySelector('.page-main-header').classList.add('open');
-                document.body.classList.remove('sidebar-open');
-                overlay.classList.remove('active');
-            }
+            closeSidebar();
         }, { passive: false });
     }
 
-    // Hook into sidebar state changes to toggle overlay
-    var origToggle = window.toggleSidebarMenu;
-    if (origToggle) {
-        // We'll patch after sidebar-menu.js loads; use MutationObserver as fallback
-    }
-    
     // Watch for sidebar class changes to sync overlay
     var sidebarEl = document.querySelector('.page-sidebar');
     if (sidebarEl && window.MutationObserver) {
@@ -118,7 +106,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (sidebarEl.classList.contains('open')) {
                 overlay.classList.remove('active');
             } else {
-                // Check if mobile
                 if (window.innerWidth <= 991) {
                     overlay.classList.add('active');
                 }
