@@ -238,4 +238,27 @@ class auctionController extends Controller
         }
     }
 
+    public function auctionbulkactive(Request $request)
+    {
+        $sts = $request->sts;
+        $ids = $request->ids;
+        $idArray = explode(",", $ids);
+
+        foreach ($idArray as $id) {
+            auction::where('id', $id)->update(['status' => $sts]);
+        }
+        return response()->json(['success' => "Auctions Updated successfully."]);
+    }
+
+    public function auctionbulkdeactive(Request $request)
+    {
+        $sts = $request->sts;
+        $ids = $request->ids;
+        $idArray = explode(",", $ids);
+
+        foreach ($idArray as $id) {
+            auction::where('id', $id)->update(['status' => $sts]);
+        }
+        return response()->json(['success' => "Auctions Updated successfully."]);
+    }
 }

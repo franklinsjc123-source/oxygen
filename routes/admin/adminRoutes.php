@@ -257,6 +257,8 @@ Route::get('auction_list', [AuctionController::class, 'list'])->name('auction/li
 Route::controller(AuctionController::class)->group(function(){
 
     Route::post('users-import', 'import')->name('import');
+    Route::post('auctionbulkactive', 'auctionbulkactive')->name('auctionbulkactive');
+    Route::post('auctionbulkdeactive', 'auctionbulkdeactive')->name('auctionbulkdeactive');
 });
 
 Route::controller(PinCodeController1::class)->group(function(){

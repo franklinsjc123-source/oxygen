@@ -91,7 +91,6 @@
                         <th data-field="id" data-sortable="true">Id / Admin_Id</th>                     
                         <th data-field="sprice" data-sortable="true">Starting Price</th>
                         <th data-field="slab" data-sortable="true">SLAB</th> 
-                        <th data-field="bid" data-sortable="true">BID Price</th>
                     	<th data-field="so" data-sortable="true">Stat Offer</th>                    
                     	<th data-field="eo" data-sortable="true">End Offer</th>
                        <th data-field="status" data-sortable="true">Status</th>
@@ -106,7 +105,6 @@
                         <td>{{$loop->iteration }} / {{$item->admin_id}}</td>
                         <td>{{$item->start_price}}</td>
                         <td>{{$item->slab}}</td>
-                        <td>{{$item->bid_price}}</td>
                         <td>{{$item->start_date}}</td>
                 		<td>{{$item->end_date}}</td>
                     
@@ -116,13 +114,13 @@
                                 $ed= $item->end_date;                                    
                             ?>
                         <label class="switch">                         
-                        @if($ed >= $date && $sd <= $date)                                                            
+                        @if($item->status == 1)                                                            
                             <input type="checkbox"
-                                onclick="return confirm('you want to Change it?  Please Click Edit Button')"
+                                class="status-toggle" data-id="{{ $item->id }}"
                                 checked id="togBtn">                                                            
                             @else
                                 <input type="checkbox"
-                                onclick="return confirm('you want to Change it?  Please Click Edit Button')" 
+                                class="status-toggle" data-id="{{ $item->id }}" 
                                  id="togBtn">                                                            
                             @endif
                         <div class="slider round">
@@ -166,3 +164,26 @@
         </div>
 		
 @endsection
+@push('scripts')
+<script>
+$(document).ready(function() {
+    $(document).on('change', '.status-toggle', function() {
+        var id = $(this).data('id');
+        var nextStatus = $(this).is(':checked') ? '1' : '0';
+        var _token = "{{ csrf_token() }}";
+        
+        $.ajax({
+            url: nextStatus === '1' ? "{{ url('admin/auctionbulkactive') }}" : "{{ url('admin/auctionbulkdeactive') }}",
+            type: "POST",
+            data: { ids: id, sts: nextStatus, _token: _token },
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(err) {
+                console.log(err);
+            }
+        });
+    });
+});
+</script>
+@endpush
