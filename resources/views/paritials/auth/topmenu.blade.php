@@ -51,82 +51,113 @@
             </div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    var sidebar = document.querySelector('.page-sidebar');
     var toggleBtn = document.getElementById('sidebar-toggle');
-    var sidebarOpen = false;
-
-    // Create overlay
-    var overlay = document.getElementById('sidebar-overlay');
-    if (!overlay) {
-        overlay = document.createElement('div');
-        overlay.id = 'sidebar-overlay';
-        document.body.appendChild(overlay);
-        overlay.style.cssText = 'display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:99998;opacity:0;transition:opacity 0.3s ease;';
-    }
 
     function isMobile() {
         return window.innerWidth <= 991;
     }
 
-    function showMobileSidebar() {
-        if (!sidebar || !isMobile()) return;
+    if (!isMobile()) return; // Desktop: do nothing, let sidebar-menu.js handle it
+
+    // ── Create mobile sidebar clone outside page-wrapper ──
+    var originalSidebar = document.querySelector('.page-sidebar');
+    if (!originalSidebar) return;
+
+    // Hide the original sidebar completely on mobile
+    originalSidebar.style.display = 'none';
+
+    // Create overlay
+    var overlay = document.createElement('div');
+    overlay.id = 'mobile-sidebar-overlay';
+    overlay.style.cssText = 'display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:99998;opacity:0;transition:opacity 0.3s ease;';
+    document.body.appendChild(overlay);
+
+    // Clone sidebar content into a new div appended to body
+    var mobileSidebar = document.createElement('div');
+    mobileSidebar.id = 'mobile-sidebar-panel';
+    mobileSidebar.innerHTML = originalSidebar.innerHTML;
+    mobileSidebar.style.cssText = 'position:fixed;top:0;left:-280px;width:260px;height:100vh;z-index:99999;overflow-y:auto;-webkit-overflow-scrolling:touch;transition:left 0.3s ease;background:#183543;display:block;padding:0;';
+    document.body.appendChild(mobileSidebar);
+
+    var sidebarOpen = false;
+
+    function showSidebar() {
         sidebarOpen = true;
-        sidebar.style.cssText = 'position:fixed !important;top:0 !important;left:0 !important;width:260px !important;height:100vh !important;z-index:99999 !important;margin-left:0 !important;overflow-y:auto !important;-webkit-overflow-scrolling:touch;transition:left 0.3s ease !important;background:#183543 !important;display:block !important;';
+        mobileSidebar.style.left = '0px';
         overlay.style.display = 'block';
         setTimeout(function() { overlay.style.opacity = '1'; }, 10);
     }
 
-    function hideMobileSidebar() {
-        if (!sidebar || !isMobile()) return;
+    function hideSidebar() {
         sidebarOpen = false;
-        sidebar.style.cssText = 'position:fixed !important;top:0 !important;left:-270px !important;width:260px !important;height:100vh !important;z-index:99999 !important;margin-left:0 !important;overflow-y:auto !important;-webkit-overflow-scrolling:touch;transition:left 0.3s ease !important;background:#183543 !important;display:block !important;';
+        mobileSidebar.style.left = '-280px';
         overlay.style.opacity = '0';
         setTimeout(function() { overlay.style.display = 'none'; }, 300);
     }
 
-    function toggleMobileSidebar(e) {
-        if (e) { e.preventDefault(); e.stopPropagation(); }
-        if (sidebarOpen) {
-            hideMobileSidebar();
-        } else {
-            showMobileSidebar();
-        }
+    function toggleSidebar(e) {
+        if (e) { e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); }
+        if (sidebarOpen) { hideSidebar(); } else { showSidebar(); }
     }
 
-    // Initial state: hide sidebar on mobile
-    if (sidebar && isMobile()) {
-        hideMobileSidebar();
-    }
-
-    // Toggle button handlers
+    // Toggle button — use capture phase to fire FIRST, before sidebar-menu.js
     if (toggleBtn) {
         var touchFired = false;
-        toggleBtn.addEventListener('touchend', function(e) {
+
+        toggleBtn.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
             touchFired = true;
-            toggleMobileSidebar(e);
-            setTimeout(function() { touchFired = false; }, 500);
-        }, { passive: false });
+            toggleSidebar(e);
+            setTimeout(function() { touchFired = false; }, 800);
+        }, true); // capture phase
 
         toggleBtn.addEventListener('click', function(e) {
-            if (touchFired) return; // Prevent double-fire from touch+click
-            toggleMobileSidebar(e);
-        });
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            if (touchFired) return;
+            toggleSidebar(e);
+        }, true); // capture phase
     }
 
-    // Close when overlay is tapped
-    overlay.addEventListener('click', function() { hideMobileSidebar(); });
-    overlay.addEventListener('touchend', function(e) {
+    // Close on overlay tap
+    overlay.addEventListener('click', hideSidebar);
+    overlay.addEventListener('touchstart', function(e) {
         e.preventDefault();
-        hideMobileSidebar();
+        hideSidebar();
     }, { passive: false });
 
-    // On resize: reset styles if moving to desktop
+    // Submenu accordion inside mobile sidebar
+    mobileSidebar.addEventListener('click', function(e) {
+        var link = e.target.closest('a.sidebar-header');
+        if (!link) return;
+        var submenu = link.nextElementSibling;
+        if (submenu && submenu.classList.contains('sidebar-submenu')) {
+            e.preventDefault();
+            // Toggle this submenu
+            if (submenu.style.display === 'block') {
+                submenu.style.display = 'none';
+                link.parentElement.classList.remove('active');
+            } else {
+                submenu.style.display = 'block';
+                link.parentElement.classList.add('active');
+            }
+        }
+    });
+
+    // Handle resize back to desktop
     window.addEventListener('resize', function() {
-        if (!isMobile() && sidebar) {
-            sidebar.style.cssText = ''; // Remove inline overrides, let desktop CSS take over
+        if (!isMobile()) {
+            originalSidebar.style.display = '';
+            mobileSidebar.style.display = 'none';
             overlay.style.display = 'none';
-            overlay.style.opacity = '0';
             sidebarOpen = false;
+        } else {
+            originalSidebar.style.display = 'none';
+            mobileSidebar.style.display = 'block';
+            mobileSidebar.style.left = '-280px';
         }
     });
 });
