@@ -21,24 +21,26 @@
 .admin-mmenu-wrap.open .admin-mmenu-bg{opacity:0.5}
 .admin-mmenu-x{position:fixed;right:15px;top:15px;z-index:1;opacity:0;transition:opacity 0.3s;color:#e1e1e1;font-size:28px;cursor:pointer;text-decoration:none;width:40px;height:40px;display:flex;align-items:center;justify-content:center}
 .admin-mmenu-wrap.open .admin-mmenu-x{opacity:1}
-.admin-mmenu-box{max-width:296px;width:100%;height:100%;overflow-y:auto;background:#222;box-shadow:1px 0 5px rgba(0,0,0,0.5);transform:translateX(-296px);-webkit-transform:translateX(-296px);transition:transform 0.4s;-webkit-transition:-webkit-transform 0.4s;padding:20px 15px;-webkit-overflow-scrolling:touch}
-.admin-mmenu-wrap.open .admin-mmenu-box{transform:translateX(0);-webkit-transform:translateX(0)}
-.admin-mmenu-user{text-align:center;padding:15px 0 20px;border-bottom:1px solid #2e3237;margin-bottom:10px}
-.admin-mmenu-user img{width:50px;height:50px;border-radius:50%}
-.admin-mmenu-user h6{color:#fff;margin:8px 0 2px;font-size:14px}
-.admin-mmenu-user p{color:#999;margin:0;font-size:12px}
-.admin-mmenu ul{list-style:none;padding:0;margin:0}
-.admin-mmenu > li{border-bottom:1px solid #2e3237}
-.admin-mmenu li a{display:block;padding:12px 10px;color:#eee;text-decoration:none;transition:color 0.3s;font-size:14px}
-.admin-mmenu li a:hover{color:#336699}
-.admin-mmenu .has-sub > a{display:flex;justify-content:space-between;align-items:center;cursor:pointer}
-.admin-mmenu .has-sub > a .arr{transition:transform 0.3s;font-size:12px}
-.admin-mmenu .has-sub.opened > a .arr{transform:rotate(90deg)}
-.admin-mmenu .sub{display:none;background:#1a1a1a}
-.admin-mmenu .has-sub.opened .sub{display:block}
-.admin-mmenu .sub li{border-bottom:1px solid #2a2a2a}
-.admin-mmenu .sub li a{padding-left:30px;font-size:13px;color:#ccc}
-.admin-mmenu .sub li a:hover{color:#336699}
+.admin-mmenu-box { max-width:296px; width:100%; height:100%; overflow-y:auto; background:#192c3a; box-shadow:1px 0 5px rgba(0,0,0,0.5); transform:translateX(-296px); -webkit-transform:translateX(-296px); transition:transform 0.4s; -webkit-transition:-webkit-transform 0.4s; padding:30px 20px; -webkit-overflow-scrolling:touch; }
+.admin-mmenu-wrap.open .admin-mmenu-box { transform:translateX(0); -webkit-transform:translateX(0); }
+.admin-mmenu-user { text-align:center; padding:0 0 30px; border-bottom:1px solid rgba(255,255,255,0.05); margin-bottom:20px; }
+.admin-mmenu-user img { width:70px; height:70px; border-radius:50%; box-shadow:0 0 20px rgba(69,162,223,0.4); border:2px solid #192c3a; }
+.admin-mmenu-user h6 { color:#ff6b6b; margin:15px 0 5px; font-size:16px; font-weight:700; text-transform:uppercase; letter-spacing:1px; }
+.admin-mmenu-user p { color:#7d91a1; margin:0; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:1px; }
+.admin-mmenu ul { list-style:none; padding:0; margin:0; }
+.admin-mmenu > li { border:none; margin-bottom:5px; }
+.admin-mmenu li a { display:flex; align-items:center; padding:12px 10px; color:#d6e5ef; text-decoration:none; transition:all 0.3s; font-size:15px; font-weight:600; border-radius:8px; }
+.admin-mmenu li a svg { width:18px; height:18px; margin-right:15px; }
+.admin-mmenu li a:hover, .admin-mmenu li.active > a { color:#45a2df; background:rgba(255,255,255,0.05); }
+.admin-mmenu .has-sub > a { justify-content:flex-start; }
+.admin-mmenu .has-sub > a .text-label { flex-grow:1; }
+.admin-mmenu .has-sub > a .arr { transition:transform 0.3s; font-size:14px; margin-left:auto; font-family:monospace; }
+.admin-mmenu .has-sub.opened > a .arr { transform:rotate(90deg); }
+.admin-mmenu .sub { display:none; background:transparent; padding-left:35px; }
+.admin-mmenu .has-sub.opened .sub { display:block; margin-top:5px; }
+.admin-mmenu .sub li { border:none; }
+.admin-mmenu .sub li a { padding:10px 10px; font-size:14px; color:#9ab0c1; }
+.admin-mmenu .sub li a:hover { color:#45a2df; }
 @media(min-width:992px){.admin-mmenu-wrap{display:none !important}}
 /* Hide legacy sidebar completely on mobile to prevent flashing or layout issues */
 @media (max-width: 991px) {
@@ -65,15 +67,15 @@
         </div>
         <ul class="admin-mmenu">
             @if(session()->get('login_id'))
-            <li><a href="{{ url('vendor/dashboard/'.session()->get('login_id')) }}">🏠 Dashboard</a></li>
+            <li><a href="{{ url('vendor/dashboard/'.session()->get('login_id')) }}"><i data-feather="home"></i> <span class="text-label">Dashboard</span></a></li>
             <li class="has-sub">
-                <a href="#">Category <span class="arr">▶</span></a>
+                <a href="#"><i data-feather="box"></i> <span class="text-label">Category</span> <span class="arr">&#10095;</span></a>
                 <ul class="sub">
                     <li><a href="{{ route('vendorcategory.sub.index') }}">Sub Category</a></li>
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="#">Products <span class="arr">▶</span></a>
+                <a href="#"><i data-feather="package"></i> <span class="text-label">Products</span> <span class="arr">&#10095;</span></a>
                 <ul class="sub">
                     <li><a href="{{ route('vendorproductscreate') }}">Add Product</a></li>
                     <li><a href="{{ route('vendorattribute.master.index') }}">Attributes</a></li>
@@ -82,21 +84,21 @@
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="#">Sales <span class="arr">▶</span></a>
+                <a href="#"><i data-feather="navigation"></i> <span class="text-label">Sales</span> <span class="arr">&#10095;</span></a>
                 <ul class="sub">
                     <li><a href="{{ route('vendor.order') }}">Orders</a></li>
                     <li><a href="{{ route('vendor.transaction') }}">Transactions</a></li>
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="#">Offers <span class="arr">▶</span></a>
+                <a href="#"><i data-feather="percent"></i> <span class="text-label">Offers</span> <span class="arr">&#10095;</span></a>
                 <ul class="sub">
                     <li><a href="{{ route('vendoroffer.list.index') }}">List Offers</a></li>
                     <li><a href="{{ route('vendoroffer.main.create') }}">Create Offer</a></li>
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="#">Marketing <span class="arr">▶</span></a>
+                <a href="#"><i data-feather="target"></i> <span class="text-label">Marketing</span> <span class="arr">&#10095;</span></a>
                 <ul class="sub">
                     <li><a href="{{ route('vendorwhatsapp.index') }}">Whatsapp</a></li>
                     <li><a href="{{ route('vendorfacebook.index') }}">Facebook</a></li>
@@ -105,12 +107,12 @@
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="#">Settings <span class="arr">▶</span></a>
+                <a href="#"><i data-feather="settings"></i> <span class="text-label">Settings</span> <span class="arr">&#10095;</span></a>
                 <ul class="sub">
                     <li><a href="{{ url('vendor/profile') }}">Profile</a></li>
                 </ul>
             </li>
-            <li><a href="{{ route('logout') }}">🔓 Logout</a></li>
+            <li><a href="{{ route('logout') }}"><i data-feather="log-in"></i> <span class="text-label">Logout</span></a></li>
             @endif
         </ul>
     </div>
