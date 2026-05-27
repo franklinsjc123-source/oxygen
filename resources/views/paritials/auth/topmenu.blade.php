@@ -102,12 +102,10 @@
 
     <!-- Page Header Start-->
     <div class="page-main-header">
-        <div class="main-header-right row p-0">
-            <div class="main-header-left d-lg-none w-auto">
-                <div class="logo-wrapper"><a href="{{ url('admin/dashboard') }}"><img class="blur-up lazyloaded"
-                            src="{{ asset('assets/images/dashboard/logo/newlogo.png') }}" alt=""></a></div>
-            </div>
-            <div class="mobile-sidebar w-auto">
+        <div class="main-header-right row p-0 align-items-center">
+            
+            <!-- 1. Left side: Breadcrumb/Toggle button -->
+            <div class="mobile-sidebar w-auto col-auto">
                 <div class="media-body text-end switch-sm">
                     <a href="javascript:void(0)" 
                     class="sidebar-toggle-btn" 
@@ -124,6 +122,12 @@
                         </svg>
                     </a>
                 </div>
+            </div>
+
+            <!-- 2. Center: Logo (mobile only) -->
+            <div class="main-header-left d-lg-none col text-center">
+                <div class="logo-wrapper" style="display: inline-block;"><a href="{{ url('admin/dashboard') }}"><img class="blur-up lazyloaded"
+                            src="{{ asset('assets/images/dashboard/logo/newlogo.png') }}" alt="Logo" style="max-height: 45px; object-fit: contain;"></a></div>
             </div>
 <script>
 // Admin mobile menu toggle — runs immediately (button exists above this script)
@@ -517,7 +521,11 @@
                         </ul>
                     </li>
                 </ul>
-                <div class="d-lg-none mobile-toggle pull-right"><i data-feather="more-horizontal"></i></div>
+                <div class="d-lg-none pull-right" style="display: flex; align-items: center;">
+                    <a href="{{ url('admin/logout') }}" style="color: #333; padding: 10px;">
+                        <i data-feather="log-out"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
