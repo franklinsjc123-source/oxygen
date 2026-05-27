@@ -11,7 +11,13 @@ body {
 .authentication-box .container {
     margin-top: auto !important;
     margin-bottom: auto !important;
-    padding-top: 100px;
-    padding-bottom: 30px;
+}
+
+/* Apply specific padding only for mobile views */
+@media (max-width: 767px) {
+    .authentication-box .container {
+        padding-top: 200px;
+        padding-bottom: 30px;
+    }
 }
 </style>
