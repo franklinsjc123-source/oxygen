@@ -92,11 +92,13 @@ Route::post('category_main/changestatus', [CategoryMainController::class, 'chang
 //category
 Route::resource('category', CategoryController::class, ['names' => 'category']);
 Route::post('category/update/{id}', [CategoryController::class, 'update'])->name('category_update');
+Route::post('category/changestatus', [CategoryController::class, 'changestatus'])->name('category.changestatus');
 
 Route::post('subcategory/update/{id}', [CategorySubController::class, 'update'])->name('subcategory_update');
 
 // Category Sub
 Route::resource('category_sub', CategorySubController::class, ['names' => 'category.sub']);
+Route::post('category_sub/changestatus', [CategorySubController::class, 'changestatus'])->name('category_sub.changestatus');
 Route::resource('attribute_groups', AttributeGroupController::class);
 Route::post('update_attributevalues', [AttributeGroupController::class, 'update_attributes'])->name('update_attributevalues');
 Route::resource('specification_groups', SpecificationGroupController::class,['names' => 'specification_groups.admin']);

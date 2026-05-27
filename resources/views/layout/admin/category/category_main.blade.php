@@ -191,8 +191,7 @@
                                                                 method="post">
                                                                 @method('DELETE')
                                                                 @csrf
-                                                                <button type="submit" class="btn btn-warning mx-1"
-                                                                    onclick="return confirm('Are you sure, you want to delete it?')"><i
+                                                                <button type="button" class="btn btn-warning mx-1 delete-btn"><i
                                                                         class="fa fa-trash"></i>
                                                                 </button>
                                                             </form>
@@ -403,8 +402,29 @@ $(document).on('click','.edit_category_main', function(e){
             }
         });
     });
+
+    // Delete SweetAlert
+    $(document).on('click', '.delete-btn', function(e) {
+        e.preventDefault();
+        var form = $(this).closest('form');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to delete it?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+
     });
 
         </script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @endsection
 

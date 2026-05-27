@@ -222,6 +222,17 @@ class CategorySubController extends Controller
                
     }
 
+    public function changestatus(Request $request)
+    {
+        $category = CategorySub::find($request->id);
+        if ($category) {
+            $category->status = $request->status;
+            $category->save();
+            return response()->json(['success' => 'Status changed successfully.']);
+        }
+        return response()->json(['error' => 'Category not found.'], 404);
+    }
+
     /**
      * Remove the specified resource from storage.
      *

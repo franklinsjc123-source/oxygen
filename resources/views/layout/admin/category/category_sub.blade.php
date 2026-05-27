@@ -366,19 +366,10 @@
                                                     <td>{{ $sub_category->category_sub_sortorder }}  </td>
                                                     <td>
                                                         <label class="switch">
-                                                         @if($sub_category->sc_status  == 1){
-                                                                <input type="checkbox"
-                                                                    onclick="return confirm('you want to Change it?  Please Click Edit Button')" value="1" active="Active"
-                                                                    checked id="togBtn">
-                                                                }@else{
-                                                                    <input type="checkbox"
-                                                                    onclick="return confirm('you want to Change it?  Please Click Edit Button')" value="0"  class="Inactive"
-                                                                     id="togBtn">
-                                                                }
-                                                                @endif 
-                                                             {{-- <input type="checkbox"
-                                                                onclick="return confirm('Are you sure, you want to Change it?')"
-                                                                checked id="togBtn"> --}}
+                                                            <input type="checkbox"
+                                                                   class="toggle-status"
+                                                                   data-id="{{ $sub_category->me_id }}"
+                                                                   {{ $sub_category->sc_status == 1 ? 'checked' : '' }}>
                                                             <div class="slider round">
                                                                 <!--ADDED HTML -->
                                                                 <span class="off">Inactive </span>
@@ -403,9 +394,7 @@
                                                                 method="post">
                                                                 @method('DELETE')
                                                                 @csrf
-                                                                <button type="submit" class="btn btn-warning mx-1"
-                                                                    onclick="return confirm('Are you sure, you want to delete it?')"><i
-                                                                        class="fa fa-trash"></i>
+                                                                <button type="button" class="btn btn-warning mx-1 delete-btn"><i class="fa fa-trash"></i>
                                                                 </button>
                                                             </form>
 															@endif
@@ -643,6 +632,49 @@
     $(".modal").on("hidden.bs.modal", function() {
         $(this).find('form').trigger('reset');
     });
+
+    // Toggle Status
+    $(document).on('change', '.toggle-status', function() {
+        var status = $(this).prop('checked') == true ? 1 : 0;
+        var category_id = $(this).data('id');
+        
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "{{ route('category_sub.changestatus') }}",
+            data: {
+                '_token': '{{ csrf_token() }}',
+                'status': status,
+                'id': category_id
+            },
+            success: function(data){
+                console.log(data.success);
+            },
+            error: function(xhr, status, error) {
+                console.log(error);
+            }
+        });
+    });
+
+    // Delete SweetAlert
+    $(document).on('click', '.delete-btn', function(e) {
+        e.preventDefault();
+        var form = $(this).closest('form');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to delete it?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+
     });
    
 
@@ -651,5 +683,6 @@
 
 
         </script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @endsection
 
