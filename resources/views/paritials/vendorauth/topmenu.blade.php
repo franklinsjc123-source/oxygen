@@ -40,6 +40,18 @@
 .admin-mmenu .sub li a{padding-left:30px;font-size:13px;color:#ccc}
 .admin-mmenu .sub li a:hover{color:#336699}
 @media(min-width:992px){.admin-mmenu-wrap{display:none !important}}
+/* Hide legacy sidebar completely on mobile to prevent flashing or layout issues */
+@media (max-width: 991px) {
+    .page-wrapper .page-body-wrapper .page-sidebar {
+        display: none !important;
+        visibility: hidden !important;
+        transform: translateX(-100%) !important;
+    }
+    .page-wrapper .page-body-wrapper .page-sidebar ~ .page-body,
+    .page-wrapper .page-body-wrapper .page-sidebar ~ footer {
+        margin-left: 0 !important;
+    }
+}
 </style>
 
 <div class="admin-mmenu-wrap" id="admMobileMenu">
