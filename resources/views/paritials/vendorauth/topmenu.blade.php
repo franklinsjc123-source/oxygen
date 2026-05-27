@@ -111,7 +111,12 @@
             <!-- 1. Left side: Breadcrumb/Toggle button -->
             <div class="mobile-sidebar w-auto col-auto">
                 <div class="media-body text-end switch-sm">
-                    <a href="javascript:void(0)" class="sidebar-toggle-btn" id="sidebar-toggle" aria-label="Toggle sidebar">
+                    <!-- Desktop Toggle -->
+                    <a href="javascript:void(0)" class="sidebar-toggle-btn d-none d-lg-inline-block" id="sidebar-toggle" aria-label="Toggle sidebar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none;"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
+                    </a>
+                    <!-- Mobile Toggle -->
+                    <a href="javascript:void(0)" class="mobile-drawer-toggle-btn d-inline-block d-lg-none" id="mobile-drawer-toggle" style="color: inherit;" aria-label="Toggle mobile menu">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events:none;"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
                     </a>
                 </div>
@@ -124,7 +129,7 @@
             </div>
 <script>
 (function(){
-    var w=document.getElementById('admMobileMenu'),bg=document.getElementById('admMobileBg'),x=document.getElementById('admMobileX'),btn=document.getElementById('sidebar-toggle');
+    var w=document.getElementById('admMobileMenu'),bg=document.getElementById('admMobileBg'),x=document.getElementById('admMobileX'),btn=document.getElementById('mobile-drawer-toggle');
     if(!w||!btn)return;
     function openM(){w.classList.add('open')}function closeM(){w.classList.remove('open')}
     bg.addEventListener('click',closeM);bg.addEventListener('touchstart',function(e){e.preventDefault();closeM()},{passive:false});
