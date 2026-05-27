@@ -88,6 +88,7 @@ Route::get('dashboard', [DashboardController::class, 'admindashboard'])
 // Category Main
 Route::resource('category_main', CategoryMainController::class, ['names' => 'category.main']);
 Route::post('category_main/update/{id}', [CategoryMainController::class, 'update'])->name('category_main_update');
+Route::post('category_main/changestatus', [CategoryMainController::class, 'changestatus'])->name('category_main.changestatus');
 //category
 Route::resource('category', CategoryController::class, ['names' => 'category']);
 Route::post('category/update/{id}', [CategoryController::class, 'update'])->name('category_update');

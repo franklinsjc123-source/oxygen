@@ -162,25 +162,17 @@
                                                     </td>
                                                     <td>
                                                         <label class="switch">
-                                                            {{-- $status = $pin->status --}}
-                                                            
-                                                             @if($categories->status  == 1){
                                                              <input type="checkbox"
-                                                                 onclick="return confirm('you want to Change it?  Please Click Edit Button')"
-                                                                 checked id="togBtn">
-                                                             }@else{
-                                                                 <input type="checkbox"
-                                                                 onclick="return confirm('you want to Change it?  Please Click Edit Button')" 
-                                                                  id="togBtn">
-                                                             }
-                                                             @endif
-                                                             <div class="slider round">
-                                                                 <!--ADDED HTML -->
-                                                                 <span class="on">Active</span>
-                                                                 <span class="off">Inactive </span>                                                                
-                                                                 <!--END-->
-                                                             </div>
-                                                         </label>
+                                                                    class="toggle-status"
+                                                                    data-id="{{ $categories->id }}"
+                                                                    {{ $categories->status == 1 ? 'checked' : '' }}>
+                                                              <div class="slider round">
+                                                                  <!--ADDED HTML -->
+                                                                  <span class="on">Active</span>
+                                                                  <span class="off">Inactive </span>                                                                
+                                                                  <!--END-->
+                                                              </div>
+                                                          </label>
 
                                                     </td>
 
@@ -385,6 +377,31 @@ $(document).on('click','.edit_category_main', function(e){
     $(document).ready(function() {
     $(".modal").on("hidden.bs.modal", function() {
         $(this).find('form').trigger('reset');
+    });
+
+    // Toggle Status
+    $(document).on('change', '.toggle-status', function() {
+        var status = $(this).prop('checked') == true ? 1 : 0;
+        var category_id = $(this).data('id');
+        
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "{{ route('category_main.changestatus') }}",
+            data: {
+                '_token': '{{ csrf_token() }}',
+                'status': status,
+                'id': category_id
+            },
+            success: function(data){
+                console.log(data.success);
+            },
+            error: function(xhr, status, error) {
+                console.log(error);
+                // Optionally revert the switch if the request fails
+                // $(this).prop('checked', !status);
+            }
+        });
     });
     });
 
