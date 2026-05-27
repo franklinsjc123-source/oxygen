@@ -11,7 +11,7 @@ body {
 .authentication-box .container {
     margin-top: auto !important;
     margin-bottom: auto !important;
-    padding-top: 30px;
+    padding-top: 100px;
     padding-bottom: 30px;
 }
 </style>
