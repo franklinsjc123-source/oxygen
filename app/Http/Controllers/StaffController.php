@@ -25,7 +25,8 @@ class StaffController extends Controller
     {
         $route=Route::all();
         $Zonal=Zonal::all();
-        $department = Departments::where('status', 1)->get(); 
+        $departmentIdsWithRoles = \App\Models\StaffRole::select('department')->distinct()->pluck('department');
+        $department = Departments::where('status', 1)->whereIn('id', $departmentIdsWithRoles)->get(); 
 
         return view('layout.admin.staff.staff-create')
         ->with(
@@ -194,8 +195,11 @@ class StaffController extends Controller
         $route=Route::all();
         $Zonal=Zonal::all();
         $staff = Staffcreates::find($id);
-        $department = Departments::where('status', 1)->get(); 
-        $designation = designation::where('status', 1)->where('department', $staff->department)->get(); 
+        $departmentIdsWithRoles = \App\Models\StaffRole::select('department')->distinct()->pluck('department');
+        $department = Departments::where('status', 1)->whereIn('id', $departmentIdsWithRoles)->get(); 
+        
+        $designationIdsWithRoles = \App\Models\StaffRole::where('department', $staff->department)->select('designation')->distinct()->pluck('designation');
+        $designation = designation::where('status', 1)->where('department', $staff->department)->whereIn('id', $designationIdsWithRoles)->get(); 
 
         return view('layout.admin.staff.staff-edit')
         ->with(
@@ -417,6 +421,14 @@ class StaffController extends Controller
     }
     public function getstaffdepartment( FlasherInterface $flasher, Request $request){
 
+        $designationIdsWithRoles = \App\Models\StaffRole::where('department', $request->department)->select('designation')->distinct()->pluck('designation');
+        $category_data = designation::where([['department', $request->department], ['status', 1]])
+            ->whereIn('id', $designationIdsWithRoles)
+            ->get();
+        return response()->json($category_data);
+    }
+
+    public function getalldesignations( FlasherInterface $flasher, Request $request){
         $category_data = designation::where([['department', $request->department], ['status', 1]])->get();
         return response()->json($category_data);
     }

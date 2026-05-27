@@ -36,14 +36,6 @@ class StaffRoleController extends Controller
     
     public function store(Request $request)
 {
-    // Validate the form input
-    $request->validate([
-        'department' => 'required',
-        'designation' => 'required',
-        'mainmenus' => 'required|array',
-        'submenus' => 'required|array',
-    ]);
-
     $exists = StaffRole::where('department', $request->department)
         ->where('designation', $request->designation)
         ->exists();
@@ -51,6 +43,14 @@ class StaffRoleController extends Controller
     if ($exists) {
         return redirect()->back()->with('error', 'A role mapping for this Department and Designation already exists!')->withInput();
     }
+
+    // Validate the form input
+    $request->validate([
+        'department' => 'required',
+        'designation' => 'required',
+        'mainmenus' => 'required|array',
+        'submenus' => 'required|array',
+    ]);
 
     // Insert into the staff_roles table
     StaffRole::create([
@@ -76,14 +76,6 @@ public function edit($id)
 
 public function update(Request $request, $id)
 {
-    // Validate the form input
-    $request->validate([
-        'department' => 'required',
-        'designation' => 'required',
-        'mainmenus' => 'required|array',
-        'submenus' => 'required|array',
-    ]);
-
     $exists = StaffRole::where('department', $request->department)
         ->where('designation', $request->designation)
         ->where('id', '!=', $id)
@@ -92,6 +84,14 @@ public function update(Request $request, $id)
     if ($exists) {
         return redirect()->back()->with('error', 'A role mapping for this Department and Designation already exists!')->withInput();
     }
+
+    // Validate the form input
+    $request->validate([
+        'department' => 'required',
+        'designation' => 'required',
+        'mainmenus' => 'required|array',
+        'submenus' => 'required|array',
+    ]);
 
     // Update staff role
     $role = StaffRole::find($id);

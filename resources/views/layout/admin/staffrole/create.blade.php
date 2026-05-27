@@ -50,15 +50,32 @@
                     <div class="col-xl-12">
                         <div class="card tab2-card">
                             <div class="card-body">
-                               	{{-- @if($errors)
-											@foreach ( $errors->all() as $errors)
-											<li style=" color:red">
-												{{$errors}}
-											</li>
-												
-											@endforeach
-											@endif --}}
-											
+                                    @if(session('error'))
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            {{ session('error') }}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    @endif
+                                    @if(session('success'))
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            {{ session('success') }}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    @endif
+                                    @if($errors->any())
+                                        <div class="alert alert-danger">
+                                            <ul class="mb-0">
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
+
 									<form method="POST" action="{{ isset($role) ? route('staffrole.update', $role->id) : route('staffrole.store') }}">
     @csrf
     @isset($role)
@@ -70,12 +87,15 @@
             <div class="form-group row">
                 <label for="department" class="col-xl-4 col-md-4">Department:</label>
                 <div class="col-xl-8 col-md-8">
-                    <select class="custom-select w-100 form-control" id="department" name="department" required>
+                    <select class="custom-select w-100 form-control" id="department" name="department" required {{ isset($role) ? 'style=pointer-events:none;background-color:#e9ecef; readonly tabindex=-1' : '' }}>
                         <option value="">--Select--</option>
                         @foreach ($departments as $item)
                             <option value="{{ $item->id }}" {{ (isset($role) && $role->department == $item->id) ? 'selected' : '' }}>{{ $item->name }}</option>
                         @endforeach
                     </select>
+                    @if(isset($role))
+                        <input type="hidden" name="department" value="{{ $role->department }}">
+                    @endif
                 </div>
             </div>
         </div>
@@ -84,12 +104,15 @@
             <div class="form-group row">
                 <label for="designation" class="col-xl-4 col-md-4">Designation:</label>
                 <div class="col-xl-8 col-md-8">
-                    <select class="custom-select w-100 form-control" id="designation" name="designation" required>
+                    <select class="custom-select w-100 form-control" id="designation" name="designation" required {{ isset($role) ? 'style=pointer-events:none;background-color:#e9ecef; readonly tabindex=-1' : '' }}>
                         <option value="">--Select--</option>
                         @foreach ($designations as $item)
                             <option value="{{ $item->id }}" {{ (isset($role) && $role->designation == $item->id) ? 'selected' : '' }}>{{ $item->designation }}</option>
                         @endforeach
                     </select>
+                    @if(isset($role))
+                        <input type="hidden" name="designation" value="{{ $role->designation }}">
+                    @endif
                 </div>
             </div>
         </div>
@@ -190,7 +213,7 @@ function getAjaxValue(url, method, callback) {
             // Main Categoy Id
             $('#department').on('change', function() {
                 let department = $(this).val();
-                let url = '{{ route('getstaffdepartment') }}?department=' + department;
+                let url = '{{ route('getalldesignations') }}?department=' + department;
                 let method = 'GET';
                 getAjaxValue(url, method, function(data) {
                     $('#designation').empty();

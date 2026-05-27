@@ -291,6 +291,7 @@ Route::post('staff/update/{id}', [StaffController::class, 'update']);
 Route::delete('staff/destroy/{id}', [StaffController::class, 'destroy'])->name('staff.destroy');
 Route::get('staff/edit/{id}', [StaffController::class, 'edit'])->name('staff.edit');
 Route::get('get-staffdepartment', [StaffController::class, 'getstaffdepartment'])->name('getstaffdepartment');
+Route::get('get-alldesignations', [StaffController::class, 'getalldesignations'])->name('getalldesignations');
 Route::get('staff_export',[StaffController::class, 'get_staff_data'])->name('staff.export');
 
 // Route::delete('staff/destroy/{id}', 'StaffController@destroy')->namfe('staff.destroy');
