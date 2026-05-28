@@ -145,4 +145,15 @@ class SpecificationGroupController extends Controller
 
         return redirect()->route('specification_groups.admin.index')->with('success', 'Specification Group deleted successfully.');
     }
+
+    public function statusUpdate(Request $request)
+    {
+        $group = SpecificationGroup::find($request->id);
+        if ($group) {
+            $group->status = $request->status;
+            $group->save();
+            return response()->json(['success' => true, 'message' => 'Status updated successfully.']);
+        }
+        return response()->json(['success' => false, 'message' => 'Specification Group not found.'], 404);
+    }
 }

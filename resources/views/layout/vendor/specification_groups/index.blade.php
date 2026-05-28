@@ -119,7 +119,19 @@
                             <span class="badge bg-success">Admin</span>
                         @endif
                     </td>
-                    <td>{{ $group->status }}</td>
+                    <td>
+                        <label class="switch">
+                            @if($group->status == 'Active' || $group->status == '1' || $group->status == 1)
+                                <input type="checkbox" class="status-toggle" data-id="{{ $group->id }}" checked>
+                            @else
+                                <input type="checkbox" class="status-toggle" data-id="{{ $group->id }}">
+                            @endif
+                            <div class="slider round">
+                                <span class="on">Active</span>
+                                <span class="off">Inactive</span>
+                            </div>
+                        </label>
+                    </td>
                    
                     <td>
                     @if($group->created_by == 'Vendor' && $group->created_byid == session()->get('login_id'))
@@ -129,11 +141,11 @@
                         
                         <a href="{{ route('specification_groups.edit', $group->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i></a>
                         
-                        <form action="{{ route('specification_groups.destroy', $group->id) }}" onsubmit="return confirm('Are you sure, you want to delete it?')"method="POST" style="display:inline;">
+                        {{-- <form action="{{ route('specification_groups.destroy', $group->id) }}" onsubmit="return confirm('Are you sure, you want to delete it?')"method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm" title="Delete">X</button>
-                        </form>
+                        </form> --}}
                     @elseif($group->created_by == 'Admin')
                         <a href="{{ route('specification_groups.edit', $group->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i></a>
                     @endif
@@ -274,6 +286,34 @@
                     }
                     renderRows(values);
                 });
+
+                // Status toggle AJAX
+                $(document).on('change', '.status-toggle', function() {
+                    var groupId = $(this).data('id');
+                    var nextStatus = $(this).is(':checked') ? 'Active' : 'De-Active';
+
+                    $.ajax({
+                        url: "{{ route('vendor.specification_groups.status') }}",
+                        type: "POST",
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            "id": groupId,
+                            "status": nextStatus
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            if (!response.success) {
+                                alert('Status update failed.');
+                                $(this).prop('checked', !$(this).is(':checked'));
+                            }
+                        }.bind(this),
+                        error: function() {
+                            alert('Status update failed.');
+                            $(this).prop('checked', !$(this).is(':checked'));
+                        }.bind(this)
+                    });
+                });
+
              })();
         </script>
 @endsection

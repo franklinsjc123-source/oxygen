@@ -191,25 +191,16 @@
                                                 </td>
                                                 <td>
                                                     <label class="switch">
-                                                        {{-- $status = $pin->status --}}
-                                                        
-                                                         @if($productcollection->status  == 1){
-                                                         <input type="checkbox"
-                                                             onclick="return confirm('you want to Change it?  Please Click Edit Button')"
-                                                             checked id="togBtn">
-                                                         }@else{
-                                                             <input type="checkbox"
-                                                             onclick="return confirm('you want to Change it?  Please Click Edit Button')" 
-                                                              id="togBtn">
-                                                         }
-                                                         @endif
-                                                         <div class="slider round">
-                                                             <!--ADDED HTML -->
-                                                             <span class="on">Active</span>
-                                                             <span class="off">Inactive </span>                                                                
-                                                             <!--END-->
-                                                         </div>
-                                                     </label>
+                                                        @if($productcollection->status == 1 || $productcollection->status == 'Active')
+                                                            <input type="checkbox" class="status-toggle" data-id="{{ $productcollection->id }}" checked>
+                                                        @else
+                                                            <input type="checkbox" class="status-toggle" data-id="{{ $productcollection->id }}">
+                                                        @endif
+                                                        <div class="slider round">
+                                                            <span class="on">Active</span>
+                                                            <span class="off">Inactive</span>
+                                                        </div>
+                                                    </label>
                                                 </td>
                                                 <td><span class="d-flex">
                                                     <button type="button" class="edit_pro_col btn btn-secondary mx-1" value="{{ $productcollection->id }}">
@@ -217,11 +208,10 @@
                                                      @if (session()->get('log_type') == 'Admin')
 														 <form
                                                         action="{{ route('productcollection.master.destroy', $productcollection->id) }}"
-                                                        method="post">
+                                                        method="post" class="delete-form">
                                                         @method('DELETE')
                                                         @csrf
-                                                        <button type="submit" class="btn btn-warning mx-1"
-                                                            onclick="return confirm('Are you sure, you want to delete it?')"><i
+                                                        <button type="button" class="btn btn-warning mx-1 delete-btn"><i
                                                                 class="fa fa-trash"></i>
                                                         </button>
                                                     </form>
@@ -242,6 +232,14 @@
     </div>
 
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Ensure SweetAlert2 popup is responsive */
+        .swal2-popup {
+            width: 500px !important; /* Fixed width for standard alerts */
+            max-width: 90% !important; /* Make sure it doesn't overflow on small screens */
+        }
+    </style>
     <script>
 
         $(document).on('click','.edit_pro_col', function(e){
@@ -311,6 +309,52 @@
         
              });
                 
+            });
+
+            // Status toggle AJAX
+            $(document).on('change', '.status-toggle', function() {
+                var collectionId = $(this).data('id');
+                var nextStatus = $(this).is(':checked') ? 1 : 0;
+
+                $.ajax({
+                    url: "{{ route('productcollection.status') }}",
+                    type: "POST",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "id": collectionId,
+                        "status": nextStatus
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (!response.success) {
+                            alert('Status update failed.');
+                            $(this).prop('checked', !$(this).is(':checked'));
+                        }
+                    }.bind(this),
+                    error: function() {
+                        alert('Status update failed.');
+                        $(this).prop('checked', !$(this).is(':checked'));
+                    }.bind(this)
+                });
+            });
+
+            // Delete SweetAlert
+            $(document).on('click', '.delete-btn', function(e) {
+                e.preventDefault();
+                var form = $(this).closest('form');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
             });
                 </script>
 @endsection

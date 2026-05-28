@@ -100,8 +100,10 @@ Route::post('subcategory/update/{id}', [CategorySubController::class, 'update'])
 Route::resource('category_sub', CategorySubController::class, ['names' => 'category.sub']);
 Route::post('category_sub/changestatus', [CategorySubController::class, 'changestatus'])->name('category_sub.changestatus');
 Route::resource('attribute_groups', AttributeGroupController::class);
+Route::post('attribute_groups/status', [AttributeGroupController::class, 'statusUpdate'])->name('attribute_groups.status');
 Route::post('update_attributevalues', [AttributeGroupController::class, 'update_attributes'])->name('update_attributevalues');
 Route::resource('specification_groups', SpecificationGroupController::class,['names' => 'specification_groups.admin']);
+Route::post('specification_groups/status', [SpecificationGroupController::class, 'statusUpdate'])->name('specification_groups.status');
 Route::post('update_specification', [SpecificationGroupController::class, 'update_specification'])->name('update_specification');
 Route::resource('product_colors', ProductColorController::class);
 Route::post('product_colors/status', [ProductColorController::class, 'statusUpdate'])->name('product_colors.status');
@@ -178,6 +180,7 @@ Route::get('product_export',[ProductsController::class, 'get_product_data'])->na
 Route::resource('attribute-listing', AttributeController::class, ['names' => 'attribute.master']);
 
 Route::resource('product-collection', ProductCollectionController::class, ['names' => 'productcollection.master']);
+Route::post('productcollection/status', [ProductCollectionController::class, 'statusUpdate'])->name('productcollection.status');
 Route::post('productcollection/update/{id}', [ProductCollectionController::class, 'update'])->name('productcollection_update');
 Route::resource('product-specification', SpecificationController::class, ['names' => 'product.specification']);
 

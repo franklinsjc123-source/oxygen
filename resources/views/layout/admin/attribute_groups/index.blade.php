@@ -113,7 +113,19 @@
                                                         }
                                                     @endphp
                     </td>
-                    <td>{{ $group->status }}</td>
+                    <td>
+                        <label class="switch">
+                            @if($group->status == 'Active' || $group->status == '1' || $group->status == 1)
+                                <input type="checkbox" class="status-toggle" data-id="{{ $group->id }}" checked>
+                            @else
+                                <input type="checkbox" class="status-toggle" data-id="{{ $group->id }}">
+                            @endif
+                            <div class="slider round">
+                                <span class="on">Active</span>
+                                <span class="off">Inactive</span>
+                            </div>
+                        </label>
+                    </td>
                    
                     <td>
                         <input type="hidden" id="attributes_val{{ $group->id }}" value="{{ $val}}">
@@ -330,6 +342,34 @@
             }
             renderRows(values);
         });
+
+        // Status toggle AJAX
+        $(document).on('change', '.status-toggle', function() {
+            var groupId = $(this).data('id');
+            var nextStatus = $(this).is(':checked') ? 'Active' : 'De-Active';
+
+            $.ajax({
+                url: "{{ route('attribute_groups.status') }}",
+                type: "POST",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "id": groupId,
+                    "status": nextStatus
+                },
+                dataType: "json",
+                success: function(response) {
+                    if (!response.success) {
+                        alert('Status update failed.');
+                        $(this).prop('checked', !$(this).is(':checked'));
+                    }
+                }.bind(this),
+                error: function() {
+                    alert('Status update failed.');
+                    $(this).prop('checked', !$(this).is(':checked'));
+                }.bind(this)
+            });
+        });
+
     })();
 </script>
         

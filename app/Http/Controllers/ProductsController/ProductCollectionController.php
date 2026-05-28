@@ -352,4 +352,15 @@ class ProductCollectionController extends Controller
             return redirect()->route('products.crud.listing');
         }
     }
+
+    public function statusUpdate(Request $request)
+    {
+        $collection = productcollection::find($request->id);
+        if ($collection) {
+            $collection->status = $request->status;
+            $collection->save();
+            return response()->json(['success' => true, 'message' => 'Status updated successfully.']);
+        }
+        return response()->json(['success' => false, 'message' => 'Product Collection not found.'], 404);
+    }
 }
