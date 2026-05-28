@@ -107,6 +107,14 @@ class MasterController extends Controller
          }
         
     }
+    public function changedepartmentstatus(Request $request)
+    {
+        $department = Departments::find($request->id);
+        $department->status = $request->status;
+        $department->save();
+
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
     public function savePincodes(Request $request)
     {
         $data = (object) $request->all();

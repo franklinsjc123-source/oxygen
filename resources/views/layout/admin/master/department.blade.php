@@ -193,19 +193,7 @@
                                                     <td>{{ $department->name }}</td>
                                                     <td>
                                                         <label class="switch">
-                                                            @if($department->status  == 1){
-                                                                <input type="checkbox"
-                                                                    onclick="return confirm('you want to Change it?  Please Click Edit Button')"
-                                                                    checked id="togBtn">
-                                                                }@else{
-                                                                    <input type="checkbox"
-                                                                    onclick="return confirm('you want to Change it?  Please Click Edit Button')" 
-                                                                     id="togBtn">
-                                                                }
-                                                                @endif
-                                                            {{-- <input type="checkbox"
-                                                                onclick="return confirm('Are you sure, you want to Change it?')"
-                                                                checked id="togBtn"> --}}
+                                                        <input type="checkbox" class="toggle-status" data-id="{{ $department->id }}" {{ $department->status == 1 ? 'checked' : '' }}>
                                                             <div class="slider round">
                                                                
                                                                     <span class="off">Inactive </span>
@@ -231,8 +219,7 @@
                                                                     method="post">
                                                                     @method('POST')
                                                                     @csrf
-                                                                    <button type="submit" class="btn btn-warning mx-1" value="{{$department->id}}"
-                                                                        onclick="return confirm('Are you sure, you want to delete it?')"><i
+                                                                    <button type="submit" class="btn btn-warning mx-1" value="{{$department->id}}"><i
                                                                             class="fa fa-trash"></i>
                                                                     </button>
                                                                 </form>
@@ -264,6 +251,57 @@
     </div>
 @endsection
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+.swal2-popup {
+    font-size: 1.6rem !important;
+}
+</style>
+<script>
+$(document).ready(function() {
+    // Status Toggle
+    $(document).on('change', '.toggle-status', function() {
+        var status = $(this).prop('checked') ? 1 : 0;
+        var id = $(this).data('id');
+        var checkbox = $(this);
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "{{ route('department.changestatus') }}",
+            data: {'status': status, 'id': id, '_token': '{{ csrf_token() }}'},
+            success: function(data) {
+                // Instantly changed
+            },
+            error: function() {
+                checkbox.prop('checked', !status);
+                Swal.fire('Error!', 'Something went wrong.', 'error');
+            }
+        });
+    });
+
+    // Delete Confirmation
+    $(document).on('submit', 'form', function(e) {
+        if($(this).find('input[name="_method"][value="POST"]').length > 0 && $(this).attr('action').includes('departmentdelete')) {
+            e.preventDefault();
+            var form = this;
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to delete this department! This cannot be undone.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        }
+    });
+});
+</script>
         <script>
             $(function() {
                 var validation_option = getValidationOptions({

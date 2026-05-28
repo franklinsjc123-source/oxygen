@@ -287,7 +287,9 @@ Route::post('whatsapp/changestatus', [WhAppController::class, 'changestatus'])->
 Route::resource('whatsapp',  WhAppController::class,['names' => 'whatsapp']);
 Route::post('facebook/changestatus', [FaceBookController::class, 'changestatus'])->name('facebook.changestatus');
 Route::resource('facebook',  FaceBookController::class,['names' => 'facebook']);
+Route::post('instagram/changestatus', [InstaController::class, 'changestatus'])->name('instagram.changestatus');
 Route::resource('instagram',  InstaController::class,['names' => 'instagram']);
+Route::post('oxygen/changestatus', [OxygenController::class, 'changestatus'])->name('oxygen.changestatus');
 Route::resource('oxygen',  OxygenController::class,['names' => 'oxygen']);
 
 
@@ -323,6 +325,7 @@ Route::get('activity/create', [ActivityController::class, 'create']);
 Route::get('activity/list', [ActivityController::class, 'list']);
 
 //Master
+Route::post('department/changestatus', [MasterController::class, 'changedepartmentstatus'])->name('department.changestatus');
 Route::get('department', [MasterController::class, 'department'])->name('department');
 Route::post('department', [MasterController::class, 'department']);
 

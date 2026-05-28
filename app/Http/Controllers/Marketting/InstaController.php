@@ -156,4 +156,12 @@ class InstaController extends Controller
             return redirect()->route('instagram.index');
         }
     }
+    public function changestatus(Request $request)
+    {
+        $instagrame = insta::find($request->id);
+        $instagrame->status = $request->status;
+        $instagrame->save();
+
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
 }

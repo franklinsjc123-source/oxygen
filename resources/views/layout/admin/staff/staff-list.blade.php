@@ -109,8 +109,7 @@
                                             <form action="{{ route('staff.edit',$stf->id) }}" method="get">
                                                 @method('EDIT')
                                                 @csrf
-                                                <button type="submit" class="btn btn-secondary mx-1" title="Edit"
-                                                    onclick="return confirm('Are you sure, you want to Edit it?')"><i
+                                                <button type="submit" class="btn btn-secondary mx-1" title="Edit"><i
                                                         class="fa fa-pencil"></i>
                                                 </button>
                                             </form> 
@@ -121,8 +120,7 @@
                                         <form action="{{ route('staff.destroy',$stf->id) }}" method="POST">
                                             @method('DELETE')
                                             @csrf
-                                            <button type="submit" class="btn btn-warning mx-1" title="Delete"
-                                                onclick="return confirm('Are you sure, you want to delete it?')"><i
+                                            <button type="submit" class="btn btn-warning mx-1" title="Delete"><i
                                                     class="fa fa-trash"></i>
                                             </button>
                                         </form>   
@@ -153,3 +151,35 @@
         </div>
 
 @endsection
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+.swal2-popup {
+    font-size: 1.6rem !important;
+}
+</style>
+<script>
+$(document).ready(function() {
+    // Delete Confirmation
+    $(document).on('submit', 'form', function(e) {
+        if($(this).find('input[name="_method"][value="DELETE"]').length > 0) {
+            e.preventDefault();
+            var form = this;
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to delete this staff! This cannot be undone.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        }
+    });
+});
+</script>
+@endpush

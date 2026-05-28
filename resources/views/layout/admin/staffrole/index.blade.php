@@ -99,15 +99,14 @@
 
                                             <td> 
                                                 <span class="mt-3 d-flex">
-												<a href="{{ route('staffrole.edit', $item->id) }}" onclick="return confirm('Are you sure, you want to Edit it?')" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-edit"></i></a> 
+												<a href="{{ route('staffrole.edit', $item->id) }}" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-edit"></i></a> 
                                              @if (session()->get('log_type') == 'Admin')
                                                  <form
                                                 action="{{ route('staffrole.destroy', $item->id) }}"
                                                 method="post">
                                                 @method('DELETE')
                                                 @csrf
-                                                <button type="submit" class="btn btn-danger mx-1"
-                                                    onclick="return confirm('Are you sure, you want to delete it?')" title="" data-original-title="Delete"><i
+                                                <button type="submit" class="btn btn-danger mx-1" title="" data-original-title="Delete"><i
                                                         class="fa fa-trash"></i>
                                                 </button>
                                             </form>
@@ -135,7 +134,35 @@
     @endsection
 
     @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+    .swal2-popup {
+        font-size: 1.6rem !important;
+    }
+    </style>
     <script>
+    $(document).ready(function() {
+        // Delete Confirmation
+        $(document).on('submit', 'form', function(e) {
+            if($(this).find('input[name="_method"][value="DELETE"]').length > 0) {
+                e.preventDefault();
+                var form = this;
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to delete this role! This cannot be undone.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            }
+        });
+    });
 
            
     $(document).on('click','#editroll', function(e){

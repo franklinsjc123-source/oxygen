@@ -135,7 +135,7 @@
 
                         <td><span class="mt-3 d-flex">
                             
-                          <a href="{{ route('auction.edit', $item->id) }}" onclick="return confirm('Are you sure, you want to Edit it?')"  class="btn btn-secondary px-2"  ><i class="fa fa-pencil"></i> </a>
+                          <a href="{{ route('auction.edit', $item->id) }}" class="btn btn-secondary px-2"  ><i class="fa fa-pencil"></i> </a>
                               @if (session()->get('log_type') == 'Admin')
 								  <form action="{{ route('auction.destroy', $item->id) }}"
                                 method="post">
