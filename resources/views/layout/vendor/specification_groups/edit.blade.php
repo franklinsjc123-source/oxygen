@@ -1,10 +1,10 @@
 @extends('layout.auth.master')
 @section('contents')
-@include('paritials.js.auction.create-auction-js')?>
-@include('paritials.js.time-js')?>
-@include('paritials.css.auction.auction')?>
+@include('paritials.js.auction.create-auction-js')
+@include('paritials.js.time-js')
+@include('paritials.css.auction.auction')
 
-    @include('paritials.auth.header')?>
+    @include('paritials.auth.header')
 
 <!-- page-wrapper Start-->
 @include('paritials.auth.topmenu');
