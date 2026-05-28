@@ -407,8 +407,11 @@ Route::post('activity_trackers/status/{id}', [ActivityTrackerController::class, 
 Route::get('activity/edit/{id}', [ActivityTrackerController::class, 'activityedit'])->name('activity.edit');
 Route::resource('activity_trackers', ActivityTrackerController::class);
 Route::get('activity/employee/', [ActivityTrackerController::class, 'employeeactivity'])->name('activity.employee');
+Route::post('states/changestatus', [StateController::class, 'changestatus'])->name('states.changestatus');
 Route::resource('states', StateController::class);
+Route::post('cities/changestatus', [CityController::class, 'changestatus'])->name('cities.changestatus');
 Route::resource('cities', CityController::class);
+Route::post('cmspages/changestatus', [PageController::class, 'changestatus'])->name('cmspages.changestatus');
 Route::resource('cmspages', PageController::class);
 
 

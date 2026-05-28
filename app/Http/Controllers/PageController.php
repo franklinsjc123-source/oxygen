@@ -104,7 +104,14 @@ class PageController extends Controller
     public function destroy(CMSPage $cmspage)
     {
         $cmspage->delete();
-
         return redirect()->route('cmspages.index')->with('success', 'Page deleted successfully.');
+    }
+    public function changestatus(Request $request)
+    {
+        $cmspage = CMSPage::find($request->id);
+        $cmspage->status = $request->status;
+        $cmspage->save();
+
+        return response()->json(['success' => 'Status changed successfully.']);
     }
 }

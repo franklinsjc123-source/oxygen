@@ -110,23 +110,31 @@
 											@foreach($states as $state)
 											<tr>
 												<td>{{ $state->state_name }}</td>
-												<td>{{ $state->status }}</td>
+												<td>
+                                                    <label class="switch">
+                                                        <input type="checkbox" class="toggle-status" data-id="{{ $state->id }}" {{ $state->status == 'Active' ? 'checked' : '' }}>
+                                                        <div class="slider round">
+                                                            <span class="off">Inactive </span>
+                                                            <span class="on">Active</span>
+                                                        </div>
+                                                    </label>
+                                                </td>
 												<td>
 													<!-- Edit Button Opens Modal for Editing -->
-													<button type="button" class="btn btn-warning btn-sm editState" 
+													<button type="button" class="btn btn-secondary mx-1 btn-sm editState" 
 													data-bs-toggle="modal" 
 													data-bs-target="#stateModal"
 													data-state-id="{{ $state->id }}"
 													data-state-name="{{ $state->state_name }}"
 													data-status="{{ $state->status }}">
-														Edit
+														<i class="fa fa-pencil"></i>
 													</button>
 													
 													<!-- Delete Form -->
 													<form action="{{ route('states.destroy', $state->id) }}" method="POST" style="display:inline;">
 														@csrf
 														@method('DELETE')
-														<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
+														<button type="submit" class="btn btn-warning mx-1 btn-sm"><i class="fa fa-trash"></i></button>
 													</form>
 												</td>
 											</tr>
@@ -156,10 +164,13 @@
 <script>
 	$(document).ready(function() {
 		// Open Modal with Pre-filled Data when Editing
-		$('.editState').click(function() {
-			var stateId = $(this).data('state-id');
-			var stateName = $(this).data('state-name');
-			var status = $(this).data('status');
+		$(document).on('click', '.editState', function(e) {
+			var btn = $(e.currentTarget);
+			var stateId = btn.attr('data-state-id');
+			var stateName = btn.attr('data-state-name');
+			var status = btn.attr('data-status');
+			
+			console.log("Edit State Clicked", stateId, stateName, status);
 			
 			$('#stateModalLabel').text('Edit State');
 			$('#state_name').val(stateName);
@@ -167,11 +178,8 @@
 			$('#state_id').val(stateId);
 			$('#upd_but').val('Update State');
 			
-			
 			var form = $('#stateForm');
-			
 			form.attr('action', '{{ route("states.update", ":stateId") }}'.replace(':stateId', stateId));
-				// Change form action dynamically
 			form.find('[name="_method"]').val('PUT'); // Set method to PUT
 		});
 		
@@ -210,5 +218,58 @@
 	});
 </script>
 
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+.swal2-popup {
+    font-size: 1.6rem !important;
+}
+</style>
+<script>
+$(document).ready(function() {
+    // Status Toggle
+    $(document).on('change', '.toggle-status', function() {
+        var status = $(this).prop('checked') ? 'Active' : 'Inactive';
+        var id = $(this).data('id');
+        var checkbox = $(this);
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "{{ route('states.changestatus') }}",
+            data: {'status': status, 'id': id, '_token': '{{ csrf_token() }}'},
+            success: function(data) {
+                // Instantly changed
+            },
+            error: function() {
+                checkbox.prop('checked', !status);
+                Swal.fire('Error!', 'Something went wrong.', 'error');
+            }
+        });
+    });
+
+    // Delete Confirmation
+    $(document).on('submit', 'form', function(e) {
+        if($(this).find('input[name="_method"][value="DELETE"]').length > 0) {
+            e.preventDefault();
+            var form = this;
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to delete this State! This cannot be undone.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        }
+    });
+});
+</script>
+@endpush
 @endsection
 

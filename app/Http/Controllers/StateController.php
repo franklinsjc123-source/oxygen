@@ -70,4 +70,12 @@ class StateController extends Controller
         
 		 return redirect()->route('states.index')->with('success', 'State Deleted  successfully');
     }
+    public function changestatus(Request $request)
+    {
+        $state = State::find($request->id);
+        $state->status = $request->status;
+        $state->save();
+
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
 }

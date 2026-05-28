@@ -122,23 +122,31 @@
 												<td>{{ $city->id }}</td>
 												<td>{{ $city->city_name }}</td>
 												<td>{{ $city->state->state_name }}</td>
-												<td>{{ $city->status }}</td>
+												<td>
+                                                    <label class="switch">
+                                                        <input type="checkbox" class="toggle-status" data-id="{{ $city->id }}" {{ $city->status == 'Active' ? 'checked' : '' }}>
+                                                        <div class="slider round">
+                                                            <span class="off">Inactive </span>
+                                                            <span class="on">Active</span>
+                                                        </div>
+                                                    </label>
+                                                </td>
 												<td>
 													<!-- Edit Button Opens Modal -->
-													<button type="button" class="btn btn-warning btn-sm edit-city"
+													<button type="button" class="btn btn-secondary mx-1 btn-sm edit-city"
 													data-bs-toggle="modal" data-bs-target="#cityModal"
 													data-city-id="{{ $city->id }}"
 													data-city-name="{{ $city->city_name }}"
 													data-state-id="{{ $city->state_id }}"
 													data-status="{{ $city->status }}">
-														Edit
+														<i class="fa fa-pencil"></i>
 													</button>
 													
 													<!-- Delete Form -->
 													<form action="{{ route('cities.destroy', $city->id) }}" method="POST" class="d-inline delete-form">
 														@csrf
 														@method('DELETE')
-														<button type="submit" class="btn btn-danger btn-sm">Delete</button>
+														<button type="submit" class="btn btn-warning mx-1 btn-sm"><i class="fa fa-trash"></i></button>
 													</form>
 												</td>
 												
@@ -180,11 +188,14 @@
 		});
 		
 		// Open Modal for Editing City
-		$('.edit-city').click(function() {
-			var cityId = $(this).data('city-id');
-			var cityName = $(this).data('city-name');
-			var stateId = $(this).data('state-id');
-			var status = $(this).data('status');
+		$(document).on('click', '.edit-city', function(e) {
+			var btn = $(e.currentTarget);
+			var cityId = btn.attr('data-city-id');
+			var cityName = btn.attr('data-city-name');
+			var stateId = btn.attr('data-state-id');
+			var status = btn.attr('data-status');
+			
+			console.log("Edit City Clicked", cityId, cityName, stateId, status);
 			
 			$('#cityModalLabel').text('Edit City');
 			$('#city_id').val(cityId);
@@ -223,14 +234,57 @@
 			});
 		});
 		
-		// Delete Confirmation
-		$('.delete-form').on('submit', function(e) {
-			if (!confirm('Are you sure you want to delete this city?')) {
-				e.preventDefault();
-			}
-		});
-	});
 </script>
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+.swal2-popup {
+    font-size: 1.6rem !important;
+}
+</style>
+<script>
+$(document).ready(function() {
+    // Status Toggle
+    $(document).on('change', '.toggle-status', function() {
+        var status = $(this).prop('checked') ? 'Active' : 'Inactive';
+        var id = $(this).data('id');
+        var checkbox = $(this);
 
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "{{ route('cities.changestatus') }}",
+            data: {'status': status, 'id': id, '_token': '{{ csrf_token() }}'},
+            success: function(data) {
+                // Instantly changed
+            },
+            error: function() {
+                checkbox.prop('checked', !status);
+                Swal.fire('Error!', 'Something went wrong.', 'error');
+            }
+        });
+    });
+
+    // Delete Confirmation
+    $(document).on('submit', '.delete-form', function(e) {
+        e.preventDefault();
+        var form = this;
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to delete this City! This cannot be undone.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+});
+</script>
+@endpush
 @endsection
 

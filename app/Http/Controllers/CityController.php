@@ -60,4 +60,11 @@ class CityController extends Controller {
         return redirect()->route('cities.index')->with('success', 'City Deleted  successfully');
 		//return response()->json(['message' => 'City deleted successfully!']);
     }
+    public function changestatus(Request $request) {
+        $city = City::find($request->id);
+        $city->status = $request->status;
+        $city->save();
+
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
 }

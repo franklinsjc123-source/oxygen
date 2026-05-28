@@ -78,14 +78,22 @@
 											<td>{{ $page->id }}</td>
 											<td>{{ $page->page_name }}</td>
 											<td>{{ $page->page_title }}</td>
-											<td>{{ $page->status }}</td>
 											<td>
-												<a href="{{ route('cmspages.show', $page->id) }}" class="btn btn-sm btn-info">View</a>
-												<a href="{{ route('cmspages.edit', $page->id) }}" class="btn btn-sm btn-primary">Edit</a>
-												<form action="{{ route('cmspages.destroy', $page->id) }}" method="POST" style="display: inline-block;">
+                                                <label class="switch">
+                                                    <input type="checkbox" class="toggle-status" data-id="{{ $page->id }}" {{ $page->status == '1' || $page->status == 'Active' ? 'checked' : '' }}>
+                                                    <div class="slider round">
+                                                        <span class="off">Inactive </span>
+                                                        <span class="on">Active</span>
+                                                    </div>
+                                                </label>
+                                            </td>
+											<td>
+												<a href="{{ route('cmspages.show', $page->id) }}" class="btn btn-sm btn-info mx-1"><i class="fa fa-eye"></i></a>
+												<a href="{{ route('cmspages.edit', $page->id) }}" class="btn btn-sm btn-secondary mx-1"><i class="fa fa-pencil"></i></a>
+												<form action="{{ route('cmspages.destroy', $page->id) }}" method="POST" style="display: inline-block;" class="delete-form">
 													@csrf
 													@method('DELETE')
-													<button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+													<button type="submit" class="btn btn-warning mx-1 btn-sm"><i class="fa fa-trash"></i></button>
 												</form>
 											</td>
 										</tr>
@@ -283,5 +291,57 @@ aria-hidden="true">
 								
 								
 								</script>
-								
-								@endsection								
+								</script>
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+.swal2-popup {
+    font-size: 1.6rem !important;
+}
+</style>
+<script>
+$(document).ready(function() {
+    // Status Toggle
+    $(document).on('change', '.toggle-status', function() {
+        var status = $(this).prop('checked') ? '1' : '0';
+        var id = $(this).data('id');
+        var checkbox = $(this);
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "{{ route('cmspages.changestatus') }}",
+            data: {'status': status, 'id': id, '_token': '{{ csrf_token() }}'},
+            success: function(data) {
+                // Instantly changed
+            },
+            error: function() {
+                checkbox.prop('checked', !status);
+                Swal.fire('Error!', 'Something went wrong.', 'error');
+            }
+        });
+    });
+
+    // Delete Confirmation
+    $(document).on('submit', '.delete-form', function(e) {
+        e.preventDefault();
+        var form = this;
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to delete this Page! This cannot be undone.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+});
+</script>
+@endpush
+@endsection
