@@ -327,13 +327,15 @@
 <div class="row">
 	<div class="col-md-6">									
 		<div class="form-group row">
-			<label for="manufacturer_type" class="col-xl-4 col-md-4">Manufacturer Type</label>
+			<label for="manufacturer_type" class="col-xl-4 col-md-4">Source Type</label>
 			<div class="col-xl-8 col-md-8">
 				<select class="custom-select w-100 form-control" name="manufacturer_type" required="">
 					<option value="">--Select--</option>
-					<option value="Own Manufacturer">Own Manufacturer </option>
-					<option value="ReSeller">ReSeller</option>
-					<option value="Dealer">Dealer</option>
+					<option value="Direct from Manufacturer">Direct from Manufacturer</option>
+					<option value="Wholesalers">Wholesalers</option>
+					<option value="Distributors">Distributors</option>
+					<option value="B2B Marketplace">B2B Marketplace</option>
+					<option value="Others">Others</option>
 				</select>
 			</div>
 		</div>

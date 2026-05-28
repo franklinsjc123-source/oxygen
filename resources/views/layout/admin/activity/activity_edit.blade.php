@@ -320,14 +320,15 @@
 										</div>
 										<div class="col-md-4">									
 										<div class="form-group row">
-											<label for="manufacturer_type" class="col-xl-4 col-md-4">Manufacturer Type  </label>
+											<label for="manufacturer_type" class="col-xl-4 col-md-4">Source Type</label>
 											<div class="col-xl-8 col-md-8">
 												<select class="custom-select w-100 form-control" name="manufacturer_type" required="">
 																<option value="">--Select--</option>
-																
-																<option value="Own Manufacturer"  {{($tracker->manufacturer_type=='Own Manufacturer')?'selected':''}}>Own Manufacturer </option>
-																<option value="ReSeller" {{($tracker->manufacturer_type=='ReSeller')?'selected':''}}>ReSeller</option>
-																<option value="Dealer" {{($tracker->manufacturer_type=='Dealer')?'selected':''}}>Dealer</option>
+																<option value="Direct from Manufacturer" {{($tracker->manufacturer_type=='Direct from Manufacturer')?'selected':''}}>Direct from Manufacturer</option>
+																<option value="Wholesalers" {{($tracker->manufacturer_type=='Wholesalers')?'selected':''}}>Wholesalers</option>
+																<option value="Distributors" {{($tracker->manufacturer_type=='Distributors')?'selected':''}}>Distributors</option>
+																<option value="B2B Marketplace" {{($tracker->manufacturer_type=='B2B Marketplace')?'selected':''}}>B2B Marketplace</option>
+																<option value="Others" {{($tracker->manufacturer_type=='Others')?'selected':''}}>Others</option>
 															
 															</select>
 											</div>
