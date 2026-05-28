@@ -267,4 +267,12 @@ class main_slidvController extends Controller
             return redirect()->route('main_slider.index');
         }
     }
+    public function changestatus(Request $request)
+    {
+        $banner = mainslider::find($request->id);
+        $banner->status = $request->status;
+        $banner->save();
+
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
 }

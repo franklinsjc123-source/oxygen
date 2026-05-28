@@ -234,6 +234,7 @@ Route::resource('coupon', CouponController::class, ['names' => 'coupon']);
 // Route::get("products/listing", [ProductsController::class, "listing"])->name('products.crud.listing');
 
 Route::get('couponlisting', [CouponController::class, "couponlisting"])->name('coupon.couponlisting');
+Route::post('coupon/changestatus', [CouponController::class, 'changestatus'])->name('coupon.changestatus');
 
 
 //banner
@@ -245,10 +246,13 @@ Route::get('couponlisting', [CouponController::class, "couponlisting"])->name('c
 
 Route::resource('advbanner', paid_adv_banerController::class, ['names' => 'advbanner']);
 Route::get('editadvbanner/{id}', [paid_adv_banerController::class, 'edit'])->name('editadvbanner');
+Route::post('advbanner/changestatus', [paid_adv_banerController::class, 'changestatus'])->name('advbanner.changestatus');
 
+Route::post('advoxygen/changestatus', [oxygen_advController::class, 'changestatus'])->name('advoxygen.changestatus');
 Route::resource('advoxygen', oxygen_advController::class, ['names' => 'advoxygen']);
 Route::get('editadvoxygen/{id}', [oxygen_advController::class, 'edit'])->name('editadvoxygen');
 
+Route::post('slider/changestatus', [main_slidvController::class, 'changestatus'])->name('slider.changestatus');
 Route::resource('slider', main_slidvController::class, ['names' => 'main_slider']);
 Route::get('editmain_slider/{id}', [main_slidvController::class, 'edit'])->name('editmain_slider');
 

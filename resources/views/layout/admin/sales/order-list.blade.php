@@ -7,6 +7,47 @@
 @include('paritials.auth.topmenu');
 <!-- Page Header Ends -->
 
+<style>
+    /* Modern, soft-pill tab styling */
+    .order-custom-tabs {
+        border-bottom: none;
+        margin-bottom: 25px;
+        background-color: #f4f6f9; /* Soft gray container */
+        padding: 8px;
+        border-radius: 12px;
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    .order-custom-tabs .nav-item {
+        margin-bottom: 0;
+    }
+    .order-custom-tabs .nav-link {
+        color: #495057 !important;
+        font-weight: 600;
+        font-size: 1.05rem;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 10px 22px;
+        transition: all 0.25s ease-in-out;
+        background-color: transparent !important;
+    }
+    .order-custom-tabs .nav-link:hover {
+        color: #1a1d20 !important;
+        background-color: #e9ecef !important;
+    }
+    .order-custom-tabs .nav-link.active, .order-custom-tabs .nav-item.show .nav-link {
+        color: #0d6efd !important; /* Rich blue text */
+        background-color: #ffffff !important; /* White pill */
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Soft shadow to make it pop */
+    }
+    
+    /* SweetAlert2 font size adjustment for visual consistency */
+    .swal2-popup {
+        font-size: 1.6rem !important;
+    }
+</style>
+
 <!-- Page Body Start-->
 <div class="page-body-wrapper">
 	
@@ -51,23 +92,24 @@
                         <div class="card-body">
 
 
-                            <ul class="nav nav-tabs tab-coupon" id="myTab" role="tablist">
+                            <ul class="nav nav-tabs order-custom-tabs" id="myTab" role="tablist">
                                 <li class="nav-item"><a class="nav-link active show" id="new-tabs" data-bs-toggle="tab" href="#new" role="tab" aria-controls="new" aria-selected="false" data-original-title="" title=""><span class="fw-bold">New ({{$new}})</span> </a></li>
-                                <li class="nav-item"><a class="nav-link" id="general-tab" data-bs-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true" data-original-title="" title=""><span class="text-warning fw-bold">Accepted ({{$accept}})</span> </a></li>
+                                <li class="nav-item"><a class="nav-link" id="general-tab" data-bs-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true" data-original-title="" title=""><span class="fw-bold">Accepted ({{$accept}})</span> </a></li>
 
-                                <li class="nav-item"><a class="nav-link" id="dispatch-tab" data-bs-toggle="tab" href="#dispatch" role="tab" aria-controls="dispatch" aria-selected="true" data-original-title="" title=""><span class="text-primary fw-bold">Dispatch ({{$dispatch}})</span> </a></li>
-                                <li class="nav-item"><a class="nav-link" id="delivery-tab" data-bs-toggle="tab" href="#delivery" role="tab" aria-controls="delivery" aria-selected="true" data-original-title="" title=""><span class="text-success fw-bold">Delivered ({{$delivered}})</span></a></li>
-                                <li class="nav-item"><a class="nav-link" id="usage-tab" data-bs-toggle="tab" href="#usage" role="tab" aria-controls="usage" aria-selected="false" data-original-title="" title=""><span class="text-secondary fw-bold">Return ({{$return}})</span> </a></li>
+                                <li class="nav-item"><a class="nav-link" id="dispatch-tab" data-bs-toggle="tab" href="#dispatch" role="tab" aria-controls="dispatch" aria-selected="true" data-original-title="" title=""><span class="fw-bold">Dispatch ({{$dispatch}})</span> </a></li>
+                                <li class="nav-item"><a class="nav-link" id="delivery-tab" data-bs-toggle="tab" href="#delivery" role="tab" aria-controls="delivery" aria-selected="true" data-original-title="" title=""><span class="fw-bold">Delivered ({{$delivered}})</span></a></li>
+                                <li class="nav-item"><a class="nav-link" id="usage-tab" data-bs-toggle="tab" href="#usage" role="tab" aria-controls="usage" aria-selected="false" data-original-title="" title=""><span class="fw-bold">Return ({{$return}})</span> </a></li>
 								
-								<li class="nav-item"><a class="nav-link" id="cancel-tab" data-bs-toggle="tab" href="#cancel" role="tab" aria-controls="cancel" aria-selected="false" data-original-title="" title=""><span class="text-danger fw-bold">Cancel ({{$cancel}})</span></a></li>
+								<li class="nav-item"><a class="nav-link" id="cancel-tab" data-bs-toggle="tab" href="#cancel" role="tab" aria-controls="cancel" aria-selected="false" data-original-title="" title=""><span class="fw-bold">Cancel ({{$cancel}})</span></a></li>
 								
                             </ul>
 
                             <div class="tab-content" id="myTabContent">
 
                                 <div class="tab-pane fade active show" id="new" role="tabpanel" aria-labelledby="new-tabs">
-								<div class="mt-3"> <button class="btn border border-success text-success accept" onclick="edit()">Accept</button> 
-                                    <button class="btn border border-success text-success cancelbulk" onclick="canceledit()">Cancel</button> 
+								<div class="mt-3"> 
+                                    <button class="btn border border-success text-success accept">Accept</button> 
+                                    <button class="btn border border-danger text-danger cancelbulk">Cancel</button> 
                                 </div>
                                     {{-- <form class="needs-validation" novalidate=""> --}}
 			
@@ -85,18 +127,11 @@
 
 														<th data-field="orderid" data-sortable="true">ORDER ID</th>
 														<th data-field="date" data-sortable="true">ORDER DATE</th>
-														<th data-field="orderqty" data-sortable="true">ORDER QTY</th>
-														
-														<th data-field="Productid" data-sortable="true">PRODUCT ID</th>
-                                                        <th data-field="image" data-sortable="true">IMAGE</th>&nbsp; &nbsp; 
+														<th data-field="image" data-sortable="true">IMAGE</th>&nbsp; &nbsp; 
                                                         <th data-field="productname" data-sortable="true"> PRODUCT NAME</th>
-                                                            <th data-field="attributes" data-sortable="true">ATTRIBUTES</th>&nbsp; &nbsp; 
-                                                            
-															<th data-field="stock" data-sortable="true">IN STOCK</th>
-                                                            
-                                                            <th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
-															<!--<th data-field="status" data-sortable="true">STATUS</th>-->
-                                                            <th data-field="action" data-sortable="true">ACTION</th>
+                                                            <th data-field="orderqty" data-sortable="true">ORDER QTY</th>
+<th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
+															<th data-field="action" data-sortable="true">ACTION</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -138,12 +173,6 @@
             
                                                             <td>{{ $attribute->order_date }}</td>
             
-                                                            <td>                                          
-                                                                {{ $attribute->product_quantity }}
-                                                            </td>
-                                                            <td>                                          
-                                                                {{ $attribute->product_id }}
-                                                            </td>
                                                             <td>       
                                                                 
                                                                 <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
@@ -153,23 +182,29 @@
                                                             <td>                                          
                                                                 {{ $attribute->product_name }}
                                                             </td>
-                                                            <td>                                          
-                                                                {{ $attribute->product_size }}
+                                                            <td>{{ $attribute->product_quantity }}</td>
+<td>                                          
+                                                                @if(stripos($attribute->payment_type, 'Cash') !== false || $attribute->payment_type == 'COD')
+                                                                    <span class="badge badge-warning text-dark">COD</span>
+                                                                @else
+                                                                    <span class="badge badge-success">Online</span>
+                                                                @endif
                                                             </td>
-                                                            <td>                                          
-                                                                {{ $attribute->instock }}
-                                                            </td>
-                                                            
-
-                                                            <td>                                          
-                                                                {{ $attribute->payment_status }}
-                                                            </td>
-
-                                                            <!--<td><p class="text-center" style="border:1px solid #ffc000;color:#ffc000;border-radius:5px;">Accept</p></td>-->
-															
-   <td><span> <button  id ="btnnew" value= "{{ $attribute->id }}" data-status="{{ $attribute->order_status }}" class="btnnew badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
+                                                            <td><span> 
+                                                                {{-- <button  id ="btnnew" value= "{{ $attribute->id }}" data-status="{{ $attribute->order_status }}" class="btnnew badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button> --}}
 															 @if (session()->get('log_type') == 'Admin')
-                                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                    <a href="#" class="btn btn-info btn-sm view-product-details text-white" 
+   data-id="{{ $attribute->product_id }}"
+   data-name="{{ $attribute->product_name }}"
+   data-image="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
+   data-size="{{ $attribute->product_size }}"
+   data-price="{{ $attribute->product_price }}"
+   data-qty="{{ $attribute->product_quantity }}"
+   data-total="{{ $attribute->total_price }}"
+   data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
+   data-toggle="tooltip" data-placement="top" title="View Details">
+   <i class="fa fa-eye"></i>
+</a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
                                                            @endif
                                                         </tr>
                                                     @endforeach
@@ -232,7 +267,7 @@
 
                                 <div class="tab-pane fade" id="general" role="tabpanel" aria-labelledby="general-tab">
 											<div class="mt-3"> <button class="btn border border-primary text-primary dispatch" >Dispatch</button> 
-                                                <button class="btn border border-success text-success cancelbulkdispatch">Cancel</button> 
+                                                <button class="btn border border-danger text-danger cancelbulkdispatch">Cancel</button> 
                                             </div>
                                     
                                     <div class="row">
@@ -249,17 +284,10 @@
                                                      <th></th>
                                                     <th data-field="orderid" data-sortable="true">ORDER ID</th>
                                                     <th data-field="date" data-sortable="true">ORDER DATE</th>
-                                                    <th data-field="orderqty" data-sortable="true">ORDER QTY</th>
-                                                    
-                                                    <th data-field="Productid" data-sortable="true">PRODUCT ID</th>
                                                     <th data-field="image" data-sortable="true">IMAGE</th>&nbsp; &nbsp; 
                                                     <th data-field="productname" data-sortable="true"> PRODUCT NAME</th>
-                                                    <th data-field="attributes" data-sortable="true">ATTRIBUTES</th>&nbsp; &nbsp; 
-                                                    
-                                                    <th data-field="stock" data-sortable="true">IN STOCK</th>
-                                                    
-                                                    <th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
-                                                    <!--<th data-field="status" data-sortable="true">STATUS</th>-->
+                                                    <th data-field="orderqty" data-sortable="true">ORDER QTY</th>
+<th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
                                                     <th data-field="action" data-sortable="true">ACTION</th>
                                                     </tr>
                                                 </thead>
@@ -283,12 +311,6 @@
         
                                                         <td>{{ $attribute->order_date }}</td>
         
-                                                        <td>                                          
-                                                            {{ $attribute->product_quantity }}
-                                                        </td>
-                                                        <td>                                          
-                                                            {{ $attribute->product_id }}
-                                                        </td>
                                                         <td>       
                                                             
                                                             <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
@@ -298,25 +320,30 @@
                                                         <td>                                          
                                                             {{ $attribute->product_name }}
                                                         </td>
-                                                        <td>                                          
-                                                            {{ $attribute->product_size }}
+                                                        <td>{{ $attribute->product_quantity }}</td>
+<td>                                          
+                                                            @if(stripos($attribute->payment_type, 'Cash') !== false || $attribute->payment_type == 'COD')
+                                                                <span class="badge badge-warning text-dark">COD</span>
+                                                            @else
+                                                                <span class="badge badge-success">Online</span>
+                                                            @endif
                                                         </td>
-                                                        <td>                                          
-                                                            {{ $attribute->instock }}
-                                                        </td>
-                                                        
-
-                                                        <td>                                          
-                                                            {{ $attribute->payment_status }}
-                                                        </td>
-
-                                                        <!--<td><p class="text-center" style="border:1px solid #ffc000;color:#ffc000;border-radius:5px;">Accept</p></td>-->
-                                                        
-                                                        <td><span>
-   <button  id ="btnaccess" value= "{{ $attribute->id }}" data-status="{{ $attribute->order_status }}" class="btnaccess badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
+                                                            <td><span>
+   {{-- <button  id ="btnaccess" value= "{{ $attribute->id }}" data-status="{{ $attribute->order_status }}" class="btnaccess badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button> --}}
                                                           
                                                          @if (session()->get('log_type') == 'Admin')
-                                                                <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                <a href="#" class="btn btn-info btn-sm view-product-details text-white" 
+   data-id="{{ $attribute->product_id }}"
+   data-name="{{ $attribute->product_name }}"
+   data-image="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
+   data-size="{{ $attribute->product_size }}"
+   data-price="{{ $attribute->product_price }}"
+   data-qty="{{ $attribute->product_quantity }}"
+   data-total="{{ $attribute->total_price }}"
+   data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
+   data-toggle="tooltip" data-placement="top" title="View Details">
+   <i class="fa fa-eye"></i>
+</a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
                                                        @endif
                                                     </tr>
                                                 @endforeach
@@ -394,17 +421,10 @@
                                           <th width="50px"><input type="checkbox" id="delmaster"></th>
                                         <th data-field="orderid" data-sortable="true">ORDER ID</th>
                                         <th data-field="date" data-sortable="true">ORDER DATE</th>
-                                        <th data-field="orderqty" data-sortable="true">ORDER QTY</th>
-                                        
-                                        <th data-field="Productid" data-sortable="true">PRODUCT ID</th>
                                         <th data-field="image" data-sortable="true">IMAGE</th>&nbsp; &nbsp; 
                                         <th data-field="productname" data-sortable="true"> PRODUCT NAME</th>
-                                            <th data-field="attributes" data-sortable="true">ATTRIBUTES</th>&nbsp; &nbsp; 
-                                            
-                                            <th data-field="stock" data-sortable="true">IN STOCK</th>
-                                            
-                                            <th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
-                                            <!--<th data-field="status" data-sortable="true">STATUS</th>-->
+                                            <th data-field="orderqty" data-sortable="true">ORDER QTY</th>
+<th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
                                             <th data-field="action" data-sortable="true">ACTION</th>
                                         </tr>
                                     </thead>
@@ -428,12 +448,6 @@
 
                                             <td>{{ $attribute->order_date }}</td>
 
-                                            <td>                                          
-                                                {{ $attribute->product_quantity }}
-                                            </td>
-                                            <td>                                          
-                                                {{ $attribute->product_id }}
-                                            </td>
                                             <td>       
                                                 
                                                 <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
@@ -443,25 +457,30 @@
                                             <td>                                          
                                                 {{ $attribute->product_name }}
                                             </td>
-                                            <td>                                          
-                                                {{ $attribute->product_size }}
+                                            <td>{{ $attribute->product_quantity }}</td>
+<td>                                          
+                                                @if(stripos($attribute->payment_type, 'Cash') !== false || $attribute->payment_type == 'COD')
+                                                    <span class="badge badge-warning text-dark">COD</span>
+                                                @else
+                                                    <span class="badge badge-success">Online</span>
+                                                @endif
                                             </td>
-                                            <td>                                          
-                                                {{ $attribute->instock }}
-                                            </td>
-                                            
-
-                                            <td>                                          
-                                                {{ $attribute->payment_status }}
-                                            </td>
-
-                                            <!--<td><p class="text-center" style="border:1px solid #ffc000;color:#ffc000;border-radius:5px;">Accept</p></td>-->
-                                            
-                                            <td><span> 
+                                                            <td><span> 
                                                 
-                                                <button  id ="btndispatch" value= "{{ $attribute->id }}" data-status="{{ $attribute->order_status }}" class="btndispatch badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
+                                                {{-- <button  id ="btndispatch" value= "{{ $attribute->id }}" data-status="{{ $attribute->order_status }}" class="btndispatch badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button> --}}
                                              @if (session()->get('log_type') == 'Admin')
-                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                    <a href="#" class="btn btn-info btn-sm view-product-details text-white" 
+   data-id="{{ $attribute->product_id }}"
+   data-name="{{ $attribute->product_name }}"
+   data-image="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
+   data-size="{{ $attribute->product_size }}"
+   data-price="{{ $attribute->product_price }}"
+   data-qty="{{ $attribute->product_quantity }}"
+   data-total="{{ $attribute->total_price }}"
+   data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
+   data-toggle="tooltip" data-placement="top" title="View Details">
+   <i class="fa fa-eye"></i>
+</a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
                                            @endif
                                         </tr>
                                     @endforeach
@@ -540,17 +559,10 @@
                                                      </th>
                                                     <th data-field="orderid" data-sortable="true">ORDER ID</th>
                                                     <th data-field="date" data-sortable="true">ORDER DATE</th>
-                                                    <th data-field="orderqty" data-sortable="true">ORDER QTY</th>
-                                                    
-                                                    <th data-field="Productid" data-sortable="true">PRODUCT ID</th>
                                                     <th data-field="image" data-sortable="true">IMAGE</th>&nbsp; &nbsp; 
                                                     <th data-field="productname" data-sortable="true"> PRODUCT NAME</th>
-                                                        <th data-field="attributes" data-sortable="true">ATTRIBUTES</th>&nbsp; &nbsp; 
-                                                        
-                                                        <th data-field="stock" data-sortable="true">IN STOCK</th>
-                                                        
-                                                        <th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
-                                                        <!--<th data-field="status" data-sortable="true">STATUS</th>-->
+                                                        <th data-field="orderqty" data-sortable="true">ORDER QTY</th>
+<th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
                                                         <th data-field="action" data-sortable="true">ACTION</th>
                                                     </tr>
                                                 </thead>
@@ -573,12 +585,6 @@
             
                                                         <td>{{ $attribute->order_date }}</td>
             
-                                                        <td>                                          
-                                                            {{ $attribute->product_quantity }}
-                                                        </td>
-                                                        <td>                                          
-                                                            {{ $attribute->product_id }}
-                                                        </td>
                                                         <td>       
                                                             
                                                             <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
@@ -588,25 +594,30 @@
                                                         <td>                                          
                                                             {{ $attribute->product_name }}
                                                         </td>
-                                                        <td>                                          
-                                                            {{ $attribute->product_size }}
+                                                        <td>{{ $attribute->product_quantity }}</td>
+<td>                                          
+                                                            @if(stripos($attribute->payment_type, 'Cash') !== false || $attribute->payment_type == 'COD')
+                                                                <span class="badge badge-warning text-dark">COD</span>
+                                                            @else
+                                                                <span class="badge badge-success">Online</span>
+                                                            @endif
                                                         </td>
-                                                        <td>                                          
-                                                            {{ $attribute->instock }}
-                                                        </td>
-                                                        
-            
-                                                        <td>                                          
-                                                            {{ $attribute->payment_status }}
-                                                        </td>
-            
-                                                        <!--<td><p class="text-center" style="border:1px solid #ffc000;color:#ffc000;border-radius:5px;">Accept</p></td>-->
-                                                        
-                                                        <td><span>
+                                                            <td><span>
                                                             
-                                                            <button  id ="btndelivered" value= "{{ $attribute->id }}" data-status="{{ $attribute->order_status }}" class="btndelivered badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
+                                                            {{-- <button  id ="btndelivered" value= "{{ $attribute->id }}" data-status="{{ $attribute->order_status }}" class="btndelivered badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button> --}}
                                                          @if (session()->get('log_type') == 'Admin')
-                                                                <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                <a href="#" class="btn btn-info btn-sm view-product-details text-white" 
+   data-id="{{ $attribute->product_id }}"
+   data-name="{{ $attribute->product_name }}"
+   data-image="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
+   data-size="{{ $attribute->product_size }}"
+   data-price="{{ $attribute->product_price }}"
+   data-qty="{{ $attribute->product_quantity }}"
+   data-total="{{ $attribute->total_price }}"
+   data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
+   data-toggle="tooltip" data-placement="top" title="View Details">
+   <i class="fa fa-eye"></i>
+</a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
                                                        @endif
                                                     </tr>
                                                 @endforeach
@@ -685,17 +696,10 @@
                                                      </th>
                                                     <th data-field="orderid" data-sortable="true">ORDER ID</th>
                                                     <th data-field="date" data-sortable="true">ORDER DATE</th>
-                                                    <th data-field="orderqty" data-sortable="true">ORDER QTY</th>
-                                                    
-                                                    <th data-field="Productid" data-sortable="true">PRODUCT ID</th>
                                                     <th data-field="image" data-sortable="true">IMAGE</th>&nbsp; &nbsp; 
                                                     <th data-field="productname" data-sortable="true"> PRODUCT NAME</th>
-                                                        <th data-field="attributes" data-sortable="true">ATTRIBUTES</th>&nbsp; &nbsp; 
-                                                        
-                                                        <th data-field="stock" data-sortable="true">IN STOCK</th>
-                                                        
-                                                        <th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
-                                                        <!--<th data-field="status" data-sortable="true">STATUS</th>-->
+                                                        <th data-field="orderqty" data-sortable="true">ORDER QTY</th>
+<th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
                                                         <th data-field="action" data-sortable="true">ACTION</th>
                                                     </tr>
                                                 </thead>
@@ -718,12 +722,6 @@
             
                                                         <td>{{ $attribute->order_date }}</td>
             
-                                                        <td>                                          
-                                                            {{ $attribute->product_quantity }}
-                                                        </td>
-                                                        <td>                                          
-                                                            {{ $attribute->product_id }}
-                                                        </td>
                                                         <td>       
                                                             
                                                             <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
@@ -733,26 +731,30 @@
                                                         <td>                                          
                                                             {{ $attribute->product_name }}
                                                         </td>
-                                                        <td>                                          
-                                                            {{ $attribute->product_size }}
+                                                        <td>{{ $attribute->product_quantity }}</td>
+<td>                                          
+                                                            @if(stripos($attribute->payment_type, 'Cash') !== false || $attribute->payment_type == 'COD')
+                                                                <span class="badge badge-warning text-dark">COD</span>
+                                                            @else
+                                                                <span class="badge badge-success">Online</span>
+                                                            @endif
                                                         </td>
-                                                        <td>                                          
-                                                            {{ $attribute->instock }}
-                                                        </td>
-                                                        
-            
-                                                        <td>                                          
-                                                            {{ $attribute->payment_status }}
-                                                        </td>
-                                                        
-            
-                                                        <!--<td><p class="text-center" style="border:1px solid #f90000;color:#f90000;border-radius:5px;">{{ $attribute->order_status }}</p></td>-->
-                                                        
-                                                        <td><span> 
+                                                            <td><span> 
                                                             
-                                                            <button  id ="btnreturn" value= "{{ $attribute->id }}" data-status="{{ $attribute->order_status }}" class="btnreturn badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
+                                                            {{-- <button  id ="btnreturn" value= "{{ $attribute->id }}" data-status="{{ $attribute->order_status }}" class="btnreturn badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button> --}}
                                                          @if (session()->get('log_type') == 'Admin')
-                                                                <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                <a href="#" class="btn btn-info btn-sm view-product-details text-white" 
+   data-id="{{ $attribute->product_id }}"
+   data-name="{{ $attribute->product_name }}"
+   data-image="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
+   data-size="{{ $attribute->product_size }}"
+   data-price="{{ $attribute->product_price }}"
+   data-qty="{{ $attribute->product_quantity }}"
+   data-total="{{ $attribute->total_price }}"
+   data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
+   data-toggle="tooltip" data-placement="top" title="View Details">
+   <i class="fa fa-eye"></i>
+</a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
                                                        @endif
                                                     </tr>
                                                 @endforeach
@@ -829,17 +831,10 @@
                                                  </th>
                                                 <th data-field="orderid" data-sortable="true">ORDER ID</th>
                                                 <th data-field="date" data-sortable="true">ORDER DATE</th>
-                                                <th data-field="orderqty" data-sortable="true">ORDER QTY</th>
-                                                
-                                                <th data-field="Productid" data-sortable="true">PRODUCT ID</th>
                                                 <th data-field="image" data-sortable="true">IMAGE</th>&nbsp; &nbsp; 
                                                 <th data-field="productname" data-sortable="true"> PRODUCT NAME</th>
-                                                    <th data-field="attributes" data-sortable="true">ATTRIBUTES</th>&nbsp; &nbsp; 
-                                                    
-                                                    <th data-field="stock" data-sortable="true">IN STOCK</th>
-                                                    
-                                                    <th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
-                                                    <!--<th data-field="status" data-sortable="true">STATUS</th>-->
+                                                    <th data-field="orderqty" data-sortable="true">ORDER QTY</th>
+<th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
                                                     <th data-field="action" data-sortable="true">ACTION</th>
                                                 </tr>
                                             </thead>
@@ -862,12 +857,6 @@
         
                                                     <td>{{ $attribute->order_date }}</td>
         
-                                                    <td>                                          
-                                                        {{ $attribute->product_quantity }}
-                                                    </td>
-                                                    <td>                                          
-                                                        {{ $attribute->product_id }}
-                                                    </td>
                                                     <td>       
                                                         
                                                         <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
@@ -877,25 +866,27 @@
                                                     <td>                                          
                                                         {{ $attribute->product_name }}
                                                     </td>
-                                                    <td>                                          
-                                                        {{ $attribute->product_size }}
-                                                    </td>
-                                                    <td>                                          
-                                                        {{ $attribute->instock }}
-                                                    </td>
-                                                    
-        
-                                                    <!--<td>                                          -->
-                                                    <!--    {{ $attribute->payment_status }}-->
+                                                    <td>{{ $attribute->product_quantity }}</td>
+<!--<td>                                          -->
+                                                    <!--    {{ $attribute->payment_type }}-->
                                                     <!--</td>-->
                                                     
         
-                                                    <td><p class="text-center" style="border:1px solid #f90000;color:#f90000;border-radius:5px;">{{ $attribute->order_status }}</p></td>
-                                                    
                                                     <td><span> 
-                                                        <button  id ="btncancel" value= "{{ $attribute->id }}" data-status="{{ $attribute->order_status }}" class="btncancel badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
+                                                        {{-- <button  id ="btncancel" value= "{{ $attribute->id }}" data-status="{{ $attribute->order_status }}" class="btncancel badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button> --}}
                                                      @if (session()->get('log_type') == 'Admin')
-                                                            <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                            <a href="#" class="btn btn-info btn-sm view-product-details text-white" 
+   data-id="{{ $attribute->product_id }}"
+   data-name="{{ $attribute->product_name }}"
+   data-image="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
+   data-size="{{ $attribute->product_size }}"
+   data-price="{{ $attribute->product_price }}"
+   data-qty="{{ $attribute->product_quantity }}"
+   data-total="{{ $attribute->total_price }}"
+   data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
+   data-toggle="tooltip" data-placement="top" title="View Details">
+   <i class="fa fa-eye"></i>
+</a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
                                                    @endif
                                                 </tr>
                                             @endforeach
@@ -968,18 +959,11 @@
                                                         </th>
 														<th data-field="orderid" data-sortable="true">ORDER ID</th>
 														<th data-field="date" data-sortable="true">CANCEL DATE</th>
-														<th data-field="orderqty" data-sortable="true">ORDER QTY</th>
-														
-														<th data-field="Productid" data-sortable="true">PRODUCT ID</th>
-                                                        <th data-field="image" data-sortable="true">IMAGE</th>
+														<th data-field="image" data-sortable="true">IMAGE</th>
                                                         <th data-field="productname" data-sortable="true"> PRODUCT NAME</th>
-                                                            <th data-field="attributes" data-sortable="true">ATTRIBUTES</th>
-                                                            
-															<th data-field="stock" data-sortable="true">IN STOCK</th>
-                                                            
-                                                            <th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
-															<!--<th>STATUS</th>-->
-                                                            <th>ACTION</th>
+                                                            <th data-field="orderqty" data-sortable="true">ORDER QTY</th>
+<th data-field="paymentmode" data-sortable="true">PAYMENT MODE</th>
+															<th>ACTION</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -1009,7 +993,18 @@
 														<td><p class="text-center" style="border:1px solid #f90000;color:#f90000;border-radius:5px;">Cancel</p></td>
 															
                                                             <td><span> <a href="#" class="badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="#can" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
-                                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                    <a href="#" class="btn btn-info btn-sm view-product-details text-white" 
+   data-id="{{ $attribute->product_id }}"
+   data-name="{{ $attribute->product_name }}"
+   data-image="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
+   data-size="{{ $attribute->product_size }}"
+   data-price="{{ $attribute->product_price }}"
+   data-qty="{{ $attribute->product_quantity }}"
+   data-total="{{ $attribute->total_price }}"
+   data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
+   data-toggle="tooltip" data-placement="top" title="View Details">
+   <i class="fa fa-eye"></i>
+</a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
 
 
                                                         </tr>
@@ -1036,7 +1031,18 @@
 															<td><p class="text-center" style="border:1px solid #f90000;color:#f90000;border-radius:5px;">Cancel</p></td>
 															
                                                             <td><span> <a href="#" class="badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
-                                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                    <a href="#" class="btn btn-info btn-sm view-product-details text-white" 
+   data-id="{{ $attribute->product_id }}"
+   data-name="{{ $attribute->product_name }}"
+   data-image="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
+   data-size="{{ $attribute->product_size }}"
+   data-price="{{ $attribute->product_price }}"
+   data-qty="{{ $attribute->product_quantity }}"
+   data-total="{{ $attribute->total_price }}"
+   data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
+   data-toggle="tooltip" data-placement="top" title="View Details">
+   <i class="fa fa-eye"></i>
+</a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
 
 
                                                         </tr>
@@ -1415,8 +1421,13 @@ console.log(chk);
 
 <script type="text/javascript">
     $(document).ready(function () {
+        // Automatically switch to the tab specified in the URL hash
+        var hash = window.location.hash;
+        if (hash) {
+            $('.nav-tabs a[href="' + hash + '"]').tab('show');
+        }
 
-        $('#master').on('click', function(e) {
+        $(document).on('click', '#master', function(e) {
           if($(this).is(':checked',true))  
           {
               $(".sub_chk").prop('checked', true);  
@@ -1432,44 +1443,44 @@ console.log(chk);
             });  
             if(allVals.length <=0)  
             {  
-                alert("Please select row.");  
+                Swal.fire('Warning', 'Please select at least one row.', 'warning');
             }  else {  
                 var currentDate = new Date();
                 var year = currentDate.getFullYear();
                 var month = currentDate.getMonth() + 1; // Months are zero-based, so we add 1
                 var day = currentDate.getDate();
-                var day = currentDate.getDate();
                 var formattedDate = year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day);
                 
-                //alert("Accept.");  
-                var check = confirm("Are you sure you want to update this row?");  
-                if(check == true){  
-                    var join_selected_values = allVals.join(","); 
-                    $.ajax({
-
-                        url: "{{route('orderbulkstatusupdate')}}", 
-                        type: "POST",
-                        data: {
-                            "_token": "{{ csrf_token() }}",
-                            "ids": join_selected_values,
-                             "sts":"Accept","formattedDate":formattedDate
-
-                        },
-
-                        dataType: "json",
-                        success: function (data) {
-                        // alert(data);
-                          
-                             location.reload();
-                        },
-                        error: function (data) {
-                            console.log('Error:', data);
-                        }
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You are about to update the status of selected rows!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, update it!'
+                }).then((result) => {
+                    if(result.isConfirmed){  
+                        var join_selected_values = allVals.join(","); 
+                        $.ajax({
+                            url: "{{route('orderbulkstatusupdate')}}", 
+                            type: "POST",
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                "ids": join_selected_values,
+                                 "sts":"Accept","formattedDate":formattedDate
+                            },
+                            dataType: "json",
+                            success: function (data) {
+                                 window.location.hash = 'general';
+                                 location.reload();
+                            },
+                            error: function (data) {
+                                console.log('Error:', data);
+                            }
                         });
-
-
-                   
-                }  
+                    }  
+                });
             }  
         });
 
@@ -1483,46 +1494,44 @@ console.log(chk);
             });  
             if(allVals.length <=0)  
             {  
-                alert("Please select row.");  
+                Swal.fire('Warning', 'Please select at least one row.', 'warning');
             }  else {  
-
-               // alert("Accept.");  
                 var currentDate = new Date();
                 var year = currentDate.getFullYear();
                 var month = currentDate.getMonth() + 1; // Months are zero-based, so we add 1
                 var day = currentDate.getDate();
-                var day = currentDate.getDate();
                 var formattedDate = year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day);
-
-                var check = confirm("Are you sure you want to update this row?");  
-                if(check == true){  
-                    var join_selected_values = allVals.join(","); 
-
-                    $.ajax({
-
-                        url: "{{route('orderbulkstatusupdate')}}", 
-                        type: "POST",
-                        data: {
-                            "_token": "{{ csrf_token() }}",
-                            "ids": join_selected_values,
-                             "sts":"Cancel","formattedDate":formattedDate
-
-                        },
-
-                        dataType: "json",
-                        success: function (data) {
-                        // alert(data);
-                          
-                             location.reload();
-                        },
-                        error: function (data) {
-                            console.log('Error:', data);
-                        }
+                
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You are about to cancel the selected orders!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, cancel it!'
+                }).then((result) => {
+                    if(result.isConfirmed){  
+                        var join_selected_values = allVals.join(","); 
+                        $.ajax({
+                            url: "{{route('orderbulkstatusupdate')}}", 
+                            type: "POST",
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                "ids": join_selected_values,
+                                 "sts":"Cancel","formattedDate":formattedDate
+                            },
+                            dataType: "json",
+                            success: function (data) {
+                                 window.location.hash = 'cancel';
+                                 location.reload();
+                            },
+                            error: function (data) {
+                                console.log('Error:', data);
+                            }
                         });
-
-
-                   
-                }  
+                    }  
+                });
             }  
         });
         /*end*/
@@ -1534,7 +1543,7 @@ console.log(chk);
 
 <script type="text/javascript">
 $(document).ready(function () {
-$('#dismaster').on('click', function(e) {
+        $(document).on('click', '#dismaster', function(e) {
    // alert('test');
           if($(this).is(':checked',true))  
           {
@@ -1553,49 +1562,44 @@ $('#dismaster').on('click', function(e) {
             });  
             if(allVals.length <=0)  
             {  
-                alert("Please select row.");  
+                Swal.fire('Warning', 'Please select at least one row.', 'warning');
             }  else {  
                 var currentDate = new Date();
                 var year = currentDate.getFullYear();
                 var month = currentDate.getMonth() + 1; // Months are zero-based, so we add 1
                 var day = currentDate.getDate();
-                var day = currentDate.getDate();
                 var formattedDate = year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day);
                 
-               // alert("Accept.");  
-                var check = confirm("Are you sure you want to update this row?");  
-                if(check == true){  
-                    var join_selected_values = allVals.join(","); 
-
-
-
-
-
-                    $.ajax({
-
-                        url: "{{route('orderbulkstatusupdate')}}", 
-                        type: "POST",
-                        data: {
-                            "_token": "{{ csrf_token() }}",
-                            "ids": join_selected_values,
-                             "sts":"Dispatch","formattedDate":formattedDate
-
-                        },
-
-                        dataType: "json",
-                        success: function (data) {
-                        // alert(data);
-                          
-                             location.reload();
-                        },
-                        error: function (data) {
-                            console.log('Error:', data);
-                        }
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You are about to dispatch the selected orders!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, dispatch it!'
+                }).then((result) => {
+                    if(result.isConfirmed){  
+                        var join_selected_values = allVals.join(","); 
+                        $.ajax({
+                            url: "{{route('orderbulkstatusupdate')}}", 
+                            type: "POST",
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                "ids": join_selected_values,
+                                 "sts":"Dispatch","formattedDate":formattedDate
+                            },
+                            dataType: "json",
+                            success: function (data) {
+                                 window.location.hash = 'dispatch';
+                                 location.reload();
+                            },
+                            error: function (data) {
+                                console.log('Error:', data);
+                            }
                         });
-
-
-                   
-                }  
+                    }  
+                });
             }  
         });
 
@@ -1653,7 +1657,7 @@ $('#dismaster').on('click', function(e) {
 
 <script type="text/javascript">
 $(document).ready(function () {
-$('#delmaster').on('click', function(e) {
+        $(document).on('click', '#delmaster', function(e) {
    // alert('test');
           if($(this).is(':checked',true))  
           {
@@ -1672,56 +1676,108 @@ $('#delmaster').on('click', function(e) {
             });  
             if(allVals.length <=0)  
             {  
-                alert("Please select row.");  
+                Swal.fire('Warning', 'Please select at least one row.', 'warning');
             }  else {  
-                
-                
                 var currentDate = new Date();
                 var year = currentDate.getFullYear();
                 var month = currentDate.getMonth() + 1; // Months are zero-based, so we add 1
                 var day = currentDate.getDate();
-                var day = currentDate.getDate();
                 var formattedDate = year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day);
-                // alert(formattedDate)
-
-               // alert("Accept.");  
-                var check = confirm("Are you sure you want to update this row?");  
-                if(check == true){  
-                    //  alert(allVals);
-                    var join_selected_values = allVals.join(","); 
-
-                    // alert(join_selected_values);
                 
-
-
-                    $.ajax({
-
-                        url: "{{route('orderbulkstatusupdate')}}", 
-                        type: "POST",
-                        data: {
-                            "_token": "{{ csrf_token() }}",
-                            "ids": join_selected_values,
-                             "sts":"Delivered","formattedDate":formattedDate
-
-                        },
-
-                        dataType: "json",
-                        success: function (data) {
-                        // alert(data);
-                          
-                             location.reload();
-                        },
-                        error: function (data) {
-                            console.log('Error:', data);
-                        }
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You are about to mark the selected orders as delivered!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, mark delivered!'
+                }).then((result) => {
+                    if(result.isConfirmed){  
+                        var join_selected_values = allVals.join(","); 
+                        $.ajax({
+                            url: "{{route('orderbulkstatusupdate')}}", 
+                            type: "POST",
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                "ids": join_selected_values,
+                                 "sts":"Delivered","formattedDate":formattedDate
+                            },
+                            dataType: "json",
+                            success: function (data) {
+                                 window.location.hash = 'delivery';
+                                 location.reload();
+                            },
+                            error: function (data) {
+                                console.log('Error:', data);
+                            }
                         });
-
-
-                   
-                }  
+                    }  
+                });
             }  
         });
     });
 </script>
 
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- View Details Modal -->
+<div class="modal fade" id="viewDetailsModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Product Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <img id="modal-product-image" src="" alt="Product Image" style="max-height: 200px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                </div>
+                <table class="table table-bordered table-striped mt-3">
+                    <tbody>
+                        <tr>
+                            <th width="40%">Product ID</th>
+                            <td id="modal-product-id" class="fw-bold"></td>
+                        </tr>
+                        <tr>
+                            <th>Name</th>
+                            <td id="modal-product-name"></td>
+                        </tr>
+                        <tr>
+                            <th>Size / Color</th>
+                            <td id="modal-product-size"></td>
+                        </tr>
+                        <tr>
+                            <th>Price</th>
+                            <td id="modal-product-price"></td>
+                        </tr>
+                        <tr>
+                            <th>Quantity</th>
+                            <td id="modal-product-qty"></td>
+                        </tr>
+                        <tr>
+                            <th>Total Price</th>
+                            <td id="modal-product-total" class="text-success fw-bold"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(document).on('click', '.view-product-details', function() {
+            $('#modal-product-id').text($(this).data('id'));
+            $('#modal-product-name').text($(this).data('name'));
+            $('#modal-product-size').text($(this).data('size') ? $(this).data('size') : 'N/A');
+            $('#modal-product-price').text('₹' + $(this).data('price'));
+            $('#modal-product-qty').text($(this).data('qty'));
+            $('#modal-product-total').text('₹' + $(this).data('total'));
+            $('#modal-product-image').attr('src', $(this).data('image'));
+        });
+    });
+</script>
 @endsection

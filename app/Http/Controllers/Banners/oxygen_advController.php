@@ -271,4 +271,12 @@ class oxygen_advController extends Controller
             return redirect()->route('advoxygen.index');
         }
     }
+    public function changestatus(Request $request)
+    {
+        $banner = oxygen_adv::find($request->id);
+        $banner->status = $request->status;
+        $banner->save();
+
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
 }

@@ -238,4 +238,13 @@ class CouponController extends Controller
                 return redirect()->route('coupon.couponlisting');
             }
 }
+
+    public function changestatus(Request $request)
+    {
+        $coupon = coupon::find($request->id);
+        $coupon->status = $request->status;
+        $coupon->save();
+
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
 }

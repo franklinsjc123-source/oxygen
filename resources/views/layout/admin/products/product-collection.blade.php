@@ -236,6 +236,7 @@
     <style>
         /* Ensure SweetAlert2 popup is responsive */
         .swal2-popup {
+            font-size: 1.6rem !important;
             width: 500px !important; /* Fixed width for standard alerts */
             max-width: 90% !important; /* Make sure it doesn't overflow on small screens */
         }
@@ -344,7 +345,7 @@
                 var form = $(this).closest('form');
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
+                    text: "You want to delete it?",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',

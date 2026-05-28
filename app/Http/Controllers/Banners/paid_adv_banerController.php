@@ -269,4 +269,12 @@ class paid_adv_banerController extends Controller
             return redirect()->route('advbanner.index');
         }
     }
+    public function changestatus(Request $request)
+    {
+        $banner = paid_adv::find($request->id);
+        $banner->status = $request->status;
+        $banner->save();
+
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
 }
