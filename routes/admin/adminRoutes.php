@@ -130,6 +130,7 @@ Route::post('gstupdate/{id}/update', [GstController::class, 'updategst'])->name(
 
 Route::resource('offer/create', OfferController::class, ['names' => 'offer.main']);
 
+Route::post('offer/changestatus', [OfferController::class, 'changestatus'])->name('offer.changestatus');
 Route::resource('offer/list', OfferController::class, ['names' => 'offer.list']);
 // Route::get('offer/list', [OfferController::class, 'index'])->name('offer.list');
 
@@ -282,7 +283,9 @@ Route::controller(PinCodeController1::class)->group(function(){
 //Route::get('offer/list', [OfferController::class, 'list']);
 
 //marketting   
+Route::post('whatsapp/changestatus', [WhAppController::class, 'changestatus'])->name('whatsapp.changestatus');
 Route::resource('whatsapp',  WhAppController::class,['names' => 'whatsapp']);
+Route::post('facebook/changestatus', [FaceBookController::class, 'changestatus'])->name('facebook.changestatus');
 Route::resource('facebook',  FaceBookController::class,['names' => 'facebook']);
 Route::resource('instagram',  InstaController::class,['names' => 'instagram']);
 Route::resource('oxygen',  OxygenController::class,['names' => 'oxygen']);

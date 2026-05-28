@@ -141,8 +141,7 @@
                                 method="post">
                                 @method('DELETE')
                                 @csrf
-                                <button type="submit" class="btn btn-warning mx-1"
-                                    onclick="return confirm('Are you sure, you want to delete it?')"><i
+                                <button type="submit" class="btn btn-warning mx-1"><i
                                         class="fa fa-trash"></i>                                        
                                 </button>                        
                             </form>
@@ -165,24 +164,54 @@
 		
 @endsection
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+.swal2-popup {
+    font-size: 1.6rem !important;
+}
+</style>
 <script>
 $(document).ready(function() {
+    // Status Toggle
     $(document).on('change', '.status-toggle', function() {
         var id = $(this).data('id');
         var nextStatus = $(this).is(':checked') ? '1' : '0';
         var _token = "{{ csrf_token() }}";
+        var checkbox = $(this);
         
         $.ajax({
             url: nextStatus === '1' ? "{{ url('admin/auctionbulkactive') }}" : "{{ url('admin/auctionbulkdeactive') }}",
             type: "POST",
             data: { ids: id, sts: nextStatus, _token: _token },
             success: function(response) {
-                console.log(response);
+                // Instantly changed
             },
             error: function(err) {
-                console.log(err);
+                checkbox.prop('checked', !nextStatus);
+                Swal.fire('Error!', 'Something went wrong.', 'error');
             }
         });
+    });
+
+    // Delete Confirmation
+    $(document).on('submit', 'form', function(e) {
+        if($(this).find('input[name="_method"][value="DELETE"]').length > 0) {
+            e.preventDefault();
+            var form = this;
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to delete this auction! This cannot be undone.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        }
     });
 });
 </script>

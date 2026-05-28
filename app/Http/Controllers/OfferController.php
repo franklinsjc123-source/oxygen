@@ -362,4 +362,12 @@ class OfferController extends Controller
 			return redirect()->route('offer.main.index');
 		}
 	}
+    public function changestatus(Request $request)
+    {
+        $offer = Offer::find($request->id);
+        $offer->status = $request->status;
+        $offer->save();
+
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
 }
