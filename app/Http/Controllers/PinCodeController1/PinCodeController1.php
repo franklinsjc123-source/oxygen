@@ -247,4 +247,12 @@ class PincodeController1 extends Controller
             return redirect()->route('pincode1.index');
         }
     }
+    public function changestatus(Request $request)
+    {
+        $pincode = PinCode::find($request->id);
+        $pincode->status = $request->status;
+        $pincode->save();
+
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
 }

@@ -110,6 +110,7 @@ Route::post('product_colors/status', [ProductColorController::class, 'statusUpda
 //Pincode
 //Route::resource('pincode', PinCodeController::class, ['names' => 'pincode']);
 // Route::resource('pincode', PinCodeController::class, ['names' => 'pincode']);
+Route::post('pincode1/changestatus', [PinCodeController1::class, 'changestatus'])->name('pincode1.changestatus');
 Route::resource('pincode1', PinCodeController1::class, ['names' => 'pincode1']);
 
 // Route::match(['put', 'patch'], '/pincode1/update/{id}','PinCodeController1@update');
@@ -340,6 +341,7 @@ Route::post('/checkDepartmentnamePost', [MasterController::class, 'checkDepartme
 //Route::get('designation', [MasterController::class, 'designation'])->name('designation');
 //Route::get('add_designation', [AdminController::class, 'designation'])->name('add_designation');
 
+Route::post('designation_master/changestatus', [designationController::class, 'changestatus'])->name('designation.master.changestatus');
 Route::resource('designation_master', designationController::class,['names' => 'designation.master']);
 
 Route::get('getdepartment', [designationController::class, 'getdepartment'])->name('getdepartment');

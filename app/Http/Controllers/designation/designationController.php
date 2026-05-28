@@ -147,4 +147,12 @@ class designationController extends Controller
             return redirect()->route('designation.master.index');
         }
     }
+    public function changestatus(Request $request)
+    {
+        $designation = designation::find($request->id);
+        $designation->status = $request->status;
+        $designation->save();
+
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
 }

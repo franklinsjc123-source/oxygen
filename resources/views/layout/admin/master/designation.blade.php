@@ -206,17 +206,7 @@
 											</td>
 						<td>
                          <label class="switch">
-							@if($item->status  == 1){
-								<input type="checkbox"
-									onclick="return confirm('you want to Change it?  Please Click Edit Button')" value="1" active="Active"
-									checked id="togBtn">
-								}@else{
-									<input type="checkbox"
-									onclick="return confirm('you want to Change it?  Please Click Edit Button')" value="0"  class="Inactive"
-									 id="togBtn">
-								}
-								@endif
-                          {{-- <input type="checkbox"  onclick="return confirm('Are you sure, you want to Change it?')" checked id="togBtn"> --}}
+                            <input type="checkbox" class="toggle-status" data-id="{{ $item->id }}" {{ $item->status == 1 ? 'checked' : '' }}>
                             <div class="slider round"><!--ADDED HTML -->
                             <span class="off" value="0" id="inactive">Inactive </span>
                             <span class="on"  value="1" id="active">Active</span><!--END--></div>
@@ -237,8 +227,7 @@
 												method="post">
 												@method('DELETE')
 												@csrf
-												<button type="submit" class="btn btn-warning mx-1" value="{{$item->id}}"
-													onclick="return confirm('Are you sure, you want to delete it?')"><i
+												<button type="submit" class="btn btn-warning mx-1" value="{{$item->id}}"><i
 														class="fa fa-trash"></i>
 												</button>
 											</form>
@@ -270,6 +259,57 @@
 	</div>
 @endsection
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+.swal2-popup {
+    font-size: 1.6rem !important;
+}
+</style>
+<script>
+$(document).ready(function() {
+    // Status Toggle
+    $(document).on('change', '.toggle-status', function() {
+        var status = $(this).prop('checked') ? 1 : 0;
+        var id = $(this).data('id');
+        var checkbox = $(this);
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "{{ route('designation.master.changestatus') }}",
+            data: {'status': status, 'id': id, '_token': '{{ csrf_token() }}'},
+            success: function(data) {
+                // Instantly changed
+            },
+            error: function() {
+                checkbox.prop('checked', !status);
+                Swal.fire('Error!', 'Something went wrong.', 'error');
+            }
+        });
+    });
+
+    // Delete Confirmation
+    $(document).on('submit', 'form', function(e) {
+        if($(this).find('input[name="_method"][value="DELETE"]').length > 0) {
+            e.preventDefault();
+            var form = this;
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to delete this designation! This cannot be undone.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        }
+    });
+});
+</script>
 <script>
 	$(document).on('click','.edit_designation', function(e){
         
