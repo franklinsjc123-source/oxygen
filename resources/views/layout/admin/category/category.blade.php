@@ -502,4 +502,11 @@ $(document).on('click','#edit_catagory', function(e){
 
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .swal2-popup {
+            font-size: 1.2rem !important;
+            width: auto !important;
+            max-width: 90% !important;
+        }
+    </style>
     @endpush

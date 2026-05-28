@@ -97,7 +97,7 @@
                     <div class="col-sm-12">
 
                         <div class="card">
-                            <div class="mt-3">
+                            <div class="mt-3" id="toolbar">
                                 <a href="{{ route('vendorproducts.crud.index', $vendorid) }}">
                                     <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add
                                         Product
@@ -208,20 +208,16 @@
                                                 {{-- @dd($product_price->selling_price); --}}
                                                   {{-- <td>{{ $product_price->selling_price}} </td> --}}
                                                 {{-- <td>{{ $products->category_sub}} </td> --}}
-                                                <?php
-                                                $categorysubcount = count($categorysub);
-                                                 
-                                                     
-                                               
-                                                for($i=0; $i< $categorysubcount; $i++){
-                                                 ?>
-                                                @if($categorysub[$i]->id == $products->category_sub)
-                                                <td>{{ $categorysub[$i]->category_sub_name}} </td>
-                                           
-                                                @endif
-                                                <?php
+                                                @php
+                                                    $subcat_name = '-';
+                                                    foreach($categorysub as $csub) {
+                                                        if($csub->id == $products->category_sub) {
+                                                            $subcat_name = $csub->category_sub_name;
+                                                            break;
+                                                        }
                                                     }
-                                                ?>
+                                                @endphp
+                                                <td>{{ $subcat_name }}</td>
                                                 <td>{{$products->collection}}</td>
                                                 
                                                 <td>
@@ -277,11 +273,13 @@
                                                         
                                                          @if($products->status  == 1){
                                                          <input type="checkbox"
-                                                             onclick="return confirm('you want to Change it?  Please Click Edit Button')"
+                                                             class="status-toggle"
+                                                             data-id="{{ $products->id }}"
                                                              checked id="togBtn">
                                                          }@else{
                                                              <input type="checkbox"
-                                                             onclick="return confirm('you want to Change it?  Please Click Edit Button')" 
+                                                             class="status-toggle"
+                                                             data-id="{{ $products->id }}"
                                                               id="togBtn">
                                                          }
                                                          @endif
@@ -300,15 +298,14 @@
                                                             class="btn btn-secondary mx-1"><i class="fa fa-eye" aria-hidden="true"></i>
                                                         </a>
 
-                                                       {{--   <a href="{{ route('vendorproducts.crud.edit', ['vendor_id'=> $vendorid, 'id'=>$products->id, 'sub_id'=>$products->category_sub,]) }}"
+                                                        <a href="{{ route('vendorproducts.crud.edit', ['vendor_id'=> $vendorid, 'id'=>$products->id, 'sub_id'=>$products->category_sub,]) }}"
                                                             class="btn btn-secondary mx-1"><i class="fa fa-pencil"></i>
-                                                        </a> --}}
+                                                        </a>
                                                         <form action="{{ route('vendor_products.admin', $products->id ) }}"
                                                             method="post">
                                                             @method('POST')
                                                             @csrf
-                                                            <button type="submit" class="btn btn-warning mx-1"
-                                                                onclick="return confirm('Are you sure, you want to delete it?')"><i
+                                                            <button type="button" class="btn btn-warning mx-1 delete-btn"><i
                                                                     class="fa fa-trash"></i>
                                                             </button>
                                                         </form>
@@ -737,7 +734,55 @@
               }  
           });
        /*End*/
+
+       $(document).on('change', '.status-toggle', function() {
+           var productId = $(this).data('id');
+           var nextStatus = $(this).is(':checked') ? '1' : '0';
+
+           $.ajax({
+               url: nextStatus === '1' ? "{{ url('admin/productbulkactive') }}" : "{{ url('admin/productbulkdeactive') }}",
+               type: "POST",
+               data: {
+                   "_token": "{{ csrf_token() }}",
+                   "ids": String(productId),
+                   "sts": nextStatus
+               },
+               dataType: "json",
+               error: function() {
+                   $(this).prop('checked', !$(this).is(':checked'));
+                   alert('Status update failed.');
+               }.bind(this)
+           });
+       });
+
+        // Delete SweetAlert
+        $(document).on('click', '.delete-btn', function(e) {
+            e.preventDefault();
+            var form = $(this).closest('form');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to delete it?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+
     });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    .swal2-popup {
+        font-size: 1.2rem !important;
+        width: auto !important;
+        max-width: 90% !important;
+    }
+</style>
 @endsection
 

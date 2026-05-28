@@ -120,7 +120,7 @@
                     <div class="col-sm-12">
 
                         <div class="card">
-                            <div class="mt-3 action-buttons-container">
+                            <div class="mt-3 action-buttons-container" id="toolbar">
                                 <a href="{{ route('products.crud.index') }}">
                                     <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add
                                         Product
@@ -233,17 +233,16 @@
                                                 {{-- @dd($product_price->selling_price); --}}
                                                   {{-- <td>{{ $product_price->selling_price}} </td> --}}
                                                 {{-- <td>{{ $products->category_sub}} </td> --}}
-                                                <?php
-                                                $categorysubcount = count($categorysub);
-                                               
-                                                for($i=0; $i< $categorysubcount; $i++){
-                                                 ?>
-                                                @if($categorysub[$i]->id == $products->category_sub)
-                                                <td>{{ $categorysub[$i]->category_sub_name}} </td>
-                                                @endif
-                                                <?php
+                                                @php
+                                                    $subcat_name = '-';
+                                                    foreach($categorysub as $csub) {
+                                                        if($csub->id == $products->category_sub) {
+                                                            $subcat_name = $csub->category_sub_name;
+                                                            break;
+                                                        }
                                                     }
-                                                ?>
+                                                @endphp
+                                                <td>{{ $subcat_name }}</td>
                                                 <td>{{$products->collection}}</td>
                                                 
                                                 <td>
@@ -323,16 +322,15 @@
                                                             class="btn btn-secondary mx-1"><i class="fab fa-mdb"></i>
                                                         </a>  --}}
 
-                                                        <!-- <a href="{{ route('products.crud.edit', ['id'=>$products->id, 'sub_id'=>$products->category_sub]) }}"
+                                                        <a href="{{ route('products.crud.edit', ['id'=>$products->id, 'sub_id'=>$products->category_sub]) }}"
                                                             class="btn btn-secondary mx-1"><i class="fa fa-pencil"></i>
-                                                        </a> -->
+                                                        </a>
 														 @if (session()->get('log_type') == 'Admin')
                                                         <form action="{{ route('products.crud.destroy', $products->id) }}"
                                                             method="post">
                                                             @method('DELETE')
                                                             @csrf
-                                                            <button type="submit" class="btn btn-warning mx-1"
-                                                                onclick="return confirm('Are you sure, you want to delete it?')"><i
+                                                            <button type="button" class="btn btn-warning mx-1 delete-btn"><i
                                                                     class="fa fa-trash" title="Delete"></i>
                                                             </button>
                                                         </form>
@@ -683,14 +681,6 @@
        $(document).on('change', '.status-toggle', function() {
            var productId = $(this).data('id');
            var nextStatus = $(this).is(':checked') ? '1' : '0';
-           var confirmText = nextStatus === '1'
-               ? 'Are you sure you want to Activate this product?'
-               : 'Are you sure you want to DeActivate this product?';
-
-           if (!confirm(confirmText)) {
-               $(this).prop('checked', !$(this).is(':checked'));
-               return;
-           }
 
            $.ajax({
                url: nextStatus === '1' ? "{{ url('admin/productbulkactive') }}" : "{{ url('admin/productbulkdeactive') }}",
@@ -743,47 +733,75 @@ function getquantity(id) {
     });
 }
 
-function createProductRow(productDetails) {
-    const attributeRows = [
-        [productDetails.attributename1, productDetails.attributevalue1],
-        [productDetails.attributename2, productDetails.attributevalue2],
-        [productDetails.attributename3, productDetails.attributevalue3],
-    ].filter(function(item) {
-        return item[0] && item[1];
-    }).map(function(item) {
-        return `<div>${item[0]} : ${item[1]}</div>`;
-    }).join('');
+    function createProductRow(productDetails) {
+        const attributeRows = [
+            [productDetails.attributename1, productDetails.attributevalue1],
+            [productDetails.attributename2, productDetails.attributevalue2],
+            [productDetails.attributename3, productDetails.attributevalue3],
+        ].filter(function(item) {
+            return item[0] && item[1];
+        }).map(function(item) {
+            return `<div>${item[0]} : ${item[1]}</div>`;
+        }).join('');
 
-    return `
-        <div class="row mb-2 align-items-end">
-        <div class="col-md-3">
-            <label>Attributes</label>
-            <div class="form-control bg-light" style="height:auto;min-height:38px;">${attributeRows || '-'}</div>
-            <input type="hidden" name="prodt_id[]" class="form-control" value=${productDetails.id}>
-        </div>
-        
-        <div class="col-md-2">
-            <label>No of Product</label> 
-            <input type="text" name="quantity[]" class="form-control" value=${productDetails.quantity}>
-        </div>
+        return `
+            <div class="row mb-2 align-items-end">
+            <div class="col-md-3">
+                <label>Attributes</label>
+                <div class="form-control bg-light" style="height:auto;min-height:38px;">${attributeRows || '-'}</div>
+                <input type="hidden" name="prodt_id[]" class="form-control" value=${productDetails.id}>
+            </div>
+            
             <div class="col-md-2">
-            <label>low stock limit</label>
-            <input type="text" name="low_stock_limit[]" class="form-control" value=${productDetails.low_stock_limit}>
-        </div>
-            <div class="col-md-2">
-            <label> MRP</label> 
-            <input type="text" name="retail_price[]" class="form-control" value=${productDetails.retail_price}>
-        </div>
-        <div class="col-md-3">
-            <label> Selling Price</label> 
-            <input type="text" name="selling_price[]" class="form-control" value=${productDetails.selling_price}>
-        </div>
-        
+                <label>No of Product</label> 
+                <input type="text" name="quantity[]" class="form-control" value=${productDetails.quantity}>
+            </div>
+                <div class="col-md-2">
+                <label>low stock limit</label>
+                <input type="text" name="low_stock_limit[]" class="form-control" value=${productDetails.low_stock_limit}>
+            </div>
+                <div class="col-md-2">
+                <label> MRP</label> 
+                <input type="text" name="retail_price[]" class="form-control" value=${productDetails.retail_price}>
+            </div>
+            <div class="col-md-3">
+                <label> Selling Price</label> 
+                <input type="text" name="selling_price[]" class="form-control" value=${productDetails.selling_price}>
+            </div>
+            
 
-        
-    </div><hr>
-    `;
-}
+            
+        </div><hr>
+        `;
+    }
+
+    // Delete SweetAlert
+    $(document).on('click', '.delete-btn', function(e) {
+        e.preventDefault();
+        var form = $(this).closest('form');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to delete it?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    .swal2-popup {
+        font-size: 1.2rem !important;
+        width: auto !important;
+        max-width: 90% !important;
+    }
+</style>
 @endsection
 
