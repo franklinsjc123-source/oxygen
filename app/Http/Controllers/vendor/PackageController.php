@@ -196,4 +196,12 @@ class PackageController extends Controller
         return redirect()->route('package.index');
      }
      }
+    public function changestatus(Request $request)
+    {
+        $package = packages::find($request->id);
+        $package->status = $request->status;
+        $package->save();
+
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
 }

@@ -223,6 +223,14 @@ public function deleteroute($id, FlasherInterface $flasher)
          }
         
     }
+    public function changeroutestatus(Request $request)
+    {
+        $route = Route::find($request->id);
+        $route->status = $request->status;
+        $route->save();
+
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
     public function zonal()
     {
         $viewBag['result'] = $this->masterRepo->getAllZonal();
@@ -263,6 +271,14 @@ public function deleteroute($id, FlasherInterface $flasher)
         // $Zonal = Zonal::find($id);
         // $Zonal->destroy();
         // return route('zonal');
+    }
+    public function changezonalstatus(Request $request)
+    {
+        $zonal = Zonal::find($request->id);
+        $zonal->status = $request->status;
+        $zonal->save();
+
+        return response()->json(['success' => 'Status changed successfully.']);
     }
     /*Route*/
     public function getrouteById(Request $request)

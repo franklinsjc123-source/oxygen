@@ -151,4 +151,12 @@ public function updategst(FlasherInterface $flasher, Request $request, $id)
          }
         
     }
+    public function changestatus(Request $request)
+    {
+        $gst = GST::find($request->id);
+        $gst->status = $request->status;
+        $gst->save();
+
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
 }

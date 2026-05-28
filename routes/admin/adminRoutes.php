@@ -118,6 +118,7 @@ Route::resource('pincode1', PinCodeController1::class, ['names' => 'pincode1']);
 //Staff Controller
 // Route::resource('staff/create', StaffController::class, ['names' => 'staff']);
 // Gst Controller 
+Route::post('gst_master/changestatus', [GstController::class, 'changestatus'])->name('gst.master.changestatus');
 Route::resource('gst_master', GstController::class, ['names' => 'gst.master']);
 
 //Route::resource('gst_master', GstController::class, ['names' => 'gst.master']);
@@ -361,11 +362,13 @@ Route::get('editroute/{id}/edit', [MasterController::class, 'editroute'])->name(
 Route::post('route_update/{id}', [MasterController::class, 'route_update'])->name('route_update');
 
 Route::post('routedelete/{id}', [MasterController::class, 'deleteroute'])->name('routedelete');
+Route::post('route/changestatus', [MasterController::class, 'changeroutestatus'])->name('route.changestatus');
 
 
 Route::post('/checRoutenamePost', [MasterController::class, 'checRoutenamePost'])->name('checRoutenamePost');
 
 Route::get('zonal', [MasterController::class, 'zonal'])->name('zonal');
+Route::post('zonal/changestatus', [MasterController::class, 'changezonalstatus'])->name('zonal.changestatus');
 //Route::post('/getZonalById', [MasterController::class, 'getZonalById'])->name('getZonalById');
 Route::post('/saveZonals', [MasterController::class, 'saveZonals'])->name('saveZonals');
 Route::post('/checkZonalnamePost', [MasterController::class, 'checkZonalnamePost'])->name('checkZonalnamePost');
@@ -383,6 +386,7 @@ Route::get('pincode_export',[MasterController::class, 'get_pincode_data'])->name
 
 //vendor
 
+Route::post('package/changestatus', [PackageController::class, 'changestatus'])->name('package.changestatus');
 Route::resource('package', PackageController::class, ['names' => 'package']);
 Route::resource('vendorcreate', VendorcreateController::class, ['names' => 'vendorcreate']);
 

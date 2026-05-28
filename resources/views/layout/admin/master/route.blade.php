@@ -174,26 +174,10 @@
                                                     <td>
 
                                                         <label class="switch">
-                                                            @if($route->status  == 1){
-                                                                <input type="checkbox"
-                                                                    onclick="return confirm('you want to Change it?  Please Click Edit Button')"
-                                                                    checked id="togBtn">
-                                                                }@else{
-                                                                    <input type="checkbox"
-                                                                    onclick="return confirm('you want to Change it?  Please Click Edit Button')" 
-                                                                     id="togBtn">
-                                                                }
-                                                                @endif
-                                                           
+                                                            <input type="checkbox" class="toggle-status" data-id="{{ $route->id }}" {{ $route->status == 1 ? 'checked' : '' }}>
                                                             <div class="slider round">                                                              
                                                                     <span class="off">Inactive </span>
-                                                               
                                                                     <span class="on">Active</span>
-                                                         
-                                                                <!--ADDED HTML -->
-
-
-                                                                <!--END-->
                                                             </div>
                                                         </label>
                                                         
@@ -213,8 +197,7 @@
                                                                     method="post">
                                                                     @method('POST')
                                                                     @csrf
-                                                                    <button type="submit" class="btn btn-warning mx-1" value="{{$route->id}}"
-                                                                        onclick="return confirm('Are you sure, you want to delete it?')"><i
+                                                                    <button type="submit" class="btn btn-warning mx-1" value="{{$route->id}}"><i
                                                                             class="fa fa-trash"></i>
                                                                     </button>
                                                                 </form>
@@ -443,6 +426,57 @@
         },
     });
 });
-        </script>
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+.swal2-popup {
+    font-size: 1.6rem !important;
+}
+</style>
+<script>
+$(document).ready(function() {
+    // Status Toggle
+    $(document).on('change', '.toggle-status', function() {
+        var status = $(this).prop('checked') ? 1 : 0;
+        var id = $(this).data('id');
+        var checkbox = $(this);
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "{{ route('route.changestatus') }}",
+            data: {'status': status, 'id': id, '_token': '{{ csrf_token() }}'},
+            success: function(data) {
+                // Instantly changed
+            },
+            error: function() {
+                checkbox.prop('checked', !status);
+                Swal.fire('Error!', 'Something went wrong.', 'error');
+            }
+        });
+    });
+
+    // Delete Confirmation
+    $(document).on('submit', 'form', function(e) {
+        if($(this).find('input[name="_method"][value="POST"]').length > 0 && $(this).attr('action').includes('delete')) {
+            e.preventDefault();
+            var form = this;
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to delete this route! This cannot be undone.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        }
+    });
+});
+</script>
     @endpush
 
