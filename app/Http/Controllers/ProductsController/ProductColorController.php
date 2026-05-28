@@ -53,4 +53,14 @@ class ProductColorController extends Controller
         return redirect()->route('product_colors.index')->with('success', 'Color deleted successfully.');
     }
 
+    public function statusUpdate(Request $request)
+    {
+        $color = ProductColor::find($request->id);
+        if ($color) {
+            $color->status = $request->status;
+            $color->save();
+            return response()->json(['success' => true, 'message' => 'Status updated successfully.']);
+        }
+        return response()->json(['success' => false, 'message' => 'Color not found.'], 404);
+    }
 }

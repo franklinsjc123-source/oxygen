@@ -112,6 +112,7 @@ Route::get("products/view/{id}", [ProductsController::class, "view"])->name('sta
 Route::post("products/addinfo", [ProductsController::class, "addinfo"])->name('staffproducts.addinfo');
 
 Route::resource('product_colors', \App\Http\Controllers\staff\ProductsController\ProductColorController::class, ['names' => 'staffproduct_colors']);
+Route::post('product_colors/status', [\App\Http\Controllers\staff\ProductsController\ProductColorController::class, 'statusUpdate'])->name('staffproduct_colors.status');
 
 Route::post("products/productdetailsdelete", [ProductsController::class, "productdetailsdelete"])->name('staffproducts.crud.productdetailsdelete');
 

@@ -123,11 +123,11 @@
                     <i class="fa fa-plus"></i> Sub Category </button>-->
                     <a href="{{ route('attribute_groups.edit', $group->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i></a>
                          @if (session()->get('log_type') == 'Admin')
-                        <form action="{{ route('attribute_groups.destroy', $group->id) }}" onsubmit="return confirm('Are you sure, you want to delete it?')"method="POST" style="display:inline;">
+                        {{-- <form action="{{ route('attribute_groups.destroy', $group->id) }}" onsubmit="return confirm('Are you sure, you want to delete it?')"method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm" title="Delete">X</button>
-                        </form>
+                        </form> --}}
 						@endif
                     </td>
                 </tr>

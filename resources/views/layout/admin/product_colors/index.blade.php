@@ -77,15 +77,13 @@
 											   <label class="switch">
                                                         {{-- $status = $pin->status --}}
                                                         
-                                                         @if($color->status  == 1){
+                                                         @if($color->status  == 1)
                                                          <input type="checkbox"
-                                                             onclick="return confirm('you want to Change it?  Please Click Edit Button')"
-                                                             checked id="togBtn">
-                                                         }@else{
+                                                             class="status-toggle" data-id="{{ $color->id }}"
+                                                             checked>
+                                                         @else
                                                              <input type="checkbox"
-                                                             onclick="return confirm('you want to Change it?  Please Click Edit Button')" 
-                                                              id="togBtn">
-                                                         }
+                                                             class="status-toggle" data-id="{{ $color->id }}">
                                                          @endif
                                                          <div class="slider round">
                                                              <!--ADDED HTML -->
@@ -98,10 +96,10 @@
 										<td>
 											<a href="{{ route('product_colors.edit', $color) }}" class="btn btn-warning" title="Edit"><i class="fa fa-pencil"></i> </a>
 											 @if (session()->get('log_type') == 'Admin')
-												 <form action="{{ route('product_colors.destroy', $color) }}"  onsubmit="return confirm('Are you sure you want to delete this color?');" method="POST" style="display:inline;">
+												 <form action="{{ route('product_colors.destroy', $color) }}" method="POST" style="display:inline;" class="delete-form">
 												@csrf
 												@method('DELETE')
-												<button type="submit" class="btn btn-danger" title="Delete"><i class="fa fa-trash"></i> </button>
+												<button type="button" class="btn btn-danger delete-btn" title="Delete"><i class="fa fa-trash"></i> </button>
 											</form>
 											@endif
 										</td>
@@ -118,5 +116,61 @@
 		<!-- Container-fluid Ends  add_designation-->
 		
 	</div>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script>
+	    $(document).ready(function() {
+	        // Status toggle AJAX
+	        $(document).on('change', '.status-toggle', function() {
+	            var colorId = $(this).data('id');
+	            var nextStatus = $(this).is(':checked') ? '1' : '0';
+
+	            $.ajax({
+	                url: "{{ route('product_colors.status') }}",
+	                type: "POST",
+	                data: {
+	                    "_token": "{{ csrf_token() }}",
+	                    "id": colorId,
+	                    "status": nextStatus
+	                },
+	                dataType: "json",
+	                success: function(response) {
+	                    if (!response.success) {
+	                        alert('Status update failed.');
+	                        $(this).prop('checked', !$(this).is(':checked'));
+	                    }
+	                }.bind(this),
+	                error: function() {
+	                    alert('Status update failed.');
+	                    $(this).prop('checked', !$(this).is(':checked'));
+	                }.bind(this)
+	            });
+	        });
+	        // Delete SweetAlert
+	        $(document).on('click', '.delete-btn', function(e) {
+	            e.preventDefault();
+	            var form = $(this).closest('form');
+	            Swal.fire({
+	                title: 'Are you sure?',
+	                text: "You want to delete it?",
+	                icon: 'warning',
+	                showCancelButton: true,
+	                confirmButtonColor: '#3085d6',
+	                cancelButtonColor: '#d33',
+	                confirmButtonText: 'Yes, delete it!'
+	            }).then((result) => {
+	                if (result.isConfirmed) {
+	                    form.submit();
+	                }
+	            });
+	        });
+	    });
+	</script>
+	<style>
+	    .swal2-popup {
+	        font-size: 1.6rem !important;
+	        width: 500px !important;
+	        max-width: 90% !important;
+	    }
+	</style>
 	@endsection
 

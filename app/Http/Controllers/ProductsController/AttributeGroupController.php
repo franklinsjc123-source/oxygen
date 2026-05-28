@@ -132,4 +132,18 @@ class AttributeGroupController extends Controller
 
         return redirect()->route('attribute_groups.index')->with('success', 'Attribute Group deleted successfully.');
     }
+    
+    public function statusUpdate(Request $request)
+    {
+        $group = AttributeGroup::find($request->id);
+        if ($group) {
+            // Keep it 'Active' or 'Inactive' based on the current logic in the controller, 
+            // wait, in edit/create the controller assigns 1 or 'Active'? 
+            // Let's just use $request->status.
+            $group->status = $request->status;
+            $group->save();
+            return response()->json(['success' => true, 'message' => 'Status updated successfully.']);
+        }
+        return response()->json(['success' => false, 'message' => 'Attribute Group not found.'], 404);
+    }
 }

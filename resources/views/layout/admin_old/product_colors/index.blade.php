@@ -97,10 +97,10 @@
 														 </td>
 										<td>
 											<a href="{{ route('product_colors.edit', $color) }}" class="btn btn-warning" title="Edit"><i class="fa fa-pencil"></i> </a>
-											<form action="{{ route('product_colors.destroy', $color) }}"  onsubmit="return confirm('Are you sure you want to delete this color?');" method="POST" style="display:inline;">
+											<form action="{{ route('product_colors.destroy', $color) }}" method="POST" style="display:inline;" class="delete-form">
 												@csrf
 												@method('DELETE')
-												<button type="submit" class="btn btn-danger" title="Delete"><i class="fa fa-trash"></i> </button>
+												<button type="button" class="btn btn-danger delete-btn" title="Delete"><i class="fa fa-trash"></i> </button>
 											</form>
 										</td>
 									</tr>
@@ -116,5 +116,35 @@
 		<!-- Container-fluid Ends  add_designation-->
 		
 	</div>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script>
+	    $(document).ready(function() {
+	        // Delete SweetAlert
+	        $(document).on('click', '.delete-btn', function(e) {
+	            e.preventDefault();
+	            var form = $(this).closest('form');
+	            Swal.fire({
+	                title: 'Are you sure?',
+	                text: "You want to delete it?",
+	                icon: 'warning',
+	                showCancelButton: true,
+	                confirmButtonColor: '#3085d6',
+	                cancelButtonColor: '#d33',
+	                confirmButtonText: 'Yes, delete it!'
+	            }).then((result) => {
+	                if (result.isConfirmed) {
+	                    form.submit();
+	                }
+	            });
+	        });
+	    });
+	</script>
+	<style>
+	    .swal2-popup {
+	        font-size: 1.6rem !important;
+	        width: 500px !important;
+	        max-width: 90% !important;
+	    }
+	</style>
 	@endsection
 

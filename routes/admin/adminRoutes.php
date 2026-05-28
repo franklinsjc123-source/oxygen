@@ -104,6 +104,7 @@ Route::post('update_attributevalues', [AttributeGroupController::class, 'update_
 Route::resource('specification_groups', SpecificationGroupController::class,['names' => 'specification_groups.admin']);
 Route::post('update_specification', [SpecificationGroupController::class, 'update_specification'])->name('update_specification');
 Route::resource('product_colors', ProductColorController::class);
+Route::post('product_colors/status', [ProductColorController::class, 'statusUpdate'])->name('product_colors.status');
 //Pincode
 //Route::resource('pincode', PinCodeController::class, ['names' => 'pincode']);
 // Route::resource('pincode', PinCodeController::class, ['names' => 'pincode']);
