@@ -66,6 +66,10 @@
         </div>
         <div class="mb-3">
             <label class="form-label">Select Category</label>
+            <div class="form-check mb-2">
+                <input type="checkbox" id="selectAllCategories" class="form-check-input">
+                <label class="form-check-label fw-bold" for="selectAllCategories">Select All Categories</label>
+            </div>
             <div class="border p-3 rounded" style="max-height: 400px; overflow-y: auto;">
                 @php
                     $selectedSubIds = isset($vendorSelectedSubIds) ? $vendorSelectedSubIds : array_filter(explode(',', (string)($group->sub_category_ids ?? '')));
@@ -218,15 +222,32 @@
                     $(`.sub-cat[data-category-id="${catId}"]`).prop('checked', checked);
                     syncParentStates();
                     renderSelections();
+                    updateSelectAllState();
                 });
 
                 $(document).on('change', '.sub-cat', function() {
                     syncParentStates();
                     renderSelections();
+                    updateSelectAllState();
                 });
+
+                $('#selectAllCategories').on('change', function() {
+                    const isChecked = $(this).is(':checked');
+                    $('.group-cat').prop('checked', isChecked);
+                    $('.sub-cat').prop('checked', isChecked);
+                    syncParentStates();
+                    renderSelections();
+                });
+
+                function updateSelectAllState() {
+                    const totalSubs = $('.sub-cat').length;
+                    const checkedSubs = $('.sub-cat:checked').length;
+                    $('#selectAllCategories').prop('checked', totalSubs > 0 && totalSubs === checkedSubs);
+                }
 
                 syncParentStates();
                 renderSelections();
+                updateSelectAllState();
             });
         </script>
 
