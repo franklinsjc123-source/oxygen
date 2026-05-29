@@ -296,64 +296,65 @@
 <div class="col-md-6">
 <div class="form-group row">
 											<label for="validationCustom2" class="col-xl-4 col-md-4">Next Follow-up Date</label>
-											<div class="col-xl-8 col-md-7">
+											<div class="col-xl-8 col-md-8">
 												<input class="form-control" id="next_follow_date"  type="date" required="" name="next_follow_date" value="{{ old('next_follow_date', $tracker->next_follow_date) }}">
 											</div>
 										</div>
 </div>
-<div class="col-md-4">
-											
-										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4">Status</label>
-											<div class="col-xl-8 col-md-8">
-												<select class="custom-select w-100 form-control" name="status" required="">
-																<option value="">--Select--</option>
-																
-																<option value="Pending" {{($tracker->status=='Pending')?'selected':''}}>Pending</option>
-																<option value="Waiting" {{($tracker->status=='Waiting')?'selected':''}}>Waiting</option>
-																<option value="Accepted" {{($tracker->status=='Accepted')?'selected':''}}>Accepted</option>
-																<option value="Rejected" {{($tracker->status=='Rejected')?'selected':''}}>Rejected</option>
-															
-															</select>
-											</div>
-										</div>
 </div>
 
-										
+<div class="row">
+	<div class="col-md-6">
+		<div class="form-group row">
+			<label for="validationCustom0" class="col-xl-4 col-md-4">Status</label>
+			<div class="col-xl-8 col-md-8">
+				<select class="custom-select w-100 form-control" name="status" required="">
+					<option value="">--Select--</option>
+					<option value="Pending" {{($tracker->status=='Pending')?'selected':''}}>Pending</option>
+					<option value="Waiting" {{($tracker->status=='Waiting')?'selected':''}}>Waiting</option>
+					<option value="Accepted" {{($tracker->status=='Accepted')?'selected':''}}>Accepted</option>
+					<option value="Rejected" {{($tracker->status=='Rejected')?'selected':''}}>Rejected</option>
+				</select>
+			</div>
+		</div>
+	</div>
 
-<div class="col-md-8">	
-										<div class="form-group row">
-											<label for="validationCustom1" class="col-xl-2 col-md-2">Reason</label>
-											<div class="col-xl-10 col-md-10">
-												<textarea class="form-control" rows="3" id="validationCustom1" type="text" required="" name="reason">{{ old('reason', $tracker->reason) }}</textarea>
-											</div>
-										</div>
-										</div>
-										<div class="col-md-4">									
-										<div class="form-group row">
-											<label for="manufacturer_type" class="col-xl-4 col-md-4">Source Type</label>
-											<div class="col-xl-8 col-md-8">
-												<select class="custom-select w-100 form-control" name="manufacturer_type" required="">
-																<option value="">--Select--</option>
-																<option value="Direct from Manufacturer" {{($tracker->manufacturer_type=='Direct from Manufacturer')?'selected':''}}>Direct from Manufacturer</option>
-																<option value="Wholesalers" {{($tracker->manufacturer_type=='Wholesalers')?'selected':''}}>Wholesalers</option>
-																<option value="Distributors" {{($tracker->manufacturer_type=='Distributors')?'selected':''}}>Distributors</option>
-																<option value="B2B Marketplace" {{($tracker->manufacturer_type=='B2B Marketplace')?'selected':''}}>B2B Marketplace</option>
-																<option value="Others" {{($tracker->manufacturer_type=='Others')?'selected':''}}>Others</option>
-															
-															</select>
-											</div>
-										</div>
-										</div>
-										<div class="col-md-8">	
-										<div class="form-group row">
-											<label for="manufacturer_details" class="col-xl-2 col-md-2">Manufacturer Details</label>
-											<div class="col-xl-10 col-md-10">
-												<textarea class="form-control" rows="3" id="manufacturer_details" type="text" required="" name="manufacturer_details">{{ old('manufacturer_details', $tracker->manufacturer_details) }}</textarea>
-											</div>
-										</div>
-										</div>	
-										</div>							
+	<div class="col-md-6">										
+		<div class="form-group row">
+			<label for="validationCustom1" class="col-xl-4 col-md-4">Reason</label>
+			<div class="col-xl-8 col-md-8">
+				<textarea class="form-control" rows="3" id="validationCustom1" type="text" required="" name="reason">{{ old('reason', $tracker->reason) }}</textarea>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-6">									
+		<div class="form-group row">
+			<label for="manufacturer_type" class="col-xl-4 col-md-4">Source Type</label>
+			<div class="col-xl-8 col-md-8">
+				<select class="custom-select w-100 form-control" name="manufacturer_type" required="">
+					<option value="">--Select--</option>
+					<option value="Direct from Manufacturer" {{($tracker->manufacturer_type=='Direct from Manufacturer')?'selected':''}}>Direct from Manufacturer</option>
+					<option value="Wholesalers" {{($tracker->manufacturer_type=='Wholesalers')?'selected':''}}>Wholesalers</option>
+					<option value="Distributors" {{($tracker->manufacturer_type=='Distributors')?'selected':''}}>Distributors</option>
+					<option value="B2B Marketplace" {{($tracker->manufacturer_type=='B2B Marketplace')?'selected':''}}>B2B Marketplace</option>
+					<option value="Others" {{($tracker->manufacturer_type=='Others')?'selected':''}}>Others</option>
+				</select>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-6">	
+		<div class="form-group row">
+			<label for="manufacturer_details" class="col-xl-4 col-md-4">Manufacturer Details</label>
+			<div class="col-xl-8 col-md-8">
+				<textarea class="form-control" rows="3" id="manufacturer_details" type="text" required="" name="manufacturer_details">{{ old('manufacturer_details', $tracker->manufacturer_details) }}</textarea>
+			</div>
+		</div>
+	</div>	
+</div>							
 <div class="modal-footer">   <button class="btn btn-lg btn-secondary px-5" type="button">Close</button>
                                                    <button class="btn  px-5 btn-lg btn-primary" type="submit">Save & Reopen</button>
                                                   
