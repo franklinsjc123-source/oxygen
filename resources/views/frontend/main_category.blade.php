@@ -463,7 +463,7 @@
                                     <div class="product text-center">
                                         <figure class="product-media">
                                             <a href="${siteurl}/productVar/${product.id}">
-                                                <img src="${siteurl}/assets/images/products/${product.product_image}" alt="${product.product_name}" width="300" height="200" />
+                                                <img src="${siteurl}/assets/images/products/${product.product_image}" alt="${product.product_name}" />
                                             </a>
                                             ${product.offer_image ? `
                                                <div class="product-label-group" style="position: absolute; top: 10px; left: 10px; z-index: 10; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px;">
@@ -475,30 +475,33 @@
                                                    ` : ''}
                                                </div>
                                             ` : ''}
-                                            <div class="product-action-horizontal">
-                                                <a href="#" class="btn-product-icon btn-cart w-icon-cart" title="Add to cart"></a>
-                                                <a href="#" onclick="addwishlist('${product.id}')" class="btn-product-icon btn-wishlist w-icon-heart" title="Wishlist"></a>
-                                                <a href="javascript:void(0)" onclick="showQuickView('${product.id}')" class="btn-product-icon btn-quickview w-icon-search" title="Quick View"></a>
+                                            <div class="product-action-vertical">
+                                                <a href="${siteurl}/productVar/${product.id}" class="btn-product-icon w-icon-cart"></a>
+                                                <a href="#" onclick="addwishlist('${product.id}')" class="btn-product-icon btn-wishlist w-icon-heart"><span></span></a>
+                                                <a href="javascript:void(0)" onclick="showQuickView('${product.id}')" data-id="${product.id}" class="btn-product-icon btn-quickview w-icon-search"></a>
                                             </div>
                                         </figure>
                                         <div class="product-details">
-                                            <div class="product-cat">
-                                                <a href="${siteurl}/vendorDetails/${product.vendor_id}">${product.shop_name}</a>
+                                            <div class="sold-by" style="margin-bottom: 2px;">
+                                                <a href="${siteurl}/shop-details/${product.vendor_id}" style="color: #0088dd; font-weight: 700; font-size: 1.3rem;">
+                                                    ${product.shop_name || ''}
+                                                </a>
                                             </div>
-                                            <h3 class="product-name">
-                                                <a href="${siteurl}/productVar/${product.id}">${product.product_name}</a>
-                                            </h3>
-                                            <div class="ratings-container">
+                                            <h4 class="product-name" style="margin-bottom: 5px; font-weight: 500; font-size: 1.4rem;">
+                                                <a href="${siteurl}/productVar/${product.id}" style="color: #333; text-decoration: none;">
+                                                    ${product.product_name}
+                                                </a>
+                                            </h4>
+                                            <div class="ratings-container" style="margin-bottom: 5px;">
                                                 <div class="ratings-full">
-                                                    <span class="ratings" style="width:100%;"></span>
-                                                    <span class="tooltiptext tooltip-top"></span>
+                                                    <span class="ratings" style="width: 0%;"></span>
                                                 </div>
-                                                <a href="#" class="rating-reviews">(3 reviews)</a>
+                                                <a class="rating-reviews" style="font-size: 1.1rem; color: #0088dd;">(0 Reviews)</a>
                                             </div>
-                                            <div class="product-pa-wrapper">
-                                                <div class="product-price">₹${product.selling_price}</div>
-                                                <div class="product-price-discount"><del>₹${product.retail_price}</del></div>
-                                                <div class="product-offer-percentage">${discount_rounded}% Off</div>
+                                            <div class="product-pa-wrapper" style="display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; flex-wrap: nowrap;">
+                                                <div class="product-price-home" style="font-family: monospace; font-size: 1.5rem; font-weight: 700; color: #000;">₹${product.selling_price}</div>
+                                                <div class="product-price-discount" style="text-decoration: line-through; color: #888; font-size: 1.1rem; font-weight: 600;">₹${product.retail_price}</div>
+                                                <div class="product-offer-percentage" style="color: #27ae60; font-weight: 700; font-size: 1.1rem;">${discount_rounded}% Off</div>
                                             </div>
                                         </div>
                                     </div>
@@ -507,8 +510,10 @@
                         });
                     } else {
                         $('#productslist').append(`
-                            <div align="center">
-                                <img src="${siteurl}/assets/images/banners/outofstock.png" alt="Out Of Stock" width="190" height="190">
+                            <div style="text-align: center; width: 100%; padding: 50px 15px;">
+                                <i class="fas fa-search" style="font-size: 40px; color: #ddd; margin-bottom: 15px;"></i>
+                                <h4 style="color: #666; font-size: 1.6rem; margin-bottom: 5px; font-weight: 600;">No Products Found</h4>
+                                <p style="color: #999; font-size: 1.3rem;">Try adjusting your filters to find what you're looking for.</p>
                             </div>
                         `);
                     }
