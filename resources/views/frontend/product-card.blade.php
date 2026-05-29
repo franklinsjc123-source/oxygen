@@ -23,8 +23,13 @@
                 }
             @endphp
             @if($offer_image)
-                <div class="product-label-group" style="position: absolute; top: 10px; left: 10px; z-index: 10;">
+                <div class="product-label-group" style="position: absolute; top: 10px; left: 10px; z-index: 10; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px;">
                     <img src="{{ asset('assets/images/offer_logo/'.$offer_image) }}" alt="Offer" style="width: 45px; height: 45px; object-fit: contain; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); border-radius: 5px;">
+                    @if(!empty($product->offer_text))
+                        <div style="background: #0088dd; color: #fff; font-size: 8px; font-weight: 700; padding: 1px 4px; border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); white-space: nowrap; line-height: 1.1;">
+                            {{ $product->offer_text }}
+                        </div>
+                    @endif
                 </div>
             @endif
             <div class="product-action-vertical">

@@ -157,23 +157,36 @@
                                                       @if($offer_image)
                                                           <div class="product-label-group offer-scroll-trigger" style="position: absolute; top: 10px; left: 10px; z-index: 10; cursor: pointer; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 5px;">
                                                               <img src="{{ asset('assets/images/offer_logo/'.$offer_image) }}" alt="Offer" style="width: 100px; height: 100px; object-fit: contain; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); border-radius: 5px;">
-                                                              @if(isset($offerDetails) && $offerDetails)
-                                                                  @php
-                                                                      $offerText = '';
-                                                                      if ($offerDetails->type == "Buy X Get Y Free") {
-                                                                          $offerText = 'Buy ' . $offerDetails->buy . ' Get ' . $offerDetails->getoffer . ' Free';
-                                                                      } elseif ($offerDetails->type == "Buy X @ Y") {
-                                                                          $offerText = 'Buy ' . $offerDetails->buyproduct . ' @ ₹' . $offerDetails->getamt;
-                                                                      } else {
-                                                                          $offerText = $offerDetails->title ?: $offerDetails->type;
-                                                                      }
-                                                                  @endphp
-                                                                  @if($offerText)
-                                                                      <div style="background: rgba(255, 60, 32, 0.95); color: #fff; font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); white-space: nowrap;">
-                                                                          {{ $offerText }}
-                                                                      </div>
-                                                                  @endif
-                                                              @endif
+                                                               @if(isset($offerDetails) && $offerDetails)
+                                                                   @php
+                                                                       $offerText = '';
+                                                                       if ($offerDetails->type == "Buy X Get Y Free") {
+                                                                           $offerText = 'Buy ' . ($offerDetails->buy ?: '1') . ' Get ' . ($offerDetails->getoffer ?: '1') . ' Free';
+                                                                       } elseif ($offerDetails->type == "Cashback") {
+                                                                           if (strtolower($offerDetails->cashbacktype) == 'percentage') {
+                                                                               $offerText = "Cashback {$offerDetails->cashbackvalue}% Off";
+                                                                           } else {
+                                                                               $offerText = "Cashback ₹{$offerDetails->cashbackvalue} Off";
+                                                                           }
+                                                                       } elseif ($offerDetails->type == "Fixed Discount") {
+                                                                           if (strtolower($offerDetails->discount_type) == 'percentage') {
+                                                                               $offerText = "Flat {$offerDetails->value}% Off";
+                                                                           } else {
+                                                                               $offerText = "Flat ₹{$offerDetails->value} Off";
+                                                                           }
+                                                                       } elseif (str_contains($offerDetails->type, '@')) {
+                                                                           $amt = $offerDetails->getamt ? "₹{$offerDetails->getamt}/-" : "{$offerDetails->value}%";
+                                                                           $offerText = "Buy {$offerDetails->buy} @ {$amt}";
+                                                                       } else {
+                                                                           $offerText = $offerDetails->title ?: $offerDetails->type;
+                                                                       }
+                                                                   @endphp
+                                                                   @if($offerText)
+                                                                       <div style="background: #0088dd; color: #fff; font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); white-space: nowrap;">
+                                                                           {{ $offerText }}
+                                                                       </div>
+                                                                   @endif
+                                                               @endif
                                                           </div>
                                                       @endif
                                                   </figure>
@@ -1304,12 +1317,42 @@
      const detailImageBase = '{{ asset("assets/images/products/detail") }}/';
      const mainImageBase = '{{ asset("assets/images/products") }}/';
      @php
-         $offerHtmlStr = '';
-         if (isset($prouctsList['offer_image']) && $prouctsList['offer_image']) {
-             $offerSrc = asset('assets/images/offer_logo/'.$prouctsList['offer_image']);
-             $offerHtmlStr = '<div class="product-label-group offer-scroll-trigger" style="position: absolute; top: 10px; left: 10px; z-index: 10; cursor: pointer; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 5px;"><img src="' . $offerSrc . '" alt="Offer" style="width: 100px; height: 100px; object-fit: contain; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); border-radius: 5px;"></div>';
-         }
-     @endphp
+        $offerHtmlStr = '';
+        if (isset($prouctsList['offer_image']) && $prouctsList['offer_image']) {
+            $offerSrc = asset('assets/images/offer_logo/'.$prouctsList['offer_image']);
+            
+            $offerText = '';
+            if (isset($offerDetails) && $offerDetails) {
+                if ($offerDetails->type == "Buy X Get Y Free") {
+                    $offerText = 'Buy ' . ($offerDetails->buy ?: '1') . ' Get ' . ($offerDetails->getoffer ?: '1') . ' Free';
+                } elseif ($offerDetails->type == "Cashback") {
+                    if (strtolower($offerDetails->cashbacktype) == 'percentage') {
+                        $offerText = "Cashback {$offerDetails->cashbackvalue}% Off";
+                    } else {
+                        $offerText = "Cashback ₹{$offerDetails->cashbackvalue} Off";
+                    }
+                } elseif ($offerDetails->type == "Fixed Discount") {
+                    if (strtolower($offerDetails->discount_type) == 'percentage') {
+                        $offerText = "Flat {$offerDetails->value}% Off";
+                    } else {
+                        $offerText = "Flat ₹{$offerDetails->value} Off";
+                    }
+                } elseif (str_contains($offerDetails->type, '@')) {
+                    $amt = $offerDetails->getamt ? "₹{$offerDetails->getamt}/-" : "{$offerDetails->value}%";
+                    $offerText = "Buy {$offerDetails->buy} @ {$amt}";
+                } else {
+                    $offerText = $offerDetails->title ?: $offerDetails->type;
+                }
+            }
+            
+            $textHtml = '';
+            if ($offerText) {
+                $textHtml = '<div style="background: #0088dd; color: #fff; font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); white-space: nowrap;">' . $offerText . '</div>';
+            }
+
+            $offerHtmlStr = '<div class="product-label-group offer-scroll-trigger" style="position: absolute; top: 10px; left: 10px; z-index: 10; cursor: pointer; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 5px;"><img src="' . $offerSrc . '" alt="Offer" style="width: 100px; height: 100px; object-fit: contain; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); border-radius: 5px;">' . $textHtml . '</div>';
+        }
+    @endphp
      const offerImageHtml = @json($offerHtmlStr);
 
      function formatINR(value) {

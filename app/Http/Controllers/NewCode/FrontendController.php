@@ -1740,10 +1740,17 @@ class FrontendController extends Controller
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
             'pd.product_detail_image',
-            'pd.product_detail_image',
             'o.offer_logo',
             'o.type as offer_type',
-            'o.discount_type'
+            'o.discount_type',
+            'o.title as offer_title',
+            'o.buy as offer_buy',
+            'o.getoffer as offer_getoffer',
+            'o.cashbacktype as offer_cashbacktype',
+            'o.cashbackvalue as offer_cashbackvalue',
+            'o.value as offer_value',
+            'o.buyproduct as offer_buyproduct',
+            'o.getamt as offer_getamt'
         )->get();
 
 
@@ -1751,6 +1758,30 @@ class FrontendController extends Controller
         foreach ($productsData as $val) {
             $productId = $val->id;
             if (!isset($resultArr[$productId])) {
+                $offerText = '';
+                if ($val->offer_type) {
+                    if ($val->offer_type == "Buy X Get Y Free") {
+                        $offerText = 'Buy ' . ($val->offer_buy ?: '1') . ' Get ' . ($val->offer_getoffer ?: '1') . ' Free';
+                    } elseif ($val->offer_type == "Cashback") {
+                        if (strtolower($val->offer_cashbacktype) == 'percentage') {
+                            $offerText = "Cashback {$val->offer_cashbackvalue}% Off";
+                        } else {
+                            $offerText = "Cashback ₹{$val->offer_cashbackvalue} Off";
+                        }
+                    } elseif ($val->offer_type == "Fixed Discount") {
+                        if (strtolower($val->discount_type) == 'percentage') {
+                            $offerText = "Flat {$val->offer_value}% Off";
+                        } else {
+                            $offerText = "Flat ₹{$val->offer_value} Off";
+                        }
+                    } elseif (str_contains($val->offer_type, '@')) {
+                        $amt = $val->offer_getamt ? "₹{$val->offer_getamt}/-" : "{$val->offer_value}%";
+                        $offerText = "Buy {$val->offer_buy} @ {$amt}";
+                    } else {
+                        $offerText = $val->offer_title ?: $val->offer_type;
+                    }
+                }
+
                 $resultArr[$productId] = [
                     'id' => $val->id,
                     'category_id' => $val->category_main,
@@ -1764,7 +1795,8 @@ class FrontendController extends Controller
                     'category_main_name' => $val->category_main_name,
                     'shop_name' => $val->shop_name,
                     'profile_image' => $val->profile_image,
-                    'offer_image' => $val->offer_logo,
+                    'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
+                    'offer_text' => $offerText,
                 ];
             }
         }
@@ -1822,9 +1854,15 @@ class FrontendController extends Controller
             ->get();
 
         // Offer types for filter
-        $offerTypes = DB::table('master_offers')
-            ->where('status', 1)
-            ->select('id', 'title', 'type')
+        $offerTypes = DB::table('products')
+            ->join('master_offers', 'master_offers.id', '=', 'products.offers')
+            ->where('products.category_main', $main_category_id)
+            ->where('products.status', 1)
+            ->where('master_offers.status', 1)
+            ->whereNotNull('products.offers')
+            ->where('products.offers', '!=', '')
+            ->select('master_offers.*')
+            ->distinct()
             ->get();
 
         return view('frontend/main_category', compact('prouctsList', 'categories', 'colours', 'main_category', 'sub_categories', 'sizes', 'collections', 'offerTypes'));
@@ -3490,7 +3528,17 @@ class FrontendController extends Controller
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
             'pd.product_detail_image',
-            'o.offer_logo'
+            'o.offer_logo',
+            'o.type as offer_type',
+            'o.discount_type',
+            'o.title as offer_title',
+            'o.buy as offer_buy',
+            'o.getoffer as offer_getoffer',
+            'o.cashbacktype as offer_cashbacktype',
+            'o.cashbackvalue as offer_cashbackvalue',
+            'o.value as offer_value',
+            'o.buyproduct as offer_buyproduct',
+            'o.getamt as offer_getamt'
         )->get();
 
         $resultArr = [];
@@ -3503,6 +3551,30 @@ class FrontendController extends Controller
                 $discount_percentage = round((($val->retail_price - $val->selling_price) / $val->retail_price) * 100);
             }
             if (!isset($resultArr[$productId])) {
+                $offerText = '';
+                if ($val->offer_type) {
+                    if ($val->offer_type == "Buy X Get Y Free") {
+                        $offerText = 'Buy ' . ($val->offer_buy ?: '1') . ' Get ' . ($val->offer_getoffer ?: '1') . ' Free';
+                    } elseif ($val->offer_type == "Cashback") {
+                        if (strtolower($val->offer_cashbacktype) == 'percentage') {
+                            $offerText = "Cashback {$val->offer_cashbackvalue}% Off";
+                        } else {
+                            $offerText = "Cashback ₹{$val->offer_cashbackvalue} Off";
+                        }
+                    } elseif ($val->offer_type == "Fixed Discount") {
+                        if (strtolower($val->discount_type) == 'percentage') {
+                            $offerText = "Flat {$val->offer_value}% Off";
+                        } else {
+                            $offerText = "Flat ₹{$val->offer_value} Off";
+                        }
+                    } elseif (str_contains($val->offer_type, '@')) {
+                        $amt = $val->offer_getamt ? "₹{$val->offer_getamt}/-" : "{$val->offer_value}%";
+                        $offerText = "Buy {$val->offer_buy} @ {$amt}";
+                    } else {
+                        $offerText = $val->offer_title ?: $val->offer_type;
+                    }
+                }
+
                 $resultArr[$productId] = [
                     'id' => $val->id,
                     'category_id' => $val->category_main,
@@ -3520,7 +3592,8 @@ class FrontendController extends Controller
                     'color' => $val->color,
                     'product_detail_image' => $val->product_detail_image,
                     'discount' => $discount_percentage,
-                    'offer_image' => $val->offer_logo,
+                    'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
+                    'offer_text' => $offerText,
                 ];
             }
         }
