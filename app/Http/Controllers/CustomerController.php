@@ -37,7 +37,6 @@ class CustomerController extends Controller
 
 
         if ($count1 > 0) {
-            session()->flash('error', 'Mobile Number Alreader Registered.');
             return response()->json(['msg' => 'Failed'], 200);
         } else {
             $statement = DB::select("SHOW TABLE STATUS LIKE 'ecom_customer_info'");
@@ -51,7 +50,6 @@ class CustomerController extends Controller
             $customer->customer_password = base64_encode(base64_encode($request->customer_password));
             $customer->save();
             Session::put('customer_id', $customer_id);
-            session()->flash('Success', 'Customer Registered Successfully.');
 
             $details = [
 

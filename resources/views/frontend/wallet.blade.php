@@ -3,22 +3,17 @@
 @section('content')
 
 <main class="main wishlist-page">
-    <div class="page-header">
+    <nav class="breadcrumb-nav mb-4 mt-4">
         <div class="container">
-            <h1 class="page-title mb-0">Wallet</h1>
-        </div>
-    </div>
-
-    <nav class="breadcrumb-nav mb-10">
-        <div class="container">
-            <ul class="breadcrumb">
+            <ul class="breadcrumb bb-no">
                 <li><a href="{{ route('home') }}">Home</a></li>
                 <li>Wallet</li>
             </ul>
         </div>
     </nav>
 
-    <div class="container mb-10">
+    <div class="container mb-10 mt-2">
+        <h2 class="title title-center mb-5">My Wallet</h2>
         <div class="row">
             <div class="col-lg-4 mb-4">
                 <div class="card">
