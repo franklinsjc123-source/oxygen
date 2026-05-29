@@ -122,7 +122,7 @@
                                             <div class="d-flex" style="gap: 5px; white-space: nowrap;">
                                                 <a href="{{ route('activity_trackers.show', $tracker->id) }}" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i> </a>
                                                 <a href="{{ route('activity_trackers.edit', $tracker->id) }}" class="btn btn-warning btn-sm"><i class="fa fa-pencil"></i> </a>
-                                                <form action="{{ route('activity_trackers.destroy', $tracker->id) }}" method="POST" style="margin: 0;">
+                                                <form action="{{ route('activity_trackers.destroy', $tracker->id) }}" method="POST" style="margin: 0;" onsubmit="return confirmDelete(event, this);">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button class="btn btn-danger btn-sm" type="submit"><i class="fa fa-trash"></i></button>
@@ -158,5 +158,32 @@
     </div>
 
 </div>
+
+<style>
+    /* SweetAlert2 font size adjustment for visual consistency */
+    .swal2-popup {
+        font-size: 1.6rem !important;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmDelete(event, form) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+        return false;
+    }
+</script>
 
 @endsection
