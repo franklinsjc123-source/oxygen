@@ -37,13 +37,18 @@
   }
 
   /* ── Selected / Active Offer ── */
+  @keyframes glowing-border {
+      0% { box-shadow: 0 0 10px #ff7b00, 0 0 15px rgba(255, 123, 0, 0.6); }
+      50% { box-shadow: 0 0 20px #ff0055, 0 0 30px rgba(255, 0, 85, 0.8); }
+      100% { box-shadow: 0 0 10px #ff7b00, 0 0 15px rgba(255, 123, 0, 0.6); }
+  }
+
   .category-ellipse.sc-active .category-media {
       position: relative;
       border-radius: 50%;
       padding: 4px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.45),
-                  0 0 30px rgba(118, 75, 162, 0.2);
+      background: linear-gradient(135deg, #ff7b00 0%, #ff0055 50%, #764ba2 100%);
+      animation: glowing-border 2s infinite;
       transition: all 0.35s cubic-bezier(.25,.8,.25,1);
   }
   .category-ellipse.sc-active .category-media img {
@@ -51,13 +56,34 @@
       border: 3px solid #fff;
   }
   .category-ellipse.sc-active {
-      transform: scale(1.08);
+      transform: scale(1.15) translateY(-5px);
       transition: transform 0.35s cubic-bezier(.25,.8,.25,1);
+      position: relative;
+      z-index: 10;
   }
   .category-ellipse.sc-active .category-name a {
-      color: #764ba2 !important;
-      font-weight: 700 !important;
-      letter-spacing: 0.2px;
+      color: #ff0055 !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-size: 1.05rem;
+      text-shadow: 0px 2px 4px rgba(255, 0, 85, 0.2);
+  }
+  
+  /* Add a tiny floating badge on the active item */
+  .category-ellipse.sc-active .category-media::after {
+      content: '★';
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #ff7b00;
+      color: #fff;
+      font-size: 14px;
+      line-height: 1;
+      padding: 6px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   }
   
   .category-media {
@@ -118,80 +144,43 @@
             <div class="page-content">
                 <div class="container">
 
-                    <div class="shop-default-category category-ellipse-section ">
-                        <div class="swiper-container swiper-theme shadow-swiper"
-                                data-swiper-options="{
-                                'spaceBetween': 20,
-                                'slidesPerView': 2,
-                                'breakpoints': {
-                                    '480': {
-                                        'slidesPerView': 3
-                                    },
-                                    '576': {
-                                        'slidesPerView': 4
-                                    },
-                                    '768': {
-                                        'slidesPerView': 6
-                                    },
-                                    '992': {
-                                        'slidesPerView': 7
-                                    },
-                                    '1200': {
-                                        'slidesPerView': 8,
-                                        'spaceBetween': 30
-                                    }
-                                }
-                            }"
-                        >
-                            <div class="swiper-wrapper row gutter-lg cols-xl-8 cols-lg-7 cols-md-6 cols-sm-4 cols-xs-3 cols-2">
+                    <div class="shop-default-category category-ellipse-section mb-6">
+                        <div class="row gutter-lg cols-xl-8 cols-lg-7 cols-md-6 cols-sm-4 cols-xs-3 cols-2 justify-content-center mt-4">
                               
-
-                                   <div class="swiper-slide category-wrap">
-                                     <div class="category category-ellipse {{ ($offer_id == 0) ? 'sc-active' : '' }}">
-
-                                         <figure class="category-media">
-                                            <a href="{{ url( 'offers' ) }}">
-                                                
-                                                <img src="{{ asset('assets/images/offer_logo/all_offer.jpeg') }}" alt="All Offers"
-                                                   style="background-color: #5C92C0;" />
-                                            </a>
-                                        </figure>
-                                        <div class="category-content">
-                                            <h4 class="category-name">
-                                                <a href="{{ url( 'offers' ) }}">All Offers</a>
-                                            </h4>
-                                        </div>
+                               <div class="category-wrap mb-4">
+                                 <div class="category category-ellipse {{ ($offer_id == 0) ? 'sc-active' : '' }}">
+                                     <figure class="category-media">
+                                        <a href="{{ url( 'offers' ) }}">
+                                            <img src="{{ asset('assets/images/offer_logo/all_offer.jpeg') }}" alt="All Offers"
+                                               style="background-color: #5C92C0;" />
+                                        </a>
+                                    </figure>
+                                    <div class="category-content">
+                                        <h4 class="category-name">
+                                            <a href="{{ url( 'offers' ) }}">All Offers</a>
+                                        </h4>
                                     </div>
                                 </div>
-
-
-                              	@foreach($offer as $o )
-
-                             
-                                <div class="swiper-slide category-wrap">
-                                     <div class="category category-ellipse {{ ($selectedGroupKey == $o->group_key) ? 'sc-active' : '' }}">
-
-                                         <figure class="category-media">
-                                            <a href="{{ url( 'offers?id='.$o->id ) }}">
-                                                
-                                                <img src="{{ asset('assets/images/offer_logo/'.$o->offer_logo) }}" alt="Categroy"
-                                                   style="background-color: #5C92C0;" />
-                                            </a>
-                                        </figure>
-                                        <div class="category-content">
-                                            <h4 class="category-name">
-                                                <a href="{{ url( 'offers?id='.$o->id ) }}">{{$o->title}}</a>
-                                            </h4>
-                                        </div>
-                                    </div>
-                                </div>
-                                @endforeach
-                              
                             </div>
 
-
-                            
-                            <div class="swiper-pagination"></div>
+                            @foreach($offer as $o )
+                            <div class="category-wrap mb-4">
+                                 <div class="category category-ellipse {{ ($selectedGroupKey == $o->group_key) ? 'sc-active' : '' }}">
+                                     <figure class="category-media">
+                                        <a href="{{ url( 'offers?id='.$o->id ) }}">
+                                            <img src="{{ asset('assets/images/offer_logo/'.$o->offer_logo) }}" alt="Categroy"
+                                               style="background-color: #5C92C0;" />
+                                        </a>
+                                    </figure>
+                                    <div class="category-content">
+                                        <h4 class="category-name">
+                                            <a href="{{ url( 'offers?id='.$o->id ) }}">{{$o->title}}</a>
+                                        </h4>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                          
                         </div>
                     </div>
 
