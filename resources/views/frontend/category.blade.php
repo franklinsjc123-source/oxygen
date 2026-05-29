@@ -187,11 +187,14 @@
                                             class="w-icon-category"></i><span>Filters</span></a>
                                         <div class="toolbox-item toolbox-sort select-box text-dark">
                                             <label>Sort By :</label>
-                                            <select name="orderby" id="orderby" class="form-control">
-                                                <option value="default" selected="selected">Default sorting</option>
-                                                <option value="price-low">Low to High</option>
-                                                <option value="price-high">High to Low</option>
-                                            </select>
+                                             <select name="orderby" id="orderby" class="form-control">
+                                                 <option value="default" selected="selected">Default sorting</option>
+                                                 <option value="new-collections">New Collections</option>
+                                                 <option value="best-sellers">Best Sellers</option>
+                                                 <option value="top-rated">Top Rated</option>
+                                                 <option value="price-low">Price Low to High</option>
+                                                 <option value="price-high">Price High to Low</option>
+                                             </select>
                                         </div>
                                 </div>
                                 <div class="toolbox-right">

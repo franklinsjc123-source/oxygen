@@ -1784,22 +1784,50 @@ class FrontendController extends Controller
         $main_category = CategoryMain::where('id', $main_category_id)->first();
 
 
-        $productcolors = DB::table('products_details')
+        $colours = DB::table('products_details')
             ->leftJoin('products', 'products.id', '=', 'products_details.products_id')
-            ->select(DB::raw('DISTINCT(products_details.attributevalue1) as color'))
             ->where('products.status', 1)
-            ->where('products.category_sub', $main_category_id)
-            ->pluck('color');
+            ->where('products.category_main', $main_category_id)
+            ->whereNotNull('products_details.attributevalue1')
+            ->where('products_details.attributevalue1', '!=', '')
+            ->select('products_details.attributevalue1 as color', DB::raw('COUNT(DISTINCT products.id) as count'))
+            ->groupBy('products_details.attributevalue1')
+            ->orderBy('count', 'desc')
+            ->get();
 
-        $colors = $productcolors->toArray();
+        // Sub-categories for filter
+        $sub_categories = DB::table('category_sub')
+            ->leftJoin('category', 'category.id', '=', 'category_sub.category_id')
+            ->where('category.main_category_id', $main_category_id)
+            ->where('category_sub.status', 1)
+            ->select('category_sub.id', 'category_sub.category_sub_name')
+            ->orderBy('category_sub.category_sub_name', 'asc')
+            ->get();
 
-        $maincolors = array("Black", "White", "Gray", "Silver", "Maroon", "Red", "Purple", "Fuchsia", "Green", "Lime", "Olive", "Yellow", "Navy", "Blue", "Teal");
+        // Sizes available in this main category
+        $sizes = DB::table('products_details')
+            ->leftJoin('products', 'products.id', '=', 'products_details.products_id')
+            ->where('products.category_main', $main_category_id)
+            ->where('products.status', 1)
+            ->whereNotNull('products_details.attributevalue2')
+            ->where('products_details.attributevalue2', '!=', '')
+            ->select(DB::raw('DISTINCT(products_details.attributevalue2) as size'))
+            ->pluck('size')
+            ->toArray();
 
-        $mergedColors = array_unique(array_merge($maincolors, $colors));
+        // Product collections
+        $collections = DB::table('master_product_collection')
+            ->where('status', 1)
+            ->select('id', 'name')
+            ->get();
 
-        $colours = array_values($mergedColors);
+        // Offer types for filter
+        $offerTypes = DB::table('master_offers')
+            ->where('status', 1)
+            ->select('id', 'title', 'type')
+            ->get();
 
-        return view('frontend/main_category', compact('prouctsList', 'categories', 'colours', 'main_category'));
+        return view('frontend/main_category', compact('prouctsList', 'categories', 'colours', 'main_category', 'sub_categories', 'sizes', 'collections', 'offerTypes'));
     }
 
 
@@ -3385,7 +3413,11 @@ class FrontendController extends Controller
         }
 
         if (!empty($sub_category_id)) {
-            $productsQuery->where('p.category_sub', $sub_category_id);
+            if (is_array($sub_category_id)) {
+                $productsQuery->whereIn('p.category_sub', $sub_category_id);
+            } else {
+                $productsQuery->where('p.category_sub', $sub_category_id);
+            }
         }
 
         if (!empty($minprice)) {
@@ -3400,7 +3432,40 @@ class FrontendController extends Controller
             $productsQuery->whereIn('pd.attributevalue1', $request->color);
         }
 
+        if (!empty($request->size)) {
+            $productsQuery->whereIn('pd.attributevalue2', $request->size);
+        }
+
+        if (!empty($request->collection)) {
+            $productsQuery->where('p.collection', $request->collection);
+        }
+
+        if (!empty($request->offer_id)) {
+            $productsQuery->whereIn('p.offers', $request->offer_id);
+        }
+
+        if (!empty($request->discount)) {
+            $discountVal = (int) $request->discount;
+            $productsQuery->whereRaw('((pd.retail_price - pd.selling_price) / pd.retail_price) * 100 >= ?', [$discountVal]);
+        }
+
         switch ($orderby) {
+            case 'new-collections':
+                $productsQuery->where('p.collection', 'New Arrivals')
+                              ->orderBy('p.created_at', 'desc');
+                break;
+            case 'best-sellers':
+                $productsQuery->where('p.collection', 'Best Seller')
+                              ->orderBy('p.id', 'desc');
+                break;
+            case 'top-rated':
+                $productsQuery->whereExists(function ($query) {
+                    $query->select(DB::raw(1))
+                          ->from('ratings')
+                          ->whereColumn('ratings.products_id', 'p.id');
+                })
+                ->orderBy(DB::raw('(SELECT COALESCE(AVG(star_rating), 0) FROM ratings WHERE ratings.products_id = p.id)'), 'desc');
+                break;
             case 'price-low':
                 $productsQuery->orderBy('pd.selling_price', 'asc');
                 break;

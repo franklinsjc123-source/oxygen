@@ -88,49 +88,126 @@
 
                             <div class="sidebar-content scrollable">
                                 <div class="sticky-sidebar">
-                                    <div class="filter-actions">
-                                        <a href="#" class="btn btn-dark btn-link filter-clean"></a>
-                                    </div>
-                                  
-                                    <div class="widget widget-collapsible">
-                                        <h3 class="widget-title"><label>Price</label></h3>
-                                       <div class="widget-body">
-                                            <div class="range-container">
 
+                                    <div style="padding: 15px 0; border-bottom: 2px solid #222;">
+                                        <h4 style="font-size: 16px; font-weight: 700; letter-spacing: 1px; margin: 0; color: #222;">FILTER:</h4>
+                                    </div>
+
+                                    {{-- Color Filter --}}
+                                    <div class="filter-section" style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                                        <div class="filter-header" onclick="toggleFilter(this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                                            <h5 style="font-size: 15px; font-weight: 600; margin: 0; color: #333;">Color</h5>
+                                            <i class="fas fa-chevron-up" style="font-size: 12px; color: #999; transition: transform 0.3s;"></i>
+                                        </div>
+                                        <div class="filter-body" style="max-height: 500px; overflow: hidden; transition: max-height 0.35s ease;">
+                                            <ul style="list-style: none; padding: 10px 0 0 0; margin: 0;">
+                                                @foreach ($colours as $colorItem)
+                                                <li style="padding: 5px 0;">
+                                                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; color: #555;">
+                                                        <input type="checkbox" name="colors[]" value="{{ $colorItem->color }}" class="filter-checkbox" style="accent-color: #222; width: 15px; height: 15px;">
+                                                        @php
+                                                            $colorMap = [
+                                                                'light slate blue' => '#8470FF',
+                                                                'multi' => 'conic-gradient(red, yellow, green, blue, purple)',
+                                                                'navy blue' => 'navy',
+                                                                'peach' => '#FFDAB9',
+                                                                'mustard' => '#FFDB58',
+                                                                'teal' => '#008080'
+                                                            ];
+                                                            $colorName = strtolower(trim($colorItem->color));
+                                                            $bgColor = $colorMap[$colorName] ?? strtolower(str_replace(' ', '', $colorItem->color));
+                                                        @endphp
+                                                        <span style="display: inline-block; width: 16px; height: 16px; border-radius: 50%; background: {{ $bgColor }}; border: 1px solid #ccc; flex-shrink: 0;"></span>
+                                                        {{ $colorItem->color }} ({{ $colorItem->count }})
+                                                    </label>
+                                                </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    {{-- Size Filter --}}
+                                    <div class="filter-section" style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                                        <div class="filter-header" onclick="toggleFilter(this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                                            <h5 style="font-size: 15px; font-weight: 600; margin: 0; color: #333;">Size</h5>
+                                            <i class="fas fa-chevron-down" style="font-size: 12px; color: #999; transition: transform 0.3s;"></i>
+                                        </div>
+                                        <div class="filter-body" style="max-height: 0; overflow: hidden; transition: max-height 0.35s ease;">
+                                            <div style="padding: 10px 0 0 0; display: flex; flex-wrap: wrap; gap: 8px;">
+                                                @foreach($sizes as $size)
+                                                <label style="display: inline-flex; align-items: center; justify-content: center; min-width: 42px; height: 36px; padding: 0 10px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500; color: #555; transition: all 0.2s;">
+                                                    <input type="checkbox" name="filter_size[]" value="{{ $size }}" class="filter-checkbox" style="display: none;">
+                                                    {{ $size }}
+                                                </label>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- Price Filter --}}
+                                    <div class="filter-section" style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                                        <div class="filter-header" onclick="toggleFilter(this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                                            <h5 style="font-size: 15px; font-weight: 600; margin: 0; color: #333;">Price</h5>
+                                            <i class="fas fa-chevron-up" style="font-size: 12px; color: #999; transition: transform 0.3s;"></i>
+                                        </div>
+                                        <div class="filter-body" style="max-height: 500px; overflow: hidden; transition: max-height 0.35s ease;">
+                                            <div class="range-container" style="padding: 10px 0 0 0;">
                                                 <div class="double-range">
                                                     <div class="slider-track"></div>
-
-                                                    <!-- MIN -->
                                                     <input class="price-filter" type="range" id="minPrice" min="0" max="5000" step="10" value="0">
-                                                    <div class="price-bubble" id="minBubble">₹500</div>
-
-                                                    <!-- MAX -->
-                                                    <input  class="price-filter" type="range" id="maxPrice" min="0" max="5000" step="10" value="5000">
-                                                    <div class="price-bubble" id="maxBubble">₹3000</div>
+                                                    <div class="price-bubble" id="minBubble">₹0</div>
+                                                    <input class="price-filter" type="range" id="maxPrice" min="0" max="5000" step="10" value="5000">
+                                                    <div class="price-bubble" id="maxBubble">₹5000</div>
                                                 </div>
-
                                             </div>
-                                        </div>>
-                                    </div>
-
-                                    </div>
-
-
-
-                                    <div class="widget widget-collapsible">
-                                        <h3 class="widget-title"><span>Color</span><span class="toggle-btn"></span></h3>
-                                        <ul class="widget-body filter-items item-check mt-1">
-                                            <div class="color-picker">
-                                            @foreach ($colours as $color)
-                                                <div class="color-swatch" title="{{ $color }}">
-                                                    <input type="checkbox" id="color_{{ $color }}" name="colors[]" value="{{ $color }}" style="display: none;">
-                                                    <label for="color_{{ $color }}" style="background-color: {{ $color }};"></label>
-                                                </div>
-                                            @endforeach
                                         </div>
-                                        </ul>
-                                       
                                     </div>
+
+                                    {{-- Discount Filter --}}
+                                    <div class="filter-section" style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                                        <div class="filter-header" onclick="toggleFilter(this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                                            <h5 style="font-size: 15px; font-weight: 600; margin: 0; color: #333;">Discount</h5>
+                                            <i class="fas fa-chevron-down" style="font-size: 12px; color: #999; transition: transform 0.3s;"></i>
+                                        </div>
+                                        <div class="filter-body" style="max-height: 0; overflow: hidden; transition: max-height 0.35s ease;">
+                                            <ul style="list-style: none; padding: 10px 0 0 0; margin: 0;">
+                                                @foreach([10, 20, 30, 40, 50, 60, 70] as $disc)
+                                                <li style="padding: 4px 0;">
+                                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #555;">
+                                                        <input type="radio" name="filter_discount" value="{{ $disc }}" class="filter-radio" style="accent-color: #222; width: 15px; height: 15px;">
+                                                        {{ $disc }}% and above
+                                                    </label>
+                                                </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    {{-- Offer Filter --}}
+                                    <div class="filter-section" style="padding: 15px 0;">
+                                        <div class="filter-header" onclick="toggleFilter(this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                                            <h5 style="font-size: 15px; font-weight: 600; margin: 0; color: #333;">Offer</h5>
+                                            <i class="fas fa-chevron-down" style="font-size: 12px; color: #999; transition: transform 0.3s;"></i>
+                                        </div>
+                                        <div class="filter-body" style="max-height: 0; overflow: hidden; transition: max-height 0.35s ease;">
+                                            <ul style="list-style: none; padding: 10px 0 0 0; margin: 0;">
+                                                @foreach($offerTypes as $offer)
+                                                <li style="padding: 4px 0;">
+                                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #555;">
+                                                        <input type="checkbox" name="filter_offer[]" value="{{ $offer->id }}" class="filter-checkbox" style="accent-color: #222; width: 15px; height: 15px;">
+                                                        {{ $offer->title }}
+                                                    </label>
+                                                </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    {{-- Clear All Filters --}}
+                                    <div style="padding: 15px 0; text-align: center;">
+                                        <button onclick="clearAllFilters()" style="background: #222; color: #fff; border: none; padding: 8px 25px; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer; letter-spacing: 0.5px; transition: background 0.2s;">Clear All Filters</button>
+                                    </div>
+
                             </div>
                         </aside>
                      
@@ -143,11 +220,14 @@
                                             class="w-icon-category"></i><span>Filters</span></a>
                                     <div class="toolbox-item toolbox-sort select-box text-dark">
                                         <label>Sort By :</label>
-                                        <select name="orderby" id="orderby" class="form-control">
-                                            <option value="default" selected="selected">Default sorting</option>
-                                            <option value="price-low">Low to High</option>
-                                            <option value="price-high">High to Low</option>
-                                        </select>
+                                         <select name="orderby" id="orderby" class="form-control">
+                                             <option value="default" selected="selected">Default sorting</option>
+                                             <option value="new-collections">New Collections</option>
+                                             <option value="best-sellers">Best Sellers</option>
+                                             <option value="top-rated">Top Rated</option>
+                                             <option value="price-low">Price Low to High</option>
+                                             <option value="price-high">Price High to Low</option>
+                                         </select>
                                     </div>
                                 </div>
                                 <div class="toolbox-right">
@@ -190,89 +270,119 @@
 
 
     <script>
+        // Accordion toggle
+        function toggleFilter(header) {
+            var body = header.nextElementSibling;
+            var icon = header.querySelector('i');
+            if (body.style.maxHeight === '0px' || body.style.maxHeight === '') {
+                body.style.maxHeight = '500px';
+                icon.className = 'fas fa-chevron-up';
+            } else {
+                body.style.maxHeight = '0px';
+                icon.className = 'fas fa-chevron-down';
+            }
+        }
+
+        // Size button visual toggle
+        document.querySelectorAll('input[name="filter_size[]"]').forEach(function(cb) {
+            cb.addEventListener('change', function() {
+                var lbl = this.parentElement;
+                if (this.checked) {
+                    lbl.style.background = '#222';
+                    lbl.style.color = '#fff';
+                    lbl.style.borderColor = '#222';
+                } else {
+                    lbl.style.background = '#fff';
+                    lbl.style.color = '#555';
+                    lbl.style.borderColor = '#ddd';
+                }
+            });
+        });
+
+        // Clear all filters
+        function clearAllFilters() {
+            document.querySelectorAll('.filter-checkbox, .filter-radio, input[name="colors[]"]').forEach(function(el) {
+                el.checked = false;
+            });
+            document.querySelectorAll('input[name="filter_size[]"]').forEach(function(cb) {
+                var lbl = cb.parentElement;
+                lbl.style.background = '#fff';
+                lbl.style.color = '#555';
+                lbl.style.borderColor = '#ddd';
+            });
+            document.getElementById('minPrice').value = 0;
+            document.getElementById('maxPrice').value = 5000;
+            document.getElementById('orderby').value = 'default';
+            updateRange();
+            getproducts();
+        }
+
+        // Price slider
         const minSlider = document.getElementById("minPrice");
         const maxSlider = document.getElementById("maxPrice");
         const minBubble = document.getElementById("minBubble");
         const maxBubble = document.getElementById("maxBubble");
-
         const sliderTrack = document.querySelector(".slider-track");
         const rangeActive = document.createElement("div");
         rangeActive.classList.add("range-active");
         sliderTrack.appendChild(rangeActive);
 
         function setBubble(slider, bubble) {
-            const max = slider.max;
-            const val = slider.value;
-            const percent = (val / max) * 100;
-
+            var val = slider.value;
+            var percent = (val / slider.max) * 100;
             bubble.innerHTML = "₹" + val;
             bubble.style.left = percent + "%";
         }
 
         function updateRange() {
-            let min = parseInt(minSlider.value);
-            let max = parseInt(maxSlider.value);
-
-            if (min > max - 100) {
-                minSlider.value = max - 100;
-            }
-            if (max < min + 100) {
-                maxSlider.value = min + 100;
-            }
-
+            var min = parseInt(minSlider.value);
+            var max = parseInt(maxSlider.value);
+            if (min > max - 100) minSlider.value = max - 100;
+            if (max < min + 100) maxSlider.value = min + 100;
             setBubble(minSlider, minBubble);
             setBubble(maxSlider, maxBubble);
-
-            const minPercent = (minSlider.value / minSlider.max) * 100;
-            const maxPercent = (maxSlider.value / maxSlider.max) * 100;
-
+            var minPercent = (minSlider.value / minSlider.max) * 100;
+            var maxPercent = (maxSlider.value / maxSlider.max) * 100;
             rangeActive.style.left = minPercent + "%";
             rangeActive.style.width = (maxPercent - minPercent) + "%";
         }
 
         minSlider.addEventListener("input", updateRange);
         maxSlider.addEventListener("input", updateRange);
-
         updateRange();
 
-
-
-
-
+        // Event bindings
         $(document).ready(function() {
-    
-            $('input[name="colors[]"]').on('change', function() {
-                getproducts();
-            });
-
-            $('#orderby').change(function() {
-                getproducts();
-            });
-
-            $('.price-filter').change(function() {
-                getproducts();
-            });
-        
+            $('input[name="colors[]"]').on('change', function() { getproducts(); });
+            $('#orderby').change(function() { getproducts(); });
+            $('.price-filter').change(function() { getproducts(); });
+            $('input[name="filter_subcategory[]"]').on('change', function() { getproducts(); });
+            $('input[name="filter_size[]"]').on('change', function() { getproducts(); });
+            $('input[name="filter_collection"]').on('change', function() { getproducts(); });
+            $('input[name="filter_discount"]').on('change', function() { getproducts(); });
+            $('input[name="filter_offer[]"]').on('change', function() { getproducts(); });
         });
 
+        function getproducts() {
+            let min_price = $('#minPrice').val();
+            let max_price = $('#maxPrice').val();
+            let orderby = $('#orderby').val();
+            let category_id = $('#category_id').val();
 
+            var checkedColors = [];
+            $('input[name="colors[]"]:checked').each(function() { checkedColors.push($(this).val()); });
 
+            var checkedSizes = [];
+            $('input[name="filter_size[]"]:checked').each(function() { checkedSizes.push($(this).val()); });
 
+            var checkedOffers = [];
+            $('input[name="filter_offer[]"]:checked').each(function() { checkedOffers.push($(this).val()); });
 
-        function getproducts()
-        {
-        
-            let min_price = $('#minPrice').length ? $('#minPrice').val() : null;
-            let max_price = $('#maxPrice').length ? $('#maxPrice').val() : null;
-        
-            let orderby = $('#orderby').length ? $('#orderby').val() : null;
-           
-            let category_id = $('#category_id').length ? $('#category_id').val() : null;
+            var checkedSubCats = [];
+            $('input[name="filter_subcategory[]"]:checked').each(function() { checkedSubCats.push($(this).val()); });
 
-            var checkedColors = [];            
-            $('input[name="colors[]"]:checked').each(function() {
-                checkedColors.push($(this).val());  
-            });
+            var collection = $('input[name="filter_collection"]:checked').val() || '';
+            var discount = $('input[name="filter_discount"]:checked').val() || '';
 
             var siteurl = "{{ url('/') }}";
             $.ajax({
@@ -284,15 +394,17 @@
                     orderby: orderby,
                     main_category_id: category_id,
                     category_id: 0,
-                    sub_category_id: 0,
-                    color: checkedColors
+                    sub_category_id: checkedSubCats.length > 0 ? checkedSubCats : 0,
+                    color: checkedColors,
+                    size: checkedSizes,
+                    collection: collection,
+                    offer_id: checkedOffers,
+                    discount: discount
                 },
                 success: function(data) {
                     $('#productslist').empty();
-
                     if (data.products.length > 0) {
                         $.each(data.products, function(index, product) {
-
                             let discount_percentage = ((product.retail_price - product.selling_price) / product.retail_price) * 100;
                             let discount_rounded = Math.round(discount_percentage / 10) * 10;
                             let productHtml = `
@@ -349,7 +461,6 @@
                     console.error(error);
                 }
             });
-
         }
     </script>
  @endsection
