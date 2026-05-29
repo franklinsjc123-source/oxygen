@@ -1042,9 +1042,9 @@
                                 </nav>
                             </div>
                             <div class="header-right">
-                                <a href="{{ url('offers') }}"><i class="w-icon-sale"></i>Offer Products</a>
-                                <a href="#" class="d-xl-show"><i class="w-icon-map-marker mr-1"></i>Track
-                                    Order</a>
+                                <a href="{{ url('offers') }}"><i class="w-icon-sale"></i>Offers</a>
+                                <a href="{{ url('auction') }}" style="margin-left: 20px; display: inline-flex; align-items: center;"><i class="fas fa-gavel" style="margin-right: 6px; font-size: 18px;"></i>Auction</a>
+                                <a href="#" class="d-xl-show" style="margin-left: 20px;"><i class="w-icon-map-marker mr-1"></i>Track Order</a>
                             </div>
                         </div>
                     </div>
