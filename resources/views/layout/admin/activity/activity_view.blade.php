@@ -84,7 +84,7 @@
                                 <div class="tab-content" id="top-tabContent">
 								
                                  @if($page=='Edit')  
-                                <form action="{{ route('activity_trackers.status', $tracker->id) }}" method="POST">
+                                <form action="{{ route('activity_trackers.status', $tracker->vendor_id) }}" method="POST">
                                     @csrf
 									
 										

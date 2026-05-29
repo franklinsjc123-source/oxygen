@@ -202,20 +202,34 @@ class ActivityTrackerController extends Controller
         {
             $tracker = StaffActivity::findOrFail($request->id);
             $tracker->update($activity);
+            
+            $parentTracker = ActivityTracker::find($id);
+            if ($parentTracker) {
+                $parentTracker->update([            
+                    'pipline' => $request->pipe,
+                    'win' => $request->win,
+                    'next_follow_date' => $request->next_follow_date,
+                    'reason' => $request->reason,
+                ]);
+            }
+            
+            return redirect()->route('activity.edit', $request->id)->with('success', 'Activity Tracker Updated');
         }
         else
         {
             StaffActivity::create($activity);
+            $parentTracker = ActivityTracker::find($id);
+            if ($parentTracker) {
+                $parentTracker->update([            
+                    'pipline' => $request->pipe,
+                    'win' => $request->win,
+                    'next_follow_date' => $request->next_follow_date,
+                    'reason' => $request->reason,
+                ]);
+            }
+            
+            return redirect()->route('activity_trackers.show', $id)->with('success', 'Activity Tracker Updated');
         }
-        $tracker = ActivityTracker::findOrFail($id);
-        $tracker->update([            
-            'pipline' => $request->pipe,
-            'win' => $request->win,
-            'next_follow_date' => $request->next_follow_date,
-            'reason' => $request->reason,
-        ]);
-       
-        return redirect()->route('activity_trackers.show',$id)->with('success', 'Activity Tracker Updated');
         //return redirect()->route('activity_trackers.index')->with('success', 'Activity Tracker Updated');
     }
 
