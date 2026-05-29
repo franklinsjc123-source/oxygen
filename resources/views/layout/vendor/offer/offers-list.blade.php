@@ -143,19 +143,14 @@
                                                     {{ $attribute->types }}
                                                     @endif
                                                 </td>
-                                                <td>
+                                                 <td>
                                                     <label class="switch">
                                                         {{-- $status = $pin->status --}}
                                                         
-                                                         @if($attribute->status  == 1){
-                                                         <input type="checkbox"
-                                                             onclick="return confirm('you want to Change it?  Please Click Edit Button')"
-                                                             checked id="togBtn">
-                                                         }@else{
-                                                             <input type="checkbox"
-                                                             onclick="return confirm('you want to Change it?  Please Click Edit Button')" 
-                                                              id="togBtn">
-                                                         }
+                                                         @if($attribute->status  == 1)
+                                                         <input type="checkbox" checked id="togBtn_{{$attribute->id}}" class="status-toggle" data-id="{{$attribute->id}}">
+                                                         @else
+                                                             <input type="checkbox" id="togBtn_{{$attribute->id}}" class="status-toggle" data-id="{{$attribute->id}}">
                                                          @endif
                                                          <div class="slider round">
                                                              <!--ADDED HTML -->
@@ -173,7 +168,6 @@
                                                         @method('GET')
                                                         @csrf
                                                     <button class="btn btn-secondary mx-1"
-                                                    onclick="return confirm('Are you sure, you want to Edit it?')"
                                                             data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                                                     </form>
                                                         <!--a href="#" onclick="return delete_maincategory()"
@@ -182,11 +176,10 @@
                                                             data-original-title="Delete"><i
                                                                 class="fa fa-trash"></i></a-->
                                                 	 <form action="{{ route('vendoroffer.main.destroy', $attribute->id) }}"
-																method="post">
+																method="post" class="delete-form">
 																@method('DELETE')
 																@csrf
-																<button type="submit" class="btn btn-warning mx-1"
-																	onclick="return confirm('Are you sure, you want to delete it?')"><i
+																<button type="button" class="btn btn-warning mx-1 delete-btn"><i
 																		class="fa fa-trash"></i>
 																</button>                        
 													</form>
@@ -211,5 +204,67 @@
             <!-- Container-fluid Ends-->
 
         </div>
+
+<style>
+    .swal2-popup {
+        font-size: 1.6rem !important;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Use event delegation for delete buttons because bootstrap-table recreates DOM elements
+    document.body.addEventListener('click', function(e) {
+        if (e.target.closest('.delete-btn')) {
+            e.preventDefault();
+            const button = e.target.closest('.delete-btn');
+            const form = button.closest('.delete-form');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        }
+    });
+
+    // Use event delegation for status toggle
+    document.body.addEventListener('change', function(e) {
+        if (e.target.classList.contains('status-toggle')) {
+            const status = e.target.checked ? 1 : 0;
+            const offer_id = e.target.getAttribute('data-id');
+            const token = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '{{ csrf_token() }}';
+
+            fetch("{{ route('vendoroffer.changestatus') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token
+                },
+                body: JSON.stringify({
+                    id: offer_id,
+                    status: status
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Silently succeed, no alert needed
+            })
+            .catch(error => {
+                console.error('Error updating status:', error);
+                // Revert toggle if failed
+                e.target.checked = !status;
+            });
+        }
+    });
+});
+</script>
 
 @endsection

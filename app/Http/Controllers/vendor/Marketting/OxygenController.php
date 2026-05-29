@@ -159,4 +159,11 @@ class OxygenController extends Controller
         }
     }
     
+    public function changestatus(Request $request)
+    {
+        $ox = oxygen::find($request->id);
+        $ox->status = $request->status;
+        $ox->save();
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
 }

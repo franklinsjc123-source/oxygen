@@ -228,4 +228,12 @@ class WhAppController extends Controller
             return redirect()->route('vendorwhatsapp.index');
         }
     }
+
+    public function changestatus(Request $request)
+    {
+        $wh = wh_app::find($request->id);
+        $wh->status = $request->status;
+        $wh->save();
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
 }

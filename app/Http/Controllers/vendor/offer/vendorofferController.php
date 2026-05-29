@@ -319,4 +319,13 @@ public function update($id, Request $request,  FlasherInterface $flasher){
             return redirect()->route('vendoroffer.main.index');
         }
     }
+
+	public function changestatus(Request $request)
+    {
+        $offer = Offer::find($request->id);
+        $offer->status = $request->status;
+        $offer->save();
+        return response()->json(['success' => 'Status change successfully.']);
+    }
 }
+

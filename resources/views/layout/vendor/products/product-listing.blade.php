@@ -332,12 +332,11 @@
                                                             class="btn btn-secondary mx-1"><i class="fa fa-pencil"></i>
                                                         </a> 
                                                         <form action="{{ route('vendorproducts.crud.destroy', $products->id) }}"
-                                                            method="post">
+                                                            method="post" id="delete-form-{{ $products->id }}">
                                                             @method('DELETE')
                                                             @csrf
-                                                            <button type="submit" class="btn btn-warning mx-1"
-                                                                onclick="return confirm('Are you sure, you want to delete it?')"><i
-                                                                    class="fa fa-trash"></i>
+                                                            <button type="button" class="btn btn-warning mx-1 delete-single-btn" data-id="{{ $products->id }}">
+                                                                <i class="fa fa-trash"></i>
                                                             </button>
                                                         </form>
                                                     </div>
@@ -475,7 +474,7 @@
             <!-- Stock model end -->
 
     <script src="//code.jquery.com/jquery.min.js"></script>
-    <script src="app/js/handleCounter.js"></script>
+    <!-- <script src="app/js/handleCounter.js"></script> -->
     <script type="text/javascript">
        function getAjaxValue(url, method, callback) {
     $.ajax({
@@ -545,15 +544,15 @@ function createProductRow(productDetails) {
     </div><hr>
     `;
 }
-        $('#handleCounter').handleCounter({
-        minimum: 1,
-        maximize: null,
-        })
-        $('#handleCounter').handleCounter({
-        onChange: function(){},
-        onMinimum: function(){},
-        onMaximize: function(){}
-        })
+        // $('#handleCounter').handleCounter({
+        // minimum: 1,
+        // maximize: null,
+        // })
+        // $('#handleCounter').handleCounter({
+        // onChange: function(){},
+        // onMinimum: function(){},
+        // onMaximize: function(){}
+        // })
 
     </script>
     
@@ -581,46 +580,66 @@ function createProductRow(productDetails) {
             });  
             if(allVals.length <=0)  
             {  
-                alert("Please select row.");  
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Please select row.'
+                });
             }  else {  
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to delete the selected rows?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var join_selected_values = allVals.join(","); 
 
-               // alert("Accept.");  
-                var check = confirm("Are you sure you want to Delete this row?");  
-                if(check == true){  
-                    var join_selected_values = allVals.join(","); 
-
-
-
-
-
-                    $.ajax({
-
-                        url: "{{ url('vendor/productbulkdelete') }}", 
-                        type: "POST",
-                        data: {
-                            "_token": "{{ csrf_token() }}",
-                            "ids": join_selected_values,
-                             "sts":"0"
-
-                        },
-
-                        dataType: "json",
-                        success: function (data) {
-                        // alert(data);
-                          
-                             location.reload();
-                        },
-                        error: function (data) {
-                            console.log('Error:', data);
-                        }
+                        $.ajax({
+                            url: "{{ url('vendor/productbulkdelete') }}", 
+                            type: "POST",
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                "ids": join_selected_values,
+                                 "sts":"0"
+                            },
+                            dataType: "json",
+                            success: function (data) {
+                                 location.reload();
+                            },
+                            error: function (data) {
+                                console.log('Error:', data);
+                            }
                         });
-
-
-                   
-                }  
+                    }
+                });
             }  
         });
     /*Delete End*/
+
+    // Single Delete Button
+    $(document).on('click', '.delete-single-btn', function(e) {
+        e.preventDefault();
+        var formId = $(this).data('id');
+        var form = $('#delete-form-' + formId);
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to delete it?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
 
         /*Active*/
         $(document).on('click', '#checkboxesMain', function() {
@@ -733,14 +752,6 @@ function createProductRow(productDetails) {
        $(document).on('change', '.status-toggle', function() {
            var productId = $(this).data('id');
            var nextStatus = $(this).is(':checked') ? '1' : '0';
-           var confirmText = nextStatus === '1'
-               ? 'Are you sure you want to Activate this product?'
-               : 'Are you sure you want to DeActivate this product?';
-
-           if (!confirm(confirmText)) {
-               $(this).prop('checked', !$(this).is(':checked'));
-               return;
-           }
 
            $.ajax({
                url: nextStatus === '1' ? "{{ url('vendor/productbulkactive') }}" : "{{ url('vendor/productbulkdeactive') }}",
@@ -759,5 +770,14 @@ function createProductRow(productDetails) {
        });
     });
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    .swal2-popup {
+        font-size: 1.6rem !important;
+        width: 500px !important;
+        max-width: 90% !important;
+    }
+</style>
 @endsection
 

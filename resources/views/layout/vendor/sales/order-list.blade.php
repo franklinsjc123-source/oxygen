@@ -7,6 +7,47 @@
 @include('paritials.auth.topmenu');
 <!-- Page Header Ends -->
 
+<style>
+    /* Modern, soft-pill tab styling */
+    .order-custom-tabs {
+        border-bottom: none;
+        margin-bottom: 25px;
+        background-color: #f4f6f9; /* Soft gray container */
+        padding: 8px;
+        border-radius: 12px;
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    .order-custom-tabs .nav-item {
+        margin-bottom: 0;
+    }
+    .order-custom-tabs .nav-link {
+        color: #495057 !important;
+        font-weight: 600;
+        font-size: 1.05rem;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 10px 22px;
+        transition: all 0.25s ease-in-out;
+        background-color: transparent !important;
+    }
+    .order-custom-tabs .nav-link:hover {
+        color: #1a1d20 !important;
+        background-color: #e9ecef !important;
+    }
+    .order-custom-tabs .nav-link.active, .order-custom-tabs .nav-item.show .nav-link {
+        color: #0d6efd !important; /* Rich blue text */
+        background-color: #ffffff !important; /* White pill */
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Soft shadow to make it pop */
+    }
+    
+    /* SweetAlert2 font size adjustment for visual consistency */
+    .swal2-popup {
+        font-size: 1.6rem !important;
+    }
+</style>
+
 <!-- Page Body Start-->
 <div class="page-body-wrapper">
 
@@ -51,15 +92,15 @@
                     <div class="card-body">
 
 
-                        <ul class="nav nav-tabs tab-coupon" id="myTab" role="tablist">
-                            <li class="nav-item"><a class="nav-link active show" id="new-tabs" data-bs-toggle="tab" href="#new" role="tab" aria-controls="new" aria-selected="false" data-original-title="" title=""><span class="fw-bold">New {{$new_product_count}}</span> </a></li>
-                            <li class="nav-item"><a class="nav-link" id="general-tab" data-bs-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true" data-original-title="" title=""><span class="text-warning fw-bold">Accepted {{$acc_product_count}}</span> </a></li>
+                        <ul class="nav nav-tabs order-custom-tabs" id="myTab" role="tablist">
+                            <li class="nav-item"><a class="nav-link active show" id="new-tabs" data-bs-toggle="tab" href="#new" role="tab" aria-controls="new" aria-selected="false" data-original-title="" title=""><span class="fw-bold">New ({{$new_product_count}})</span> </a></li>
+                            <li class="nav-item"><a class="nav-link" id="general-tab" data-bs-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true" data-original-title="" title=""><span class="fw-bold">Accepted ({{$acc_product_count}})</span> </a></li>
 
-                            <li class="nav-item"><a class="nav-link" id="dispatch-tab" data-bs-toggle="tab" href="#dispatch" role="tab" aria-controls="dispatch" aria-selected="true" data-original-title="" title=""><span class="text-primary fw-bold">Dispatch {{$dis_product_count}}</span> </a></li>
-                            <li class="nav-item"><a class="nav-link" id="delivery-tab" data-bs-toggle="tab" href="#delivery" role="tab" aria-controls="delivery" aria-selected="true" data-original-title="" title=""><span class="text-success fw-bold">Delivered {{$del_product_count}}</span></a></li>
-                            <li class="nav-item"><a class="nav-link" id="usage-tab" data-bs-toggle="tab" href="#usage" role="tab" aria-controls="usage" aria-selected="false" data-original-title="" title=""><span class="text-secondary fw-bold">Return {{$ret_product_count}}</span> </a></li>
+                            <li class="nav-item"><a class="nav-link" id="dispatch-tab" data-bs-toggle="tab" href="#dispatch" role="tab" aria-controls="dispatch" aria-selected="true" data-original-title="" title=""><span class="fw-bold">Dispatch ({{$dis_product_count}})</span> </a></li>
+                            <li class="nav-item"><a class="nav-link" id="delivery-tab" data-bs-toggle="tab" href="#delivery" role="tab" aria-controls="delivery" aria-selected="true" data-original-title="" title=""><span class="fw-bold">Delivered ({{$del_product_count}})</span></a></li>
+                            <li class="nav-item"><a class="nav-link" id="usage-tab" data-bs-toggle="tab" href="#usage" role="tab" aria-controls="usage" aria-selected="false" data-original-title="" title=""><span class="fw-bold">Return ({{$ret_product_count}})</span> </a></li>
                             
-                            <li class="nav-item"><a class="nav-link" id="cancel-tab" data-bs-toggle="tab" href="#cancel" role="tab" aria-controls="cancel" aria-selected="false" data-original-title="" title=""><span class="text-danger fw-bold">Cancel {{$can_product_count}}</span></a></li>
+                            <li class="nav-item"><a class="nav-link" id="cancel-tab" data-bs-toggle="tab" href="#cancel" role="tab" aria-controls="cancel" aria-selected="false" data-original-title="" title=""><span class="fw-bold">Cancel ({{$can_product_count}})</span></a></li>
                             
                         </ul>
 

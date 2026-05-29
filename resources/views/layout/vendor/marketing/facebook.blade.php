@@ -60,7 +60,7 @@
 												<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 											</div>
 											<div class="modal-body">
-												<form class="" action="{{route('vendorfacebook.store')}}" method="post" onsubmit="return confirm('Are you sure, you want to Save it?')">
+												<form class="" action="{{route('vendorfacebook.store')}}" method="post">
 													@csrf
 													<div class="row fw-bold">
 														<div class="col-sm-12">
@@ -142,7 +142,7 @@
 												<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 											</div>
 											<div class="modal-body">
-												<form class="" action="{{route('vendorfacebook.update', 1)}}" method="post" onsubmit="return confirm('Are you sure, you want to Save it?')">
+												<form class="" action="{{route('vendorfacebook.update', 1)}}" method="post">
 													@csrf
 													@method('PUT')
 													<div class="row fw-bold">
@@ -247,22 +247,14 @@
 										<td>{{$item->duration}}</td>
 										<td>
 											<label class="switch">
-												{{-- $status = $pin->status --}}
-												 @if($item->status  == 1){
-												 <input type="checkbox"
-													 onclick="return confirm('you want to Change it?  Please Click Edit Button')"
-													 checked id="togBtn">
-												 }@else{
-													 <input type="checkbox"
-													 onclick="return confirm('you want to Change it?  Please Click Edit Button')" 
-													  id="togBtn">
-												 }
+												 @if($item->status == 1)
+												 <input type="checkbox" checked id="togBtn_{{$item->id}}" class="status-toggle" data-id="{{$item->id}}">
+												 @else
+												 <input type="checkbox" id="togBtn_{{$item->id}}" class="status-toggle" data-id="{{$item->id}}">
 												 @endif
 												 <div class="slider round">
-													 <!--ADDED HTML -->
 													 <span class="on">Active</span>
 													 <span class="off">Inactive </span>                                                                
-													 <!--END-->
 												 </div>
 											 </label>										
                             			</td>
@@ -270,16 +262,13 @@
 											<button type="button" value="{{$item->id}}" class="edit_facebook btn btn-secondary mx-1"> 
 												<i class="fa fa-pencil"></i></button> 
 											{{-- <a href="#" class="badge badge-secondary px-2"  data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"data-original-title="Edit"><i class="fa fa-pencil"></i> </a> --}}
-											<form
-											action="{{ route('vendorfacebook.destroy', $item->id) }}"
-											method="post">
-											@method('DELETE')
-											@csrf
-											<button type="submit" class="btn btn-warning mx-1"
-												onclick="return confirm('Are you sure, you want to delete it?')"><i
-													class="fa fa-trash"></i>
-											</button>
-										</form>
+											<form action="{{ route('vendorfacebook.destroy', $item->id) }}" method="post" class="delete-form">
+												@method('DELETE')
+												@csrf
+												<button type="button" class="btn btn-warning mx-1 delete-btn">
+													<i class="fa fa-trash"></i>
+												</button>
+											</form>
 											{{-- <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td> --}}
 									</tr>
 										@endforeach
@@ -298,6 +287,12 @@
 
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    .swal2-popup {
+        font-size: 1.6rem !important;
+    }
+</style>
 <script>
     $(document).on('click', '.edit_facebook', function(e){
 
@@ -348,5 +343,56 @@
         
     });
 
+    // Use event delegation for delete buttons because bootstrap-table recreates DOM elements
+    document.body.addEventListener('click', function(e) {
+        if (e.target.closest('.delete-btn')) {
+            e.preventDefault();
+            const button = e.target.closest('.delete-btn');
+            const form = button.closest('.delete-form');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        }
+    });
+
+    // Use event delegation for status toggle
+    document.body.addEventListener('change', function(e) {
+        if (e.target.classList.contains('status-toggle')) {
+            const status = e.target.checked ? 1 : 0;
+            const item_id = e.target.getAttribute('data-id');
+            const token = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '{{ csrf_token() }}';
+
+            fetch("{{ route('vendorfacebook.changestatus') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token
+                },
+                body: JSON.stringify({
+                    id: item_id,
+                    status: status
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Silently succeed
+            })
+            .catch(error => {
+                console.error('Error updating status:', error);
+                // Revert toggle if failed
+                e.target.checked = !status;
+            });
+        }
+    });
 </script>
 @endpush

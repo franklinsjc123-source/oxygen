@@ -157,4 +157,12 @@ class FaceBookController extends Controller
             return redirect()->route('vendorfacebook.index');
         }
     }
+
+    public function changestatus(Request $request)
+    {
+        $fb = face_book::find($request->id);
+        $fb->status = $request->status;
+        $fb->save();
+        return response()->json(['success' => 'Status changed successfully.']);
+    }
 }

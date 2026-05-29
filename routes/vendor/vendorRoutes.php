@@ -238,9 +238,13 @@ Route::post('orderbulkstatusupdate', [SalesController::class, 'orderbulkstatusup
 	
 	//marketting   
 	Route::resource('whatsapp',  WhAppController::class,['names' => 'vendorwhatsapp']);
+	Route::post('whatsapp/changestatus', [WhAppController::class, 'changestatus'])->name('vendorwhatsapp.changestatus');
 	Route::resource('facebook',  FaceBookController::class,['names' => 'vendorfacebook']);
+	Route::post('facebook/changestatus', [FaceBookController::class, 'changestatus'])->name('vendorfacebook.changestatus');
 	Route::resource('instagram',  InstaController::class,['names' => 'vendorinstagram']);
+	Route::post('instagram/changestatus', [InstaController::class, 'changestatus'])->name('vendorinstagram.changestatus');
 	Route::resource('oxygen',  OxygenController::class,['names' => 'vendoroxygen']);
+	Route::post('oxygen/changestatus', [OxygenController::class, 'changestatus'])->name('vendoroxygen.changestatus');
 	
 	
 	// Route::get('marketing/facebook', [MarketingController::class, 'facebook']);
@@ -325,3 +329,4 @@ Route::post('orderbulkstatusupdate', [SalesController::class, 'orderbulkstatusup
 	
 	
 
+	Route::post('offer/changestatus', [vendorofferController::class, 'changestatus'])->name('vendoroffer.changestatus');

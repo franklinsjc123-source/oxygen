@@ -481,7 +481,7 @@
 
 
     <script src="//code.jquery.com/jquery.min.js"></script>
-    <script src="app/js/handleCounter.js"></script>
+    <!-- <script src="app/js/handleCounter.js"></script> -->
     <script type="text/javascript">
         $(document).ready(function() {
             // AJAX REQUEST
@@ -548,15 +548,15 @@
 
         })
 
-        $('#handleCounter').handleCounter({
-        minimum: 1,
-        maximize: null,
-        })
-        $('#handleCounter').handleCounter({
-        onChange: function(){},
-        onMinimum: function(){},
-        onMaximize: function(){}
-        })
+        // $('#handleCounter').handleCounter({
+        // minimum: 1,
+        // maximize: null,
+        // })
+        // $('#handleCounter').handleCounter({
+        // onChange: function(){},
+        // onMinimum: function(){},
+        // onMaximize: function(){}
+        // })
 
 
        
@@ -586,43 +586,42 @@
             });  
             if(allVals.length <=0)  
             {  
-                alert("Please select row.");  
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Please select row.'
+                });
             }  else {  
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to delete the selected rows?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var join_selected_values = allVals.join(","); 
 
-               // alert("Accept.");  
-                var check = confirm("Are you sure you want to Delete this row?");  
-                if(check == true){  
-                    var join_selected_values = allVals.join(","); 
-
-
-
-
-
-                    $.ajax({
-
-                        url: "{{route('vendorproductbulkdelete')}}", 
-                        type: "POST",
-                        data: {
-                            "_token": "{{ csrf_token() }}",
-                            "ids": join_selected_values,
-                             "sts":"0"
-
-                        },
-
-                        dataType: "json",
-                        success: function (data) {
-                        // alert(data);
-                          
-                             location.reload();
-                        },
-                        error: function (data) {
-                            console.log('Error:', data);
-                        }
+                        $.ajax({
+                            url: "{{route('vendorproductbulkdelete')}}", 
+                            type: "POST",
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                "ids": join_selected_values,
+                                 "sts":"0"
+                            },
+                            dataType: "json",
+                            success: function (data) {
+                                 location.reload();
+                            },
+                            error: function (data) {
+                                console.log('Error:', data);
+                            }
                         });
-
-
-                   
-                }  
+                    }
+                });
             }  
         });
     /*Delete End*/
