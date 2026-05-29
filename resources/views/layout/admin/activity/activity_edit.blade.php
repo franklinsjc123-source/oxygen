@@ -193,7 +193,18 @@
 										<div class="form-group row">
 											<label for="validationCustom0" class="col-xl-4 col-md-4">Location Map</label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="validationCustom0" type="text" required="" name="locationmap" value="{{ old('locationmap', $tracker->location_map) }}">
+												<div class="input-group mb-2">
+													<input class="form-control" id="location_map" type="text" name="locationmap" required placeholder="Select location on map" value="{{ old('locationmap', $tracker->location_map) }}" readonly>
+													<button class="btn btn-primary" id="btn_open_map" type="button" data-bs-toggle="modal" data-bs-target="#vendorMapModal">
+														<i class="fa fa-map-marker"></i> Pick on Map
+													</button>
+													<button class="btn btn-info ms-2" id="btn_current_location" type="button">
+														<i class="fa fa-crosshairs"></i> Current Location
+													</button>
+												</div>
+												<input type="hidden" name="latitude" id="latitude">
+												<input type="hidden" name="longitude" id="longitude">
+												<small class="text-muted">Stored Coordinates: <span id="coords_display">{{ old('locationmap', $tracker->location_map) ?: 'N/A' }}</span></small>
 											</div>
 										</div>
 </div>
@@ -370,5 +381,130 @@
     </div>
 
 </div>
+<!-- Location Map Modal -->
+<div class="modal fade" id="vendorMapModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="vendorMapModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="vendorMapModalLabel">Select Location on Map</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="map" style="height: 450px; width: 100%; border-radius: 8px;"></div>
+                <p class="mt-2 text-muted">Click on the map or drag the blue marker to set the precise location.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Confirm & Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    $(document).ready(function() {
+        var mapInitialized = false;
+        var map, marker;
+        
+        // Use existing coordinates if available, otherwise default to Chennai
+        var existingCoords = $('#location_map').val().split(',');
+        var defaultLat = existingCoords.length == 2 && !isNaN(parseFloat(existingCoords[0])) ? parseFloat(existingCoords[0]) : 13.0827;
+        var defaultLng = existingCoords.length == 2 && !isNaN(parseFloat(existingCoords[1])) ? parseFloat(existingCoords[1]) : 80.2707;
+
+        function updateInputs(lat, lng) {
+            $('#latitude').val(lat.toFixed(8));
+            $('#longitude').val(lng.toFixed(8));
+            $('#location_map').val(lat.toFixed(8) + ', ' + lng.toFixed(8));
+            $('#coords_display').text(lat.toFixed(8) + ', ' + lng.toFixed(8));
+        }
+
+        function initMap() {
+            if (mapInitialized) return;
+            
+            map = L.map('map').setView([defaultLat, defaultLng], 13);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            marker = L.marker([defaultLat, defaultLng], {
+                draggable: true
+            }).addTo(map);
+
+            marker.on('dragend', function(event) {
+                var position = marker.getLatLng();
+                updateInputs(position.lat, position.lng);
+            });
+
+            map.on('click', function(e) {
+                marker.setLatLng(e.latlng);
+                updateInputs(e.latlng.lat, e.latlng.lng);
+            });
+
+            mapInitialized = true;
+        }
+
+        // Current Location Logic
+        $('#btn_current_location').on('click', function() {
+            if (navigator.geolocation) {
+                var $btn = $(this);
+                var originalHtml = $btn.html();
+                $btn.html('<i class="fa fa-spinner fa-spin"></i> Getting Location...').prop('disabled', true);
+
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var lat = position.coords.latitude;
+                    var lng = position.coords.longitude;
+                    
+                    updateInputs(lat, lng);
+                    
+                    if (map && marker) {
+                        marker.setLatLng([lat, lng]);
+                        map.setView([lat, lng], 15);
+                    } else {
+                        defaultLat = lat;
+                        defaultLng = lng;
+                    }
+                    
+                    $btn.html(originalHtml).prop('disabled', false);
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({title: 'Success', text: 'Location updated successfully!', icon: 'success'});
+                    } else {
+                        alert('Location updated successfully!');
+                    }
+                }, function(error) {
+                    $btn.html(originalHtml).prop('disabled', false);
+                    let msg = 'Error getting location: ';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED: msg += "User denied Geolocation."; break;
+                        case error.POSITION_UNAVAILABLE: msg += "Location information is unavailable."; break;
+                        case error.TIMEOUT: msg += "The request to get user location timed out."; break;
+                        case error.UNKNOWN_ERROR: msg += "An unknown error occurred."; break;
+                    }
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({title: 'Error', text: msg, icon: 'error'});
+                    } else {
+                        alert(msg);
+                    }
+                }, {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                });
+            } else {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({title: 'Error', text: 'Geolocation is not supported by this browser.', icon: 'error'});
+                } else {
+                    alert('Geolocation is not supported by this browser.');
+                }
+            }
+        });
+
+        $('#vendorMapModal').on('shown.bs.modal', function() {
+            initMap();
+            setTimeout(function(){ map.invalidateSize(); }, 200);
+        });
+    });
+</script>
 
 @endsection

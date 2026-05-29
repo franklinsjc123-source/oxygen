@@ -54,7 +54,7 @@
                               
                                 <div class="tab-content" id="top-tabContent">
 
-        <h3>Activity Trackers <a href="{{ route('activity_trackers.create') }}" class="btn btn-primary"> New Vendor Tracker</a></h3>
+        <h3><a href="{{ route('activity_trackers.create') }}" class="btn btn-primary"> New Vendor Tracker</a></h3>
         
 
         <table class="table" id="table"  data-click-to-select="true"  data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true"  data-show-refresh="true" data-key-events="true"  data-resizable="true" data-cookie="true"
@@ -119,15 +119,16 @@
 										
                                         
                                         <td>
-                                        <a href="{{ route('activity_trackers.show', $tracker->id) }}" class="btn btn-primary"><i class="fa fa-eye"></i> </a>
-                            
-                            <a href="{{ route('activity_trackers.edit', $tracker->id) }}" class="btn btn-warning"><i class="fa fa-pencil"></i> </a>
-                            <form action="{{ route('activity_trackers.destroy', $tracker->id) }}" method="POST" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i></button>
-                            </form>
-                        </td>
+                                            <div class="d-flex" style="gap: 5px; white-space: nowrap;">
+                                                <a href="{{ route('activity_trackers.show', $tracker->id) }}" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i> </a>
+                                                <a href="{{ route('activity_trackers.edit', $tracker->id) }}" class="btn btn-warning btn-sm"><i class="fa fa-pencil"></i> </a>
+                                                <form action="{{ route('activity_trackers.destroy', $tracker->id) }}" method="POST" style="margin: 0;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-danger btn-sm" type="submit"><i class="fa fa-trash"></i></button>
+                                                </form>
+                                            </div>
+                                        </td>
                                     </tr>
                                     
 

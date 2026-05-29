@@ -535,7 +535,11 @@
                     }
                     
                     $btn.html(originalHtml).prop('disabled', false);
-                    alert('Location updated successfully!');
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({title: 'Success', text: 'Location updated successfully!', icon: 'success'});
+                    } else {
+                        alert('Location updated successfully!');
+                    }
                 }, function(error) {
                     $btn.html(originalHtml).prop('disabled', false);
                     let msg = 'Error getting location: ';
@@ -545,14 +549,22 @@
                         case error.TIMEOUT: msg += "The request to get user location timed out."; break;
                         case error.UNKNOWN_ERROR: msg += "An unknown error occurred."; break;
                     }
-                    alert(msg);
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({title: 'Error', text: msg, icon: 'error'});
+                    } else {
+                        alert(msg);
+                    }
                 }, {
                     enableHighAccuracy: true,
                     timeout: 10000,
                     maximumAge: 0
                 });
             } else {
-                alert('Geolocation is not supported by this browser.');
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({title: 'Error', text: 'Geolocation is not supported by this browser.', icon: 'error'});
+                } else {
+                    alert('Geolocation is not supported by this browser.');
+                }
             }
         });
 
