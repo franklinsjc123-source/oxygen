@@ -644,7 +644,7 @@
 
          <div class="title-link-wrapper mb-3">
              <h2 class="title mb-0 pt-2 pb-2">Auction Products</h2>
-             <a href="shop-boxed-banner.html" class="mb-0">More Products<i
+             <a href="{{ url('auction') }}" class="mb-0">More Products<i
                      class="w-icon-long-arrow-right"></i></a>
          </div>
          <div class="swiper-container swiper-theme product-wrapper"
@@ -678,8 +678,6 @@
                          <div class="product-action-vertical">
                              <a href="#" onclick="addwishlist('{{ $auction->id }}')" class="btn-product-icon btn-wishlist w-icon-heart"
                                  title="Add to wishlist"></a>
-                             <a href="#" class="btn-product-icon btn-compare w-icon-compare"
-                                 title="Add to Compare"></a>
                          </div>
                          <div class="product-action">
                              <a href="javascript:void(0)" onclick="showQuickView('{{ $auction->id }}')" data-id='{{ $auction->id }}' class="btn-product btn-quickview" title="Quick View">Quick
@@ -712,26 +710,9 @@
                              <a>({{ $auction->review_count ?? 0 }} Reviews)</a>
                          </div>
 
-                         <div class="product-pa-wrapper">
-                             <div class="product-price-home">
-                                 ₹{{ $auction->selling_price }}
-                             </div>
-                             <div class="product-price-discount">
-                                 ₹{{ $auction->retail_price }}
-                             </div>
-                             @php
-                                $retailPrice = (float) ($auction->retail_price ?? 0);
-                                $sellingPrice = (float) ($auction->selling_price ?? 0);
-                                if ($retailPrice > 0) {
-                                    $discount_percentage = (($retailPrice - $sellingPrice) / $retailPrice) * 100;
-                                    $discount_rounded = round($discount_percentage / 10) * 10;
-                                } else {
-                                    $discount_rounded = 0;
-                                }
-                             @endphp
-
-                             <div class="product-offer-percentage">
-                                 {{ $discount_rounded }}% Off
+                         <div class="product-pa-wrapper" style="display: flex; align-items: center; justify-content: center; padding-top: 5px;">
+                             <div class="product-price-home" style="font-family: monospace; font-size: 1.6rem; font-weight: 700; color: #000;" title="Bid Amount">
+                                <span style="color: #666; font-size: 1.4rem; font-weight: 600; margin-right: 5px; font-family: inherit;">Bid:</span>₹{{ $auction->selling_price > 0 ? $auction->selling_price : ($auction->retail_price ?? 0) }}
                              </div>
                          </div>
                      </div>
