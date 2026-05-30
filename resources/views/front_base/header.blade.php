@@ -712,7 +712,9 @@
                             </a>
 
                             <a class="wishlist label-down link d-xs-show" href="{{ route('myWishlist') }}">
-                                <i class="w-icon-heart"></i>
+                                <i class="w-icon-heart" style="position: relative;">
+                                    <span class="wishcount" style="position:absolute; top:-5px; right:-8px; width:1.9rem; height:1.9rem; border-radius:50%; font-style:normal; z-index:1; font-size:1.1rem; font-weight:400; line-height:1.9rem; background:#ff5b5b; color:#fff; text-align:center;">0</span>
+                                </i>
                                 <span class="wishlist-label d-lg-show mt-1">Wishlist</span>
                             </a>
 

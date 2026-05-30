@@ -108,6 +108,7 @@ Route::get('/myAccount', [FrontendController::class, 'myAccount'])->name('myAcco
 Route::get('/myWallet', [FrontendController::class, 'myWallet'])->name('myWallet');
 Route::get('/myWishlist', [FrontendController::class, 'myWishlist'])->name('myWishlist');
 Route::get('/add-wishlist', [FrontendController::class,'addWishlist'])->name('add-wishlist');
+Route::get('/get-wishlist-count', [FrontendController::class,'getWishlistCount'])->name('get-wishlist-count');
 Route::get('/offers', [FrontendController::class, 'offers'])->name('offers');
 Route::get('/offer-products/{id}', [FrontendController::class, 'vendor_offer_products'])->name('offer-products');
 Route::get('/vendor-offer-products/{id}', [FrontendController::class, 'vendor_offer_products'])->name('vendor-offer-products');

@@ -1154,6 +1154,15 @@
            applyInitialCartCount();
            showSideCart();
 
+           // Load wishlist count on page load
+           <?php if(session('customer_id')): ?>
+           $.get('<?= route('get-wishlist-count') ?>', function(data) {
+               if (data && typeof data.wishcount !== 'undefined') {
+                   $('.wishcount').html(data.wishcount);
+               }
+           });
+           <?php endif; ?>
+
            @if(session('success'))
            window.showCenterMessage(@json(session('success')), 'success');
            @endif

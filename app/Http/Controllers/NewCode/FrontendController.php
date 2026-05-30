@@ -3693,6 +3693,16 @@ class FrontendController extends Controller
         return response()->json(['msg' => 'Success', 'wishcount' => $wishCount], 200);
     }
 
+    public function getWishlistCount(Request $request)
+    {
+        $customer_id = Session::get('customer_id');
+        $wishCount = 0;
+        if ($customer_id) {
+            $wishCount = wishlist::where('customer_id', $customer_id)->count();
+        }
+        return response()->json(['wishcount' => $wishCount], 200);
+    }
+
     public function storeRating(Request $request)
     {
         if (!session()->has('customer_id')) {
