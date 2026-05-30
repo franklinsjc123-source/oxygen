@@ -211,7 +211,7 @@ class FrontendController extends Controller
             $customer = Ecom_Customer_info::where('customer_id', $customer_id)->first();
             $shipping_address = Ecom_Customer_Shipping::where('customer_id', $customer_id)->get();
 
-            $wishlist = wishlist::select('ecom_wishlist.*', 'pr.product_name', 'pd.product_detail_image', 'pd.retail_price', 'pd.selling_price')
+            $wishlist = wishlist::select('ecom_wishlist.*', 'pr.product_name', 'pr.product_image', 'pd.product_detail_image', 'pd.retail_price', 'pd.selling_price')
                 ->leftJoin('products_details as pd', 'pd.id', '=', 'ecom_wishlist.ecom_product_id')
                 ->leftJoin('products as pr', 'pd.products_id', '=', 'pr.product_id')
                 ->where('ecom_wishlist.customer_id', '=', $customer_id)
@@ -3650,7 +3650,7 @@ class FrontendController extends Controller
     {
         $customer_id = Session::get('customer_id');
 
-        $wishlist = wishlist::select('ecom_wishlist.*', 'pr.product_name', 'pd.product_detail_image', 'pd.retail_price', 'pd.selling_price')
+        $wishlist = wishlist::select('ecom_wishlist.*', 'pr.product_name', 'pr.product_image', 'pd.product_detail_image', 'pd.retail_price', 'pd.selling_price')
             ->leftJoin('products_details as pd', 'pd.id', '=', 'ecom_wishlist.ecom_product_id')
             ->leftJoin('products as pr', 'pd.products_id', '=', 'pr.product_id')
             ->where('ecom_wishlist.customer_id', '=', $customer_id)

@@ -606,25 +606,25 @@
                                     <table class="shop-table wishlist-table">
                                         <thead>
                                             <tr>
-                                                <th class="product-name"><span>Product</span></th>
-                                                <th class="product-name">Product Name</th>
-                                                <th class="product-price"><span>Price</span></th>
-                                                <th class="product-stock-status"><span>Stock Status</span></th>
-                                                <th class="wishlist-action">Actions</th>
+                                                <th class="product-name" style="text-align: center; width: 12%;"><span>Product</span></th>
+                                                <th class="product-name" style="text-align: center; width: 33%;">Product Name</th>
+                                                <th class="product-price" style="text-align: center; width: 15%;"><span>Price</span></th>
+                                                <th class="product-stock-status" style="text-align: center; white-space: nowrap; width: 20%;"><span>Stock Availability</span></th>
+                                                <th class="wishlist-action" style="text-align: center; width: 20%;">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                         @php $i=0; @endphp
                                                         @if($wishCount>0)
                                                         @foreach ($wishlist as $product)
-                                                        @php  $i++; $images=explode(',',$product->product_detail_image);  $img=substr($images[0], 2, -1);       @endphp
+                                                        @php  $i++; @endphp
                                                         
                                                         <tr>
-                                                            <td style="text-align: center;" >
+                                                            <td style="text-align: center; vertical-align: middle;" >
                                                                 <div class="p-relative"  >
                                                                     <a href="{{url('productVar',$product->ecom_product_id)}}">
                                                                     
-                                                                            <img   src="{{ asset('assets/images/products/detail') . '/' . $img }}"  alt="product" 
+                                                                            <img   src="{{ asset('assets/images/products/' . $product->product_image) }}"  alt="product" style="width:80px; height:80px; object-fit:contain; margin:0 auto;"
                                                                                 >
                                                                     
                                                                     </a>
@@ -632,22 +632,21 @@
                                                                             class="fas fa-times"></i></a> --}}
                                                                 </div>
                                                             </td>
-                                                            <td style="text-align: center;" class="product-name">
+                                                            <td style="text-align: center; vertical-align: middle;" class="product-name">
                                                                 <a href="{{url('productVar',$product->ecom_product_id)}}">
                                                                 {{ $product->product_name }}
                                                                 </a>
                                                             </td>
-                                                            <td  style="text-align: center;" class="product-price"><ins class="new-price">Rs. {{ $product->selling_price }} <del><span class="currencySymbol">Rs.</span> {{ $product->retail_price }} </del></ins></td>
-                                                            <td  style="text-align: center;" class="product-stock-status">
+                                                            <td  style="text-align: center; vertical-align: middle;" class="product-price"><ins class="new-price">Rs. {{ $product->selling_price }} <del><span class="currencySymbol">Rs.</span> {{ $product->retail_price }} </del></ins></td>
+                                                            <td  style="text-align: center; vertical-align: middle; white-space: nowrap;" class="product-stock-status">
                                                                 <span class="wishlist-in-stock">In Stock</span>
                                                             </td>
-                                                            <td  style="text-align: center;" class="wishlist-action">
-                                                                <div class="d-lg-flex">
+                                                            <td  style="text-align: center; vertical-align: middle;" class="wishlist-action">
+                                                                <div style="display: flex; justify-content: center; gap: 10px; align-items: center; flex-wrap: wrap;">
                                                                     <a href="{{url('delete_wishlist',$product->ecom_wishlist_id)}}"
-                                                                        class="btn btn-default btn-rounded btn-sm mb-2 mb-lg-0">Remove 
+                                                                        class="btn btn-default btn-rounded btn-sm">Remove 
                                                                         </a>
-                                                                    <a href="{{url('productVar',$product->ecom_product_id)}}" class="btn btn-dark btn-rounded btn-sm ml-lg-2 btn-cart">Add to
-                                                                        cart</a>
+                                                                    <a href="{{url('productVar',$product->ecom_product_id)}}" class="btn btn-dark btn-rounded btn-sm btn-cart">View</a>
                                                                 </div>
                                                             </td>
                                                         </tr>
