@@ -1,6 +1,7 @@
- @extends('app_template')
- @section('title', 'Checkout Page')
+@extends('app_template')
+ @section('title', 'Checkout')
  @section('content')
+ <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
      <div class="woo-page-header">
      <div class="">
      <ul class="breadcrumb">
@@ -522,14 +523,14 @@
    
      <div class="card">
      <div class="card-header">
-     <a href="#payment" class="expand">Online Payments</a>
+     <a href="#payment" class="expand payment-option" data-method="onlinepayment">Online Payments</a>
      </div>
      <div id="payment" class="collapsed" style="display: none;">
      </div>
      </div>
      <div class="card">
      <div class="card-header">
-     <a href="#delivery" class="expand">Cash on delivery</a>
+     <a href="#delivery" class="expand payment-option" data-method="Cash On Delivery">Cash on delivery</a>
      </div>
      <div id="delivery" class="collapsed" style="display: none;">
      </div>
@@ -554,6 +555,9 @@
      </div>
 
      <div class="form-group place-order pt-6">
+     <input type="hidden" name="payment_method" id="payment_method_input" value="onlinepayment">
+     <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+     <input type="hidden" name="razorpay_signature" id="razorpay_signature">
      <button type="submit" class="btn btn-dark btn-block btn-rounded">Place
      Order</button>
      </div>
@@ -1085,9 +1089,50 @@
                      if (!hasAddress()) {
                          e.preventDefault();
                          openModal();
+                         return;
+                     }
+                     
+                     var paymentMethod = document.getElementById('payment_method_input').value;
+                     if (paymentMethod === 'onlinepayment' && document.getElementById('razorpay_payment_id').value === '') {
+                         e.preventDefault();
+                         
+                         var totalAmount = '{{ $checkoutSummary['grand_total'] ?? 0 }}';
+                         var customerName = '{{ $customer->customer_firstname ?? "Customer" }}';
+                         var customerEmail = '{{ $customer->customer_email ?? "customer@example.com" }}';
+                         var customerPhone = '{{ $customer->customer_mobileno ?? "" }}';
+                         
+                         var options = {
+                             "key": "{{ config('services.razorpay.key') }}",
+                             "amount": totalAmount * 100,
+                             "currency": "INR",
+                             "name": "Oxygen Store",
+                             "description": "Order Payment",
+                             "handler": function (response){
+                                 document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+                                 document.getElementById('razorpay_signature').value = response.razorpay_signature;
+                                 form.submit();
+                             },
+                             "prefill": {
+                                 "name": customerName,
+                                 "email": customerEmail,
+                                 "contact": customerPhone
+                             },
+                             "theme": {
+                                 "color": "#3399cc"
+                             }
+                         };
+                         var rzp1 = new Razorpay(options);
+                         rzp1.open();
                      }
                  });
              }
+
+             document.querySelectorAll('.payment-option').forEach(function(el) {
+                 el.addEventListener('click', function(e) {
+                     document.getElementById('payment_method_input').value = this.getAttribute('data-method');
+                 });
+             });
+
 
              // Keep button enabled; block submit only if address missing.
 

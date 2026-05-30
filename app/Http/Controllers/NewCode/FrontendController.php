@@ -2637,6 +2637,25 @@ class FrontendController extends Controller
             $legacyOrder->order_date = now();
             $legacyOrder->save();
 
+            if ($request->payment_method === 'onlinepayment' && $request->has('razorpay_payment_id') && !empty($request->razorpay_payment_id)) {
+                $payment = new \App\Models\Payment();
+                $payment->order_id = $orderId;
+                $payment->razorpay_payment_id = $request->razorpay_payment_id;
+                $payment->razorpay_signature = $request->razorpay_signature;
+                $payment->amount = $grandTotal;
+                $payment->status = 'Captured';
+                $payment->payment_data = json_encode($request->all());
+                $payment->save();
+
+                $legacyOrder->payment_status = 'Completed';
+                $legacyOrder->order_status = 'Processing';
+                $legacyOrder->save();
+
+                DB::table('ecom_order')->where('order_id', $orderId)->update([
+                    'status' => 'Processing'
+                ]);
+            }
+
             foreach ($checkoutSummary['lines'] as $line) {
                 $productId = (int) ($line['product_id'] ?? 0);
                 $detailId = (int) ($line['detail_id'] ?? 0);
