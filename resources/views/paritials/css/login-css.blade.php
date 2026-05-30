@@ -16,7 +16,7 @@ body {
 /* Apply specific padding only for mobile views */
 @media (max-width: 767px) {
     .authentication-box .container {
-        padding-top: 110px;
+        padding-top: 60px;
         padding-bottom: 30px;
     }
 }
