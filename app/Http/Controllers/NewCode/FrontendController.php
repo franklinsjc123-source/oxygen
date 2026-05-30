@@ -1058,6 +1058,7 @@ class FrontendController extends Controller
                 'vendor_details.shop_name'
             )
             ->where('auctions.status', 1)
+            ->where('auctions.end_date', '>=', now())
             ->groupBy('auctions.id', 'products.id', 'products.product_name', 'products.product_image', 'products.vendor_id', 'vendor_details.shop_name', 'auctions.bid_price', 'auctions.start_price', 'auctions.end_date')
             ->get();
 
@@ -2246,6 +2247,8 @@ class FrontendController extends Controller
 
     public function checkoutPage(Request $request)
     {
+
+
         [$cart, $cookie] = $this->cartSession($request);
         $count = $cart->getContent()->count();
         $records = $cart->getContent();

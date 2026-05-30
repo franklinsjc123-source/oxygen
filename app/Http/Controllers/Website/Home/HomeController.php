@@ -1255,6 +1255,8 @@ class HomeController extends Controller
     public function auctionlist(Request $request)
     {
         $getauctionProduct = auction::with('productdetails')
+            ->where('status', 1)
+            ->where('end_date', '>=', now())
             ->get();
         //dd($getauctionProduct);
         return view('front_end.site.auction_products')->with([

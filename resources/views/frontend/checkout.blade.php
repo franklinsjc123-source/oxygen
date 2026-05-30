@@ -421,11 +421,7 @@
       </div>
       </div>
 
-     <div class="form-group mt-3">
-     <label for="order-notes">Order notes (optional)</label>
-     <textarea class="form-control mb-0" id="order-notes" name="order-notes" cols="30" rows="4"
-         placeholder="Notes about your order, e.g special notes for delivery"></textarea>
-     </div>
+
      </div>
      <div class="col-lg-4 mb-4 sticky-sidebar-wrapper">
      <div class="order-summary-wrapper sticky-sidebar">
@@ -528,21 +524,14 @@
      <div class="card-header">
      <a href="#payment" class="expand">Online Payments</a>
      </div>
-     <div id="payment" class="card-body collapsed">
-     <p class="mb-0">
-     Please send a check to Store Name, Store Street, Store Town, Store
-     State / County, Store Postcode.
-     </p>
+     <div id="payment" class="collapsed" style="display: none;">
      </div>
      </div>
      <div class="card">
      <div class="card-header">
      <a href="#delivery" class="expand">Cash on delivery</a>
      </div>
-     <div id="delivery" class="card-body collapsed">
-     <p class="mb-0">
-     Pay with cash upon delivery.
-     </p>
+     <div id="delivery" class="collapsed" style="display: none;">
      </div>
      </div>
      {{-- <div class="card p-relative">
@@ -1033,6 +1022,12 @@
 
              if (changeBtn) {
                  changeBtn.addEventListener('click', function() {
+                     if (!isLoggedIn) {
+                         if (typeof showLoginPopup === 'function') {
+                             showLoginPopup('{{ route('checkoutPage') }}');
+                         }
+                         return;
+                     }
                      syncToModal();
                      openModal();
                  });
@@ -1080,6 +1075,13 @@
 
              if (form) {
                  form.addEventListener('submit', function(e) {
+                     if (!isLoggedIn) {
+                         e.preventDefault();
+                         if (typeof showLoginPopup === 'function') {
+                             showLoginPopup('{{ route('checkoutPage') }}');
+                         }
+                         return;
+                     }
                      if (!hasAddress()) {
                          e.preventDefault();
                          openModal();

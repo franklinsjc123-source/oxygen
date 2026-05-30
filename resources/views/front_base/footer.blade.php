@@ -510,10 +510,233 @@
    <div id="centerToast" class="center-toast" aria-live="polite"></div>
 
    <!-- Start of Quick View -->
-   <div class="login-register-popup mfp-hide">
-       <div class="row gutter-sm">
-           <div class="col-md-6 mb-4 mb-md-0">
-               <div class="login-popup">
+    <style>
+        /* Premium Login Modal UI Redesign */
+        .login-register-popup {
+            background: #fff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            max-width: 480px;
+            margin: 0 auto;
+            position: relative;
+            padding: 0;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .login-register-popup .row {
+            margin: 0;
+        }
+
+        .login-register-popup .col-md-6 {
+            padding: 0;
+        }
+
+        .login-register-popup .login-popup {
+            padding: 30px 45px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #ffffff;
+        }
+
+        .login-register-popup .tab-nav-underline {
+            border-bottom: 2px solid #f1f5f9;
+            margin-bottom: 35px;
+        }
+
+        .login-register-popup .nav-tabs .nav-item {
+            margin-bottom: -2px;
+            flex: 1;
+            text-align: center;
+        }
+
+        .login-register-popup .nav-tabs .nav-link {
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: #94a3b8;
+            padding: 14px 24px;
+            border: none;
+            background: transparent;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: 100%;
+            display: block;
+        }
+
+        .login-register-popup .nav-tabs .nav-link:hover {
+            color: #64748b;
+        }
+
+        .login-register-popup .nav-tabs .nav-link.active {
+            color: #0088dd;
+            border-bottom: 3px solid #0088dd;
+        }
+
+        /* Form Styles */
+        .login-register-popup .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .login-register-popup .form-group label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #475569;
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .login-register-popup .form-control {
+            border: 1.5px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-size: 1.05rem;
+            color: #1e293b;
+            background-color: #f8fafc;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .login-register-popup .form-control:focus {
+            border-color: #0088dd;
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(0, 136, 221, 0.1);
+            outline: none;
+        }
+
+        .login-register-popup .toggle-password,
+        .login-register-popup .toggle-password-1,
+        .login-register-popup .toggle-password-2 {
+            color: #94a3b8;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+            position: absolute;
+            right: 18px !important;
+            top: 43px !important;
+            bottom: auto !important;
+            margin-top: 0 !important;
+            cursor: pointer;
+        }
+
+        .login-register-popup .toggle-password:hover,
+        .login-register-popup .toggle-password-1:hover,
+        .login-register-popup .toggle-password-2:hover {
+            color: #0088dd;
+        }
+
+        .login-register-popup .form-checkbox {
+            margin-bottom: 28px;
+            font-size: 0.95rem;
+        }
+
+        .login-register-popup .form-checkbox label {
+            color: #64748b;
+            font-weight: 500;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+
+        .login-register-popup .form-checkbox a {
+            color: #0088dd;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .login-register-popup .form-checkbox a:hover {
+            color: #006bb3;
+            text-decoration: underline;
+        }
+
+        .login-register-popup .btn {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .login-register-popup .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #fff;
+            box-shadow: 0 6px 15px rgba(16, 185, 129, 0.25);
+        }
+
+        .login-register-popup .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+        }
+
+        .login-register-popup .btn-primary {
+            background: linear-gradient(135deg, #0088dd 0%, #006bb3 100%);
+            color: #fff;
+            box-shadow: 0 6px 15px rgba(0, 136, 221, 0.25);
+        }
+
+        .login-register-popup .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 136, 221, 0.35);
+        }
+
+        .login-register-popup .image-wrapper {
+            height: 100%;
+            min-height: 550px;
+            background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+        }
+
+        .login-register-popup .image-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('{{ asset('website_assets/images/icons/login.jpg') }}') center center / cover no-repeat;
+            opacity: 0.9;
+            mix-blend-mode: multiply;
+        }
+        
+        .login-register-popup .image-wrapper img {
+            display: none;
+        }
+
+        /* Force proper scroll inside Magnific Popup */
+        .mfp-wrap {
+            overflow-y: scroll !important;
+        }
+
+        @media (max-width: 767px) {
+            .login-register-popup .login-popup {
+                padding: 35px 25px;
+            }
+            .login-register-popup .image-wrapper {
+                display: none;
+            }
+            .login-register-popup {
+                max-width: 95%;
+                border-radius: 16px;
+            }
+        }
+    </style>
+    <div class="login-register-popup mfp-hide">
+        <div class="row w-100 m-0">
+            <div class="col-md-12 mb-0 p-0">
+                <div class="login-popup">
                    <div class="tab tab-nav-boxed tab-nav-center tab-nav-underline">
                        <ul class="nav nav-tabs text-uppercase" role="tablist">
                            <li class="nav-item">
@@ -526,80 +749,85 @@
                        <div class="tab-content">
 
                            <div class="tab-pane active" id="sign-in">
-                               <form id="login-form" class="ebb-form" autocomplete="Off">
+                               <form id="login-form" class="ebb-form" autocomplete="Off" novalidate>
+                                   <div id="login-error-alert" class="text-center mb-3" style="display:none; font-weight:500; color: #ef4444 !important; font-size: 1.1rem;"></div>
                                    <div class="form-group">
-                                       <label>Mobile*</label>
+                                       <label>Mobile Number *</label>
                                        <input type="text" class="form-control" name="username"
-                                           id="login_username" required>
+                                           id="login_username" placeholder="Enter your mobile number" 
+                                           oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="10">
                                    </div>
                                    <div class="form-group mb-0 position-relative">
                                        <label>Password *</label>
                                        <input type="password" class="form-control" name="password"
-                                           id="login_password" required>
+                                           id="login_password" placeholder="Enter your password">
 
-                                       <i class="fa-solid fa-eye toggle-password" onclick="togglePassword()"
-                                           style="position:absolute; right:10px; margin-top:-30px; cursor:pointer;"></i>
+                                       <i class="fa-solid fa-eye toggle-password" onclick="togglePassword()"></i>
                                    </div>
-                                   <div class="form-checkbox d-flex align-items-center justify-content-between">
-                                       <input type="checkbox" class="custom-checkbox" id="remember1"
-                                           name="remember1" required="">
-                                       <label for="remember1">Remember me</label>
-                                       <a href="">Last your password?</a>
+                                   <div class="form-checkbox d-flex align-items-center justify-content-between mt-4">
+                                       <div>
+                                           <input type="checkbox" class="custom-checkbox" id="remember1"
+                                               name="remember1">
+                                           <label for="remember1" class="mb-0">Remember me</label>
+                                       </div>
+                                       <a href="javascript:void(0)" onclick="$('#forget-mail').click()">Lost your password?</a>
                                    </div>
 
                                    <button type="button" class="btn btn-success" onclick="cuslogin()"
-                                       id="cus_login">Login</button>
+                                       id="cus_login"> Login</button>
                                </form>
                            </div>
 
                            <div class="tab-pane" id="sign-up">
-                               <form id="register-form" class="ebb-form" autocomplete="off">
+                               <form id="register-form" class="ebb-form" autocomplete="off" novalidate>
+                                   <div id="register-error-alert" class="text-center mb-3" style="display:none; font-weight:500; color: #ef4444 !important; font-size: 1.1rem;"></div>
                                    <div class="form-group">
                                        <label>Customer Name *</label>
                                        <input type="text" class="form-control" name="email_1"
-                                           id="register_username" placeholder="Name" style="text-transform:uppercase"
-                                           required autocomplete="new-username">
+                                           id="register_username" placeholder="E.g. John Doe" style="text-transform:uppercase"
+                                           autocomplete="new-username">
                                    </div>
                                    <div class="form-group">
-                                       <label>Your email address *</label>
+                                       <label>Email Address *</label>
                                        <input type="text" class="form-control" name="email_1" id="register_email"
-                                           onblur="isEmail(this.value)" placeholder="Email ID" required>
+                                           onblur="isEmail(this.value)" placeholder="E.g. john@example.com">
                                    </div>
                                    <div class="form-group">
                                        <label>Phone Number *</label>
                                        <input type="text" class="form-control" name="phone-number"
                                            id="register_mobile" onblur="verify_mobile(this.value)"
-                                           placeholder="Mobile Number" required>
+                                           oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="10"
+                                           placeholder="E.g. 9876543210">
                                    </div>
-                                   <div class="form-group mb-5">
+                                   <div class="form-group mb-4 position-relative">
                                        <label>Password *</label>
                                        <input type="password" class="form-control" name="password_1"
                                            id="register_password" onblur="pass_verify(this.value)"
-                                           placeholder="New Password" required autocomplete="new-pass">
+                                           placeholder="Create a strong password" autocomplete="new-pass">
                                        <i class="fa-solid fa-eye toggle-password-1"
                                            onclick="togglePasswordRegister('register_password', this)"
                                            style="position:absolute; right:10px; margin-top:-30px; cursor:pointer;">
                                        </i>
                                    </div>
-                                   <div class="form-group mb-5">
+                                   <div class="form-group mb-4 position-relative">
                                        <label>Confirm Password *</label>
                                        <input type="password" class="form-control" name="password_1"
                                            id="register_cpassword" onblur="cpass_verify(this.value)"
-                                           placeholder="Confirm Password" autocomplete="off" required>
+                                           placeholder="Re-enter password" autocomplete="off">
                                        <i class="fa-solid fa-eye toggle-password-2"
                                            onclick="togglePasswordRegister('register_cpassword', this)"
                                            style="position:absolute; right:10px; margin-top:-30px; cursor:pointer;">
                                        </i>
                                    </div>
 
-                                   <div class="form-checkbox d-flex align-items-center justify-content-between mb-5">
-                                       <input type="checkbox" class="custom-checkbox" id="remember" name="remember"
-                                           required="">
-                                       <label for="remember" class="font-size-md">I agree to the <a href="#"
-                                               class="text-primary font-size-md">privacy policy</a></label>
+                                   <div class="form-checkbox d-flex align-items-center justify-content-between mb-4">
+                                       <div>
+                                           <input type="checkbox" class="custom-checkbox" id="remember" name="remember" required>
+                                           <label for="remember" class="font-size-md mb-0">I agree to the <a href="#" class="text-primary font-size-md">Privacy Policy</a></label>
+                                       </div>
                                    </div>
                                    <button type="button" id="cus_register" onclick="cusregister()"
-                                       class="btn btn-primary">Register</button>
+                                       class="btn btn-primary">Create Account</button>
 
                                </form>
                            </div>
@@ -608,9 +836,6 @@
                    </div>
                </div>
            </div>
-           <div class="col-md-6 mb-4 mb-md-0">
-               <img src="{{ asset('website_assets/images/icons/login.jpg') }}">
-
            </div>
        </div>
    </div>
@@ -792,8 +1017,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             var serverLoginMobile = @json(session('login_mobile'));
             var serverLoginRedirect = @json(session('login_redirect'));
-            if (serverLoginMobile) {
-                showLoginPopup(serverLoginRedirect || null, serverLoginMobile);
+            if (serverLoginMobile || serverLoginRedirect) {
+                showLoginPopup(serverLoginRedirect || null, serverLoginMobile || null);
             }
         });
 
@@ -1012,64 +1237,89 @@
            @endif
        });
 
-       function cuslogin() {
-           var username = $('#login_username').val();
-           var password = $('#login_password').val();
-           var url = '<?= url('Cuslogin') ?>';
-           if (username != '' && password != '') {
+        function showFieldError(inputId, message) {
+            var input = $('#' + inputId);
+            input.css('border-color', '#ef4444');
+            if (input.siblings('.inline-error-msg').length == 0) {
+                input.after('<small class="inline-error-msg mt-1 d-block" style="color: #ef4444 !important; font-weight: 500; font-size: 0.85rem; text-transform: none; position: absolute; bottom: -22px; left: 0;">' + message + '</small>');
+            } else {
+                input.siblings('.inline-error-msg').text(message);
+            }
+        }
 
-               $.ajax({
+        function clearFieldError(inputId) {
+            var input = $('#' + inputId);
+            input.css('border-color', '');
+            input.siblings('.inline-error-msg').remove();
+        }
 
-                   url: url,
-                   type: "GET",
-                   data: {
-                       "_token": "{{ csrf_token() }}",
-                       "username": username,
-                       "password": password
-                   },
+        $(document).ready(function() {
+            $('.form-control').on('input focus', function() {
+                clearFieldError($(this).attr('id'));
+            });
+        });
 
-                   dataType: "json",
-                   success: function(data) {
-                       console.log(data);
+        function cuslogin() {
+            var username = $('#login_username').val();
+            var password = $('#login_password').val();
+            var url = '<?= url('Cuslogin') ?>';
+            
+            clearFieldError('login_username');
+            clearFieldError('login_password');
+            $('#login-error-alert').hide();
+
+            var hasError = false;
+
+            if (username == '') {
+                showFieldError('login_username', 'Please enter your mobile number.');
+                hasError = true;
+            }
+            if (password == '') {
+                showFieldError('login_password', 'Please enter your password.');
+                hasError = true;
+            }
+
+            if (!hasError) {
+
+                $.ajax({
+
+                    url: url,
+                    type: "GET",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "username": username,
+                        "password": password
+                    },
+
+                    dataType: "json",
+                    success: function(data) {
+                        console.log(data);
                         if (data.msg == 'Success') {
                             var redirectUrl = sessionStorage.getItem('post_login_redirect') || "{{ route('myAccount') }}";
                             sessionStorage.removeItem('post_login_redirect');
                             sessionStorage.removeItem('prefill_login_mobile');
                             if (typeof swal === 'function') {
-                               swal("Success!", "Login Successfully", "success").then(function() {
-                                   window.location.href = redirectUrl;
-                               });
-                               setTimeout(function() {
-                                   window.location.href = redirectUrl;
-                               }, 1200);
-                           } else {
-                               if (typeof window.showCenterMessage === 'function') {
-                                   window.showCenterMessage("Login Successfully", "success");
-                               }
-                               window.location.href = redirectUrl;
-                           }
-                       } else {
-                           if (typeof swal === 'function') {
-                               swal("Warning!", "Username And Password is Wrong", "error");
-                           } else if (typeof window.showCenterMessage === 'function') {
-                               window.showCenterMessage("Username And Password is Wrong", "error");
-                           } else {
-                               alert("Username And Password is Wrong");
-                           }
-                       }
+                                swal("Success!", "Login Successfully", "success").then(function() {
+                                    window.location.href = redirectUrl;
+                                });
+                                setTimeout(function() {
+                                    window.location.href = redirectUrl;
+                                }, 1200);
+                            } else {
+                                window.location.href = redirectUrl;
+                            }
+                        } else {
+                            $('#login-error-alert').text('Invalid username or password.').show();
+                        }
 
 
-                   },
-                   error: function(data) {
-                       console.log('Error:', data);
-                   }
-               });
-           } else {
-
-               swal("Warning!", "Fill All Form Details", "warning");
-
-           }
-       }
+                    },
+                    error: function(data) {
+                        console.log('Error:', data);
+                    }
+                });
+            }
+        }
 
        $('#forget-mail').click(function() {
 
@@ -1110,126 +1360,106 @@
 
        });
 
-       function cusregister() {
-           var customer_name = $('#register_username').val();
-           var customer_mobileno = $('#register_mobile').val();
-           var customer_email = $('#register_email').val();
-           var customer_password = $('#register_password').val();
-           var customer_cpassword = $('#register_cpassword').val();
-           var url = '<?= url('CusRegister') ?>';
-           if (customer_password != customer_cpassword) {
-               swal("Warning!", "Password Miss Matched", "warning");
-           } else if (customer_name != '' && customer_mobileno != '' && customer_password != '' && customer_cpassword !=
-               '') {
-               $('#reg-btn1').show();
-               $('#reg-btn2').hide();
-               $.ajax({
-                   url: url,
-                   type: "GET",
-                   data: {
-                       "_token": "{{ csrf_token() }}",
-                       "customer_name": customer_name,
-                       "customer_mobileno": customer_mobileno,
-                       "customer_email": customer_email,
-                       "customer_password": customer_password
+        function cusregister() {
+            var customer_name = $('#register_username').val();
+            var customer_mobileno = $('#register_mobile').val();
+            var customer_email = $('#register_email').val();
+            var customer_password = $('#register_password').val();
+            var customer_cpassword = $('#register_cpassword').val();
+            var url = '<?= url('CusRegister') ?>';
 
-                   },
+            clearFieldError('register_username');
+            clearFieldError('register_mobile');
+            clearFieldError('register_email');
+            clearFieldError('register_password');
+            clearFieldError('register_cpassword');
+            $('#register-error-alert').hide();
 
-                   dataType: "json",
-                   success: function(data) {
-                       console.log(data);
-                       if (data.msg == 'Success') {
-                           swal("Success!", "Registered  Successfully", "success");
+            var hasError = false;
 
-                           location.reload();
-                       } else {
-                           //alert(data.msg);
-                           swal("Failed", "Mobile Number Already Registered", "error");
-                       }
-                       $('#reg-btn1').hide();
-                       $('#reg-btn2').show();
+            if (customer_name == '') { showFieldError('register_username', 'Please enter your name'); hasError = true; }
+            if (customer_mobileno == '') { showFieldError('register_mobile', 'Please enter your mobile number'); hasError = true; }
+            if (customer_email == '') { showFieldError('register_email', 'Please enter your email address'); hasError = true; }
+            if (customer_password == '') { showFieldError('register_password', 'Please enter a password'); hasError = true; }
+            if (customer_password != '' && customer_password.length < 8) { showFieldError('register_password', 'Password must be at least 8 characters'); hasError = true; }
+            if (customer_password != '' && customer_password != customer_cpassword) { showFieldError('register_cpassword', 'Passwords do not match'); hasError = true; }
 
-                   },
-                   error: function(data) {
-                       console.log('Error:', data);
-                       $('#reg-btn1').hide();
-                       $('#reg-btn2').show();
-                   }
-               });
-           } else {
+            if (!hasError) {
+                $('#reg-btn1').show();
+                $('#reg-btn2').hide();
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "customer_name": customer_name,
+                        "customer_mobileno": customer_mobileno,
+                        "customer_email": customer_email,
+                        "customer_password": customer_password
+                    },
 
-               swal("Warning!", "Fill All Form Details", "warning");
+                    dataType: "json",
+                    success: function(data) {
+                        console.log(data);
+                        if (data.msg == 'Success') {
+                            swal("Success!", "Registered Successfully", "success").then(function() {
+                                location.reload();
+                            });
+                        } else {
+                            $('#register-error-alert').text('Mobile Number Already Registered').show();
+                        }
+                        $('#reg-btn1').hide();
+                        $('#reg-btn2').show();
 
-           }
+                    },
+                    error: function(data) {
+                        console.log('Error:', data);
+                        $('#reg-btn1').hide();
+                        $('#reg-btn2').show();
+                    }
+                });
+            }
+        }
 
-       }
+        function pass_verify(pass) {
+            clearFieldError('register_password');
+            if (pass.length > 0 && pass.length < 8) {
+                showFieldError('register_password', 'Password must be at least 8 characters');
+            }
+        }
 
-       function pass_verify(pass) {
+        function cpass_verify(cpass) {
+            clearFieldError('register_cpassword');
+            var pass = $('#register_password').val();
+            if (cpass.length > 0 && pass != cpass) {
+                showFieldError('register_cpassword', 'Passwords do not match');
+            }
+        }
 
-           if (pass.length < 8) {
-               //swal("Warning!", "Password Minimum 8 Character", "warning");
+        function opass_verify(cpass) {
+            var pass = $('#cpd').val();
+            if (pass != cpass) {
+                swal("Warning!", "Old Password Miss Matched", "warning");
+                $('#customer_opassword').val('');
+            }
+        }
 
-               $('#register_password').val('');
-           }
-       }
+        function isEmail(email) {
+            clearFieldError('register_email');
+            var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if (email != '' && regex.test(email) == false) {
+                showFieldError('register_email', 'Please enter a valid email address');
+            }
+        }
 
-       function cpass_verify(cpass) {
-           var pass = $('#register_password').val();
-           if (pass.length < 8) {
-               swal("Warning!", "Password Minimum 8 Character", "warning");
-
-           } else if (pass != cpass) {
-               swal("Warning!", "Password Miss Matched", "warning");
-               $('#register_cpassword').val('');
-           }
-       }
-
-       function opass_verify(cpass) {
-           var pass = $('#cpd').val();
-
-
-           if (pass != cpass) {
-               swal("Warning!", "Old Password Miss Matched", "warning");
-               $('#customer_opassword').val('');
-           }
-       }
-
-       function isEmail(email) {
-           var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-
-           if (email == '') {
-
-               swal("Warning!", "Enter the Email ID", "warning");
-           } else if (regex.test(email) == false) {
-
-
-               swal("Warning!", "Invalid Email ID", "warning");
-               $('#register_email').val('');
-           } else {
-
-           }
-       }
-
-       function verify_mobile(id) {
-
-           var mobile = id;
-
-
-
-           var reg = /(6|7|8|9)\d{9}/;
-
-           if (mobile == '') {
-
-               swal("Warning!", "Enter the Mobile Number", "warning");
-           } else if (reg.test(mobile) == false) {
-
-
-               swal("Warning!", "Invalid Mobile Number", "warning");
-               $("#register_mobile").val('');
-           } else {
-
-           }
-       }
+        function verify_mobile(id) {
+            clearFieldError('register_mobile');
+            var mobile = id;
+            var reg = /(6|7|8|9)\d{9}/;
+            if (mobile != '' && reg.test(mobile) == false) {
+                showFieldError('register_mobile', 'Please enter a valid 10-digit mobile number');
+            }
+        }
 
        function setImage(e) {
            var img = $(e).attr('data-image');
