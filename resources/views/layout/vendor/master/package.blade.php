@@ -4,10 +4,10 @@
   <script id="MathJax-script" async
           src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js">
   </script>
-    @include('paritials.auth.header')?>
+    @include('paritials.vendorauth.header')?>
 
 <!-- page-wrapper Start-->
-@include('paritials.auth.topmenu');
+@include('paritials.vendorauth.topmenu');
 <!-- Page Header Ends -->
 
 <!-- Page Body Start-->

@@ -2,10 +2,10 @@
 @section('contents')
 @include('paritials.css.activity.activity-css')?>
 @include('paritials.js.activity.activity-add-js')?>
-    @include('paritials.auth.header')?>
+    @include('paritials.vendorauth.header')?>
 
 <!-- page-wrapper Start-->
-@include('paritials.auth.topmenu');
+@include('paritials.vendorauth.topmenu');
 <!-- Page Header Ends -->
 
 <!-- Page Body Start-->

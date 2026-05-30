@@ -152,10 +152,11 @@
             @if (session()->get('level') == 5 || session()->get('level') == 4)
                 <li><a class="sidebar-header" href="#"><i data-feather="bar-chart"></i><span>Reports</span></a>
                 </li>
-                <li><a class="sidebar-header" href="{{ route('logout') }}"><i
-                            data-feather="log-in"></i><span>Logout</span></a>
-                </li>
             @endif
+            <li><a class="sidebar-header" href="{{ route('logout') }}"><i
+                        data-feather="log-out"></i><span>Logout</span></a>
+            </li>
+
             @endif
             
             @if(isset($staff) && $staff)

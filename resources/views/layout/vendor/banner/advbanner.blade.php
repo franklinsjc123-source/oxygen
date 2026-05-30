@@ -1,10 +1,10 @@
 @extends('layout.auth.master')
 @section('contents')
 
-    @include('paritials.auth.header')?>
+    @include('paritials.vendorauth.header')?>
 
 <!-- page-wrapper Start-->
-@include('paritials.auth.topmenu');
+@include('paritials.vendorauth.topmenu');
 <!-- Page Header Ends -->
 
 <!-- Page Body Start-->

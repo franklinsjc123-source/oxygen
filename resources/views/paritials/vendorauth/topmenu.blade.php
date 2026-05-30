@@ -112,7 +112,7 @@
                     <li><a href="{{ url('vendor/profile') }}">Profile</a></li>
                 </ul>
             </li>
-            <li><a href="{{ route('logout') }}"><i data-feather="log-in"></i> <span class="text-label">Logout</span></a></li>
+            <li><a href="{{ route('logout') }}"><i data-feather="log-out"></i> <span class="text-label">Logout</span></a></li>
             @endif
         </ul>
     </div>

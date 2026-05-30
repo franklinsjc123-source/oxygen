@@ -4,10 +4,10 @@
 @include('paritials.js.coupon.coupon-create-js')
 @include('paritials.css.coupon.coupon-css')
 
-    @include('paritials.auth.header')
+    @include('paritials.vendorauth.header')
 
 <!-- page-wrapper Start-->
-@include('paritials.auth.topmenu');
+@include('paritials.vendorauth.topmenu');
 <!-- Page Header Ends -->
 
 <!-- Page Body Start-->

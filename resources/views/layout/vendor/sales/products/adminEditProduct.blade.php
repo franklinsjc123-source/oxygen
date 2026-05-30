@@ -3,17 +3,17 @@
     @include('paritials.css.product.add-product-css')
     @include('paritials.js.product.add-product-js')
 
-    @include('paritials.auth.header')
+    @include('paritials.vendorauth.header')
 
     <!-- page-wrapper Start-->
-    @include('paritials.auth.topmenu');
+    @include('paritials.vendorauth.topmenu');
     <!-- Page Header Ends -->
 
     <!-- Page Body Start-->
     <div class="page-body-wrapper">
 
         <!-- Page Sidebar Start-->
-        @include('paritials.auth.sidemenu');
+        @include('paritials.vendorauth.sidemenu');
         <!-- Page Sidebar Ends-->
 
         <!-- Right sidebar Start-->

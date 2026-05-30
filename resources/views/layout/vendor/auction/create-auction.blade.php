@@ -4,10 +4,10 @@
 @include('paritials.js.time-js')?>
 @include('paritials.css.auction.auction')?>
 
-    @include('paritials.auth.header')?>
+    @include('paritials.vendorauth.header')?>
 
 <!-- page-wrapper Start-->
-@include('paritials.auth.topmenu');
+@include('paritials.vendorauth.topmenu');
 <!-- Page Header Ends -->
 
 <!-- Page Body Start-->
