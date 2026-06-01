@@ -1997,7 +1997,7 @@ class FrontendController extends Controller
         // Colours
         $colorsQuery = DB::table('products_details')
             ->leftJoin('products', 'products.id', '=', 'products_details.products_id')
-            ->select(DB::raw('DISTINCT(products_details.attributevalue1) as color'), DB::raw('COUNT(products.id) as count'))
+            ->select('products_details.attributevalue1 as color', DB::raw('COUNT(DISTINCT products.id) as count'))
             ->where('products.category', $category_id)
             ->where('products.status', 1)
             ->whereNotNull('products_details.attributevalue1')
