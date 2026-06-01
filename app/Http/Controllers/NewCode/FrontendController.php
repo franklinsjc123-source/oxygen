@@ -1994,25 +1994,55 @@ class FrontendController extends Controller
 
 
 
-        $productcolors = DB::table('products_details')
+        // Colours
+        $colorsQuery = DB::table('products_details')
             ->leftJoin('products', 'products.id', '=', 'products_details.products_id')
-            ->select(DB::raw('DISTINCT(products_details.attributevalue1) as color'))
-            ->where('products.category', $category_id);
-
+            ->select(DB::raw('DISTINCT(products_details.attributevalue1) as color'), DB::raw('COUNT(products.id) as count'))
+            ->where('products.category', $category_id)
+            ->where('products.status', 1)
+            ->whereNotNull('products_details.attributevalue1')
+            ->where('products_details.attributevalue1', '!=', '')
+            ->groupBy('products_details.attributevalue1')
+            ->orderBy('count', 'desc');
+            
         if ($sub_category_id > 0) {
-            $productcolors->where('products.category_sub', $sub_category_id);
+            $colorsQuery->where('products.category_sub', $sub_category_id);
         }
-        $productcolors->where('products.status', 1);
+        $colours = $colorsQuery->get();
 
-        $colors = $productcolors->pluck('color')->toArray();
+        // Sizes
+        $sizesQuery = DB::table('products_details')
+            ->leftJoin('products', 'products.id', '=', 'products_details.products_id')
+            ->where('products.category', $category_id)
+            ->where('products.status', 1)
+            ->whereNotNull('products_details.attributevalue2')
+            ->where('products_details.attributevalue2', '!=', '')
+            ->select(DB::raw('DISTINCT(products_details.attributevalue2) as size'));
+            
+        if ($sub_category_id > 0) {
+            $sizesQuery->where('products.category_sub', $sub_category_id);
+        }
+        $sizes = $sizesQuery->pluck('size')->toArray();
 
-        $maincolors = array("Black", "White", "Gray", "Silver", "Maroon", "Red", "Purple", "Fuchsia", "Green", "Lime", "Olive", "Yellow", "Navy", "Blue", "Teal");
+        // Collections
+        $collections = DB::table('master_product_collection')->where('status', 1)->get(['id', 'name']);
 
-        $mergedColors = array_unique(array_merge($maincolors, $colors));
+        // Offer Types
+        $offerQuery = DB::table('products')
+            ->join('master_offers', 'products.offers', '=', 'master_offers.id')
+            ->where('products.category', $category_id)
+            ->where('products.status', 1)
+            ->whereNotNull('products.offers')
+            ->where('products.offers', '!=', 0)
+            ->select('master_offers.id', 'master_offers.type', 'master_offers.title', 'master_offers.buy', 'master_offers.getoffer', 'master_offers.cashbacktype', 'master_offers.cashbackvalue', 'master_offers.value', 'master_offers.buyproduct', 'master_offers.getamt', 'master_offers.discount_type')
+            ->distinct();
+            
+        if ($sub_category_id > 0) {
+            $offerQuery->where('products.category_sub', $sub_category_id);
+        }
+        $offerTypes = $offerQuery->get();
 
-        $colours = array_values($mergedColors);
-
-        return view('frontend/category', compact('product', 'sub_categories_menu', 'prouctsList', 'main_category', 'category', 'sub_category', 'colours'));
+        return view('frontend/category', compact('product', 'sub_categories_menu', 'prouctsList', 'main_category', 'category', 'sub_category', 'colours', 'sizes', 'collections', 'offerTypes'));
     }
 
 
