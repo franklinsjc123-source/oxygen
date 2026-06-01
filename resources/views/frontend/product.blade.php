@@ -1087,7 +1087,7 @@
                                     @foreach ($offerProducts as $product)
                                         <div class="col-md-2 swiper-slide product">
                                             <figure class="product-media">
-                                                <a href="{{ url('productVar').'/'.$product->id }}">
+                                                <a href="{{ url('products/' . ($product->slug ?? $product->id)) }}">
                                                     <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product"/>
                                                 </a>
 
@@ -1110,7 +1110,7 @@
                                                 </div>
                                             </figure>
                                             <div class="product-details">
-                                                <h4 class="product-name"><a href="{{ url('productVar').'/'.$product->id }}">{{ $product->product_name }}</a></h4>
+                                                <h4 class="product-name"><a href="{{ url('products/' . ($product->slug ?? $product->id)) }}">{{ $product->product_name }}</a></h4>
                                                 <div class="ratings-container">
                                                     <div class="ratings-full">
                                                         <span class="ratings" style="width: 100%;"></span>
@@ -1217,7 +1217,7 @@
                                                 @foreach ($vendorProducts as $product)
                                                  <div class="product product-widget">
                                                      <figure class="product-media">
-                                                         <a href="{{ url('/productVar/'.$product->id) }}">
+                                                         <a href="{{ url('products/' . ($product->slug ?? $product->id)) }}">
                                                              <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product"
                                                                  width="100" height="113" />
                                                          </a>
@@ -1259,7 +1259,7 @@
                                                       @foreach ($vendorProducts2 as $product)
                                                  <div class="product product-widget">
                                                      <figure class="product-media">
-                                                         <a href="{{ url('/productVar/'.$product->id) }}">
+                                                         <a href="{{ url('products/' . ($product->slug ?? $product->id)) }}">
                                                              <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product"
                                                                  width="100" height="113" />
                                                          </a>

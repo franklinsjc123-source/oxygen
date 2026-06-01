@@ -49,12 +49,12 @@
                         <div class="product-wrap">
                             <div class="product text-center">
                                 <figure class="product-media">
-                                    <a href="{{ url('/productVar/'.$product->id) }}">
+                                    <a href="{{ url('products/' . ($product->slug ?? $product->id)) }}">
                                         <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product" />
                                     </a>
                                     
                                     <div class="product-action-vertical">
-                                        <a href="{{ url('/productVar/'.$product->id) }}" class="btn-product-icon w-icon-cart"></a>
+                                        <a href="{{ url('products/' . ($product->slug ?? $product->id)) }}" class="btn-product-icon w-icon-cart"></a>
                                         <a href="#" onclick="addwishlist('{{ $product->id }}')" class="btn-product-icon btn-wishlist w-icon-heart"><span></span></a>
                                         <a href="#" onclick="showQuickView('{{ $product->id }}')" data-id="{{ $product->id }}" class="btn-product-icon btn-quickview w-icon-search"></a>
                                     </div>
@@ -79,7 +79,7 @@
                                          </a>
                                      </div>
                                      <h4 class="product-name" style="margin-bottom: 5px; font-weight: 500; font-size: 1.4rem;">
-                                         <a href="{{ url('/productVar/'.$product->id) }}" style="color: #333; text-decoration: none;">
+                                         <a href="{{ url('products/' . ($product->slug ?? $product->id)) }}" style="color: #333; text-decoration: none;">
                                             {{ $product->product_name }}
                                          </a>
                                      </h4>

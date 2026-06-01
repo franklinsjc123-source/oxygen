@@ -188,14 +188,14 @@ class FrontendController extends Controller
             ->where('shop_name', 'LIKE', '%' . $term . '%')
             ->orderBy('shop_name', 'asc')
             ->limit(10)
-            ->get(['id', 'shop_name', 'profile_image']);
+            ->get(['id', 'slug', 'shop_name', 'profile_image']);
 
         $suggestions = $vendors->map(function ($vendor) {
             return [
                 'value' => $vendor->shop_name,
                 'type' => 'shop',
                 'image' => !empty($vendor->profile_image) ? asset('assets/images/vendor/profile/' . $vendor->profile_image) : null,
-                'url' => url('/shop-details/' . $vendor->id),
+                'url' => url('/shop/' . ($vendor->slug ?? $vendor->id)),
             ];
         })->values();
 
@@ -211,7 +211,7 @@ class FrontendController extends Controller
             $customer = Ecom_Customer_info::where('customer_id', $customer_id)->first();
             $shipping_address = Ecom_Customer_Shipping::where('customer_id', $customer_id)->get();
 
-            $wishlist = wishlist::select('ecom_wishlist.*', 'pr.product_name', 'pr.product_image', 'pd.product_detail_image', 'pd.retail_price', 'pd.selling_price')
+            $wishlist = wishlist::select('ecom_wishlist.*', 'pr.product_name', 'pr.slug', 'pr.product_image', 'pd.product_detail_image', 'pd.retail_price', 'pd.selling_price')
                 ->leftJoin('products_details as pd', 'pd.id', '=', 'ecom_wishlist.ecom_product_id')
                 ->leftJoin('products as pr', 'pd.products_id', '=', 'pr.product_id')
                 ->where('ecom_wishlist.customer_id', '=', $customer_id)
@@ -384,6 +384,7 @@ class FrontendController extends Controller
             ->leftJoin('master_offers as o', 'o.id', '=', 'products.offers')
             ->select(
                 'products.id',
+                'products.slug',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
@@ -399,6 +400,7 @@ class FrontendController extends Controller
             ->where('products.status', 1)
             ->groupBy(
                 'products.id',
+                'products.slug',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
@@ -411,6 +413,7 @@ class FrontendController extends Controller
             ->leftJoin('master_offers as o', 'o.id', '=', 'products.offers')
             ->select(
                 'products.id',
+                'products.slug',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
@@ -427,6 +430,7 @@ class FrontendController extends Controller
             ->where('products.collection', '4')
             ->groupBy(
                 'products.id',
+                'products.slug',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
@@ -440,6 +444,7 @@ class FrontendController extends Controller
             ->leftJoin('master_offers as o', 'o.id', '=', 'products.offers')
             ->select(
                 'products.id',
+                'products.slug',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
@@ -456,6 +461,7 @@ class FrontendController extends Controller
             ->where('products.status', 1)
             ->groupBy(
                 'products.id',
+                'products.slug',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
@@ -475,6 +481,7 @@ class FrontendController extends Controller
             ->leftJoin('master_offers as o', 'o.id', '=', 'products.offers')
             ->select(
                 'products.id',
+                'products.slug',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
@@ -490,6 +497,7 @@ class FrontendController extends Controller
             ->where('products.status', 1)
             ->groupBy(
                 'products.id',
+                'products.slug',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
@@ -1174,6 +1182,7 @@ class FrontendController extends Controller
             })
             ->select(
                 'products.id',
+                'products.slug',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
@@ -1191,6 +1200,7 @@ class FrontendController extends Controller
             ->where('products.status', 1)
             ->groupBy(
                 'products.id',
+                'products.slug',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
@@ -1222,6 +1232,7 @@ class FrontendController extends Controller
             })
             ->select(
                 'products.id',
+                'products.slug',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
@@ -1239,6 +1250,7 @@ class FrontendController extends Controller
             ->where('products.status', 1)
             ->groupBy(
                 'products.id',
+                'products.slug',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
@@ -1267,6 +1279,7 @@ class FrontendController extends Controller
             ->leftJoin('master_offers', 'master_offers.id', '=', 'products.offers')
             ->select(
                 'products.id',
+                'products.slug',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
@@ -1281,6 +1294,7 @@ class FrontendController extends Controller
             ->where('products.status', 1)
             ->groupBy(
                 'products.id',
+                'products.slug',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
@@ -1307,6 +1321,7 @@ class FrontendController extends Controller
             ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
             ->select(
                 'products.id',
+                'products.slug',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
@@ -1317,6 +1332,7 @@ class FrontendController extends Controller
             ->where('products.status', 1)
             ->groupBy(
                 'products.id',
+                'products.slug',
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name'
@@ -1632,6 +1648,7 @@ class FrontendController extends Controller
 
         $productsData = $productsData->select(
             'p.id',
+            'p.slug',
             'p.vendor_id',
             'p.product_name',
             'p.product_image',
@@ -1656,6 +1673,7 @@ class FrontendController extends Controller
             if (!isset($resultArr[$productId])) {
                 $resultArr[$productId] = [
                     'id' => $val->id,
+                    'slug' => $val->slug,
                     'vendor_id' => $val->vendor_id,
                     'product_name' => $val->product_name,
                     'product_image' => $val->product_image,
@@ -1703,6 +1721,7 @@ class FrontendController extends Controller
 
         $productsData = $productsData->select(
             'p.id',
+            'p.slug',
             'p.vendor_id',
             'p.product_name',
             'p.product_image',
@@ -1730,6 +1749,7 @@ class FrontendController extends Controller
             if (!isset($resultArr[$productId])) {
                 $resultArr[$productId] = [
                     'id' => $val->id,
+                    'slug' => $val->slug,
                     'vendor_id' => $val->vendor_id,
                     'product_name' => $val->product_name,
                     'product_image' => $val->product_image,
@@ -1782,6 +1802,7 @@ class FrontendController extends Controller
 
         $productsData = $productsData->select(
             'p.id',
+            'p.slug',
             'p.category_main',
             'p.vendor_id',
             'p.product_name',
@@ -1841,6 +1862,7 @@ class FrontendController extends Controller
 
                 $resultArr[$productId] = [
                     'id' => $val->id,
+                    'slug' => $val->slug,
                     'category_id' => $val->category_main,
                     'vendor_id' => $val->vendor_id,
                     'product_name' => $val->product_name,
@@ -2237,7 +2259,8 @@ class FrontendController extends Controller
             ->where('p.status', 1)
             ->select(
                 'p.id',
-                'p.vendor_id',
+            'p.slug',
+            'p.vendor_id',
                 'p.product_name',
                 'p.product_image',
                 'pd.selling_price',
@@ -2262,6 +2285,7 @@ class FrontendController extends Controller
             if (!isset($resultArr[$productId])) {
                 $resultArr[$productId] = [
                     'id' => $val->id,
+                    'slug' => $val->slug,
                     'vendor_id' => $val->vendor_id,
                     'product_name' => $val->product_name,
                     'product_image' => $val->product_image,
@@ -3618,6 +3642,7 @@ class FrontendController extends Controller
 
         $products = $productsQuery->select(
             'p.id',
+            'p.slug',
             'p.category_main',
             'p.vendor_id',
             'p.product_name',
@@ -3682,6 +3707,7 @@ class FrontendController extends Controller
 
                 $resultArr[$productId] = [
                     'id' => $val->id,
+                    'slug' => $val->slug,
                     'category_id' => $val->category_main,
                     'vendor_id' => $val->vendor_id,
                     'product_name' => $val->product_name,
