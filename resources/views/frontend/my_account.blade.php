@@ -92,8 +92,8 @@
     .account-dashboard-grid .icon-box {
         border: 1px solid #e8e8e8;
         border-radius: 6px;
-        padding: 48px 20px;
-        min-height: 190px;
+        padding: 16px 10px;
+        min-height: 90px;
         transition: all .2s ease;
         background: #fff;
     }
