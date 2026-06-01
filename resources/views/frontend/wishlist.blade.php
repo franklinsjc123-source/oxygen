@@ -37,7 +37,7 @@
                                         <div class="p-relative">
                                             <a href="{{url('productVar',$product->ecom_product_id)}}">
                                                 <figure>
-                                                    <img src="{{ asset('assets/images/products/' . $product->product_image) }}"  alt="product" style="width:80px; height:80px; object-fit:contain; margin:0 auto;">
+                                                    <img src="{{ asset('assets/images/products/' . $product->product_image) }}" alt="product" style="width:55px; height:55px; object-fit:contain; margin:0 auto;">
                                                 </figure>
                                             </a>
                                             {{-- <a   href="{{url('Delete_wishlist',$product->ecom_wishlist_id)}}" class="btn btn-close"><i
@@ -49,7 +49,23 @@
                                         {{ $product->product_name }}
                                         </a>
                                     </td>
-                                    <td  style="text-align: center; vertical-align: middle;" class="product-price"><ins class="new-price">Rs. {{ $product->selling_price }} <del><span class="currencySymbol">Rs.</span> {{ $product->retail_price }} </del></ins></td>
+                                    <td  style="text-align: center; vertical-align: middle;" class="product-price">
+                                        @php
+                                            $retailPrice = (float) ($product->retail_price ?? 0);
+                                            $sellingPrice = (float) ($product->selling_price ?? 0);
+                                            if ($retailPrice > 0) {
+                                                $discount_percentage = (($retailPrice - $sellingPrice) / $retailPrice) * 100;
+                                                $discount_rounded = round($discount_percentage / 10) * 10;
+                                            } else {
+                                                $discount_rounded = 0;
+                                            }
+                                        @endphp
+                                        <ins class="new-price" style="text-decoration: none;">
+                                            <span style="font-family: Arial, sans-serif;">₹</span> {{ $product->selling_price }} 
+                                            <del style="font-size: 0.8em; color: #888; font-weight: 400; margin: 0 4px;"><span class="currencySymbol" style="font-family: Arial, sans-serif;">₹</span> {{ $product->retail_price }}</del> 
+                                            <span style="color: #27ae60; font-weight: 700; font-size: 1.4rem; margin-left: 5px;">{{ $discount_rounded }}% Off</span>
+                                        </ins>
+                                    </td>
                                     <td  style="text-align: center; vertical-align: middle; white-space: nowrap;" >
                                         <span class="wishlist-in-stock">In Stock</span>
                                     </td>

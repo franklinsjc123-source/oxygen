@@ -249,7 +249,7 @@
                                                 <td class="order-id">#{{ $order->order_id }}</td>
                                                 <td class="order-date">{{ \Carbon\Carbon::parse($order->order_date)->format('d M Y') }}</td>
                                                 <td class="order-status">{{ $order->order_status }}</td>
-                                                <td class="order-total"><span class="order-price">Rs. {{ number_format($order->grand_total, 2) }}</span></td>
+                                                <td class="order-total"><span class="order-price"><span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($order->grand_total, 2) }}</span></td>
                                                 <td class="order-action">
                                                     <a href="javascript:void(0)" class="btn btn-outline btn-default btn-block btn-sm btn-rounded">
                                                         View Details
@@ -265,9 +265,9 @@
                                                                     <b>Invoice:</b> {{ $invoice->invoice_id }}<br>
                                                                     <b>Status:</b> {{ $invoice->status }}<br>
                                                                     <b>Qty:</b> {{ $invoice->line_qty ?? 1 }} |
-                                                                    <b>Tax:</b> Rs. {{ number_format($invoice->tax_amount ?? 0, 2) }}
+                                                                    <b>Tax:</b> <span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($invoice->tax_amount ?? 0, 2) }}
                                                                 </div>
-                                                                <div class="text-right"><b>Amount:</b> Rs. {{ number_format($invoice->line_amount, 2) }}</div>
+                                                                <div class="text-right"><b>Amount:</b> <span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($invoice->line_amount, 2) }}</div>
                                                             </div>
                                                             @if(isset($invoice->products) && count($invoice->products) > 0)
                                                                 @foreach($invoice->products as $product)
@@ -282,7 +282,7 @@
                                                                             @if(!empty($product->product_size) || !empty($product->product_color))
                                                                                 <div>Size: {{ $product->product_size ?: '-' }} | Color: {{ $product->product_color ?: '-' }}</div>
                                                                             @endif
-                                                                            <div>Price: Rs. {{ number_format($product->product_price, 2) }}</div>
+                                                                            <div>Price: <span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($product->product_price, 2) }}</div>
                                                                         </div>
                                                                     </div>
                                                                 @endforeach
@@ -498,57 +498,53 @@
                            <form action="{{url('/updateaddress')}}" name="frm-login" method="post" autocomplete="Off" class="checkout-form" onsubmit="return confirm('Do you  want to Change Billing Address?');">
                                {{ csrf_field() }}
                                <div class="row">
-                                   <div class="col-xs-6">
+                                   <div class="col-md-4 mb-3">
                                        <label>First Name *</label>
                                        <input type="text" class="form-control" name="customer_firstname" onkeyup="this.value = this.value.toUpperCase(); " required="" value="{{@$customer->customer_firstname}}" />
                                    </div>
-                                   <div class="col-xs-6">
+                                   <div class="col-md-4 mb-3">
                                        <label>Last Name *</label>
                                        <input type="text" class="form-control" name="customer_lastname" onkeyup="this.value = this.value.toUpperCase(); " required="" value="{{@$customer->customer_lastname}}" />
                                    </div>
-                               </div>
-                               <label>Company Name (Optional)</label>
-                               <input type="text" class="form-control" name="customer_company_name" onkeyup="this.value = this.value.toUpperCase(); " value="{{@$customer->customer_company_name}}" />
-
-                               <label>Street Address *</label>
-                               <input type="text" class="form-control" name="customer_address" required="" placeholder="House number and street name" value="{{@$customer->customer_address}}" />
-                               <input type="text" class="form-control" name="customer_address1" required="" placeholder="Area" value="{{@$customer->customer_address1}}" />
-
-                               <div class="row">
-                                   <div class="col-xs-6">
-                                       <label>ZIP / POSTAL CODE*</label>
-                                       <input type="text" class="form-control" id="pincode" name="customer_pincode" required="" value="{{@$customer->customer_pincode}}" />
-                                   </div>
-                                   <div class="col-xs-6">
+                                   <div class="col-md-4 mb-3">
                                        <label>Phone *</label>
                                        <input type="text" class="form-control" name="customer_mobileno" id="order_mobile" required="" onblur="verify_mobile(this.value)" value="{{@$customer->customer_mobileno}}" />
                                    </div>
-                               </div>
-                               <div class="row">
-                                   <div class="col-xs-6">
+                                   
+                                   <div class="col-md-4 mb-3">
+                                       <label>Email Address *</label>
+                                       <input type="email" class="form-control" name="customer_email" required="" value="{{@$customer->customer_email}}" />
+                                   </div>
+                                   <div class="col-md-4 mb-3">
+                                       <label>Street / House No *</label>
+                                       <input type="text" class="form-control" name="customer_address" required="" placeholder="House number and street name" value="{{@$customer->customer_address}}" />
+                                   </div>
+                                   <div class="col-md-4 mb-3">
+                                       <label>Area / Locality *</label>
+                                       <input type="text" class="form-control" name="customer_address1" required="" placeholder="Area" value="{{@$customer->customer_address1}}" />
+                                   </div>
+
+                                   <div class="col-md-4 mb-3">
                                        <label>Town / City *</label>
                                        <input type="text" class="form-control" id="city" name="customer_city" required="" value="{{@$customer->customer_city}}" />
                                    </div>
-                                   <div class="col-xs-6">
+                                   <div class="col-md-4 mb-3">
                                        <label>State *</label>
                                        <input type="text" class="form-control" id="state" name="customer_state" required="" value="{{@$customer->customer_state}}" />
                                    </div>
+                                   <div class="col-md-4 mb-3">
+                                       <label>ZIP / POSTAL CODE *</label>
+                                       <input type="text" class="form-control" id="pincode" name="customer_pincode" required="" value="{{@$customer->customer_pincode}}" />
+                                   </div>
                                </div>
-                               <label>Email Address *</label>
-                               <input type="email" class="form-control" name="customer_email" required="" value="{{@$customer->customer_email}}" />
 
-                               <br>
-                               <div class="login-on-checkout">
-                                   <p class="form-row">
-                                       <button type="submit" name="btn-sbmt" class="btn">SAVE CHANGES</button>
-                                   </p>
+                               <div class="login-on-checkout mt-2">
+                                   <button type="submit" name="btn-sbmt" class="btn btn-dark btn-rounded">SAVE CHANGES</button>
+                               </div>
                            </form>
                        </div>
 
-                      
-                   </div>
-
-                    <div class="tab-pane" id="account-details">                           
+                                           <div class="tab-pane" id="account-details">                           
                         <div class="account-back-wrap" style="float:right">
                             <a href="#account-dashboard" data-bs-toggle="tab" class="btn btn-outline btn-default btn-sm account-back-btn back-to-dashboard">Back</a>
                         </div>
@@ -624,8 +620,7 @@
                                                                 <div class="p-relative"  >
                                                                     <a href="{{url('productVar',$product->ecom_product_id)}}">
                                                                     
-                                                                            <img   src="{{ asset('assets/images/products/' . $product->product_image) }}"  alt="product" style="width:80px; height:80px; object-fit:contain; margin:0 auto;"
-                                                                                >
+                                                                            <img src="{{ asset('assets/images/products/' . $product->product_image) }}" alt="product" style="width:55px; height:55px; object-fit:contain; margin:0 auto;">
                                                                     
                                                                     </a>
                                                                     {{-- <a   href="{{url('Delete_wishlist',$product->ecom_wishlist_id)}}" class="btn btn-close"><i
@@ -637,7 +632,23 @@
                                                                 {{ $product->product_name }}
                                                                 </a>
                                                             </td>
-                                                            <td  style="text-align: center; vertical-align: middle;" class="product-price"><ins class="new-price">Rs. {{ $product->selling_price }} <del><span class="currencySymbol">Rs.</span> {{ $product->retail_price }} </del></ins></td>
+                                                            <td  style="text-align: center; vertical-align: middle;" class="product-price">
+                                                                @php
+                                                                    $retailPrice = (float) ($product->retail_price ?? 0);
+                                                                    $sellingPrice = (float) ($product->selling_price ?? 0);
+                                                                    if ($retailPrice > 0) {
+                                                                        $discount_percentage = (($retailPrice - $sellingPrice) / $retailPrice) * 100;
+                                                                        $discount_rounded = round($discount_percentage / 10) * 10;
+                                                                    } else {
+                                                                        $discount_rounded = 0;
+                                                                    }
+                                                                @endphp
+                                                                <ins class="new-price" style="text-decoration: none;">
+                                                                    <span style="font-family: Arial, sans-serif;">₹</span> {{ $product->selling_price }} 
+                                                                    <del style="font-size: 0.8em; color: #888; font-weight: 400; margin: 0 4px;"><span class="currencySymbol" style="font-family: Arial, sans-serif;">₹</span> {{ $product->retail_price }}</del> 
+                                                                    <span style="color: #27ae60; font-weight: 700; font-size: 1.4rem; margin-left: 5px;">{{ $discount_rounded }}% Off</span>
+                                                                </ins>
+                                                            </td>
                                                             <td  style="text-align: center; vertical-align: middle; white-space: nowrap;" class="product-stock-status">
                                                                 <span class="wishlist-in-stock">In Stock</span>
                                                             </td>

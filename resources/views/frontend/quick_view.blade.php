@@ -101,6 +101,12 @@
                              Shop Name:
                              <span class="product-category"><a href="#"><?= $prouctsList[$id]['shop_name'] ?></a></span>
                          </div>
+                         @if(!empty($prouctsList[$id]['mobile_number1']))
+                         <div class="product-categories mt-1">
+                             Shop Contact:
+                             <span class="product-category"><a href="tel:<?= $prouctsList[$id]['mobile_number1'] ?>"><i class="fas fa-phone-alt"></i> <?= $prouctsList[$id]['mobile_number1'] ?></a></span>
+                         </div>
+                         @endif
                          {{-- <div class="product-categories">
                              Category:
                              <span class="product-category"><a href="#"><?= $prouctsList[$id]['category_name'] ?></a></span>

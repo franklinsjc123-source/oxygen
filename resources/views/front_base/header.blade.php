@@ -564,7 +564,7 @@
 
         /* ── Stock Badge Design ── */
         .product-stock-status {
-            display: flex;
+            /* display: flex; */
             justify-content: center;
             margin: 8px 0 2px 0;
             min-height: 24px;

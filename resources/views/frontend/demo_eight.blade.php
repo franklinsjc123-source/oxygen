@@ -642,6 +642,7 @@
      <!-- End of Banner Shoes -->
      <div class="container">
 
+         @if(isset($auctionProducts) && count($auctionProducts) > 0)
          <div class="title-link-wrapper mb-3">
              <h2 class="title mb-0 pt-2 pb-2">Auction Products</h2>
              <a href="{{ url('auction') }}" class="mb-0">More Products<i
@@ -667,7 +668,6 @@
                     }
                 }">
              <div class="swiper-wrapper row cols-xl-6 cols-lg-5 cols-md-4 cols-sm-3 cols-2">
-                 @if(isset($auctionProducts) && count($auctionProducts) > 0)
                  @foreach($auctionProducts as $auction)
                  <div class="swiper-slide product product-simple text-center">
                      <figure class="product-media">
@@ -687,9 +687,6 @@
                              @php
                                 $endDateStr = str_replace('T', ' ', $auction->end_date);
                                 $parsedDate = \Carbon\Carbon::parse($endDateStr);
-                                $formattedForJs = $parsedDate->format('Y, m, d, H, i, s');
-                                // The js countdown plugin expects months 1-12 or 0-11 depending on version. Usually m-1 for JS Date() but the plugin often accepts standard. 
-                                // Let's use format('Y, n, j, G, i, s'). Note that for jQuery Countdown by Keith Wood (often used here), month is 1-12.
                                 $formattedForJs = $parsedDate->format('Y, n, j, G, i, s');
                              @endphp
                              <div class="product-countdown countdown-compact" data-until="{{ $formattedForJs }}"
@@ -719,16 +716,12 @@
                  </div>
                  <!-- End of Product Simple -->
                  @endforeach
-                 @else
-                     <div class="col-12 text-center py-5">
-                         <p>No active auctions at the moment.</p>
-                     </div>
-                 @endif
 
              </div>
              <div class="swiper-pagination"></div>
          </div>
          <!-- End of Swiper Container -->
+         @endif
 
      </div>
 <style>
