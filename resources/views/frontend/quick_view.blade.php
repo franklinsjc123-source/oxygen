@@ -163,7 +163,7 @@
                  </div>
 
                  <div class="product-form">
-                     <a href="<?= url('/productVar/' . $prouctsList[$id]['id']) ?>" class="btn btn-primary ">
+                     <a href="<?= url('/products/' . ($prouctsList[$id]['slug'] ?? $prouctsList[$id]['id'])) ?>" class="btn btn-primary ">
                          <i class="w-icon-cart"></i>
                          <span>Add to Cart</span>
                      </a>

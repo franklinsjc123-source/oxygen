@@ -35,7 +35,7 @@
                                 <tr>
                                     <td style="text-align: center; vertical-align: middle;" class="product-thumbnail">
                                         <div class="p-relative">
-                                            <a href="{{url('productVar',$product->ecom_product_id)}}">
+                                            <a href="{{url('products', $product->slug ?? $product->ecom_product_id)}}">
                                                 <figure>
                                                     <img src="{{ asset('assets/images/products/' . $product->product_image) }}" alt="product" style="width:55px; height:55px; object-fit:contain; margin:0 auto;">
                                                 </figure>
@@ -45,7 +45,7 @@
                                         </div>
                                     </td>
                                     <td style="text-align: center; vertical-align: middle;" class="product-name">
-                                        <a href="{{url('productVar',$product->ecom_product_id)}}">
+                                        <a href="{{url('products', $product->slug ?? $product->ecom_product_id)}}">
                                         {{ $product->product_name }}
                                         </a>
                                     </td>
@@ -74,7 +74,7 @@
                                             <a href="{{url('delete_wishlist',$product->ecom_wishlist_id)}}"
                                                 class="btn btn-default btn-rounded btn-sm">Remove 
                                                 </a>
-                                            <a href="{{url('productVar',$product->ecom_product_id)}}" class="btn btn-dark btn-rounded btn-sm btn-cart">View</a>
+                                            <a href="{{url('products', $product->slug ?? $product->ecom_product_id)}}" class="btn btn-dark btn-rounded btn-sm btn-cart">View</a>
                                         </div>
                                     </td>
                                 </tr>

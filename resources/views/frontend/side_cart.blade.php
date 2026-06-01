@@ -211,12 +211,12 @@
     foreach ($records as $row) {  ?>
         <div class="product product-cart">
             <figure class="product-media">
-                <a href="<?= route('productVar', [$row['product_id']]) ?>">
+                <a href="<?= url('/products/' . ($row['slug'] ?? $row['product_id'])) ?>">
                     <img src="<?= $baseUrl ?>/assets/images/products/<?= $row['image'] ?>" alt="product">
                 </a>
             </figure>
             <div class="product-detail">
-                <a href="<?= route('productVar', [$row['product_id']]) ?>" class="product-name"><?= $row['name'] ?></a>
+                <a href="<?= url('/products/' . ($row['slug'] ?? $row['product_id'])) ?>" class="product-name"><?= $row['name'] ?></a>
                 <?php
                     $size = $row['size'] ?? '';
                     $color = $row['color'] ?? '';

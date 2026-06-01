@@ -11,7 +11,7 @@
                     <ul class="breadcrumb bb-no">
 
                         <li><a href="{{ url('home')}}">Home</a></li>
-                        <li><a href="{{ url( 'mainCategoryShop/'.$main_category->id ) }}">  {{ $main_category->category_main_name  }} </a> </li>
+                        <li><a href="{{ url('main-category/' . ($main_category->slug ?? $main_category->id)) }}">  {{ $main_category->category_main_name  }} </a> </li>
 
                     </ul>
                 </div>
@@ -57,7 +57,7 @@
                                        <center>
 
                                          <figure class="category-media">
-                                            <a href="{{ url( 'categoryShop/'.$category->id ) }}">
+                                            <a href="{{ url('category/' . ($category->slug ?? $category->id)) }}">
                                                 <img src="{{ asset('assets/images/category').'/'.$category->category_image }}" alt="Categroy"
                                                    style="background-color: #5C92C0;" />
                                             </a>
@@ -65,7 +65,7 @@
                                        </center>
                                         <div class="category-content">
                                             <h4 class="category-name">
-                                                <a href="{{ url( 'categoryShop/'.$category->id ) }}">{{$category->category_name}}</a>
+                                                <a href="{{ url('category/' . ($category->slug ?? $category->id)) }}">{{$category->category_name}}</a>
                                             </h4>
                                         </div>
                                     </div>
@@ -462,7 +462,7 @@
                                 <div class="product-wrap">
                                     <div class="product text-center">
                                         <figure class="product-media">
-                                            <a href="${siteurl}/productVar/${product.id}">
+                                            <a href="${siteurl}/products/${product.slug || product.id}">
                                                 <img src="${siteurl}/assets/images/products/${product.product_image}" alt="${product.product_name}" />
                                             </a>
                                             ${product.offer_image ? `
@@ -476,19 +476,19 @@
                                                </div>
                                             ` : ''}
                                             <div class="product-action-vertical">
-                                                <a href="${siteurl}/productVar/${product.id}" class="btn-product-icon w-icon-cart"></a>
+                                                <a href="${siteurl}/products/${product.slug || product.id}" class="btn-product-icon w-icon-cart"></a>
                                                 <a href="#" onclick="addwishlist('${product.id}')" class="btn-product-icon btn-wishlist w-icon-heart"><span></span></a>
                                                 <a href="javascript:void(0)" onclick="showQuickView('${product.id}')" data-id="${product.id}" class="btn-product-icon btn-quickview w-icon-search"></a>
                                             </div>
                                         </figure>
                                         <div class="product-details">
                                             <div class="sold-by" style="margin-bottom: 2px;">
-                                                <a href="${siteurl}/shop-details/${product.vendor_id}" style="color: #0088dd; font-weight: 700; font-size: 1.3rem;">
+                                                <a href="${siteurl}/shop/${product.vendor_slug || product.vendor_id}" style="color: #0088dd; font-weight: 700; font-size: 1.3rem;">
                                                     ${product.shop_name || ''}
                                                 </a>
                                             </div>
                                             <h4 class="product-name" style="margin-bottom: 5px; font-weight: 500; font-size: 1.4rem;">
-                                                <a href="${siteurl}/productVar/${product.id}" style="color: #333; text-decoration: none;">
+                                                <a href="${siteurl}/products/${product.slug || product.id}" style="color: #333; text-decoration: none;">
                                                     ${product.product_name}
                                                 </a>
                                             </h4>

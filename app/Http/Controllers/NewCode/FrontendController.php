@@ -368,6 +368,13 @@ class FrontendController extends Controller
         return array_values(array_unique($images));
     }
 
+    public function vendorDetailsBySlug($slug)
+    {
+        $vendor = \DB::table('vendor_details')->where('slug', $slug)->first();
+        if (!$vendor) return redirect('home');
+        return $this->vendorDetails($vendor->id);
+    }
+
     public function vendorDetails($id)
     {
 
@@ -543,6 +550,7 @@ class FrontendController extends Controller
         }
         $productsData = $productsData->select(
             'p.id',
+            'p.slug',
             'p.vendor_id',
             'p.product_name',
             'p.product_image',
@@ -554,6 +562,7 @@ class FrontendController extends Controller
             'cs.category_sub_name',
             'cm.category_main_name',
             'vp.shop_name',
+            'vp.slug as vendor_slug',
             'vp.mobile_number1',
             'vp.profile_image',
             'pd.attributevalue2 as size',
@@ -570,6 +579,7 @@ class FrontendController extends Controller
             if (!isset($resultArr[$productId])) {
                 $resultArr[$productId] = [
                     'id' => $val->id,
+                    'slug' => $val->slug,
                     'vendor_id' => $val->vendor_id,
                     'product_name' => $val->product_name,
                     'product_image' => $val->product_image,
@@ -581,6 +591,7 @@ class FrontendController extends Controller
                     'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
                     'shop_name' => $val->shop_name,
+                    'vendor_slug' => $val->vendor_slug,
                     'mobile_number1' => $val->mobile_number1,
                     'profile_image' => $val->profile_image,
                     'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
@@ -614,6 +625,7 @@ class FrontendController extends Controller
         }
         $productsData = $productsData->select(
             'p.id',
+            'p.slug',
             'p.product_name',
             'p.description',
             'p.specification',
@@ -626,6 +638,7 @@ class FrontendController extends Controller
             'cs.category_sub_name',
             'cm.category_main_name',
             'vp.shop_name',
+            'vp.slug as vendor_slug',
             'vp.profile_image',
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
@@ -648,6 +661,7 @@ class FrontendController extends Controller
             if (!isset($resultArr[$productId])) {
                 $resultArr[$productId] = [
                     'id' => $val->id,
+                    'slug' => $val->slug,
                     'product_name' => $val->product_name,
                     'description' => $val->description,
                     'specification' => $val->specification,
@@ -657,6 +671,7 @@ class FrontendController extends Controller
                     'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
                     'shop_name' => $val->shop_name,
+                    'vendor_slug' => $val->vendor_slug,
                     'profile_image' => $val->profile_image,
                     'retail_price' => $val->retail_price,
                     'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
@@ -783,6 +798,7 @@ class FrontendController extends Controller
 
         $productsData = $productsData->select(
             'p.id',
+            'p.slug',
             'p.vendor_id',
             'p.product_name',
             'p.product_image',
@@ -794,6 +810,7 @@ class FrontendController extends Controller
             'cs.category_sub_name',
             'cm.category_main_name',
             'vp.shop_name',
+            'vp.slug as vendor_slug',
             'vp.profile_image',
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
@@ -808,6 +825,7 @@ class FrontendController extends Controller
             if (!isset($resultArr[$productId])) {
                 $resultArr[$productId] = [
                     'id' => $val->id,
+                    'slug' => $val->slug,
                     'vendor_id' => $val->vendor_id,
                     'product_name' => $val->product_name,
                     'product_image' => $val->product_image,
@@ -819,6 +837,7 @@ class FrontendController extends Controller
                     'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
                     'shop_name' => $val->shop_name,
+                    'vendor_slug' => $val->vendor_slug,
                     'profile_image' => $val->profile_image,
                     'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
                 ];
@@ -847,6 +866,7 @@ class FrontendController extends Controller
 
         $productsData = $productsData->select(
             'p.id',
+            'p.slug',
             'p.vendor_id',
             'p.product_name',
             'p.product_image',
@@ -858,6 +878,7 @@ class FrontendController extends Controller
             'cs.category_sub_name',
             'cm.category_main_name',
             'vp.shop_name',
+            'vp.slug as vendor_slug',
             'vp.profile_image',
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
@@ -872,6 +893,7 @@ class FrontendController extends Controller
             if (!isset($resultArr[$productId])) {
                 $resultArr[$productId] = [
                     'id' => $val->id,
+                    'slug' => $val->slug,
                     'vendor_id' => $val->vendor_id,
                     'product_name' => $val->product_name,
                     'product_image' => $val->product_image,
@@ -883,6 +905,7 @@ class FrontendController extends Controller
                     'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
                     'shop_name' => $val->shop_name,
+                    'vendor_slug' => $val->vendor_slug,
                     'profile_image' => $val->profile_image,
                     'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
                 ];
@@ -910,6 +933,7 @@ class FrontendController extends Controller
 
         $productsData = $productsData->select(
             'p.id',
+            'p.slug',
             'p.vendor_id',
             'p.product_name',
             'p.product_image',
@@ -921,6 +945,7 @@ class FrontendController extends Controller
             'cs.category_sub_name',
             'cm.category_main_name',
             'vp.shop_name',
+            'vp.slug as vendor_slug',
             'vp.profile_image',
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
@@ -935,6 +960,7 @@ class FrontendController extends Controller
             if (!isset($resultArr[$productId])) {
                 $resultArr[$productId] = [
                     'id' => $val->id,
+                    'slug' => $val->slug,
                     'vendor_id' => $val->vendor_id,
                     'product_name' => $val->product_name,
                     'product_image' => $val->product_image,
@@ -946,6 +972,7 @@ class FrontendController extends Controller
                     'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
                     'shop_name' => $val->shop_name,
+                    'vendor_slug' => $val->vendor_slug,
                     'profile_image' => $val->profile_image,
                     'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
                 ];
@@ -972,6 +999,7 @@ class FrontendController extends Controller
 
         $productsData = $productsData->select(
             'p.id',
+            'p.slug',
             'p.vendor_id',
             'p.product_name',
             'p.product_image',
@@ -983,6 +1011,7 @@ class FrontendController extends Controller
             'cs.category_sub_name',
             'cm.category_main_name',
             'vp.shop_name',
+            'vp.slug as vendor_slug',
             'vp.profile_image',
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
@@ -997,6 +1026,7 @@ class FrontendController extends Controller
             if (!isset($resultArr[$productId])) {
                 $resultArr[$productId] = [
                     'id' => $val->id,
+                    'slug' => $val->slug,
                     'vendor_id' => $val->vendor_id,
                     'product_name' => $val->product_name,
                     'product_image' => $val->product_image,
@@ -1008,6 +1038,7 @@ class FrontendController extends Controller
                     'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
                     'shop_name' => $val->shop_name,
+                    'vendor_slug' => $val->vendor_slug,
                     'profile_image' => $val->profile_image,
                     'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
                 ];
@@ -1054,14 +1085,17 @@ class FrontendController extends Controller
                 'auctions.start_price as retail_price',
                 'auctions.end_date as end_date',
                 'products.id as id',
+                'products.slug',
                 'products.product_name', 
                 'products.product_image',
                 'products.vendor_id',
-                'vendor_details.shop_name'
+                'vendor_details.shop_name',
+                'vendor_details.slug as vendor_slug'
             )
             ->where('auctions.status', 1)
             ->where('auctions.end_date', '>=', now())
-            ->groupBy('auctions.id', 'products.id', 'products.product_name', 'products.product_image', 'products.vendor_id', 'vendor_details.shop_name', 'auctions.bid_price', 'auctions.start_price', 'auctions.end_date')
+            ->groupBy('auctions.id', 'products.id', 'products.slug', 'products.product_name', 'products.product_image', 'products.vendor_id', 'vendor_details.shop_name',
+                'vendor_details.slug', 'auctions.bid_price', 'auctions.start_price', 'auctions.end_date')
             ->get();
 
         foreach ($auctionProducts as $auction) {
@@ -1294,6 +1328,21 @@ class FrontendController extends Controller
         return $products;
     }
 
+
+    /**
+     * SEO-friendly product page using slug URL.
+     * Resolves slug to product ID and delegates to productVar().
+     */
+    public function productBySlug($slug)
+    {
+        $product = \DB::table('products')->where('slug', $slug)->first();
+
+        if (!$product) {
+            return redirect('home');
+        }
+
+        return $this->productVar($product->id);
+    }
 
     public function productVar($id = '')
     {
@@ -1592,6 +1641,7 @@ class FrontendController extends Controller
             'cs.category_sub_name',
             'cm.category_main_name',
             'vp.shop_name',
+            'vp.slug as vendor_slug',
             'vp.profile_image',
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
@@ -1615,6 +1665,7 @@ class FrontendController extends Controller
                     'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
                     'shop_name' => $val->shop_name,
+                    'vendor_slug' => $val->vendor_slug,
                     'profile_image' => $val->profile_image,
                     'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
                 ];
@@ -1661,6 +1712,7 @@ class FrontendController extends Controller
             'cs.category_sub_name',
             'cm.category_main_name',
             'vp.shop_name',
+            'vp.slug as vendor_slug',
             'vp.profile_image',
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
@@ -1687,6 +1739,7 @@ class FrontendController extends Controller
                     'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
                     'shop_name' => $val->shop_name,
+                    'vendor_slug' => $val->vendor_slug,
                     'profile_image' => $val->profile_image,
                     'stock_qty' => (int) ($val->stock_qty ?? 0),
                     'low_stock_limit' => isset($val->low_stock_limit) ? (int) $val->low_stock_limit : null,
@@ -1739,6 +1792,7 @@ class FrontendController extends Controller
             'cs.category_sub_name',
             'cm.category_main_name',
             'vp.shop_name',
+            'vp.slug as vendor_slug',
             'vp.profile_image',
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
@@ -1797,6 +1851,7 @@ class FrontendController extends Controller
                     'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
                     'shop_name' => $val->shop_name,
+                    'vendor_slug' => $val->vendor_slug,
                     'profile_image' => $val->profile_image,
                     'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
                     'offer_text' => $offerText,
@@ -1808,6 +1863,29 @@ class FrontendController extends Controller
         return $resultArr;
     }
 
+
+    public function mainCategoryShopBySlug($slug)
+    {
+        $cat = \DB::table('category_main')->where('slug', $slug)->first();
+        if (!$cat) return redirect('home');
+        return $this->mainCategoryShop($cat->id);
+    }
+
+    public function categoryShopBySlug($category_slug, $sub_category_slug = '')
+    {
+        $cat = \DB::table('category')->where('slug', $category_slug)->first();
+        if (!$cat) return redirect('home');
+        
+        $subCatId = '';
+        if ($sub_category_slug) {
+            $subCat = \DB::table('category_sub')->where('slug', $sub_category_slug)->first();
+            if ($subCat) {
+                $subCatId = $subCat->id;
+            }
+        }
+        
+        return $this->categoryShop($cat->id, $subCatId);
+    }
 
     public function mainCategoryShop($main_category_id)
     {
@@ -2168,6 +2246,7 @@ class FrontendController extends Controller
                 'cs.category_sub_name',
                 'cm.category_main_name',
                 'vp.shop_name',
+            'vp.slug as vendor_slug',
                 'vp.profile_image',
                 'pd.attributevalue2 as size',
                 'pd.attributevalue1 as color',
@@ -2192,6 +2271,7 @@ class FrontendController extends Controller
                     'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
                     'shop_name' => $val->shop_name,
+                    'vendor_slug' => $val->vendor_slug,
                     'profile_image' => $val->profile_image,
                     'stock_qty' => (int) ($val->stock_qty ?? 0),
                     'low_stock_limit' => isset($val->low_stock_limit) ? (int) $val->low_stock_limit : null,
@@ -3548,6 +3628,7 @@ class FrontendController extends Controller
             'cs.category_sub_name',
             'cm.category_main_name',
             'vp.shop_name',
+            'vp.slug as vendor_slug',
             'vp.profile_image',
             'pd.attributevalue2 as size',
             'pd.attributevalue1 as color',
@@ -3611,6 +3692,7 @@ class FrontendController extends Controller
                     'category_sub_name' => $val->category_sub_name,
                     'category_main_name' => $val->category_main_name,
                     'shop_name' => $val->shop_name,
+                    'vendor_slug' => $val->vendor_slug,
                     'profile_image' => $val->profile_image,
                     'size' => $val->size,
                     'color' => $val->color,
@@ -3652,7 +3734,7 @@ class FrontendController extends Controller
     {
         $customer_id = Session::get('customer_id');
 
-        $wishlist = wishlist::select('ecom_wishlist.*', 'pr.product_name', 'pr.product_image', 'pd.product_detail_image', 'pd.retail_price', 'pd.selling_price')
+        $wishlist = wishlist::select('ecom_wishlist.*', 'pr.product_name', 'pr.product_image', 'pr.slug', 'pd.product_detail_image', 'pd.retail_price', 'pd.selling_price')
             ->leftJoin('products_details as pd', 'pd.id', '=', 'ecom_wishlist.ecom_product_id')
             ->leftJoin('products as pr', 'pd.products_id', '=', 'pr.product_id')
             ->where('ecom_wishlist.customer_id', '=', $customer_id)

@@ -9,10 +9,10 @@
                     <ul class="breadcrumb bb-no">
                       
                         <li><a href="{{ url('home')}}">Home</a></li>
-                        <li><a href="{{ url( 'mainCategoryShop/'.$main_category->id ) }}">  {{ $main_category->category_main_name  }} </a> </li>
-                        <li><a href="{{ url( 'categoryShop/'.$category->id ) }}">  {{$category->category_name  }} </a> </li>
+                        <li><a href="{{ url('main-category/' . ($main_category->slug ?? $main_category->id)) }}">  {{ $main_category->category_main_name  }} </a> </li>
+                        <li><a href="{{ url('category/' . ($category->slug ?? $category->id)) }}">  {{$category->category_name  }} </a> </li>
                         <?php  if(isset($sub_category)) {  ?>
-                            <li><a href="{{ url( 'categoryShop/'.$category->id.'/'.$sub_category->id ) }}">  {{$sub_category->category_sub_name  }} </a> </li>
+                            <li><a href="{{ url('category/' . ($category->slug ?? $category->id) . '/' . ($sub_category->slug ?? $sub_category->id)) }}">  {{$sub_category->category_sub_name  }} </a> </li>
 
                         <?php }  ?>
 
@@ -105,14 +105,14 @@
                                     <div class="swiper-slide category-wrap">
                                         <div class="category category-ellipse {{ (isset($sub_category) && $sub_category->id == $sc->id) ? 'sc-active' : '' }}">
                                             <center> <figure class="category-media">
-                                               <a href="{{ url( 'categoryShop/'.$sc->category_id.'/'.$sc->id ) }}">
+                                               <a href="{{ url('category/' . ($category->slug ?? $sc->category_id) . '/' . ($sc->slug ?? $sc->id)) }}">
                                                     <img src="{{  $sc->category_sub_image ? asset('assets/images/categorySub').'/'.$sc->category_sub_image  : ''}}" alt="Categroy"
                                                     style="background-color: #5C92C0;" />
                                                 </a>
                                             </figure></center>
                                             <div class="category-content">
                                                 <h4 class="category-name">
-                                                    <a href="{{ url( 'categoryShop/'.$sc->category_id.'/'.$sc->id ) }}">{{$sc->category_sub_name}}</a>
+                                                    <a href="{{ url('category/' . ($category->slug ?? $sc->category_id) . '/' . ($sc->slug ?? $sc->id)) }}">{{$sc->category_sub_name}}</a>
                                                 </h4>
                                             </div>
                                         </div>
@@ -371,7 +371,7 @@
                                 <div class="product-wrap">
                                     <div class="product text-center">
                                         <figure class="product-media">
-                                            <a href="${siteurl}/productVar/${product.id}">
+                                            <a href="${siteurl}/products/${product.slug || product.id}">
                                                 <img src="${siteurl}/assets/images/products/${product.product_image}" alt="${product.product_name}" width="300" height="200" />
                                             </a>
                                             ${product.offer_image ? `
@@ -390,7 +390,7 @@
                                                 <a href="${siteurl}/vendorDetails/${product.vendor_id}">${product.shop_name}</a>
                                             </div>
                                             <h3 class="product-name">
-                                                <a href="${siteurl}/productVar/${product.id}">${product.product_name}</a>
+                                                <a href="${siteurl}/products/${product.slug || product.id}">${product.product_name}</a>
                                             </h3>
                                             <div class="ratings-container">
                                                 <div class="ratings-full">

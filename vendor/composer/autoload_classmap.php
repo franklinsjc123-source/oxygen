@@ -114,6 +114,7 @@ return array(
     'App\\Http\\Controllers\\staff\\ProductsController\\AttributeController' => $baseDir . '/app/Http/Controllers/staff/ProductsController/AttributeController.php',
     'App\\Http\\Controllers\\staff\\ProductsController\\CollectionController' => $baseDir . '/app/Http/Controllers/staff/ProductsController/CollectionController.php',
     'App\\Http\\Controllers\\staff\\ProductsController\\ProductCollectionController' => $baseDir . '/app/Http/Controllers/staff/ProductsController/ProductCollectionController.php',
+    'App\\Http\\Controllers\\staff\\ProductsController\\ProductColorController' => $baseDir . '/app/Http/Controllers/staff/ProductsController/ProductColorController.php',
     'App\\Http\\Controllers\\staff\\ProductsController\\ProductsController' => $baseDir . '/app/Http/Controllers/staff/ProductsController/ProductsController.php',
     'App\\Http\\Controllers\\staff\\ProductsController\\SpecificationController' => $baseDir . '/app/Http/Controllers/staff/ProductsController/SpecificationController.php',
     'App\\Http\\Controllers\\staff\\SalesController' => $baseDir . '/app/Http/Controllers/staff/SalesController.php',

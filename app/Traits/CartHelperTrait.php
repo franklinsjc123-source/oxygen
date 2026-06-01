@@ -366,9 +366,10 @@ trait CartHelperTrait
             $effectiveUnitPrice = $qty > 0 ? ($offerMeta['payable_amount'] / $qty) : $unitPrice;
             $lineRaw = (float) $offerMeta['payable_amount'];
 
-            $taxMeta = DB::table('products')->where('id', $productId)->select('tax_id', 'gst_id')->first();
+            $taxMeta = DB::table('products')->where('id', $productId)->select('tax_id', 'gst_id', 'slug')->first();
             $taxRate = (float) ($taxMeta->gst_id ?? 0);
             $isTaxIncluded = ((int) ($taxMeta->tax_id ?? 1) === 1);
+            $productSlug = $taxMeta->slug ?? $productId;
 
             if ($isTaxIncluded) {
                 $lineTax = $taxRate > 0 ? ($lineRaw * $taxRate) / (100 + $taxRate) : 0.0;
@@ -391,6 +392,7 @@ trait CartHelperTrait
             $lines[] = [
                 'id' => $item->id,
                 'product_id' => $productId,
+                'slug' => $productSlug,
                 'detail_id' => (int) $detailId,
                 'name' => (string) ($item->name ?? 'Product'),
                 'image' => $item->attributes->image ?? null,

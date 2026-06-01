@@ -887,6 +887,7 @@ class ComposerStaticInitb46fe83d0cb27c02673a0058ed8b28ec
         'App\\Http\\Controllers\\staff\\ProductsController\\AttributeController' => __DIR__ . '/../..' . '/app/Http/Controllers/staff/ProductsController/AttributeController.php',
         'App\\Http\\Controllers\\staff\\ProductsController\\CollectionController' => __DIR__ . '/../..' . '/app/Http/Controllers/staff/ProductsController/CollectionController.php',
         'App\\Http\\Controllers\\staff\\ProductsController\\ProductCollectionController' => __DIR__ . '/../..' . '/app/Http/Controllers/staff/ProductsController/ProductCollectionController.php',
+        'App\\Http\\Controllers\\staff\\ProductsController\\ProductColorController' => __DIR__ . '/../..' . '/app/Http/Controllers/staff/ProductsController/ProductColorController.php',
         'App\\Http\\Controllers\\staff\\ProductsController\\ProductsController' => __DIR__ . '/../..' . '/app/Http/Controllers/staff/ProductsController/ProductsController.php',
         'App\\Http\\Controllers\\staff\\ProductsController\\SpecificationController' => __DIR__ . '/../..' . '/app/Http/Controllers/staff/ProductsController/SpecificationController.php',
         'App\\Http\\Controllers\\staff\\SalesController' => __DIR__ . '/../..' . '/app/Http/Controllers/staff/SalesController.php',

@@ -381,13 +381,13 @@
      @foreach ($checkoutSummary['lines'] ?? [] as $item)
      <div class="product product-list d-flex align-items-center">
      <figure class="product-media">
-     <a href="{{ route('productVar', [$item['product_id']]) }}">
+     <a href="{{ url('/products/' . ($item['slug'] ?? $item['product_id'])) }}">
      <img src="{{ asset('assets/images/products/' . ($item['image'] ?? '')) }}" alt="product">
      </a>
      </figure>
      <div class="product-details flex-grow-1">
      <div class="product-name">
-         <a href="{{ route('productVar', [$item['product_id']]) }}" class="text-dark">
+         <a href="{{ url('/products/' . ($item['slug'] ?? $item['product_id'])) }}" class="text-dark">
              {{ $item['name'] }}
          </a>
      </div>
@@ -447,7 +447,7 @@
      @foreach ($checkoutSummary['lines'] ?? [] as $item)
      <tr class="bb-no">
      <td class="product-name" style="word-break: break-word; white-space: normal; padding-right: 10px !important;">
-     <a href="{{ route('productVar', [$item['product_id']]) }}" class="text-dark">
+     <a href="{{ url('/products/' . ($item['slug'] ?? $item['product_id'])) }}" class="text-dark">
          {{ $item['name'] }}
      </a>
      <i class="fas fa-times"></i>

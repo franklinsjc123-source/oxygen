@@ -219,7 +219,7 @@
                      <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
                          <div class="product product-simple text-center">
                              <figure class="product-media">
-                                 <a href="<?= url('/productVar/' . $row['id']) ?>">
+                                 <a href="<?= url('/products/' . ($row['slug'] ?? $row['id'])) ?>">
                                      <img src="<?php echo asset('assets') ?>/images/products/<?= $row['product_image'] ?>" alt="Product" width="260"
                                          height="291" />
                                  </a>
@@ -241,9 +241,9 @@
                              </figure>
                              <div class="product-details">
                                  <div class="sold-by">
-                                     <b><a href="<?= url('/shop-details/' . $row['vendor_id']) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
+                                     <b><a href="<?= url('/shop/' . ($row['vendor_slug'] ?? $row['vendor_id'])) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
                                  </div>
-                                 <h4 class="product-name"><a href="<?= url('/productVar/' . $row['id']) ?>"><?= ucwords($row['product_name']) ?></a></h4>
+                                 <h4 class="product-name"><a href="<?= url('/products/' . ($row['slug'] ?? $row['id'])) ?>"><?= ucwords($row['product_name']) ?></a></h4>
 
                              </div>
                              <div class="ratings-container">
@@ -293,7 +293,7 @@
                     <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
                         <div class="product product-simple text-center">
                             <figure class="product-media">
-                                <a href="<?= url('/productVar/' . $row['id']) ?>">
+                                <a href="<?= url('/products/' . ($row['slug'] ?? $row['id'])) ?>">
                                     <img src="<?php echo asset('assets') ?>/images/products/<?= $row['product_image'] ?>" alt="Product" width="260"
                                         height="291" />
                                 </a>
@@ -315,9 +315,9 @@
                             </figure>
                             <div class="product-details">
                                 <div class="sold-by">
-                                    <b><a href="<?= url('/shop-details/' . $row['vendor_id']) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
+                                    <b><a href="<?= url('/shop/' . ($row['vendor_slug'] ?? $row['vendor_id'])) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
                                 </div>
-                                <h4 class="product-name"><a href="<?= url('/productVar/' . $row['id']) ?>"><?= ucwords($row['product_name']) ?></a></h4>
+                                <h4 class="product-name"><a href="<?= url('/products/' . ($row['slug'] ?? $row['id'])) ?>"><?= ucwords($row['product_name']) ?></a></h4>
 
                             </div>
                             <div class="ratings-container">
@@ -389,7 +389,7 @@
 
          <div class="title-link-wrapper mb-3">
              <h2 class="title mb-0 pt-2 pb-2">Mens Products</h2>
-             <a href="{{ url('mainCategoryShop').'/'.'1' }}" class="mb-0">More Products<i
+             <a href="{{ url('main-category/men') }}" class="mb-0">More Products<i
                      class="w-icon-long-arrow-right"></i></a>
          </div>
          <div class="row grid banner-product-wrapper mb-6">
@@ -398,7 +398,7 @@
                      <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
                          <div class="product product-simple text-center">
                              <figure class="product-media">
-                                 <a href="<?= url('/productVar/' . $row['id']) ?>">
+                                 <a href="<?= url('/products/' . ($row['slug'] ?? $row['id'])) ?>">
                                      <img src="<?php echo asset('assets') ?>/images/products/<?= $row['product_image'] ?>" alt="Product" width="260"
                                          height="291" />
                                  </a>
@@ -420,9 +420,9 @@
                              </figure>
                              <div class="product-details">
                                  <div class="sold-by">
-                                     <b><a href="<?= url('/shop-details/' . $row['vendor_id']) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
+                                     <b><a href="<?= url('/shop/' . ($row['vendor_slug'] ?? $row['vendor_id'])) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
                                  </div>
-                                 <h4 class="product-name"><a href="<?= url('/productVar/' . $row['id']) ?>"><?= ucwords($row['product_name']) ?></a></h4>
+                                 <h4 class="product-name"><a href="<?= url('/products/' . ($row['slug'] ?? $row['id'])) ?>"><?= ucwords($row['product_name']) ?></a></h4>
 
                              </div>
                              <div class="ratings-container">
@@ -464,7 +464,7 @@
 
          <div class="title-link-wrapper mb-3">
              <h2 class="title mb-0 pt-2 pb-2">Womens Products</h2>
-             <a href="{{ url('mainCategoryShop').'/'.'3' }}" class="mb-0">More Products<i
+             <a href="{{ url('main-category/women') }}" class="mb-0">More Products<i
                      class="w-icon-long-arrow-right"></i></a>
          </div>
          <div class="row grid banner-product-wrapper mb-6">
@@ -473,7 +473,7 @@
                      <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
                          <div class="product product-simple text-center">
                              <figure class="product-media">
-                                 <a href="<?= url('/productVar/' . $row['id']) ?>">
+                                 <a href="<?= url('/products/' . ($row['slug'] ?? $row['id'])) ?>">
                                      <img src="<?php echo asset('assets') ?>/images/products/<?= $row['product_image'] ?>" alt="Product" width="260"
                                          height="291" />
                                  </a>
@@ -495,9 +495,9 @@
                              </figure>
                              <div class="product-details">
                                  <div class="sold-by">
-                                     <b><a href="<?= url('/shop-details/' . $row['vendor_id']) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
+                                     <b><a href="<?= url('/shop/' . ($row['vendor_slug'] ?? $row['vendor_id'])) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
                                  </div>
-                                 <h4 class="product-name"><a href="<?= url('/productVar/' . $row['id']) ?>"><?= ucwords($row['product_name']) ?></a></h4>
+                                 <h4 class="product-name"><a href="<?= url('/products/' . ($row['slug'] ?? $row['id'])) ?>"><?= ucwords($row['product_name']) ?></a></h4>
 
                              </div>
                              <div class="ratings-container">
@@ -540,7 +540,7 @@
 
          <div class="title-link-wrapper mb-3">
              <h2 class="title mb-0 pt-2 pb-2">kids Products</h2>
-             <a href="{{ url('mainCategoryShop').'/'.'2' }}" class="mb-0">More Products<i
+             <a href="{{ url('main-category/kids') }}" class="mb-0">More Products<i
                      class="w-icon-long-arrow-right"></i></a>
          </div>
          <div class="row grid banner-product-wrapper mb-6">
@@ -549,7 +549,7 @@
                      <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
                          <div class="product product-simple text-center">
                              <figure class="product-media">
-                                 <a href="<?= url('/productVar/' . $row['id']) ?>">
+                                 <a href="<?= url('/products/' . ($row['slug'] ?? $row['id'])) ?>">
                                      <img src="<?php echo asset('assets') ?>/images/products/<?= $row['product_image'] ?>" alt="Product" width="260"
                                          height="291" />
                                  </a>
@@ -571,9 +571,9 @@
                              </figure>
                              <div class="product-details">
                                  <div class="sold-by">
-                                     <b><a href="<?= url('/shop-details/' . $row['vendor_id']) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
+                                     <b><a href="<?= url('/shop/' . ($row['vendor_slug'] ?? $row['vendor_id'])) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
                                  </div>
-                                 <h4 class="product-name"><a href="<?= url('/productVar/' . $row['id']) ?>"><?= ucwords($row['product_name']) ?></a></h4>
+                                 <h4 class="product-name"><a href="<?= url('/products/' . ($row['slug'] ?? $row['id'])) ?>"><?= ucwords($row['product_name']) ?></a></h4>
 
                              </div>
                              <div class="ratings-container">
@@ -671,7 +671,7 @@
                  @foreach($auctionProducts as $auction)
                  <div class="swiper-slide product product-simple text-center">
                      <figure class="product-media">
-                         <a href="{{ url('/productVar/' . $auction->id) }}">
+                         <a href="{{ url('/products/' . ($auction->slug ?? $auction->id)) }}">
                              <img src="{{ asset('assets/images/products/' . $auction->product_image) }}" alt="Product" width="260"
                                  height="291" />
                          </a>
@@ -696,9 +696,9 @@
                      </figure>
                      <div class="product-details">
                          <div class="sold-by">
-                             <b><a href="{{ url('/shop-details/' . $auction->vendor_id) }}">{{ $auction->shop_name ?? 'Admin' }}</a></b>
+                             <b><a href="{{ url('/shop/' . ($auction->vendor_slug ?? $auction->vendor_id)) }}">{{ $auction->shop_name ?? 'Admin' }}</a></b>
                          </div>
-                         <h4 class="product-name"><a href="{{ url('/productVar/' . $auction->id) }}">{{ ucwords($auction->product_name) }}</a></h4>
+                         <h4 class="product-name"><a href="{{ url('/products/' . ($auction->slug ?? $auction->id)) }}">{{ ucwords($auction->product_name) }}</a></h4>
 
                          <div class="ratings-container">
                              <div class="ratings-full">
@@ -870,7 +870,7 @@
                            
                          <div class="swiper-slide swiper-slide-vendor">
                             <figure class="vendor-figure">
-                                <a href="<?= url('/shop-details/' . $row['id']) ?>" class="vendor-img-link">
+                                <a href="<?= url('/shop/' . ($row['slug'] ?? $row['id'])) ?>" class="vendor-img-link">
                                     <span class="vendor-img-wrap">
                                         <img
                                             class="vendor-profile-img"

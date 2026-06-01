@@ -87,9 +87,33 @@ Route::post('/updateQty', [IndexController::class, 'updateQty'])->name('updateQt
 Route::post('/customCart', [FrontendController::class, 'customCart'])->name('customCart');
 Route::get('shops',[FrontendController::class,'shops'])->name('shops');
 Route::get('vendorDokenStore',[FrontendController::class,'vendorDokenStore'])->name('vendorDokenStore');
-Route::get('shop-details/{id}', [FrontendController::class, 'vendorDetails'])->name('shop-details');
+Route::get('shop/{slug}', [FrontendController::class, 'vendorDetailsBySlug'])->name('shop.show');
+
+Route::get('shop-details/{id}', function($id) {
+    $vendor = \DB::table('vendor_details')->where('id', $id)->first();
+    if ($vendor && $vendor->slug) {
+        return redirect()->route('shop.show', $vendor->slug, 301);
+    }
+    return redirect('home');
+})->name('shop-details');
 Route::get('home',[FrontendController::class,'home'])->name('home');
-Route::get('productVar/{id?}',[FrontendController::class,'productVar'])->name('productVar');
+Route::get('products/{slug}',[FrontendController::class,'productBySlug'])->name('product.show');
+// Legacy URL redirect: /productVar/123 → /products/slug (SEO redirect)
+Route::get('productVar/{id?}', function($id = '') {
+    $product = \DB::table('products')->where('id', $id)->first();
+    
+    if (!$product) {
+        $detail = \DB::table('products_details')->where('id', $id)->first();
+        if ($detail) {
+            $product = \DB::table('products')->where('id', $detail->products_id)->first();
+        }
+    }
+
+    if ($product && $product->slug) {
+        return redirect()->route('product.show', $product->slug, 301);
+    }
+    return redirect('home');
+})->name('productVar');
 Route::get('getSpecificProduct/{id?}',[FrontendController::class,'getProduct'])->name('getSpecificProduct');
 Route::get('getAllProduct/{id?}',[FrontendController::class,'getSpecificProduct'])->name('getAllProduct');
 Route::get('quickView/{id?}',[FrontendController::class,'quickView'])->name('quickView');
@@ -101,8 +125,29 @@ Route::get('/invoice-pdf/{id}', [FrontendController::class, 'downloadInvoice'])-
 
 Route::post('/rating/store',[FrontendController::class,'storeRating'])->name('rating.store');
 
-Route::get('/mainCategoryShop/{id}', [FrontendController::class, 'mainCategoryShop'])->name('mainCategoryShop');
-Route::get('categoryShop/{category_id}/{sub_category_id?}', [FrontendController::class, 'categoryShop'])->name('categoryShop');
+Route::get('/main-category/{slug}', [FrontendController::class, 'mainCategoryShopBySlug'])->name('mainCategoryShop.slug');
+Route::get('/category/{category_slug}/{sub_category_slug?}', [FrontendController::class, 'categoryShopBySlug'])->name('categoryShop.slug');
+
+Route::get('/mainCategoryShop/{id}', function($id) {
+    $cat = \DB::table('category_main')->where('id', $id)->first();
+    if ($cat && $cat->slug) {
+        return redirect()->route('mainCategoryShop.slug', $cat->slug, 301);
+    }
+    return redirect('home');
+})->name('mainCategoryShop');
+
+Route::get('categoryShop/{category_id}/{sub_category_id?}', function($category_id, $sub_category_id = null) {
+    $cat = \DB::table('category')->where('id', $category_id)->first();
+    if ($cat && $cat->slug) {
+        $subSlug = null;
+        if ($sub_category_id) {
+            $sub = \DB::table('category_sub')->where('id', $sub_category_id)->first();
+            $subSlug = $sub ? $sub->slug : null;
+        }
+        return redirect()->route('categoryShop.slug', ['category_slug' => $cat->slug, 'sub_category_slug' => $subSlug], 301);
+    }
+    return redirect('home');
+})->name('categoryShop');
 Route::get('get-filter-product/', [FrontendController::class, 'getFilterProducts'])->name('get-filter-product');
 Route::get('/myAccount', [FrontendController::class, 'myAccount'])->name('myAccount');
 Route::get('/myWallet', [FrontendController::class, 'myWallet'])->name('myWallet');

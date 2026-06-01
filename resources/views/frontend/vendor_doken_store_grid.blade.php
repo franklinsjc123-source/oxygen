@@ -94,7 +94,7 @@
                                <div class="store-header custom-split">
                                     <div class="store-left">
                                         <h4 class="store-title">
-                                            <a href="{{ url('/shop-details/'.$vendorcreate->id) }}">
+                                            <a href="{{ url('/shop/' . ($vendorcreate->slug ?? $vendorcreate->id)) }}">
                                                 {{ $vendorcreate->shop_name }}
                                             </a>
                                         </h4>
@@ -114,7 +114,7 @@
                                             
                                         </div>
                                     <!-- 
-                                        <a href="{{ url('/shop-details/'.$vendorcreate->id) }}" class="btn btn-dark mt-3">
+                                        <a href="{{ url('/shop/' . ($vendorcreate->slug ?? $vendorcreate->id)) }}" class="btn btn-dark mt-3">
                                             VISIT STORE
                                         </a> -->
                                     </div>
@@ -129,7 +129,7 @@
                                     <figure class="seller-brand">
                                         <img src="{{ asset('assets/images/vendor/profile/' . $vendorcreate->profile_image) }}" alt="Brand" width="80" height="80" />
                                     </figure>
-                                    <a href=" {{ url('/shop-details/'.$vendorcreate->id) }}" class="btn btn-dark btn-link btn-underline btn-icon-right btn-visit">
+                                    <a href=" {{ url('/shop/' . ($vendorcreate->slug ?? $vendorcreate->id)) }}" class="btn btn-dark btn-link btn-underline btn-icon-right btn-visit">
                                        <b>Visit Store</b> <i class="w-icon-long-arrow-right"></i></a>
                                 </div>
                             </div>

@@ -165,7 +165,7 @@
                            <h4 class="widget-title">Categories</h4>
                            <ul class="widget-body">
                                @foreach ($categorymain as $categoriesmain)
-                                   <li><a href="{{ url('mainCategoryShop/' . $categoriesmain->id) }}">
+                                   <li><a href="{{ url('main-category/' . ($categoriesmain->slug ?? $categoriesmain->id)) }}">
                                            {{ $categoriesmain->category_main_name }}</a></li>
                                @endforeach
                            </ul>
@@ -224,7 +224,7 @@
            <p>Offers</p>
        </a>
 
-       <a href="{{ url('mainCategoryShop/1') }}" class="sticky-link">
+       <a href="{{ url('main-category/men') }}" class="sticky-link">
            <i class="w-icon-grid"></i>
            <p>Products</p>
        </a>
@@ -273,7 +273,7 @@
                        @foreach ($categorymain as $categoriesmain)
                            @if (count($categoriesmain->submenu) > 0)
                                <li>
-                                   <a href="{{ url('mainCategoryShop/' . $categoriesmain->id) }}">
+                                   <a href="{{ url('main-category/' . ($categoriesmain->slug ?? $categoriesmain->id)) }}">
                                        {{ $categoriesmain->category_main_name }}
                                    </a>
                                    <ul>
@@ -281,11 +281,11 @@
                                            @if (count($submenus->childmenu) > 0)
                                                <li>
                                                    <a
-                                                       href="{{ url('categoryShop/' . $submenus->id) }}">{{ $submenus->category_name }}</a>
+                                                       href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
                                                    <ul>
                                                        @foreach ($submenus->childmenu as $childmenus)
                                                            <li><a
-                                                                   href="{{ url('categoryShop/' . $submenus->id . '/' . $childmenus->id) }}">{{ $childmenus->category_sub_name }}
+                                                                   href="{{ url('category/' . ($submenus->slug ?? $submenus->id) . '/' . ($childmenus->slug ?? $childmenus->id)) }}">{{ $childmenus->category_sub_name }}
                                                                </a>
                                                            </li>
                                                        @endforeach

@@ -74,7 +74,7 @@
                                         $shop_name = $vendor_detail ? $vendor_detail->shop_name : 'Admin';
                                      @endphp
                                      <div class="sold-by" style="margin-bottom: 2px;">
-                                         <a href="{{ url('/shop-details/' . ($vendor_id ?? '#')) }}" style="color: #0088dd; font-weight: 700; font-size: 1.3rem;">
+                                         <a href="{{ url('/shop/' . ($vendor_slug ?? $vendor_id ?? '#')) }}" style="color: #0088dd; font-weight: 700; font-size: 1.3rem;">
                                              {{ $shop_name }}
                                          </a>
                                      </div>

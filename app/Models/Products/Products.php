@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Category\Category;
 use App\Models\Category\CategorySub;
+use Illuminate\Support\Str;
 
 class Products extends Model
 {
@@ -26,6 +27,7 @@ class Products extends Model
         "category_main",
         "category_sub",
         "product_name",
+        "slug",
         "tax_id",
         "gst_id",
         "product_image",
@@ -42,6 +44,43 @@ class Products extends Model
         "status",
         "created_by"
     ];
+
+    /**
+     * Auto-generate slug from product_name on create/update.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($product) {
+            if (empty($product->slug)) {
+                $product->slug = static::generateUniqueSlug($product->product_name);
+            }
+        });
+
+        static::updating(function ($product) {
+            if ($product->isDirty('product_name') && !$product->isDirty('slug')) {
+                $product->slug = static::generateUniqueSlug($product->product_name, $product->id);
+            }
+        });
+    }
+
+    /**
+     * Generate a unique slug from a product name.
+     */
+    public static function generateUniqueSlug($name, $ignoreId = null)
+    {
+        $slug = Str::slug($name);
+        $originalSlug = $slug;
+        $counter = 1;
+
+        while (static::where('slug', $slug)->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
+        return $slug;
+    }
 
     public function CategoryMain()
     {

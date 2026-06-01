@@ -225,7 +225,7 @@
                              <div class="product-details" data-sticky-options="{'minWidth': 767}">
                                  <h1 class="product-title"><?php echo $prouctsList['product_name'] ?></h1>
                                  <div class="product-bm-wrapper">
-                                    <a href="{{ url('shop-details'). '/'.$getProduct['id'] }}">
+                                    <a href="{{ url('shop/' . ($vendor_details->slug ?? $vendor_details->id)) }}">
                                      <figure class="brand">
                                          <img src="<?php echo asset('assets/images/vendor/profile/' . $prouctsList['profile_image']) ?>" alt="Brand"
                                              width="60" height="50" />
@@ -233,7 +233,7 @@
                                       </a>
                                      <div class="product-meta">
                                          <div class="product-categories">
-                                            <b><span class="product-category"><a href="{{ url('shop-details'). '/'.$getProduct['id'] }}">
+                                            <b><span class="product-category"><a href="{{ url('shop/' . ($vendor_details->slug ?? $vendor_details->id)) }}">
                                                 <?php echo $vendor_details['shop_name'] ?></a></span></b> 
                                          </div>
                                          <div class="product-categories">
@@ -434,7 +434,7 @@
                                                     </figure>-->
                                         <div>
                                             <div class="vendor-name"><a
-                                                    href="{{ url('shop-details').'/'.$vendor_details->id }}" >{{ $vendor_details->owner_name }}</a>
+                                                    href="{{ url('shop/' . ($vendor_details->slug ?? $vendor_details->id)) }}" >{{ $vendor_details->owner_name }}</a>
                                             </div>
                                             <div class="ratings-container">
                                                 <div class="ratings-full">
@@ -465,7 +465,7 @@
                                         </li>
                                     </ul>
                                     
-                                          <a href="{{ url('shop-details').'/'.$vendor_details->id }}"
+                                          <a href="{{ url('shop/' . ($vendor_details->slug ?? $vendor_details->id)) }}"
                                         class="btn btn-dark btn-link btn-underline btn-icon-right"><h3> Visit Store <i class="w-icon-long-arrow-right"></i> </h3></a>
                                     
                                   

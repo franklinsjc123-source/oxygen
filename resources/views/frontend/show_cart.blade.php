@@ -6,7 +6,7 @@ if (isset($records) && count($records) > 0) {
 <tr>
     <td class="product-thumbnail align-middle">
         <div class="p-relative">
-            <a href="{{ url('/productVar/' . $row['product_id']) }}">
+            <a href="{{ url('/products/' . ($row['slug'] ?? $row['product_id'])) }}">
                 <figure>
                     <img src="<?= asset('assets/images/products/' . $image) ?>" alt="product" width="90" height="100">
                 </figure>
@@ -14,7 +14,7 @@ if (isset($records) && count($records) > 0) {
         </div>
     </td>
     <td class="product-name align-middle">
-        <a href="{{ url('/productVar/' . $row['product_id']) }}">
+        <a href="{{ url('/products/' . ($row['slug'] ?? $row['product_id'])) }}">
             {{ $row['name'] }}
         </a>
         @php

@@ -6,7 +6,7 @@
 <div class="product-wrap">
     <div class="product text-center">
         <figure class="product-media">
-            <a href="{{ url('/productVar/'.$product->id) }}">
+            <a href="{{ url('/products/'.($product->slug ?? $product->id)) }}">
                 <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product" />
             </a>
             @php
@@ -33,7 +33,7 @@
                 </div>
             @endif
             <div class="product-action-vertical">
-                <a href="{{ url('/productVar/'.$product->id) }}" class="btn-product-icon  w-icon-cart"></a>
+                <a href="{{ url('/products/'.($product->slug ?? $product->id)) }}" class="btn-product-icon  w-icon-cart"></a>
                 <a href="#" onclick="addwishlist('{{ $product->id }}')" class="btn-product-icon btn-wishlist w-icon-heart"><span></span></a>
                 <a href="#" onclick="showQuickView('{{ $product->id }}')" data-id="{{ $product->id }}" class="btn-product-icon btn-quickview w-icon-search"></a>
             </div>
@@ -42,13 +42,13 @@
          <div class="product-details">
              @if((isset($product->vendor_id) || isset($product->shop_name)) && !request()->routeIs('shop-details'))
                 <div class="sold-by" style="margin-bottom: 2px;">
-                    <a href="{{ url('/shop-details/' . ($product->vendor_id ?? '#')) }}" style="color: #0088dd; font-weight: 700; font-size: 1.3rem;">
+                    <a href="{{ url('/shop/' . ($product->vendor_slug ?? $product->vendor_id ?? '#')) }}" style="color: #0088dd; font-weight: 700; font-size: 1.3rem;">
                         {{ $product->shop_name ?? 'N/A' }}
                     </a>
                 </div>
              @endif
              <h4 class="product-name" style="margin-bottom: 5px; font-weight: 500; font-size: 1.4rem;">
-                 <a href="{{ url('/productVar/'.$product->id) }}" style="color: #333 text-decoration: none;">
+                 <a href="{{ url('/products/'.($product->slug ?? $product->id)) }}" style="color: #333 text-decoration: none;">
                     {{ $product->product_name }}
                  </a>
              </h4>

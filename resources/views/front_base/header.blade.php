@@ -816,7 +816,7 @@
                                             @foreach ($categorymain as $categoriesmain)
                                                 @if (count($categoriesmain->submenu) > 0)
                                                     <li>
-                                                        <a href="{{ url('mainCategoryShop/' . $categoriesmain->id) }}">
+                                                        <a href="{{ url('main-category/' . ($categoriesmain->slug ?? $categoriesmain->id)) }}">
 
                                                             {{ $categoriesmain->category_main_name }}
                                                         </a>
@@ -824,17 +824,17 @@
                                                             @foreach ($categoriesmain->submenu as $submenus)
                                                                 @if (count($submenus->childmenu) > 0)
                                                                     <li>
-                                                                        <a href="{{ url('categoryShop/' . $submenus->id) }}">{{ $submenus->category_name }}</a>
+                                                                        <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
                                                                         <hr class="divider">
                                                                         <ul>
                                                                             @foreach ($submenus->childmenu as $childmenus)
-                                                                                <li><a href="{{ url('categoryShop/' . $submenus->id . '/' . $childmenus->id) }}">{{ $childmenus->category_sub_name }}</a></li>
+                                                                                <li><a href="{{ url('category/' . ($submenus->slug ?? $submenus->id) . '/' . ($childmenus->slug ?? $childmenus->id)) }}">{{ $childmenus->category_sub_name }}</a></li>
                                                                             @endforeach
                                                                         </ul>
                                                                     </li>
                                                                 @else
                                                                     <li>
-                                                                        <a href="{{ url('categoryShop/' . $submenus->id) }}">{{ $submenus->category_name }}</a>
+                                                                        <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
                                                                     </li>
                                                                 @endif
                                                             @endforeach
@@ -844,7 +844,7 @@
                                                     </li>
                                                 @else
                                                     <li><a
-                                                            href="{{ url('mainCategoryShop/' . $categoriesmain->id) }}">{{ $categoriesmain->category_main_name }}</a>
+                                                            href="{{ url('main-category/' . ($categoriesmain->slug ?? $categoriesmain->id)) }}">{{ $categoriesmain->category_main_name }}</a>
                                                     </li>
                                                 @endif
                                             @endforeach
@@ -952,15 +952,15 @@
                                         </ul> --}}
                                         </li>
 
-                                        <li> <a href="{{ url('mainCategoryShop') . '/' . '1' }}"><i
+                                        <li> <a href="{{ url('main-category/men') }}"><i
                                                     class="w-icon-tshirt"></i> Men</a></li>
 
-                                        <li><a href="{{ url('mainCategoryShop') . '/' . '3' }}"><i
+                                        <li><a href="{{ url('main-category/women') }}"><i
                                                     class="w-icon-tshirt2"></i> Women</a></li>
 
-                                        <li><a href="{{ url('mainCategoryShop') . '/' . '2' }}"> <i
+                                        <li><a href="{{ url('main-category/kids') }}"> <i
                                                     class="w-icon-basketball"></i> Kids</a></li>
-                                        <li><a href="{{ url('mainCategoryShop') . '/' . '4' }}"> <i
+                                        <li><a href="{{ url('main-category/living-personalized') }}"> <i
                                                     class="w-icon-shopify"></i> Living</a></li>
                                         {{-- <li><a href="">Location</a></li> --}}
                                         {{-- <li >
