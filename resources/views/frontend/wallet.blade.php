@@ -19,7 +19,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="text-muted mb-2">Available Balance</div>
-                        <h2 class="mb-0">&#8377;{{ number_format($walletBalance ?? 0, 2) }}</h2>
+                        <h2 class="mb-0"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($walletBalance ?? 0, 2) }}</h2>
                     </div>
                 </div>
             </div>
@@ -48,7 +48,7 @@
                                                 <td>{{ $transaction->order_id }}</td>
                                                 <td>{{ $transaction->offer_title ?: 'Cashback' }}</td>
                                                 <td>{{ ucfirst($transaction->status ?? 'credited') }}</td>
-                                                <td>&#8377;{{ number_format((float) $transaction->amount, 2) }}</td>
+                                                <td><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format((float) $transaction->amount, 2) }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>

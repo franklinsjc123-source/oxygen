@@ -305,6 +305,12 @@
      </div>
      @endif
 
+     @if (!session()->has('customer_id'))
+     <div class="checkout-notice mt-3" style="cursor:pointer" onclick="showLoginPopup('{{ route('checkoutPage') }}')">
+         <i class="w-icon-coupon" style="font-size: 20px;"></i>
+         <span>Have a coupon? <a class="show-coupon" style="color: #0088dd; font-weight: 700; text-decoration: underline;">Click here to enter your code</a></span>
+     </div>
+     @else
      <div class="checkout-notice mt-3 coupon-toggle" style="cursor:pointer">
          <i class="w-icon-coupon" style="font-size: 20px;"></i>
          <span>Have a coupon? <a class="show-coupon">Click here to enter your code</a></span>
@@ -318,6 +324,7 @@
      value="Apply coupon">Apply Coupon</button>
      </div>
      </div>
+     @endif
      @php
          $hasCustomer = session()->has('customer_id');
          $hasAddress =
@@ -414,8 +421,8 @@
              $displayPrice = $item['unit_price'];
          }
      @endphp
-     <div class="price">&#8377;{{ number_format($displayPrice, 2) }}</div>
-     <div class="total">Total: <b>&#8377;{{ number_format($item['payable_amount'], 2) }}</b></div>
+     <div class="price"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($displayPrice, 2) }}</div>
+     <div class="total">Total: <b><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($item['payable_amount'], 2) }}</b></div>
      </div>
      </div>
       @endforeach
@@ -453,45 +460,45 @@
      | Free Qty: {{ $item['free_qty'] }}
      @endif
      @if (!empty($item['discount_amount']))
-     | Saved: &#8377;{{ number_format($item['discount_amount'], 2) }}
+     | Saved: <span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($item['discount_amount'], 2) }}
      @endif
      @if (!empty($item['cashback_amount']))
-     | Cashback: &#8377;{{ number_format($item['cashback_amount'], 2) }}
+     | Cashback: <span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($item['cashback_amount'], 2) }}
      @endif
      </div>
      @endif
      </td>
      <td class="product-total">
-     &#8377;{{ number_format($item['line_total'], 2) }}
+     <span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($item['line_total'], 2) }}
      </td>
      </tr>
      @endforeach
 
      <tr class="cart-subtotal bb-no">
      <td><b>Subtotal</b></td>
-     <td class="product-total"><b style="white-space: nowrap;">&#8377;{{ number_format($checkoutSummary['subtotal'] ?? $total, 2) }}</b>
+     <td class="product-total"><b style="white-space: nowrap;"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($checkoutSummary['subtotal'] ?? $total, 2) }}</b>
      </td>
      </tr>
      @if (($checkoutSummary['discount_total'] ?? 0) > 0)
      <tr class="cart-subtotal bb-no">
      <td><b>Offer Discount</b></td>
-     <td class="product-total"><b style="color: #10b981; white-space: nowrap;">-&#8377;{{ number_format($checkoutSummary['discount_total'], 2) }}</b>
+     <td class="product-total"><b style="color: #10b981; white-space: nowrap;">-<span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($checkoutSummary['discount_total'], 2) }}</b>
      </td>
      </tr>
      @endif
      <tr class="cart-subtotal bb-no">
      <td><b>Tax</b></td>
-     <td class="product-total"><b style="white-space: nowrap;">&#8377;{{ number_format($checkoutSummary['tax_total'] ?? 0, 2) }}</b>
+     <td class="product-total"><b style="white-space: nowrap;"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($checkoutSummary['tax_total'] ?? 0, 2) }}</b>
      </td>
      </tr>
      <tr class="cart-subtotal bb-no">
      <td><b>Delivery Charge</b></td>
-     <td class="product-total"><b style="white-space: nowrap;">&#8377;{{ number_format($checkoutSummary['delivery_charge'] ?? 0, 2) }}</b>
+     <td class="product-total"><b style="white-space: nowrap;"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($checkoutSummary['delivery_charge'] ?? 0, 2) }}</b>
      </td>
      </tr>
      <tr class="cart-subtotal bb-no">
      <td><b>Platform Fee</b></td>
-     <td class="product-total"><b style="white-space: nowrap;">&#8377;{{ number_format($checkoutSummary['platform_fee'] ?? 10.0, 2) }}</b>
+     <td class="product-total"><b style="white-space: nowrap;"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($checkoutSummary['platform_fee'] ?? 10.0, 2) }}</b>
      </td>
      </tr>
      </tbody>
@@ -501,7 +508,7 @@
      <b>Total</b>
      </th>
      <td>
-     <b>&#8377;{{ number_format($checkoutSummary['grand_total'] ?? $total, 2) }}</b>
+     <b><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($checkoutSummary['grand_total'] ?? $total, 2) }}</b>
      </td>
      </tr>
      @if (($checkoutSummary['cashback_total'] ?? 0) > 0)
@@ -510,7 +517,7 @@
      <b>Wallet Cashback</b>
      </th>
      <td>
-     <b>&#8377;{{ number_format($checkoutSummary['cashback_total'], 2) }}</b>
+     <b><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($checkoutSummary['cashback_total'], 2) }}</b>
      </td>
      </tr>
      @endif

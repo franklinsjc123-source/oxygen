@@ -40,7 +40,7 @@
         </figure>
 
          <div class="product-details">
-             @if(isset($product->vendor_id) || isset($product->shop_name))
+             @if((isset($product->vendor_id) || isset($product->shop_name)) && !request()->routeIs('shop-details'))
                 <div class="sold-by" style="margin-bottom: 2px;">
                     <a href="{{ url('/shop-details/' . ($product->vendor_id ?? '#')) }}" style="color: #0088dd; font-weight: 700; font-size: 1.3rem;">
                         {{ $product->shop_name ?? 'N/A' }}

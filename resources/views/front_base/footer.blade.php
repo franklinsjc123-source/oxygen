@@ -661,7 +661,8 @@
     <div class="login-register-popup mfp-hide">
         <div class="row w-100 m-0">
             <div class="col-md-12 mb-0 p-0">
-                <div class="login-popup">
+                <div class="login-popup" style="position: relative;">
+                   <button type="button" onclick="$.magnificPopup.close()" style="position: absolute; top: 12px; right: 16px; font-size: 28px; font-weight: 400; line-height: 1; color: #7cb8eb; background: transparent; border: none; cursor: pointer; transition: color 0.2s; z-index: 1045; padding: 0;" onmouseover="this.style.color='#0088dd'" onmouseout="this.style.color='#7cb8eb'" title="Close">&times;</button>
                    <div class="tab tab-nav-boxed tab-nav-center tab-nav-underline">
                        <ul class="nav nav-tabs text-uppercase" role="tablist">
                            <li class="nav-item">
@@ -689,12 +690,7 @@
 
                                        <i class="fa-solid fa-eye toggle-password" onclick="togglePassword()"></i>
                                    </div>
-                                   <div class="form-checkbox d-flex align-items-center justify-content-between mt-4">
-                                       <div>
-                                           <input type="checkbox" class="custom-checkbox" id="remember1"
-                                               name="remember1">
-                                           <label for="remember1" class="mb-0">Remember me</label>
-                                       </div>
+                                   <div class="form-checkbox d-flex align-items-center justify-content-end mt-4">
                                        <a href="javascript:void(0)" onclick="$('#forget-mail').click()">Lost your password?</a>
                                    </div>
 
