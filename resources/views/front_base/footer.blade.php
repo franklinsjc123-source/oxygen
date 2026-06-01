@@ -1080,8 +1080,6 @@
                            }
                        });
 
-                   } else {
-                       swal("Your Cart is safe!");
                    }
                });
        }
