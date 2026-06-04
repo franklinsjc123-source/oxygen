@@ -49,14 +49,13 @@
                         <div class="product-wrap">
                             <div class="product text-center">
                                 <figure class="product-media">
-                                    <a href="{{ url('products/' . ($product->slug ?? $product->id)) }}">
+                                    <a href="{{ route('auction.detail', $auct->id) }}">
                                         <img src="{{ asset('assets/images/products/'.$product->product_image) }}" alt="Product" />
                                     </a>
                                     
                                     <div class="product-action-vertical">
-                                        <a href="{{ url('products/' . ($product->slug ?? $product->id)) }}" class="btn-product-icon w-icon-cart"></a>
+                                        <a href="{{ route('auction.detail', $auct->id) }}" class="btn-product-icon w-icon-cart" title="Bid Now"></a>
                                         <a href="#" onclick="addwishlist('{{ $product->id }}')" class="btn-product-icon btn-wishlist w-icon-heart"><span></span></a>
-                                        <a href="#" onclick="showQuickView('{{ $product->id }}')" data-id="{{ $product->id }}" class="btn-product-icon btn-quickview w-icon-search"></a>
                                     </div>
                                     
                                     <div class="product-countdown-container">
@@ -79,7 +78,7 @@
                                          </a>
                                      </div>
                                      <h4 class="product-name" style="margin-bottom: 5px; font-weight: 500; font-size: 1.4rem;">
-                                         <a href="{{ url('products/' . ($product->slug ?? $product->id)) }}" style="color: #333; text-decoration: none;">
+                                         <a href="{{ route('auction.detail', $auct->id) }}" style="color: #333; text-decoration: none;">
                                             {{ $product->product_name }}
                                          </a>
                                      </h4>

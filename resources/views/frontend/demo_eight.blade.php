@@ -671,7 +671,7 @@
                  @foreach($auctionProducts as $auction)
                  <div class="swiper-slide product product-simple text-center">
                      <figure class="product-media">
-                         <a href="{{ url('/products/' . ($auction->slug ?? $auction->id)) }}">
+                         <a href="{{ route('auction.detail', $auction->auction_id) }}">
                              <img src="{{ asset('assets/images/products/' . $auction->product_image) }}" alt="Product" width="260"
                                  height="291" />
                          </a>
@@ -698,7 +698,7 @@
                          <div class="sold-by">
                              <b><a href="{{ url('/shop/' . ($auction->vendor_slug ?? $auction->vendor_id)) }}">{{ $auction->shop_name ?? 'Admin' }}</a></b>
                          </div>
-                         <h4 class="product-name"><a href="{{ url('/products/' . ($auction->slug ?? $auction->id)) }}">{{ ucwords($auction->product_name) }}</a></h4>
+                         <h4 class="product-name"><a href="{{ route('auction.detail', $auction->auction_id) }}">{{ ucwords($auction->product_name) }}</a></h4>
 
                          <div class="ratings-container">
                              <div class="ratings-full">

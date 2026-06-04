@@ -13,6 +13,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\NewCode\FrontendController;
 use App\Http\Controllers\NewCode\IndexController;
 use App\Http\Controllers\wishlistcontroller;
+use App\Http\Controllers\Website\AuctionController as AuctionWebController;
 use Laravel\Telescope\Http\Controllers\HomeController as ControllersHomeController;
 
 /*
@@ -226,6 +227,9 @@ Route::get('orderscancel/{ordid}', [AjaxGetProductController::class, 'orderscanc
 Route::post('rating', [AjaxGetProductController::class, 'rating'])->name('rating');
 
 Route::get('auction', [AjaxGetProductController::class, 'auction'])->name('auction');
+Route::get('auction/{id}/detail', [AuctionWebController::class, 'show'])->name('auction.detail');
+Route::post('auction/bid', [AuctionWebController::class, 'placeBid'])->name('auction.bid');
+Route::get('auction/{id}/bids', [AuctionWebController::class, 'getBids'])->name('auction.bids');
 
 /*Vendor all product*/
 
