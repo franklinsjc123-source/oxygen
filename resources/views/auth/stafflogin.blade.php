@@ -19,7 +19,6 @@
                                 <div class="portal-nav d-flex justify-content-center mb-4" style="background: #f1f2f6; padding: 5px; border-radius: 15px;">
                                     <a href="/admin/login" style="flex: 1; text-align: center; padding: 10px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 1rem; {{ request()->is('admin*') ? 'background: #fff; color: #1e3799; box-shadow: 0 2px 10px rgba(0,0,0,0.1);' : 'color: #747d8c;' }}">Admin</a>
                                     <a href="/staff/login" style="flex: 1; text-align: center; padding: 10px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 1rem; {{ request()->is('staff*') ? 'background: #fff; color: #1e3799; box-shadow: 0 2px 10px rgba(0,0,0,0.1);' : 'color: #747d8c;' }}">Staff</a>
-                                    <a href="/vendor/login" style="flex: 1; text-align: center; padding: 10px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 1rem; {{ request()->is('vendor*') ? 'background: #fff; color: #1e3799; box-shadow: 0 2px 10px rgba(0,0,0,0.1);' : 'color: #747d8c;' }}">Vendor</a>
                                 </div>
                                 @if(@$error)
                                     <h6 style="color:#ff4d4d;" class="text-center mb-2">{{ @$error }}</h6>

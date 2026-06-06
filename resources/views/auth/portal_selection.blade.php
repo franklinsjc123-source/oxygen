@@ -46,23 +46,6 @@
                     </a>
                 </div>
 
-                <!-- Vendor Card -->
-                <div class="col-md-4 mb-4">
-                    <a href="/vendor/login" style="text-decoration: none;">
-                        <div class="card portal-card h-100" style="border-radius: 20px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: all 0.3s ease; overflow: hidden; background: #fff;">
-                            <div class="card-body text-center p-5">
-                                <div class="icon-wrapper mb-4" style="width: 80px; height: 80px; background: rgba(255, 168, 1, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
-                                    <i class="fa fa-shuttle-van" style="font-size: 2.5rem; color: #ffa801;"></i>
-                                </div>
-                                <h3 style="font-weight: 700; color: #2d3436; margin-bottom: 15px;">Vendor</h3>
-                                <p style="color: #636e72;">Access for registered partners and product sellers.</p>
-                                <div class="mt-4">
-                                    <span class="btn" style="background: #ffa801; color: #fff; border-radius: 10px; padding: 10px 25px; font-weight: 600;">Enter Portal</span>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
             </div>
         </div>
     </div>
