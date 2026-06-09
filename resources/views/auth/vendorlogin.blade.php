@@ -45,7 +45,7 @@
 
                                     <div class="form-button text-center mt-1">
                                         <button type="submit" name="submit" class="btn w-100 mb-2" style="background: linear-gradient(90deg, #ffa801 0%, #ff5e57 100%); color: #fff; font-weight: 700; border-radius: 12px; padding: 10px; border: none; box-shadow: 0 4px 15px rgba(255, 168, 1, 0.3); text-transform: uppercase;">Login</button>
-                                        <button type="button" onclick="window.location.href='/admin';" class="btn w-100" style="background: #eee; color: #444; font-weight: 600; border-radius: 12px; padding: 10px; border: none; font-size: 0.9rem;">Cancel</button>
+                                        <button type="button"  class="btn w-100" style="background: #eee; color: #444; font-weight: 600; border-radius: 12px; padding: 10px; border: none; font-size: 0.9rem;">Cancel</button>
                                     </div>
 
                                 </form>
