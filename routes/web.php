@@ -21,7 +21,7 @@ Route::prefix('/vendor')->middleware('panel.session')->group(__DIR__.'/vendor/ve
 
 
 // Routes For Staff
-Route::prefix('/staff')->group(__DIR__.'/staff/staffRoutes.php');
+Route::prefix('/staff')->middleware('panel.session')->group(__DIR__.'/staff/staffRoutes.php');
 
 // Routes For Website
 //Route::prefix('/')->group(__DIR__.'/website/websiteRoutes.php');
