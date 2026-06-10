@@ -15,9 +15,9 @@
     }
     $vendorName = optional($vendorProfile)->shop_name ?: (optional($vendorProfile)->owner_name ?: (session()->get('username') ?: 'Vendor'));
     $vendorRole = optional($vendorProfile)->owner_name ?: 'Vendor Panel';
-    $vendorImage = optional($vendorProfile)->profile_image
+    $vendorImage = optional($vendorProfile)->profile_image && file_exists(public_path('assets/images/vendor/profile/' . $vendorProfile->profile_image))
         ? asset('assets/images/vendor/profile/' . $vendorProfile->profile_image)
-        : asset('assets/images/dashboard/man.png');
+        : asset('assets/images/dashboard/man.jpeg');
 @endphp
 <div class="page-sidebar">
     <div class="main-header-left d-none d-lg-block">

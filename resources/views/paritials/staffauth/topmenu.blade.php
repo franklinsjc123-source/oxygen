@@ -85,7 +85,7 @@
                     </li>
                 @endif
             @endforeach
-            <li><a href="{{ url('admin/logout') }}"><i data-feather="log-in"></i> <span class="text-label">Logout</span></a></li>
+            <li><a href="{{ url('staff/logout') }}"><i data-feather="log-in"></i> <span class="text-label">Logout</span></a></li>
         </ul>
     </div>
 </div>
@@ -153,16 +153,16 @@
                                     class="main-circle"></span></div>
                         </div>
                         <ul class="profile-dropdown onhover-show-div p-20 profile-dropdown-hover">
-                            <li><a href="#"><i data-feather="user"></i>Edit Profile</a></li>
-                            <li><a href="#"><i data-feather="mail"></i>Inbox</a></li>
-                            <li><a href="#"><i data-feather="lock"></i>Lock Screen</a></li>
-                            <li><a href="#"><i data-feather="settings"></i>Settings</a></li>
-                            <li><a href="index.php"><i data-feather="log-out"></i>Logout</a></li>
+                            {{-- <li><a href="#"><i data-feather="user"></i>Edit Profile</a></li> --}}
+                            {{-- <li><a href="#"><i data-feather="mail"></i>Inbox</a></li> --}}
+                            {{-- <li><a href="#"><i data-feather="lock"></i>Lock Screen</a></li> --}}
+                            {{-- <li><a href="#"><i data-feather="settings"></i>Settings</a></li> --}}
+                            <li><a href="{{ url('staff/logout') }}"><i data-feather="log-out"></i>Logout</a></li>
                         </ul>
                     </li>
                 </ul>
                 <div class="d-lg-none pull-right" style="display: flex; align-items: center;">
-                    <a href="{{ url('admin/logout') }}" style="color: #333; padding: 10px;">
+                    <a href="{{ url('staff/logout') }}" style="color: #333; padding: 10px;">
                         <i data-feather="log-out"></i>
                     </a>
                 </div>

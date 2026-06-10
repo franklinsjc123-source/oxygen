@@ -5,9 +5,9 @@
             ->where('id', session()->get('login_id'))->first();
     }
     $vName = optional($vendorProfile)->shop_name ?: (optional($vendorProfile)->owner_name ?: 'Vendor');
-    $vImg = optional($vendorProfile)->profile_image
+    $vImg = optional($vendorProfile)->profile_image && file_exists(public_path('assets/images/vendor/profile/' . $vendorProfile->profile_image))
         ? asset('assets/images/vendor/profile/' . $vendorProfile->profile_image)
-        : asset('assets/images/dashboard/man.png');
+        : asset('assets/images/dashboard/man.jpeg');
 @endphp
 <style>
 #sidebar-toggle {
@@ -112,7 +112,7 @@
                     <li><a href="{{ url('vendor/profile') }}">Profile</a></li>
                 </ul>
             </li>
-            <li><a href="{{ route('logout') }}"><i data-feather="log-out"></i> <span class="text-label">Logout</span></a></li>
+            <li><a href="{{ url('vendor/logout') }}"><i data-feather="log-out"></i> <span class="text-label">Logout</span></a></li>
             @endif
         </ul>
     </div>
@@ -176,21 +176,21 @@
                     <li class="onhover-dropdown">
                         <div class="media align-items-center"><img
                                 class="align-self-center pull-right img-30 rounded-circle blur-up lazyloaded"
-                                src="{{ asset('assets/images/dashboard/logo/fav.png') }}" alt="header-user">
+                                src="{{ asset('assets/images/dashboard/logo/4.png') }}" alt="header-user">
                             <div class="dotted-animation"><span class="animate-circle"></span><span
                                     class="main-circle"></span></div>
                         </div>
                         <ul class="profile-dropdown onhover-show-div p-20 profile-dropdown-hover">
-                            <li><a href="#"><i data-feather="user"></i>Edit Profile</a></li>
-                            <li><a href="#"><i data-feather="mail"></i>Inbox</a></li>
-                            <li><a href="#"><i data-feather="lock"></i>Lock Screen</a></li>
-                            <li><a href="#"><i data-feather="settings"></i>Settings</a></li>
-                            <li><a href="index.php"><i data-feather="log-out"></i>Logout</a></li>
+                            {{-- <li><a href="#"><i data-feather="user"></i>Edit Profile</a></li> --}}
+                            {{-- <li><a href="#"><i data-feather="mail"></i>Inbox</a></li> --}}
+                            {{-- <li><a href="#"><i data-feather="lock"></i>Lock Screen</a></li> --}}
+                            {{-- <li><a href="#"><i data-feather="settings"></i>Settings</a></li> --}}
+                            <li><a href="{{ url('vendor/logout') }}"><i data-feather="log-out"></i>Logout</a></li>
                         </ul>
                     </li>
                 </ul>
                 <div class="d-lg-none pull-right" style="display: flex; align-items: center;">
-                    <a href="{{ route('logout') }}" style="color: #333; padding: 10px;">
+                    <a href="{{ url('vendor/logout') }}" style="color: #333; padding: 10px;">
                         <i data-feather="log-out"></i>
                     </a>
                 </div>

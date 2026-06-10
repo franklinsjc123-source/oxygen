@@ -72,6 +72,7 @@ Route::get('login', function () {
 
 
 Route::post('login', [AuthController::class, 'stafflogin'])->name('stafflogin');
+Route::get('logout', [AuthController::class, 'logout'])->name('staff.logout');
 
 Route::get('add_designation', [AdminController::class, 'designation']);
 
