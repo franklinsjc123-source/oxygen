@@ -9,8 +9,13 @@
     <meta name="keywords" content="">
     <meta name="author" content="pixelstrap">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
+    @if(session('status') == 2)
+    <link rel="icon" href="{{ asset('assets/images/dashboard/logo/4.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('assets/images/dashboard/logo/4.png') }}" type="image/x-icon">
+    @else
     <link rel="icon" href="{{ asset('assets/images/dashboard/logo/fav.png') }}" type="image/x-icon">
     <link rel="shortcut icon" href="{{ asset('assets/images/dashboard/logo/fav.png') }}" type="image/x-icon">
+    @endif
     <title>oxygen</title>
 
     <!-- Google font-->
