@@ -50,6 +50,9 @@ use Illuminate\Support\Facades\Route;
                 <ul class="sidebar-submenu">
                     @foreach($sub_menus as $submenu)
                     @php
+                        if ($submenu->title == 'Vendor Product List' || $submenu->link == 'vendor_products.crud.listing') {
+                            continue;
+                        }
                         $canSeeSubmenu = false;
                         if ($staffroless) {
                             $canSeeSubmenu = in_array($submenu->id, explode(',', $staffroless->submenus));

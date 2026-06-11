@@ -76,6 +76,9 @@
                         <a href="#"><i data-feather="{{ $mm->font_icon }}"></i> <span class="text-label">{{ $mm->title }}</span> <span class="arr">&#10095;</span></a>
                         <ul class="sub">
                             @foreach($mob_subs as $sm)
+                                @if($sm->title == 'Vendor Product List' || $sm->link == 'vendor_products.crud.listing')
+                                    @continue
+                                @endif
                                 @php $canSee = $mob_sr ? in_array($sm->id, explode(',', $mob_sr->submenus)) : true; @endphp
                                 @if($canSee)
                                     <li><a href="{{ $sm->type=='route' ? route($sm->link) : url($sm->link) }}">{{ $sm->title }}</a></li>

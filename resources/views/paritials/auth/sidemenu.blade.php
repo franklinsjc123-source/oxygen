@@ -35,6 +35,9 @@
             <li><a class="sidebar-header" href="#"><i data-feather="{{$mainmenu->font_icon}}"></i> <span>{{$mainmenu->title}}</span><i class="fa fa-angle-right pull-right" style="float: right;"></i></a>
                 <ul class="sidebar-submenu">
                     @foreach($sub_menus as $submenu)
+                        @if($submenu->title == 'Vendor Product List' || $submenu->link == 'vendor_products.crud.listing')
+                            @continue
+                        @endif
 						@if($submenu->type=='route')
                         <li><a href="{{ route($submenu->link) }}"><i class="fa fa-circle"></i>{{$submenu->title}}</a></li>
 						@else
@@ -75,6 +78,9 @@
                 <ul class="sidebar-submenu">
                     @foreach($sub_menus as $submenu)
                     @php
+                        if ($submenu->title == 'Vendor Product List' || $submenu->link == 'vendor_products.crud.listing') {
+                            continue;
+                        }
                         $canSeeSubmenu = false;
                         if ($staffroless) {
                             $canSeeSubmenu = in_array($submenu->id, explode(',', $staffroless->submenus));
