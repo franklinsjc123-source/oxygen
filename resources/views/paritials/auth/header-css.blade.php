@@ -105,4 +105,9 @@
             justify-content: center !important;
         }
     }
+
+    /* Remove dotted column resizer drag guide border */
+    .JCLRgripDrag {
+        border-left: none !important;
+    }
 </style>
