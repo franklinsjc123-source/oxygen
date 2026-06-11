@@ -17,11 +17,7 @@
     <!-- Start of Page Content -->
     <div class="page-content mb-8 mt-5">
         <div class="container">
-            <div class="toolbox vendor-toolbox pb-0">
-                <div class="toolbox-left mb-4 mb-md-0">
-                    <h2><label class="d-block">Auction Products</label></h2>
-                </div>
-            </div>
+
 
             <div class="product-wrapper row cols-md-6 cols-sm-2 cols-2" id="productslist">
                 @foreach($auction as $auct)
