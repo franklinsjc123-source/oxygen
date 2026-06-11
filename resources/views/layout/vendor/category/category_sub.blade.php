@@ -106,7 +106,7 @@
     @endphp
     <div class="btn-popup pull-right">
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <form method="POST" action="{{ route('vendorsubcategory_mapping_update', $sub_category_viewdata->me_id) }}">
                         @csrf

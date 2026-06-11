@@ -340,7 +340,7 @@
                         <!-- -->
                         <!-- Modal -->
                             <div  class="modal fade" id="addtocart{{$productdetail->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
+                                <div class="modal-dialog modal-dialog-centered">
                                 <div style="background-color: #00FFAB;  border-radius: 25px;" class="modal-content">
                                     <div class="modal-header">
                                     <h5 class="modal-title" id="exampleModalLabel">Bid Amount</h5>

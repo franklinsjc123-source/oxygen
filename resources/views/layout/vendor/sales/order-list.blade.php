@@ -861,7 +861,7 @@
 
 
 <div id="quickview_product" class="modal fade" role="dialog">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
 
     <!-- Modal content-->
     <div class="modal-content">

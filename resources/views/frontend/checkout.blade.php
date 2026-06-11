@@ -576,7 +576,7 @@
 
      <div id="deliveryModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"
      style="display:none;">
-     <div class="modal-dialog modal-md" role="document">
+     <div class="modal-dialog modal-dialog-centered modal-md" role="document">
      <div class="modal-content">
      <div class="modal-header d-flex align-items-center justify-content-between">
      <h5 class="modal-title mb-0">Delivery Address</h5>

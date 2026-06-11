@@ -47,7 +47,7 @@
     <!-- Modal -->
     <div class="modal fade" id="divConfirm" tabindex="-1" role="dialog" aria-labelledby="divConfirmLabel"
         aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header alert alert-danger">
                     <button type="button" class="close close2" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -69,7 +69,7 @@
     <!-- modal Alert-->
     <div class="modal fade" id="divAlert" tabindex="-1" role="dialog" aria-labelledby="divAlertLabel"
         aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header alert alert-info">
                     <button type="button" class="close2" data-dismiss="modal" aria-hidden="true">&times;</button>

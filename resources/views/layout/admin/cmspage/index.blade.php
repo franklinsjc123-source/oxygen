@@ -114,7 +114,7 @@
 {{-- Edit Attribute --}}
 <div class="modal fade fcolor" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
 aria-hidden="true">
-	<div class="modal-dialog modal-lg" role="document">
+	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title f-w-600" id="exampleModalLabel">Update Attributes</h5>
@@ -172,7 +172,7 @@ aria-hidden="true">
 {{-- Edit Attribute --}}
 <div class="modal fade fcolor" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
 aria-hidden="true">
-	<div class="modal-dialog modal-lg" role="document">
+	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title f-w-600" id="exampleModalLabel">Selected Category</h5>
