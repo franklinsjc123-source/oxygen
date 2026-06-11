@@ -68,4 +68,41 @@
             padding: 20px 20px !important;
         }
     }
+
+    /* Fix Horizontal Overflow/Left-Right Scroll on Mobile */
+    html, body, .page-wrapper, .page-body-wrapper {
+        overflow-x: hidden !important;
+    }
+
+    /* Bootstrap Table Mobile Toolbar & Pagination Fix */
+    @media (max-width: 575.98px) {
+        .fixed-table-toolbar .search {
+            width: 100% !important;
+            float: none !important;
+            padding-left: 0 !important;
+            margin-bottom: 10px !important;
+        }
+        .fixed-table-toolbar .columns {
+            width: 100% !important;
+            float: none !important;
+            display: flex !important;
+            justify-content: flex-start !important;
+            margin-top: 5px !important;
+            margin-bottom: 10px !important;
+        }
+        .fixed-table-pagination .pagination-detail {
+            display: block !important;
+            margin-bottom: 10px !important;
+            float: none !important;
+            text-align: center !important;
+        }
+        .fixed-table-pagination div.pagination {
+            display: block !important;
+            float: none !important;
+            text-align: center !important;
+        }
+        .fixed-table-pagination div.pagination .pagination {
+            justify-content: center !important;
+        }
+    }
 </style>
