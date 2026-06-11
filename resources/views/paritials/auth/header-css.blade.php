@@ -58,4 +58,14 @@
             margin-left: 0 !important;
         }
     }
+
+    /* Modal Spacing and Padding for Mobile */
+    @media (max-width: 575.98px) {
+        .modal-dialog {
+            margin: 0.5rem 15px !important;
+        }
+        .modal-body {
+            padding: 20px 20px !important;
+        }
+    }
 </style>
