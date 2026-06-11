@@ -605,6 +605,30 @@
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.9; transform: scale(1.02); }
         }
+
+        /* ── Uniform Product Image Sizes ── */
+        .product-media > a > img {
+            width: 100% !important;
+            height: 220px !important;
+            object-fit: cover !important;
+            object-position: center !important;
+        }
+        @supports (aspect-ratio: 1/1) {
+            .product-media > a > img {
+                aspect-ratio: 260 / 291 !important;
+                height: auto !important;
+            }
+        }
+        @media (max-width: 768px) {
+            .product-media > a > img {
+                height: 185px !important;
+            }
+            @supports (aspect-ratio: 1/1) {
+                .product-media > a > img {
+                    height: auto !important;
+                }
+            }
+        }
     </style>
 
     <body>
