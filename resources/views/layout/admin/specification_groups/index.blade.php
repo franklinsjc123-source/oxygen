@@ -135,18 +135,20 @@
                         </label>
                     </td>
                    
-                    <td>
-                        <input type="hidden" id="attributes_val{{ $group->id }}" value="{{ $val}}">
-                    <button type="button" class="edit_attribute btn btn-secondary mx-1" data-bs-toggle="modal" data-original-title="Edit" value="{{$group->id}}" id="edit_attribute"> 
-                    <i class="fa fa-plus"></i> Specifications </button>
-                    <a href="{{ route('specification_groups.admin.edit', $group->id) }}" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-edit"></i></a>
-                         @if (session()->get('log_type') == 'Admin')
-                        {{-- <form action="{{ route('specification_groups.admin.destroy', $group->id) }}" onsubmit="return confirm('Are you sure, you want to delete it?')"method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" title="Delete">X</button>
-                        </form> --}}
-						@endif
+                    <td style="white-space: nowrap; width: 1%;">
+                        <div style="display: flex; gap: 5px; align-items: center;">
+                            <input type="hidden" id="attributes_val{{ $group->id }}" value="{{ $val}}">
+                            <button type="button" class="edit_attribute btn btn-secondary" data-bs-toggle="modal" data-original-title="Edit" value="{{$group->id}}" id="edit_attribute" style="margin: 0;"> 
+                            <i class="fa fa-plus"></i> Specifications </button>
+                            <a href="{{ route('specification_groups.admin.edit', $group->id) }}" class="btn btn-warning btn-sm" title="Edit" style="margin: 0;"><i class="fa fa-edit"></i></a>
+                             @if (session()->get('log_type') == 'Admin')
+                            {{-- <form action="{{ route('specification_groups.admin.destroy', $group->id) }}" onsubmit="return confirm('Are you sure, you want to delete it?')"method="POST" style="display:inline; margin: 0;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm" title="Delete" style="margin: 0;">X</button>
+                            </form> --}}
+                            @endif
+                        </div>
                     </td>
                 </tr>
             @endforeach
