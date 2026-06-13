@@ -44,8 +44,8 @@
             <!-- Container-fluid Ends-->
 
             <!-- Container-fluid starts-->
-            <div class="container">
-                <div class="col-sm-9">
+            <div class="container-fluid">
+                <div class="col-sm-12">
 
                     <div class="card">
 

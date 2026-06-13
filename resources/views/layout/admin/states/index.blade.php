@@ -26,7 +26,7 @@
 				<div class="row">
 					<div class="col-lg-6">
 						<div class="page-header-left">
-                            <h3>Activity Tracker
+                            <h3>State List
 								
 							</h3>
 						</div>
@@ -35,7 +35,7 @@
 						<ol class="breadcrumb pull-right">
                             <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
 							
-							<li class="breadcrumb-item active">Cities</li>
+							<li class="breadcrumb-item active">State List</li>
 						</ol>
 					</div>
 				</div>
@@ -96,7 +96,6 @@
 								
 								<!-- Table of States -->
 								<div class="mt-4">
-									<h3>State List</h3>
 									<table class="table" id="table"  data-click-to-select="true"  data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true"  data-show-refresh="true" data-key-events="true"  data-resizable="true" data-cookie="true"
 									data-show-export="true" data-click-to-select="true" data-toolbar="#toolbar">
 										<thead>

@@ -117,8 +117,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="card-body">
                                     <table class="table" id="table" data-click-to-select="true" data-sort-name="id"
                                         data-sort-order="asc" data-mobile-responsive="true" data-toggle="table"
                                         data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-columns="true"
@@ -159,9 +157,6 @@
                                                                 <!--END-->
                                                             </div>
                                                         </label>
-
-                                </div>
-
                                 </td>
 
 
@@ -190,8 +185,6 @@
 
                                 </tbody>
                                 </table>
-                            </div>
-
                         </div>
                     </div>
                 </div>

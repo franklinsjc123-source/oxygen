@@ -112,7 +112,7 @@
 										</td>
 										<td>
                                         {{ $tracker->reason }}
-										</td>p
+										</td>
 											<td>
 										<span class="badge border border-success text-success"> {{ $tracker->pipline }}</span>
 										</td>

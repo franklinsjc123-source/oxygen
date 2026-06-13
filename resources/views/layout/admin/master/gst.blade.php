@@ -120,7 +120,6 @@
                                 </div>
 
                                 {{-- Edit gst --}}
-                                <div class="card-body">
                                 
                                 <div class="btn-popup pull-right">
                                     <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog"
@@ -189,9 +188,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                                 {{-- End gdt --}}
-                                <div class="card-body">
                                     <table class="table" id="table" data-click-to-select="true" data-sort-name="id"
                                         data-sort-order="asc" data-mobile-responsive="true" data-toggle="table"
                                         data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-columns="true"
@@ -240,9 +237,6 @@
                                                                 <span class="on">Active</span>
                                                             </div>
                                                         </label>
-
-                                </div>
-
                                 </td>
 
 
@@ -276,7 +270,6 @@
 
                                 </tbody>
                                 </table>
-                            </div>
 
                         </div>
                     </div>

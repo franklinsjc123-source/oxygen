@@ -180,7 +180,38 @@
             }
         });
     </script>
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', 'a[href*="logout"], a[href*="customer-logout"], a[href*="userlogout"]', function(e) {
+                e.preventDefault();
+                var logoutUrl = $(this).attr('href');
+                
+                function performLogoutConfirm() {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You want to logout?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, logout!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = logoutUrl;
+                        }
+                    });
+                }
 
+                if (typeof Swal === 'undefined') {
+                    $.getScript('https://cdn.jsdelivr.net/npm/sweetalert2@11', function() {
+                        performLogoutConfirm();
+                    });
+                } else {
+                    performLogoutConfirm();
+                }
+            });
+        });
+    </script>
     </body>
 
     </html>

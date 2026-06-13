@@ -1,6 +1,5 @@
 @extends('layout.auth.master')
 @section('contents')
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async
           src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js">
   </script>
@@ -253,7 +252,7 @@
 											<th>++ Days</th>
 											<th>wallet</th>
 											<th>Commission</th>
-											<th>Description</th>
+											{{-- <th>Description</th> --}}
 											
 											
 											<th> Status</th>
@@ -278,7 +277,7 @@
 											<td>{{ $package->days }}</td>
 											<td>{{ $package->wallet }}</td>
 											<td>{{ $package->commission }}</td>
-											<td>{!! $package->description !!}</td>
+											{{-- <td>{!! $package->description !!}</td> --}}
 										
 										
 										
