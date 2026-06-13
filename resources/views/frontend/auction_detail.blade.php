@@ -67,6 +67,78 @@
         .msg-box { display: none; padding: 16px 20px; border-radius: 12px; margin-bottom: 20px; font-size: 15px; font-weight: 600; align-items: center; gap: 12px; }
         #bid-success-msg { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; display: none; }
         #bid-error-msg { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; display: none; }
+
+        /* Premium Specifications Table Styling */
+        .product-specs-table {
+            width: 100%;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        .product-specs-table tr {
+            transition: background-color 0.2s ease;
+        }
+
+        .product-specs-table tr:not(:last-child) {
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .product-specs-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .product-specs-table th.spec-label {
+            width: 30%;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            text-align: left;
+            background-color: #f8fafc;
+            border-right: 1px solid #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .product-specs-table td.spec-value {
+            padding: 8px 16px;
+            font-size: 13px;
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        /* Responsive styling for specifications */
+        @media (max-width: 768px) {
+            .product-specs-table {
+                border-radius: 8px;
+            }
+            .product-specs-table tr {
+                display: flex;
+                flex-direction: column;
+            }
+            .product-specs-table tr:not(:last-child) {
+                border-bottom: 1px solid #e2e8f0;
+            }
+            .product-specs-table th.spec-label {
+                width: 100%;
+                padding: 8px 12px 2px;
+                border-right: none;
+                background-color: transparent;
+                color: #64748b;
+                font-size: 11px;
+            }
+            .product-specs-table td.spec-value {
+                width: 100%;
+                padding: 2px 12px 8px;
+                font-size: 12px;
+            }
+        }
     </style>
 
     <div class="auction-page-wrapper">
@@ -224,10 +296,24 @@
                                  
                              </div>
                              <div class="tab-pane" id="product-tab-specification">
-                                 @foreach ($ProductSpecs as $spec)
-                                 <p>{{ $spec->specify_attribute }} : {{ $spec->specify_value }} </p>
-                                 @endforeach
-                             </div>
+                                  @if(count($ProductSpecs) > 0)
+                                      <table class="product-specs-table">
+                                          <tbody>
+                                              @foreach ($ProductSpecs as $spec)
+                                                  <tr>
+                                                      <th class="spec-label">{{ $spec->specify_attribute }}</th>
+                                                      <td class="spec-value">{{ $spec->specify_value }}</td>
+                                                  </tr>
+                                              @endforeach
+                                          </tbody>
+                                      </table>
+                                  @else
+                                      <div style="text-align: center; padding: 40px 20px; color: #64748b;">
+                                          <i class="w-icon-exclamation-circle" style="font-size: 32px; margin-bottom: 10px; display: block; color: #cbd5e1;"></i>
+                                          <span>No specifications available for this product.</span>
+                                      </div>
+                                  @endif
+                              </div>
                              <div class="tab-pane" id="product-tab-reviews">
                                  <div class="row mb-4">
                                      <div class="col-xl-4 col-lg-5 mb-4">
