@@ -136,6 +136,7 @@
                         <td><span class="mt-3 d-flex">
                             
                           <a href="{{ route('auction.edit', $item->id) }}" class="btn btn-secondary px-2"  ><i class="fa fa-pencil"></i> </a>
+                          <a href="javascript:void(0)" class="btn btn-info px-2 mx-1 view-bids-btn" onclick="openBidsModal({{ $item->id }})"><i class="fa fa-eye"></i></a>
                               @if (session()->get('log_type') == 'Admin')
 								  <form action="{{ route('auction.destroy', $item->id) }}"
                                 method="post">
@@ -160,6 +161,45 @@
             </div>
             <!-- Container-fluid Ends-->
 
+        </div>
+
+        <!-- Bid History Modal -->
+        <div id="bid-history-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 9999; justify-content: center; align-items: center; transition: opacity 0.3s ease; opacity: 0;">
+            <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); width: 95%; max-width: 550px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); overflow: hidden; transform: scale(0.9); transition: transform 0.3s ease; padding: 24px; position: relative;">
+                <!-- Close Button -->
+                <button onclick="closeBidsModal()" style="position: absolute; top: 20px; right: 20px; background: #f1f5f9; border: none; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #64748b; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='#e2e8f0'; this.style.color='#0f172a';" onmouseout="this.style.background='#f1f5f9'; this.style.color='#64748b';">
+                    <i class="fas fa-times"></i>
+                </button>
+
+                <!-- Header -->
+                <h4 style="margin: 0 0 16px 0; font-weight: 800; color: #0f172a; font-size: 20px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-history" style="color: #2563eb;"></i> Bid History
+                </h4>
+
+                <!-- Content Area -->
+                <div style="max-height: 350px; overflow-y: auto; padding-right: 4px; margin-top: 10px;">
+                    <div id="bid-history-loading" style="text-align: center; padding: 30px; color: #64748b;">
+                        <i class="fas fa-circle-notch fa-spin" style="font-size: 28px; color: #2563eb; margin-bottom: 12px; display: block;"></i>
+                        Loading bid history...
+                    </div>
+                    <table class="table" id="bid-history-table" style="display: none; width: 100%; border-collapse: collapse; margin-top: 5px;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
+                                <th style="padding: 12px 8px; color: #475569; font-weight: 700;">Bidder</th>
+                                <th style="padding: 12px 8px; color: #475569; font-weight: 700; text-align: right;">Amount</th>
+                                <th style="padding: 12px 8px; color: #475569; font-weight: 700; text-align: right;">Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bid-history-tbody">
+                            <!-- Bids injected here -->
+                        </tbody>
+                    </table>
+                    <div id="no-bids-message" style="display: none; text-align: center; padding: 30px; color: #64748b;">
+                        <i class="fas fa-gavel" style="font-size: 36px; color: #cbd5e1; margin-bottom: 12px; display: block;"></i>
+                        No bids have been placed yet.
+                    </div>
+                </div>
+            </div>
         </div>
 		
 @endsection
@@ -213,6 +253,88 @@ $(document).ready(function() {
             });
         }
     });
+});
+
+// ===================== BID HISTORY MODAL FUNCTIONS =====================
+function openBidsModal(auctionId) {
+    var modal = document.getElementById('bid-history-modal');
+    var loading = document.getElementById('bid-history-loading');
+    var table = document.getElementById('bid-history-table');
+    var noBids = document.getElementById('no-bids-message');
+    var tbody = document.getElementById('bid-history-tbody');
+    
+    // Show modal & loading
+    modal.style.display = 'flex';
+    setTimeout(function() {
+        modal.style.opacity = '1';
+        modal.firstElementChild.style.transform = 'scale(1)';
+    }, 10);
+    
+    loading.style.display = 'block';
+    table.style.display = 'none';
+    noBids.style.display = 'none';
+    tbody.innerHTML = '';
+    
+    var url = "{{ url('auction') }}/" + auctionId + "/bids";
+    fetch(url)
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        loading.style.display = 'none';
+        if (data.bids && data.bids.length > 0) {
+            table.style.display = 'table';
+            data.bids.forEach(function(bid) {
+                var tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid #f1f5f9';
+                
+                var tdName = document.createElement('td');
+                tdName.style.padding = '12px 8px';
+                tdName.style.fontWeight = '600';
+                tdName.style.color = '#1e293b';
+                tdName.textContent = bid.customer_name;
+                
+                var tdAmount = document.createElement('td');
+                tdAmount.style.padding = '12px 8px';
+                tdAmount.style.textAlign = 'right';
+                tdAmount.style.fontWeight = '700';
+                tdAmount.style.color = '#2563eb';
+                tdAmount.innerHTML = '<span style="font-family: Arial, sans-serif;">₹</span>' + parseFloat(bid.bid_amount).toLocaleString('en-IN', {minimumFractionDigits: 2});
+                
+                var tdTime = document.createElement('td');
+                tdTime.style.padding = '12px 8px';
+                tdTime.style.textAlign = 'right';
+                tdTime.style.color = '#64748b';
+                tdTime.style.fontSize = '13px';
+                tdTime.textContent = bid.time;
+                
+                tr.appendChild(tdName);
+                tr.appendChild(tdAmount);
+                tr.appendChild(tdTime);
+                tbody.appendChild(tr);
+            });
+        } else {
+            noBids.style.display = 'block';
+        }
+    })
+    .catch(function() {
+        loading.style.display = 'none';
+        noBids.style.display = 'block';
+        noBids.textContent = 'Failed to load bid history.';
+    });
+}
+
+function closeBidsModal() {
+    var modal = document.getElementById('bid-history-modal');
+    modal.style.opacity = '0';
+    modal.firstElementChild.style.transform = 'scale(0.9)';
+    setTimeout(function() { modal.style.display = 'none'; }, 300);
+}
+
+// Close modal when clicking outside of modal content
+window.addEventListener('click', function(event) {
+    var modal = document.getElementById('bid-history-modal');
+    if (event.target === modal) {
+        closeBidsModal();
+    }
 });
 </script>
 @endpush
