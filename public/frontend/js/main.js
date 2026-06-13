@@ -976,7 +976,14 @@ window.Wolmart = {};
                 // Split and created again for ie and edge
                 if (!$this.data('relative')) {
                     var untilDateArr = untilDate.split(", "), // data-until 2019, 10, 8 - yy,mm,dd
-                        newDate = new Date(untilDateArr[0], untilDateArr[1] - 1, untilDateArr[2]);
+                        newDate = new Date(
+                            parseInt(untilDateArr[0]),
+                            parseInt(untilDateArr[1]) - 1,
+                            parseInt(untilDateArr[2]),
+                            parseInt(untilDateArr[3] || 0),
+                            parseInt(untilDateArr[4] || 0),
+                            parseInt(untilDateArr[5] || 0)
+                        );
                 } else {
                     newDate = untilDate;
                 }

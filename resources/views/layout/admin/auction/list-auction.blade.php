@@ -105,8 +105,8 @@
                         <td>{{$loop->iteration }} / {{$item->admin_id}}</td>
                         <td>{{$item->start_price}}</td>
                         <td>{{$item->slab}}</td>
-                        <td>{{$item->start_date}}</td>
-                		<td>{{$item->end_date}}</td>
+                        <td>{{ $item->start_date ? date('d-m-Y h:i A', strtotime($item->start_date)) : '' }}</td>
+                		<td>{{ $item->end_date ? date('d-m-Y h:i A', strtotime($item->end_date)) : '' }}</td>
                     
                         <td>
                             <?php

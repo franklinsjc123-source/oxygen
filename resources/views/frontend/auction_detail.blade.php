@@ -139,6 +139,83 @@
                 font-size: 12px;
             }
         }
+        /* Bid History Modal Styles */
+        .tm-modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1050; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(15, 23, 42, 0.6); 
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .tm-modal.show {
+            display: flex;
+            opacity: 1;
+        }
+        .tm-modal-content {
+            background-color: #fff;
+            margin: auto;
+            padding: 32px;
+            border: 1px solid #e2e8f0;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .tm-modal.show .tm-modal-content {
+            transform: scale(1);
+        }
+        .tm-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+        }
+        .tm-modal-header h3 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .tm-modal-close {
+            color: #94a3b8;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+        .tm-modal-close:hover {
+            color: #0f172a;
+        }
+        .tm-history-table th {
+            font-size: 14px;
+            color: #475569;
+            font-weight: 700;
+            border-bottom: 2px solid #f1f5f9;
+            padding: 12px 8px;
+        }
+        .tm-history-table td {
+            font-size: 15px;
+            color: #0f172a;
+            border-bottom: 1px solid #f1f5f9;
+            padding: 12px 8px;
+        }
+        .tm-history-table tr:last-child td {
+            border-bottom: none;
+        }
     </style>
 
     <div class="auction-page-wrapper">
@@ -211,7 +288,16 @@
                         <div class="tm-bid-box">
                             <div class="tm-bid-box-inner">
                                 <div class="tm-current-bid-label">Current Highest Bid</div>
-                                <div class="tm-current-bid-value" id="current-bid-display"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($currentBid, 2) }}</div>
+                                <div class="tm-current-bid-value" id="current-bid-display" style="margin-bottom: 8px;"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($currentBid, 2) }}</div>
+                                @if(count($bidList) > 0)
+                                    <div id="highest-bidder-display" style="margin-bottom: 25px; display: flex; justify-content: center;">
+                                        <span style="background: #fef3c7; color: #92400e; border: 1px solid #fde68a; padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; text-transform: capitalize; box-shadow: 0 2px 10px rgba(217, 119, 6, 0.08);">
+                                            Highest Bidder: {{ $bidList[0]['customer_name'] }} <i class="fas fa-crown" style="color: #d97706;"></i>
+                                        </span>
+                                    </div>
+                                @else
+                                    <div id="highest-bidder-display" style="margin-bottom: 25px; display: none; justify-content: center;"></div>
+                                @endif
                                 
                                 <div id="bid-success-msg" class="msg-box"><i class="fas fa-check-circle"></i> <span></span></div>
                                 <div id="bid-error-msg" class="msg-box"><i class="fas fa-exclamation-circle"></i> <span></span></div>
@@ -242,12 +328,44 @@
                                 @endif
 
                                 @if($totalBids > 0)
-                                    <div class="tm-reserve-status"><i class="fas fa-check" style="margin-right: 4px;"></i> Reserve met</div>
-                                    <a href="javascript:void(0)" class="tm-bid-history-link" id="total-bids-text">{{ $totalBids }} bid{{ $totalBids > 1 ? 's' : '' }} so far – view history</a>
+
+                                    <a href="javascript:void(0)" class="tm-bid-history-link" id="total-bids-text" onclick="openHistoryModal()">{{ $totalBids }} bid{{ $totalBids > 1 ? 's' : '' }} so far – view history</a>
                                 @else
                                     <div class="tm-reserve-status" style="background: #f1f5f9; color: #475569;"><i class="fas fa-info-circle" style="margin-right: 4px;"></i> No bids yet</div>
                                     <div style="font-size: 15px; color: #64748b; margin-top: 8px; font-weight: 500;">Be the first to bid!</div>
                                 @endif
+                            </div>
+                        </div>
+
+                        <!-- Bid History Modal -->
+                        <div id="bid-history-modal" class="tm-modal">
+                            <div class="tm-modal-content">
+                                <div class="tm-modal-header">
+                                    <h3>Bid History (Past 5 Bids)</h3>
+                                    <span class="tm-modal-close" onclick="closeHistoryModal()">&times;</span>
+                                </div>
+                                <div class="tm-modal-body">
+                                    <div id="bid-history-loading" style="text-align: center; padding: 20px; color: #64748b;">
+                                        <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
+                                        <div>Loading history...</div>
+                                    </div>
+                                    <table class="tm-history-table" id="bid-history-table" style="display: none; width: 100%; border-collapse: collapse;">
+                                        <thead>
+                                            <tr style="border-bottom: 2px solid #f1f5f9; text-align: left;">
+                                                <th style="padding: 12px 8px; color: #475569; font-weight: 700;">Bidder</th>
+                                                <th style="padding: 12px 8px; color: #475569; font-weight: 700; text-align: right;">Amount</th>
+                                                <th style="padding: 12px 8px; color: #475569; font-weight: 700; text-align: right;">Time</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="bid-history-tbody">
+                                            <!-- Bids will be dynamically injected here -->
+                                        </tbody>
+                                    </table>
+                                    <div id="no-bids-message" style="display: none; text-align: center; padding: 30px; color: #64748b;">
+                                        <i class="fas fa-gavel" style="font-size: 36px; color: #cbd5e1; margin-bottom: 12px; display: block;"></i>
+                                        No bids have been placed yet.
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -1000,6 +1118,12 @@
 
                 document.getElementById('current-bid-display').innerHTML = '<span style="font-family: Arial, sans-serif;">₹</span>' + parseFloat(bidAmount).toLocaleString('en-IN', {minimumFractionDigits: 2});
                 
+                 var bidderEl = document.getElementById('highest-bidder-display');
+                 if (bidderEl && data.bid) {
+                     bidderEl.innerHTML = '<span style="background: #fef3c7; color: #92400e; border: 1px solid #fde68a; padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; text-transform: capitalize; box-shadow: 0 2px 10px rgba(217, 119, 6, 0.08);">Highest Bidder: ' + data.bid.customer_name + ' <i class="fas fa-crown" style="color: #d97706;"></i></span>';
+                     bidderEl.style.display = 'flex';
+                 }
+                
                 var totalBidsText = data.total_bids + ' bid' + (data.total_bids > 1 ? 's' : '') + ' so far – view history';
                 if(document.getElementById('total-bids-text')) {
                     document.getElementById('total-bids-text').textContent = totalBidsText;
@@ -1035,6 +1159,12 @@
         .then(function(data) {
             document.getElementById('current-bid-display').innerHTML = '<span style="font-family: Arial, sans-serif;">₹</span>' + parseFloat(data.current_bid).toLocaleString('en-IN', {minimumFractionDigits: 2});
             
+            var bidderEl = document.getElementById('highest-bidder-display');
+            if (bidderEl && data.bids && data.bids.length > 0) {
+                bidderEl.innerHTML = '<span style="background: #fef3c7; color: #92400e; border: 1px solid #fde68a; padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; text-transform: capitalize; box-shadow: 0 2px 10px rgba(217, 119, 6, 0.08);">Highest Bidder: ' + data.bids[0].customer_name + ' <i class="fas fa-crown" style="color: #d97706;"></i></span>';
+                bidderEl.style.display = 'flex';
+            }
+            
             if(document.getElementById('total-bids-text')) {
                 document.getElementById('total-bids-text').textContent = data.total_bids + ' bid' + (data.total_bids > 1 ? 's' : '') + ' so far – view history';
             }
@@ -1054,6 +1184,83 @@
         .catch(function() {});
     }, 5000);
     @endif
+ 
+    // ===================== BID HISTORY MODAL FUNCTIONS =====================
+    function openHistoryModal() {
+        var modal = document.getElementById('bid-history-modal');
+        var loading = document.getElementById('bid-history-loading');
+        var table = document.getElementById('bid-history-table');
+        var noBids = document.getElementById('no-bids-message');
+        var tbody = document.getElementById('bid-history-tbody');
+        
+        // Show modal & loading
+        modal.style.display = 'flex';
+        setTimeout(function() { modal.classList.add('show'); }, 10);
+        loading.style.display = 'block';
+        table.style.display = 'none';
+        noBids.style.display = 'none';
+        tbody.innerHTML = '';
+        
+        fetch("{{ route('auction.bids', $auction->id) }}")
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            loading.style.display = 'none';
+            if (data.bids && data.bids.length > 0) {
+                table.style.display = 'table';
+                // Take only the past 5 bids
+                var bidsToShow = data.bids.slice(0, 5);
+                bidsToShow.forEach(function(bid) {
+                    var tr = document.createElement('tr');
+                    
+                    var tdName = document.createElement('td');
+                    tdName.style.padding = '12px 8px';
+                    tdName.style.fontWeight = '600';
+                    tdName.style.color = '#1e293b';
+                    tdName.textContent = bid.customer_name;
+                    
+                    var tdAmount = document.createElement('td');
+                    tdAmount.style.padding = '12px 8px';
+                    tdAmount.style.textAlign = 'right';
+                    tdAmount.style.fontWeight = '700';
+                    tdAmount.style.color = '#2563eb';
+                    tdAmount.innerHTML = '<span style="font-family: Arial, sans-serif;">₹</span>' + parseFloat(bid.bid_amount).toLocaleString('en-IN', {minimumFractionDigits: 2});
+                    
+                    var tdTime = document.createElement('td');
+                    tdTime.style.padding = '12px 8px';
+                    tdTime.style.textAlign = 'right';
+                    tdTime.style.color = '#64748b';
+                    tdTime.style.fontSize = '13px';
+                    tdTime.textContent = bid.time;
+                    
+                    tr.appendChild(tdName);
+                    tr.appendChild(tdAmount);
+                    tr.appendChild(tdTime);
+                    tbody.appendChild(tr);
+                });
+            } else {
+                noBids.style.display = 'block';
+            }
+        })
+        .catch(function() {
+            loading.style.display = 'none';
+            noBids.style.display = 'block';
+            noBids.textContent = 'Failed to load bid history.';
+        });
+    }
+
+    function closeHistoryModal() {
+        var modal = document.getElementById('bid-history-modal');
+        modal.classList.remove('show');
+        setTimeout(function() { modal.style.display = 'none'; }, 300);
+    }
+    
+    // Close modal when clicking outside of modal content
+    window.addEventListener('click', function(event) {
+        var modal = document.getElementById('bid-history-modal');
+        if (event.target === modal) {
+            closeHistoryModal();
+        }
+    });
 </script>
 
 @endsection

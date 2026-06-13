@@ -307,9 +307,29 @@
                                    <h5>Starting  <span>Rs.{{$productdetail->start_price}}</span></h5>
                                   
                                    <div class="btn auction-btn btn-lg pt-2" data-bs-toggle="modal" data-bs-target="#addtocart{{$productdetail->id}}">Bid Now</div><br><br>
+                                   @php
+                                       $endDateStr = str_replace('T', ' ', $productdetail->end_date);
+                                       try {
+                                           $parsedDate = \Carbon\Carbon::parse($endDateStr);
+                                           $formattedForJs = $parsedDate->format('Y, n, j, G, i, s');
+                                           $isExpired = \Carbon\Carbon::now()->greaterThanOrEqualTo($parsedDate);
+                                       } catch (\Exception $e) {
+                                           $formattedForJs = '';
+                                           $isExpired = true;
+                                       }
+                                   @endphp
                                    <div>
-                                    <!--<p  style="font-size:20px;border-color:#009ffd;"id="demo"></p>-->
-                                   <p style="font-size:15px; font-weight:bold;margin-left: -10px;">Days  &nbsp  Hrs  &nbsp    Min &nbsp    Sec</p>
+                                       @if(!$isExpired && !empty($formattedForJs))
+                                           <div class="product-countdown countdown-compact" data-until="{{ $formattedForJs }}"
+                                               data-format="DHMS" data-compact="false" data-labels-short="Days, Hrs, Mins, Secs"
+                                               style="font-size:15px; font-weight:bold; margin-left: -10px; color:#009ffd; text-align: center;">
+                                               00 Days 00 Hrs 00 Min 00 Sec
+                                           </div>
+                                       @else
+                                           <div style="font-size:15px; font-weight:bold; margin-left: -10px; color:red; text-align: center;">
+                                               EXPIRED
+                                           </div>
+                                       @endif
                                    </div>
                                 </div>
                                 </div>
@@ -768,50 +788,60 @@
 
 
    
-	<script>
-    // Set the date we're counting down to
-    // var countDownDate = new Date("july 5, 2022 15:37:25").getTime();
-    
-    // // Update the count down every 1 second
-    // var x = setInterval(function() {
-    
-    //   // Get today's date and time
-    //   var now = new Date().getTime();
-        
-    //   // Find the distance between now and the count down date
-    //   var distance = countDownDate - now;
-        
-    //   // Time calculations for days, hours, minutes and seconds
-    //   var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    //   var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    //   var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    //   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        
-    //   // Output the result in an element with id="demo"
-    //   document.getElementById("demo").innerHTML = "&nbsp&nbsp"+days + "&nbsp&nbsp &nbsp  " + hours + "&nbsp &nbsp&nbsp  "
-    //   + minutes + "  &nbsp&nbsp&nbsp " + seconds + " &nbsp&nbsp&nbsp ";
-    //   document.getElementById("demo1").innerHTML = "&nbsp"+days + "&nbsp&nbsp &nbsp  " + hours + "&nbsp &nbsp&nbsp  "
-    //   + minutes + "  &nbsp&nbsp&nbsp " + seconds + " &nbsp&nbsp&nbsp ";
-    //   document.getElementById("demo2").innerHTML = "&nbsp"+days + "&nbsp&nbsp &nbsp  " + hours + "&nbsp &nbsp&nbsp  "
-    //   + minutes + "  &nbsp&nbsp&nbsp " + seconds + " &nbsp&nbsp&nbsp ";
-    //   document.getElementById("demo3").innerHTML = "&nbsp"+days + "&nbsp&nbsp &nbsp  " + hours + "&nbsp &nbsp&nbsp  "
-    //   + minutes + "  &nbsp&nbsp&nbsp " + seconds + " &nbsp&nbsp&nbsp ";
-    //     document.getElementById("demo4").innerHTML ="&nbsp"+days + "&nbsp&nbsp &nbsp  " + hours + "&nbsp &nbsp&nbsp  "
-    //   + minutes + "  &nbsp&nbsp&nbsp " + seconds + " &nbsp&nbsp&nbsp ";
-    //   document.getElementById("demo5").innerHTML = "&nbsp"+days + "&nbsp&nbsp &nbsp  " + hours + "&nbsp &nbsp&nbsp  "
-    //   + minutes + "  &nbsp&nbsp&nbsp " + seconds + " &nbsp&nbsp&nbsp ";
-    //   // If the count down is over, write some text 
-    //   if (distance < 0) {
-    //     clearInterval(x);
-    //     document.getElementById("demo").innerHTML = "EXPIRED";
-    // 	 document.getElementById("demo1").innerHTML = "EXPIRED";
-    // 	  document.getElementById("demo2").innerHTML = "EXPIRED";
-    // 	   document.getElementById("demo3").innerHTML = "EXPIRED";
-    // 	    document.getElementById("demo4").innerHTML = "EXPIRED";
-    // 		 document.getElementById("demo5").innerHTML = "EXPIRED";
-    //   }
-    // }, 1000);
-</script>
+    <script>
+        window.Wolmart = window.Wolmart || {};
+        Wolmart.countDown = function (selector) {
+            $(selector).each(function () {
+                var $this = $(this);
+                var untilDate = $this.data('until');
+                if (!untilDate) return;
+                
+                var untilDateArr = untilDate.split(", ");
+                if (untilDateArr.length < 3) return;
+                
+                var year = parseInt(untilDateArr[0]);
+                var month = parseInt(untilDateArr[1]) - 1;
+                var day = parseInt(untilDateArr[2]);
+                var hour = parseInt(untilDateArr[3] || 0);
+                var minute = parseInt(untilDateArr[4] || 0);
+                var second = parseInt(untilDateArr[5] || 0);
+                
+                var targetDate = new Date(year, month, day, hour, minute, second);
+                
+                var updateTimer = function () {
+                    var now = new Date();
+                    var distance = targetDate.getTime() - now.getTime();
+                    
+                    if (distance < 0) {
+                        $this.html("<span style='color:red; font-weight:bold;'>EXPIRED</span>");
+                        clearInterval(intervalId);
+                        return;
+                    }
+                    
+                    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    
+                    var pad = function (num) { return num < 10 ? '0' + num : num; };
+                    
+                    $this.html(
+                        pad(days) + " Days " +
+                        pad(hours) + " Hrs " +
+                        pad(minutes) + " Min " +
+                        pad(seconds) + " Sec"
+                    );
+                };
+                
+                updateTimer();
+                var intervalId = setInterval(updateTimer, 1000);
+            });
+        };
+
+        $(document).ready(function() {
+            Wolmart.countDown('.product-countdown');
+        });
+    </script>
 <script>
         function myFunction(data,nextval, nextval2, nextval3, nextval4, nextval5 ) {
             

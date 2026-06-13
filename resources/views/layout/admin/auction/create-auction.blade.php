@@ -71,19 +71,7 @@
 										</div>
 									@endif
 									<div class="row ">
-										<div class="col-md-6">
-											<div class="form-group row">
-												<label for="validationCustom1" class="col-xl-4 col-md-4">Select Product
-													Type</label>
-												<div class="col-xl-8 col-md-8">
-													<select class="form-control" id="validationCustom1" type="text"
-														name="product_type" required="">
-														<option value="1">Admin Products</option>
-														<option value="2">Vendor Products</option>
-													</select>
-												</div>
-											</div>
-										</div>
+										<input type="hidden" name="product_type" value="1">
 										<div class="col-md-6">
 											<div class="form-group row ">
 												<label for="validationCustom1" class="col-xl-4 col-md-4">Product ID</label>
