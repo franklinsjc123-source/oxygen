@@ -50,7 +50,9 @@ class AuctionController extends Controller
             if (is_array($decoded)) {
                 foreach ($decoded as $img) {
                     if (!empty($img)) {
-                        $productImages[] = $img;
+                        if (file_exists(public_path('assets/images/products/detail/' . $img))) {
+                            $productImages[] = $img;
+                        }
                     }
                 }
             }
