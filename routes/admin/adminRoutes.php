@@ -267,6 +267,7 @@ Route::resource('auction', AuctionController::class, ['names' => 'auction']);
 //  Route::get('auction/create', [AuctionController::class, 'create'])->name('auction/create');
 
 Route::get('auction_list', [AuctionController::class, 'list'])->name('auction/list');
+Route::get('live_auction', [AuctionController::class, 'live_list'])->name('auction/live');
 
 Route::controller(AuctionController::class)->group(function(){
 

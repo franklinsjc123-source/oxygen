@@ -49,7 +49,9 @@
                            
                             <div class="card-body">
                                 
+                          @if(!isset($title) || $title !== 'Live Auction')
                           <a href="{{route('auction.create')}}" class="btn mb-4 btn-primary"><i class="fa fa-plus"></i> Add Auction </a> 
+                          @endif
                           @if ($errors->any())
                           <div class="alert alert-danger">
                               <ul>
@@ -59,6 +61,7 @@
                               </ul>
                           </div>
                       @endif
+                                    @if(!isset($title) || $title !== 'Live Auction')
                                     <div class="card-body">
                                         <form action="{{ route('import') }}"
                                               method="POST"
@@ -79,6 +82,7 @@
                                               </a> --}}
                                         </form>
                                     </div>
+                                    @endif
 
                             <div class="datatable-dashv1-list custom-datatable-overright">
 
@@ -88,12 +92,14 @@
 
                     <thead>
                      <tr>
-                        <th data-field="id" data-sortable="true">Id / Admin_Id</th>                     
+                        <th data-field="product_name" data-sortable="true">Product Name</th>
                         <th data-field="sprice" data-sortable="true">Starting Price</th>
                         <th data-field="slab" data-sortable="true">SLAB</th> 
                     	<th data-field="so" data-sortable="true">Stat Offer</th>                    
                     	<th data-field="eo" data-sortable="true">End Offer</th>
+                       @if(!isset($title) || $title !== 'Live Auction')
                        <th data-field="status" data-sortable="true">Status</th>
+                       @endif
                        <th>Action</th>
                     </tr>
                     </thead>
@@ -102,12 +108,13 @@
 
                     @foreach ( $auction as $item)
                     <tr>
-                        <td>{{$loop->iteration }} / {{$item->admin_id}}</td>
+                        <td>{{ $item->product->product_name ?? 'N/A' }}</td>
                         <td>{{$item->start_price}}</td>
                         <td>{{$item->slab}}</td>
                         <td>{{ $item->start_date ? date('d-m-Y h:i A', strtotime($item->start_date)) : '' }}</td>
                 		<td>{{ $item->end_date ? date('d-m-Y h:i A', strtotime($item->end_date)) : '' }}</td>
                     
+                        @if(!isset($title) || $title !== 'Live Auction')
                         <td>
                             <?php
                                 $sd = $item->start_date;
@@ -132,11 +139,19 @@
                         </label>                    
                         </div>                    
                         </td>
+                        @endif
 
                         <td><span class="mt-3 d-flex">
                             
+                          @if(!isset($title) || $title !== 'Live Auction')
                           <a href="{{ route('auction.edit', $item->id) }}" class="btn btn-secondary px-2"  ><i class="fa fa-pencil"></i> </a>
-                          <a href="javascript:void(0)" class="btn btn-info px-2 mx-1 view-bids-btn" onclick="openBidsModal({{ $item->id }})"><i class="fa fa-eye"></i></a>
+                          @endif
+
+                          @if(isset($title) && $title === 'Live Auction')
+                          <a href="javascript:void(0)" class="btn btn-info px-3 mx-1 view-bids-btn" onclick="openBidsModal({{ $item->id }})"><i class="fa fa-eye"></i> View Bids</a>
+                          @endif
+
+                          @if(!isset($title) || $title !== 'Live Auction')
                               @if (session()->get('log_type') == 'Admin')
 								  <form action="{{ route('auction.destroy', $item->id) }}"
                                 method="post">
@@ -146,8 +161,10 @@
                                         class="fa fa-trash"></i>                                        
                                 </button>                        
                             </form>
-							@endif
-                            </tr>
+							  @endif
+                          @endif
+                            </span></td>
+                        </tr>
                     @endforeach 
                 </tbody>
                 </table>
@@ -185,9 +202,9 @@
                     <table class="table" id="bid-history-table" style="display: none; width: 100%; border-collapse: collapse; margin-top: 5px;">
                         <thead>
                             <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
-                                <th style="padding: 12px 8px; color: #475569; font-weight: 700;">Bidder</th>
-                                <th style="padding: 12px 8px; color: #475569; font-weight: 700; text-align: right;">Amount</th>
-                                <th style="padding: 12px 8px; color: #475569; font-weight: 700; text-align: right;">Time</th>
+                                <th style="padding: 12px 8px; color: #ffffff !important; font-weight: 700;">Bidder</th>
+                                <th style="padding: 12px 8px; color: #ffffff !important; font-weight: 700; text-align: right;">Amount</th>
+                                <th style="padding: 12px 8px; color: #ffffff !important; font-weight: 700; text-align: right;">Time</th>
                             </tr>
                         </thead>
                         <tbody id="bid-history-tbody">

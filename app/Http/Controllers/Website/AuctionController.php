@@ -33,7 +33,7 @@ class AuctionController extends Controller
         }
 
         // Get product details
-        $product = Products::where('id', $auction->product_id)->first();
+        $product = $auction->product;
 
         if (!$product) {
             return redirect()->route('auction')->with('error', 'Product not found.');

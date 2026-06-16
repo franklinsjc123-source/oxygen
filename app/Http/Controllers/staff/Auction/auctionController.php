@@ -191,7 +191,7 @@ class auctionController extends Controller
 			$time = $dt->format('H:i:s');
             $date    = "$dat$t$time";
 
-        $auction   =  auction::all();
+        $auction   =  auction::with('product')->get();
 
         return view('layout.staff.auction.list-auction')
         ->with([
@@ -238,4 +238,27 @@ class auctionController extends Controller
         }
     }
 
+    public function live_list()
+    {
+        date_default_timezone_set('GMT');
+        $dt = new DateTime('Asia/Kolkata');
+        $t = "T";
+        $dat = $dt->format('Y-m-d');
+        $time = $dt->format('H:i:s');
+        $date = "$dat$t$time";
+
+        $auction = auction::with('product')
+            ->where('status', 1)
+            ->where('start_date', '<=', $date)
+            ->where('end_date', '>=', $date)
+            ->get();
+
+        return view('layout.staff.auction.list-auction')
+        ->with([
+            "auction" => $auction,
+            "date" => $date,
+            "time" => $time,
+            "title" => "Live Auction"
+        ]);
+    }
 }

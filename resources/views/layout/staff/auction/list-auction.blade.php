@@ -28,7 +28,7 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="page-header-left">
-                                <h3>List Auction
+                                <h3>{{ $title ?? 'List Auction' }}
                                   
                                 </h3>
                             </div>
@@ -36,7 +36,7 @@
                         <div class="col-lg-6">
                             <ol class="breadcrumb pull-right">
                                 <li class="breadcrumb-item"><a href="dashboard.php"><i data-feather="home"></i></a></li>
-                                <li class="breadcrumb-item active">List Auction</li>
+                                <li class="breadcrumb-item active">{{ $title ?? 'List Auction' }}</li>
                             </ol>
                         </div>
                     </div>
@@ -52,7 +52,9 @@
                            
                             <div class="card-body">
                                 
+                          @if(!isset($title) || $title !== 'Live Auction')
                           <a href="{{route('staffauction.create')}}" class="btn mb-4 btn-primary"><i class="fa fa-plus"></i> Add Offers </a> 
+                          @endif
                           @if ($errors->any())
                           <div class="alert alert-danger">
                               <ul>
@@ -62,6 +64,7 @@
                               </ul>
                           </div>
                       @endif
+                                    @if(!isset($title) || $title !== 'Live Auction')
                                     <div class="card-body">
                                         <form action="{{ route('staffimport') }}"
                                               method="POST"
@@ -79,6 +82,7 @@
                                               </a> --}}
                                         </form>
                                     </div>
+                                    @endif
 
                             <div class="datatable-dashv1-list custom-datatable-overright">
 
@@ -89,12 +93,15 @@
                     <thead>
                      <tr>
                         <th data-field="id" data-sortable="true">Id / Admin_Id</th>                     
+                        <th data-field="product_name" data-sortable="true">Product Name</th>
                         <th data-field="sprice" data-sortable="true">Starting Price</th>
                         <th data-field="slab" data-sortable="true">SLAB</th> 
                         <th data-field="bid" data-sortable="true">BID Price</th>
                     	<th data-field="so" data-sortable="true">Stat Offer</th>                    
                     	<th data-field="eo" data-sortable="true">End Offer</th>
+                       @if(!isset($title) || $title !== 'Live Auction')
                        <th data-field="status" data-sortable="true">Status</th>
+                       @endif
                        <th>Action</th>
                     </tr>
                     </thead>
@@ -104,12 +111,14 @@
                     @foreach ( $auction as $item)
                     <tr>
                         <td>{{$loop->iteration }} / {{$item->admin_id}}</td>
+                        <td>{{ $item->product->product_name ?? 'N/A' }}</td>
                         <td>{{$item->start_price}}</td>
                         <td>{{$item->slab}}</td>
                         <td>{{$item->bid_price}}</td>
                         <td>{{ $item->start_date ? date('d-m-Y h:i A', strtotime($item->start_date)) : '' }}</td>
                 		<td>{{ $item->end_date ? date('d-m-Y h:i A', strtotime($item->end_date)) : '' }}</td>
                     
+                        @if(!isset($title) || $title !== 'Live Auction')
                         <td>
                             <?php
                                 $sd = $item->start_date;
@@ -134,8 +143,10 @@
                         </label>                    
                         </div>                    
                         </td>
+                        @endif
 
                         <td><span class="mt-3 d-flex">
+                          @if(!isset($title) || $title !== 'Live Auction')
                             <form action="{{ route('staffauction.edit', $item->id) }}"
                                 method="get">
                                 @method('GET')
@@ -144,8 +155,14 @@
                             onclick="return confirm('Are you sure, you want to Edit it?')"
                                     data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                             </form>
-                            <button type="button" class="btn btn-info mx-1" onclick="openBidsModal({{ $item->id }})"><i class="fa fa-eye"></i></button>
+                          @endif
+
+                          @if(isset($title) && $title === 'Live Auction')
+                            <button type="button" class="btn btn-info mx-1 px-3" onclick="openBidsModal({{ $item->id }})"><i class="fa fa-eye"></i> View Bids</button>
+                          @endif
                             {{-- <a href="#" class="badge badge-secondary px-2"  data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"data-original-title="Edit"><i class="fa fa-pencil"></i> </a> --}}
+                          
+                          @if(!isset($title) || $title !== 'Live Auction')
                             <form action="{{ route('staffauction.destroy', $item->id) }}"
                                 method="post">
                                 @method('DELETE')
@@ -155,7 +172,8 @@
                                         class="fa fa-trash"></i>                                        
                                 </button>                        
                             </form>
-                            {{-- <a href="#" onclick="return confirm('Are you sure, you want to Edit it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>                         --}}
+                          @endif
+                            {{-- <a href="#" onclick="return confirm('Are you sure, you want to Edit it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a>--}}</span></td>                        
                     </tr>
                     @endforeach 
                 </tbody>
@@ -194,9 +212,9 @@
                     <table class="table" id="bid-history-table" style="display: none; width: 100%; border-collapse: collapse; margin-top: 5px;">
                         <thead>
                             <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
-                                <th style="padding: 12px 8px; color: #475569; font-weight: 700;">Bidder</th>
-                                <th style="padding: 12px 8px; color: #475569; font-weight: 700; text-align: right;">Amount</th>
-                                <th style="padding: 12px 8px; color: #475569; font-weight: 700; text-align: right;">Time</th>
+                                <th style="padding: 12px 8px; color: #ffffff !important; font-weight: 700;">Bidder</th>
+                                <th style="padding: 12px 8px; color: #ffffff !important; font-weight: 700; text-align: right;">Amount</th>
+                                <th style="padding: 12px 8px; color: #ffffff !important; font-weight: 700; text-align: right;">Time</th>
                             </tr>
                         </thead>
                         <tbody id="bid-history-tbody">

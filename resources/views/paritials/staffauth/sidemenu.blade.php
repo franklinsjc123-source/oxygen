@@ -75,6 +75,8 @@ use Illuminate\Support\Facades\Route;
                                     $finalRoute = route('stafftransaction');
                                 } elseif ($submenu->link == 'auction/list') {
                                     $finalRoute = route('staffauction/list');
+                                } elseif ($submenu->link == 'auction/live') {
+                                    $finalRoute = route('staffauction/live');
                                 } elseif (Route::has($submenu->link)) {
                                     $finalRoute = route($submenu->link);
                                 }

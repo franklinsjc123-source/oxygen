@@ -36,11 +36,4 @@ class auction extends Model
         return $this->belongsTo(\App\Models\Products\Products::class, 'product_id', 'id');
     }
 
-    /**
-     * Get the product details.
-     */
-    public function productdetails()
-    {
-        return $this->belongsTo(\App\Models\Products\Products::class, 'product_id', 'product_id');
-    }
 }
