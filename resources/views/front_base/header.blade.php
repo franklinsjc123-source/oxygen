@@ -544,7 +544,7 @@
         .category-menu > li > .megamenu > li ul li a {
             padding: 4px 8px !important;
             margin-bottom: 2px;
-            font-size: 11.5px !important;
+            font-size: 13px !important;
             font-weight: 500 !important;
             color: #475569 !important;
             border-radius: 6px;
@@ -675,7 +675,7 @@
 
         /* Column Heading */
         .main-nav .menu .megamenu > li > a {
-            font-size: 11.5px !important;
+            font-size: 13px !important;
             font-weight: 700 !important;
             color: #0f172a !important;
             text-transform: uppercase !important;
@@ -697,7 +697,7 @@
         /* Inner list */
         .main-nav .menu .megamenu > li ul {
             padding: 0 !important;
-            margin: 0 !important;
+            margin: 10px 0 0 0 !important;
             list-style: none !important;
             display: flex !important;
             flex-direction: column !important;
@@ -714,7 +714,7 @@
         .main-nav .menu .megamenu > li ul li a {
             padding: 3px 6px !important;
             margin-bottom: 1px !important;
-            font-size: 11px !important;
+            font-size: 13px !important;
             font-weight: 500 !important;
             color: #475569 !important;
             border-radius: 6px !important;
