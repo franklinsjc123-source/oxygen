@@ -1256,7 +1256,7 @@ class HomeController extends Controller
     {
         $getauctionProduct = auction::with('productdetails')
             ->where('status', 1)
-            ->where('end_date', '>=', now())
+            ->where('end_date', '>=', now('Asia/Kolkata')->format('Y-m-d\TH:i'))
             ->get();
         //dd($getauctionProduct);
         return view('front_end.site.auction_products')->with([

@@ -370,7 +370,7 @@ public function orderscancel($id)
 
 	public function auction()
 	{
-		$auction = auction::where('status', 1)->where('end_date', '>=', now())->get(); 
+		$auction = auction::where('status', 1)->where('end_date', '>=', now('Asia/Kolkata')->format('Y-m-d\TH:i'))->get(); 
 		$product_details = ProductsDetails::get();
 		$product = Products::get();
 

@@ -1101,7 +1101,7 @@ class FrontendController extends Controller
                 'vendor_details.slug as vendor_slug'
             )
             ->where('auctions.status', 1)
-            ->where('auctions.end_date', '>=', now())
+            ->where('auctions.end_date', '>=', now('Asia/Kolkata')->format('Y-m-d\TH:i'))
             ->groupBy('auctions.id', 'products.id', 'products.slug', 'products.product_name', 'products.product_image', 'products.vendor_id', 'vendor_details.shop_name',
                 'vendor_details.slug', 'auctions.bid_price', 'auctions.start_price', 'auctions.end_date')
             ->get();
