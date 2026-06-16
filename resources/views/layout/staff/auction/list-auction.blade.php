@@ -1,6 +1,45 @@
 @extends('layout.auth.master')
 @section('contents')
 
+<style>
+.pulse-indicator {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #10b981;
+    border-radius: 50%;
+    margin-right: 6px;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    animation: pulse 1.2s infinite;
+}
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
+}
+</style>
+
 @include('paritials.css.auction.auction')?>
 
     @include('paritials.auth.header')?>
@@ -29,7 +68,11 @@
                         <div class="col-lg-6">
                             <div class="page-header-left">
                                 <h3>{{ $title ?? 'List Auction' }}
-                                  
+                                    @if(isset($title) && $title === 'Live Auction')
+                                        <span class="pulse-indicator" style="margin-left: 10px; vertical-align: middle;">
+                                            <span class="pulse-dot"></span>Live Performance
+                                        </span>
+                                    @endif
                                 </h3>
                             </div>
                         </div>
@@ -92,17 +135,19 @@
 
                     <thead>
                      <tr>
-                        <th data-field="id" data-sortable="true">Id / Admin_Id</th>                     
                         <th data-field="product_name" data-sortable="true">Product Name</th>
                         <th data-field="sprice" data-sortable="true">Starting Price</th>
                         <th data-field="slab" data-sortable="true">SLAB</th> 
+                        @if(isset($title) && $title === 'Live Auction')
+                        <th data-field="current_bid" data-sortable="true">Current Bid</th>
+                        <th data-field="time_remaining" data-sortable="true">Time Remaining</th>
+                        @else
                         <th data-field="bid" data-sortable="true">BID Price</th>
                     	<th data-field="so" data-sortable="true">Stat Offer</th>                    
                     	<th data-field="eo" data-sortable="true">End Offer</th>
-                       @if(!isset($title) || $title !== 'Live Auction')
-                       <th data-field="status" data-sortable="true">Status</th>
-                       @endif
-                       <th>Action</th>
+                        <th data-field="status" data-sortable="true">Status</th>
+                        @endif
+                        <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -110,15 +155,25 @@
 
                     @foreach ( $auction as $item)
                     <tr>
-                        <td>{{$loop->iteration }} / {{$item->admin_id}}</td>
                         <td>{{ $item->product->product_name ?? 'N/A' }}</td>
                         <td>{{$item->start_price}}</td>
                         <td>{{$item->slab}}</td>
+                        @if(isset($title) && $title === 'Live Auction')
+                        <td>
+                           <div style="font-weight: 700; color: #10b981; font-size: 1.3rem;">
+                               ₹{{ number_format($item->highestBid->bid_amount ?? $item->start_price, 2) }}
+                           </div>
+                           <div style="font-size: 0.9rem; color: #64748b; font-weight: 600; margin-top: 2px;">
+                               <i class="fa fa-gavel"></i> {{ $item->bids->count() }} bids
+                           </div>
+                        </td>
+                        <td>
+                           <span class="countdown-timer" data-endtime="{{ $item->end_date }}" style="font-weight: 700; font-family: monospace; font-size: 1.1rem; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 4px 8px; border-radius: 4px; display: inline-block; letter-spacing: 0.05em; text-transform: uppercase;"></span>
+                        </td>
+                        @else
                         <td>{{$item->bid_price}}</td>
                         <td>{{ $item->start_date ? date('d-m-Y h:i A', strtotime($item->start_date)) : '' }}</td>
                 		<td>{{ $item->end_date ? date('d-m-Y h:i A', strtotime($item->end_date)) : '' }}</td>
-                    
-                        @if(!isset($title) || $title !== 'Live Auction')
                         <td>
                             <?php
                                 $sd = $item->start_date;
@@ -158,7 +213,7 @@
                           @endif
 
                           @if(isset($title) && $title === 'Live Auction')
-                            <button type="button" class="btn btn-info mx-1 px-3" onclick="openBidsModal({{ $item->id }})"><i class="fa fa-eye"></i> View Bids</button>
+                            <button type="button" class="btn btn-info mx-1 px-3" onclick="openBidsModal({{ $item->id }}, '{{ addslashes($item->product->product_name ?? 'N/A') }}')"><i class="fa fa-eye"></i> View Bids</button>
                           @endif
                             {{-- <a href="#" class="badge badge-secondary px-2"  data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"data-original-title="Edit"><i class="fa fa-pencil"></i> </a> --}}
                           
@@ -199,28 +254,39 @@
                 </button>
 
                 <!-- Header -->
-                <h4 style="margin: 0 0 16px 0; font-weight: 800; color: #0f172a; font-size: 20px; display: flex; align-items: center; gap: 8px;">
+                <h4 style="margin: 0 0 4px 0; font-weight: 800; color: #0f172a; font-size: 20px; display: flex; align-items: center; gap: 8px;">
                     <i class="fas fa-history" style="color: #2563eb;"></i> Bid History
                 </h4>
+                <div id="bid-modal-product-title" style="font-size: 13px; color: #64748b; font-weight: 600; margin-bottom: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 420px;">
+                    <!-- Product title injected here -->
+                </div>
 
                 <!-- Content Area -->
-                <div style="max-height: 350px; overflow-y: auto; padding-right: 4px; margin-top: 10px;">
+                <div style="max-height: 400px; overflow-y: auto; padding-right: 4px; margin-top: 10px;">
+                    <!-- Summary Cards -->
+                    <div id="bid-history-summary" style="display: none; background: #f8fafc; border-radius: 16px; padding: 16px; margin-bottom: 20px; border: 1px solid #e2e8f0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Current High Bid</div>
+                                <div id="summary-highest-bid" style="font-size: 20px; font-weight: 800; color: #10b981; margin-top: 2px;">₹0.00</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Total Bids</div>
+                                <div id="summary-total-bids" style="font-size: 20px; font-weight: 800; color: #0f172a; margin-top: 2px;">0</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div id="bid-history-loading" style="text-align: center; padding: 30px; color: #64748b;">
                         <i class="fas fa-circle-notch fa-spin" style="font-size: 28px; color: #2563eb; margin-bottom: 12px; display: block;"></i>
                         Loading bid history...
                     </div>
-                    <table class="table" id="bid-history-table" style="display: none; width: 100%; border-collapse: collapse; margin-top: 5px;">
-                        <thead>
-                            <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
-                                <th style="padding: 12px 8px; color: #ffffff !important; font-weight: 700;">Bidder</th>
-                                <th style="padding: 12px 8px; color: #ffffff !important; font-weight: 700; text-align: right;">Amount</th>
-                                <th style="padding: 12px 8px; color: #ffffff !important; font-weight: 700; text-align: right;">Time</th>
-                            </tr>
-                        </thead>
-                        <tbody id="bid-history-tbody">
-                            <!-- Bids injected here -->
-                        </tbody>
-                    </table>
+
+                    <!-- Bids Feed List -->
+                    <div id="bid-history-list" style="display: none; flex-direction: column; gap: 12px; margin-top: 5px;">
+                        <!-- Bids injected here -->
+                    </div>
+
                     <div id="no-bids-message" style="display: none; text-align: center; padding: 30px; color: #64748b;">
                         <i class="fas fa-gavel" style="font-size: 36px; color: #cbd5e1; margin-bottom: 12px; display: block;"></i>
                         No bids have been placed yet.
@@ -233,13 +299,53 @@
 
 @push('scripts')
 <script>
+document.addEventListener("DOMContentLoaded", function() {
+    function updateCountdowns() {
+        const now = new Date().getTime();
+        document.querySelectorAll(".countdown-timer").forEach(timer => {
+            const endTimeStr = timer.getAttribute("data-endtime");
+            if (!endTimeStr) return;
+            
+            const parsedTime = endTimeStr.replace('T', ' ').replace(/-/g, '/');
+            const endTime = new Date(parsedTime).getTime();
+            const distance = endTime - now;
+
+            if (distance < 0) {
+                timer.innerHTML = "EXPIRED";
+                timer.style.background = "rgba(100, 116, 139, 0.15)";
+                timer.style.color = "#64748b";
+                timer.style.borderColor = "rgba(100, 116, 139, 0.3)";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            let timeString = "";
+            if (days > 0) timeString += days + "d ";
+            if (hours > 0 || days > 0) timeString += hours + "h ";
+            timeString += minutes + "m " + seconds + "s";
+
+            timer.innerHTML = timeString;
+        });
+    }
+    updateCountdowns();
+    setInterval(updateCountdowns, 1000);
+});
+</script>
+<script>
 // ===================== BID HISTORY MODAL FUNCTIONS =====================
-function openBidsModal(auctionId) {
+function openBidsModal(auctionId, productName) {
     var modal = document.getElementById('bid-history-modal');
     var loading = document.getElementById('bid-history-loading');
-    var table = document.getElementById('bid-history-table');
+    var summary = document.getElementById('bid-history-summary');
+    var list = document.getElementById('bid-history-list');
     var noBids = document.getElementById('no-bids-message');
-    var tbody = document.getElementById('bid-history-tbody');
+    
+    // Set product title
+    document.getElementById('bid-modal-product-title').textContent = productName ? 'Product: ' + productName : '';
     
     // Show modal & loading
     modal.style.display = 'flex';
@@ -249,9 +355,10 @@ function openBidsModal(auctionId) {
     }, 10);
     
     loading.style.display = 'block';
-    table.style.display = 'none';
+    summary.style.display = 'none';
+    list.style.display = 'none';
     noBids.style.display = 'none';
-    tbody.innerHTML = '';
+    list.innerHTML = '';
     
     var url = "{{ url('auction') }}/" + auctionId + "/bids";
     fetch(url)
@@ -259,48 +366,98 @@ function openBidsModal(auctionId) {
     .then(function(data) {
         loading.style.display = 'none';
         if (data.bids && data.bids.length > 0) {
-            table.style.display = 'table';
-            data.bids.forEach(function(bid) {
-                var tr = document.createElement('tr');
-                tr.style.borderBottom = '1px solid #f1f5f9';
+            // Show and populate summary
+            summary.style.display = 'block';
+            var highestBidVal = parseFloat(data.bids[0].bid_amount);
+            document.getElementById('summary-highest-bid').textContent = '₹' + highestBidVal.toLocaleString('en-IN', {minimumFractionDigits: 2});
+            document.getElementById('summary-total-bids').textContent = data.bids.length;
+            
+            // Build modern feed list
+            list.style.display = 'flex';
+            data.bids.forEach(function(bid, index) {
+                var itemDiv = document.createElement('div');
+                itemDiv.style.display = 'flex';
+                itemDiv.style.alignItems = 'center';
+                itemDiv.style.justifyContent = 'space-between';
+                itemDiv.style.padding = '12px 16px';
+                itemDiv.style.background = index === 0 ? 'rgba(16, 185, 129, 0.04)' : '#ffffff';
+                itemDiv.style.border = index === 0 ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid #f1f5f9';
+                itemDiv.style.borderRadius = '16px';
+                itemDiv.style.transition = 'all 0.2s';
                 
-                var tdName = document.createElement('td');
-                tdName.style.padding = '12px 8px';
-                tdName.style.color = '#1e293b';
+                // Left section: Avatar + Info
+                var leftSec = document.createElement('div');
+                leftSec.style.display = 'flex';
+                leftSec.style.alignItems = 'center';
+                leftSec.style.gap = '12px';
                 
-                var nameDiv = document.createElement('div');
-                nameDiv.style.fontWeight = '600';
-                nameDiv.textContent = bid.customer_name;
-                tdName.appendChild(nameDiv);
+                // Initials avatar
+                var avatar = document.createElement('div');
+                avatar.style.width = '36px';
+                avatar.style.height = '36px';
+                avatar.style.borderRadius = '50%';
+                avatar.style.background = index === 0 ? '#10b981' : '#f1f5f9';
+                avatar.style.color = index === 0 ? '#ffffff' : '#475569';
+                avatar.style.display = 'flex';
+                avatar.style.alignItems = 'center';
+                avatar.style.justifyContent = 'center';
+                avatar.style.fontWeight = '700';
+                avatar.style.fontSize = '14px';
+                avatar.textContent = bid.customer_name ? bid.customer_name.charAt(0).toUpperCase() : 'U';
+                leftSec.appendChild(avatar);
                 
-                if (bid.location) {
-                    var locDiv = document.createElement('div');
-                    locDiv.style.fontSize = '12px';
-                    locDiv.style.color = '#64748b';
-                    locDiv.style.fontWeight = '400';
-                    locDiv.style.marginTop = '2px';
-                    locDiv.textContent = bid.location;
-                    tdName.appendChild(locDiv);
+                // Name and details
+                var details = document.createElement('div');
+                
+                var nameContainer = document.createElement('div');
+                nameContainer.style.display = 'flex';
+                nameContainer.style.alignItems = 'center';
+                nameContainer.style.gap = '6px';
+                
+                var nameSpan = document.createElement('span');
+                nameSpan.style.fontWeight = '700';
+                nameSpan.style.color = '#0f172a';
+                nameSpan.style.fontSize = '14px';
+                nameSpan.textContent = bid.customer_name;
+                nameContainer.appendChild(nameSpan);
+                
+                if (index === 0) {
+                    var leaderBadge = document.createElement('span');
+                    leaderBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+                    leaderBadge.style.color = '#10b981';
+                    leaderBadge.style.fontSize = '10px';
+                    leaderBadge.style.fontWeight = '800';
+                    leaderBadge.style.padding = '2px 8px';
+                    leaderBadge.style.borderRadius = '9999px';
+                    leaderBadge.style.letterSpacing = '0.05em';
+                    leaderBadge.textContent = 'LEADING';
+                    nameContainer.appendChild(leaderBadge);
                 }
+                details.appendChild(nameContainer);
                 
-                var tdAmount = document.createElement('td');
-                tdAmount.style.padding = '12px 8px';
-                tdAmount.style.textAlign = 'right';
-                tdAmount.style.fontWeight = '700';
-                tdAmount.style.color = '#2563eb';
-                tdAmount.innerHTML = '<span style="font-family: Arial, sans-serif;">₹</span>' + parseFloat(bid.bid_amount).toLocaleString('en-IN', {minimumFractionDigits: 2});
+                var subtext = document.createElement('div');
+                subtext.style.fontSize = '12px';
+                subtext.style.color = '#64748b';
+                subtext.style.marginTop = '2px';
+                subtext.textContent = (bid.location || 'Unknown Location') + ' • ' + bid.time;
+                details.appendChild(subtext);
                 
-                var tdTime = document.createElement('td');
-                tdTime.style.padding = '12px 8px';
-                tdTime.style.textAlign = 'right';
-                tdTime.style.color = '#64748b';
-                tdTime.style.fontSize = '13px';
-                tdTime.textContent = bid.time;
+                leftSec.appendChild(details);
                 
-                tr.appendChild(tdName);
-                tr.appendChild(tdAmount);
-                tr.appendChild(tdTime);
-                tbody.appendChild(tr);
+                // Right section: Price
+                var priceSec = document.createElement('div');
+                priceSec.style.textAlign = 'right';
+                
+                var priceSpan = document.createElement('span');
+                priceSpan.style.fontWeight = '800';
+                priceSpan.style.fontSize = index === 0 ? '16px' : '14px';
+                priceSpan.style.color = index === 0 ? '#10b981' : '#1e293b';
+                priceSpan.innerHTML = '₹' + parseFloat(bid.bid_amount).toLocaleString('en-IN', {minimumFractionDigits: 2});
+                priceSec.appendChild(priceSpan);
+                
+                itemDiv.appendChild(leftSec);
+                itemDiv.appendChild(priceSec);
+                list.appendChild(itemDiv);
             });
         } else {
             noBids.style.display = 'block';

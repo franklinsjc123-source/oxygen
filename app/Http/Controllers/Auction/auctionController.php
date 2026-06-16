@@ -271,7 +271,7 @@ class auctionController extends Controller
         $time = $dt->format('H:i:s');
         $date = "$dat$t$time";
 
-        $auction = auction::with('product')
+        $auction = auction::with(['product', 'bids', 'highestBid'])
             ->where('status', 1)
             ->where('start_date', '<=', $date)
             ->where('end_date', '>=', $date)
