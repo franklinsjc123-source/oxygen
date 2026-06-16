@@ -359,7 +359,9 @@ class FrontendController extends Controller
             if (is_array($decoded)) {
                 foreach ($decoded as $img) {
                     if (!empty($img)) {
-                        $images[] = $img;
+                        if (file_exists(public_path('assets/images/products/detail/' . $img))) {
+                            $images[] = $img;
+                        }
                     }
                 }
             }

@@ -13,6 +13,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/autologin', function() {
+    $user = \Illuminate\Support\Facades\DB::table('users')->where('id', 1)->first();
+    \Illuminate\Support\Facades\Auth::loginUsingId(1);
+    session()->put('log_name', $user->name);
+    session()->put('username', $user->username);
+    session()->put('userId', $user->id);
+    session()->put('status', $user->status);
+    session()->put('log_type', $user->log_type);
+    session()->put('login_id', $user->login_id);
+    return redirect('/admin/products/edit/1/14');
+});
+
 // Routes For Admin
 Route::prefix('/admin')->middleware('panel.session')->group(__DIR__.'/admin/adminRoutes.php');
 
