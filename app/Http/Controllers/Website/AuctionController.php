@@ -234,6 +234,41 @@ class AuctionController extends Controller
             return response()->json(['success' => false, 'message' => 'This auction has not started yet.']);
         }
 
+        // Check if customer is already participating in another active auction
+        $otherActiveBids = AuctionBid::where('customer_id', $customerId)
+            ->where('auction_id', '!=', $auction->id)
+            ->whereHas('auction', function ($query) {
+                $query->where('status', 1)
+                      ->where('is_settled', 0);
+            })
+            ->get();
+
+        $activeOtherAuctionId = null;
+        foreach ($otherActiveBids as $bid) {
+            $otherAuction = $bid->auction;
+            if ($otherAuction) {
+                $otherStartStr = str_replace('T', ' ', $otherAuction->start_date);
+                $otherEndStr = str_replace('T', ' ', $otherAuction->end_date);
+                try {
+                    $otherStart = \Carbon\Carbon::parse($otherStartStr, $timezone);
+                    $otherEnd = \Carbon\Carbon::parse($otherEndStr, $timezone);
+                    if ($now->greaterThanOrEqualTo($otherStart) && $now->lessThan($otherEnd)) {
+                        $activeOtherAuctionId = $otherAuction->id;
+                        break;
+                    }
+                } catch (\Exception $e) {
+                    // Ignore bad formatting
+                }
+            }
+        }
+
+        if ($activeOtherAuctionId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You cannot place a bid because you are already participating in another active auction.'
+            ]);
+        }
+
         // Get current highest bid
         $highestBid = AuctionBid::where('auction_id', $auction->id)->max('bid_amount');
         $currentBid = $highestBid ?? $auction->start_price;

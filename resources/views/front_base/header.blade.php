@@ -71,12 +71,12 @@
     use Illuminate\Support\Facades\Session;
     
     $categorymain = CategoryMain::orderBy('category_main_sortorder', 'asc')->get();
-    // dd($categorymain);
-    // $category = Category::orderBy('category_sortorder', 'asc')->get();
-
-    // $categorysub = CategorySub::orderBy('category_sub_sortorder', 'asc')->get();
+    $menCategory = $categorymain->firstWhere('slug', 'men') ?? $categorymain->filter(fn($c) => strtolower($c->category_main_name) === 'men')->first();
+    $womenCategory = $categorymain->firstWhere('slug', 'women') ?? $categorymain->filter(fn($c) => strtolower($c->category_main_name) === 'women')->first();
+    $kidsCategory = $categorymain->firstWhere('slug', 'kids') ?? $categorymain->filter(fn($c) => strtolower($c->category_main_name) === 'kids')->first();
+    $livingCategory = $categorymain->firstWhere('slug', 'living-personalized') ?? $categorymain->filter(fn($c) => str_contains(strtolower($c->category_main_name), 'living'))->first();
+    
     $count = Cart::getContent()->count();
-    // $customerName = Session::get('customer_name');
     if ( Session::has('customer_id')) {
         $customerName = optional(Ecom_Customer_info::where('customer_id', Session::get('customer_id'))->first())->customer_firstname;
     }
@@ -629,9 +629,159 @@
                 }
             }
         }
+
+        /* ── Premium Horizontal Megamenu Styling for Main Nav ── */
+        .main-nav .menu > li > .megamenu {
+            display: none !important;
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            width: 1000px !important;
+            min-width: 800px !important;
+            background: #ffffff !important;
+            border: 1px solid rgba(0, 0, 0, 0.05) !important;
+            border-radius: 0 0 12px 12px !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+            padding: 18px 22px !important;
+            z-index: 99999 !important;
+            flex-wrap: wrap !important;
+            flex-direction: row !important;
+        }
+
+        .main-nav .menu > li:hover > .megamenu,
+        .main-nav .menu > li.mega-hover > .megamenu {
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            transform: none !important;
+        }
+
+        /* Megamenu columns */
+        .main-nav .menu .megamenu > li {
+            flex: 0 0 190px !important;
+            max-width: 190px !important;
+            border-right: 1px solid #f1f5f9 !important;
+            padding: 4px 14px !important;
+            margin: 0 !important;
+            list-style: none !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        .main-nav .menu .megamenu > li:last-child {
+            border-right: none !important;
+        }
+
+        /* Column Heading */
+        .main-nav .menu .megamenu > li > a {
+            font-size: 11.5px !important;
+            font-weight: 700 !important;
+            color: #0f172a !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.8px !important;
+            padding: 0 0 6px 0 !important;
+            margin: 0 0 8px 0 !important;
+            border-bottom: 2px solid #0088dd !important;
+            display: block !important;
+            position: relative !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+
+        .main-nav .menu .megamenu > li > a:hover {
+            color: #0088dd !important;
+        }
+
+        /* Inner list */
+        .main-nav .menu .megamenu > li ul {
+            padding: 0 !important;
+            margin: 0 !important;
+            list-style: none !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 1px !important;
+        }
+
+        .main-nav .menu .megamenu > li ul li {
+            padding: 0 !important;
+            margin: 0 !important;
+            list-style: none !important;
+        }
+
+        /* Sub-links */
+        .main-nav .menu .megamenu > li ul li a {
+            padding: 3px 6px !important;
+            margin-bottom: 1px !important;
+            font-size: 11px !important;
+            font-weight: 500 !important;
+            color: #475569 !important;
+            border-radius: 6px !important;
+            transition: all 0.2s ease-in-out !important;
+            display: block !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            background-color: transparent !important;
+            text-transform: none !important;
+        }
+
+        .main-nav .menu .megamenu > li ul li a:hover {
+            color: #0088dd !important;
+            background-color: #f1f6fa !important;
+            padding-left: 12px !important;
+        }
+
+        .main-nav .menu .megamenu .divider {
+            display: none !important;
+        }
+
+        .main-nav {
+            position: relative !important;
+        }
+
+        .main-nav .menu > li {
+            position: static !important;
+        }
+
+        .main-nav .menu > li > a {
+            position: relative !important;
+        }
     </style>
 
-    <body>
+    {{-- JavaScript hover handler for main-nav megamenu --}}
+    <script>
+        $(document).ready(function() {
+            // Target only main-nav menu items that have a .megamenu child
+            $('.main-nav .menu > li').has('.megamenu').each(function() {
+                var $li = $(this);
+                var $mega = $li.children('.megamenu');
+
+                $li.on('mouseenter', function() {
+                    $li.addClass('mega-hover');
+                    $mega.css({
+                        'display': 'flex',
+                        'visibility': 'visible',
+                        'opacity': '1',
+                        'position': 'absolute',
+                        'top': '100%',
+                        'left': '0',
+                        'z-index': '99999',
+                        'pointer-events': 'auto'
+                    });
+                });
+
+                $li.on('mouseleave', function() {
+                    $li.removeClass('mega-hover');
+                    $mega.css({
+                        'display': 'none'
+                    });
+                });
+            });
+        });
+    </script>
+
         <!-- Start of Page Wrapper -->
         <div class="page-wrapper">
             <h1 class="d-none">Wolmart - Responsive Marketplace HTML Template</h1>
@@ -828,6 +978,7 @@
                     <div class="container">
                         <div class="inner-wrap">
                             <div class="header-left">
+                                {{--
                                 <div class="dropdown category-dropdown has-border " data-visible="true">
                                     <a href="#" class="category-toggle" role="button" data-toggle="dropdown"
                                         aria-haspopup="true" aria-expanded="true" data-display="static"
@@ -877,6 +1028,7 @@
                                     </div>
 
                                 </div>
+                                --}}
                                 <nav class="main-nav">
                                     <ul class="menu active-underline">
                                         <li>
@@ -976,16 +1128,113 @@
                                         </ul> --}}
                                         </li>
 
-                                        <li> <a href="{{ url('main-category/men') }}"><i
-                                                    class="w-icon-tshirt"></i> Men</a></li>
+                                        @if ($menCategory && count($menCategory->submenu) > 0)
+                                            <li>
+                                                <a href="{{ url('main-category/men') }}"><i class="w-icon-tshirt"></i> Men</a>
+                                                <ul class="megamenu">
+                                                    @foreach ($menCategory->submenu as $submenus)
+                                                        @if (count($submenus->childmenu) > 0)
+                                                            <li>
+                                                                <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
+                                                                <hr class="divider">
+                                                                <ul>
+                                                                    @foreach ($submenus->childmenu as $childmenus)
+                                                                        <li><a href="{{ url('category/' . ($submenus->slug ?? $submenus->id) . '/' . ($childmenus->slug ?? $childmenus->id)) }}">{{ $childmenus->category_sub_name }}</a></li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            </li>
+                                                        @else
+                                                            <li>
+                                                                <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
+                                                            </li>
+                                                        @endif
+                                                    @endforeach
+                                                </ul>
+                                            </li>
+                                        @else
+                                            <li> <a href="{{ url('main-category/men') }}"><i class="w-icon-tshirt"></i> Men</a></li>
+                                        @endif
 
-                                        <li><a href="{{ url('main-category/women') }}"><i
-                                                    class="w-icon-tshirt2"></i> Women</a></li>
+                                        @if ($womenCategory && count($womenCategory->submenu) > 0)
+                                            <li>
+                                                <a href="{{ url('main-category/women') }}"><i class="w-icon-tshirt2"></i> Women</a>
+                                                <ul class="megamenu">
+                                                    @foreach ($womenCategory->submenu as $submenus)
+                                                        @if (count($submenus->childmenu) > 0)
+                                                            <li>
+                                                                <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
+                                                                <hr class="divider">
+                                                                <ul>
+                                                                    @foreach ($submenus->childmenu as $childmenus)
+                                                                        <li><a href="{{ url('category/' . ($submenus->slug ?? $submenus->id) . '/' . ($childmenus->slug ?? $childmenus->id)) }}">{{ $childmenus->category_sub_name }}</a></li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            </li>
+                                                        @else
+                                                            <li>
+                                                                <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
+                                                            </li>
+                                                        @endif
+                                                    @endforeach
+                                                </ul>
+                                            </li>
+                                        @else
+                                            <li><a href="{{ url('main-category/women') }}"><i class="w-icon-tshirt2"></i> Women</a></li>
+                                        @endif
 
-                                        <li><a href="{{ url('main-category/kids') }}"> <i
-                                                    class="w-icon-basketball"></i> Kids</a></li>
-                                        <li><a href="{{ url('main-category/living-personalized') }}"> <i
-                                                    class="w-icon-shopify"></i> Living</a></li>
+                                        @if ($kidsCategory && count($kidsCategory->submenu) > 0)
+                                            <li>
+                                                <a href="{{ url('main-category/kids') }}"><i class="w-icon-basketball"></i> Kids</a>
+                                                <ul class="megamenu">
+                                                    @foreach ($kidsCategory->submenu as $submenus)
+                                                        @if (count($submenus->childmenu) > 0)
+                                                            <li>
+                                                                <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
+                                                                <hr class="divider">
+                                                                <ul>
+                                                                    @foreach ($submenus->childmenu as $childmenus)
+                                                                        <li><a href="{{ url('category/' . ($submenus->slug ?? $submenus->id) . '/' . ($childmenus->slug ?? $childmenus->id)) }}">{{ $childmenus->category_sub_name }}</a></li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            </li>
+                                                        @else
+                                                            <li>
+                                                                <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
+                                                            </li>
+                                                        @endif
+                                                    @endforeach
+                                                </ul>
+                                            </li>
+                                        @else
+                                            <li><a href="{{ url('main-category/kids') }}"> <i class="w-icon-basketball"></i> Kids</a></li>
+                                        @endif
+
+                                        @if ($livingCategory && count($livingCategory->submenu) > 0)
+                                            <li>
+                                                <a href="{{ url('main-category/living-personalized') }}"><i class="w-icon-shopify"></i> Living</a>
+                                                <ul class="megamenu">
+                                                    @foreach ($livingCategory->submenu as $submenus)
+                                                        @if (count($submenus->childmenu) > 0)
+                                                            <li>
+                                                                <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
+                                                                <hr class="divider">
+                                                                <ul>
+                                                                    @foreach ($submenus->childmenu as $childmenus)
+                                                                        <li><a href="{{ url('category/' . ($submenus->slug ?? $submenus->id) . '/' . ($childmenus->slug ?? $childmenus->id)) }}">{{ $childmenus->category_sub_name }}</a></li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            </li>
+                                                        @else
+                                                            <li>
+                                                                <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
+                                                            </li>
+                                                        @endif
+                                                    @endforeach
+                                                </ul>
+                                            </li>
+                                        @else
+                                            <li><a href="{{ url('main-category/living-personalized') }}"> <i class="w-icon-shopify"></i> Living</a></li>
+                                        @endif
                                         {{-- <li><a href="">Location</a></li> --}}
                                         {{-- <li >
                                         <a href="vendor-dokan-store.html">Offers</a>
