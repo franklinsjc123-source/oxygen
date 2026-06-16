@@ -92,9 +92,22 @@ class AuctionController extends Controller
         $bidList = [];
         foreach ($bids as $bid) {
             $customer = Ecom_Customer_info::where('customer_id', $bid->customer_id)->first();
+            $locationParts = [];
+            if ($customer) {
+                if (!empty($customer->customer_address1)) {
+                    $locationParts[] = $customer->customer_address1;
+                }
+                if (!empty($customer->customer_city)) {
+                    $locationParts[] = $customer->customer_city;
+                }
+                if (!empty($customer->customer_state)) {
+                    $locationParts[] = $customer->customer_state;
+                }
+            }
             $bidList[] = [
                 'id' => $bid->id,
                 'customer_name' => $customer ? ($customer->customer_firstname . ' ' . ($customer->customer_lastname ?? '')) : 'Unknown',
+                'location' => implode(', ', $locationParts),
                 'bid_amount' => $bid->bid_amount,
                 'time' => Carbon::parse($bid->created_at)->diffForHumans(),
                 'created_at' => $bid->created_at,
@@ -306,11 +319,25 @@ class AuctionController extends Controller
         $customer = Ecom_Customer_info::where('customer_id', $customerId)->first();
         $customerName = $customer ? ($customer->customer_firstname . ' ' . ($customer->customer_lastname ?? '')) : 'You';
 
+        $locationParts = [];
+        if ($customer) {
+            if (!empty($customer->customer_address1)) {
+                $locationParts[] = $customer->customer_address1;
+            }
+            if (!empty($customer->customer_city)) {
+                $locationParts[] = $customer->customer_city;
+            }
+            if (!empty($customer->customer_state)) {
+                $locationParts[] = $customer->customer_state;
+            }
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Bid placed successfully!',
             'bid' => [
                 'customer_name' => $customerName,
+                'location' => implode(', ', $locationParts),
                 'bid_amount' => $request->bid_amount,
                 'time' => 'Just now',
             ],
@@ -332,8 +359,21 @@ class AuctionController extends Controller
         $bidList = [];
         foreach ($bids as $bid) {
             $customer = Ecom_Customer_info::where('customer_id', $bid->customer_id)->first();
+            $locationParts = [];
+            if ($customer) {
+                if (!empty($customer->customer_address1)) {
+                    $locationParts[] = $customer->customer_address1;
+                }
+                if (!empty($customer->customer_city)) {
+                    $locationParts[] = $customer->customer_city;
+                }
+                if (!empty($customer->customer_state)) {
+                    $locationParts[] = $customer->customer_state;
+                }
+            }
             $bidList[] = [
                 'customer_name' => $customer ? ($customer->customer_firstname . ' ' . ($customer->customer_lastname ?? '')) : 'Unknown',
+                'location' => implode(', ', $locationParts),
                 'bid_amount' => $bid->bid_amount,
                 'time' => Carbon::parse($bid->created_at)->diffForHumans(),
             ];

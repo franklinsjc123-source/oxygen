@@ -248,9 +248,22 @@ function openBidsModal(auctionId) {
                 
                 var tdName = document.createElement('td');
                 tdName.style.padding = '12px 8px';
-                tdName.style.fontWeight = '600';
                 tdName.style.color = '#1e293b';
-                tdName.textContent = bid.customer_name;
+                
+                var nameDiv = document.createElement('div');
+                nameDiv.style.fontWeight = '600';
+                nameDiv.textContent = bid.customer_name;
+                tdName.appendChild(nameDiv);
+                
+                if (bid.location) {
+                    var locDiv = document.createElement('div');
+                    locDiv.style.fontSize = '12px';
+                    locDiv.style.color = '#64748b';
+                    locDiv.style.fontWeight = '400';
+                    locDiv.style.marginTop = '2px';
+                    locDiv.textContent = bid.location;
+                    tdName.appendChild(locDiv);
+                }
                 
                 var tdAmount = document.createElement('td');
                 tdAmount.style.padding = '12px 8px';
