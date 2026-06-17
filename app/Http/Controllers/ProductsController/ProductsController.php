@@ -747,7 +747,7 @@ class ProductsController extends Controller
                                 
                                 $constraint->aspectRatio();
                                 
-                            })->save('assets/images/products/detail'.'/'.$products_details_filename);
+                            })->save(public_path('assets/images/products/detail').'/'.$products_details_filename);
                             
                             $filename =  $products_details_filename;
 
@@ -764,7 +764,7 @@ class ProductsController extends Controller
                                 
                                 $constraint->aspectRatio();
                                 
-                            })->save('assets/images/products/detail'.'/'.$products_details_filename1);
+                            })->save(public_path('assets/images/products/detail').'/'.$products_details_filename1);
                             
                             $filename =  $products_details_filename1;
                             // $products_details_file1->move('assets/images/products/detail', $products_details_filename1);       
@@ -780,7 +780,7 @@ class ProductsController extends Controller
                                 
                                 $constraint->aspectRatio();
                                 
-                            })->save('assets/images/products/detail'.'/'.$products_details_filename2);
+                            })->save(public_path('assets/images/products/detail').'/'.$products_details_filename2);
                             
                             $filename =  $products_details_filename2;
 
@@ -798,7 +798,7 @@ class ProductsController extends Controller
                                 
                                 $constraint->aspectRatio();
                                 
-                            })->save('assets/images/products/detail'.'/'.$products_details_filename3);
+                            })->save(public_path('assets/images/products/detail').'/'.$products_details_filename3);
                             
                             $filename =  $products_details_filename3;
 

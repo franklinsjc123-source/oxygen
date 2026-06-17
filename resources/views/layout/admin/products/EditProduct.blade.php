@@ -208,22 +208,30 @@
                                                 @include('layout.admin.products.producteditDetails')
 
 
-                                                <div class="card">
-                                                    <div class="card-header">
-                                                        <h5>Product Images</h5>
+                                                <div class="card mt-3">
+                                                    <div class="card-header bg-light">
+                                                        <h5 class="m-0 fw-bold text-dark">Product Main Image</h5>
                                                     </div>
                                                     <div class="card-body">
-                                                        <div class="row">
-                                                            <div class="col-md-2">
-                                                                <h6>Upload Main Image</h6>
-
-                                                                <img src="{{ url('assets/images/products/'.$product->product_image) }}" id="mainImg" name="mainImage" height="100" width="100">
-                                                                <input class="form-control" type="file" id="mainImg" name="mainImage" multiple accept="image/*">
-                                                                
-                                                                    
-                                                                    <input class="form-control" type="hidden" id="mainImage" name="oldmainImage" value="{{ $product->product_image }}" multiple accept="image/*">
+                                                        <div class="row align-items-center">
+                                                            <div class="col-md-4 text-center">
+                                                                <div class="border rounded p-3 bg-light" style="max-width: 200px; margin: 0 auto;">
+                                                                    <div class="img-preview-box mb-2 d-flex align-items-center justify-content-center" style="height: 150px; overflow: hidden;">
+                                                                        <img src="{{ !empty($product->product_image) ? url('assets/images/products/'.$product->product_image) : '' }}" id="productMainImgPreview" class="img-fluid rounded" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ !empty($product->product_image) ? '' : 'display: none;' }}">
+                                                                    </div>
+                                                                    <span class="btn btn-xs btn-outline-primary btn-productimg w-100 position-relative">
+                                                                        <i class="fa fa-cloud-upload"></i> Upload Image
+                                                                        <input class="form-control" type="file" id="productMainImgInput" name="mainImage" accept="image/*" style="position: absolute; top: 0; left: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer;">
+                                                                    </span>
+                                                                    <input type="hidden" name="oldmainImage" value="{{ $product->product_image }}">
+                                                                </div>
                                                             </div>
-                                                            <div class="row" id="ming_preview">
+                                                            <div class="col-md-8">
+                                                                <p class="text-secondary small mb-1">Upload a high-quality main image for your product display.</p>
+                                                                <ul class="text-secondary small ps-3 mb-0">
+                                                                    <li>Supported formats: JPG, PNG, WEBP, GIF</li>
+                                                                    <li>Recommend resolution: 800 x 800 pixels</li>
+                                                                </ul>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -243,117 +251,88 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="card-head ">
-                                                    <div class="form-group">
-                                                        <div class="row">
-                                                            <h4 class="text-start fw-bold ">Shipping</h4>
-                                                            <div class="card-body">
-                                                                <div class="row">
-                                                                    <div class="col-md-3">
-                                                                        <div class="next-input--stylized">
-                                                                            <input type="number" class="form-control"
-                                                                                name="weight" placeholder="Weight (g)" value="{{$product->weight}}">
-                                                                        </div>
-                                                                    </div>
-    
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group mb-3">
-                                                                            <div class="next-input--stylized">
-                                                                                <input type="number" class="form-control"
-                                                                                    placeholder="Length (cm)" name="length"
-                                                                                    value="{{ $product->length }}">
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3">
-                                                                        <div class="form-group mb-3">
-                                                                            <div class="next-input--stylized">
-                                                                                <input type="number" class="form-control"
-                                                                                    name="width" placeholder="Width (cm)" value="{{ $product->width }}">
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 ">
-                                                                        <div class="form-group mb-3">
-                                                                            <div class="next-input--stylized">
-    
-                                                                                <input type="number" class="form-control"
-                                                                                    name="height" placeholder="Height (cm)" value="{{$product->height}}">
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                                <div class="card mt-3">
+                                                    <div class="card-header bg-light">
+                                                        <h5 class="m-0 fw-bold text-dark">Shipping Information</h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="row g-3">
+                                                            <div class="col-md-3">
+                                                                <label class="form-label fw-bold text-secondary mb-1">Weight (g)</label>
+                                                                <input type="number" class="form-control" name="weight" placeholder="Weight (g)" value="{{$product->weight}}">
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <label class="form-label fw-bold text-secondary mb-1">Length (cm)</label>
+                                                                <input type="number" class="form-control" placeholder="Length (cm)" name="length" value="{{ $product->length }}">
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <label class="form-label fw-bold text-secondary mb-1">Width (cm)</label>
+                                                                <input type="number" class="form-control" name="width" placeholder="Width (cm)" value="{{ $product->width }}">
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <label class="form-label fw-bold text-secondary mb-1">Height (cm)</label>
+                                                                <input type="number" class="form-control" name="height" placeholder="Height (cm)" value="{{$product->height}}">
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-xl-12">
-                                                        <div class="card p-3">
-                                                            <div class="card-body">
-                                                                <div class="conatiner">
-                                                                    <div class="row mt-3">
-                                                                        <div class="col-md-12 ">
-                                                                            <h4 class="fw-bold">Specification</h4>
-                                                                        </div>
-                                                                        <div class="col-md-2 text-start">
-                                                                            <span class="text-dark fw-bold"
-                                                                                id="specify_length"></span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <table class="table table-bordered ">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <td>Specification</td>
-                                                                                <td> Value</td>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody class="spectable">
-                                                                            @php
-                                                                                $specById = [];
-                                                                                $specByName = [];
-                                                                                foreach ($productspecs as $ps) {
-                                                                                    if (!empty($ps->spec_id)) {
-                                                                                        $specById[$ps->spec_id] = $ps->specify_value;
-                                                                                    }
-                                                                                    if (!empty($ps->specify_attribute)) {
-                                                                                        $specByName[$ps->specify_attribute] = $ps->specify_value;
-                                                                                    }
-                                                                                }
-                                                                            @endphp
-                                                                            @foreach ($specification as $spec)
-                                                                                @php
-                                                                                    $specValues = json_decode($spec->specification_values ?? '[]', true) ?: [];
-                                                                                    $selectedValue = $specById[$spec->id] ?? ($specByName[$spec->specification_group_name] ?? '');
-                                                                                @endphp
-                                                                                <tr>
-                                                                                    <td>
-                                                                                        <div class="row">
-                                                                                            <div class="col-md-1">
-                                                                                                <input type="checkbox" id="spec_id_{{ $spec->id }}" name="spec_id[]" value="{{ $spec->id }}" {{ $selectedValue !== '' ? 'checked' : '' }}>
-                                                                                            </div>
-                                                                                            <div class="col-md-11">
-                                                                                                {{ $spec->specification_group_name }}
-                                                                                                <input type="hidden" name="specify_attribute[{{ $spec->id }}]" value="{{ $spec->specification_group_name }}">
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </td>
-                                                                                    <td>
-                                                                                        <select class="form-select form-select-lg text-secondary" name="specify_value[{{ $spec->id }}]" id="specify_value_{{ $spec->id }}">
-                                                                                            <option value="" hidden {{ $selectedValue === '' ? 'selected' : '' }}> --Select {{ $spec->specification_group_name }}--</option>
-                                                                                            @foreach ($specValues as $specify_val)
-                                                                                                <option value="{{ $specify_val }}" {{ $specify_val == $selectedValue ? 'selected' : '' }}>{{ $specify_val }}</option>
-                                                                                            @endforeach
-                                                                                        </select>
-                                                                                    </td>
-                                                                                </tr>
-                                                                            @endforeach
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
+                                                <div class="card mt-3">
+                                                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                                        <h5 class="m-0 fw-bold text-dark">Specifications</h5>
+                                                        <span class="text-secondary fw-bold" id="specify_length"></span>
+                                                    </div>
+                                                    <div class="card-body p-0">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-hover table-bordered m-0 align-middle">
+                                                                <thead class="table-light">
+                                                                    <tr>
+                                                                        <th style="width: 40%;">Specification Name</th>
+                                                                        <th style="width: 60%;">Value</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody class="spectable">
+                                                                    @php
+                                                                        $specById = [];
+                                                                        $specByName = [];
+                                                                        foreach ($productspecs as $ps) {
+                                                                            if (!empty($ps->spec_id)) {
+                                                                                $specById[$ps->spec_id] = $ps->specify_value;
+                                                                            }
+                                                                            if (!empty($ps->specify_attribute)) {
+                                                                                $specByName[$ps->specify_attribute] = $ps->specify_value;
+                                                                            }
+                                                                        }
+                                                                    @endphp
+                                                                    @foreach ($specification as $spec)
+                                                                        @php
+                                                                            $specValues = json_decode($spec->specification_values ?? '[]', true) ?: [];
+                                                                            $selectedValue = $specById[$spec->id] ?? ($specByName[$spec->specification_group_name] ?? '');
+                                                                        @endphp
+                                                                        <tr>
+                                                                            <td>
+                                                                                <div class="form-check m-0 d-flex align-items-center">
+                                                                                    <input class="form-check-input m-0" type="checkbox" id="spec_id_{{ $spec->id }}" name="spec_id[]" value="{{ $spec->id }}" {{ $selectedValue !== '' ? 'checked' : '' }}>
+                                                                                    <label class="form-check-label fw-bold text-secondary ms-2 mb-0" for="spec_id_{{ $spec->id }}">
+                                                                                        {{ $spec->specification_group_name }}
+                                                                                    </label>
+                                                                                </div>
+                                                                                <input type="hidden" name="specify_attribute[{{ $spec->id }}]" value="{{ $spec->specification_group_name }}">
+                                                                            </td>
+                                                                            <td>
+                                                                                <select class="form-select text-secondary" name="specify_value[{{ $spec->id }}]" id="specify_value_{{ $spec->id }}">
+                                                                                    <option value="" hidden {{ $selectedValue === '' ? 'selected' : '' }}>-- Select {{ $spec->specification_group_name }} --</option>
+                                                                                    @foreach ($specValues as $specify_val)
+                                                                                        <option value="{{ $specify_val }}" {{ $specify_val == $selectedValue ? 'selected' : '' }}>{{ $specify_val }}</option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
                                                         </div>
                                                     </div>
+                                                </div>
             
                                                     <div class="col-xl-12">
                                                         <div class="card p-3">
@@ -760,31 +739,20 @@
         //image preview
          //main image
 
-         $("#mainImg").on("change", function(e) {
-            //console.log(e);
-            
-            var files = e.target.files,
-                filesLength = files.length;
-            
-            for (var i = 0; i < filesLength; i++) {
-                var f = files[i]
-                var fileReader = new FileReader();
-                fileReader.onload = (function(e) {
-                    var file = e.target;
-                  
-                    $("<div class='col-md-2'><span class=\"pip\">" +
-                        "<img class=\"imageThumb\" src=\"" + e.target.result +
-                        "\" title=\"" + file.name + "\"/>" +
-                        "<br/><span class=\"remove\">Remove image</span>" +
-                        "</span></div>").insertAfter("#ming_preview");
-                    $(".remove").click(function() {
-                        $(this).parent(".pip").remove();
-                    });
-
-                });
-                fileReader.readAsDataURL(f);
-            }
-        });
+         $("#productMainImgInput").on("change", function(e) {
+             var file = this.files;
+             var img = document.getElementById('productMainImgPreview');
+             if (file && file[0]) {
+                 img.onload = () => {
+                     URL.revokeObjectURL(img.src);
+                 }
+                 img.src = URL.createObjectURL(file[0]);
+                 $(img).show();
+             } else {
+                 img.src = "";
+                 $(img).hide();
+             }
+         });
         //image preciew
     $("#im1").on("change", function(e) {
             //console.log(e);
@@ -838,11 +806,122 @@
            var lis =$(this).val();
            //alert(lis);
            
-            if (x < max_fields) { //max input box allowed
-                x++; //text box increment
-            $(wrapper).append('<hr style="color:black;size:3px;"><div class="w "><div class="row mt-2"><div class="col-md-3"> <div class="form-group flex"><div class="row"><div class="col-md-3"><span class="btn btn-primary btn-productimg"><i class="fa fa-cloud-upload" aria-hidden="true"></i> <input class="form-control add_product" type="file" id="p_mainimg'+x+'" name="mainimg[]" onchange="previewmainImg(this)"  accept="image/*"> </span><label class="text-secondary fw-bold">Upload main image</label> </div> <div class="col-md-3"> <span class="btn btn-primary btn-productimg"  > <i class="fa fa-cloud-upload" aria-hidden="true"></i> <input class="form-control add_product" type="file" id="subimg1'+x+'" onchange="previewsubImg1(this)" name="subimg1[]"  accept="image/*"> </span><label class="text-secondary">Upload Sub image1</label> </div> <div class="col-md-3"> <span class="btn btn-primary btn-productimg"  > <i class="fa fa-cloud-upload" aria-hidden="true"></i> <input class="form-control add_product" type="file" id="subimg2'+x+'" onchange="previewsubImg2(this)" name="subimg2[]"  accept="image/*"> </span><label class="text-secondary">Upload Sub image2</label> </div> <div class="col-md-3"> <span class="btn btn-primary btn-productimg" > <i class="fa fa-cloud-upload" aria-hidden="true"></i> <input class="form-control add_product" type="file" id="subimg3'+x+'" name="subimg3[]" onchange="previewsubImg3(this)" accept="image/*"> </span><label class="text-secondary">Upload Sub image2</label> </div><input type="hidden" name="product_details_id[]" placeholder=""class="form-control"></div></div></div><div class="col-md-9"> <div class="row"><div class="col-md-2"><select class="form-select form-select-lg text-secondary attrcolor" name="attrcolor[]" id ="attrcolor'+x+'"><option hidden>Color</option></select></div><div class="col-md-2"><select class="form-select form-select-lg text-secondary attrsize" name ="attrsize[]" placeholder="Size" id ="attrsize'+x+'"><option hidden>Size</option></select></div><div class="col-md-2"> <input type="text" name="retail_price[]" placeholder="Retail Price" class="form-control" required></div><div class="col-md-2"><input type="text" name="selling_price[]" placeholder="Selling Price" class="form-control" required></div><div class="col-md-2"><input type="number" class="form-control" placeholder="Qty" name="quantity[]" required></div> </div><div class="row mt-3"><div class="col-md-2"><input type="text" name="sku[]" placeholder="SKU"  class="form-control" required  ></div><div class="col-md-2"><select class="form-select form-select-lg text-secondary"  name="return_replace[]" required><option selected value="" hidden>Return /Replacement</option><option value="1">Return</option><option value="2">Return</option><option value="3">Replacement</option><option value="4">NA</option></select></div><div class="col-md-2"><input type="text" name="r_days[]" placeholder="Days"  class="form-control" required></div>  <div class="col-md-2"><input type="number" name="low_stock_limit[]"  placeholder="Low Stock Limit" class="form-control" required></div>  <div class="col-md-1 "> <a href="#" class="remove_field h6 btn btn-sm bg-warning m-0" style="text-decoration: none;background-color:red;">remove</a></div>  <div class="col-md-3"><span class="text-danger fw-bold" id="bill_month'+x+'_err"></span></div></div><br></div><div class="row "" ><div class="col-md-2"><div class="img-thumb-wrapper card shadow"> <img class="img-thumb" id="mainr1'+x+'"  src=""   /> <br/><span class="removeimg" id="removemainimg" value="mainimg">Remove</span> </div></div> <div class="col-md-2"><div class="img-thumb-wrapper card shadow"> <img class="img-thumb" id="sub1r1'+x+'"  src=""   /> <br/><span class="removeimg" id="removesub1img" value="subimg1">Remove</span> </div></div> <div class="col-md-2"><div class="img-thumb-wrapper card shadow"> <img class="img-thumb" id="sub2r1'+x+'"  src=""   /> <br/><span class="removeimg" id="removesub2img" value="subimg2">Remove</span> </div></div> <div class="col-md-2"><div class="img-thumb-wrapper card shadow"> <img class="img-thumb" id="sub3r1'+x+'"  src=""   /> <br/><span class="removeimg" id="removesub3img" value="subimg3">Remove</span> </div></div></div>'
-                    ); //add input box
-                           // $(wrapper).append('<hr style="color:black;size:3px;"><div class="w "><div class="row mt-2"><div class="col-md-3"> <div class="form-group"><label class="text-secondary fw-bold">Upload main image</label><input class="form-control " type="file" id="im'+x+'" onchange="previewImg(this)"  name="nproducts[]" accept="image/*"> <input type="hidden"name="product_details_id[]" placeholder=""class="form-control" required  value="0"></div></div><div class="col-md-9"> <div class="row"><div class="col-md-2"><select class="form-select form-select-lg text-secondary attrsize" name ="attrsize[]" id ="attrsize'+x+'"></select></div><div class="col-md-2"><select class="form-select form-select-lg text-secondary attrcolor" name="attrcolor[]" id ="attrcolor'+x+'"></select></div><div class="col-md-2"> <input type="text" name="retail_price[]" placeholder="Retail Price" class="form-control" required></div><div class="col-md-2"><input type="text" name="selling_price[]" placeholder="Selling Price" class="form-control" required></div><div class="col-md-2"><input type="number" class="form-control" placeholder="Qty" name="quantity[]" required></div> </div><div class="row mt-3"><div class="col-md-2"><input type="text" name="sku[]" placeholder="SKU"  class="form-control" required  ></div><div class="col-md-2"><select class="form-select form-select-lg text-secondary"  name="return_replace[]" required><option selected value="" hidden>Return /Replacement</option><option value="1">Return</option><option value="2">Replacement</option></select></div><div class="col-md-2"><input type="text" name="r_days[]" placeholder="Days"  class="form-control" required></div>  <div class="col-md-2"><input type="number" name="low_stock_limit[]"  placeholder="Low Stock Limit" class="form-control" required></div>  <div class="col-md-1 "> <a href="#" class="remove_field h6 btn btn-sm bg-warning m-0" style="text-decoration: none;background-color:red;">remove</a></div>  <div class="col-md-3"><span class="text-danger fw-bold" id="bill_month'+x+'_err"></span></div></div><br></div><div class="row " onload = "addmore()"" ><div class="col-md-12 " id="r'+x+'"></div> </div>'
+            $(wrapper).append(
+                '<div class="variant-card w" id="variant-card-'+x+'">' +
+                '    <div class="variant-card-header">' +
+                '        <h6 class="m-0 fw-bold text-primary">Variant #'+(x+1)+'</h6>' +
+                '        <button class="remove_field btn btn-xs btn-danger m-0" value=""><i class="fa fa-trash"></i> Remove</button>' +
+                '    </div>' +
+                '    <div class="card-body p-4">' +
+                '        <input type="hidden" name="product_details_id[]" value="" required>' +
+                '        <div class="row">' +
+                '            <div class="col-md-9">' +
+                '                <div class="row g-3">' +
+                '                    <div class="col-md-4">' +
+                '                        <label class="form-label fw-bold text-secondary mb-1">Color</label>' +
+                '                        <select class="form-select text-secondary attrcolor" name="attrcolor[]" id="attrcolor'+x+'"><option hidden>Color</option></select>' +
+                '                    </div>' +
+                '                    <div class="col-md-4">' +
+                '                        <label class="form-label fw-bold text-secondary mb-1">Size</label>' +
+                '                        <select class="form-select text-secondary attrsize" name="attrsize[]" id="attrsize'+x+'"><option hidden>Size</option></select>' +
+                '                    </div>' +
+                '                    <div class="col-md-4">' +
+                '                        <label class="form-label fw-bold text-secondary mb-1">Retail Price</label>' +
+                '                        <input type="text" name="retail_price[]" placeholder="Retail Price" class="form-control" required>' +
+                '                    </div>' +
+                '                    <div class="col-md-4">' +
+                '                        <label class="form-label fw-bold text-secondary mb-1">Selling Price</label>' +
+                '                        <input type="text" name="selling_price[]" placeholder="Selling Price" class="form-control" required>' +
+                '                    </div>' +
+                '                    <div class="col-md-4">' +
+                '                        <label class="form-label fw-bold text-secondary mb-1" id="lowstack'+(x+1)+'">Quantity</label>' +
+                '                        <input type="number" class="qty form-control" id="qty'+(x+1)+'" placeholder="Qty" name="quantity[]" required>' +
+                '                    </div>' +
+                '                    <div class="col-md-4">' +
+                '                        <label class="form-label fw-bold text-secondary mb-1">SKU</label>' +
+                '                        <input type="text" name="sku[]" placeholder="SKU" class="form-control" required>' +
+                '                    </div>' +
+                '                    <div class="col-md-4">' +
+                '                        <label class="form-label fw-bold text-secondary mb-1">Return / Replacement</label>' +
+                '                        <select class="form-select text-secondary" name="return_replace[]">' +
+                '                            <option value="">Select</option>' +
+                '                            <option value="Return">Return</option>' +
+                '                            <option value="Replacement">Replacement</option>' +
+                '                        </select>' +
+                '                    </div>' +
+                '                    <div class="col-md-4">' +
+                '                        <label class="form-label fw-bold text-secondary mb-1">Return Days</label>' +
+                '                        <input type="text" name="r_days[]" placeholder="Days" class="form-control">' +
+                '                    </div>' +
+                '                    <div class="col-md-4">' +
+                '                        <label class="form-label fw-bold text-secondary mb-1">Low Stock Limit</label>' +
+                '                        <input type="number" name="low_stock_limit[]" id="low_stock_limit'+(x+1)+'" placeholder="Low Stock Limit" class="low_stock_limit form-control" required>' +
+                '                    </div>' +
+                '                </div>' +
+                '            </div>' +
+                '            <div class="col-md-3 border-start">' +
+                '                <div class="px-2">' +
+                '                    <label class="form-label fw-bold text-dark mb-2">Variant Images</label>' +
+                '                    <div class="row g-2">' +
+                '                        <div class="col-6">' +
+                '                            <div class="border rounded p-2 text-center bg-light position-relative">' +
+                '                                <span class="d-block mb-1 small fw-bold text-secondary">Main Image</span>' +
+                '                                <div class="img-preview-box mb-2">' +
+                '                                    <img class="img-thumb" id="mainr'+x+'" src="" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;" />' +
+                '                                </div>' +
+                '                                <span class="btn btn-xs btn-outline-primary btn-productimg w-100">' +
+                '                                    <i class="fa fa-cloud-upload"></i> Upload' +
+                '                                    <input class="form-control add_product" type="file" onchange="previewmainImg(this)" id="p_mainimg'+x+'" name="mainimg[]" accept="image/*">' +
+                '                                </span>' +
+                '                                <input type="hidden" name="old_mainimg[]" value="">' +
+                '                            </div>' +
+                '                        </div>' +
+                '                        <div class="col-6">' +
+                '                            <div class="border rounded p-2 text-center bg-light position-relative">' +
+                '                                <span class="d-block mb-1 small fw-bold text-secondary">Sub Image 1</span>' +
+                '                                <div class="img-preview-box mb-2">' +
+                '                                    <img class="img-thumb" id="sub1r'+x+'" src="" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;" />' +
+                '                                </div>' +
+                '                                <span class="btn btn-xs btn-outline-primary btn-productimg w-100">' +
+                '                                    <i class="fa fa-cloud-upload"></i> Upload' +
+                '                                    <input class="form-control add_product" type="file" onchange="previewsubImg1(this)" id="subimg1'+x+'" name="subimg1[]" accept="image/*">' +
+                '                                </span>' +
+                '                                <input type="hidden" name="old_subimg1[]" value="">' +
+                '                            </div>' +
+                '                        </div>' +
+                '                        <div class="col-6 mt-2">' +
+                '                            <div class="border rounded p-2 text-center bg-light position-relative">' +
+                '                                <span class="d-block mb-1 small fw-bold text-secondary">Sub Image 2</span>' +
+                '                                <div class="img-preview-box mb-2">' +
+                '                                    <img class="img-thumb" id="sub2r'+x+'" src="" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;" />' +
+                '                                </div>' +
+                '                                <span class="btn btn-xs btn-outline-primary btn-productimg w-100">' +
+                '                                    <i class="fa fa-cloud-upload"></i> Upload' +
+                '                                    <input class="form-control add_product" type="file" onchange="previewsubImg2(this)" id="subimg2'+x+'" name="subimg2[]" accept="image/*">' +
+                '                                </span>' +
+                '                                <input type="hidden" name="old_subimg2[]" value="">' +
+                '                            </div>' +
+                '                        </div>' +
+                '                        <div class="col-6 mt-2">' +
+                '                            <div class="border rounded p-2 text-center bg-light position-relative">' +
+                '                                <span class="d-block mb-1 small fw-bold text-secondary">Sub Image 3</span>' +
+                '                                <div class="img-preview-box mb-2">' +
+                '                                    <img class="img-thumb" id="sub3r'+x+'" src="" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;" />' +
+                '                                </div>' +
+                '                                <span class="btn btn-xs btn-outline-primary btn-productimg w-100">' +
+                '                                    <i class="fa fa-cloud-upload"></i> Upload' +
+                '                                    <input class="form-control add_product" type="file" onchange="previewsubImg3(this)" id="subimg3'+x+'" name="subimg3[]" accept="image/*">' +
+                '                                </span>' +
+                '                                <input type="hidden" name="old_subimg3[]" value="">' +
+                '                            </div>' +
+                '                        </div>' +
+                '                    </div>' +
+                '                </div>' +
+                '            </div>' +
+                '        </div>' +
+                '    </div>' +
+                '</div>'
+            );
 
             }
 
@@ -958,28 +1037,27 @@
     // });
 
 
-   // Image previve main img
+   // Image preview main img
    function previewmainImg(a)
-                {
-                let idee=a.id; 
-                   let file=$('#'+idee).prop('files'); 
-                   
-                const myArray = idee.split("p_mainimg");
-                 let x =   myArray[1]; 
-                    var thy = $(this);
-                    
-                    var img = document.getElementById('mainr1'+x);
-                    var fi = $(a).attr('id');
-                    if (file && file[0]) {                        
-                    img.onload = () => {
-                        URL.revokeObjectURL(img.src);  // no longer needed, free memory
-                    }
-                        img.src = URL.createObjectURL(file[0]); // set src to blob url
-                    }  else{
-                        img.src="";
-                    }
-                console.log(files);                             
-                }
+   {
+       let idee = a.id; 
+       let file = $('#'+idee).prop('files'); 
+       
+       const myArray = idee.split("p_mainimg");
+       let x = myArray[1]; 
+       
+       var img = document.getElementById('mainr'+x);
+       if (file && file[0]) {                        
+           img.onload = () => {
+               URL.revokeObjectURL(img.src);
+           }
+           img.src = URL.createObjectURL(file[0]);
+           img.style.display = 'block';
+       } else {
+           img.src = "";
+           img.style.display = 'none';
+       }
+   }
 
 // Image previve sub img1
             function previewsubImg1(a)
@@ -991,7 +1069,7 @@
                  let x =   myArray[1]; 
                     var thy = $(this);
                     
-                    var img = document.getElementById('sub1r1'+x);
+                    var img = document.getElementById('sub1r'+x);
                     var fi = $(a).attr('id');
                     if (file && file[0]) {                      
                       
@@ -999,9 +1077,11 @@
                         URL.revokeObjectURL(img.src);  // no longer needed, free memory
                     }                   
                         img.src = URL.createObjectURL(file[0]); // set src to blob url
+                        img.style.display = 'block';
                     }else{  
                                              
                         img.src="";
+                        img.style.display = 'none';
                     }                 
                 console.log(files);                             
                 }
@@ -1016,7 +1096,7 @@
                  let x =   myArray[1]; 
                     var thy = $(this);
                     
-                    var img = document.getElementById('sub2r1'+x);
+                    var img = document.getElementById('sub2r'+x);
                     var fi = $(a).attr('id');
                     if (file && file[0]) {                      
                         
@@ -1024,9 +1104,11 @@
                         URL.revokeObjectURL(img.src);  // no longer needed, free memory
                     }                   
                         img.src = URL.createObjectURL(file[0]); // set src to blob url
+                        img.style.display = 'block';
                     }  else{  
                                              
                         img.src="";
+                        img.style.display = 'none';
                     }
                 console.log(files);
                 }
@@ -1041,7 +1123,7 @@
                 let x =   myArray[1]; 
                 var thy = $(this);
                     
-                    var img = document.getElementById('sub3r1'+x);
+                    var img = document.getElementById('sub3r'+x);
                     var fi = $(a).attr('id');
                     if (file && file[0]) {
 
@@ -1049,8 +1131,10 @@
                         URL.revokeObjectURL(img.src);  // no longer needed, free memory
                     }
                         img.src = URL.createObjectURL(file[0]); // set src to blob url
+                        img.style.display = 'block';
                     }  else{
                         img.src="";
+                        img.style.display = 'none';
                     }
                 console.log(files);
                 }

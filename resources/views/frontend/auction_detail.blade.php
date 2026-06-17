@@ -9,33 +9,33 @@
 
         .tm-title { font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom: 25px; line-height: 1.25; letter-spacing: -0.5px; }
         
-        .tm-timer-blocks { display: flex; gap: 6px; margin-bottom: 24px; }
-        .timer-block { background: #4b4b4b; color: #fff; padding: 12px 10px; text-align: center; flex: 1; border-radius: 6px; display: flex; flex-direction: column; justify-content: center; }
-        .timer-block span { font-size: 20px; font-weight: 700; display: block; line-height: 1; margin-bottom: 4px; color: #fff; }
-        .timer-block small { font-size: 13px; font-weight: 500; text-transform: capitalize; color: #e2e8f0; }
-        .timer-block-days span { color: #f97316; }
-
-
-        .tm-bid-box { background: #fff; border-radius: 20px; margin-bottom: 24px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; transition: transform 0.3s ease; }
-        .tm-bid-box:hover { transform: translateY(-3px); box-shadow: 0 15px 50px rgba(0,0,0,0.06); }
-        .tm-bid-box-inner { padding: 40px 32px; text-align: center; position: relative; }
-        
-        .tm-current-bid-label { font-size: 14px; color: #64748b; margin-bottom: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
-        .tm-current-bid-value { font-size: 38px; font-weight: 800; color: #000; margin-bottom: 30px; line-height: 1; letter-spacing: normal; font-family: inherit; }
-        
-        .tm-bid-input-group { display: flex; gap: 0; margin-bottom: 15px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 6px; transition: all 0.3s ease; align-items: stretch; }
-        .tm-bid-input-group:focus-within { border-color: #3b82f6; background: #fff; box-shadow: 0 8px 25px rgba(59,130,246,0.15); transform: translateY(-2px); }
-        .tm-bid-currency { display: flex; align-items: center; padding-left: 20px; font-size: 20px; font-weight: 800; color: #64748b; font-family: Arial, sans-serif; user-select: none; }
-        .tm-bid-input { flex: 1; padding: 16px 12px; border: none; background: transparent; font-size: 20px; font-weight: 800; color: #0f172a; text-align: left; width: 100%; }
-        .tm-bid-input:focus { outline: none; }
-        .tm-bid-input::placeholder { color: #94a3b8; font-weight: 600; font-size: 16px; }
-        .tm-place-bid-btn { background: #0f172a; color: #fff; border: none; padding: 0 32px; font-weight: 700; font-size: 16px; border-radius: 12px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); white-space: nowrap; }
-        .tm-place-bid-btn:hover { background: #2563eb; box-shadow: 0 8px 25px rgba(37,99,235,0.3); }
-        .tm-place-bid-btn:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; color: #94a3b8; }
-
-        .tm-reserve-status { font-size: 14px; color: #059669; margin-bottom: 8px; font-weight: 700; background: #d1fae5; display: inline-block; padding: 6px 16px; border-radius: 20px; letter-spacing: 0.5px; }
-        .tm-bid-history-link { font-size: 15px; color: #64748b; text-decoration: none; font-weight: 600; display: block; margin-top: 8px; transition: color 0.2s; }
-        .tm-bid-history-link:hover { color: #2563eb; text-decoration: underline; }
+         .tm-timer-blocks { display: flex; gap: 6px; margin-bottom: 24px; }
+         .timer-block { background: #4b4b4b; color: #fff; padding: 12px 10px; text-align: center; flex: 1; border-radius: 6px; display: flex; flex-direction: column; justify-content: center; }
+         .timer-block span { font-size: 26px; font-weight: 700; display: block; line-height: 1; margin-bottom: 4px; color: #fff; }
+         .timer-block small { font-size: 14px; font-weight: 500; text-transform: capitalize; color: #e2e8f0; }
+         .timer-block-days span { color: #f97316; }
+ 
+ 
+         .tm-bid-box { background: #fff; border-radius: 20px; margin-bottom: 24px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; transition: transform 0.3s ease; }
+         .tm-bid-box:hover { transform: translateY(-3px); box-shadow: 0 15px 50px rgba(0,0,0,0.06); }
+         .tm-bid-box-inner { padding: 40px 32px; text-align: center; position: relative; }
+         
+         .tm-current-bid-label { font-size: 14px; color: #64748b; margin-bottom: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
+         .tm-current-bid-value { font-size: 44px; font-weight: 800; color: #000; margin-bottom: 30px; line-height: 1; letter-spacing: normal; font-family: inherit; }
+         
+         .tm-bid-input-group { display: flex; gap: 0; margin-bottom: 15px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 6px; transition: all 0.3s ease; align-items: stretch; }
+         .tm-bid-input-group:focus-within { border-color: #3b82f6; background: #fff; box-shadow: 0 8px 25px rgba(59,130,246,0.15); transform: translateY(-2px); }
+         .tm-bid-currency { display: flex; align-items: center; padding-left: 20px; font-size: 20px; font-weight: 800; color: #64748b; font-family: Arial, sans-serif; user-select: none; }
+         .tm-bid-input { flex: 1; padding: 16px 12px; border: none; background: transparent; font-size: 20px; font-weight: 800; color: #0f172a; text-align: left; width: 100%; }
+         .tm-bid-input:focus { outline: none; }
+         .tm-bid-input::placeholder { color: #94a3b8; font-weight: 600; font-size: 16px; }
+         .tm-place-bid-btn { background: #0f172a; color: #fff; border: none; padding: 0 32px; font-weight: 700; font-size: 16px; border-radius: 12px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); white-space: nowrap; }
+         .tm-place-bid-btn:hover { background: #2563eb; box-shadow: 0 8px 25px rgba(37,99,235,0.3); }
+         .tm-place-bid-btn:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; color: #94a3b8; }
+ 
+         .tm-reserve-status { font-size: 14px; color: #059669; margin-bottom: 8px; font-weight: 700; background: #d1fae5; display: inline-block; padding: 6px 16px; border-radius: 20px; letter-spacing: 0.5px; }
+         .tm-bid-history-link { font-size: 18px; color: #64748b; text-decoration: none; font-weight: 600; display: block; margin-top: 8px; transition: color 0.2s; }
+         .tm-bid-history-link:hover { color: #2563eb; text-decoration: underline; }
         
         .tm-shipping-info { background: #f8fafc; border-top: 1px solid #f1f5f9; padding: 20px 32px; font-size: 15px; color: #475569; display: flex; align-items: center; font-weight: 600; }
         .tm-shipping-info i { margin-right: 14px; font-size: 20px; color: #94a3b8; }
