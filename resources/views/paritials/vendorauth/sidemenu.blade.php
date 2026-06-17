@@ -42,12 +42,12 @@
                         data-feather="home"></i><span>Dashboard</span></a></li>
 
                 {{-- category --}}
-                {{-- <li><a class="sidebar-header" href="#"><i data-feather="box"></i> <span>Category</span><i
+                <li><a class="sidebar-header" href="#"><i data-feather="box"></i> <span>Category</span><i
                     class="fa fa-angle-right pull-right"></i></a>
                     <ul class="sidebar-submenu">
                         <li><a href="{{ route('vendorcategory.sub.index') }}"><i class="fa fa-circle"></i>Sub Category</a></li>
                     </ul>
-                </li> --}}
+                </li>
             
             
             
