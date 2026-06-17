@@ -244,6 +244,9 @@ class SpecificationGroupController extends Controller
     {
         $group = SpecificationGroup::find($request->id);
         if ($group) {
+            if ($group->created_by === 'Admin') {
+                return response()->json(['success' => false, 'message' => 'Cannot change status of Admin-created group.'], 403);
+            }
             $group->status = $request->status;
             $group->save();
             return response()->json(['success' => true, 'message' => 'Status updated successfully.']);

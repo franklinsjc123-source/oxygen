@@ -122,11 +122,11 @@
                     <td>
                         <label class="switch">
                             @if($group->status == 'Active' || $group->status == '1' || $group->status == 1)
-                                <input type="checkbox" class="status-toggle" data-id="{{ $group->id }}" checked>
+                                <input type="checkbox" class="status-toggle" data-id="{{ $group->id }}" checked {{ $group->created_by === 'Admin' ? 'disabled' : '' }}>
                             @else
-                                <input type="checkbox" class="status-toggle" data-id="{{ $group->id }}">
+                                <input type="checkbox" class="status-toggle" data-id="{{ $group->id }}" {{ $group->created_by === 'Admin' ? 'disabled' : '' }}>
                             @endif
-                            <div class="slider round">
+                            <div class="slider round" style="{{ $group->created_by === 'Admin' ? 'cursor: not-allowed; opacity: 0.6;' : '' }}">
                                 <span class="on">Active</span>
                                 <span class="off">Inactive</span>
                             </div>
