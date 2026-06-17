@@ -216,11 +216,15 @@ class SpecificationGroupController extends Controller
     {
         $id = $request->id;
         $group = SpecificationGroup::findOrFail($id);
-        if ($group->created_by !== 'Vendor' || $group->created_byid != session()->get('login_id')) {
+        $isAuthorized = ($group->created_by === 'Admin') || ($group->created_by === 'Vendor' && $group->created_byid == session()->get('login_id'));
+        if (!$isAuthorized) {
             return redirect()->route('specification_groups.index')->with('error', 'Unauthorized access.');
         }
+        $values = is_array($request->value) ? array_values(array_filter(array_map('trim', $request->value), function($val) {
+            return $val !== '';
+        })) : [];
         $group->update([
-            'specification_values' => json_encode($request->value)
+            'specification_values' => json_encode($values)
         ]);
 
         return redirect()->route('specification_groups.index')->with('success', 'Specification updated successfully.');

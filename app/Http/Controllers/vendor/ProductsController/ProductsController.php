@@ -126,24 +126,31 @@ class ProductsController extends Controller
 
         $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $category_sub->id)->where('vendor_id', $login_id)->first();
         $hasMapping = !is_null($mapping);
-        $adminMappedSpecIds = SpecificationGroup::where(function($q) use ($category_sub, $login_id) {
-                $q->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$category_sub->id])
-                  ->orWhere('created_byid', $login_id);
-            })->pluck('id')->toArray();
 
-        $defaultSpecIds = ($category_sub->category_sub_specifications != '') ? explode(',', $category_sub->category_sub_specifications) : [];
-        $validSpecificationIds = array_unique(array_map('intval', array_merge($defaultSpecIds, $adminMappedSpecIds)));
+        // Fetch all specification groups created by this vendor that are mapped to this subcategory
+        $vendorSpecIds = SpecificationGroup::where('created_by', 'Vendor')
+            ->where('created_byid', $login_id)
+            ->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$category_sub->id])
+            ->pluck('id')
+            ->toArray();
 
+        // Fetch Admin-created specification groups
         if ($hasMapping) {
-            $specdata = ($mapping->category_sub_specification_ids)
+            $adminSpecIds = $mapping->category_sub_specification_ids
                 ? (json_decode($mapping->category_sub_specification_ids, true) ?: [])
                 : [];
-            $specdata = array_intersect(array_map('intval', $specdata), $validSpecificationIds);
         } else {
-            $specdata = [];
+            $adminSpecIds = ($category_sub->category_sub_specifications != '')
+                ? explode(',', $category_sub->category_sub_specifications)
+                : [];
         }
 
-        $specdata = array_values(array_filter(array_map('intval', $specdata)));
+        // Merge both sets of specification group IDs
+        $specdata = array_unique(array_merge(
+            array_map('intval', $adminSpecIds),
+            array_map('intval', $vendorSpecIds)
+        ));
+        $specdata = array_values(array_filter($specdata));
 
         if ($mapping && $mapping->category_sub_attribute_ids) {
             $vendorAttrs = array_map('intval', json_decode($mapping->category_sub_attribute_ids, true) ?: []);
@@ -662,12 +669,13 @@ public function store(Request $request, FlasherInterface $flasher)
         $offer = Offer::where('created_by_id',$login_id)->where('status',1)->get();
 
         $subCategoryId = (int) ($products->category_sub ?? $category_sub);
-        $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $subCategoryId)->first();
+        $mapping = DB::table('sub_category_mapping')
+            ->where('sub_category_id', $subCategoryId)
+            ->where('vendor_id', $login_id)
+            ->first();
+        $hasMapping = !is_null($mapping);
+
         $adminMappedAttributeIds = AttributeGroup::where(function($q) use ($subCategoryId, $login_id) {
-                $q->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subCategoryId])
-                  ->orWhere('created_byid', $login_id);
-            })->pluck('id')->toArray();
-        $adminMappedSpecIds = SpecificationGroup::where(function($q) use ($subCategoryId, $login_id) {
                 $q->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subCategoryId])
                   ->orWhere('created_byid', $login_id);
             })->pluck('id')->toArray();
@@ -676,23 +684,38 @@ public function store(Request $request, FlasherInterface $flasher)
         $defaultAttrIds = ($subCategory && !empty($subCategory->category_sub_attributes)) ? explode(',', $subCategory->category_sub_attributes) : [];
         $validAttrIds = array_unique(array_map('intval', array_merge($defaultAttrIds, $adminMappedAttributeIds)));
 
-        $defaultSpecIds = ($subCategory && !empty($subCategory->category_sub_specifications)) ? explode(',', $subCategory->category_sub_specifications) : [];
-        $validSpecIds = array_unique(array_map('intval', array_merge($defaultSpecIds, $adminMappedSpecIds)));
-
-        if ($mapping) {
+        if ($hasMapping) {
             $attributeIds = $mapping->category_sub_attribute_ids
                 ? (json_decode($mapping->category_sub_attribute_ids, true) ?: [])
                 : [];
             $attributeIds = array_intersect(array_map('intval', (array)$attributeIds), $validAttrIds);
-
-            $specificationIds = $mapping->category_sub_specification_ids
-                ? (json_decode($mapping->category_sub_specification_ids, true) ?: [])
-                : [];
-            $specificationIds = array_intersect(array_map('intval', (array)$specificationIds), $validSpecIds);
         } else {
             $attributeIds = $validAttrIds;
-            $specificationIds = $validSpecIds;
         }
+
+        // Fetch all specification groups created by this vendor that are mapped to this subcategory
+        $vendorSpecIds = SpecificationGroup::where('created_by', 'Vendor')
+            ->where('created_byid', $login_id)
+            ->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subCategoryId])
+            ->pluck('id')
+            ->toArray();
+
+        // Fetch Admin-created specification groups
+        if ($hasMapping) {
+            $adminSpecIds = $mapping->category_sub_specification_ids
+                ? (json_decode($mapping->category_sub_specification_ids, true) ?: [])
+                : [];
+        } else {
+            $adminSpecIds = ($subCategory && !empty($subCategory->category_sub_specifications))
+                ? explode(',', $subCategory->category_sub_specifications)
+                : [];
+        }
+
+        // Merge both sets of specification group IDs
+        $specificationIds = array_unique(array_merge(
+            array_map('intval', $adminSpecIds),
+            array_map('intval', $vendorSpecIds)
+        ));
 
         $attributeIds = array_values(array_filter(array_map('intval', $attributeIds)));
         $specificationIds = array_values(array_filter(array_map('intval', $specificationIds)));
