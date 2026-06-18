@@ -1025,9 +1025,9 @@
                         );
                 });
 
-                subIds.forEach(id => {
-                    $inputs.append(`<input type="hidden" name="sub_category_ids[]" value="${id}">`);
-                });
+                if (subIds.size > 0) {
+                    $inputs.append(`<input type="hidden" name="sub_category_ids_csv" value="${Array.from(subIds).join(',')}">`);
+                }
             }
 
             $(document).on('change', '.main-cat', function() {

@@ -123,7 +123,7 @@ class AttributeController extends Controller
                     $adminMapping = DB::table('sub_category_mapping')->where('sub_category_id', $subId)->whereNull('vendor_id')->first();
                     $attrs = $adminMapping ? (json_decode($adminMapping->category_sub_attribute_ids, true) ?: []) : [];
                     $globalAttrs = explode(',', $group->sub_category_ids ?? '');
-                    if (in_array($id, $attrs) || in_array($id, $globalAttrs)) {
+                    if (in_array($id, $attrs) || in_array($subId, $globalAttrs)) {
                         $vendorSelectedSubIds[] = $subId;
                     }
                 }
@@ -293,7 +293,11 @@ class AttributeController extends Controller
             return redirect()->route('vendorattribute.master.index')->with('error', 'Unauthorized access');
         }
 
-        $group->attribute_values = json_encode($request->value);
+        $values = is_array($request->value) ? array_values(array_filter(array_map('trim', $request->value), function($val) {
+            return $val !== '';
+        })) : [];
+
+        $group->attribute_values = json_encode($values);
         $group->update();
 
         return redirect()->route('vendorattribute.master.index')->with('success', 'Attributes updated successfully.');

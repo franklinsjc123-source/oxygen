@@ -117,7 +117,10 @@ class AttributeGroupController extends Controller
     {
         $id=  $request->id;
         $login_id = session()->get('login_id');
-        $validated['attribute_values'] = json_encode($request->value);
+        $values = is_array($request->value) ? array_values(array_filter(array_map('trim', $request->value), function($val) {
+            return $val !== '';
+        })) : [];
+        $validated['attribute_values'] = json_encode($values);
         $validated['created_by'] = "Admin";
         $validated['created_byid'] = $login_id;
         $group = AttributeGroup::findOrFail($id);

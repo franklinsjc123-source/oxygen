@@ -83,27 +83,14 @@ class SpecificationGroupController extends Controller
             return redirect()->route('specification_groups.index')->with('error', 'Unauthorized access.');
         }
 
-        $vendorcreate = vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
-        $subcategoryarray = array_values(array_filter(array_map('intval', array_map('trim', explode(',', (string) optional($vendorcreate)->sub_category_ids)))));
-
-        $query = DB::table('category_sub as t1')
+        $CategoryMain = CategoryMain::where('status', 1)->select('id', 'category_main_name')->get();
+        $Category = Category::where('status', 1)->select('id', 'main_category_id', 'category_name')->get();
+        $CategorySub = DB::table('category_sub as t1')
             ->join('category as t2', 't1.category_id', '=', 't2.id')
             ->join('category_main as t3', 't1.category_main_id', '=', 't3.id')
             ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
             ->where('t1.status', 1)
-            ->whereIn('t1.id', $subcategoryarray);
-
-        if ($group->created_by === 'Admin') {
-            $adminAssignedIds = array_values(array_filter(array_map('intval', explode(',', $group->sub_category_ids ?? ''))));
-            if (!empty($adminAssignedIds)) {
-                $query->whereIn('t1.id', $adminAssignedIds);
-            } else {
-                // If admin didn't assign any, the vendor shouldn't see any
-                $query->whereRaw('1 = 0');
-            }
-        }
-
-        $CategorySub = $query->get();
+            ->get();
 
         $vendorSelectedSubIds = [];
         if ($group->created_by === 'Admin') {
@@ -127,12 +114,6 @@ class SpecificationGroupController extends Controller
         } else {
             $vendorSelectedSubIds = array_filter(explode(',', $group->sub_category_ids ?? ''));
         }
-
-        $categoryIds = $CategorySub->pluck('category_id')->unique();
-        $Category = Category::whereIn('id', $categoryIds)->where('status', 1)->select('id', 'main_category_id', 'category_name')->get();
-
-        $mainCategoryIds = $Category->pluck('main_category_id')->unique();
-        $CategoryMain = CategoryMain::whereIn('id', $mainCategoryIds)->where('status', 1)->select('id', 'category_main_name')->get();
 
         return view('layout.vendor.specification_groups.edit', compact('group', 'CategoryMain', 'Category', 'CategorySub', 'vendorSelectedSubIds'));
     }

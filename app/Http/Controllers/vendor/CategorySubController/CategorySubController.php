@@ -67,6 +67,20 @@ class CategorySubController extends Controller
                     $selectedSpecificationIds = array_values(array_unique(array_merge($adminSpecs, $globalSpecIds, $defaultSpecificationIds)));
                 }
 
+                // Merge vendor's own mapping which is stored directly in attribute/specification group tables
+                $vendorAttrIds = AttributeGroup::where('created_byid', $login_id)
+                    ->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$viewId])
+                    ->pluck('id')
+                    ->toArray();
+
+                $vendorSpecIds = SpecificationGroup::where('created_byid', $login_id)
+                    ->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$viewId])
+                    ->pluck('id')
+                    ->toArray();
+
+                $selectedAttributeIds = array_values(array_unique(array_merge($selectedAttributeIds, $vendorAttrIds)));
+                $selectedSpecificationIds = array_values(array_unique(array_merge($selectedSpecificationIds, $vendorSpecIds)));
+
                 $attributegroup = AttributeGroup::where(function($q) use ($viewId, $login_id) {
                         $q->where(function($q1) use ($viewId, $login_id) {
                             $q1->where('created_byid', $login_id)
@@ -131,18 +145,63 @@ class CategorySubController extends Controller
             'category_sub_specification_ids.*' => 'integer',
         ]);
 
-        $attributeIds = array_values(array_unique(array_map('intval', $request->input('category_sub_attribute_ids', []))));
-        $specificationIds = array_values(array_unique(array_map('intval', $request->input('category_sub_specification_ids', []))));
+        $submittedAttributeIds = array_values(array_unique(array_map('intval', $request->input('category_sub_attribute_ids', []))));
+        $submittedSpecificationIds = array_values(array_unique(array_map('intval', $request->input('category_sub_specification_ids', []))));
 
+        // Separate Admin-created and Vendor-created attributes/specifications
+        $vendorAttrs = AttributeGroup::where('created_byid', $login_id)->get();
+        $vendorSpecs = SpecificationGroup::where('created_byid', $login_id)->get();
+
+        $vendorAttrIds = $vendorAttrs->pluck('id')->toArray();
+        $vendorSpecIds = $vendorSpecs->pluck('id')->toArray();
+
+        // Admin-created IDs are those in the submitted list that do NOT belong to the vendor
+        $adminAttributeIds = array_values(array_diff($submittedAttributeIds, $vendorAttrIds));
+        $adminSpecificationIds = array_values(array_diff($submittedSpecificationIds, $vendorSpecIds));
+
+        // Save Admin-created mappings in sub_category_mapping
         DB::table('sub_category_mapping')->updateOrInsert(
             ['sub_category_id' => $id, 'vendor_id' => $login_id],
             [
-                'category_sub_attribute_ids' => json_encode($attributeIds),
-                'category_sub_specification_ids' => json_encode($specificationIds),
+                'category_sub_attribute_ids' => json_encode($adminAttributeIds),
+                'category_sub_specification_ids' => json_encode($adminSpecificationIds),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
         );
+
+        // Update Vendor-created groups
+        foreach ($vendorAttrs as $group) {
+            $subCategoryIds = array_filter(explode(',', $group->sub_category_ids ?? ''));
+            $isSubmitted = in_array($group->id, $submittedAttributeIds);
+
+            if ($isSubmitted) {
+                if (!in_array((string)$id, $subCategoryIds)) {
+                    $subCategoryIds[] = (string)$id;
+                }
+            } else {
+                $subCategoryIds = array_diff($subCategoryIds, [(string)$id]);
+            }
+
+            $group->sub_category_ids = implode(',', $subCategoryIds);
+            $group->save();
+        }
+
+        foreach ($vendorSpecs as $group) {
+            $subCategoryIds = array_filter(explode(',', $group->sub_category_ids ?? ''));
+            $isSubmitted = in_array($group->id, $submittedSpecificationIds);
+
+            if ($isSubmitted) {
+                if (!in_array((string)$id, $subCategoryIds)) {
+                    $subCategoryIds[] = (string)$id;
+                }
+            } else {
+                $subCategoryIds = array_diff($subCategoryIds, [(string)$id]);
+            }
+
+            $group->sub_category_ids = implode(',', $subCategoryIds);
+            $group->save();
+        }
 
         return redirect()->route('vendorcategory.sub.index')->with('success', 'Sub-category mapping updated successfully.');
     }

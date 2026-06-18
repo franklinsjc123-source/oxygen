@@ -73,47 +73,70 @@
             <div class="border p-3 rounded" style="max-height: 400px; overflow-y: auto;">
                 @php
                     $selectedSubIds = isset($vendorSelectedSubIds) ? $vendorSelectedSubIds : array_filter(explode(',', (string)($group->sub_category_ids ?? '')));
+                    $isAdminGroup = ($group->created_by === 'Admin');
+                    $adminSubIds = $isAdminGroup ? array_filter(explode(',', (string)($group->sub_category_ids ?? ''))) : [];
                 @endphp
                 @foreach ($CategoryMain as $main)
                     @php
                         $categories = $Category->where('main_category_id', $main->id);
+                        $mainHasAllowedCats = false;
+                        if ($isAdminGroup) {
+                            foreach ($categories as $cat) {
+                                $currentSubIds = $CategorySub->where('category_id', $cat->id)->pluck('id')->map(fn($id) => (string)$id)->toArray();
+                                if (!empty(array_intersect($currentSubIds, $adminSubIds))) {
+                                    $mainHasAllowedCats = true;
+                                    break;
+                                }
+                            }
+                        } else {
+                            $mainHasAllowedCats = true;
+                        }
                     @endphp
-                    @foreach ($categories as $cat)
-                        @php
-                            $subs = $CategorySub->where('category_id', $cat->id);
-                            if ($subs->isEmpty()) continue;
-                        @endphp
-                        <div class="category-group-item mb-3">
-                            <div class="form-check border-bottom pb-1 mb-2">
-                                <input type="checkbox" class="form-check-input group-cat mt-1" 
-                                       id="group_{{ $cat->id }}" 
-                                       data-category-id="{{ $cat->id }}">
-                                <label class="form-check-label fw-bold text-dark ms-2" for="group_{{ $cat->id }}">
-                                    {{ $main->category_main_name }} &rarr; {{ $cat->category_name }}
-                                </label>
-                            </div>
-                            <div class="sub-categories ms-4">
-                                @foreach ($subs as $sub)
-                                    <div class="form-check mb-1">
+                    @if($mainHasAllowedCats)
+                        @foreach ($categories as $cat)
+                            @php
+                                $currentSubIds = $CategorySub->where('category_id', $cat->id)->pluck('id')->map(fn($id) => (string)$id)->toArray();
+                                if ($isAdminGroup && empty(array_intersect($currentSubIds, $adminSubIds))) {
+                                    continue;
+                                }
+                                $subs = $CategorySub->where('category_id', $cat->id);
+                                if ($subs->isEmpty()) continue;
+                            @endphp
+                            <div class="category-group-item mb-3">
+                                <div class="form-check border-bottom pb-1 mb-2">
+                                    <input type="checkbox" class="form-check-input group-cat mt-1" 
+                                           id="group_{{ $cat->id }}" 
+                                           data-category-id="{{ $cat->id }}">
+                                    <label class="form-check-label fw-bold text-dark ms-2" for="group_{{ $cat->id }}">
+                                        {{ $main->category_main_name }} &rarr; {{ $cat->category_name }}
+                                    </label>
+                                </div>
+                                <div class="sub-categories ms-4">
+                                    @foreach ($subs as $sub)
                                         @php
+                                            if ($isAdminGroup && !in_array((string)$sub->id, $adminSubIds)) {
+                                                continue;
+                                            }
                                             $isChecked = in_array((string)$sub->id, $selectedSubIds);
                                         @endphp
-                                        <input type="checkbox" class="form-check-input sub-cat mt-1" 
-                                               id="sub_{{ $sub->id }}" 
-                                               data-category-id="{{ $cat->id }}"
-                                               data-sub-id="{{ $sub->id }}"
-                                               data-sub-name="{{ $sub->category_sub_name }}"
-                                               data-main-name="{{ $main->category_main_name }}"
-                                               data-category-name="{{ $cat->category_name }}"
-                                               {{ $isChecked ? 'checked' : '' }}>
-                                        <label class="form-check-label text-secondary ms-2" for="sub_{{ $sub->id }}">
-                                            {{ $sub->category_sub_name }}
-                                        </label>
-                                    </div>
-                                @endforeach
+                                        <div class="form-check mb-1">
+                                            <input type="checkbox" class="form-check-input sub-cat mt-1" 
+                                                   id="sub_{{ $sub->id }}" 
+                                                   data-category-id="{{ $cat->id }}"
+                                                   data-sub-id="{{ $sub->id }}"
+                                                   data-sub-name="{{ $sub->category_sub_name }}"
+                                                   data-main-name="{{ $main->category_main_name }}"
+                                                   data-category-name="{{ $cat->category_name }}"
+                                                   {{ $isChecked ? 'checked' : '' }}>
+                                            <label class="form-check-label text-secondary ms-2" for="sub_{{ $sub->id }}">
+                                                {{ $sub->category_sub_name }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    @endif
                 @endforeach
             </div>
             <div id="selected_subcategory_inputs">

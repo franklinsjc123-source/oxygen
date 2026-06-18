@@ -254,7 +254,7 @@
                     var result = ($('#attributes_val' + id).val() || '').trim();
                     var splitResult = result ? result.split(',').filter(function (v) { return v.trim() !== ''; }) : [];
                     if (splitResult.length === 0) {
-                        splitResult = ['', '', ''];
+                        splitResult = [''];
                     }
                     renderRows(splitResult.slice(0, maxFields));
                 });
