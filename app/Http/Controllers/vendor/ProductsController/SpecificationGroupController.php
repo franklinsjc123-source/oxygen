@@ -71,7 +71,7 @@ class SpecificationGroupController extends Controller
         $validated['created_byid'] = $login_id;
         SpecificationGroup::create($validated);;
 
-        return redirect()->route('specification_groups.index')->with('success', 'Specification Group created successfully.');
+        return redirect()->route('specification_groups.index')->with('success', 'Specification  created successfully.');
     }
 
     public function edit($id)
@@ -196,7 +196,7 @@ class SpecificationGroupController extends Controller
         $validated['sub_category_ids'] = !empty($selectedSubCategoryIds) ? implode(',', $selectedSubCategoryIds) : '';
         $group->update($validated);
 
-        return redirect()->route('specification_groups.index')->with('success', 'Specification Group updated successfully.');
+        return redirect()->route('specification_groups.index')->with('success', 'Specification  updated successfully.');
     }
     public function update_specification(Request $request)
     {
@@ -223,7 +223,7 @@ class SpecificationGroupController extends Controller
         }
         $group->delete();
 
-        return redirect()->route('specification_groups.index')->with('success', 'Specification Group deleted successfully.');
+        return redirect()->route('specification_groups.index')->with('success', 'Specification  deleted successfully.');
     }
 
     public function statusUpdate(Request $request)
@@ -237,6 +237,6 @@ class SpecificationGroupController extends Controller
             $group->save();
             return response()->json(['success' => true, 'message' => 'Status updated successfully.']);
         }
-        return response()->json(['success' => false, 'message' => 'Specification Group not found.'], 404);
+        return response()->json(['success' => false, 'message' => 'Specification  not found.'], 404);
     }
 }

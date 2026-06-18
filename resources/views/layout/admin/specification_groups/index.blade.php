@@ -28,7 +28,7 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="page-header-left">
-                                <h3>List Specification Group
+                                <h3>List Specification 
                                   
                                 </h3>
                             </div>
@@ -36,7 +36,7 @@
                         <div class="col-lg-6">
                             <ol class="breadcrumb pull-right">
                                 <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
-                                <li class="breadcrumb-item active">List Specification Group </li>
+                                <li class="breadcrumb-item active">List Specification  </li>
                             </ol>
                         </div>
                     </div>
@@ -52,7 +52,7 @@
                            
                             <div class="card-body">
                                 
-                          <a href="{{ route('specification_groups.admin.create') }}" class="btn mb-4 btn-primary"><i class="fa fa-plus"></i> Add Specification Group </a> 
+                          <a href="{{ route('specification_groups.admin.create') }}" class="btn mb-4 btn-primary"><i class="fa fa-plus"></i> Add Specification  </a> 
                          
 
                             <div class="datatable-dashv1-list custom-datatable-overright">

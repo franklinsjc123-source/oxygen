@@ -27,7 +27,7 @@
 				<div class="row">
 					<div class="col-lg-6">
 						<div class="page-header-left">
-							<h3> Specification Group
+							<h3> Specification 
 							
 							</h3>
 						</div>
@@ -36,7 +36,7 @@
 						<ol class="breadcrumb pull-right">
 							<li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
 
-							<li class="breadcrumb-item active">Add Specification Group</li>
+							<li class="breadcrumb-item active">Add Specification </li>
 						</ol>
 					</div>
 				</div>
