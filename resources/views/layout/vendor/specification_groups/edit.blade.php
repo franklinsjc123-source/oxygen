@@ -161,6 +161,7 @@
         </div>
         
         <button type="submit" class="btn btn-primary">Update</button>
+        <a href="{{ route('specification_groups.index') }}" class="btn btn-secondary">Close</a>
     </form>
 					
 					

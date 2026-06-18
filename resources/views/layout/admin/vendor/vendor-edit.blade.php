@@ -1009,6 +1009,8 @@
                 const $tags = $('#selected_subcategory_tags');
                 $inputs.empty();
                 $tags.empty();
+                $inputs.append(
+                    '<input type="hidden" name="sub_category_ids_csv" id="sub_category_ids_csv" value="">');
 
                 const subIds = new Set();
                 $('.category-cat:checked').each(function() {
@@ -1025,9 +1027,7 @@
                         );
                 });
 
-                if (subIds.size > 0) {
-                    $inputs.append(`<input type="hidden" name="sub_category_ids_csv" value="${Array.from(subIds).join(',')}">`);
-                }
+                $('#sub_category_ids_csv').val(Array.from(subIds).join(','));
             }
 
             $(document).on('change', '.main-cat', function() {

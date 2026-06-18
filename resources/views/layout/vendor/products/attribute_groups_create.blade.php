@@ -121,6 +121,7 @@
         </div>
        
         <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="{{ route('vendorattribute.master.index') }}" class="btn btn-secondary">Close</a>
     </form>
 					
 					

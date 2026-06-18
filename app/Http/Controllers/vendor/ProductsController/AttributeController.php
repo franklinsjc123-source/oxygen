@@ -121,9 +121,16 @@ class AttributeController extends Controller
                     }
                 } else {
                     $adminMapping = DB::table('sub_category_mapping')->where('sub_category_id', $subId)->whereNull('vendor_id')->first();
-                    $attrs = $adminMapping ? (json_decode($adminMapping->category_sub_attribute_ids, true) ?: []) : [];
-                    $globalAttrs = explode(',', $group->sub_category_ids ?? '');
-                    if (in_array($id, $attrs) || in_array($subId, $globalAttrs)) {
+                    $adminAttrs = $adminMapping ? (json_decode($adminMapping->category_sub_attribute_ids, true) ?: []) : [];
+                    $globalAttrIds = \App\Models\Master\Attribute\AttributeGroup::whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subId])->pluck('id')->toArray();
+                    
+                    // Since $sub is from raw join, the default attributes could be in category_sub_attributes column
+                    $defaultAttributeIds = (!empty($sub->category_sub_attributes))
+                        ? array_values(array_filter(array_map('intval', explode(',', $sub->category_sub_attributes))))
+                        : [];
+
+                    $mergedAttrs = array_map('intval', array_unique(array_merge($adminAttrs, $globalAttrIds, $defaultAttributeIds)));
+                    if (in_array((int)$id, $mergedAttrs)) {
                         $vendorSelectedSubIds[] = $subId;
                     }
                 }
@@ -155,10 +162,9 @@ class AttributeController extends Controller
         $group = \App\Models\Master\Attribute\AttributeGroup::findOrFail($id);
 
         if ($group->created_byid != $login_id) {
-            $vendorcreate = \App\Models\vendor\vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
-            $vendorSubCategoryIds = ($vendorcreate && $vendorcreate->sub_category_ids) ? explode(',', $vendorcreate->sub_category_ids) : [];
+            $adminSubCategoryIds = array_filter(explode(',', (string) ($group->sub_category_ids ?? '')));
             
-            foreach ($vendorSubCategoryIds as $subId) {
+            foreach ($adminSubCategoryIds as $subId) {
                 $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $subId)->where('vendor_id', $login_id)->first();
                 if (!$mapping) {
                     $adminMapping = DB::table('sub_category_mapping')->where('sub_category_id', $subId)->whereNull('vendor_id')->first();

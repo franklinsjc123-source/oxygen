@@ -22,12 +22,46 @@ class CategorySubController extends Controller
     {
         $login_id = session()->get('login_id');
         $vendorcreate = vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
-        $subcategoryarray = ($vendorcreate && $vendorcreate->sub_category_ids) ? explode(',', $vendorcreate->sub_category_ids) : [];
+        $subcategoryarray = array_values(array_filter(array_map('intval', array_map('trim', explode(',', (string) optional($vendorcreate)->sub_category_ids)))));
+
+        // Only show sub-categories that have at least one attribute or specification mapped for this vendor
+        $mappedSubIds = DB::table('sub_category_mapping')
+            ->where('vendor_id', $login_id)
+            ->where(function ($q) {
+                $q->where(function ($sq) {
+                    $sq->whereNotNull('category_sub_attribute_ids')
+                       ->where('category_sub_attribute_ids', '!=', '[]')
+                       ->where('category_sub_attribute_ids', '!=', '');
+                })->orWhere(function ($sq) {
+                    $sq->whereNotNull('category_sub_specification_ids')
+                       ->where('category_sub_specification_ids', '!=', '[]')
+                       ->where('category_sub_specification_ids', '!=', '');
+                });
+            })
+            ->pluck('sub_category_id')
+            ->toArray();
+
+        // Also include sub-categories referenced by vendor-created attribute/specification groups
+        $vendorAttrSubIds = AttributeGroup::where('created_byid', $login_id)
+            ->whereNotNull('sub_category_ids')->where('sub_category_ids', '!=', '')
+            ->pluck('sub_category_ids')->flatMap(fn($ids) => explode(',', $ids))
+            ->filter()->map(fn($id) => (int)$id)->toArray();
+
+        $vendorSpecSubIds = SpecificationGroup::where('created_byid', $login_id)
+            ->whereNotNull('sub_category_ids')->where('sub_category_ids', '!=', '')
+            ->pluck('sub_category_ids')->flatMap(fn($ids) => explode(',', $ids))
+            ->filter()->map(fn($id) => (int)$id)->toArray();
+
+        $activeSubIds = array_values(array_unique(array_merge($mappedSubIds, $vendorAttrSubIds, $vendorSpecSubIds)));
+        // Intersect with vendor's authorized sub-category IDs
+        $filteredSubIds = !empty($subcategoryarray)
+            ? array_values(array_intersect($subcategoryarray, $activeSubIds))
+            : [];
 
         $sub_category_data = CategorySub::join('category', 'category_sub.category_id', '=', 'category.id')
             ->join('category_main', 'category_sub.category_main_id', '=', 'category_main.id')
             ->select('*', 'category_sub.id as me_id', 'category_sub.status as sc_status')
-            ->whereIn('category_sub.id', $subcategoryarray)->get();
+            ->whereIn('category_sub.id', !empty($filteredSubIds) ? $filteredSubIds : [0])->get();
         $viewId = (int) $request->query('view_id', 0);
         if ($viewId > 0) {
             $sub_category_viewdata = CategorySub::join('category', 'category_sub.category_id', '=', 'category.id')
