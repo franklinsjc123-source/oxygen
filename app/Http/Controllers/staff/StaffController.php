@@ -365,14 +365,15 @@ class StaffController extends Controller
               if (!$user) {
                   $user = new User();
               }
-              $pass   =  Hash::make($request->password);
               $user->login_id = $employee_id;
               $user->name     = $request->fullname;
               $user->firstName = $request->department;
               $user->lastName =  $request->designation;
               $user->email =   $request->email;
               $user->username = $request->username;
-              $user->password = $pass;
+              if ($request->filled('password')) {
+                  $user->password = Hash::make($request->password);
+              }
               $user->level = 0;
               $user->status = 3;
               $user->log_type = 'Staff';

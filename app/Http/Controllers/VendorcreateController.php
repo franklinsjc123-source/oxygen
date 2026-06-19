@@ -384,7 +384,6 @@ class VendorcreateController extends Controller
             if($vedorregisterd){
                 $user = User::find($id);
                 //$user = new User();
-                $pass   =  Hash::make($request->pass1);
                 //$user->id = $id;
                 //$user->admin_id = 0;
                 //$user->login_id = $ven;
@@ -393,7 +392,9 @@ class VendorcreateController extends Controller
                 $user->lastName =  $request->owner_name;
                 $user->email =   $request->email;
                 $user->username = $request->username;
-                $user->password = $pass;
+                if ($request->filled('pass1')) {
+                    $user->password = Hash::make($request->pass1);
+                }
                 $user->level = 0;
                 $user->status = 2;
                 $user->save();
