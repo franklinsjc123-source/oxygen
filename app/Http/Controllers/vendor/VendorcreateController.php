@@ -559,6 +559,54 @@ class VendorcreateController extends Controller
                 $user->level = 0;
                 $user->status = 2;
                 $user->save();
+
+                // Seed sub_category_mapping for the vendor from admin attribute/specification group assignments
+                // Clean up old mappings that are no longer assigned to this vendor
+                if (!empty($selectedSubCategoryIds)) {
+                    FacadesDB::table('sub_category_mapping')
+                        ->where('vendor_id', $id)
+                        ->whereNotIn('sub_category_id', $selectedSubCategoryIds)
+                        ->delete();
+
+                    $adminAttrGroups = AttributeGroup::where('created_by', 'Admin')->get();
+                    $adminSpecGroups = SpecificationGroup::where('created_by', 'Admin')->get();
+
+                    foreach ($selectedSubCategoryIds as $subCatId) {
+                        $subCatId = (int) $subCatId;
+
+                        // Find admin attribute groups that include this sub-category
+                        $attrIds = [];
+                        foreach ($adminAttrGroups as $ag) {
+                            $agSubIds = array_map('intval', array_filter(explode(',', $ag->sub_category_ids ?? '')));
+                            if (in_array($subCatId, $agSubIds)) {
+                                $attrIds[] = $ag->id;
+                            }
+                        }
+
+                        // Find admin specification groups that include this sub-category
+                        $specIds = [];
+                        foreach ($adminSpecGroups as $sg) {
+                            $sgSubIds = array_map('intval', array_filter(explode(',', $sg->sub_category_ids ?? '')));
+                            if (in_array($subCatId, $sgSubIds)) {
+                                $specIds[] = $sg->id;
+                            }
+                        }
+
+                        FacadesDB::table('sub_category_mapping')->updateOrInsert(
+                            ['sub_category_id' => $subCatId, 'vendor_id' => $id],
+                            [
+                                'category_sub_attribute_ids' => json_encode(array_values(array_unique($attrIds))),
+                                'category_sub_specification_ids' => json_encode(array_values(array_unique($specIds))),
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ]
+                        );
+                    }
+                } else {
+                    FacadesDB::table('sub_category_mapping')
+                        ->where('vendor_id', $id)
+                        ->delete();
+                }
             } else {
                 $flasher->addError('Something Error!! =>');
                 //return 'failde'   ;

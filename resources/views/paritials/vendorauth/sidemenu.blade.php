@@ -295,7 +295,7 @@
                 }
             </style>
             <div class="rm-card">
-                <div class="rm-badge">Support Desk</div>
+                <div class="rm-badge">Support</div>
                 <div class="d-flex align-items-center">
                     <div class="rm-avatar-container">
                         <img class="rm-avatar lazyloaded blur-up" src="{{ $staffImage }}" alt="RM">
