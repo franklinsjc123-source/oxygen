@@ -98,9 +98,15 @@
                                     </li>
                                 </ul>
 
-                                <form class="" method="post" action="{{ route('vendorcreate.store') }}"
+                                <form class="" id="vendor-create-form" method="post" action="{{ route('vendorcreate.store') }}"
                                     enctype="multipart/form-data">
                                     @csrf
+                                    @if(session('error'))
+                                        <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+                                            {{ session('error') }}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    @endif
                                     <div class="tab-content" id="top-tabContent">
                                         <div class="tab-pane fade show active" id="top-profile" role="tabpanel"
                                             aria-labelledby="top-profile-tab">
@@ -1015,6 +1021,36 @@
                     }
                 }
 
+                // Extra check for step 3 (Documents & Package)
+                if (currentTab.attr('id') === 'top-upload') {
+                    var totalSize = 0;
+                    var maxPostSize = 8 * 1024 * 1024; // 8MB
+                    var maxFileSize = 2 * 1024 * 1024; // 2MB
+                    var fileTooLarge = false;
+                    var offendingFileName = '';
+
+                    currentTab.find('input[type="file"]').each(function() {
+                        var files = this.files;
+                        if (files) {
+                            for (var i = 0; i < files.length; i++) {
+                                totalSize += files[i].size;
+                                if (files[i].size > maxFileSize) {
+                                    fileTooLarge = true;
+                                    offendingFileName = files[i].name;
+                                }
+                            }
+                        }
+                    });
+
+                    if (fileTooLarge) {
+                        valid = false;
+                        alert('The file "' + offendingFileName + '" exceeds the 2MB size limit. Please upload smaller files.');
+                    } else if (totalSize > maxPostSize) {
+                        valid = false;
+                        alert('The total size of the uploaded files exceeds the 8MB limit. Please upload smaller files.');
+                    }
+                }
+
                 // Extra check for step 4 (Bank Details)
                 if (currentTab.attr('id') === 'top-bank') {
                     var ac_no = $('#ac_no').val();
@@ -1335,6 +1371,42 @@
                     }
                 });
 
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#vendor-create-form').on('submit', function(e) {
+                var totalSize = 0;
+                var maxPostSize = 8 * 1024 * 1024; // 8MB
+                var maxFileSize = 2 * 1024 * 1024; // 2MB
+                var fileTooLarge = false;
+                var offendingFileName = '';
+                
+                $(this).find('input[type="file"]').each(function() {
+                    var files = this.files;
+                    if (files) {
+                        for (var i = 0; i < files.length; i++) {
+                            totalSize += files[i].size;
+                            if (files[i].size > maxFileSize) {
+                                fileTooLarge = true;
+                                offendingFileName = files[i].name;
+                            }
+                        }
+                    }
+                });
+
+                if (fileTooLarge) {
+                    e.preventDefault();
+                    alert('The file "' + offendingFileName + '" exceeds the 2MB size limit. Please upload smaller files.');
+                    return false;
+                }
+
+                if (totalSize > maxPostSize) {
+                    e.preventDefault();
+                    alert('The total size of the uploaded files exceeds the 8MB limit. Please upload smaller files.');
+                    return false;
+                }
             });
         });
     </script>

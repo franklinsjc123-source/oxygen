@@ -11,6 +11,7 @@ use App\Models\Category\Category;
 use App\Models\Category\CategoryMain;
 use DB;
 use Session;
+use App\Models\vendor\vendorcreate;
 
 class AttributeGroupController extends Controller
 {
@@ -110,6 +111,37 @@ class AttributeGroupController extends Controller
             'created_byid' => $login_id,
         ];
         $group->update($data);
+
+        // Propagate attribute group assignment to all existing vendors
+        // For each sub-category in this group, ensure every vendor that has this sub-category
+        // gets the attribute group ID in their sub_category_mapping
+        $allVendors = vendorcreate::whereNotNull('sub_category_ids')->where('sub_category_ids', '!=', '')->get();
+        foreach ($allVendors as $vendor) {
+            $vendorSubIds = array_map('intval', array_filter(explode(',', $vendor->sub_category_ids)));
+            foreach ($vendorSubIds as $subCatId) {
+                $isInGroup = in_array((string)$subCatId, $selectedSubCategoryIds);
+                $mapping = DB::table('sub_category_mapping')
+                    ->where('sub_category_id', $subCatId)
+                    ->where('vendor_id', $vendor->id)
+                    ->first();
+
+                $currentAttrIds = $mapping ? (json_decode($mapping->category_sub_attribute_ids, true) ?: []) : [];
+
+                if ($isInGroup && !in_array($id, $currentAttrIds)) {
+                    $currentAttrIds[] = $id;
+                } elseif (!$isInGroup) {
+                    $currentAttrIds = array_values(array_diff($currentAttrIds, [$id]));
+                }
+
+                DB::table('sub_category_mapping')->updateOrInsert(
+                    ['sub_category_id' => $subCatId, 'vendor_id' => $vendor->id],
+                    [
+                        'category_sub_attribute_ids' => json_encode(array_values(array_unique(array_map('intval', $currentAttrIds)))),
+                        'updated_at' => now(),
+                    ]
+                );
+            }
+        }
 
         return redirect()->route('attribute_groups.index')->with('success', 'Attribute Group updated successfully.');
     }

@@ -17,6 +17,8 @@ use Flasher\Prime\FlasherInterface;
 use DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB as FacadesDB;
+use App\Models\Master\Attribute\AttributeGroup;
+use App\Models\Master\Specification\SpecificationGroup;
 class VendorcreateController extends Controller
 {
 
@@ -196,6 +198,52 @@ class VendorcreateController extends Controller
             $user->level = 0;
             $user->status = 2;
             $user->save();
+
+            // Handle sub-category assignment and seed sub_category_mapping
+            $selectedSubCategoryIds = $request->input('sub_category_ids', []);
+            if (empty($selectedSubCategoryIds) && $request->filled('sub_category_ids_csv')) {
+                $selectedSubCategoryIds = explode(',', (string) $request->sub_category_ids_csv);
+            }
+            $selectedSubCategoryIds = array_values(array_unique(array_filter($selectedSubCategoryIds)));
+
+            if (!empty($selectedSubCategoryIds)) {
+                $vendor->sub_category_ids = implode(',', $selectedSubCategoryIds);
+                $vendor->save();
+
+                $newVendorId = $vendor->id;
+                $adminAttrGroups = AttributeGroup::where('created_by', 'Admin')->get();
+                $adminSpecGroups = SpecificationGroup::where('created_by', 'Admin')->get();
+
+                foreach ($selectedSubCategoryIds as $subCatId) {
+                    $subCatId = (int) $subCatId;
+
+                    $attrIds = [];
+                    foreach ($adminAttrGroups as $ag) {
+                        $agSubIds = array_map('intval', array_filter(explode(',', $ag->sub_category_ids ?? '')));
+                        if (in_array($subCatId, $agSubIds)) {
+                            $attrIds[] = $ag->id;
+                        }
+                    }
+
+                    $specIds = [];
+                    foreach ($adminSpecGroups as $sg) {
+                        $sgSubIds = array_map('intval', array_filter(explode(',', $sg->sub_category_ids ?? '')));
+                        if (in_array($subCatId, $sgSubIds)) {
+                            $specIds[] = $sg->id;
+                        }
+                    }
+
+                    FacadesDB::table('sub_category_mapping')->updateOrInsert(
+                        ['sub_category_id' => $subCatId, 'vendor_id' => $newVendorId],
+                        [
+                            'category_sub_attribute_ids' => json_encode(array_values(array_unique($attrIds))),
+                            'category_sub_specification_ids' => json_encode(array_values(array_unique($specIds))),
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]
+                    );
+                }
+            }
         }else{
            return 'failde'   ;
            

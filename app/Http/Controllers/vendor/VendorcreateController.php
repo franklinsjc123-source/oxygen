@@ -26,6 +26,8 @@ use App\Models\Category\CategorySub;
 use App\Models\Category\Category;
 use App\Models\Category\CategoryMain;
 use App\Models\ActivityTracker;
+use App\Models\Master\Attribute\AttributeGroup;
+use App\Models\Master\Specification\SpecificationGroup;
 
 class VendorcreateController extends Controller
 {
@@ -265,6 +267,45 @@ class VendorcreateController extends Controller
                 $user->level = 0;
                 $user->status = 2;
                 $user->save();
+
+                // Seed sub_category_mapping for the new vendor from admin attribute/specification group assignments
+                $newVendorId = $vendor->id;
+                if (!empty($selectedSubCategoryIds)) {
+                    $adminAttrGroups = AttributeGroup::where('created_by', 'Admin')->get();
+                    $adminSpecGroups = SpecificationGroup::where('created_by', 'Admin')->get();
+
+                    foreach ($selectedSubCategoryIds as $subCatId) {
+                        $subCatId = (int) $subCatId;
+
+                        // Find admin attribute groups that include this sub-category
+                        $attrIds = [];
+                        foreach ($adminAttrGroups as $ag) {
+                            $agSubIds = array_map('intval', array_filter(explode(',', $ag->sub_category_ids ?? '')));
+                            if (in_array($subCatId, $agSubIds)) {
+                                $attrIds[] = $ag->id;
+                            }
+                        }
+
+                        // Find admin specification groups that include this sub-category
+                        $specIds = [];
+                        foreach ($adminSpecGroups as $sg) {
+                            $sgSubIds = array_map('intval', array_filter(explode(',', $sg->sub_category_ids ?? '')));
+                            if (in_array($subCatId, $sgSubIds)) {
+                                $specIds[] = $sg->id;
+                            }
+                        }
+
+                        FacadesDB::table('sub_category_mapping')->updateOrInsert(
+                            ['sub_category_id' => $subCatId, 'vendor_id' => $newVendorId],
+                            [
+                                'category_sub_attribute_ids' => json_encode(array_values(array_unique($attrIds))),
+                                'category_sub_specification_ids' => json_encode(array_values(array_unique($specIds))),
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ]
+                        );
+                    }
+                }
             } else {
                 return 'failde';
             }

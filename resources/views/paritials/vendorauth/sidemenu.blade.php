@@ -1,6 +1,7 @@
 @php
     $vendorProfile = null;
     $staffName = '';
+    $staff = null;
     if (session()->get('login_id')) {
         $vendorProfile = App\Models\vendor\vendorcreate::select('shop_name', 'owner_name', 'profile_image', 'staff_id')
             ->where('id', session()->get('login_id'))
@@ -17,6 +18,10 @@
     $vendorRole = optional($vendorProfile)->owner_name ?: 'Vendor Panel';
     $vendorImage = optional($vendorProfile)->profile_image && file_exists(public_path('assets/images/vendor/profile/' . $vendorProfile->profile_image))
         ? asset('assets/images/vendor/profile/' . $vendorProfile->profile_image)
+        : asset('assets/images/dashboard/man.jpeg');
+    
+    $staffImage = isset($staff) && isset($staff->profileimage) && $staff->profileimage != '-' && file_exists(public_path('assets/images/staffcreate/' . $staff->profileimage))
+        ? asset('assets/images/staffcreate/' . $staff->profileimage)
         : asset('assets/images/dashboard/man.jpeg');
 @endphp
 <div class="page-sidebar">
@@ -160,21 +165,150 @@
             @endif
             
             @if(isset($staff) && $staff)
-            <li class="mt-4 pb-4 px-3">
-                <div class="d-flex align-items-center" style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 15px;">
-                    <div style="margin-right: 12px; flex-shrink: 0;">
-                        @if($staff->profileimage && $staff->profileimage != '-')
-                            <img class="rounded-circle lazyloaded blur-up" src="{{ asset('assets/images/staffcreate/' . $staff->profileimage) }}" alt="RM" style="object-fit: cover; width: 30px; height: 30px; min-width: 30px;">
-                        @else
-                            <img class="rounded-circle lazyloaded blur-up" src="{{ asset('assets/images/dashboard/man.jpeg') }}" alt="RM" style="object-fit: cover; width: 30px; height: 30px; min-width: 30px;">
-                        @endif
+            <style>
+                .rm-card {
+                    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+                    border: 1px solid rgba(255, 255, 255, 0.08);
+                    border-radius: 12px;
+                    padding: 10px 12px;
+                    margin: 25px 8px 15px 8px;
+                    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .rm-card::before {
+                    content: '';
+                    position: absolute;
+                    top: -50%;
+                    left: -50%;
+                    width: 200%;
+                    height: 200%;
+                    background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+                    pointer-events: none;
+                }
+
+                .rm-card:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+                    border-color: rgba(255, 255, 255, 0.18);
+                    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+                }
+
+                .rm-badge {
+                    display: inline-block;
+                    font-size: 8px;
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    padding: 3px 8px;
+                    border-radius: 20px;
+                    background: rgba(255, 193, 7, 0.15);
+                    color: #ffc107;
+                    margin-bottom: 8px;
+                    border: 1px solid rgba(255, 193, 7, 0.2);
+                }
+
+                .rm-avatar-container {
+                    position: relative;
+                    width: 32px;
+                    height: 32px;
+                    margin-right: 8px;
+                    flex-shrink: 0;
+                }
+
+                .rm-avatar {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    border-radius: 50%;
+                    border: 2px solid rgba(255, 255, 255, 0.15);
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+                    transition: all 0.3s ease;
+                }
+
+                .rm-card:hover .rm-avatar {
+                    border-color: #ffc107;
+                    transform: scale(1.05);
+                }
+
+                .rm-status-dot {
+                    position: absolute;
+                    bottom: 0px;
+                    right: 0px;
+                    width: 8px;
+                    height: 8px;
+                    background-color: #2ecc71;
+                    border: 1.5px solid #1a3344;
+                    border-radius: 50%;
+                    box-shadow: 0 0 0 1.5px rgba(46, 204, 113, 0.4);
+                    animation: pulse-green-rm 2s infinite;
+                }
+
+                @keyframes pulse-green-rm {
+                    0% {
+                        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7);
+                    }
+                    70% {
+                        box-shadow: 0 0 0 5px rgba(46, 204, 113, 0);
+                    }
+                    100% {
+                        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
+                    }
+                }
+
+                .rm-info {
+                    flex-grow: 1;
+                }
+
+                .rm-name {
+                    margin: 0 0 2px 0;
+                    color: #ffffff;
+                    font-size: 11.5px;
+                    font-weight: 700;
+                    letter-spacing: 0.3px;
+                    text-transform: uppercase;
+                    white-space: nowrap;
+                }
+
+                .rm-phone {
+                    margin: 0;
+                    font-size: 10.5px;
+                    color: rgba(255, 255, 255, 0.75);
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    text-decoration: none;
+                    transition: color 0.2s ease;
+                    font-weight: 500;
+                    white-space: nowrap;
+                }
+
+                .rm-phone:hover {
+                    color: #ffc107;
+                }
+
+                .rm-phone i {
+                    font-size: 9px;
+                    color: #ffc107;
+                }
+            </style>
+            <div class="rm-card">
+                <div class="rm-badge">Support Desk</div>
+                <div class="d-flex align-items-center">
+                    <div class="rm-avatar-container">
+                        <img class="rm-avatar lazyloaded blur-up" src="{{ $staffImage }}" alt="RM">
+                        <div class="rm-status-dot"></div>
                     </div>
-                    <div class="text-start text-truncate">
-                        <h6 class="mb-1 text-white text-truncate" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">RM: {{ $staff->fullname ?? $staff->username }}</h6>
-                        <p class="mb-0 text-white text-truncate" style="font-size: 10px;"><i class="fa fa-phone me-1"></i>{{ $staff->mobileno }}</p>
+                    <div class="rm-info">
+                        <h6 class="rm-name">RM: {{ $staff->fullname ?? $staff->username }}</h6>
+                        <a href="tel:{{ $staff->mobileno }}" class="rm-phone">
+                            <i class="fa fa-phone"></i> {{ $staff->mobileno }}
+                        </a>
                     </div>
                 </div>
-            </li>
+            </div>
             @endif
             
         </ul>
