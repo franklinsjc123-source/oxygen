@@ -717,56 +717,56 @@
                 @endfor
                 <div class="col-md-12">
                     <div class="row">
-                        <div class="row">
-                            <div class="col-xl-12">
-                                <div class="card p-3">
-                                    <div class="card-body ">
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <h4 class="text-start fw-bold ">Shipping</h4>
-                                                <div class="card-body">
-                                                    <div class="row">
-                                                        <div class="col-md-3">
+                      
+                        <div class="col-xl-12">
+                            <div class="card p-3">
+                                <div class="card-body ">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <h4 class="text-start fw-bold ">Shipping </h4>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <div class="next-input--stylized">
+                                                            <input type="number" class="form-control"
+                                                                name="weight" placeholder="Weight (g)">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                        <div class="form-group mb-3">
                                                             <div class="next-input--stylized">
                                                                 <input type="number" class="form-control"
-                                                                    name="weight" placeholder="Weight (g)">
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="col-md-3">
-                                                            <div class="form-group mb-3">
-                                                                <div class="next-input--stylized">
-                                                                    <input type="number" class="form-control"
-                                                                        placeholder="Length (cm)" name="length"
-                                                                        value="">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <div class="form-group mb-3">
-                                                                <div class="next-input--stylized">
-                                                                    <input type="number" class="form-control"
-                                                                        name="width" placeholder="Width (cm)">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3 ">
-                                                            <div class="form-group mb-3">
-                                                                <div class="next-input--stylized">
-
-                                                                    <input type="number" class="form-control"
-                                                                        name="height" placeholder="Height (cm)">
-                                                                </div>
+                                                                    placeholder="Length (cm)" name="length"
+                                                                    value="">
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group mb-3">
+                                                            <div class="next-input--stylized">
+                                                                <input type="number" class="form-control"
+                                                                    name="width" placeholder="Width (cm)">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3 ">
+                                                        <div class="form-group mb-3">
+                                                            <div class="next-input--stylized">
+
+                                                                <input type="number" class="form-control"
+                                                                    name="height" placeholder="Height (cm)">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        
 
                         <div class="col-xl-12">
                             <div class="row">
