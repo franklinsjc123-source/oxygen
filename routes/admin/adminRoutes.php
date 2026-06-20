@@ -3,7 +3,6 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SalesController;
-use App\Http\Controllers\CouponsController;
 use App\Http\Controllers\BannerController;
 
 use App\Http\Controllers\Banners\main_slidvController;
@@ -84,6 +83,10 @@ Route::post('login', [AuthController::class, 'adminlogin'])->name('adminlogin');
 Route::get('dashboard', [DashboardController::class, 'admindashboard'])
     ->name('admindashboard')
     ->middleware('auth');
+
+Route::get('dashboard.php', function() {
+    return redirect()->route('admindashboard');
+});
 
 // Category Main
 Route::resource('category_main', CategoryMainController::class, ['names' => 'category.main']);
@@ -231,7 +234,7 @@ Route::post('orderstatusupdate/{id}', [SalesController::class, 'orderstatusupdat
 Route::post('orderbulkstatusupdate', [SalesController::class, 'orderbulkstatusupdate'])->name('orderbulkstatusupdate');
 
 //coupon
-Route::get('coupon/create', [CouponsController::class, 'create']);
+Route::get('coupon/create', [CouponController::class, 'create']);
 Route::resource('coupon', CouponController::class, ['names' => 'coupon']);
 //Route::resource('coupon', CouponController::class, ['names' => 'coupon']);
 // Route::get("products/listing", [ProductsController::class, "listing"])->name('products.crud.listing');

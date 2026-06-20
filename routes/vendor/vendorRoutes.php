@@ -3,13 +3,12 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
 
-use App\Http\Controllers\CouponsController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\AuctionController;
 use App\Http\Controllers\vendor\offer\vendorofferController;
 use App\Http\Controllers\MarketingController;
 use App\Http\Controllers\StaffController;
-use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RollController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\MasterController;
@@ -31,9 +30,9 @@ use App\Http\Controllers\vendor\GstController\GstController;
 use App\Http\Controllers\vendor\PackageController;
 use App\Http\Controllers\vendor\VendorcreateController;
 use App\Http\Controllers\vendor\ProductsController\SpecificationController;
-use App\Http\Controllers\vendor\coupon\CouponController;
+use App\Http\Controllers\coupon\CouponController;
 use App\Http\Controllers\vendor\PinCodeController\PinCodeController;
-use App\Http\Controllers\vendor\PinCodeController1\PinCodeController1;
+use App\Http\Controllers\PinCodeController1\PinCodeController1;
 
 
 //Marketting
@@ -73,6 +72,19 @@ Route::get(
 )
 	->name('vendordashboard')
 	->middleware('auth');
+
+Route::get('dashboard.php', function() {
+	$id = null;
+	if (auth()->check() && (int) auth()->user()->status === 2) {
+		$id = auth()->user()->login_id;
+	} elseif (session()->has('login_id')) {
+		$id = session()->get('login_id');
+	}
+	if ($id) {
+		return redirect()->route('vendordashboard', $id);
+	}
+	return redirect('vendor/login');
+});
 // Category Sub
 Route::resource('category_sub', CategorySubController::class, ['names' => 'vendorcategory.sub']);
 
@@ -209,7 +221,7 @@ Route::get('order', [SalesController::class, 'order'])->name('vendor.order');
 Route::get('Print_invoice/{id}', [SalesController::class, 'print_invoice'])->name('vendor.print_invoice');
 Route::get('transaction', [SalesController::class, 'transaction'])->name('vendor.transaction');
 //coupon
-Route::get('coupon/create', [CouponsController::class, 'create']);
+Route::get('coupon/create', [CouponController::class, 'create']);
 
 Route::post('orderstatusupdate/{id}', [SalesController::class, 'orderstatusupdate'])->name('orderstatusupdate');
 Route::post('orderbulkstatusupdate', [SalesController::class, 'orderbulkstatusupdate'])->name('vendor.orderbulkstatusupdate');
@@ -264,9 +276,9 @@ Route::post('oxygen/changestatus', [OxygenController::class, 'changestatus'])->n
 
 // Route::delete('staff/destroy/{id}', 'StaffController@destroy')->name('staff.destroy');
 //role
-Route::get('role/create', [RoleController::class, 'create']);
+Route::get('role/create', [RollController::class, 'create']);
 
-Route::get('role/list', [RoleController::class, 'list']);
+Route::get('role/list', [RollController::class, 'list']);
 
 //vendor
 Route::get('vendor/create', [VendorController::class, 'create']);

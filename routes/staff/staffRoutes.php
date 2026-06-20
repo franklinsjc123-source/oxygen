@@ -80,6 +80,19 @@ Route::get('dashboard/{id}',
 [DashboardController::class, 'staffdashboard'])
      ->name('staffdashboard')
     ->middleware('auth');
+
+Route::get('dashboard.php', function() {
+	$id = null;
+	if (auth()->check() && (int) auth()->user()->status === 3) {
+		$id = auth()->user()->login_id;
+	} elseif (session()->has('login_id')) {
+		$id = session()->get('login_id');
+	}
+	if ($id) {
+		return redirect()->route('staffdashboard', $id);
+	}
+	return redirect('staff/login');
+});
     
 Route::get('slider', [BannerController::class, 'slider'])->name('banners.slider');
 /*sales*/

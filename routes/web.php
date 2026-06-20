@@ -25,6 +25,36 @@ Route::get('/autologin', function() {
     return redirect('/admin/products/edit/1/14');
 });
 
+// Intercept all legacy dashboard.php requests globally across the application
+Route::get('{any_dashboard}', function ($any_dashboard) {
+    if (str_contains($any_dashboard, 'vendor') || str_contains($any_dashboard, 'vendar')) {
+        $id = null;
+        if (auth()->check() && (int) auth()->user()->status === 2) {
+            $id = auth()->user()->login_id;
+        } elseif (session()->has('login_id')) {
+            $id = session()->get('login_id');
+        }
+        if ($id) {
+            return redirect()->route('vendordashboard', $id);
+        }
+        return redirect('vendor/login');
+    } elseif (str_contains($any_dashboard, 'staff')) {
+        $id = null;
+        if (auth()->check() && (int) auth()->user()->status === 5) {
+            $id = auth()->user()->login_id;
+        } elseif (session()->has('login_id')) {
+            $id = session()->get('login_id');
+        }
+        if ($id) {
+            return redirect()->route('staffdashboard', $id);
+        }
+        return redirect('staff/login');
+    } elseif (str_contains($any_dashboard, 'admin')) {
+        return redirect('admin/dashboard');
+    }
+    return redirect('/');
+})->where('any_dashboard', '.*dashboard\.php');
+
 // Routes For Admin
 Route::prefix('/admin')->middleware('panel.session')->group(__DIR__.'/admin/adminRoutes.php');
 
