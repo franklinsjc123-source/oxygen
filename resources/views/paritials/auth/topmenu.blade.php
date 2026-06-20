@@ -267,6 +267,42 @@
             @endphp
             <div class="nav-right col">
                 <ul class="nav-menus">
+                    <li class="onhover-dropdown" style="padding: 0 10px;">
+                        <style>
+                            .btn-dark-setting-icon {
+                                cursor: pointer;
+                                display: inline-flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: inherit;
+                                opacity: 0.9;
+                                transition: opacity 0.2s ease-in-out;
+                            }
+                            .btn-dark-setting-icon:hover {
+                                opacity: 1;
+                            }
+                            .btn-dark-setting-icon svg {
+                                width: 22px !important;
+                                height: 22px !important;
+                            }
+                            .btn-dark-setting-icon .icon-sun {
+                                display: none;
+                            }
+                            .btn-dark-setting-icon .icon-moon {
+                                display: inline-block;
+                            }
+                            body.dark .btn-dark-setting-icon .icon-moon {
+                                display: none;
+                            }
+                            body.dark .btn-dark-setting-icon .icon-sun {
+                                display: inline-block;
+                            }
+                        </style>
+                        <a href="javascript:void(0)" class="btn-dark-setting btn-dark-setting-icon" title="Toggle Dark/Light Mode">
+                            <i data-feather="moon" class="icon-moon"></i>
+                            <i data-feather="sun" class="icon-sun"></i>
+                        </a>
+                    </li>
                     <li class="onhover-dropdown"><i data-feather="bell"></i><span
                             class="badge badge-pill badge-primary pull-right notification-badge">{{($adminorders_pro) ? $adminorders_pro : $vendarorders_pro}}</span><span
                             class="dot"></span>
