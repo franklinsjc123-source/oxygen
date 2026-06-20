@@ -38246,8 +38246,19 @@ input:focus {
   /*! padding-top: 5px; */
   /*! padding-bottom: 5px; */
   padding-bottom: 9px !important;
-  margin: 0px 0 0px !important;
   border-bottom: none;
+}
+@media (min-width: 992px) {
+  .page-wrapper .page-body-wrapper .page-header {
+    margin: 40px 0 0px !important;
+   
+  }
+}
+@media (max-width: 991px) {
+  .page-wrapper .page-body-wrapper .page-header {
+    margin: 10px 0 0px !important;
+     
+  }
 }
 .page-wrapper .page-body-wrapper .page-header .row {
   -webkit-box-align: center;

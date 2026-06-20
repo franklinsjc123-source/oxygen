@@ -422,6 +422,34 @@
 	}
 </script>
 
+<script type="text/javascript">
+$(document).ready(function() {
+    function adjustMobileBackButton() {
+        if ($(window).width() < 992) {
+            $('.page-header-left').each(function() {
+                var $container = $(this);
+                if ($container.find('.mobile-title-back-btn').length === 0) {
+                    var backBtnHtml = '<a href="javascript:void(0)" onclick="window.history.back()" class="mobile-title-back-btn btn btn-primary btn-sm" style="margin-left: auto; display: inline-flex; align-items: center; gap: 5px; margin-top: 15px; padding: 6px 12px; font-weight: 600; border-radius: 4px; font-size: 11px; text-transform: uppercase; line-height: 1;">' +
+                        '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left" style="vertical-align: middle;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>' +
+                        'Back</a>';
+                    $container.css({
+                        'width': '100%',
+                        'display': 'flex',
+                        'align-items': 'center'
+                    }).append(backBtnHtml);
+                } else {
+                    $container.find('.mobile-title-back-btn').show();
+                }
+            });
+        } else {
+            $('.mobile-title-back-btn').hide();
+        }
+    }
+
+    adjustMobileBackButton();
+    $(window).on('resize', adjustMobileBackButton);
+});
+</script>
 
 <!-- sidebar handled by assets/js/sidebar-menu.js -->
 
