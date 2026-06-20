@@ -94,8 +94,8 @@
                         @php
                             $display_vals = array_slice($attr_val, 0, 3);
                         @endphp
-                        @foreach($display_vals as $val)
-                            <span class="p-1 border border-dark px-3 mx-1 rounded">{{ $val }}</span>
+                        @foreach($display_vals as $display_val)
+                            <span class="p-1 border border-dark px-3 mx-1 rounded">{{ $display_val }}</span>
                         @endforeach
                         @if(count($attr_val) > 3)
                             <span>...</span>
