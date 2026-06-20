@@ -87,31 +87,25 @@
                     <td>{{ $group->attribute_group_refname }}</td>
                     <td>
                     @php
-                                                        $attr_val = json_decode($group->attribute_values);
-                                                        if($attr_val!='')
-                                                        {
-                                                        $i=1;
-                                                        $nspc=count($attr_val);
-                                                        echo '<p>';
-                                                        foreach ($attr_val as $key => $value) {
-                                                          if($i==4) 
-                                                          {
-                                                             echo '<span id="dots'.$spc.'">...</span><span id="more'.$spc.'" class="more">';
-                                                          } 
-                                                             echo "<span class='p-1 border border-dark px-3 mx-1 rounded'>$value</span>";
-                                                             
-                                                              $i++;
-                                                        }
-                                                         
-                                                         if($nspc>3)
-                                                         {
-                                                      echo '</span></p><button onclick="readmore('.$spc.')" id="myBtn'.$spc.'">+ more</button> '; 
-                                                         }
-                                                         else {
-                                                            echo '</p>';
-                                                         }
-                                                        }
-                                                    @endphp
+                        $attr_val = json_decode($group->attribute_values) ?? [];
+                    @endphp
+                    @if(!empty($attr_val))
+                        @php
+                            $display_vals = array_slice($attr_val, 0, 3);
+                        @endphp
+                        @foreach($display_vals as $val)
+                            <span class="p-1 border border-dark px-3 mx-1 rounded">{{ $val }}</span>
+                        @endforeach
+                        @if(count($attr_val) > 3)
+                            <span>...</span>
+                            <button type="button" class="btn btn-xs btn-secondary show-all-values-btn" 
+                                    data-name="{{ $group->attribute_group_name }}" 
+                                    data-values="{{ json_encode($attr_val) }}" 
+                                    style="padding: 2px 6px; font-size: 11px; margin-left: 5px; background-color: #13c9ca; border-color: #13c9ca; color: white; font-weight: bold;">
+                                + MORE
+                            </button>
+                        @endif
+                    @endif
                     </td>
                     <td>
                         <label class="switch">
@@ -259,22 +253,47 @@
             </div>
         </div>
         {{-- end --}}
+        <!-- Modal for viewing all values -->
+        <div class="modal fade" id="viewValuesModal" tabindex="-1" role="dialog" aria-labelledby="viewValuesModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title f-w-600" id="viewValuesModalLabel">View Values</h5>
+                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="modalValuesContainer" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
-        function readmore(id) {
-          var dots = document.getElementById("dots"+id);
-          var moreText = document.getElementById("more"+id);
-          var btnText = document.getElementById("myBtn"+id);
-        
-          if (dots.style.display === "none") {
-            dots.style.display = "inline";
-            btnText.innerHTML = "+ more"; 
-            moreText.style.display = "none";
-          } else {
-            dots.style.display = "none";
-            btnText.innerHTML = "+ less"; 
-            moreText.style.display = "inline";
-          }
-        }
+        $(document).on('click', '.show-all-values-btn', function(e) {
+            e.preventDefault();
+            var name = $(this).data('name');
+            var values = $(this).data('values');
+            
+            $('#viewValuesModalLabel').text(name + ' Values');
+            
+            var container = $('#modalValuesContainer');
+            container.empty();
+            
+            if (Array.isArray(values)) {
+                values.forEach(function(val) {
+                    container.append('<span class="p-1 border border-dark px-3 mx-1 rounded" style="font-size: 14px; background-color: #f8f9fa; display: inline-block; margin-bottom: 5px;">' + $('<div/>').text(val).html() + '</span>');
+                });
+            }
+            
+            var modalEl = $('#viewValuesModal');
+            if (!modalEl.parent().is('body')) {
+                modalEl.appendTo('body');
+            }
+            modalEl.modal('show');
+        });
         </script>
 
 <script>
