@@ -63,9 +63,8 @@
     
 <thead>
  <tr>
-   <th data-field="id" data-sortable="true">Id</th> 
+   <th data-field="id" data-sortable="true" style="white-space: nowrap !important; min-width: 140px !important;">Id</th> 
    <th data-field="shop_name" data-sortable="true">Shop Name</th> 
-   <th data-field="created_by" data-sortable="true">Created By</th> 
    
    <th data-field="title" data-sortable="true">Offer Title</th>
     <th data-field="otype" data-sortable="true">Offer Type</th>
@@ -76,6 +75,7 @@
 	 <th data-field="dtype" data-sortable="true">Discount Type</th>
 	 <th data-field="value" data-sortable="true">Value</th>
 	 <th data-field="shold" data-sortable="true">Threshold</th>
+   <th data-field="created_by" data-sortable="true">Created By</th> 
 	 
    <th data-field="status" data-sortable="true">Status</th>
    <th>Action</th>
@@ -102,18 +102,20 @@
                                                          $shop_name = $vendor->shop_name ?? '-';
                                                      } else {
                                                          $zzone = '-';
-                                                         $shop_name = 'Shop (Deleted)';
+                                                         $shop_name = 'N/A';
                                                      }
                                                      $created_by = 'Shop';
+                                                 }
+                                                 if (!empty($attribute->added_by)) {
+                                                     $created_by = $attribute->added_by;
                                                  }
                                                  @endphp
                                                 
                                                 
                                                 
                                                 
-                                                <td>{{ $zzone.'-'. str_pad($attribute->created_by_id, 4, '0', STR_PAD_LEFT).'-'.str_pad($loop->iteration, 4, '0', STR_PAD_LEFT);  }}</td>
+                                                <td style="white-space: nowrap !important; word-break: normal !important; min-width: 140px !important;">{{ $zzone.'-'. str_pad($attribute->created_by_id, 4, '0', STR_PAD_LEFT).'-'.str_pad($loop->iteration, 4, '0', STR_PAD_LEFT);  }}</td>
                                                 <td>{{ $shop_name }}</td>
-                                                <td>{{ $created_by }}</td>
 
                                                 <td>{{ $attribute->title }}</td>
 
@@ -128,6 +130,15 @@
                                                 </td>
 												<td>                                          
                                                     {{ $attribute->types }}
+                                                </td>
+                                                <td>
+                                                    @if($created_by == 'Admin')
+                                                        <span class="badge badge-primary px-2" style="color: #fff;">{{ $created_by }}</span>
+                                                    @elseif($created_by == 'Shop')
+                                                        <span class="badge badge-success px-2" style="color: #fff;">{{ $created_by }}</span>
+                                                    @else
+                                                        <span class="badge badge-info px-2" style="color: #fff;">{{ $created_by }}</span>
+                                                    @endif
                                                 </td>
                                                  <td>
                                                     <label class="switch">

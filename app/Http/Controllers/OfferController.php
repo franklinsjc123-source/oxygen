@@ -167,6 +167,16 @@ class OfferController extends Controller
 		try {
 			$user_id = $request->input('shop_id', session()->get('login_id'));
 			$offer_main->created_by_id = $user_id;
+
+			$creator_status = session()->get('status');
+			$added_by = 'Shop';
+			if ($creator_status == 1) {
+				$added_by = 'Admin';
+			} elseif ($creator_status == 3) {
+				$added_by = session()->get('log_name') ?? 'Staff';
+			}
+			$offer_main->added_by = $added_by;
+
 			$offer_main->catagory_id = $request->catagory_id;
 			$offer_main->product_id = $request->product_id;
 			$offer_main->title = $request->offertitle;
@@ -295,6 +305,15 @@ class OfferController extends Controller
 
 		$user_id = $request->input('shop_id', session()->get('login_id'));
 		$offer_main->created_by_id = $user_id;
+
+		$creator_status = session()->get('status');
+		$added_by = 'Shop';
+		if ($creator_status == 1) {
+			$added_by = 'Admin';
+		} elseif ($creator_status == 3) {
+			$added_by = session()->get('log_name') ?? 'Staff';
+		}
+		$offer_main->added_by = $added_by;
 
 		$offer_main->catagory_id = $request->catagory_id;
 		$offer_main->product_id = $request->product_id;
