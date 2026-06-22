@@ -63,7 +63,7 @@
     
 <thead>
  <tr>
-   <th data-field="id" data-sortable="true" style="white-space: nowrap !important; min-width: 140px !important;">Id</th> 
+   <th data-field="id" data-sortable="true" class="id-column" data-width="150px">Id</th> 
    <th data-field="shop_name" data-sortable="true">Shop Name</th> 
    
    <th data-field="title" data-sortable="true">Offer Title</th>
@@ -110,7 +110,7 @@
                                                 
                                                 
                                                 
-                                                <td style="white-space: nowrap !important; word-break: normal !important; min-width: 140px !important;">{{ $zzone.'-'. str_pad($attribute->created_by_id, 4, '0', STR_PAD_LEFT).'-'.str_pad($loop->iteration, 4, '0', STR_PAD_LEFT);  }}</td>
+                                                <td class="id-column">{{ $zzone.'-'. str_pad($attribute->created_by_id, 4, '0', STR_PAD_LEFT).'-'.str_pad($loop->iteration, 4, '0', STR_PAD_LEFT);  }}</td>
                                                 <td>{{ $shop_name }}</td>
 
                                                 <td>{{ $attribute->title }}</td>
@@ -195,6 +195,11 @@
 <style>
 .swal2-popup {
     font-size: 1.6rem !important;
+}
+.id-column {
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    min-width: 150px !important;
 }
 </style>
 <script>
