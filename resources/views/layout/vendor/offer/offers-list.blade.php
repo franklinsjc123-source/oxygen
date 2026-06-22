@@ -79,26 +79,18 @@
                                         @foreach ($Offer as $attribute)
                                             <tr>
                                                  @php
-                                                 
-                                                 
-                                                  $zoneid = App\Models\User::where('login_id', $attribute->created_by_id)
-                                                       ->join('vendor_details', 'vendor_details.user_id',  '=', 'users.id')
-                                                       ->select('vendor_details.zone')
-                                                       ->first();
+                                                 $zoneid = \DB::table('vendor_details')
+                                                     ->where('vendor_details.user_id', $attribute->created_by_id)
+                                                     ->leftJoin('zonals', 'zonals.id', '=', 'vendor_details.zone')
+                                                     ->select('zonals.name')
+                                                     ->first();
 
-
-                                                
-
-                                                if( $zoneid != null)
-                                                {
-                                                   
-                                                    $zzone = $zoneid->zone;
-                                                }
-                                                else{
-                                                   
-                                                    $zzone='-';
-                                                }
-                                                @endphp
+                                                 if ($zoneid != null && !empty($zoneid->name)) {
+                                                     $zzone = $zoneid->name;
+                                                 } else {
+                                                     $zzone = '-';
+                                                 }
+                                                 @endphp
 
 
 

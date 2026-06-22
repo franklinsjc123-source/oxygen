@@ -64,9 +64,10 @@
 <thead>
  <tr>
    <th data-field="id" data-sortable="true">Id</th> 
+   <th data-field="shop_name" data-sortable="true">Shop Name</th> 
+   <th data-field="created_by" data-sortable="true">Created By</th> 
    
    <th data-field="title" data-sortable="true">Offer Title</th>
-   <th data-field="logo" data-sortable="true">Offer Logo</th>
     <th data-field="otype" data-sortable="true">Offer Type</th>
 	 <th data-field="dtype" data-sortable="true">Discount Type</th>
 	 <th data-field="value" data-sortable="true">Value</th>
@@ -81,29 +82,36 @@
                                             <tr>
                                                 
                                                 @php
-                                                    $zoneid = App\Models\User::where('login_id', $attribute->created_by_id)
-                                                       ->join('vendor_details', 'vendor_details.user_id',  '=', 'users.id')
-                                                       ->select('vendor_details.zone')
-                                                       ->first();
+                                                 if ($attribute->created_by_id == 'admin' || $attribute->created_by_id == 1) {
+                                                     $zzone = '-';
+                                                     $shop_name = 'Admin';
+                                                     $created_by = 'Admin';
+                                                 } else {
+                                                     $vendor = \DB::table('vendor_details')
+                                                         ->where('vendor_details.user_id', $attribute->created_by_id)
+                                                         ->leftJoin('zonals', 'zonals.id', '=', 'vendor_details.zone')
+                                                         ->select('zonals.name as zone_name', 'vendor_details.shop_name')
+                                                         ->first();
 
-                                                if( $zoneid != null)
-                                                {
-                                                   
-                                                    $zzone = $zoneid->zone;
-                                                }
-                                                else{
-                                                   
-                                                    $zzone='-';
-                                                }
-                                                @endphp
+                                                     if ($vendor != null) {
+                                                         $zzone = $vendor->zone_name ?? '-';
+                                                         $shop_name = $vendor->shop_name ?? '-';
+                                                     } else {
+                                                         $zzone = '-';
+                                                         $shop_name = 'Shop (Deleted)';
+                                                     }
+                                                     $created_by = 'Shop';
+                                                 }
+                                                 @endphp
                                                 
                                                 
                                                 
                                                 
                                                 <td>{{ $zzone.'-'. str_pad($attribute->created_by_id, 4, '0', STR_PAD_LEFT).'-'.str_pad($loop->iteration, 4, '0', STR_PAD_LEFT);  }}</td>
+                                                <td>{{ $shop_name }}</td>
+                                                <td>{{ $created_by }}</td>
 
                                                 <td>{{ $attribute->title }}</td>
-                                                <td> <img src="{{ asset('assets/images/offer_logo') . '/' .  $attribute->offer_logo }}" height="60" width="60"></td>
                                                  
 
                                                 <td>{{ $attribute->type }}</td>

@@ -145,9 +145,28 @@
                                          }
                                     </script> --}}
                                    
+@php
+    $shops = \DB::table('vendor_details')
+        ->select('user_id', 'shop_name')
+        ->orderBy('shop_name', 'asc')
+        ->get();
+@endphp
+
                 {{-- Edit Row --}}
                                 <div class="row">
                                     <div class="col-sm-12">
+                                        <div class="form-group row">
+                                            <div class="col-md-12">
+                                                <label class="form-group mb-3"><b>Shop Name</b></label>
+                                                <select class="custom-select w-100 form-control" id="shop_id" name="shop_id" required>
+                                                    <option value="" disabled {{ $offer->created_by_id == 'admin' ? 'selected' : '' }}>Choose Shop Name</option>
+                                                    @foreach($shops as $shop)
+                                                        <option value="{{ $shop->user_id }}" {{ $offer->created_by_id == $shop->user_id ? 'selected' : '' }}>{{ $shop->shop_name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
                                         <div class="form-group row">
                                             <div class="col-md-12">
                                                 <label class="form-group mb-3"><b>Offer Title</b></label>
@@ -521,23 +540,7 @@
 
 
 
-                    <input type="hidden" name="old_logo" value="{{ $offer->offer_logo }}" > 
 
-                     <div class="card">
-                        <div class="card-body row">
-                            <div class="form-group col-md-8">
-                                <label for="validationCustom02" class="mb-1">Offer
-                                    Logo </label>
-
-                                <input class="form-control" name="offer_logo"
-                                    type="file" accept="image/*">
-                            </div>
-
-                            <div class="form-group col-md-4 mt-2">
-                              <img src="{{ asset('assets/images/offer_logo') . '/' .  $offer->offer_logo }}" height="60" width="60">
-                            </div>
-                        </div>
-                    </div>
 
 
 

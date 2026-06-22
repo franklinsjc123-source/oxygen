@@ -60,8 +60,27 @@
 							@endif
                             <form id="frmOffer" name="frmOffer" class="needs-validation" method="POST"    enctype="multipart/form-data"  action="{{ route('offer.main.store') }}">
 							 @csrf	
+@php
+    $shops = \DB::table('vendor_details')
+        ->select('user_id', 'shop_name')
+        ->orderBy('shop_name', 'asc')
+        ->get();
+@endphp
+
                                 <div class="row">
                                     <div class="col-sm-12">
+                                        <div class="form-group row">
+                                            <div class="col-md-12">
+                                                <label class="form-group mb-3"><b>Shop Name</b></label>
+                                                <select class="custom-select w-100 form-control" id="shop_id" name="shop_id" required>
+                                                    <option value="" disabled selected>Choose Shop Name</option>
+                                                    @foreach($shops as $shop)
+                                                        <option value="{{ $shop->user_id }}">{{ $shop->shop_name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
                                         <div class="form-group row">
                                             <div class="col-md-12">
                                                 <label class="form-group mb-3"><b>Offer Title</b></label>
@@ -117,17 +136,7 @@
                         </div>
                     </div>
 
-                     <div class="card">
-                        <div class="card-body">
-                            <div class="form-group row">
-                                <label for="validationCustom02" class="mb-1">Offer
-                                    Logo </label>
 
-                                <input class="form-control" name="offer_logo"
-                                    type="file" accept="image/*">
-                            </div>
-                        </div>
-                    </div>
 
 
                     <div class="card" id="buyxgetydiv" style="display: none;">

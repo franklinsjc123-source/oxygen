@@ -139,10 +139,9 @@ class OfferController extends Controller
 		// 		$time = $dt->format('H:i:s');
 		// 		$date    = "$dat$t$time";
 
-		// 			$request->validate([
-		// 			'startdate' => 'required|date|after_or_equal:' . now()->toDateString(),
-		// 			'enddate' => 'required|date|after_or_equal:' . $request->startdate,
-		// 		]);
+		$request->validate([
+			'shop_id' => 'required',
+		]);
 
 		$offer_main = new Offer();
 
@@ -166,7 +165,7 @@ class OfferController extends Controller
 
 
 		try {
-			$user_id = session()->get('login_id');
+			$user_id = $request->input('shop_id', session()->get('login_id'));
 			$offer_main->created_by_id = $user_id;
 			$offer_main->catagory_id = $request->catagory_id;
 			$offer_main->product_id = $request->product_id;
@@ -264,6 +263,10 @@ class OfferController extends Controller
 
 	public function update($id, Request $request,  FlasherInterface $flasher)
 	{
+		$request->validate([
+			'shop_id' => 'required',
+		]);
+
 		//try {
 
 		//$user_id = session()->get('login_id');
@@ -290,7 +293,7 @@ class OfferController extends Controller
 
 	
 
-		$user_id = session()->get('login_id');
+		$user_id = $request->input('shop_id', session()->get('login_id'));
 		$offer_main->created_by_id = $user_id;
 
 		$offer_main->catagory_id = $request->catagory_id;
