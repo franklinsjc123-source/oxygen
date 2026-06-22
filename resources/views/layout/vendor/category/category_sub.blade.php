@@ -151,9 +151,11 @@
                                             <td>{{ $group->attribute_group_name }}</td>
                                             <td>{{ $group->attribute_group_refname }}</td>
                                             <td>
+                                                <div style="display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; overflow: hidden;">
                                                 @foreach ($attr_val as $value)
-                                                <span class="p-1 border border-dark px-3 mx-1 rounded">{{ $value }}</span>
+                                                <span class="d-inline-block p-1 border border-dark px-2 rounded" style="white-space: nowrap; flex-shrink: 0;">{{ $value }}</span>
                                                 @endforeach
+                                                </div>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -185,9 +187,11 @@
                                             <td>{{ $group->specification_group_name }}</td>
                                             <td>{{ $group->specification_group_refname }}</td>
                                             <td>
+                                                <div style="display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; overflow: hidden;">
                                                 @foreach ($spec_val as $value)
-                                                <span class="p-1 border border-dark px-3 mx-1 rounded">{{ $value }}</span>
+                                                <span class="d-inline-block p-1 border border-dark px-2 rounded" style="white-space: nowrap; flex-shrink: 0;">{{ $value }}</span>
                                                 @endforeach
+                                                </div>
                                             </td>
                                             <td>
                                                 @if($group->created_by == 'Admin')

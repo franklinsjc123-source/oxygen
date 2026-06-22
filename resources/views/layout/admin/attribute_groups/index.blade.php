@@ -89,23 +89,23 @@
                     @php
                         $attr_val = json_decode($group->attribute_values) ?? [];
                     @endphp
-                    @if(!empty($attr_val))
+                    <div style="display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; overflow: hidden;">@if(!empty($attr_val))
                         @php
                             $display_vals = array_slice($attr_val, 0, 3);
                         @endphp
                         @foreach($display_vals as $display_val)
-                            <span class="p-1 border border-dark px-3 mx-1 rounded">{{ $display_val }}</span>
+                            <span class="d-inline-block p-1 border border-dark px-2 rounded" style="white-space: nowrap; flex-shrink: 0;">{{ $display_val }}</span>
                         @endforeach
                         @if(count($attr_val) > 3)
-                            <span>...</span>
+                            <span style="flex-shrink: 0;">...</span>
                             <button type="button" class="btn btn-xs btn-secondary show-all-values-btn" 
                                     data-name="{{ $group->attribute_group_name }}" 
                                     data-values="{{ json_encode($attr_val) }}" 
-                                    style="padding: 2px 6px; font-size: 11px; margin-left: 5px; background-color: #13c9ca; border-color: #13c9ca; color: white; font-weight: bold;">
+                                    style="padding: 2px 6px; font-size: 11px; background-color: #13c9ca; border-color: #13c9ca; color: white; font-weight: bold; flex-shrink: 0; margin: 0;">
                                 + MORE
                             </button>
                         @endif
-                    @endif
+                    @endif</div>
                     </td>
                     <td>
                         <label class="switch">
@@ -284,7 +284,7 @@
             
             if (Array.isArray(values)) {
                 values.forEach(function(val) {
-                    container.append('<span class="p-1 border border-dark px-3 mx-1 rounded" style="font-size: 14px; background-color: #f8f9fa; display: inline-block; margin-bottom: 5px;">' + $('<div/>').text(val).html() + '</span>');
+                    container.append('<span class="d-inline-block p-1 border border-dark px-3 mx-1 my-1 rounded" style="white-space: nowrap; font-size: 14px; background-color: #f8f9fa; display: inline-block; margin-bottom: 5px;">' + $('<div/>').text(val).html() + '</span>');
                 });
             }
             

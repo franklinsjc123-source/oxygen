@@ -102,7 +102,7 @@
                                                           {
                                                              echo '<span id="dots'.$spc.'">...</span><span id="more'.$spc.'" class="more">';
                                                           } 
-                                                             echo "<span class='p-1 border border-dark px-3 mx-1 rounded'>$value</span>";
+                                                             echo "<span class='d-inline-block p-1 border border-dark px-3 mx-1 my-1 rounded' style='white-space: nowrap;'>$value</span>";
                                                              
                                                               $i++;
                                                         }

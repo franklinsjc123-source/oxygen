@@ -90,13 +90,15 @@
 
                                                 <td>
 
+                                                    <div style="display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; overflow: hidden;">
                                                     @php
                                                         $attr_val = json_decode($attribute->value);
                                                         
                                                         foreach ($attr_val as $key => $value) {
-                                                            echo "<span class='p-1 border border-dark px-3 mx-1 rounded'>$value</span>";
+                                                            echo "<span class='d-inline-block p-1 border border-dark px-2 rounded' style='white-space: nowrap; flex-shrink: 0;'>$value</span>";
                                                         }
                                                     @endphp
+                                                    </div>
 
 
                                                     {{-- <span class="p-1 border border-danger mx-2 px-3 rounded more"
