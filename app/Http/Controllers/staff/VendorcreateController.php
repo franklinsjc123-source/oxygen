@@ -475,11 +475,10 @@ class VendorcreateController extends Controller
             $vedorregisterd = $vendor->save();
 
             if($vedorregisterd){
-                $user = User::find($id);
-                //$user = new User();
-                //$user->id = $id;
-                //$user->admin_id = 0;
-                //$user->login_id = $ven;
+                $user = User::where('login_id', $id)->first();
+                if (!$user) {
+                    $user = new User();
+                }
                 $user->name     = $request->created_by;
                 $user->firstName = $request->shop_name;
                 $user->lastName =  $request->owner_name;
