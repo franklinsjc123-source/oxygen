@@ -120,7 +120,7 @@
 
 <div class="page-wrapper">
     <div class="page-main-header">
-        <div class="main-header-right row p-0 align-items-center">
+        <div class="main-header-right row p-0 align-items-center" style="margin-right: 0px !important; margin-left: 0px !important;">
             
             <!-- 1. Left side: Breadcrumb/Toggle button -->
             <div class="mobile-sidebar w-auto col-auto">

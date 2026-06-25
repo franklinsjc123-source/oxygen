@@ -41,7 +41,7 @@
             <h6 class="mt-3 f-14">{{ $vendorName }}</h6>
             <p>{{ $vendorRole }}</p>
         </div>
-        <ul class="sidebar-menu">
+        <ul class="sidebar-menu" style="padding-bottom: 60px;">
             @if (session()->get('login_id'))
             <li><a class="sidebar-header" href="{{ url('vendor/dashboard/'.session()->get('login_id')) }}"><i
                         data-feather="home"></i><span>Dashboard</span></a></li>
@@ -170,7 +170,7 @@
                     background: linear-gradient(135deg, #ff7a59 0%, #ff5252 100%);
                     border-radius: 12px;
                     padding: 10px 12px;
-                    margin: 25px 0 15px 0;
+                    margin: 25px 0 40px 0;
                     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
                     box-shadow: 0 4px 15px rgba(255, 122, 89, 0.25);
                     position: relative;

@@ -138,9 +138,10 @@ class DashboardController extends Controller
                 }
             }
         } else {
-            for ($i = 11; $i >= 0; $i--) {
-                $monthKey = date('Y-m', strtotime("-$i months"));
-                $monthLabel = date('M Y', strtotime("-$i months"));
+            $currentYear = date('Y');
+            for ($m = 1; $m <= 12; $m++) {
+                $monthKey = sprintf('%s-%02d', $currentYear, $m);
+                $monthLabel = date('M Y', mktime(0, 0, 0, $m, 1, $currentYear));
                 $salesTrendLabels[] = $monthLabel;
                 $salesTrendRevenue[$monthKey] = 0;
                 $salesTrendOrders[$monthKey] = 0;
@@ -269,9 +270,10 @@ class DashboardController extends Controller
                 }
             }
         } else {
-            for ($i = 11; $i >= 0; $i--) {
-                $monthKey = date('Y-m', strtotime("-$i months"));
-                $monthLabel = date('M Y', strtotime("-$i months"));
+            $currentYear = date('Y');
+            for ($m = 1; $m <= 12; $m++) {
+                $monthKey = sprintf('%s-%02d', $currentYear, $m);
+                $monthLabel = date('M Y', mktime(0, 0, 0, $m, 1, $currentYear));
                 $customerTrendLabels[] = $monthLabel;
                 $customerTrendCounts[$monthKey] = 0;
             }
@@ -467,6 +469,106 @@ class DashboardController extends Controller
             $id = session()->get('login_id');
         }
 
+        $vendorDetails = DB::table('vendor_details')->where('id', $id)->first();
+        $packagePlanName = '';
+        $subCategoriesList = [];
+        if ($vendorDetails) {
+            $packagePlanName = DB::table('packages')->where('id', $vendorDetails->package_id)->value('name') ?? 'No Plan';
+            if ($vendorDetails->sub_category_ids) {
+                $subCategoriesList = DB::table('category_sub')
+                    ->whereIn('id', explode(',', $vendorDetails->sub_category_ids))
+                    ->pluck('category_sub_name')
+                    ->toArray();
+            }
+        }
+
+        // New metrics based on the dashboard image
+        $completedOrdersTotalValue = DB::table('ecom_order_product')
+            ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
+            ->join('products', 'products.id', '=', 'products_details.products_id')
+            ->where('products.login_id', $id)
+            ->where('products.logintype', 'Vendor')
+            ->where('products.flag', 1)
+            ->where('ecom_order_product.order_status', 'Delivered')
+            ->sum('ecom_order_product.total_price');
+
+        $completedOrdersCount = DB::table('ecom_order_product')
+            ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
+            ->join('products', 'products.id', '=', 'products_details.products_id')
+            ->where('products.login_id', $id)
+            ->where('products.logintype', 'Vendor')
+            ->where('products.flag', 1)
+            ->where('ecom_order_product.order_status', 'Delivered')
+            ->distinct('ecom_order_product.order_id')
+            ->count('ecom_order_product.order_id');
+
+        $avgCompletedOrderValue = $completedOrdersCount > 0 ? round($completedOrdersTotalValue / $completedOrdersCount, 2) : 0;
+
+        $completedOrderIds = DB::table('ecom_order_product')
+            ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
+            ->join('products', 'products.id', '=', 'products_details.products_id')
+            ->where('products.login_id', $id)
+            ->where('products.logintype', 'Vendor')
+            ->where('products.flag', 1)
+            ->where('ecom_order_product.order_status', 'Delivered')
+            ->distinct('ecom_order_product.order_id')
+            ->pluck('ecom_order_product.order_id')
+            ->toArray();
+
+        $avgHoursToComplete = 0;
+        if (!empty($completedOrderIds)) {
+            $timeDiffs = DB::table('ecom_order_info')
+                ->whereIn('order_id', $completedOrderIds)
+                ->selectRaw('TIMESTAMPDIFF(HOUR, created_at, updated_at) as diff')
+                ->pluck('diff')
+                ->toArray();
+            if (count($timeDiffs) > 0) {
+                $avgHoursToComplete = round(array_sum($timeDiffs) / count($timeDiffs), 2);
+            }
+        }
+
+        $totalTax = 0;
+        if (!empty($completedOrderIds)) {
+            $totalTax = DB::table('ecom_order_info')
+                ->whereIn('order_id', $completedOrderIds)
+                ->sum('gst_charge');
+        }
+
+        $totalShipping = 0;
+        if (!empty($completedOrderIds)) {
+            $totalShipping = DB::table('ecom_order_info')
+                ->whereIn('order_id', $completedOrderIds)
+                ->sum('shipping_charge');
+        }
+
+        $activeOrders = DB::table('ecom_order_product')
+            ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
+            ->join('products', 'products.id', '=', 'products_details.products_id')
+            ->join('ecom_order_info', 'ecom_order_info.order_id', '=', 'ecom_order_product.order_id')
+            ->where('products.login_id', $id)
+            ->where('products.logintype', 'Vendor')
+            ->where('products.flag', 1)
+            ->whereIn('ecom_order_product.order_status', ['Pending', 'Accept', 'Dispatch'])
+            ->select(
+                'ecom_order_product.order_id',
+                'ecom_order_product.order_status',
+                'ecom_order_info.payment_type',
+                'ecom_order_info.payment_status',
+                'ecom_order_info.created_at',
+                DB::raw('SUM(ecom_order_product.total_price) as total_price'),
+                DB::raw('SUM(ecom_order_product.product_quantity) as total_qty'),
+                DB::raw('MAX(ecom_order_product.product_image) as product_image')
+            )
+            ->groupBy(
+                'ecom_order_product.order_id',
+                'ecom_order_product.order_status',
+                'ecom_order_info.payment_type',
+                'ecom_order_info.payment_status',
+                'ecom_order_info.created_at'
+            )
+            ->orderByDesc('ecom_order_info.created_at')
+            ->get();
+
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
 
@@ -548,9 +650,10 @@ class DashboardController extends Controller
                 }
             }
         } else {
-            for ($i = 11; $i >= 0; $i--) {
-                $monthKey = date('Y-m', strtotime("-$i months"));
-                $monthLabel = date('M Y', strtotime("-$i months"));
+            $currentYear = date('Y');
+            for ($m = 1; $m <= 12; $m++) {
+                $monthKey = sprintf('%s-%02d', $currentYear, $m);
+                $monthLabel = date('M Y', mktime(0, 0, 0, $m, 1, $currentYear));
                 $salesTrendLabels[] = $monthLabel;
                 $salesTrendRevenue[$monthKey] = 0;
                 $salesTrendOrders[$monthKey] = 0;
@@ -688,9 +791,10 @@ class DashboardController extends Controller
                 }
             }
         } else {
-            for ($i = 11; $i >= 0; $i--) {
-                $monthKey = date('Y-m', strtotime("-$i months"));
-                $monthLabel = date('M Y', strtotime("-$i months"));
+            $currentYear = date('Y');
+            for ($m = 1; $m <= 12; $m++) {
+                $monthKey = sprintf('%s-%02d', $currentYear, $m);
+                $monthLabel = date('M Y', mktime(0, 0, 0, $m, 1, $currentYear));
                 $customerTrendLabels[] = $monthLabel;
                 $customerTrendCounts[$monthKey] = 0;
             }
@@ -905,7 +1009,19 @@ class DashboardController extends Controller
             'categoryCounts' => $categoryCounts,
             'statusLabels' => $statusLabels,
             'statusCounts' => $statusCounts,
-            'recentActivities' => $recentActivities
+            'recentActivities' => $recentActivities,
+
+            // New fields
+            'vendorDetails' => $vendorDetails,
+            'packagePlanName' => $packagePlanName,
+            'subCategoriesList' => $subCategoriesList,
+            'completedOrdersTotalValue' => $completedOrdersTotalValue,
+            'completedOrdersCount' => $completedOrdersCount,
+            'avgCompletedOrderValue' => $avgCompletedOrderValue,
+            'avgHoursToComplete' => $avgHoursToComplete,
+            'totalTax' => $totalTax,
+            'totalShipping' => $totalShipping,
+            'activeOrders' => $activeOrders
         ]);
     }
 
