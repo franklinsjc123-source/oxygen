@@ -482,6 +482,11 @@ class DashboardController extends Controller
             }
         }
 
+        $packages = DB::table('packages')
+            ->where('status', 1)
+            ->where('flag', 1)
+            ->get();
+
         // New metrics based on the dashboard image
         $completedOrdersTotalValue = DB::table('ecom_order_product')
             ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
@@ -1438,7 +1443,8 @@ class DashboardController extends Controller
             'doughnutStatuses' => $doughnutStatuses,
             'doughnutTotal' => $doughnutTotal,
             'transactionsList' => $transactionsList,
-            'activitiesList' => $activitiesList
+            'activitiesList' => $activitiesList,
+            'packages' => $packages
         ]);
     }
 
@@ -1461,6 +1467,70 @@ class DashboardController extends Controller
             'vendorid' => $id,
             // 'roll' => $roll
         ]);
+    }
+
+    public function renewPackage(Request $request)
+    {
+        $packageId = $request->input('package_id');
+        if (empty($packageId)) {
+            return response()->json(['success' => false, 'message' => 'Package ID is required.'], 400);
+        }
+
+        $package = DB::table('packages')->where('id', $packageId)->where('status', 1)->first();
+        if (!$package) {
+            return response()->json(['success' => false, 'message' => 'Package not found or inactive.'], 404);
+        }
+
+        // Get the logged in vendor ID
+        $vendorId = null;
+        if (auth()->check() && (int) auth()->user()->status === 2) {
+            $vendorId = auth()->user()->login_id;
+        } elseif (session()->has('login_id')) {
+            $vendorId = session()->get('login_id');
+        }
+
+        if (empty($vendorId)) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized or vendor session expired.'], 401);
+        }
+
+        // Update vendor details
+        $purchaseDate = date('Y-m-d H:i:s');
+        $validityDays = (int) $package->validity;
+        
+        // Add days additional if any
+        $additionalDays = (int) $package->days;
+        $totalDays = $validityDays + $additionalDays;
+        if ($totalDays <= 0) {
+            $totalDays = 30; // fallback
+        }
+
+        $expiredDate = date('Y-m-d H:i:s', strtotime("+$totalDays days"));
+        $nextRenewalDate = date('Y-m-d H:i:s', strtotime("+$totalDays days"));
+
+        $updated = DB::table('vendor_details')
+            ->where('id', $vendorId)
+            ->update([
+                'package_id' => $package->id,
+                'purchase_date' => $purchaseDate,
+                'expired_date' => $expiredDate,
+                'next_renewal_date' => $nextRenewalDate,
+                'wallet' => $package->wallet,
+                'commission' => $package->commission,
+                'validity' => $package->validity,
+                'description' => $package->description,
+                'updated_at' => now()
+            ]);
+
+        if ($updated) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Subscription plan updated successfully!',
+                'plan_name' => $package->name,
+                'expired_date' => date('d M Y', strtotime($expiredDate))
+            ]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Failed to update plan. Please try again.'], 500);
     }
 
 }

@@ -73,6 +73,13 @@ Route::get(
 	->name('vendordashboard')
 	->middleware('auth');
 
+Route::post(
+	'dashboard/renew-package',
+	[DashboardController::class, 'renewPackage']
+)
+	->name('vendor.renew_package')
+	->middleware('auth');
+
 Route::get('dashboard.php', function() {
 	$id = null;
 	if (auth()->check() && (int) auth()->user()->status === 2) {

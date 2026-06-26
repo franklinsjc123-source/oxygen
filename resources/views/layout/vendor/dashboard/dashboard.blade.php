@@ -420,7 +420,7 @@
                                             Till: {{ $vendorDetails->expired_date ? date('d M Y', strtotime($vendorDetails->expired_date)) : '31st Dec 2023' }}
                                         </div>
                                     </div>
-                                    <a href="javascript:void(0)" style="background-color: #183543; color: #ffffff; padding: 5px 12px; border-radius: 6px; font-size: 11.5px; font-weight: 700; text-decoration: none; transition: background-color 0.2s; box-shadow: 0 2px 5px rgba(24, 53, 67, 0.15);">
+                                    <a href="javascript:void(0)" onclick="openRenewalModal()" style="background-color: #183543; color: #ffffff; padding: 5px 12px; border-radius: 6px; font-size: 11.5px; font-weight: 700; text-decoration: none; transition: background-color 0.2s; box-shadow: 0 2px 5px rgba(24, 53, 67, 0.15);">
                                         Renewal
                                     </a>
                                 </div>
@@ -984,10 +984,305 @@
 
 </div>
 </div>
+<!-- Subscription Renewal Modal -->
+<!-- Subscription Renewal Modal -->
+<div class="modal fade" id="renewalModal" tabindex="-1" aria-labelledby="renewalModalLabel" aria-hidden="true" style="backdrop-filter: blur(8px); background-color: rgba(15, 23, 42, 0.3);">
+    <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 1020px;">
+        <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.15); overflow: hidden; background: #ffffff;">
+            
+            <!-- Modal Header -->
+            <div class="modal-header" style="background: linear-gradient(135deg, #183543 0%, #0f2430 100%); border: none; padding: 18px 24px; display: flex; flex-direction: column; align-items: center; position: relative;">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="position: absolute; right: 18px; top: 18px; opacity: 0.8; transition: all 0.2s; border: none; background: transparent; color: white; font-size: 20px; font-weight: 300; line-height: 1; outline: none;">&times;</button>
+                <h3 class="modal-title text-white" id="renewalModalLabel" style="font-weight: 800; font-size: 19px; margin-bottom: 4px; letter-spacing: -0.5px;">Subscription Renewal Plans</h3>
+                <p style="color: #94a3b8; font-size: 12px; margin: 0; font-weight: 500; text-align: center;">Select the ideal plan to unlock premium features and accelerate your store's growth.</p>
+                
+                <!-- Sliding Pill Tab Selector -->
+                <div style="display: flex; justify-content: center; margin-top: 14px; width: 100%;">
+                    <div style="background-color: rgba(255, 255, 255, 0.08); border-radius: 30px; padding: 3px; display: flex; position: relative; width: 330px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <button type="button" class="duration-tab active" onclick="switchDurationGroup('12', this)" style="flex: 1; border: none; background: transparent; padding: 6px 12px; font-size: 11.5px; font-weight: 700; border-radius: 26px; cursor: pointer; transition: all 0.3s; color: #ffffff; z-index: 2; outline: none;">12 Months</button>
+                        <button type="button" class="duration-tab" onclick="switchDurationGroup('3', this)" style="flex: 1; border: none; background: transparent; padding: 6px 12px; font-size: 11.5px; font-weight: 700; border-radius: 26px; cursor: pointer; transition: all 0.3s; color: #94a3b8; z-index: 2; outline: none;">3 Months</button>
+                        <button type="button" class="duration-tab" onclick="switchDurationGroup('1', this)" style="flex: 1; border: none; background: transparent; padding: 6px 12px; font-size: 11.5px; font-weight: 700; border-radius: 26px; cursor: pointer; transition: all 0.3s; color: #94a3b8; z-index: 2; outline: none;">1 Month</button>
+                        <!-- Sliding Background Pill -->
+                        <div id="durationPillBg" style="position: absolute; top: 3px; bottom: 3px; left: 3px; width: 106px; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 26px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; box-shadow: 0 3px 8px rgba(29, 78, 216, 0.3);"></div>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Modal Body -->
+            <div class="modal-body" style="padding: 20px; background-color: #f8fafc;">
+                <div class="row g-3 justify-content-center" id="packageCardsRow" style="min-height: 300px;">
+                    <!-- Cards will be dynamically injected here via JS -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .pricing-features-scroll::-webkit-scrollbar {
+        width: 5px;
+    }
+    .pricing-features-scroll::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .pricing-features-scroll::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+    .pricing-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .pricing-card:hover {
+        transform: translateY(-6px) !important;
+    }
+</style>
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
+    // === Subscription Renewal Package Setup ===
+    // Dynamically load SweetAlert2 if not already present
+    if (typeof Swal === 'undefined') {
+        var sweetalertScript = document.createElement('script');
+        sweetalertScript.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
+        document.head.appendChild(sweetalertScript);
+    }
+
+    var currentVendorPackageId = {{ $vendorDetails->package_id ?? 0 }};
+    var dbPackages = @json($packages);
+    var packageGroups = {
+        '12': [],
+        '3': [],
+        '1': []
+    };
+
+    dbPackages.forEach(function(pkg) {
+        var validity = parseInt(pkg.validity);
+        var groupKey = '1';
+        if (validity >= 360) {
+            groupKey = '12';
+        } else if (validity >= 80) {
+            groupKey = '3';
+        }
+        
+        // Parse features list from description HTML
+        var tempDiv = document.createElement('div');
+        tempDiv.innerHTML = pkg.description;
+        var features = [];
+        var lis = tempDiv.querySelectorAll('li');
+        lis.forEach(function(li) {
+            features.push(li.textContent.trim());
+        });
+
+        // Determine type of plan based on name
+        var lowerName = pkg.name.toLowerCase();
+        var type = 'startup';
+        if (lowerName.includes('business')) {
+            type = 'business';
+        } else if (lowerName.includes('premium') || lowerName.includes('professional')) {
+            type = 'premium';
+        } else if (lowerName.includes('enterprise')) {
+            type = 'enterprise';
+        }
+
+        packageGroups[groupKey].push({
+            id: pkg.id,
+            name: pkg.name.split(' (')[0], // e.g. "Start-Up"
+            price: parseFloat(pkg.price),
+            validity: pkg.validity,
+            days: pkg.days,
+            type: type,
+            features: features
+        });
+    });
+
+    // Sort packages within each group to ensure order: Startup, Business, Premium, Enterprise
+    var typeOrder = { 'startup': 0, 'business': 1, 'premium': 2, 'enterprise': 3 };
+    Object.keys(packageGroups).forEach(function(key) {
+        packageGroups[key].sort(function(a, b) {
+            return typeOrder[a.type] - typeOrder[b.type];
+        });
+    });
+
+    function openRenewalModal() {
+        // Show the modal
+        var modalEl = document.getElementById('renewalModal');
+        var modal = bootstrap.Modal.getInstance(modalEl);
+        if (!modal) {
+            modal = new bootstrap.Modal(modalEl);
+        }
+        modal.show();
+
+        // Trigger duration slide after modal is shown to ensure correct dimensions are calculated
+        setTimeout(function() {
+            var activeTab = document.querySelector('.duration-tab.active');
+            if (activeTab) {
+                switchDurationGroup('12', activeTab);
+            }
+        }, 200);
+    }
+
+    function switchDurationGroup(groupKey, el) {
+        // Update active class on buttons
+        document.querySelectorAll('.duration-tab').forEach(function(btn) {
+            btn.classList.remove('active');
+            btn.style.color = '#94a3b8';
+        });
+        el.classList.add('active');
+        el.style.color = '#ffffff';
+
+        // Slide the background pill
+        var pill = document.getElementById('durationPillBg');
+        var width = el.offsetWidth;
+        pill.style.width = width + 'px';
+        pill.style.left = (el.offsetLeft) + 'px';
+
+        // Render the cards for this group
+        renderPackageCards(groupKey);
+    }
+
+    function renderPackageCards(durationKey) {
+        var cards = packageGroups[durationKey] || [];
+        var row = document.getElementById('packageCardsRow');
+        row.innerHTML = '';
+
+        cards.forEach(function(pkg) {
+            var colors = {
+                startup: { primary: '#0ca678', bgGradient: 'linear-gradient(135deg, #e6fcf5 0%, #c3fae8 100%)', text: '#094080' },
+                business: { primary: '#3b82f6', bgGradient: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)', text: '#1e3a8a' },
+                premium: { primary: '#9b59b6', bgGradient: 'linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%)', text: '#581c87' },
+                enterprise: { primary: '#f59e0b', bgGradient: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', text: '#78350f' }
+            };
+            var theme = colors[pkg.type] || colors.startup;
+
+            var isCurrentPlan = (pkg.id == currentVendorPackageId);
+            var cardStyle = 'border-radius: 14px; border: 1.5px solid #e2e8f0; background: #ffffff; padding: 16px 14px; height: 100%; display: flex; flex-direction: column; position: relative; transition: all 0.3s ease; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);';
+            var popularBadgeHtml = '';
+            var currentPlanBadgeHtml = '';
+
+            if (pkg.type === 'business') {
+                cardStyle = 'border-radius: 14px; border: 2.5px solid #3b82f6; background: #ffffff; padding: 16px 14px; height: 100%; display: flex; flex-direction: column; position: relative; transition: all 0.3s ease; box-shadow: 0 8px 20px -5px rgba(59, 130, 246, 0.15); transform: scale(1.01);';
+                popularBadgeHtml = '<div style="position: absolute; top: -11px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #ffffff; padding: 2px 10px; border-radius: 20px; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 3px 6px rgba(29, 78, 216, 0.25); white-space: nowrap; z-index: 10;">Most Popular</div>';
+            }
+
+            if (isCurrentPlan) {
+                cardStyle += ' border-color: #0ca678; box-shadow: 0 8px 20px -5px rgba(12, 166, 120, 0.15);';
+                currentPlanBadgeHtml = '<div style="position: absolute; top: 8px; right: 8px; background: #e6fcf5; color: #0ca678; border: 1px solid #c3fae8; padding: 1px 6px; border-radius: 12px; font-size: 8px; font-weight: 700; text-transform: uppercase; z-index: 10;">Current Plan</div>';
+            }
+
+            var featuresHtml = '';
+            pkg.features.forEach(function(feat) {
+                featuresHtml += `
+                    <div style="display: flex; align-items: flex-start; gap: 7px; margin-bottom: 7px; font-size: 11.5px; color: #4a5568; font-weight: 500; line-height: 1.3;">
+                        <i class="fa fa-check-circle" style="color: ${theme.primary}; font-size: 13px; margin-top: 1px; flex-shrink: 0;"></i>
+                        <span>${feat}</span>
+                    </div>`;
+            });
+
+            var col = document.createElement('div');
+            col.className = 'col-lg-3 col-md-6 mb-3';
+            col.innerHTML = `
+                <div class="pricing-card" style="${cardStyle}">
+                    ${popularBadgeHtml}
+                    ${currentPlanBadgeHtml}
+                    
+                    <div style="text-align: center; margin-bottom: 10px;">
+                        <h5 style="font-size: 13px; font-weight: 700; color: #64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">${pkg.name}</h5>
+                        
+                        <div style="background: ${theme.bgGradient}; border-radius: 30px; padding: 4px 10px; display: inline-flex; align-items: center; justify-content: center; gap: 3px; border: 1px solid rgba(0,0,0,0.02); min-width: 110px;">
+                           <span style="font-size: 12px; font-weight: 800; color: ${theme.primary}; align-self: flex-start; margin-top: 1px;">₹</span>
+                           <span style="font-size: 18px; font-weight: 800; color: ${theme.primary}; line-height: 1;">${pkg.price.toLocaleString('en-IN')}</span>
+                           <span style="font-size: 10px; font-weight: 600; color: #718096; margin-left: 1px; align-self: flex-end; margin-bottom: 1px;">/ ${pkg.days} days</span>
+                        </div>
+                    </div>
+
+                    <div class="pricing-features-scroll" style="flex-grow: 1; overflow-y: auto; max-height: 150px; padding-right: 2px; margin-bottom: 12px; border-bottom: 1px solid #edf2f7; border-top: 1px solid #edf2f7; padding: 8px 0;">
+                        ${featuresHtml}
+                    </div>
+
+                    <button type="button" class="btn w-100" onclick="selectRenewalPlan(${pkg.id}, '${pkg.name}', ${pkg.price})" style="background: ${isCurrentPlan ? 'linear-gradient(135deg, #0ca678 0%, #087f5b 100%)' : 'linear-gradient(135deg, #183543 0%, #0f2430 100%)'}; color: #ffffff; border: none; border-radius: 8px; padding: 6px 10px; font-size: 11.5px; font-weight: 700; transition: all 0.2s; box-shadow: 0 3px 6px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <span>${isCurrentPlan ? 'Renew Plan' : 'Upgrade Plan'}</span>
+                        <i class="fa fa-arrow-right" style="font-size: 10px;"></i>
+                    </button>
+                </div>
+            `;
+            row.appendChild(col);
+        });
+    }
+
+    function selectRenewalPlan(packageId, packageName, price) {
+        if (typeof Swal === 'undefined') {
+            alert('Please wait a moment while the interface loads, or try again.');
+            return;
+        }
+
+        Swal.fire({
+            title: 'Confirm Subscription Update',
+            html: `You have selected the <strong>${packageName}</strong> plan.<br><br><span style="font-size: 18px; font-weight: 700; color: #183543;">Amount Payable: ₹${price.toLocaleString('en-IN')}</span>`,
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Proceed to Payment',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#183543',
+            cancelButtonColor: '#718096',
+            background: '#ffffff'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Processing Payment...',
+                    html: 'Simulating secure payment gateway connection. Please do not close this window.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        
+                        // Submit AJAX call to renew plan
+                        $.ajax({
+                            url: "{{ route('vendor.renew_package') }}",
+                            type: "POST",
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                                package_id: packageId
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    setTimeout(function() {
+                                        Swal.fire({
+                                            title: 'Plan Activated!',
+                                            text: 'Your plan has been updated successfully to ' + response.plan_name + '! Expiring on: ' + response.expired_date,
+                                            icon: 'success',
+                                            confirmButtonColor: '#0ca678'
+                                        }).then(() => {
+                                            window.location.reload();
+                                        });
+                                    }, 1500);
+                                } else {
+                                    Swal.fire({
+                                        title: 'Error',
+                                        text: response.message || 'Failed to update plan.',
+                                        icon: 'error',
+                                        confirmButtonColor: '#183543'
+                                    });
+                                }
+                            },
+                            error: function(xhr) {
+                                var msg = 'Failed to process renewal. Please try again.';
+                                if (xhr.responseJSON && xhr.responseJSON.message) {
+                                    msg = xhr.responseJSON.message;
+                                }
+                                Swal.fire({
+                                    title: 'Transaction Failed',
+                                    text: msg,
+                                    icon: 'error',
+                                    confirmButtonColor: '#183543'
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
     // === Active Orders Tab Switcher ===
     function switchActiveTab(tabName, btnElement) {
         document.querySelectorAll('.tab-panel-content').forEach(function(el) {
