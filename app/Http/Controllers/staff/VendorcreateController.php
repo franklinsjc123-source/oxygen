@@ -212,6 +212,9 @@ class VendorcreateController extends Controller
             $vendor->option1 = $request->option1;
             $vendor->option2 = $request->option2;
             $vendor->comments = $request->comments;
+            $vendor->instagram_link = $request->instagram_link;
+            $vendor->facebook_link = $request->facebook_link;
+            $vendor->whatsapp_number = $request->whatsapp_number;
 
             // echo $vendor;
             // exit();
@@ -469,6 +472,9 @@ class VendorcreateController extends Controller
             $vendor->option1 = $request->option1;
             $vendor->option2 = $request->option2;
             $vendor->comments = $request->comments;
+            $vendor->instagram_link = $request->instagram_link;
+            $vendor->facebook_link = $request->facebook_link;
+            $vendor->whatsapp_number = $request->whatsapp_number;
 
             // echo $vendor;
             // exit();

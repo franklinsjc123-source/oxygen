@@ -744,11 +744,25 @@
                                                         </div>
 
                                                         <div class="row mt-3">
-
+ 
                                                             <label for="validationCustom1"
                                                                 class="col-xl-1 col-md-1">Comments:</label>
                                                             <div class="col-xl-5 col-md-5">
                                                                 <textarea class="form-control" rows="3" id="validationCustom1" type="text" name="comments"></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mt-3">
+                                                            <div class="col-md-4">
+                                                                <label class="fw-bold">Instagram Link</label>
+                                                                <input class="form-control" type="text" name="instagram_link" placeholder="https://instagram.com/username">
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label class="fw-bold">Facebook Link</label>
+                                                                <input class="form-control" type="text" name="facebook_link" placeholder="https://facebook.com/username">
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label class="fw-bold">WhatsApp Number</label>
+                                                                <input class="form-control" type="text" name="whatsapp_number" placeholder="e.g. 919876543210">
                                                             </div>
                                                         </div><br>
                                                     </div>

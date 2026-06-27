@@ -636,6 +636,20 @@
                                                             <div class="col-xl-5 col-md-5">
                                                                 <textarea class="form-control" rows="3" id="validationCustom1" type="text" name="comments">{{$vendorcreate->comments}}</textarea>
                                                             </div>
+                                                        </div>
+                                                        <div class="row mt-3">
+                                                            <div class="col-md-4">
+                                                                <label class="fw-bold">Instagram Link</label>
+                                                                <input class="form-control" type="text" name="instagram_link" value="{{ $vendorcreate->instagram_link }}">
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label class="fw-bold">Facebook Link</label>
+                                                                <input class="form-control" type="text" name="facebook_link" value="{{ $vendorcreate->facebook_link }}">
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label class="fw-bold">WhatsApp Number</label>
+                                                                <input class="form-control" type="text" name="whatsapp_number" value="{{ $vendorcreate->whatsapp_number }}">
+                                                            </div>
                                                         </div><br>
                                                         
                                                         <div class="">

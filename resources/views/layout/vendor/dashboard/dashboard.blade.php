@@ -424,6 +424,30 @@
                                         Renewal
                                     </a>
                                 </div>
+                                
+                                <!-- Social Media Links -->
+                                @if(!empty($vendorDetails->instagram_link) || !empty($vendorDetails->facebook_link) || !empty($vendorDetails->whatsapp_number))
+                                    <div style="display: flex; gap: 12px; margin-top: 6px; justify-content: center; align-items: center; border-top: 1px solid #edf2f7; padding-top: 12px;">
+                                        @if(!empty($vendorDetails->facebook_link))
+                                            <a href="{{ $vendorDetails->facebook_link }}" target="_blank" title="Facebook" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background-color: #3b5998; color: #ffffff; font-size: 15px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 6px rgba(59, 89, 152, 0.2);" onmouseover="this.style.transform='scale(1.15)'; this.style.boxShadow='0 6px 12px rgba(59, 89, 152, 0.35)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 6px rgba(59, 89, 152, 0.2)';">
+                                                <i class="fa fa-facebook"></i>
+                                            </a>
+                                        @endif
+                                        @if(!empty($vendorDetails->instagram_link))
+                                            <a href="{{ $vendorDetails->instagram_link }}" target="_blank" title="Instagram" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: #ffffff; font-size: 15px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 6px rgba(220, 39, 67, 0.2);" onmouseover="this.style.transform='scale(1.15)'; this.style.boxShadow='0 6px 12px rgba(220, 39, 67, 0.35)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 6px rgba(220, 39, 67, 0.2)';">
+                                                <i class="fa fa-instagram"></i>
+                                            </a>
+                                        @endif
+                                        @if(!empty($vendorDetails->whatsapp_number))
+                                            @php
+                                                $whatsappNumber = preg_replace('/[^0-9]/', '', $vendorDetails->whatsapp_number);
+                                            @endphp
+                                            <a href="https://wa.me/{{ $whatsappNumber }}" target="_blank" title="WhatsApp" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background-color: #25d366; color: #ffffff; font-size: 17px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 6px rgba(37, 211, 102, 0.2);" onmouseover="this.style.transform='scale(1.15)'; this.style.boxShadow='0 6px 12px rgba(37, 211, 102, 0.35)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 6px rgba(37, 211, 102, 0.2)';">
+                                                <i class="fa fa-whatsapp"></i>
+                                            </a>
+                                        @endif
+                                    </div>
+                                @endif
                             </div>
                         </div>
 
