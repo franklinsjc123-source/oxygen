@@ -1339,7 +1339,8 @@ class DashboardController extends Controller
                 'ecom_order_info.created_at',
                 'ecom_order_info.customer_firstname',
                 'ecom_order_info.customer_lastname',
-                'ecom_order_info.grand_total'
+                'ecom_order_info.grand_total',
+                'ecom_order_info.customer_city'
             )
             ->groupBy(
                 'ecom_order_info.order_id',
@@ -1348,7 +1349,8 @@ class DashboardController extends Controller
                 'ecom_order_info.created_at',
                 'ecom_order_info.customer_firstname',
                 'ecom_order_info.customer_lastname',
-                'ecom_order_info.grand_total'
+                'ecom_order_info.grand_total',
+                'ecom_order_info.customer_city'
             )
             ->orderByDesc('ecom_order_info.created_at')
             ->limit(5)
@@ -1361,7 +1363,7 @@ class DashboardController extends Controller
                 'customer' => $tx->customer_firstname . ' ' . $tx->customer_lastname,
                 'initials' => strtoupper(substr($tx->customer_firstname, 0, 1) . substr($tx->customer_lastname, 0, 1)),
                 'date' => date('d/m/Y', strtotime($tx->created_at)),
-                'ref' => 'REF-' . str_pad($tx->order_id, 7, '0', STR_PAD_LEFT),
+                'location' => $tx->customer_city ?: 'N/A',
                 'amount' => '₹' . number_format($tx->grand_total, 2),
                 'status' => $tx->payment_status === 'Paid' ? 'Paid' : 'Pending'
             ];
@@ -1394,7 +1396,7 @@ class DashboardController extends Controller
             
             if ($status === 'Pending') {
                 $activitiesList[] = [
-                    'text' => "$cust placed a new Order.",
+                    'text' => "$cust placed an Order.",
                     'time' => $timeAgo,
                     'initials' => $initials,
                     'color' => '#f08c00'
