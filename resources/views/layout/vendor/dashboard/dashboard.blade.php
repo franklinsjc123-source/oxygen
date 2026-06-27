@@ -840,10 +840,18 @@
                             <!-- Category Tabs -->
                             <div id="catsubTabsContainer" style="display: flex; gap: 20px; align-items: center; transition: all 0.2s;">
                                 <span class="catsub-tab active" onclick="switchCatSubTab('All', this)" style="cursor: pointer; font-size: 14px; font-weight: 700; color: #ff7675; border-bottom: 2px solid #ff7675; padding-bottom: 4px; transition: all 0.2s;">All</span>
-                                <span class="catsub-tab" onclick="switchCatSubTab('Men', this)" style="cursor: pointer; font-size: 14px; font-weight: 600; color: #a0aec0; padding-bottom: 4px; transition: all 0.2s;">Men</span>
-                                <span class="catsub-tab" onclick="switchCatSubTab('Women', this)" style="cursor: pointer; font-size: 14px; font-weight: 600; color: #a0aec0; padding-bottom: 4px; transition: all 0.2s;">Women</span>
-                                <span class="catsub-tab" onclick="switchCatSubTab('Kids', this)" style="cursor: pointer; font-size: 14px; font-weight: 600; color: #a0aec0; padding-bottom: 4px; transition: all 0.2s;">Kids</span>
-                                <span class="catsub-tab" onclick="switchCatSubTab('Living', this)" style="cursor: pointer; font-size: 14px; font-weight: 600; color: #a0aec0; padding-bottom: 4px; transition: all 0.2s;">Living</span>
+                                @if(in_array('Men', $activeTabKeys))
+                                    <span class="catsub-tab" onclick="switchCatSubTab('Men', this)" style="cursor: pointer; font-size: 14px; font-weight: 600; color: #a0aec0; padding-bottom: 4px; transition: all 0.2s;">Men</span>
+                                @endif
+                                @if(in_array('Women', $activeTabKeys))
+                                    <span class="catsub-tab" onclick="switchCatSubTab('Women', this)" style="cursor: pointer; font-size: 14px; font-weight: 600; color: #a0aec0; padding-bottom: 4px; transition: all 0.2s;">Women</span>
+                                @endif
+                                @if(in_array('Kids', $activeTabKeys))
+                                    <span class="catsub-tab" onclick="switchCatSubTab('Kids', this)" style="cursor: pointer; font-size: 14px; font-weight: 600; color: #a0aec0; padding-bottom: 4px; transition: all 0.2s;">Kids</span>
+                                @endif
+                                @if(in_array('Living', $activeTabKeys))
+                                    <span class="catsub-tab" onclick="switchCatSubTab('Living', this)" style="cursor: pointer; font-size: 14px; font-weight: 600; color: #a0aec0; padding-bottom: 4px; transition: all 0.2s;">Living</span>
+                                @endif
                             </div>
                             <!-- Right Category/Offer Buttons -->
                             <div style="display: flex; gap: 8px;">
@@ -1033,7 +1041,7 @@
 <!-- Subscription Renewal Modal -->
 <!-- Subscription Renewal Modal -->
 <div class="modal fade" id="renewalModal" tabindex="-1" aria-labelledby="renewalModalLabel" aria-hidden="true" style="backdrop-filter: blur(8px); background-color: rgba(15, 23, 42, 0.3);">
-    <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 1020px;">
+    <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 1250px;">
         <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.15); overflow: hidden; background: #ffffff;">
             
             <!-- Modal Header -->

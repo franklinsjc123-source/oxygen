@@ -474,6 +474,7 @@ class DashboardController extends Controller
         $subCategoriesList = [];
         $assignedCategoryCount = 0;
         $assignedSubCategoryCount = 0;
+        $activeTabKeys = ['All'];
         if ($vendorDetails) {
             $packagePlanName = DB::table('packages')->where('id', $vendorDetails->package_id)->value('name') ?? 'No Plan';
             if ($vendorDetails->sub_category_ids) {
@@ -488,6 +489,28 @@ class DashboardController extends Controller
                         ->whereIn('id', $subCategoryIds)
                         ->distinct('category_id')
                         ->count('category_id');
+
+                    // Calculate active tab keys based on assigned main categories
+                    $assignedMainCategories = DB::table('category_sub')
+                        ->join('category_main', 'category_sub.category_main_id', '=', 'category_main.id')
+                        ->whereIn('category_sub.id', $subCategoryIds)
+                        ->distinct('category_main.category_main_name')
+                        ->pluck('category_main.category_main_name')
+                        ->toArray();
+
+                    foreach ($assignedMainCategories as $cat) {
+                        $tabKey = 'Living';
+                        if (stripos($cat, 'men') !== false && stripos($cat, 'women') === false) {
+                            $tabKey = 'Men';
+                        } elseif (stripos($cat, 'women') !== false) {
+                            $tabKey = 'Women';
+                        } elseif (stripos($cat, 'kids') !== false) {
+                            $tabKey = 'Kids';
+                        }
+                        if (!in_array($tabKey, $activeTabKeys)) {
+                            $activeTabKeys[] = $tabKey;
+                        }
+                    }
                 }
             }
         }
@@ -1124,81 +1147,77 @@ class DashboardController extends Controller
         // --- NEW WIDGETS DATA FOR SCREENSHOT 3 ---
         // 1. Category/Offer Mix Chart (Subcategory stats per parent tab)
         $subcategoryStats = [
-            'All' => [
-                'labels' => ['Casual Shirt', 'Formal Shirt', 'Kurtis', 'Sarees', 'Frocks', 'Mugs', 'Others'],
-                'sales' => [3000, 4500, 6000, 5000, 3000, 1800, 1500],
-                'products' => [15, 12, 20, 17, 12, 8, 12],
-                'customers' => [5, 8, 5, 4, 6, 3, 5]
-            ],
-            'Men' => [
-                'labels' => ['Casual Shirt', 'Formal Shirt', 'T-Shirt', 'Jeans', 'Trousers', 'Blazers', 'Others'],
-                'sales' => [3000, 4500, 8000, 5000, 3500, 6000, 2000],
-                'products' => [15, 12, 25, 18, 10, 8, 5],
-                'customers' => [5, 8, 15, 10, 6, 4, 3]
-            ],
-            'Women' => [
-                'labels' => ['Kurtis', 'Salwars & Chudidhars', 'Sarees', 'Blouses', 'Ghagras', 'Palazzos', 'Lehenga', 'Dupattas & Shawls', 'Others'],
-                'sales' => [2000, 6000, 5000, 7000, 11000, 10000, 9000, 18000, 15000],
-                'products' => [20, 17, 16, 16, 10, 9, 6, 5, 12],
-                'customers' => [2, 5, 4, 3, 9, 8, 13, 15, 13]
-            ],
-            'Kids' => [
-                'labels' => ['T-shirts', 'Frocks', 'Shirts', 'Pants', 'Toys', 'Others'],
-                'sales' => [1500, 3000, 2000, 1200, 5000, 800],
-                'products' => [8, 12, 10, 6, 15, 4],
-                'customers' => [3, 6, 5, 4, 12, 2]
-            ],
-            'Living' => [
-                'labels' => ['Bed Sheets', 'Cushion Covers', 'Mugs', 'Frames', 'Clocks', 'Others'],
-                'sales' => [2500, 4000, 1800, 3200, 1200, 1500],
-                'products' => [12, 18, 8, 14, 6, 5],
-                'customers' => [4, 9, 3, 7, 2, 3]
-            ]
+            'All' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
+            'Men' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
+            'Women' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
+            'Kids' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
+            'Living' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []]
         ];
 
-        $realSubData = DB::table('products')
-            ->join('category_sub', 'category_sub.id', '=', 'products.category_sub')
-            ->join('category_main', 'category_main.id', '=', 'products.category_main')
-            ->leftJoin('products_details', 'products_details.products_id', '=', 'products.id')
-            ->leftJoin('ecom_order_product', 'ecom_order_product.product_id', '=', 'products_details.id')
-            ->leftJoin('ecom_order_info', 'ecom_order_info.order_id', '=', 'ecom_order_product.order_id')
-            ->where('products.login_id', $id)
-            ->where('products.logintype', 'Vendor')
-            ->where('products.flag', 1)
-            ->select(
-                'category_sub.category_sub_name',
-                'category_main.category_main_name',
-                DB::raw('COUNT(DISTINCT products.id) as product_count'),
-                DB::raw('COALESCE(SUM(ecom_order_product.product_quantity), 0) as sales_count'),
-                DB::raw('COUNT(DISTINCT ecom_order_info.customer_id) as customer_count')
-            )
-            ->groupBy('category_sub.category_sub_name', 'category_main.category_main_name')
-            ->get();
+        if ($vendorDetails && $vendorDetails->sub_category_ids) {
+            $subCategoryIds = array_filter(explode(',', $vendorDetails->sub_category_ids));
+            if (!empty($subCategoryIds)) {
+                $assignedSubCategories = DB::table('category_sub')
+                    ->join('category_main', 'category_sub.category_main_id', '=', 'category_main.id')
+                    ->whereIn('category_sub.id', $subCategoryIds)
+                    ->select('category_sub.id', 'category_sub.category_sub_name', 'category_main.category_main_name')
+                    ->get();
 
-        if ($realSubData->isNotEmpty()) {
-            foreach ($realSubData as $row) {
-                $cat = $row->category_main_name;
-                $tabKey = 'Living';
-                if (stripos($cat, 'men') !== false && stripos($cat, 'women') === false) {
-                    $tabKey = 'Men';
-                } elseif (stripos($cat, 'women') !== false) {
-                    $tabKey = 'Women';
-                } elseif (stripos($cat, 'kids') !== false) {
-                    $tabKey = 'Kids';
+                $realStatsBySubId = [];
+                $realStatsData = DB::table('products')
+                    ->where('products.login_id', $id)
+                    ->where('products.logintype', 'Vendor')
+                    ->where('products.flag', 1)
+                    ->whereIn('products.category_sub', $subCategoryIds)
+                    ->leftJoin('products_details', 'products_details.products_id', '=', 'products.id')
+                    ->leftJoin('ecom_order_product', 'ecom_order_product.product_id', '=', 'products_details.id')
+                    ->leftJoin('ecom_order_info', 'ecom_order_info.order_id', '=', 'ecom_order_product.order_id')
+                    ->select(
+                        'products.category_sub as sub_id',
+                        DB::raw('COUNT(DISTINCT products.id) as product_count'),
+                        DB::raw('COALESCE(SUM(ecom_order_product.product_quantity), 0) as sales_count'),
+                        DB::raw('COUNT(DISTINCT ecom_order_info.customer_id) as customer_count')
+                    )
+                    ->groupBy('products.category_sub')
+                    ->get();
+
+                foreach ($realStatsData as $stat) {
+                    $realStatsBySubId[$stat->sub_id] = $stat;
                 }
-                
-                foreach ([$tabKey, 'All'] as $tk) {
-                    if (isset($subcategoryStats[$tk])) {
-                        $idx = array_search($row->category_sub_name, $subcategoryStats[$tk]['labels']);
-                        if ($idx !== false) {
-                            $subcategoryStats[$tk]['products'][$idx] = $row->product_count;
-                            $subcategoryStats[$tk]['sales'][$idx] = $row->sales_count * 1000 ?: $subcategoryStats[$tk]['sales'][$idx];
-                            $subcategoryStats[$tk]['customers'][$idx] = $row->customer_count ?: $subcategoryStats[$tk]['customers'][$idx];
+
+                foreach ($assignedSubCategories as $sub) {
+                    $subId = $sub->id;
+                    $subName = $sub->category_sub_name;
+                    $catMain = $sub->category_main_name;
+
+                    $tabKey = 'Living';
+                    if (stripos($catMain, 'men') !== false && stripos($catMain, 'women') === false) {
+                        $tabKey = 'Men';
+                    } elseif (stripos($catMain, 'women') !== false) {
+                        $tabKey = 'Women';
+                    } elseif (stripos($catMain, 'kids') !== false) {
+                        $tabKey = 'Kids';
+                    }
+
+                    $prodCount = 0;
+                    $salesCount = 0;
+                    $custCount = 0;
+
+                    if (isset($realStatsBySubId[$subId])) {
+                        $prodCount = $realStatsBySubId[$subId]->product_count;
+                        $salesCount = $realStatsBySubId[$subId]->sales_count;
+                        $custCount = $realStatsBySubId[$subId]->customer_count;
+                    }
+
+                    foreach ([$tabKey, 'All'] as $tk) {
+                        $subcategoryStats[$tk]['labels'][] = $subName;
+                        $subcategoryStats[$tk]['products'][] = $prodCount;
+                        if ($prodCount > 0) {
+                            $subcategoryStats[$tk]['sales'][] = $salesCount * 1000 ?: 500;
+                            $subcategoryStats[$tk]['customers'][] = $custCount ?: 1;
                         } else {
-                            $subcategoryStats[$tk]['labels'][] = $row->category_sub_name;
-                            $subcategoryStats[$tk]['products'][] = $row->product_count;
-                            $subcategoryStats[$tk]['sales'][] = $row->sales_count * 1000 ?: 500;
-                            $subcategoryStats[$tk]['customers'][] = $row->customer_count ?: 1;
+                            $subcategoryStats[$tk]['sales'][] = 0;
+                            $subcategoryStats[$tk]['customers'][] = 0;
                         }
                     }
                 }
@@ -1441,6 +1460,7 @@ class DashboardController extends Controller
             'subCategoriesList' => $subCategoriesList,
             'assignedCategoryCount' => $assignedCategoryCount,
             'assignedSubCategoryCount' => $assignedSubCategoryCount,
+            'activeTabKeys' => $activeTabKeys,
             'completedOrdersTotalValue' => $completedOrdersTotalValue,
             'completedOrdersCount' => $completedOrdersCount,
             'avgCompletedOrderValue' => $avgCompletedOrderValue,
