@@ -285,6 +285,95 @@
             color: #183543;
             background-color: rgba(24, 53, 67, 0.05);
         }
+        
+        /* Responsive Shop Banner & Info */
+        .shop-profile-banner {
+            height: 80px; 
+            background: #183543; 
+            position: relative; 
+            padding: 12px 24px; 
+            display: flex; 
+            align-items: center; 
+            gap: 16px;
+        }
+        .shop-profile-info {
+            flex-grow: 1; 
+            min-width: 0; 
+            color: #ffffff; 
+            padding-right: 145px;
+        }
+        .shop-profile-status-badge {
+            position: absolute; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            right: 24px;
+        }
+        .shop-owner-details-row {
+            display: grid; 
+            grid-template-columns: 1fr 1fr 1.2fr; 
+            gap: 10px; 
+            margin-bottom: 14px; 
+            border-bottom: 1px solid #edf2f7; 
+            padding-bottom: 14px;
+        }
+        
+        @media (max-width: 575.98px) {
+            .shop-profile-banner {
+                flex-direction: row !important;
+                align-items: flex-start !important;
+                height: auto !important;
+                padding: 12px !important;
+                gap: 12px !important;
+            }
+            .shop-profile-banner > div:first-child,
+            .shop-profile-banner > div:first-child img {
+                width: 48px !important;
+                height: 48px !important;
+            }
+            .shop-profile-info {
+                padding-right: 92px !important;
+                width: auto !important;
+                flex-grow: 1 !important;
+            }
+            .shop-profile-info h4 {
+                font-size: 15px !important;
+                white-space: normal !important;
+                overflow: visible !important;
+                text-overflow: clip !important;
+                line-height: 1.25 !important;
+            }
+            .shop-profile-info p {
+                font-size: 11px !important;
+                line-height: 1.3 !important;
+                margin-top: 2px !important;
+            }
+            .shop-profile-info p span {
+                -webkit-line-clamp: unset !important;
+                overflow: visible !important;
+                display: block !important;
+            }
+            .shop-profile-status-badge {
+                position: absolute !important;
+                top: 12px !important;
+                right: 12px !important;
+                transform: none !important;
+                bottom: auto !important;
+            }
+            .shop-profile-status-badge button {
+                padding: 3px 8px !important;
+                font-size: 10px !important;
+            }
+            .shop-owner-details-row {
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+            }
+            .shop-owner-details-row div div {
+                white-space: normal !important;
+                word-break: break-word !important;
+                overflow: visible !important;
+                text-overflow: clip !important;
+            }
+        }
     </style>
 
     <!-- Container-fluid starts-->
@@ -315,30 +404,30 @@
             <div class="col-xl-6 col-lg-6 col-md-12 mb-4" style="display: flex; flex-direction: column;">
                 <div class="profile-card" style="padding: 0; overflow: hidden; position: relative;">
                     <!-- Modern Header Banner with Shop Image, Name and Address -->
-                    <div style="height: 92px; background: #183543; position: relative; padding: 10px 24px; display: flex; align-items: center; gap: 16px;">
+                    <div class="shop-profile-banner">
                         <!-- Profile Image -->
-                        <div style="width: 72px; height: 72px; flex-shrink: 0; position: relative;">
+                        <div style="width: 56px; height: 56px; flex-shrink: 0; position: relative;">
                             @if(!empty($vendorDetails->profile_image) && file_exists(public_path('assets/images/vendor/profile/' . $vendorDetails->profile_image)))
-                                <img src="{{ asset('assets/images/vendor/profile/' . $vendorDetails->profile_image) }}" style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.15);" alt="Profile">
+                                <img src="{{ asset('assets/images/vendor/profile/' . $vendorDetails->profile_image) }}" style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.15);" alt="Profile">
                             @else
-                                <img src="{{ asset('assets/images/dashboard/man.jpeg') }}" style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.15);" alt="Profile">
+                                <img src="{{ asset('assets/images/dashboard/man.jpeg') }}" style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.15);" alt="Profile">
                             @endif
                         </div>
                         
                         <!-- Shop Info next to the image -->
-                        <div style="flex-grow: 1; min-width: 0; color: #ffffff; padding-right: 70px;">
+                        <div class="shop-profile-info">
                             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                                <h4 style="font-size: 18px; font-weight: 700; color: #ffffff; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                <h4 style="font-size: 20px; font-weight: 700; color: #ffffff; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                     {{ $vendorDetails->shop_name ?? 'ABC Garments' }}
                                 </h4>
                                 <div style="display: flex; gap: 2px; align-items: center; flex-shrink: 0; background-color: rgba(255, 255, 255, 0.15); padding: 2px 6px; border-radius: 12px;">
-                                    <i class="fa fa-star" style="color: #f1c40f; font-size: 11px;"></i>
-                                    <span style="font-size: 10px; font-weight: 700; color: #ffffff; margin-left: 2px;">5.0</span>
+                                    <i class="fa fa-star" style="color: #f1c40f; font-size: 12px;"></i>
+                                    <span style="font-size: 11px; font-weight: 700; color: #ffffff; margin-left: 2px;">5.0</span>
                                 </div>
                             </div>
                             
-                            <p style="font-size: 11.5px; color: #ffffff; margin: 0; display: flex; align-items: flex-start; gap: 4px; line-height: 1.35;">
-                                <i class="fa fa-map-marker" style="color: #ffffff; margin-top: 2px; font-size: 11px; width: 11px; text-align: center; flex-shrink: 0;"></i>
+                            <p style="font-size: 13px; color: #ffffff; margin: 0; display: flex; align-items: flex-start; gap: 4px; line-height: 1.35;">
+                                <i class="fa fa-map-marker" style="color: #ffffff; margin-top: 2px; font-size: 12px; width: 12px; text-align: center; flex-shrink: 0;"></i>
                                 <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                                     #{{ $vendorDetails->address ?? '38' }}
                                     @if(!empty($vendorDetails->address1)), {{ $vendorDetails->address1 }} @endif
@@ -349,16 +438,16 @@
                             </p>
                             @if(!empty($vendorDetails->location_map))
                                 <div style="margin-top: 4px;">
-                                    <a href="{{ $vendorDetails->location_map }}" target="_blank" style="background-color: rgba(255, 255, 255, 0.15); color: #ffffff; padding: 2px 8px; border-radius: 4px; font-size: 9.5px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 3px;">
-                                        <i class="fa fa-map-marker" style="font-size: 8.5px;"></i> Map View
+                                    <a href="{{ $vendorDetails->location_map }}" target="_blank" style="background-color: rgba(255, 255, 255, 0.15); color: #ffffff; padding: 2px 8px; border-radius: 4px; font-size: 10.5px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 3px;">
+                                        <i class="fa fa-map-marker" style="font-size: 9.5px;"></i> Map View
                                     </a>
                                 </div>
                             @endif
                         </div>
                         
                         <!-- Status Badge on the right -->
-                        <div style="position: absolute; top: 50%; transform: translateY(-50%); right: 24px;">
-                            <button id="vendorStatusBtn" onclick="toggleVendorStatus()" style="background-color: {{ (int)($vendorDetails->status ?? 1) === 1 ? 'rgba(46, 204, 113, 0.25)' : 'rgba(231, 76, 60, 0.25)' }}; color: {{ (int)($vendorDetails->status ?? 1) === 1 ? '#2ecc71' : '#e74c3c' }}; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; border: 1px solid {{ (int)($vendorDetails->status ?? 1) === 1 ? 'rgba(46, 204, 113, 0.4)' : 'rgba(231, 76, 60, 0.4)' }}; letter-spacing: 0.5px; backdrop-filter: blur(4px); cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s; outline: none;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        <div class="shop-profile-status-badge">
+                            <button id="vendorStatusBtn" onclick="toggleVendorStatus()" style="background-color: {{ (int)($vendorDetails->status ?? 1) === 1 ? 'rgba(46, 204, 113, 0.25)' : 'rgba(231, 76, 60, 0.25)' }}; color: {{ (int)($vendorDetails->status ?? 1) === 1 ? '#2ecc71' : '#e74c3c' }}; padding: 4px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 700; text-transform: uppercase; border: 1px solid {{ (int)($vendorDetails->status ?? 1) === 1 ? 'rgba(46, 204, 113, 0.4)' : 'rgba(231, 76, 60, 0.4)' }}; letter-spacing: 0.5px; backdrop-filter: blur(4px); cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s; outline: none;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                                 <span id="vendorStatusDot" style="width: 6px; height: 6px; border-radius: 50%; background-color: {{ (int)($vendorDetails->status ?? 1) === 1 ? '#2ecc71' : '#e74c3c' }}; display: inline-block;"></span>
                                 <span id="vendorStatusText">{{ (int)($vendorDetails->status ?? 1) === 1 ? 'Active' : 'Inactive' }}</span>
                             </button>
@@ -366,91 +455,78 @@
                     </div>
 
                     <!-- Shop Information -->
-                    <div style="padding: 16px 24px 10px 24px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div style="padding: 16px 16px 12px 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
                         <div>
                             
                             <!-- Business Category Box -->
-                            <div style="background-color: #f8fafc; border: 1px solid #edf2f7; border-radius: 12px; padding: 10px 14px; margin-bottom: 16px;">
-                                <div style="font-size: 10px; text-transform: uppercase; color: #a0aec0; letter-spacing: 0.6px; font-weight: 700; margin-bottom: 2px;">Business Category</div>
-                                <div style="font-size: 13px; font-weight: 600; color: #2d3748; display: flex; align-items: center; gap: 6px;">
-                                    <i class="fa fa-tag" style="color: #b7791f; font-size: 11px;"></i>
-                                    <span>
-                                        {{ $vendorDetails->business_category ?? 'Fashion' }}
-                                        @if(count($subCategoriesList) > 0)
-                                            <span style="color: #718096; font-weight: 400; font-size: 12px;">
-                                                ({{ implode(', ', array_slice($subCategoriesList, 0, 2)) }}
-                                                @if(count($subCategoriesList) > 2)
-                                                    +{{ count($subCategoriesList) - 2 }} more
-                                                @endif)
-                                            </span>
-                                        @endif
-                                    </span>
+                            <div style="background-color: #f8fafc; border: 1px solid #edf2f7; border-radius: 8px; padding: 8px 12px; margin-bottom: 12px;">
+                                <div style="font-size: 11.5px; text-transform: uppercase; color: #a0aec0; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 2px;">Business Category</div>
+                                <div style="font-size: 14.5px; font-weight: 600; color: #2d3748; display: flex; align-items: center; gap: 6px;">
+                                    <i class="fa fa-tag" style="color: #b7791f; font-size: 13px;"></i><span>{{ $vendorDetails->business_category ?? 'Fashion' }}@if(count($subCategoriesList) > 0) <span style="color: #718096; font-weight: 400; font-size: 13px;">({{ implode(', ', array_slice($subCategoriesList, 0, 2)) }}@if(count($subCategoriesList) > 2) +{{ count($subCategoriesList) - 2 }} more @endif)</span>@endif</span>
                                 </div>
                             </div>
                             
-                            <!-- Owner & Phone Details Grid -->
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; border-bottom: 1px solid #edf2f7; padding-bottom: 12px;">
+                            <!-- Owner, Phone, Email Details Row -->
+                            <div class="shop-owner-details-row">
                                 <div>
-                                    <div style="font-size: 10px; text-transform: uppercase; color: #a0aec0; letter-spacing: 0.6px; font-weight: 700; margin-bottom: 2px;">Owner Name</div>
-                                    <div style="font-size: 13px; font-weight: 600; color: #2d3748; display: flex; align-items: center; gap: 5px;">
-                                        <i class="fa fa-user" style="color: #718096; font-size: 12px;"></i>
-                                        {{ $vendorDetails->owner_name ?? 'N/A' }}
+                                    <div style="font-size: 11.5px; text-transform: uppercase; color: #a0aec0; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 2px;">Owner Name</div>
+                                    <div style="font-size: 14px; font-weight: 600; color: #2d3748; display: flex; align-items: center; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <i class="fa fa-user" style="color: #718096; font-size: 13px;"></i>{{ $vendorDetails->owner_name ?? 'N/A' }}
                                     </div>
                                 </div>
                                 <div>
-                                    <div style="font-size: 10px; text-transform: uppercase; color: #a0aec0; letter-spacing: 0.6px; font-weight: 700; margin-bottom: 2px;">Mobile Number</div>
-                                    <div style="font-size: 13px; font-weight: 600; color: #2d3748; display: flex; align-items: center; gap: 5px;">
-                                        <i class="fa fa-phone" style="color: #718096; font-size: 12px;"></i>
-                                        {{ $vendorDetails->mobile_number1 ?? 'N/A' }}
+                                    <div style="font-size: 11.5px; text-transform: uppercase; color: #a0aec0; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 2px;">Mobile Number</div>
+                                    <div style="font-size: 14px; font-weight: 600; color: #2d3748; display: flex; align-items: center; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <i class="fa fa-phone" style="color: #718096; font-size: 13px;"></i>{{ $vendorDetails->mobile_number1 ?? 'N/A' }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 11.5px; text-transform: uppercase; color: #a0aec0; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 2px;">Email Address</div>
+                                    <div style="font-size: 14px; font-weight: 600; color: #2d3748; display: flex; align-items: center; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $vendorDetails->email ?? 'N/A' }}">
+                                        <i class="fa fa-envelope" style="color: #718096; font-size: 13px;"></i>{{ $vendorDetails->email ?? 'N/A' }}
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Email & Subscription Plan -->
-                            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
-                                <div style="display: flex; align-items: center; gap: 6px;">
-                                    <i class="fa fa-envelope" style="color: #a0aec0; font-size: 12px; width: 12px; text-align: center;"></i>
-                                    <span style="font-size: 13px; color: #4a5568; font-weight: 500;">{{ $vendorDetails->email ?? 'emailaddress@com' }}</span>
-                                </div>
-                                
-                                <!-- Plan Card Container -->
-                                <div style="background: linear-gradient(135deg, #e6fcf5 0%, #c3fae8 100%); border-radius: 12px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #a3ebd6;">
+                            <!-- Subscription Plan Box -->
+                            <div style="background: linear-gradient(135deg, #e6fcf5 0%, #c3fae8 100%); border-radius: 8px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #a3ebd6; margin-bottom: 10px;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
                                     <div>
-                                        <div style="font-size: 9px; text-transform: uppercase; color: #0ca678; letter-spacing: 0.5px; font-weight: 700;">Plan Info</div>
-                                        <div style="font-size: 13px; font-weight: 700; color: #094080; margin-top: 1px;">{{ $packagePlanName }}</div>
-                                        <div style="font-size: 11px; color: #0ca678; font-weight: 500; margin-top: 1px;">
-                                            Till: {{ $vendorDetails->expired_date ? date('d M Y', strtotime($vendorDetails->expired_date)) : '31st Dec 2023' }}
-                                        </div>
+                                        <span style="font-size: 11.5px; text-transform: uppercase; color: #0ca678; letter-spacing: 0.5px; font-weight: 700;">Plan:</span>
+                                        <strong style="font-size: 14px; color: #094080; margin-left: 4px;">{{ $packagePlanName }}</strong>
                                     </div>
-                                    <a href="javascript:void(0)" onclick="openRenewalModal()" style="background-color: #183543; color: #ffffff; padding: 5px 12px; border-radius: 6px; font-size: 11.5px; font-weight: 700; text-decoration: none; transition: background-color 0.2s; box-shadow: 0 2px 5px rgba(24, 53, 67, 0.15);">
-                                        Renewal
-                                    </a>
+                                    <div style="font-size: 13px; color: #0ca678; font-weight: 500; border-left: 1px solid #a3ebd6; padding-left: 12px;">
+                                        Expires: {{ $vendorDetails->expired_date ? date('d M Y', strtotime($vendorDetails->expired_date)) : '31st Dec 2023' }}
+                                    </div>
                                 </div>
-                                
-                                <!-- Social Media Links -->
-                                @if(!empty($vendorDetails->instagram_link) || !empty($vendorDetails->facebook_link) || !empty($vendorDetails->whatsapp_number))
-                                    <div style="display: flex; gap: 12px; margin-top: 6px; justify-content: center; align-items: center; border-top: 1px solid #edf2f7; padding-top: 12px;">
-                                        @if(!empty($vendorDetails->facebook_link))
-                                            <a href="{{ $vendorDetails->facebook_link }}" target="_blank" title="Facebook" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background-color: #3b5998; color: #ffffff; font-size: 15px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 6px rgba(59, 89, 152, 0.2);" onmouseover="this.style.transform='scale(1.15)'; this.style.boxShadow='0 6px 12px rgba(59, 89, 152, 0.35)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 6px rgba(59, 89, 152, 0.2)';">
-                                                <i class="fa fa-facebook"></i>
-                                            </a>
-                                        @endif
-                                        @if(!empty($vendorDetails->instagram_link))
-                                            <a href="{{ $vendorDetails->instagram_link }}" target="_blank" title="Instagram" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: #ffffff; font-size: 15px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 6px rgba(220, 39, 67, 0.2);" onmouseover="this.style.transform='scale(1.15)'; this.style.boxShadow='0 6px 12px rgba(220, 39, 67, 0.35)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 6px rgba(220, 39, 67, 0.2)';">
-                                                <i class="fa fa-instagram"></i>
-                                            </a>
-                                        @endif
-                                        @if(!empty($vendorDetails->whatsapp_number))
-                                            @php
-                                                $whatsappNumber = preg_replace('/[^0-9]/', '', $vendorDetails->whatsapp_number);
-                                            @endphp
-                                            <a href="https://wa.me/{{ $whatsappNumber }}" target="_blank" title="WhatsApp" style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background-color: #25d366; color: #ffffff; font-size: 17px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 6px rgba(37, 211, 102, 0.2);" onmouseover="this.style.transform='scale(1.15)'; this.style.boxShadow='0 6px 12px rgba(37, 211, 102, 0.35)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 6px rgba(37, 211, 102, 0.2)';">
-                                                <i class="fa fa-whatsapp"></i>
-                                            </a>
-                                        @endif
-                                    </div>
-                                @endif
+                                <a href="javascript:void(0)" onclick="openRenewalModal()" style="background-color: #183543; color: #ffffff; padding: 4px 10px; border-radius: 4px; font-size: 10.5px; font-weight: 700; text-decoration: none; transition: background-color 0.2s; box-shadow: 0 2px 4px rgba(24, 53, 67, 0.15);">
+                                    Renewal
+                                </a>
                             </div>
+
+                            <!-- Social Media Links -->
+                            @if(!empty($vendorDetails->instagram_link) || !empty($vendorDetails->facebook_link) || !empty($vendorDetails->whatsapp_number))
+                                <div style="display: flex; gap: 6px; justify-content: flex-end; align-items: center; margin-top: 8px;">
+                                    @if(!empty($vendorDetails->facebook_link))
+                                        <a href="{{ $vendorDetails->facebook_link }}" target="_blank" title="Facebook" style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background-color: #3b5998; color: #ffffff; font-size: 10px; text-decoration: none; transition: transform 0.2s; box-shadow: 0 2px 4px rgba(59, 89, 152, 0.15);" onmouseover="this.style.transform='scale(1.15)';" onmouseout="this.style.transform='scale(1)';">
+                                            <i class="fa fa-facebook"></i>
+                                        </a>
+                                    @endif
+                                    @if(!empty($vendorDetails->instagram_link))
+                                        <a href="{{ $vendorDetails->instagram_link }}" target="_blank" title="Instagram" style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: #ffffff; font-size: 10px; text-decoration: none; transition: transform 0.2s; box-shadow: 0 2px 4px rgba(220, 39, 67, 0.15);" onmouseover="this.style.transform='scale(1.15)';" onmouseout="this.style.transform='scale(1)';">
+                                            <i class="fa fa-instagram"></i>
+                                        </a>
+                                    @endif
+                                    @if(!empty($vendorDetails->whatsapp_number))
+                                        @php
+                                            $whatsappNumber = preg_replace('/[^0-9]/', '', $vendorDetails->whatsapp_number);
+                                        @endphp
+                                        <a href="https://wa.me/{{ $whatsappNumber }}" target="_blank" title="WhatsApp" style="display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background-color: #25d366; color: #ffffff; font-size: 11px; text-decoration: none; transition: transform 0.2s; box-shadow: 0 2px 4px rgba(37, 211, 102, 0.15);" onmouseover="this.style.transform='scale(1.15)';" onmouseout="this.style.transform='scale(1)';">
+                                            <i class="fa fa-whatsapp"></i>
+                                        </a>
+                                    @endif
+                                </div>
+                            @endif
                         </div>
 
 
@@ -462,70 +538,72 @@
             <div class="col-xl-6 col-lg-6 col-md-12 mb-4" style="display: flex; flex-direction: column;">
                 <div class="row" style="flex-grow: 1; display: flex; margin-bottom: -24px;">
                     <!-- Card 1: Orders -->
-                    <div class="col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
-                        <div class="metric-card" style="background: linear-gradient(135deg, #094080 0%, #1e5ba0 100%); color: #ffffff; position: relative; padding: 24px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="col-6 col-xs-6 col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
+                        <div class="metric-card" style="background: linear-gradient(135deg, #094080 0%, #1e5ba0 100%); color: #ffffff; position: relative; padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
                             <div>
-                                <div class="metric-title" style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Orders</div>
-                                <div class="metric-value" style="font-size: 36px; font-weight: 700; margin-top: 8px;">{{ number_format($orderCount) }}</div>
+                                <div class="metric-title" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Orders</div>
+                                <div class="metric-value" style="font-size: 28px; font-weight: 700; margin-top: 8px;">{{ number_format($orderCount) }}</div>
                             </div>
-                            <i class="fa fa-shopping-bag" style="position: absolute; right: 24px; bottom: 24px; font-size: 36px; opacity: 0.18;"></i>
+                            <i class="fa fa-shopping-bag" style="position: absolute; right: 16px; bottom: 16px; font-size: 28px; opacity: 0.18;"></i>
                         </div>
                     </div>
                     
                     <!-- Card 2: Products -->
-                    <div class="col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
-                        <div class="metric-card" style="background: linear-gradient(135deg, #00bfa5 0%, #1de9b6 100%); color: #ffffff; position: relative; padding: 24px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="col-6 col-xs-6 col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
+                        <div class="metric-card" style="background: linear-gradient(135deg, #00bfa5 0%, #1de9b6 100%); color: #ffffff; position: relative; padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
                             <div>
-                                <div class="metric-title" style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Products</div>
-                                <div class="metric-value" style="font-size: 36px; font-weight: 700; margin-top: 8px;">{{ number_format($productCount) }}</div>
+                                <div class="metric-title" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Products</div>
+                                <div class="metric-value" style="font-size: 28px; font-weight: 700; margin-top: 8px;">{{ number_format($productCount) }}</div>
                             </div>
-                            <i class="fa fa-cubes" style="position: absolute; right: 24px; bottom: 24px; font-size: 36px; opacity: 0.18;"></i>
+                            <i class="fa fa-cubes" style="position: absolute; right: 16px; bottom: 16px; font-size: 28px; opacity: 0.18;"></i>
                         </div>
                     </div>
                     
                     <!-- Card 3: Customers -->
-                    <div class="col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
-                        <div class="metric-card" style="background: linear-gradient(135deg, #ff5252 0%, #ff8a80 100%); color: #ffffff; position: relative; padding: 24px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="col-6 col-xs-6 col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
+                        <div class="metric-card" style="background: linear-gradient(135deg, #ff5252 0%, #ff8a80 100%); color: #ffffff; position: relative; padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
                             <div>
-                                <div class="metric-title" style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Customers</div>
-                                <div class="metric-value" style="font-size: 36px; font-weight: 700; margin-top: 8px;">{{ number_format($customerCount) }}</div>
+                                <div class="metric-title" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Customers</div>
+                                <div class="metric-value" style="font-size: 28px; font-weight: 700; margin-top: 8px;">{{ number_format($customerCount) }}</div>
                             </div>
-                            <i class="fa fa-users" style="position: absolute; right: 24px; bottom: 24px; font-size: 36px; opacity: 0.18;"></i>
+                            <i class="fa fa-users" style="position: absolute; right: 16px; bottom: 16px; font-size: 28px; opacity: 0.18;"></i>
                         </div>
                     </div>
                     
                     <!-- Card 4: Viewers -->
-                    <div class="col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
-                        <div class="metric-card" style="background: linear-gradient(135deg, #7c4dff 0%, #b388ff 100%); color: #ffffff; position: relative; padding: 24px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="col-6 col-xs-6 col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
+                        <div class="metric-card" style="background: linear-gradient(135deg, #7c4dff 0%, #b388ff 100%); color: #ffffff; position: relative; padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
                             <div>
-                                <div class="metric-title" style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Viewers</div>
-                                <div class="metric-value" style="font-size: 36px; font-weight: 700; margin-top: 8px;">{{ number_format($totalViews) }}</div>
+                                <div class="metric-title" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Viewers</div>
+                                <div class="metric-value" style="font-size: 28px; font-weight: 700; margin-top: 8px;">{{ number_format($totalViews) }}</div>
                             </div>
-                            <i class="fa fa-eye" style="position: absolute; right: 24px; bottom: 24px; font-size: 36px; opacity: 0.18;"></i>
+                            <i class="fa fa-eye" style="position: absolute; right: 16px; bottom: 16px; font-size: 28px; opacity: 0.18;"></i>
                         </div>
                     </div>
 
+                    {{--
                     <!-- Card 5: Categories -->
-                    <div class="col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
-                        <div class="metric-card" style="background: linear-gradient(135deg, #ff9100 0%, #ffb74d 100%); color: #ffffff; position: relative; padding: 24px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="col-6 col-xs-6 col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
+                        <div class="metric-card" style="background: linear-gradient(135deg, #ff9100 0%, #ffb74d 100%); color: #ffffff; position: relative; padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
                             <div>
-                                <div class="metric-title" style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Categories</div>
-                                <div class="metric-value" style="font-size: 36px; font-weight: 700; margin-top: 8px;">{{ number_format($assignedCategoryCount) }}</div>
+                                <div class="metric-title" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Categories</div>
+                                <div class="metric-value" style="font-size: 28px; font-weight: 700; margin-top: 8px;">{{ number_format($assignedCategoryCount) }}</div>
                             </div>
-                            <i class="fa fa-th-list" style="position: absolute; right: 24px; bottom: 24px; font-size: 36px; opacity: 0.18;"></i>
+                            <i class="fa fa-th-list" style="position: absolute; right: 16px; bottom: 16px; font-size: 28px; opacity: 0.18;"></i>
                         </div>
                     </div>
                     
                     <!-- Card 6: Sub Categories -->
-                    <div class="col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
-                        <div class="metric-card" style="background: linear-gradient(135deg, #e91e63 0%, #ff6090 100%); color: #ffffff; position: relative; padding: 24px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="col-6 col-xs-6 col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
+                        <div class="metric-card" style="background: linear-gradient(135deg, #e91e63 0%, #ff6090 100%); color: #ffffff; position: relative; padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
                             <div>
-                                <div class="metric-title" style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Sub Categories</div>
-                                <div class="metric-value" style="font-size: 36px; font-weight: 700; margin-top: 8px;">{{ number_format($assignedSubCategoryCount) }}</div>
+                                <div class="metric-title" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Sub Categories</div>
+                                <div class="metric-value" style="font-size: 28px; font-weight: 700; margin-top: 8px;">{{ number_format($assignedSubCategoryCount) }}</div>
                             </div>
-                            <i class="fa fa-tags" style="position: absolute; right: 24px; bottom: 24px; font-size: 36px; opacity: 0.18;"></i>
+                            <i class="fa fa-tags" style="position: absolute; right: 16px; bottom: 16px; font-size: 28px; opacity: 0.18;"></i>
                         </div>
                     </div>
+                    --}}
                 </div>
             </div>
         </div>
