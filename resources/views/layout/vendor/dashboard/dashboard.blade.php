@@ -761,7 +761,7 @@
         <div class="row mt-4">
             <!-- Left: Mixed Chart -->
             <div class="col-lg-8 col-md-12 mb-4">
-                <div class="card" style="border-radius: 20px; border: none; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02);">
+                <div class="card" style="border-radius: 20px; border: none; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02); height: 100%; display: flex; flex-direction: column;">
                     <div class="card-header" style="background-color: transparent; border: none; padding: 24px 24px 0 24px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
                             <!-- Chart Type Tabs -->
@@ -777,7 +777,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body" style="padding: 16px 24px 24px 24px;">
+                    <div class="card-body" style="padding: 16px 24px 24px 24px; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1;">
                         <h5 id="chartTitle" style="font-size: 16px; font-weight: 600; color: #3498db; margin-bottom: 16px;">Sales over Customers</h5>
                         <div style="position: relative; height: 220px; width: 100%;">
                             <canvas id="salesCustomerChart"></canvas>
@@ -798,14 +798,14 @@
 
             <!-- Right: Returning Customers Gauge -->
             <div class="col-lg-4 col-md-12 mb-4">
-                <div class="card" style="border-radius: 20px; border: none; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02); height: 100%;">
+                <div class="card" style="border-radius: 20px; border: none; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02); height: 100%; display: flex; flex-direction: column;">
                     <div class="card-header" style="background-color: transparent; border: none; padding: 24px 24px 0 24px;">
-                        <div style="display: flex; gap: 20px; align-items: center;">
-                            <span class="gauge-tab active" onclick="switchGaugeTab('returning', this)" style="cursor: pointer; font-size: 13px; font-weight: 600; color: #2d3748; padding-bottom: 4px;">Returning Customers</span>
-                            <span class="gauge-tab" onclick="switchGaugeTab('customer_visitors', this)" style="cursor: pointer; font-size: 13px; font-weight: 600; color: #a0aec0; padding-bottom: 4px;">Customer / Visitors</span>
+                        <div style="display: flex; gap: 24px; align-items: center; justify-content: center;">
+                            <span class="gauge-tab active" onclick="switchGaugeTab('returning', this)" style="cursor: pointer; font-size: 13px; font-weight: 600; color: #2d3748; padding-bottom: 4px; text-align: center;">Returning Customers</span>
+                            <span class="gauge-tab" onclick="switchGaugeTab('customer_visitors', this)" style="cursor: pointer; font-size: 13px; font-weight: 600; color: #a0aec0; padding-bottom: 4px; text-align: center;">Customer &  Visitors</span>
                         </div>
                     </div>
-                    <div class="card-body" style="padding: 20px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <div class="card-body" style="padding: 20px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1;">
                         <!-- Gauge -->
                         <div style="position: relative; width: 180px; height: 100px; margin-bottom: 10px;">
                             <canvas id="gaugeChart" width="180" height="100"></canvas>
@@ -889,35 +889,35 @@
                     <div class="card-header" style="background-color: transparent; border: none; padding: 24px 24px 0 24px;">
                         <h4 style="font-weight: 700; color: #1a202c; margin: 0; font-size: 18px;">Total Orders</h4>
                     </div>
-                    <div class="card-body" style="padding: 20px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1;">
-                        <div style="position: relative; width: 220px; height: 220px; margin-bottom: 20px;">
-                            <canvas id="totalOrdersDoughnut" width="220" height="220"></canvas>
+                    <div class="card-body" style="padding: 12px 24px 20px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1;">
+                        <div style="position: relative; width: 170px; height: 170px; margin-bottom: 15px;">
+                            <canvas id="totalOrdersDoughnut" width="170" height="170"></canvas>
                             <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
-                                <div style="font-size: 13px; font-weight: 600; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1;">Total</div>
-                                <div style="font-size: 12px; font-weight: 600; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1; margin-bottom: 2px;">Orders</div>
-                                <div style="font-size: 36px; font-weight: 800; color: #2d3748; line-height: 1;">{{ $doughnutTotal }}</div>
+                                <div style="font-size: 11px; font-weight: 600; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1;">Total</div>
+                                <div style="font-size: 10px; font-weight: 600; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1; margin-bottom: 2px;">Orders</div>
+                                <div style="font-size: 30px; font-weight: 800; color: #2d3748; line-height: 1;">{{ $doughnutTotal }}</div>
                             </div>
                         </div>
-                        <div style="width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 16px; border-top: 1px solid #edf2f7; padding-top: 16px; margin-top: auto;">
+                        <div style="width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 14px; border-top: 1px solid #edf2f7; padding-top: 12px; margin-top: auto;">
                             <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #718096; font-weight: 600; white-space: nowrap;">
                                 <span style="width: 8px; height: 8px; border-radius: 2px; background-color: #3498db; display: inline-block;"></span>
                                 <span>Pending: <b style="color: #2d3748;">{{ $doughnutStatuses['Pending'] }}</b></span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #718096; font-weight: 600; white-space: nowrap;">
                                 <span style="width: 8px; height: 8px; border-radius: 2px; background-color: #9b59b6; display: inline-block;"></span>
-                                <span>Accept: <b style="color: #2d3748;">{{ $doughnutStatuses['Accepted'] }}</b></span>
+                                <span>Accepted: <b style="color: #2d3748;">{{ $doughnutStatuses['Accepted'] }}</b></span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #718096; font-weight: 600; white-space: nowrap;">
                                 <span style="width: 8px; height: 8px; border-radius: 2px; background-color: #ff7675; display: inline-block;"></span>
-                                <span>Deliv: <b style="color: #2d3748;">{{ $doughnutStatuses['Delivered'] }}</b></span>
+                                <span>Delivered: <b style="color: #2d3748;">{{ $doughnutStatuses['Delivered'] }}</b></span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #718096; font-weight: 600; white-space: nowrap;">
                                 <span style="width: 8px; height: 8px; border-radius: 2px; background-color: #2ecc71; display: inline-block;"></span>
-                                <span>Compl: <b style="color: #2d3748;">{{ $doughnutStatuses['Completed'] }}</b></span>
+                                <span>Completed: <b style="color: #2d3748;">{{ $doughnutStatuses['Completed'] }}</b></span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #718096; font-weight: 600; white-space: nowrap;">
                                 <span style="width: 8px; height: 8px; border-radius: 2px; background-color: #00cec9; display: inline-block;"></span>
-                                <span>Return: <b style="color: #2d3748;">{{ $doughnutStatuses['Returned'] }}</b></span>
+                                <span>Returned: <b style="color: #2d3748;">{{ $doughnutStatuses['Returned'] }}</b></span>
                             </div>
                         </div>
                     </div>
@@ -1807,21 +1807,23 @@
 
     // === Total Orders Doughnut Chart ===
     var doughnutCounts = @json($doughnutStatuses);
+    var hasData = Object.values(doughnutCounts).some(function(v) { return v > 0; });
+    var doughnutData = hasData 
+        ? [doughnutCounts.Pending, doughnutCounts.Accepted, doughnutCounts.Delivered, doughnutCounts.Completed, doughnutCounts.Returned]
+        : [1];
+    var doughnutColors = hasData
+        ? ['#3498db', '#9b59b6', '#ff7675', '#2ecc71', '#00cec9']
+        : ['#edf2f7'];
+
     var doughnutCtx = document.getElementById('totalOrdersDoughnut').getContext('2d');
     var totalOrdersDoughnut = new Chart(doughnutCtx, {
         type: 'doughnut',
         data: {
-            labels: ['Pending', 'Accepted', 'Delivered', 'Completed', 'Returned'],
+            labels: hasData ? ['Pending', 'Accepted', 'Delivered', 'Completed', 'Returned'] : ['No Orders'],
             datasets: [{
-                data: [
-                    doughnutCounts.Pending,
-                    doughnutCounts.Accepted,
-                    doughnutCounts.Delivered,
-                    doughnutCounts.Completed,
-                    doughnutCounts.Returned
-                ],
-                backgroundColor: ['#3498db', '#9b59b6', '#ff7675', '#2ecc71', '#00cec9'],
-                borderWidth: 4,
+                data: doughnutData,
+                backgroundColor: doughnutColors,
+                borderWidth: hasData ? 4 : 1,
                 borderColor: '#ffffff',
                 hoverBorderColor: '#ffffff'
             }]
@@ -1829,10 +1831,11 @@
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            cutout: '70%',
+            cutout: '72%',
             plugins: {
                 legend: { display: false },
                 tooltip: {
+                    enabled: hasData,
                     backgroundColor: '#2d3748',
                     titleFont: { size: 12, weight: '600' },
                     bodyFont: { size: 12 },
