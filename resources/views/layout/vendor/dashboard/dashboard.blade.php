@@ -959,7 +959,7 @@
                                 <tbody>
                                     @forelse($transactionsList as $tx)
                                         <tr class="tx-row" data-status="{{ $tx['status'] }}" style="border-bottom: 1px solid #f7fafc; transition: all 0.2s;">
-                                            <td style="font-size: 13.5px; font-weight: 700; color: #5c67f2; padding: 16px 8px;">{{ $tx['order_no'] }}</td>
+                                            <td style="font-size: 13.5px; font-weight: 700; color: #2d3748; padding: 16px 8px;">{{ $tx['order_no'] }}</td>
                                             <td style="font-size: 13px; color: #718096; font-weight: 500; padding: 16px 8px;">{{ $tx['date'] }}</td>
                                             <td style="padding: 16px 8px;">
                                                 <div style="display: flex; align-items: center; gap: 10px;">
