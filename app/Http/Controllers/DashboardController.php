@@ -1567,4 +1567,43 @@ class DashboardController extends Controller
         return response()->json(['success' => false, 'message' => 'Failed to update plan. Please try again.'], 500);
     }
 
+    public function toggleStatus(Request $request)
+    {
+        $vendorId = null;
+        if (auth()->check() && (int) auth()->user()->status === 2) {
+            $vendorId = auth()->user()->login_id;
+        } elseif (session()->has('login_id')) {
+            $vendorId = session()->get('login_id');
+        }
+
+        if (empty($vendorId)) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized or vendor session expired.'], 401);
+        }
+
+        $vendor = DB::table('vendor_details')->where('id', $vendorId)->first();
+        if (!$vendor) {
+            return response()->json(['success' => false, 'message' => 'Vendor not found.'], 404);
+        }
+
+        // Toggle status: 1 for Active, 0 for Inactive
+        $newStatus = ((int)$vendor->status === 1) ? 0 : 1;
+
+        $updated = DB::table('vendor_details')
+            ->where('id', $vendorId)
+            ->update([
+                'status' => $newStatus,
+                'updated_at' => now()
+            ]);
+
+        if ($updated) {
+            return response()->json([
+                'success' => true,
+                'status' => $newStatus,
+                'message' => 'Status updated successfully!'
+            ]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Failed to update status.'], 500);
+    }
+
 }

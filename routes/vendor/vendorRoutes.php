@@ -80,6 +80,13 @@ Route::post(
 	->name('vendor.renew_package')
 	->middleware('auth');
 
+Route::post(
+	'dashboard/toggle-status',
+	[DashboardController::class, 'toggleStatus']
+)
+	->name('vendor.toggle_status')
+	->middleware('auth');
+
 Route::get('dashboard.php', function() {
 	$id = null;
 	if (auth()->check() && (int) auth()->user()->status === 2) {

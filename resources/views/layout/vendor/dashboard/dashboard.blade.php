@@ -314,58 +314,60 @@
             <!-- 1. Profile / Business Card -->
             <div class="col-xl-6 col-lg-6 col-md-12 mb-4" style="display: flex; flex-direction: column;">
                 <div class="profile-card" style="padding: 0; overflow: hidden; position: relative;">
-                    <!-- Modern Gradient Banner -->
-                    <div style="height: 85px; background: #183543; position: relative;">
-                        <!-- Status Badge overlay in banner -->
-                        <div style="position: absolute; top: 50%; transform: translateY(-50%); right: 24px; display: flex; align-items: center;">
-                            <span style="background-color: rgba(46, 204, 113, 0.25); color: #2ecc71; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; border: 1px solid rgba(46, 204, 113, 0.4); letter-spacing: 0.5px; backdrop-filter: blur(4px);">Active</span>
+                    <!-- Modern Header Banner with Shop Image, Name and Address -->
+                    <div style="height: 92px; background: #183543; position: relative; padding: 10px 24px; display: flex; align-items: center; gap: 16px;">
+                        <!-- Profile Image -->
+                        <div style="width: 72px; height: 72px; flex-shrink: 0; position: relative;">
+                            @if(!empty($vendorDetails->profile_image) && file_exists(public_path('assets/images/vendor/profile/' . $vendorDetails->profile_image)))
+                                <img src="{{ asset('assets/images/vendor/profile/' . $vendorDetails->profile_image) }}" style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.15);" alt="Profile">
+                            @else
+                                <img src="{{ asset('assets/images/dashboard/man.jpeg') }}" style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.15);" alt="Profile">
+                            @endif
                         </div>
-                    </div>
-                    
-                    <!-- Profile picture overlapping the banner -->
-                    <div style="padding: 0 24px; margin-top: -40px; height: 38px; position: relative;">
-                        @if(!empty($vendorDetails->profile_image) && file_exists(public_path('assets/images/vendor/profile/' . $vendorDetails->profile_image)))
-                            <img src="{{ asset('assets/images/vendor/profile/' . $vendorDetails->profile_image) }}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 4px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: absolute; bottom: 0; left: 24px;" alt="Profile">
-                        @else
-                            <img src="{{ asset('assets/images/dashboard/man.jpeg') }}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 4px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: absolute; bottom: 0; left: 24px;" alt="Profile">
-                        @endif
+                        
+                        <!-- Shop Info next to the image -->
+                        <div style="flex-grow: 1; min-width: 0; color: #ffffff; padding-right: 70px;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                <h4 style="font-size: 18px; font-weight: 700; color: #ffffff; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    {{ $vendorDetails->shop_name ?? 'ABC Garments' }}
+                                </h4>
+                                <div style="display: flex; gap: 2px; align-items: center; flex-shrink: 0; background-color: rgba(255, 255, 255, 0.15); padding: 2px 6px; border-radius: 12px;">
+                                    <i class="fa fa-star" style="color: #f1c40f; font-size: 11px;"></i>
+                                    <span style="font-size: 10px; font-weight: 700; color: #ffffff; margin-left: 2px;">5.0</span>
+                                </div>
+                            </div>
+                            
+                            <p style="font-size: 11.5px; color: #ffffff; margin: 0; display: flex; align-items: flex-start; gap: 4px; line-height: 1.35;">
+                                <i class="fa fa-map-marker" style="color: #ffffff; margin-top: 2px; font-size: 11px; width: 11px; text-align: center; flex-shrink: 0;"></i>
+                                <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                    #{{ $vendorDetails->address ?? '38' }}
+                                    @if(!empty($vendorDetails->address1)), {{ $vendorDetails->address1 }} @endif
+                                    @if(!empty($vendorDetails->city)), {{ $vendorDetails->city }} @endif
+                                    @if(!empty($vendorDetails->state)), {{ $vendorDetails->state }} @endif
+                                    @if(!empty($vendorDetails->pincode)) - {{ $vendorDetails->pincode }} @endif
+                                </span>
+                            </p>
+                            @if(!empty($vendorDetails->location_map))
+                                <div style="margin-top: 4px;">
+                                    <a href="{{ $vendorDetails->location_map }}" target="_blank" style="background-color: rgba(255, 255, 255, 0.15); color: #ffffff; padding: 2px 8px; border-radius: 4px; font-size: 9.5px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 3px;">
+                                        <i class="fa fa-map-marker" style="font-size: 8.5px;"></i> Map View
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
+                        
+                        <!-- Status Badge on the right -->
+                        <div style="position: absolute; top: 50%; transform: translateY(-50%); right: 24px;">
+                            <button id="vendorStatusBtn" onclick="toggleVendorStatus()" style="background-color: {{ (int)($vendorDetails->status ?? 1) === 1 ? 'rgba(46, 204, 113, 0.25)' : 'rgba(231, 76, 60, 0.25)' }}; color: {{ (int)($vendorDetails->status ?? 1) === 1 ? '#2ecc71' : '#e74c3c' }}; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; border: 1px solid {{ (int)($vendorDetails->status ?? 1) === 1 ? 'rgba(46, 204, 113, 0.4)' : 'rgba(231, 76, 60, 0.4)' }}; letter-spacing: 0.5px; backdrop-filter: blur(4px); cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s; outline: none;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                <span id="vendorStatusDot" style="width: 6px; height: 6px; border-radius: 50%; background-color: {{ (int)($vendorDetails->status ?? 1) === 1 ? '#2ecc71' : '#e74c3c' }}; display: inline-block;"></span>
+                                <span id="vendorStatusText">{{ (int)($vendorDetails->status ?? 1) === 1 ? 'Active' : 'Inactive' }}</span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Shop Information -->
                     <div style="padding: 16px 24px 10px 24px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
                         <div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                                <h4 style="font-size: 20px; font-weight: 700; color: #1a202c; margin: 0;">
-                                    {{ $vendorDetails->shop_name ?? 'ABC Garments' }}
-                                </h4>
-                                <div style="display: flex; gap: 3px; align-items: center;">
-                                    <i class="fa fa-star" style="color: #f1c40f; font-size: 14px;"></i>
-                                    <i class="fa fa-star" style="color: #f1c40f; font-size: 14px;"></i>
-                                    <i class="fa fa-star" style="color: #f1c40f; font-size: 14px;"></i>
-                                    <i class="fa fa-star" style="color: #f1c40f; font-size: 14px;"></i>
-                                    <i class="fa fa-star" style="color: #f1c40f; font-size: 14px;"></i>
-                                    <span style="font-size: 12px; font-weight: 700; color: #4a5568; margin-left: 4px;">5.0</span>
-                                </div>
-                            </div>
-                            
-                            <!-- Address with icon & Map button -->
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 12px;">
-                                <p style="font-size: 13px; color: #718096; margin: 0; display: flex; align-items: flex-start; gap: 6px; line-height: 1.4;">
-                                    <i class="fa fa-map-marker" style="color: #a0aec0; margin-top: 3px; font-size: 12px; width: 12px; text-align: center;"></i>
-                                    <span>
-                                        #{{ $vendorDetails->address ?? '38' }}
-                                        @if(!empty($vendorDetails->address1)), {{ $vendorDetails->address1 }} @endif
-                                        @if(!empty($vendorDetails->city)), {{ $vendorDetails->city }} @endif
-                                        @if(!empty($vendorDetails->state)), {{ $vendorDetails->state }} @endif
-                                        @if(!empty($vendorDetails->pincode)) - {{ $vendorDetails->pincode }} @endif
-                                    </span>
-                                </p>
-                                @if(!empty($vendorDetails->location_map))
-                                    <a href="{{ $vendorDetails->location_map }}" target="_blank" style="background-color: #02cccd; color: #ffffff; padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 5px rgba(2, 204, 205, 0.15); white-space: nowrap;">
-                                        <i class="fa fa-map-marker" style="font-size: 10px;"></i> Map View
-                                    </a>
-                                @endif
-                            </div>
                             
                             <!-- Business Category Box -->
                             <div style="background-color: #f8fafc; border: 1px solid #edf2f7; border-radius: 12px; padding: 10px 14px; margin-bottom: 16px;">
@@ -947,13 +949,13 @@
                             <table class="table table-borderless align-middle" style="margin: 0;">
                                 <thead>
                                     <tr style="border-bottom: 1px solid #edf2f7;">
-                                        <th style="font-size: 11px; font-weight: 600; color: #a0aec0; text-transform: uppercase; padding: 12px 8px;">Order No.</th>
-                                        <th style="font-size: 11px; font-weight: 600; color: #a0aec0; text-transform: uppercase; padding: 12px 8px;">Date</th>
-                                        <th style="font-size: 11px; font-weight: 600; color: #a0aec0; text-transform: uppercase; padding: 12px 8px;">Customer</th>
-                                        <th style="font-size: 11px; font-weight: 600; color: #a0aec0; text-transform: uppercase; padding: 12px 8px;">Location</th>
-                                        <th style="font-size: 11px; font-weight: 600; color: #a0aec0; text-transform: uppercase; padding: 12px 8px;">Amount</th>
-                                        <th style="font-size: 11px; font-weight: 600; color: #a0aec0; text-transform: uppercase; padding: 12px 8px;">Status</th>
-                                        <th style="font-size: 11px; font-weight: 600; color: #a0aec0; text-transform: uppercase; padding: 12px 8px; text-align: right;"></th>
+                                        <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Order No.</th>
+                                        <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Date</th>
+                                        <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Customer</th>
+                                        <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Location</th>
+                                        <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Amount</th>
+                                        <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Status</th>
+                                        <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px; text-align: right;"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1094,6 +1096,82 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
+    // === Vendor Status Toggle ===
+    function toggleVendorStatus() {
+        var btn = $('#vendorStatusBtn');
+        btn.prop('disabled', true);
+        
+        $.ajax({
+            url: "{{ route('vendor.toggle_status') }}",
+            type: "POST",
+            data: {
+                _token: "{{ csrf_token() }}"
+            },
+            success: function(response) {
+                btn.prop('disabled', false);
+                if (response.success) {
+                    var isNowActive = (parseInt(response.status) === 1);
+                    
+                    // Update UI style dynamically
+                    if (isNowActive) {
+                        btn.css({
+                            'background-color': 'rgba(46, 204, 113, 0.25)',
+                            'color': '#2ecc71',
+                            'border-color': 'rgba(46, 204, 113, 0.4)'
+                        });
+                        $('#vendorStatusDot').css('background-color', '#2ecc71');
+                        $('#vendorStatusText').text('Active');
+                        
+                        // Toast notification
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Status updated to Active',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+                    } else {
+                        btn.css({
+                            'background-color': 'rgba(231, 76, 60, 0.25)',
+                            'color': '#e74c3c',
+                            'border-color': 'rgba(231, 76, 60, 0.4)'
+                        });
+                        $('#vendorStatusDot').css('background-color', '#e74c3c');
+                        $('#vendorStatusText').text('Inactive');
+                        
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Status updated to Inactive',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+                    }
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: response.message || 'Failed to update status.',
+                        icon: 'error',
+                        confirmButtonColor: '#183543'
+                    });
+                }
+            },
+            error: function(xhr) {
+                btn.prop('disabled', false);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'An error occurred while updating status. Please try again.',
+                    icon: 'error',
+                    confirmButtonColor: '#183543'
+                });
+            }
+        });
+    }
+
     // === Subscription Renewal Package Setup ===
     // Dynamically load SweetAlert2 if not already present
     if (typeof Swal === 'undefined') {

@@ -169,7 +169,7 @@ class FrontendController extends Controller
     public function shops(Request $request)
     {
         $keyword = trim((string) ($request->input('keywords') ?? $request->input('vendor') ?? ''));
-        $vendorcreate = vendorcreate::query();
+        $vendorcreate = vendorcreate::query()->where('status', 1);
         if ($keyword !== '') {
             $vendorcreate->where('shop_name', 'LIKE', '%' . $keyword . '%');
         }
@@ -185,6 +185,7 @@ class FrontendController extends Controller
         }
 
         $vendors = vendorcreate::query()
+            ->where('status', 1)
             ->where('shop_name', 'LIKE', '%' . $term . '%')
             ->orderBy('shop_name', 'asc')
             ->limit(10)
@@ -372,7 +373,7 @@ class FrontendController extends Controller
 
     public function vendorDetailsBySlug($slug)
     {
-        $vendor = \DB::table('vendor_details')->where('slug', $slug)->first();
+        $vendor = \DB::table('vendor_details')->where('slug', $slug)->where('status', 1)->first();
         if (!$vendor) return redirect('home');
         return $this->vendorDetails($vendor->id);
     }
@@ -507,13 +508,13 @@ class FrontendController extends Controller
             )
             ->get();
 
-        $vendorcreate = vendorcreate::where('user_id', $id)->first();
+        $vendorcreate = vendorcreate::where('user_id', $id)->where('status', 1)->first();
         if (!$vendorcreate) {
-            $vendorcreate = vendorcreate::where('id', $id)->first();
+            $vendorcreate = vendorcreate::where('id', $id)->where('status', 1)->first();
         }
 
         if (!$vendorcreate) {
-            return redirect()->route('shops')->with('error', 'Vendor details not found.');
+            return redirect()->route('shops')->with('error', 'Vendor details not found or store is inactive.');
         }
 
         // Increment view count
@@ -554,6 +555,7 @@ class FrontendController extends Controller
             ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers')
             ->where('p.status', 1)
             ->where('p.flag', 1)
+            ->where('vp.status', 1)
             ->inRandomOrder();
         if ($id != '') {
             $productsData = $productsData->where('p.id', $id);
@@ -629,7 +631,8 @@ class FrontendController extends Controller
             ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
             ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers')
             ->where('p.status', 1)
-            ->where('p.flag', 1);
+            ->where('p.flag', 1)
+            ->where('vp.status', 1);
         if ($id != '') {
             $productsData = $productsData->where('p.id', $id);
         }
@@ -804,6 +807,7 @@ class FrontendController extends Controller
             ->where('cm.id', 1)
             ->where('p.status', 1)
             ->where('p.flag', 1)
+            ->where('vp.status', 1)
             ->inRandomOrder();
 
         $productsData = $productsData->select(
@@ -872,6 +876,7 @@ class FrontendController extends Controller
             ->where('cm.id', 3)
             ->where('p.status', 1)
             ->where('p.flag', 1)
+            ->where('vp.status', 1)
             ->inRandomOrder();
 
         $productsData = $productsData->select(
@@ -939,6 +944,7 @@ class FrontendController extends Controller
             ->where('cm.id', 2)
             ->where('p.status', 1)
             ->where('p.flag', 1)
+            ->where('vp.status', 1)
             ->inRandomOrder();
 
         $productsData = $productsData->select(
@@ -1005,6 +1011,7 @@ class FrontendController extends Controller
             ->whereNotNull('p.offers')
             ->where('p.status', 1)
             ->where('p.flag', 1)
+            ->where('vp.status', 1)
             ->inRandomOrder();
 
         $productsData = $productsData->select(
@@ -1083,12 +1090,13 @@ class FrontendController extends Controller
         $attachRatings($topRatedProducts);
         $attachRatings($offerProducts);
 
-        $vendorcreate = vendorcreate::get();
+        $vendorcreate = vendorcreate::where('status', 1)->get();
 
         $auctionProducts = DB::table('auctions')
             ->leftJoin('products', 'products.id', '=', 'auctions.product_id')
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
             ->leftJoin('vendor_details', 'vendor_details.id', '=', 'products.vendor_id')
+            ->where('vendor_details.status', 1)
             ->select(
                 'auctions.id as auction_id',
                 'auctions.bid_price as selling_price',
@@ -1381,6 +1389,17 @@ class FrontendController extends Controller
             return redirect('home');
         }
 
+        if ($getSpecificProduct && $getSpecificProduct->product) {
+            // Check if vendor is active
+            $vendorActive = DB::table('vendor_details')
+                ->where('id', $getSpecificProduct->product->vendor_id)
+                ->where('status', 1)
+                ->exists();
+            if (!$vendorActive) {
+                return redirect('home');
+            }
+        }
+
         $mainProductId = $getSpecificProduct->products_id;
 
         // Increment view count
@@ -1646,7 +1665,7 @@ class FrontendController extends Controller
             $productsData = $productsData->where('p.category_sub', $sub_category_id);
         }
 
-        $productsData = $productsData->where('p.status', 1);
+        $productsData = $productsData->where('p.status', 1)->where('vp.status', 1);
 
         $productsData = $productsData->select(
             'p.id',
@@ -1719,7 +1738,7 @@ class FrontendController extends Controller
             $productsData = $productsData->whereNotNull('p.offers');
         }
 
-        $productsData = $productsData->where('p.status', 1);
+        $productsData = $productsData->where('p.status', 1)->where('vp.status', 1);
 
         $productsData = $productsData->select(
             'p.id',
@@ -1800,7 +1819,7 @@ class FrontendController extends Controller
             $productsData = $productsData->where('p.category_main', $main_category_id);
         }
 
-        $productsData = $productsData->where('p.status', 1);
+        $productsData = $productsData->where('p.status', 1)->where('vp.status', 1);
 
         $productsData = $productsData->select(
             'p.id',
