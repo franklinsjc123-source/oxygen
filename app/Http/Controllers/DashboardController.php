@@ -472,13 +472,23 @@ class DashboardController extends Controller
         $vendorDetails = DB::table('vendor_details')->where('id', $id)->first();
         $packagePlanName = '';
         $subCategoriesList = [];
+        $assignedCategoryCount = 0;
+        $assignedSubCategoryCount = 0;
         if ($vendorDetails) {
             $packagePlanName = DB::table('packages')->where('id', $vendorDetails->package_id)->value('name') ?? 'No Plan';
             if ($vendorDetails->sub_category_ids) {
-                $subCategoriesList = DB::table('category_sub')
-                    ->whereIn('id', explode(',', $vendorDetails->sub_category_ids))
-                    ->pluck('category_sub_name')
-                    ->toArray();
+                $subCategoryIds = array_filter(explode(',', $vendorDetails->sub_category_ids));
+                if (!empty($subCategoryIds)) {
+                    $subCategoriesList = DB::table('category_sub')
+                        ->whereIn('id', $subCategoryIds)
+                        ->pluck('category_sub_name')
+                        ->toArray();
+                    $assignedSubCategoryCount = count($subCategoriesList);
+                    $assignedCategoryCount = DB::table('category_sub')
+                        ->whereIn('id', $subCategoryIds)
+                        ->distinct('category_id')
+                        ->count('category_id');
+                }
             }
         }
 
@@ -1429,6 +1439,8 @@ class DashboardController extends Controller
             'vendorDetails' => $vendorDetails,
             'packagePlanName' => $packagePlanName,
             'subCategoriesList' => $subCategoriesList,
+            'assignedCategoryCount' => $assignedCategoryCount,
+            'assignedSubCategoryCount' => $assignedSubCategoryCount,
             'completedOrdersTotalValue' => $completedOrdersTotalValue,
             'completedOrdersCount' => $completedOrdersCount,
             'avgCompletedOrderValue' => $avgCompletedOrderValue,

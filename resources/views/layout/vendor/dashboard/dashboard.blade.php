@@ -332,7 +332,7 @@
                     </div>
 
                     <!-- Shop Information -->
-                    <div style="padding: 16px 24px 24px 24px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div style="padding: 16px 24px 10px 24px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
                         <div>
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                                 <h4 style="font-size: 20px; font-weight: 700; color: #1a202c; margin: 0;">
@@ -500,6 +500,28 @@
                                 <div class="metric-value" style="font-size: 36px; font-weight: 700; margin-top: 8px;">{{ number_format($totalViews) }}</div>
                             </div>
                             <i class="fa fa-eye" style="position: absolute; right: 24px; bottom: 24px; font-size: 36px; opacity: 0.18;"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 5: Categories -->
+                    <div class="col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
+                        <div class="metric-card" style="background: linear-gradient(135deg, #ff9100 0%, #ffb74d 100%); color: #ffffff; position: relative; padding: 24px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <div class="metric-title" style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Categories</div>
+                                <div class="metric-value" style="font-size: 36px; font-weight: 700; margin-top: 8px;">{{ number_format($assignedCategoryCount) }}</div>
+                            </div>
+                            <i class="fa fa-th-list" style="position: absolute; right: 24px; bottom: 24px; font-size: 36px; opacity: 0.18;"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 6: Sub Categories -->
+                    <div class="col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
+                        <div class="metric-card" style="background: linear-gradient(135deg, #e91e63 0%, #ff6090 100%); color: #ffffff; position: relative; padding: 24px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <div class="metric-title" style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Sub Categories</div>
+                                <div class="metric-value" style="font-size: 36px; font-weight: 700; margin-top: 8px;">{{ number_format($assignedSubCategoryCount) }}</div>
+                            </div>
+                            <i class="fa fa-tags" style="position: absolute; right: 24px; bottom: 24px; font-size: 36px; opacity: 0.18;"></i>
                         </div>
                     </div>
                 </div>
