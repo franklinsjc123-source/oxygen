@@ -2,16 +2,27 @@
     $colors = ['#10b981', '#f43f5e', '#f59e0b', '#8b5cf6'];
     $color = $colors[$index % count($colors)];
     
-    $pct = $act->pipline ?? 75;
-    $pctEnd = min(100, $pct + 25);
+    $win = $act->win ?? '';
+    $pctStart = 75;
+    $pctEnd = 100;
+    if ($win) {
+        preg_match_all('/\d+/', $win, $allMatches);
+        if (isset($allMatches[0]) && count($allMatches[0]) >= 2) {
+            $pctStart = (int) $allMatches[0][0];
+            $pctEnd = (int) $allMatches[0][1];
+        } elseif (isset($allMatches[0]) && count($allMatches[0]) == 1) {
+            $pctStart = (int) $allMatches[0][0];
+            $pctEnd = min(100, $pctStart + 25);
+        }
+    }
     
     $pillBg = '#d1fae5';
     $pillText = '#065f46';
     
-    if ($pct < 40) {
+    if ($pctStart < 40) {
         $pillBg = '#fee2e2';
         $pillText = '#991b1b';
-    } elseif ($pct < 70) {
+    } elseif ($pctStart < 70) {
         $pillBg = '#fef3c7';
         $pillText = '#92400e';
     }
@@ -49,7 +60,7 @@
         $fullAddress = 'Address not specified';
     }
 @endphp
-
+ 
 <div class="activity-card" style="--indicator-color: {{ $color }};">
     <div class="activity-card-row1">
         <span class="activity-staff-name">{{ $staffName }}</span>
@@ -66,7 +77,7 @@
             <i class="fa fa-map-marker-alt me-1"></i> {{ $areaText }}
         </span>
         <span class="activity-percentage-pill" style="background-color: {{ $pillBg }}; color: {{ $pillText }};">
-            {{ $pct }}% - {{ $pctEnd }}%
+            {{ $pctStart }}% - {{ $pctEnd }}%
         </span>
     </div>
     

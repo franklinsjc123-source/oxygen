@@ -18,6 +18,10 @@ class DashboardController extends Controller
 {
     public function admindashboard(Request $request)
     {
+        if (session()->get('log_type') === 'Staff' || (auth()->check() && (int) auth()->user()->status === 3)) {
+            return redirect()->route('staffdashboard', session()->get('login_id') ?? auth()->user()->login_id);
+        }
+
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
         $staffId = $request->input('staff_id');
@@ -1687,6 +1691,388 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        // Dynamic Interactive Charts Data
+        $subStaffList = DB::table('staffother')
+            ->where('created_by', $staffDetails->id)
+            ->orWhere('id', $staffDetails->id)
+            ->select('id', 'fullname')
+            ->get();
+        $subStaffIds = $subStaffList->pluck('id')->toArray();
+
+        $staffVendors = DB::table('vendor_details')
+            ->whereIn('staff_id', $subStaffIds)
+            ->select('id', 'shop_name', 'city')
+            ->get();
+        $staffVendorIds = $staffVendors->pluck('id')->toArray();
+
+        $salesRecords = [];
+        if (!empty($staffVendorIds)) {
+            $salesRecords = DB::table('ecom_order_product as eop')
+                ->join('products_details as pd', 'pd.id', '=', 'eop.product_id')
+                ->join('products as p', 'p.id', '=', 'pd.products_id')
+                ->join('vendor_details as vd', 'vd.id', '=', 'p.login_id')
+                ->join('ecom_order_info as eoi', 'eoi.order_id', '=', 'eop.order_id')
+                ->where('p.logintype', 'Vendor')
+                ->where('p.flag', 1)
+                ->where('eop.order_status', 'Delivered')
+                ->whereIn('vd.id', $staffVendorIds)
+                ->select(
+                    'vd.staff_id',
+                    'vd.id as vendor_id',
+                    'vd.shop_name',
+                    'vd.city',
+                    'eoi.customer_id',
+                    DB::raw("CONCAT(eoi.customer_firstname, ' ', eoi.customer_lastname) as customer_name"),
+                    'eop.total_price',
+                    'eop.product_quantity'
+                )
+                ->get();
+        }
+
+        $employeesData = [];
+        $vendorsData = [];
+        $locationsData = [];
+        $customersData = [];
+
+        $staffNameMap = [];
+        foreach ($subStaffList as $ss) {
+            $staffNameMap[$ss->id] = $ss->fullname;
+            $employeesData[$ss->fullname] = ['revenue' => 0.0, 'auction' => 0];
+        }
+
+        foreach ($salesRecords as $row) {
+            $price = (float) $row->total_price;
+            $qty = (int) $row->product_quantity;
+
+            // 1. Employee
+            $empName = $staffNameMap[$row->staff_id] ?? 'Unknown';
+            if (!isset($employeesData[$empName])) {
+                $employeesData[$empName] = ['revenue' => 0.0, 'auction' => 0];
+            }
+            $employeesData[$empName]['revenue'] += $price;
+            $employeesData[$empName]['auction'] += $qty;
+
+            // 2. Vendor
+            $vName = $row->shop_name ?? 'Vendor #' . $row->vendor_id;
+            if (!isset($vendorsData[$vName])) {
+                $vendorsData[$vName] = ['revenue' => 0.0, 'auction' => 0];
+            }
+            $vendorsData[$vName]['revenue'] += $price;
+            $vendorsData[$vName]['auction'] += $qty;
+
+            // 3. Location
+            $loc = !empty($row->city) ? $row->city : 'Unknown';
+            if (!isset($locationsData[$loc])) {
+                $locationsData[$loc] = ['revenue' => 0.0, 'auction' => 0];
+            }
+            $locationsData[$loc]['revenue'] += $price;
+            $locationsData[$loc]['auction'] += $qty;
+
+            // 4. Customer
+            $cName = trim($row->customer_name);
+            if (empty($cName)) {
+                $cName = 'Customer #' . $row->customer_id;
+            }
+            if (!isset($customersData[$cName])) {
+                $customersData[$cName] = ['revenue' => 0.0, 'auction' => 0];
+            }
+            $customersData[$cName]['revenue'] += $price;
+            $customersData[$cName]['auction'] += $qty;
+        }
+
+        $getTop10 = function($data, $metric) {
+            uasort($data, function($a, $b) use ($metric) {
+                return $b[$metric] <=> $a[$metric];
+            });
+            $sliced = array_slice($data, 0, 10, true);
+            
+            $labels = [];
+            $values = [];
+            foreach ($sliced as $name => $vals) {
+                $labels[] = $name;
+                $values[] = $metric === 'revenue' ? round($vals['revenue'], 2) : $vals['auction'];
+            }
+            return ['labels' => $labels, 'values' => $values];
+        };
+
+        $top10Data = [
+            'employee' => [
+                'revenue' => $getTop10($employeesData, 'revenue'),
+                'auction' => $getTop10($employeesData, 'auction'),
+            ],
+            'vendor' => [
+                'revenue' => $getTop10($vendorsData, 'revenue'),
+                'auction' => $getTop10($vendorsData, 'auction'),
+            ],
+            'location' => [
+                'revenue' => $getTop10($locationsData, 'revenue'),
+                'auction' => $getTop10($locationsData, 'auction'),
+            ],
+            'customer' => [
+                'revenue' => $getTop10($customersData, 'revenue'),
+                'auction' => $getTop10($customersData, 'auction'),
+            ],
+        ];
+
+        // Right Card: Pipeline stages, Win %, Reference
+        $activitiesDb = DB::table('activity_trakcers')
+            ->where('createdby', $id)
+            ->select('pipline', 'win', 'reference')
+            ->get();
+
+        $pipelineMap = [
+            'Appointment Fixed' => 0,
+            'Package Explained' => 0,
+            'Negotiating' => 0,
+            'Pending Decision' => 0,
+            'Not Interested' => 0,
+            'Interested' => 0
+        ];
+        $winMap = [
+            '0%-25%' => 0,
+            '25%-50%' => 0,
+            '50%-75%' => 0,
+            '75%-100%' => 0
+        ];
+        $refMap = [
+            'Self' => 0,
+            'Referral' => 0
+        ];
+
+        foreach ($activitiesDb as $act) {
+            // Pipeline
+            $stage = trim($act->pipline);
+            if ($stage === 'Appoinment Fixed' || $stage === 'Appointment Fixed') {
+                $pipelineMap['Appointment Fixed']++;
+            } elseif (isset($pipelineMap[$stage])) {
+                $pipelineMap[$stage]++;
+            } elseif (!empty($stage)) {
+                $pipelineMap[$stage] = ($pipelineMap[$stage] ?? 0) + 1;
+            }
+
+            // Win %
+            $winVal = trim($act->win);
+            if (isset($winMap[$winVal])) {
+                $winMap[$winVal]++;
+            } elseif (!empty($winVal)) {
+                $winMap[$winVal] = ($winMap[$winVal] ?? 0) + 1;
+            }
+
+            // Reference
+            $refVal = trim($act->reference);
+            if (isset($refMap[$refVal])) {
+                $refMap[$refVal]++;
+            } elseif (!empty($refVal)) {
+                $refMap[$refVal] = ($refMap[$refVal] ?? 0) + 1;
+            }
+        }
+
+        $activityStats = [
+            'pipeline' => [
+                'labels' => array_keys($pipelineMap),
+                'values' => array_values($pipelineMap)
+            ],
+            'win' => [
+                'labels' => array_keys($winMap),
+                'values' => array_values($winMap)
+            ],
+            'reference' => [
+                'labels' => array_keys($refMap),
+                'values' => array_values($refMap)
+            ]
+        ];
+
+        // Left Dynamic Line Chart Data (Revenue vs. Target, Client vs. Revenue)
+        $currentYear = date('Y');
+        $monthlyStats = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $monthName = date('M', mktime(0, 0, 0, $m, 1));
+            $monthlyStats[$monthName] = [
+                'revenue' => 0.0,
+                'clients' => 0,
+                'client_ids' => []
+            ];
+        }
+
+        $yearlySales = [];
+        if (!empty($staffVendorIds)) {
+            $yearlySales = DB::table('ecom_order_product as eop')
+                ->join('products_details as pd', 'pd.id', '=', 'eop.product_id')
+                ->join('products as p', 'p.id', '=', 'pd.products_id')
+                ->join('ecom_order_info as eoi', 'eoi.order_id', '=', 'eop.order_id')
+                ->where('p.logintype', 'Vendor')
+                ->where('p.flag', 1)
+                ->where('eop.order_status', 'Delivered')
+                ->whereIn('p.login_id', $staffVendorIds)
+                ->whereYear('eop.created_at', $currentYear)
+                ->select('eoi.customer_id', 'eop.total_price', 'eop.created_at')
+                ->get();
+        }
+
+        foreach ($yearlySales as $sale) {
+            $monthName = date('M', strtotime($sale->created_at));
+            if (isset($monthlyStats[$monthName])) {
+                $monthlyStats[$monthName]['revenue'] += (float) $sale->total_price;
+                if (!in_array($sale->customer_id, $monthlyStats[$monthName]['client_ids'])) {
+                    $monthlyStats[$monthName]['client_ids'][] = $sale->customer_id;
+                    $monthlyStats[$monthName]['clients']++;
+                }
+            }
+        }
+
+        $locationStats = [];
+        if (!empty($staffVendorIds)) {
+            $locSales = DB::table('ecom_order_product as eop')
+                ->join('products_details as pd', 'pd.id', '=', 'eop.product_id')
+                ->join('products as p', 'p.id', '=', 'pd.products_id')
+                ->join('vendor_details as vd', 'vd.id', '=', 'p.login_id')
+                ->join('ecom_order_info as eoi', 'eoi.order_id', '=', 'eop.order_id')
+                ->where('p.logintype', 'Vendor')
+                ->where('p.flag', 1)
+                ->where('eop.order_status', 'Delivered')
+                ->whereIn('vd.id', $staffVendorIds)
+                ->select('vd.city', 'eoi.customer_id', 'eop.total_price')
+                ->get();
+
+            foreach ($locSales as $sale) {
+                $loc = !empty($sale->city) ? $sale->city : 'Unknown';
+                if (!isset($locationStats[$loc])) {
+                    $locationStats[$loc] = [
+                        'revenue' => 0.0,
+                        'clients' => 0,
+                        'client_ids' => []
+                    ];
+                }
+                $locationStats[$loc]['revenue'] += (float) $sale->total_price;
+                if (!in_array($sale->customer_id, $locationStats[$loc]['client_ids'])) {
+                    $locationStats[$loc]['client_ids'][] = $sale->customer_id;
+                    $locationStats[$loc]['clients']++;
+                }
+            }
+        }
+
+        uasort($locationStats, function($a, $b) {
+            return $b['revenue'] <=> $a['revenue'];
+        });
+        $topLocations = array_slice($locationStats, 0, 10, true);
+
+        $monthlyLabels = array_keys($monthlyStats);
+        $monthlyRevenueVals = array_column($monthlyStats, 'revenue');
+        $monthlyClientVals = array_column($monthlyStats, 'clients');
+        
+        $targetVal = (float) ($staffDetails->monthlytarget ?? 0);
+        $monthlyTargetVals = array_fill(0, 12, $targetVal);
+
+        $locationLabels = array_keys($topLocations);
+        $locationRevenueVals = array_map(function($loc) { return round($loc['revenue'], 2); }, $topLocations);
+        $locationClientVals = array_map(function($loc) { return $loc['clients']; }, $topLocations);
+
+        $doubleChartsData = [
+            'target' => [
+                'labels' => $monthlyLabels,
+                'revenue' => $monthlyRevenueVals,
+                'target' => $monthlyTargetVals
+            ],
+            'client' => [
+                'period' => [
+                    'labels' => $monthlyLabels,
+                    'clients' => $monthlyClientVals,
+                    'revenue' => $monthlyRevenueVals
+                ],
+                'location' => [
+                    'labels' => $locationLabels,
+                    'clients' => $locationClientVals,
+                    'revenue' => $locationRevenueVals
+                ]
+            ]
+        ];
+
+        // Right Dynamic Gauge Chart Data
+        $totalOrdersCount = 0;
+        $completedOrdersCount = 0;
+        if (!empty($staffVendorIds)) {
+            $totalOrdersCount = DB::table('ecom_order_product as eop')
+                ->join('products_details as pd', 'pd.id', '=', 'eop.product_id')
+                ->join('products as p', 'p.id', '=', 'pd.products_id')
+                ->whereIn('p.login_id', $staffVendorIds)
+                ->count();
+
+            $completedOrdersCount = DB::table('ecom_order_product as eop')
+                ->join('products_details as pd', 'pd.id', '=', 'eop.product_id')
+                ->join('products as p', 'p.id', '=', 'pd.products_id')
+                ->whereIn('p.login_id', $staffVendorIds)
+                ->where('eop.order_status', 'Delivered')
+                ->count();
+        }
+        $clientRate = $totalOrdersCount > 0 ? round(($completedOrdersCount / $totalOrdersCount) * 100, 1) : 0;
+
+        $totalProspectsCount = DB::table('activity_trakcers')->where('createdby', $id)->count();
+        $totalClientsCount = 0;
+        if (!empty($staffVendorIds)) {
+            $totalClientsCount = DB::table('ecom_order_product as eop')
+                ->join('products_details as pd', 'pd.id', '=', 'eop.product_id')
+                ->join('products as p', 'p.id', '=', 'pd.products_id')
+                ->join('ecom_order_info as eoi', 'eoi.order_id', '=', 'eop.order_id')
+                ->whereIn('p.login_id', $staffVendorIds)
+                ->distinct('eoi.customer_id')
+                ->count('eoi.customer_id');
+        }
+        $prospectRate = ($totalProspectsCount + $totalClientsCount) > 0 ? round(($totalClientsCount / ($totalProspectsCount + $totalClientsCount)) * 100, 1) : 0;
+
+        $totalVendorsCount = $vendorCount;
+        $renewedVendorsCount = DB::table('vendor_details')
+            ->where('staff_id', $staffDetails->id)
+            ->where('expired_date', '>', date('Y-m-d H:i:s'))
+            ->count();
+        $loyalRate = $totalVendorsCount > 0 ? round(($renewedVendorsCount / $totalVendorsCount) * 100, 1) : 0;
+
+        $auctionSalesCount = 0;
+        $auctionSalesSum = 0;
+        if (!empty($staffVendorIds)) {
+            $auctionSales = DB::table('ecom_order_product as eop')
+                ->join('products_details as pd', 'pd.id', '=', 'eop.product_id')
+                ->join('products as p', 'p.id', '=', 'pd.products_id')
+                ->join('auctions as a', 'a.product_id', '=', 'p.id')
+                ->whereIn('p.login_id', $staffVendorIds)
+                ->where('eop.order_status', 'Delivered')
+                ->select(DB::raw('SUM(eop.total_price) as sum_price'), DB::raw('COUNT(*) as count'))
+                ->first();
+            
+            $auctionSalesSum = (float) ($auctionSales->sum_price ?? 0);
+            $auctionSalesCount = (int) ($auctionSales->count ?? 0);
+        }
+
+        $gaugeStats = [
+            'client' => [
+                'rate' => $clientRate,
+                'stat1_label' => 'Total Orders',
+                'stat1_value' => $totalOrdersCount,
+                'stat2_label' => 'Completed Orders',
+                'stat2_value' => $completedOrdersCount
+            ],
+            'prospect' => [
+                'rate' => $prospectRate,
+                'stat1_label' => 'Total Prospects',
+                'stat1_value' => $totalProspectsCount,
+                'stat2_label' => 'Converted Clients',
+                'stat2_value' => $totalClientsCount
+            ],
+            'loyal' => [
+                'rate' => $loyalRate,
+                'stat1_label' => 'Total Vendors',
+                'stat1_value' => $totalVendorsCount,
+                'stat2_label' => 'Active/Renewed',
+                'stat2_value' => $renewedVendorsCount
+            ],
+            'auction' => [
+                'rate' => ($completedOrdersTotalValueSum > 0) ? round(($auctionSalesSum / $completedOrdersTotalValueSum) * 100, 1) : 0,
+                'stat1_label' => 'Total Sales (₹)',
+                'stat1_value' => round($completedOrdersTotalValueSum, 1),
+                'stat2_label' => 'Bid Sales (₹)',
+                'stat2_value' => round($auctionSalesSum, 1)
+            ]
+        ];
+
         return view('layout.staff.dashboard.dashboard')->with([
             'vendorid' => $id,
             'staffDetails' => $staffDetails,
@@ -1699,7 +2085,11 @@ class DashboardController extends Controller
             'todayActivities' => $todayActivities,
             'upcomingActivities' => $upcomingActivities,
             'pastDueActivities' => $pastDueActivities,
-            'recentActivities' => $recentActivities
+            'recentActivities' => $recentActivities,
+            'top10Data' => $top10Data,
+            'activityStats' => $activityStats,
+            'doubleChartsData' => $doubleChartsData,
+            'gaugeStats' => $gaugeStats
         ]);
     }
 

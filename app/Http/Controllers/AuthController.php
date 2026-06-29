@@ -110,7 +110,7 @@ class AuthController extends Controller
                     FacadesSession::put('roll', $roll);
                 }
                 
-                return redirect()->route('admindashboard');
+                return redirect()->route('staffdashboard', $user->login_id);
             }
 
             Auth::logout();

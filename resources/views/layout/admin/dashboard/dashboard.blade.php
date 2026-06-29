@@ -34,56 +34,6 @@
         </div>
         <!-- Container-fluid Ends-->
 
-        <!-- Filter Card -->
-        <div class="container-fluid">
-            <div class="card" style="border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 4px 20px 0 rgba(0,0,0,0.02); border-radius: 8px; margin-bottom: 25px;">
-                <div class="card-header" style="border-bottom: 1px solid rgba(0,0,0,0.08); background-color: #fff; padding: 15px 20px; border-top-left-radius: 8px; border-top-right-radius: 8px;">
-                    <h5 style="margin: 0; font-size: 15px; font-weight: 600; color: #192c3a; text-transform: none; letter-spacing: 0; display: flex; align-items: center; gap: 8px;">
-                        <i class="fa fa-sliders" style="color: #02cccd;"></i> Filter Dashboard Metrics
-                    </h5>
-                </div>
-                <div class="card-body" style="padding: 20px;">
-                    <form method="GET" action="{{ url('admin/dashboard') }}" id="filter-form">
-                        <div class="row align-items-end">
-                            <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
-                                <label class="form-label" style="font-weight: 500; font-size: 13px; color: #4f5d6e; margin-bottom: 6px; display: block;">Start Date</label>
-                                <input type="date" name="start_date" class="form-control" value="{{ $startDate }}" style="border-radius: 6px; border: 1px solid #ced4da; padding: 8px 12px; height: auto;">
-                            </div>
-                            <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
-                                <label class="form-label" style="font-weight: 500; font-size: 13px; color: #4f5d6e; margin-bottom: 6px; display: block;">End Date</label>
-                                <input type="date" name="end_date" class="form-control" value="{{ $endDate }}" style="border-radius: 6px; border: 1px solid #ced4da; padding: 8px 12px; height: auto;">
-                            </div>
-                            <div class="col-xl-2 col-lg-6 col-md-6 mb-3">
-                                <label class="form-label" style="font-weight: 500; font-size: 13px; color: #4f5d6e; margin-bottom: 6px; display: block;">Employee / Creator</label>
-                                <select name="staff_id" class="form-control" style="border-radius: 6px; border: 1px solid #ced4da; padding: 8px 12px; height: auto;">
-                                    <option value="">All Employees</option>
-                                    @foreach($staffList as $staff)
-                                        <option value="{{ $staff->id }}" {{ $staffId == $staff->id ? 'selected' : '' }}>{{ $staff->fullname }} ({{ $staff->username }})</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-xl-2 col-lg-6 col-md-6 mb-3">
-                                <label class="form-label" style="font-weight: 500; font-size: 13px; color: #4f5d6e; margin-bottom: 6px; display: block;">Subscription Plan</label>
-                                <select name="package_id" class="form-control" style="border-radius: 6px; border: 1px solid #ced4da; padding: 8px 12px; height: auto;">
-                                    <option value="">All Plans</option>
-                                    @foreach($packageList as $pkg)
-                                        <option value="{{ $pkg->id }}" {{ $packageId == $pkg->id ? 'selected' : '' }}>{{ $pkg->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-xl-2 col-lg-12 col-md-12 mb-3" style="display: flex; gap: 10px;">
-                                <button type="submit" class="btn btn-primary w-100" style="padding: 10px; border-radius: 6px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px; background-color: #02cccd; border-color: #02cccd;">
-                                    <i class="fa fa-filter"></i> Filter
-                                </button>
-                                <a href="{{ url('admin/dashboard') }}" class="btn btn-secondary w-100" style="padding: 10px; border-radius: 6px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px; background-color: #6c757d; border-color: #6c757d; color: #fff;">
-                                    <i class="fa fa-undo"></i> Reset
-                                </a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
 
         <style>
         /* Employee Card Styles */
@@ -583,40 +533,40 @@
                 <!-- Right Column: 6 Metrics Cards Grid -->
                 <div class="col-xl-7 col-lg-12 mb-4">
                     <div class="metrics-grid">
-                        <!-- Card 1: Completed Orders Total Value -->
-                        <div class="metric-card-custom card-style-val">
-                            <div class="metric-card-label">Completed orders total value</div>
-                            <div class="metric-card-value">₹{{ number_format(($completedOrdersTotalValueSum ?? 0) / 1000, 1) }}K</div>
-                        </div>
-                        
-                        <!-- Card 2: Orders -->
+                        <!-- Card 1: Orders -->
                         <div class="metric-card-custom card-style-orders">
-                            <div class="metric-card-label"># completed orders</div>
+                            <div class="metric-card-label">Orders</div>
                             <div class="metric-card-value">{{ $orderCount ?? 0 }}</div>
                         </div>
                         
-                        <!-- Card 3: Products -->
+                        <!-- Card 2: Products -->
                         <div class="metric-card-custom card-style-products">
                             <div class="metric-card-label">Products</div>
                             <div class="metric-card-value">{{ $productCount ?? 0 }}</div>
                         </div>
                         
-                        <!-- Card 4: Customers -->
+                        <!-- Card 3: Customers -->
                         <div class="metric-card-custom card-style-customers">
                             <div class="metric-card-label">Customers</div>
                             <div class="metric-card-value">{{ $customerCount ?? 0 }}</div>
                         </div>
                         
-                        <!-- Card 5: Vendors -->
+                        <!-- Card 4: Vendors -->
                         <div class="metric-card-custom card-style-vendors">
                             <div class="metric-card-label">Vendors</div>
                             <div class="metric-card-value">{{ $vendorCount ?? 0 }}</div>
                         </div>
                         
-                        <!-- Card 6: Viewers -->
+                        <!-- Card 5: Viewers -->
                         <div class="metric-card-custom card-style-viewers">
                             <div class="metric-card-label">Viewers</div>
                             <div class="metric-card-value">{{ $totalViews ?? 0 }}</div>
+                        </div>
+
+                        <!-- Card 6: Completed Orders Total Value -->
+                        <div class="metric-card-custom card-style-val">
+                            <div class="metric-card-label">Completed Orders Value</div>
+                            <div class="metric-card-value">₹{{ number_format(($completedOrdersTotalValueSum ?? 0) / 1000, 1) }}K</div>
                         </div>
                     </div>
                 </div>
