@@ -417,6 +417,74 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        $selectedStaffDetails = null;
+        if ($staffId) {
+            $selectedStaffDetails = DB::table('staffother')->where('id', $staffId)->first();
+        }
+
+        $completedOrdersQuery = DB::table('ecom_order_product')
+            ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
+            ->join('products', 'products.id', '=', 'products_details.products_id')
+            ->where('ecom_order_product.order_status', 'Delivered');
+        if (!empty($vendorIds)) {
+            $completedOrdersQuery->whereIn('products.login_id', $vendorIds);
+        } elseif ($staffId || $packageId) {
+            $completedOrdersQuery->whereIn('products.login_id', [-1]);
+        }
+        if ($startDate && $endDate) {
+            $completedOrdersQuery->whereBetween('ecom_order_product.created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+        }
+        $completedOrdersTotalValueSum = $completedOrdersQuery->sum('ecom_order_product.total_price') ?? 0;
+
+        $todayDate = date('Y-m-d');
+        $baseActivityQuery = DB::table('activity_trakcers as t1')
+            ->leftJoin('users as t2', DB::raw('t1.createdby COLLATE utf8mb4_unicode_ci'), '=', 't2.login_id')
+            ->leftJoin('staffother as t3', DB::raw('t1.createdby COLLATE utf8mb4_unicode_ci'), '=', 't3.employee_id')
+            ->select(
+                't1.*', 
+                't2.name as staff_name', 
+                't3.profileimage as staff_photo', 
+                't3.designation as staff_designation',
+                't3.mobileno as staff_mobile',
+                't3.email as staff_email'
+            );
+
+        if ($staffId) {
+            $staffCode = DB::table('staffother')->where('id', $staffId)->value('employee_id');
+            if ($staffCode) {
+                $baseActivityQuery->where('t1.createdby', $staffCode);
+            }
+        }
+
+        $activities = $baseActivityQuery->orderByDesc('t1.id')->get();
+
+        $todayActivities = [];
+        $upcomingActivities = [];
+        $pastDueActivities = [];
+
+        foreach ($activities as $act) {
+            $followDate = $act->next_follow_date;
+            if (!$followDate) {
+                $todayActivities[] = $act;
+                continue;
+            }
+            
+            $followTimestamp = strtotime($followDate);
+            $followDay = date('Y-m-d', $followTimestamp);
+            
+            if ($followDay === $todayDate) {
+                $todayActivities[] = $act;
+            } elseif ($followDay > $todayDate) {
+                $upcomingActivities[] = $act;
+            } else {
+                $pastDueActivities[] = $act;
+            }
+        }
+
+        $todayActivities = array_slice($todayActivities, 0, 6);
+        $upcomingActivities = array_slice($upcomingActivities, 0, 6);
+        $pastDueActivities = array_slice($pastDueActivities, 0, 6);
+
         return view('layout.admin.dashboard.dashboard')->with([
             'startDate' => $startDate,
             'endDate' => $endDate,
@@ -424,6 +492,11 @@ class DashboardController extends Controller
             'packageId' => $packageId,
             'staffList' => $staffList,
             'packageList' => $packageList,
+            'selectedStaffDetails' => $selectedStaffDetails,
+            'completedOrdersTotalValueSum' => $completedOrdersTotalValueSum,
+            'todayActivities' => $todayActivities,
+            'upcomingActivities' => $upcomingActivities,
+            'pastDueActivities' => $pastDueActivities,
             
             'productCount' => $productCount,
             'orderCount' => $orderCount,
@@ -1484,22 +1557,149 @@ class DashboardController extends Controller
 
     public function staffdashboard($id)
     {
-        //$vendor_id = Auth::user()->login_id;
+        $Staffcreates = Staffcreates::where('employee_id', $id)->get();
+        if ($Staffcreates->isEmpty()) {
+            return redirect()->route('stafflogin')->with('error', 'Staff details not found.');
+        }
+        $staffDetails = $Staffcreates[0];
+        $department = $staffDetails->department;
+        $roll = Roll::where('roll', $department)->get();
+        Session::put('roll', $roll);
 
-        
-       $Staffcreates    = Staffcreates::where('employee_id',$id )->get();
-       if ($Staffcreates->isEmpty()) {
-           return redirect()->route('stafflogin')->with('error', 'Staff details not found.');
-       }
-       $department =  ($Staffcreates[0]->department);
-       $roll   =  Roll::where('roll', $department)->get();
-       //   $roll =  ($role[0]->permission_id);
-       Session::put('roll', $roll);
-       //   $staffs = json_decode($roll->permission_id);
-        //return ($roll);
+        $staffDbId = $staffDetails->id;
+
+        // Fetch counts for this staff member
+        $vendorQuery = DB::table('vendor_details')->where('staff_id', $staffDbId);
+        $vendorCount = $vendorQuery->count();
+        $vendorIds = $vendorQuery->pluck('id')->toArray();
+
+        $productQuery = DB::table('products')->where('logintype', 'Vendor');
+        if (!empty($vendorIds)) {
+            $productQuery->whereIn('login_id', $vendorIds);
+        } else {
+            $productQuery->whereIn('login_id', [-1]);
+        }
+        $productCount = $productQuery->count();
+
+        $orderIdsQuery = DB::table('ecom_order_product')
+            ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
+            ->join('products', 'products.id', '=', 'products_details.products_id');
+        if (!empty($vendorIds)) {
+            $orderIdsQuery->whereIn('products.login_id', $vendorIds);
+        } else {
+            $orderIdsQuery->whereIn('products.login_id', [-1]);
+        }
+        $matchingOrderIds = $orderIdsQuery->distinct('ecom_order_product.order_id')->pluck('ecom_order_product.order_id')->toArray();
+
+        $orderQuery = DB::table('ecom_order_info');
+        if (!empty($matchingOrderIds)) {
+            $orderQuery->whereIn('order_id', $matchingOrderIds);
+        } else {
+            $orderQuery->whereIn('order_id', [-1]);
+        }
+        $orderCount = $orderQuery->count();
+
+        $customerCount = $orderQuery->distinct('customer_id')->count('customer_id');
+
+        $vendorProfileViews = DB::table('vendor_details')->where('staff_id', $staffDbId)->sum('view_count') ?? 0;
+        $productQueryViews = DB::table('products')->where('logintype', 'Vendor');
+        if (!empty($vendorIds)) {
+            $productQueryViews->whereIn('login_id', $vendorIds);
+        } else {
+            $productQueryViews->whereIn('login_id', [-1]);
+        }
+        $productViews = $productQueryViews->sum('view_count') ?? 0;
+        $totalViews = $vendorProfileViews + $productViews;
+
+        // Completed orders total value for this staff member
+        $completedOrdersQuery = DB::table('ecom_order_product')
+            ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
+            ->join('products', 'products.id', '=', 'products_details.products_id')
+            ->where('ecom_order_product.order_status', 'Delivered');
+        if (!empty($vendorIds)) {
+            $completedOrdersQuery->whereIn('products.login_id', $vendorIds);
+        } else {
+            $completedOrdersQuery->whereIn('products.login_id', [-1]);
+        }
+        $completedOrdersTotalValueSum = $completedOrdersQuery->sum('ecom_order_product.total_price') ?? 0;
+
+        // Activities for this staff member
+        $todayDate = date('Y-m-d');
+        $baseActivityQuery = DB::table('activity_trakcers as t1')
+            ->leftJoin('users as t2', DB::raw('t1.createdby COLLATE utf8mb4_unicode_ci'), '=', 't2.login_id')
+            ->leftJoin('staffother as t3', DB::raw('t1.createdby COLLATE utf8mb4_unicode_ci'), '=', 't3.employee_id')
+            ->select(
+                't1.*', 
+                't2.name as staff_name', 
+                't3.profileimage as staff_photo', 
+                't3.designation as staff_designation',
+                't3.mobileno as staff_mobile',
+                't3.email as staff_email'
+            )
+            ->where('t1.createdby', $id);
+
+        $activities = $baseActivityQuery->orderByDesc('t1.id')->get();
+
+        $todayActivities = [];
+        $upcomingActivities = [];
+        $pastDueActivities = [];
+
+        foreach ($activities as $act) {
+            $followDate = $act->next_follow_date;
+            if (!$followDate) {
+                $todayActivities[] = $act;
+                continue;
+            }
+            
+            $followTimestamp = strtotime($followDate);
+            $followDay = date('Y-m-d', $followTimestamp);
+            
+            if ($followDay === $todayDate) {
+                $todayActivities[] = $act;
+            } elseif ($followDay > $todayDate) {
+                $upcomingActivities[] = $act;
+            } else {
+                $pastDueActivities[] = $act;
+            }
+        }
+
+        $todayActivities = array_slice($todayActivities, 0, 6);
+        $upcomingActivities = array_slice($upcomingActivities, 0, 6);
+        $pastDueActivities = array_slice($pastDueActivities, 0, 6);
+
+        $recentActivities = DB::table('ecom_order_product')
+            ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
+            ->join('products', 'products.id', '=', 'products_details.products_id')
+            ->join('ecom_order_info', 'ecom_order_product.order_id', '=', 'ecom_order_info.order_id')
+            ->where('products.flag', 1)
+            ->whereIn('products.login_id', !empty($vendorIds) ? $vendorIds : [-1])
+            ->select(
+                'ecom_order_product.product_name',
+                'ecom_order_product.product_quantity',
+                'ecom_order_product.total_price',
+                'ecom_order_product.product_image',
+                'ecom_order_product.order_status',
+                'ecom_order_product.created_at',
+                'ecom_order_info.customer_firstname',
+                'ecom_order_info.customer_lastname'
+            )
+            ->orderByDesc('ecom_order_product.id')
+            ->take(5)
+            ->get();
+
         return view('layout.staff.dashboard.dashboard')->with([
             'vendorid' => $id,
-            // 'roll' => $roll
+            'staffDetails' => $staffDetails,
+            'vendorCount' => $vendorCount,
+            'productCount' => $productCount,
+            'orderCount' => $orderCount,
+            'customerCount' => $customerCount,
+            'totalViews' => $totalViews,
+            'completedOrdersTotalValueSum' => $completedOrdersTotalValueSum,
+            'todayActivities' => $todayActivities,
+            'upcomingActivities' => $upcomingActivities,
+            'pastDueActivities' => $pastDueActivities,
+            'recentActivities' => $recentActivities
         ]);
     }
 
