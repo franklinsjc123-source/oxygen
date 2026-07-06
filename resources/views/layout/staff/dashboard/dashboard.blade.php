@@ -46,7 +46,7 @@
         /* Employee Card Styles */
         .employee-card {
             background: #fff;
-            border-radius: 16px;
+            border-radius: 24px;
             border: 1px solid rgba(0, 0, 0, 0.06);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
             padding: 24px;
@@ -123,14 +123,26 @@
             padding-top: 20px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            gap: 12px;
         }
 
         .employee-meta-item {
+            background: #f8fafc;
+            border: 1px solid #edf2f7;
+            border-radius: 8px;
+            padding: 8px 12px;
             display: flex;
             flex-direction: column;
             gap: 4px;
             min-width: 0;
+            transition: all 0.2s ease;
+        }
+
+        .employee-meta-item:hover {
+            border-color: #cbd5e0;
+            background: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            transform: translateY(-1px);
         }
 
         .employee-meta-label {
@@ -220,70 +232,97 @@
         }
 
         .metric-card-custom {
-            border-radius: 16px;
-            padding: 24px 20px;
+            border-radius: 20px !important;
+            padding: 20px !important;
             min-height: 120px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            cursor: pointer;
+            overflow: hidden;
+            border: none !important;
         }
 
         .metric-card-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+            transform: translateY(-6px) scale(1.01) !important;
         }
 
         .metric-card-label {
-            font-size: 13px;
-            font-weight: 600;
-            opacity: 0.95;
-            margin-bottom: 8px;
+            font-size: 11px !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            opacity: 0.85 !important;
+            font-weight: 700 !important;
             line-height: 1.3;
         }
 
         .metric-card-value {
-            font-size: 32px;
-            font-weight: 700;
-            line-height: 1;
+            font-size: 32px !important;
+            font-weight: 800 !important;
+            line-height: 1.1 !important;
+            letter-spacing: -0.5px !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         }
 
         .card-style-val {
-            background-color: #fbf9ff;
-            border: 2px solid #ebdbff;
-            color: #192c3a;
+            background: linear-gradient(135deg, #f472b6 0%, #db2777 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 10px 20px -5px rgba(219, 39, 119, 0.35) !important;
+        }
+        .card-style-val:hover {
+            box-shadow: 0 20px 30px -5px rgba(219, 39, 119, 0.5) !important;
         }
         .card-style-val .metric-card-label {
-            color: #6c757d;
+            color: #ffffff !important;
         }
         .card-style-val .metric-card-value {
-            color: #192c3a;
+            color: #ffffff !important;
         }
 
         .card-style-orders {
-            background-color: #0f4a8a;
-            color: #ffffff;
+            background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.35) !important;
+        }
+        .card-style-orders:hover {
+            box-shadow: 0 20px 30px -5px rgba(37, 99, 235, 0.5) !important;
         }
 
         .card-style-products {
-            background-color: #0082c4;
-            color: #ffffff;
+            background: linear-gradient(135deg, #34d399 0%, #059669 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 10px 20px -5px rgba(5, 150, 105, 0.35) !important;
+        }
+        .card-style-products:hover {
+            box-shadow: 0 20px 30px -5px rgba(5, 150, 105, 0.5) !important;
         }
 
         .card-style-customers {
-            background-color: #00a876;
-            color: #ffffff;
+            background: linear-gradient(135deg, #fb7185 0%, #e11d48 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 10px 20px -5px rgba(225, 29, 72, 0.35) !important;
+        }
+        .card-style-customers:hover {
+            box-shadow: 0 20px 30px -5px rgba(225, 29, 72, 0.5) !important;
         }
 
         .card-style-vendors {
-            background-color: #df485a;
-            color: #ffffff;
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 10px 20px -5px rgba(217, 119, 6, 0.35) !important;
+        }
+        .card-style-vendors:hover {
+            box-shadow: 0 20px 30px -5px rgba(217, 119, 6, 0.5) !important;
         }
 
         .card-style-viewers {
-            background-color: #6c56b7;
-            color: #ffffff;
+            background: linear-gradient(135deg, #818cf8 0%, #4f46e5 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.35) !important;
+        }
+        .card-style-viewers:hover {
+            box-shadow: 0 20px 30px -5px rgba(99, 102, 241, 0.5) !important;
         }
 
         /* Activity Tracker Section */
@@ -646,7 +685,7 @@
                             <div class="d-flex align-items-center gap-1">
                                 <ul class="activity-nav-pills" id="double-left-tabs">
                                     <li><button type="button" class="activity-nav-link active" onclick="switchDoubleLeftTab(this, 'target')">Target</button></li>
-                                    <li><button type="button" class="activity-nav-link" onclick="switchDoubleLeftTab(this, 'client')">Client</button></li>
+                                    <li><button type="button" class="activity-nav-link" onclick="switchDoubleLeftTab(this, 'client')">Customer · Sales · Revenue</button></li>
                                 </ul>
                             </div>
                             <!-- Right Sub-Tabs -->
@@ -671,7 +710,7 @@
                             <!-- Left Sub-Tabs -->
                             <div class="d-flex align-items-center gap-1">
                                 <ul class="activity-nav-pills" id="gauge-tabs">
-                                    <li><button type="button" class="activity-nav-link active" onclick="switchGaugeTab(this, 'client')">Client</button></li>
+                                    <li><button type="button" class="activity-nav-link active" onclick="switchGaugeTab(this, 'client')">Customer</button></li>
                                     <li><button type="button" class="activity-nav-link" onclick="switchGaugeTab(this, 'prospect')">Prospect</button></li>
                                     <li><button type="button" class="activity-nav-link" onclick="switchGaugeTab(this, 'loyal')">Loyal</button></li>
                                     <li><button type="button" class="activity-nav-link" onclick="switchGaugeTab(this, 'auction')">Auction</button></li>
@@ -1085,10 +1124,10 @@ function renderDoubleChart(leftTab, rightTab) {
         
         if (rightTab === 'period') {
             labels = doubleChartsData.client.period.labels;
-            title = 'Clients vs. Revenue (Monthly)';
+            title = 'Customer · Sales · Revenue by Period';
             
             dataSets.push({
-                label: 'Clients Count',
+                label: 'Customer Count',
                 data: doubleChartsData.client.period.clients,
                 borderColor: '#2563eb',
                 fill: false,
@@ -1107,11 +1146,11 @@ function renderDoubleChart(leftTab, rightTab) {
             });
         } else {
             labels = doubleChartsData.client.location.labels;
-            title = 'Clients vs. Revenue (by Location)';
+            title = 'Customer · Sales · Revenue by Location';
             chartType = 'bar';
             
             dataSets.push({
-                label: 'Clients Count',
+                label: 'Customer Count',
                 data: doubleChartsData.client.location.clients,
                 backgroundColor: '#2563eb',
                 borderRadius: 4,
@@ -1141,7 +1180,7 @@ function renderDoubleChart(leftTab, rightTab) {
             grid: { color: 'rgba(0,0,0,0.03)' },
             title: {
                 display: true,
-                text: leftTab === 'target' ? 'Revenue (₹)' : 'Clients Count'
+                text: leftTab === 'target' ? 'Revenue (₹)' : 'Customer Count'
             }
         }
     };

@@ -17,6 +17,18 @@
 <div class="page-body" style="background-color: #f7fafc; margin-top: 60px !important; ">
 
     <style>
+        /* Fix sidebar overlap and responsive container alignment */
+        @media (min-width: 992px) {
+            .page-sidebar ~ .page-body {
+                margin-left: 200px !important;
+                transition: 0.3s ease !important;
+            }
+            .page-sidebar.open ~ .page-body {
+                margin-left: 0 !important;
+                transition: 0.3s ease !important;
+            }
+        }
+
         /* General styling */
         .dashboard-container {
             font-family: 'Inter', 'Work Sans', sans-serif;
@@ -288,13 +300,14 @@
         
         /* Responsive Shop Banner & Info */
         .shop-profile-banner {
-            height: 80px; 
-            background: #183543; 
+            min-height: 100px; 
+            background: linear-gradient(135deg, #183543 0%, #0f2430 100%); 
             position: relative; 
-            padding: 12px 24px; 
+            padding: 20px 24px; 
             display: flex; 
             align-items: center; 
             gap: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
         .shop-profile-info {
             flex-grow: 1; 
@@ -310,11 +323,139 @@
         }
         .shop-owner-details-row {
             display: grid; 
-            grid-template-columns: 1fr 1fr 1.2fr; 
+            grid-template-columns: 1fr 1fr 1.25fr; 
             gap: 10px; 
             margin-bottom: 14px; 
             border-bottom: 1px solid #edf2f7; 
             padding-bottom: 14px;
+        }
+        .shop-owner-details-row > div {
+            background: #f8fafc;
+            border: 1px solid #edf2f7;
+            border-radius: 8px;
+            padding: 8px 10px;
+            transition: all 0.2s ease;
+        }
+        .shop-owner-details-row > div:hover {
+            border-color: #cbd5e0;
+            background: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            transform: translateY(-1px);
+        }
+        
+        .premium-plan-box {
+            background: linear-gradient(135deg, #f0f7fa 0%, #e1eff5 100%);
+            border: 1px solid #b3d1df;
+            border-radius: 12px;
+            padding: 10px 16px;
+            transition: all 0.2s ease;
+        }
+        
+        /* Pulsing green status indicator animation */
+        @keyframes pulse-green {
+            0% {
+                box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 6px rgba(46, 204, 113, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
+            }
+        }
+        .status-dot-active {
+            animation: pulse-green 2s infinite;
+        }
+
+        /* Premium Metric Cards */
+        .premium-metric-card {
+            border-radius: 20px !important;
+            padding: 20px !important;
+            color: #ffffff !important;
+            position: relative;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            cursor: pointer;
+            overflow: hidden;
+            border: none !important;
+        }
+        .premium-metric-card:hover {
+            transform: translateY(-6px) scale(1.01) !important;
+        }
+        .premium-metric-card i {
+            transition: all 0.3s ease;
+        }
+        .premium-metric-card:hover i {
+            transform: scale(1.2) rotate(-5deg) !important;
+            opacity: 0.3 !important;
+        }
+        .premium-metric-card .metric-value {
+            font-size: 32px !important;
+            font-weight: 800 !important;
+            margin-top: 8px !important;
+            letter-spacing: -0.5px !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            line-height: 1.1;
+        }
+        .premium-metric-card .metric-title {
+            font-size: 11px !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            opacity: 0.85 !important;
+            font-weight: 700 !important;
+            line-height: 1.3;
+        }
+        
+        /* Gradients and Shadows for each metric */
+        .metric-visitors {
+            background: linear-gradient(135deg, #818cf8 0%, #4f46e5 100%) !important;
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.35) !important;
+        }
+        .metric-visitors:hover {
+            box-shadow: 0 20px 30px -5px rgba(99, 102, 241, 0.5) !important;
+        }
+        
+        .metric-customers {
+            background: linear-gradient(135deg, #fb7185 0%, #e11d48 100%) !important;
+            box-shadow: 0 10px 20px -5px rgba(225, 29, 72, 0.35) !important;
+        }
+        .metric-customers:hover {
+            box-shadow: 0 20px 30px -5px rgba(225, 29, 72, 0.5) !important;
+        }
+        
+        .metric-products {
+            background: linear-gradient(135deg, #34d399 0%, #059669 100%) !important;
+            box-shadow: 0 10px 20px -5px rgba(5, 150, 105, 0.35) !important;
+        }
+        .metric-products:hover {
+            box-shadow: 0 20px 30px -5px rgba(5, 150, 105, 0.5) !important;
+        }
+        
+        .metric-orders {
+            background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%) !important;
+            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.35) !important;
+        }
+        .metric-orders:hover {
+            box-shadow: 0 20px 30px -5px rgba(37, 99, 235, 0.5) !important;
+        }
+        
+        .metric-sales {
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%) !important;
+            box-shadow: 0 10px 20px -5px rgba(217, 119, 6, 0.35) !important;
+        }
+        .metric-sales:hover {
+            box-shadow: 0 20px 30px -5px rgba(217, 119, 6, 0.5) !important;
+        }
+        
+        .metric-revenue {
+            background: linear-gradient(135deg, #f472b6 0%, #db2777 100%) !important;
+            box-shadow: 0 10px 20px -5px rgba(219, 39, 119, 0.35) !important;
+        }
+        .metric-revenue:hover {
+            box-shadow: 0 20px 30px -5px rgba(219, 39, 119, 0.5) !important;
         }
         
         @media (max-width: 575.98px) {
@@ -445,10 +586,9 @@
                             @endif
                         </div>
                         
-                        <!-- Status Badge on the right -->
                         <div class="shop-profile-status-badge">
                             <button id="vendorStatusBtn" onclick="toggleVendorStatus()" style="background-color: {{ (int)($vendorDetails->status ?? 1) === 1 ? 'rgba(46, 204, 113, 0.25)' : 'rgba(231, 76, 60, 0.25)' }}; color: {{ (int)($vendorDetails->status ?? 1) === 1 ? '#2ecc71' : '#e74c3c' }}; padding: 4px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 700; text-transform: uppercase; border: 1px solid {{ (int)($vendorDetails->status ?? 1) === 1 ? 'rgba(46, 204, 113, 0.4)' : 'rgba(231, 76, 60, 0.4)' }}; letter-spacing: 0.5px; backdrop-filter: blur(4px); cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s; outline: none;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                                <span id="vendorStatusDot" style="width: 6px; height: 6px; border-radius: 50%; background-color: {{ (int)($vendorDetails->status ?? 1) === 1 ? '#2ecc71' : '#e74c3c' }}; display: inline-block;"></span>
+                                <span id="vendorStatusDot" class="{{ (int)($vendorDetails->status ?? 1) === 1 ? 'status-dot-active' : '' }}" style="width: 6px; height: 6px; border-radius: 50%; background-color: {{ (int)($vendorDetails->status ?? 1) === 1 ? '#2ecc71' : '#e74c3c' }}; display: inline-block;"></span>
                                 <span id="vendorStatusText">{{ (int)($vendorDetails->status ?? 1) === 1 ? 'Active' : 'Inactive' }}</span>
                             </button>
                         </div>
@@ -456,8 +596,8 @@
 
                     <!-- Shop Information -->
                     <div style="padding: 16px 16px 12px 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                        <!-- Top details -->
                         <div>
-                            
                             <!-- Business Category Box -->
                             <div style="background-color: #f8fafc; border: 1px solid #edf2f7; border-radius: 8px; padding: 8px 12px; margin-bottom: 12px;">
                                 <div style="font-size: 11.5px; text-transform: uppercase; color: #a0aec0; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 2px;">Business Category</div>
@@ -487,19 +627,22 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
+                        <!-- Bottom details / Plan -->
+                        <div>
                             <!-- Subscription Plan Box -->
-                            <div style="background: linear-gradient(135deg, #e6fcf5 0%, #c3fae8 100%); border-radius: 8px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #a3ebd6; margin-bottom: 10px;">
+                            <div class="premium-plan-box" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                                 <div style="display: flex; align-items: center; gap: 12px;">
                                     <div>
-                                        <span style="font-size: 11.5px; text-transform: uppercase; color: #0ca678; letter-spacing: 0.5px; font-weight: 700;">Plan:</span>
-                                        <strong style="font-size: 14px; color: #094080; margin-left: 4px;">{{ $packagePlanName }}</strong>
+                                        <span style="font-size: 11.5px; text-transform: uppercase; color: #183543; letter-spacing: 0.5px; font-weight: 700;">Plan:</span>
+                                        <strong style="font-size: 14px; color: #183543; margin-left: 4px;">{{ $packagePlanName }}</strong>
                                     </div>
-                                    <div style="font-size: 13px; color: #0ca678; font-weight: 500; border-left: 1px solid #a3ebd6; padding-left: 12px;">
+                                    <div style="font-size: 13px; color: #23495c; font-weight: 500; border-left: 1px solid #b3d1df; padding-left: 12px;">
                                         Expires: {{ $vendorDetails->expired_date ? date('d M Y', strtotime($vendorDetails->expired_date)) : '31st Dec 2023' }}
                                     </div>
                                 </div>
-                                <a href="javascript:void(0)" onclick="openRenewalModal()" style="background-color: #183543; color: #ffffff; padding: 4px 10px; border-radius: 4px; font-size: 10.5px; font-weight: 700; text-decoration: none; transition: background-color 0.2s; box-shadow: 0 2px 4px rgba(24, 53, 67, 0.15);">
+                                <a href="javascript:void(0)" onclick="openRenewalModal()" style="background-color: #183543; color: #ffffff; padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; text-decoration: none; transition: all 0.2s; box-shadow: 0 2px 4px rgba(24, 53, 67, 0.15);" onmouseover="this.style.backgroundColor='#23495c';" onmouseout="this.style.backgroundColor='#183543';">
                                     Renewal
                                 </a>
                             </div>
@@ -528,8 +671,6 @@
                                 </div>
                             @endif
                         </div>
-
-
                     </div>
                 </div>
             </div>
@@ -537,76 +678,75 @@
             <!-- 2. Metrics Cards -->
             <div class="col-xl-6 col-lg-6 col-md-12 mb-4" style="display: flex; flex-direction: column;">
                 <div class="row" style="flex-grow: 1; display: flex; margin-bottom: -24px;">
-                    <!-- Card 1: Orders -->
+                    <!-- Card 1: Visitors -->
                     <div class="col-6 col-xs-6 col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
-                        <div class="metric-card" style="background: linear-gradient(135deg, #094080 0%, #1e5ba0 100%); color: #ffffff; position: relative; padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div class="premium-metric-card metric-visitors">
                             <div>
-                                <div class="metric-title" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Orders</div>
-                                <div class="metric-value" style="font-size: 28px; font-weight: 700; margin-top: 8px;">{{ number_format($orderCount) }}</div>
+                                <div class="metric-title">Visitors</div>
+                                <div class="metric-value" id="metricViewerCount">{{ number_format($totalViews) }}</div>
                             </div>
-                            <i class="fa fa-shopping-bag" style="position: absolute; right: 16px; bottom: 16px; font-size: 28px; opacity: 0.18;"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- Card 2: Products -->
-                    <div class="col-6 col-xs-6 col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
-                        <div class="metric-card" style="background: linear-gradient(135deg, #00bfa5 0%, #1de9b6 100%); color: #ffffff; position: relative; padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
-                            <div>
-                                <div class="metric-title" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Products</div>
-                                <div class="metric-value" style="font-size: 28px; font-weight: 700; margin-top: 8px;">{{ number_format($productCount) }}</div>
-                            </div>
-                            <i class="fa fa-cubes" style="position: absolute; right: 16px; bottom: 16px; font-size: 28px; opacity: 0.18;"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- Card 3: Customers -->
-                    <div class="col-6 col-xs-6 col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
-                        <div class="metric-card" style="background: linear-gradient(135deg, #ff5252 0%, #ff8a80 100%); color: #ffffff; position: relative; padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
-                            <div>
-                                <div class="metric-title" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Customers</div>
-                                <div class="metric-value" style="font-size: 28px; font-weight: 700; margin-top: 8px;">{{ number_format($customerCount) }}</div>
-                            </div>
-                            <i class="fa fa-users" style="position: absolute; right: 16px; bottom: 16px; font-size: 28px; opacity: 0.18;"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- Card 4: Viewers -->
-                    <div class="col-6 col-xs-6 col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
-                        <div class="metric-card" style="background: linear-gradient(135deg, #7c4dff 0%, #b388ff 100%); color: #ffffff; position: relative; padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
-                            <div>
-                                <div class="metric-title" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Viewers</div>
-                                <div class="metric-value" style="font-size: 28px; font-weight: 700; margin-top: 8px;">{{ number_format($totalViews) }}</div>
-                            </div>
-                            <i class="fa fa-eye" style="position: absolute; right: 16px; bottom: 16px; font-size: 28px; opacity: 0.18;"></i>
+                            <i class="fa fa-eye" style="position: absolute; right: 20px; bottom: 20px; font-size: 36px; opacity: 0.18;"></i>
                         </div>
                     </div>
 
-                    {{--
-                    <!-- Card 5: Categories -->
+                    <!-- Card 2: Customers -->
                     <div class="col-6 col-xs-6 col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
-                        <div class="metric-card" style="background: linear-gradient(135deg, #ff9100 0%, #ffb74d 100%); color: #ffffff; position: relative; padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div class="premium-metric-card metric-customers">
                             <div>
-                                <div class="metric-title" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Categories</div>
-                                <div class="metric-value" style="font-size: 28px; font-weight: 700; margin-top: 8px;">{{ number_format($assignedCategoryCount) }}</div>
+                                <div class="metric-title">Customers</div>
+                                <div class="metric-value" id="metricCustomerCount">{{ number_format($customerCount) }}</div>
                             </div>
-                            <i class="fa fa-th-list" style="position: absolute; right: 16px; bottom: 16px; font-size: 28px; opacity: 0.18;"></i>
+                            <i class="fa fa-users" style="position: absolute; right: 20px; bottom: 20px; font-size: 36px; opacity: 0.18;"></i>
                         </div>
                     </div>
-                    
-                    <!-- Card 6: Sub Categories -->
+
+                    <!-- Card 3: Products -->
                     <div class="col-6 col-xs-6 col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
-                        <div class="metric-card" style="background: linear-gradient(135deg, #e91e63 0%, #ff6090 100%); color: #ffffff; position: relative; padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div class="premium-metric-card metric-products">
                             <div>
-                                <div class="metric-title" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85;">Sub Categories</div>
-                                <div class="metric-value" style="font-size: 28px; font-weight: 700; margin-top: 8px;">{{ number_format($assignedSubCategoryCount) }}</div>
+                                <div class="metric-title">Products</div>
+                                <div class="metric-value" id="metricProductCount">{{ number_format($productCount) }}</div>
                             </div>
-                            <i class="fa fa-tags" style="position: absolute; right: 16px; bottom: 16px; font-size: 28px; opacity: 0.18;"></i>
+                            <i class="fa fa-cubes" style="position: absolute; right: 20px; bottom: 20px; font-size: 36px; opacity: 0.18;"></i>
                         </div>
                     </div>
-                    --}}
+
+                    <!-- Card 4: Orders -->
+                    <div class="col-6 col-xs-6 col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
+                        <div class="premium-metric-card metric-orders">
+                            <div>
+                                <div class="metric-title">Orders</div>
+                                <div class="metric-value" id="metricOrderCount">{{ number_format($orderCount) }}</div>
+                            </div>
+                            <i class="fa fa-shopping-bag" style="position: absolute; right: 20px; bottom: 20px; font-size: 36px; opacity: 0.18;"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 5: Sales -->
+                    <div class="col-6 col-xs-6 col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
+                        <div class="premium-metric-card metric-sales">
+                            <div>
+                                <div class="metric-title">Sales</div>
+                                <div class="metric-value" id="metricSalesCount">{{ number_format($completedOrdersCount) }}</div>
+                            </div>
+                            <i class="fa fa-check-circle" style="position: absolute; right: 20px; bottom: 20px; font-size: 36px; opacity: 0.18;"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 6: Revenue -->
+                    <div class="col-6 col-xs-6 col-md-6 col-sm-6" style="margin-bottom: 24px; display: flex; flex-direction: column;">
+                        <div class="premium-metric-card metric-revenue">
+                            <div>
+                                <div class="metric-title">Revenue</div>
+                                <div class="metric-value" id="metricRevenueValue">₹{{ number_format($completedOrdersTotalValue) }}</div>
+                            </div>
+                            <i class="fa fa-inr" style="position: absolute; right: 20px; bottom: 20px; font-size: 36px; opacity: 0.18;"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+                </div>
+            </div>
 
         <!-- Bottom Section: Active Orders -->
         <div class="card mt-2" style="border-radius: 20px; border: none; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02);">
@@ -801,7 +941,7 @@
                 </div>
                 <div>
                     <span style="font-weight: 700; color: #1a202c; font-size: 15px; display: block;">Period Filter</span>
-                    <span style="font-size: 11px; color: #718096; font-weight: 500;">
+                    <span id="filterDateText" style="font-size: 11px; color: #718096; font-weight: 500;">
                         @if($startDate && $endDate)
                             Showing data from {{ \Carbon\Carbon::parse($startDate)->format('M d, Y') }} to {{ \Carbon\Carbon::parse($endDate)->format('M d, Y') }}
                         @else
@@ -811,28 +951,26 @@
                 </div>
             </div>
             <div class="filter-controls d-flex align-items-center gap-3 flex-wrap">
-                <!-- Period Preset Buttons (Today, Week, Month matches mockup exactly) -->
+                <!-- Period Preset Buttons (AJAX powered - no page refresh) -->
                 <div class="period-selector d-flex p-1" style="border-radius: 30px; background-color: #f1f5f9; border: 1px solid #e2e8f0;">
-                    <a href="?period=today" class="period-btn {{ $period === 'today' ? 'active' : '' }}" style="padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; text-align: center;">Today</a>
-                    <a href="?period=week" class="period-btn {{ $period === 'week' ? 'active' : '' }}" style="padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; text-align: center;">Week</a>
-                    <a href="?period=month" class="period-btn {{ $period === 'month' ? 'active' : '' }}" style="padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; text-align: center;">Month</a>
+                    <button type="button" class="period-btn {{ $period === 'today' ? 'active' : '' }}" onclick="applyPeriodFilter('today', this)" style="padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; text-align: center; border: none; cursor: pointer;">Today</button>
+                    <button type="button" class="period-btn {{ $period === 'week' ? 'active' : '' }}" onclick="applyPeriodFilter('week', this)" style="padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; text-align: center; border: none; cursor: pointer;">Week</button>
+                    <button type="button" class="period-btn {{ $period === 'month' ? 'active' : '' }}" onclick="applyPeriodFilter('month', this)" style="padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; text-align: center; border: none; cursor: pointer;">Month</button>
                 </div>
                 
-                <!-- Custom Date Form -->
-                <form method="GET" action="" class="d-flex align-items-center gap-2 m-0 flex-wrap">
+                <!-- Custom Date Form (AJAX powered) -->
+                <form id="customDateFilterForm" class="d-flex align-items-center gap-2 m-0 flex-wrap" onsubmit="return applyCustomDateFilter(event)">
                     <div class="input-group input-group-sm" style="width: auto; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);">
                         <span class="input-group-text bg-white" style="border-right: none; border-color: #cbd5e1; border-top-left-radius: 8px; border-bottom-left-radius: 8px;"><i class="fa fa-calendar-o" style="color: #64748b; font-size: 11px;"></i></span>
-                        <input type="date" name="start_date" class="form-control form-control-sm" value="{{ $startDate }}" style="border-left: none; border-color: #cbd5e1; font-size: 12px; font-weight: 500; color: #334155; width: 135px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; height: 32px;">
+                        <input type="date" id="filterStartDate" class="form-control form-control-sm" value="{{ $startDate }}" style="border-left: none; border-color: #cbd5e1; font-size: 12px; font-weight: 500; color: #334155; width: 135px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; height: 32px;">
                     </div>
                     <span style="font-size: 12px; color: #64748b; font-weight: 600; padding: 0 4px;">to</span>
                     <div class="input-group input-group-sm" style="width: auto; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);">
                         <span class="input-group-text bg-white" style="border-right: none; border-color: #cbd5e1; border-top-left-radius: 8px; border-bottom-left-radius: 8px;"><i class="fa fa-calendar-o" style="color: #64748b; font-size: 11px;"></i></span>
-                        <input type="date" name="end_date" class="form-control form-control-sm" value="{{ $endDate }}" style="border-left: none; border-color: #cbd5e1; font-size: 12px; font-weight: 500; color: #334155; width: 135px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; height: 32px;">
+                        <input type="date" id="filterEndDate" class="form-control form-control-sm" value="{{ $endDate }}" style="border-left: none; border-color: #cbd5e1; font-size: 12px; font-weight: 500; color: #334155; width: 135px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; height: 32px;">
                     </div>
-                    <button type="submit" class="btn btn-sm text-white" style="background-color: #183543; border-radius: 8px; font-size: 12px; font-weight: 600; padding: 0 16px; border: none; height: 32px; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(24, 53, 67, 0.15);">Apply</button>
-                    @if(request('period') || request('start_date') || request('end_date'))
-                        <a href="?" class="btn btn-sm btn-light d-inline-flex align-items-center justify-content-center" style="border-radius: 8px; font-size: 12px; font-weight: 600; padding: 0 12px; border: 1px solid #cbd5e1; height: 32px; background-color: #f8fafc;">Clear</a>
-                    @endif
+                    <button type="submit" id="applyFilterBtn" class="btn btn-sm text-white" style="background-color: #183543; border-radius: 8px; font-size: 12px; font-weight: 600; padding: 0 16px; border: none; height: 32px; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(24, 53, 67, 0.15);">Apply</button>
+                    <button type="button" class="btn btn-sm btn-light d-inline-flex align-items-center justify-content-center" onclick="applyPeriodFilter('month', document.querySelector('.period-btn:last-child'))" style="border-radius: 8px; font-size: 12px; font-weight: 600; padding: 0 12px; border: 1px solid #cbd5e1; height: 32px; background-color: #f8fafc;">Clear</button>
                 </form>
             </div>
         </div>
@@ -844,11 +982,9 @@
                 <div class="card" style="border-radius: 20px; border: none; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02); height: 100%; display: flex; flex-direction: column;">
                     <div class="card-header" style="background-color: transparent; border: none; padding: 24px 24px 0 24px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-                            <!-- Chart Type Tabs -->
+                            <!-- Chart Title Labels -->
                             <div style="display: flex; gap: 20px; align-items: center;">
-                                <span class="chart-type-tab active" onclick="switchChartType('sales', this)" style="cursor: pointer; font-size: 14px; font-weight: 600; color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 4px;">Sales</span>
-                                <span class="chart-type-tab" onclick="switchChartType('revenue', this)" style="cursor: pointer; font-size: 14px; font-weight: 600; color: #a0aec0; padding-bottom: 4px;">Revenue</span>
-                                <span class="chart-type-tab" onclick="switchChartType('customer', this)" style="cursor: pointer; font-size: 14px; font-weight: 600; color: #a0aec0; padding-bottom: 4px;">Customer</span>
+                                <span style="font-size: 15px; font-weight: 700; color: #1a202c; letter-spacing: -0.3px;">Customer · Sales · Revenue</span>
                             </div>
                             <!-- Period / Location Tabs -->
                             <div style="display: flex; gap: 8px;">
@@ -859,17 +995,21 @@
                     </div>
                     <div class="card-body" style="padding: 16px 24px 24px 24px; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1;">
                         <h5 id="chartTitle" style="font-size: 16px; font-weight: 600; color: #3498db; margin-bottom: 16px;">Sales over Customers</h5>
-                        <div style="position: relative; height: 220px; width: 100%;">
+                        <div style="position: relative; height: 300px; width: 100%;">
                             <canvas id="salesCustomerChart"></canvas>
                         </div>
                         <div style="display: flex; justify-content: center; gap: 24px; margin-top: 12px;">
                             <div style="display: flex; align-items: center; gap: 6px;">
-                                <span style="width: 14px; height: 3px; background-color: #3498db; border-radius: 2px;"></span>
-                                <span id="legend0Label" style="font-size: 12px; color: #718096;">Customer</span>
+                                <span style="width: 20px; height: 10px; background: linear-gradient(180deg, rgba(66, 133, 244, 0.5) 0%, rgba(66, 133, 244, 0.05) 100%); border: 1.5px solid #4285F4; border-radius: 3px;"></span>
+                                <span style="font-size: 12px; color: #718096; font-weight: 600;">Customer</span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 6px;">
-                                <span style="width: 14px; height: 3px; background-color: #e88e8e; border-radius: 2px;"></span>
-                                <span id="legend1Label" style="font-size: 12px; color: #718096;">Sales</span>
+                                <span style="width: 20px; height: 3px; background-color: #F4A842; border-radius: 2px; position: relative;"><span style="position: absolute; width: 6px; height: 6px; background: #F4A842; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%);"></span></span>
+                                <span style="font-size: 12px; color: #718096; font-weight: 600;">Sales</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span style="width: 20px; height: 3px; background-color: #E04B3A; border-radius: 2px; position: relative;"><span style="position: absolute; width: 6px; height: 6px; background: #E04B3A; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%);"></span></span>
+                                <span style="font-size: 12px; color: #718096; font-weight: 600;">Revenue</span>
                             </div>
                         </div>
                     </div>
@@ -1197,7 +1337,7 @@
                             'color': '#2ecc71',
                             'border-color': 'rgba(46, 204, 113, 0.4)'
                         });
-                        $('#vendorStatusDot').css('background-color', '#2ecc71');
+                        $('#vendorStatusDot').css('background-color', '#2ecc71').addClass('status-dot-active');
                         $('#vendorStatusText').text('Active');
                         
                         // Toast notification
@@ -1216,7 +1356,7 @@
                             'color': '#e74c3c',
                             'border-color': 'rgba(231, 76, 60, 0.4)'
                         });
-                        $('#vendorStatusDot').css('background-color', '#e74c3c');
+                        $('#vendorStatusDot').css('background-color', '#e74c3c').removeClass('status-dot-active');
                         $('#vendorStatusText').text('Inactive');
                         
                         Swal.fire({
@@ -1505,8 +1645,6 @@
         btnElement.classList.add('active');
     }
 
-    // === Chart Data from Controller ===
-    var currentChartType = sessionStorage.getItem('currentChartType') || 'sales';
     var currentChartViewMode = sessionStorage.getItem('currentChartViewMode') || 'period';
 
     var periodLabels = @json($salesTrendLabels);
@@ -1532,7 +1670,7 @@
     var totalBuyers = {{ $customerCount }};
     var totalViewers = {{ $totalViews }};
 
-    // === Mixed Area + Line Chart ===
+    // === Combined Area + Line Chart (Customer + Sales + Revenue) ===
     var ctx = document.getElementById('salesCustomerChart').getContext('2d');
     var salesCustomerChart = new Chart(ctx, {
         type: 'line',
@@ -1542,34 +1680,70 @@
                 {
                     label: 'Customer',
                     data: customerData.length ? customerData : Array(chartLabels.length).fill(0),
-                    borderColor: '#3498db',
-                    backgroundColor: 'rgba(52, 152, 219, 0.12)',
+                    borderColor: '#4285F4',
+                    backgroundColor: function(context) {
+                        var chart = context.chart;
+                        var {ctx: chartCtx, chartArea} = chart;
+                        if (!chartArea) return 'rgba(66, 133, 244, 0.3)';
+                        var gradient = chartCtx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                        gradient.addColorStop(0, 'rgba(66, 133, 244, 0.45)');
+                        gradient.addColorStop(0.6, 'rgba(66, 133, 244, 0.15)');
+                        gradient.addColorStop(1, 'rgba(66, 133, 244, 0.02)');
+                        return gradient;
+                    },
                     fill: true,
                     tension: 0.4,
                     borderWidth: 2.5,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#3498db',
+                    pointRadius: 5,
+                    pointBackgroundColor: '#4285F4',
                     pointBorderColor: '#ffffff',
                     pointBorderWidth: 2,
-                    pointHoverRadius: 6,
-                    order: 1,
+                    pointHoverRadius: 7,
+                    pointHoverBackgroundColor: '#4285F4',
+                    pointHoverBorderColor: '#ffffff',
+                    pointHoverBorderWidth: 3,
+                    order: 2,
                     yAxisID: 'y'
                 },
                 {
                     label: 'Sales',
-                    data: salesData,
-                    borderColor: '#e88e8e',
+                    data: salesData && salesData.length ? salesData : Array(chartLabels.length).fill(0),
+                    borderColor: '#F4A842',
                     backgroundColor: 'transparent',
                     fill: false,
                     tension: 0.4,
                     borderWidth: 2.5,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#e88e8e',
+                    pointRadius: 5,
+                    pointBackgroundColor: '#F4A842',
                     pointBorderColor: '#ffffff',
                     pointBorderWidth: 2,
-                    pointHoverRadius: 6,
-                    order: 0,
+                    pointHoverRadius: 7,
+                    pointHoverBackgroundColor: '#F4A842',
+                    pointHoverBorderColor: '#ffffff',
+                    pointHoverBorderWidth: 3,
+                    pointStyle: 'circle',
+                    order: 1,
                     yAxisID: 'y'
+                },
+                {
+                    label: 'Revenue',
+                    data: revenueData && revenueData.length ? revenueData : Array(chartLabels.length).fill(0),
+                    borderColor: '#E04B3A',
+                    backgroundColor: 'transparent',
+                    fill: false,
+                    tension: 0.4,
+                    borderWidth: 2.5,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#E04B3A',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 7,
+                    pointHoverBackgroundColor: '#E04B3A',
+                    pointHoverBorderColor: '#ffffff',
+                    pointHoverBorderWidth: 3,
+                    pointStyle: 'circle',
+                    order: 0,
+                    yAxisID: 'y1'
                 }
             ]
         },
@@ -1580,17 +1754,17 @@
             plugins: {
                 legend: { display: false },
                 tooltip: {
-                    backgroundColor: '#2d3748',
-                    titleFont: { size: 12, weight: '600' },
-                    bodyFont: { size: 12 },
-                    padding: 10,
-                    cornerRadius: 8,
+                    backgroundColor: 'rgba(26, 32, 44, 0.92)',
+                    titleFont: { size: 13, weight: '700', family: "'Inter', sans-serif" },
+                    bodyFont: { size: 12, family: "'Inter', sans-serif" },
+                    padding: 12,
+                    cornerRadius: 10,
+                    boxPadding: 4,
+                    usePointStyle: true,
                     callbacks: {
                         label: function(context) {
                             var label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
+                            if (label) label += ': ';
                             if (context.dataset.label === 'Revenue') {
                                 label += '₹' + context.parsed.y.toLocaleString();
                             } else {
@@ -1604,55 +1778,53 @@
             scales: {
                 x: {
                     grid: { display: false },
-                    ticks: { font: { size: 11, weight: '500' }, color: '#a0aec0' }
+                    ticks: {
+                        font: { size: 11, weight: '600', family: "'Inter', sans-serif" },
+                        color: '#94a3b8',
+                        maxRotation: 0
+                    }
                 },
                 y: {
                     type: 'linear',
                     display: true,
                     position: 'left',
-                    grid: { color: 'rgba(0,0,0,0.04)' },
+                    grid: { color: 'rgba(0,0,0,0.04)', drawBorder: false },
                     ticks: {
-                        font: { size: 11 },
-                        color: '#a0aec0',
-                        callback: function(value, index, values) {
-                            if (salesCustomerChart && salesCustomerChart.data.datasets[1].label === 'Revenue') {
-                                return '₹' + value;
-                            }
-                            return value;
-                        }
+                        font: { size: 11, weight: '500' },
+                        color: '#94a3b8',
+                        padding: 8,
+                        stepSize: 5
                     },
-                    beginAtZero: true
+                    beginAtZero: true,
+                    title: {
+                        display: false
+                    }
                 },
                 y1: {
                     type: 'linear',
-                    display: false,
+                    display: true,
                     position: 'right',
-                    grid: { drawOnChartArea: false },
-                    ticks: { font: { size: 11 }, color: '#a0aec0' },
-                    beginAtZero: true
+                    grid: { drawOnChartArea: false, drawBorder: false },
+                    ticks: {
+                        font: { size: 11, weight: '500' },
+                        color: '#94a3b8',
+                        padding: 8,
+                        callback: function(value) {
+                            if (value >= 1000) return '₹' + (value / 1000).toFixed(1) + 'K';
+                            return '₹' + value;
+                        }
+                    },
+                    beginAtZero: true,
+                    title: {
+                        display: false
+                    }
                 }
             }
         }
     });
 
-    // === Restore Chart Tab Styles and Render on Page Load ===
+    // === Restore Chart View Mode Tab on Page Load ===
     (function() {
-        // Restore Chart Type Tab Active Styling
-        var typeTabs = document.querySelectorAll('.chart-type-tab');
-        typeTabs.forEach(function(tab) {
-            var onclickAttr = tab.getAttribute('onclick');
-            if (onclickAttr && onclickAttr.includes(currentChartType)) {
-                tab.classList.add('active');
-                tab.style.color = '#3498db';
-                tab.style.borderBottom = '2px solid #3498db';
-            } else {
-                tab.classList.remove('active');
-                tab.style.color = '#a0aec0';
-                tab.style.borderBottom = 'none';
-            }
-        });
-
-        // Restore Chart View Mode Tab (Period / Location)
         var viewTabs = document.querySelectorAll('.chart-view-tab');
         viewTabs.forEach(function(tab) {
             var onclickAttr = tab.getAttribute('onclick');
@@ -1667,25 +1839,9 @@
             }
         });
 
-        // Trigger initial render with correct datasets
+        // Trigger initial render with correct data source
         updateMainChart();
     })();
-
-    // === Chart Type Tab Switcher ===
-    function switchChartType(type, el) {
-        document.querySelectorAll('.chart-type-tab').forEach(function(tab) {
-            tab.classList.remove('active');
-            tab.style.color = '#a0aec0';
-            tab.style.borderBottom = 'none';
-        });
-        el.classList.add('active');
-        el.style.color = '#3498db';
-        el.style.borderBottom = '2px solid #3498db';
-
-        currentChartType = type;
-        sessionStorage.setItem('currentChartType', type);
-        updateMainChart();
-    }
 
     // === Chart View Mode Switcher (Period / Location) ===
     function switchChartView(mode, el) {
@@ -1703,60 +1859,26 @@
         updateMainChart();
     }
 
-    // === Unified Chart Update Function ===
+    // === Unified Chart Update - Always shows Customer + Sales + Revenue ===
     function updateMainChart() {
         var titleEl = document.getElementById('chartTitle');
-        var legend0Label = document.getElementById('legend0Label');
-        var legend1Label = document.getElementById('legend1Label');
 
         var labelsSource = (currentChartViewMode === 'location') ? locationLabels : periodLabels;
         var revenueSource = (currentChartViewMode === 'location') ? locationRevenue : periodRevenue;
         var salesSource = (currentChartViewMode === 'location') ? locationSales : periodSales;
         var customerSource = (currentChartViewMode === 'location') ? locationCustomers : periodCustomers;
-        var visitorSource = (currentChartViewMode === 'location') ? locationVisitors : periodVisitors;
 
         salesCustomerChart.data.labels = labelsSource;
 
-        if (currentChartType === 'sales') {
-            salesCustomerChart.data.datasets[0].label = 'Customer';
-            salesCustomerChart.data.datasets[0].data = customerSource;
-            salesCustomerChart.data.datasets[0].yAxisID = 'y';
-            
-            salesCustomerChart.data.datasets[1].label = 'Sales';
-            salesCustomerChart.data.datasets[1].data = salesSource;
-            salesCustomerChart.data.datasets[1].yAxisID = 'y';
-            
-            salesCustomerChart.options.scales.y1.display = false;
-            titleEl.textContent = (currentChartViewMode === 'location') ? 'Sales over Customers by Location' : 'Sales over Customers';
-            if(legend0Label) legend0Label.textContent = 'Customer';
-            if(legend1Label) legend1Label.textContent = 'Sales';
-        } else if (currentChartType === 'revenue') {
-            salesCustomerChart.data.datasets[0].label = 'Sales';
-            salesCustomerChart.data.datasets[0].data = salesSource;
-            salesCustomerChart.data.datasets[0].yAxisID = 'y1';
-            
-            salesCustomerChart.data.datasets[1].label = 'Revenue';
-            salesCustomerChart.data.datasets[1].data = revenueSource;
-            salesCustomerChart.data.datasets[1].yAxisID = 'y';
-            
-            salesCustomerChart.options.scales.y1.display = true;
-            titleEl.textContent = (currentChartViewMode === 'location') ? 'Revenue over Sales by Location' : 'Revenue over Sales';
-            if(legend0Label) legend0Label.textContent = 'Sales';
-            if(legend1Label) legend1Label.textContent = 'Revenue';
-        } else if (currentChartType === 'customer') {
-            salesCustomerChart.data.datasets[0].label = 'Visitors';
-            salesCustomerChart.data.datasets[0].data = visitorSource;
-            salesCustomerChart.data.datasets[0].yAxisID = 'y';
-            
-            salesCustomerChart.data.datasets[1].label = 'Customer';
-            salesCustomerChart.data.datasets[1].data = customerSource;
-            salesCustomerChart.data.datasets[1].yAxisID = 'y';
-            
-            salesCustomerChart.options.scales.y1.display = false;
-            titleEl.textContent = (currentChartViewMode === 'location') ? 'Customer over Visitors by Location' : 'Customer over Visitors';
-            if(legend0Label) legend0Label.textContent = 'Visitors';
-            if(legend1Label) legend1Label.textContent = 'Customer';
-        }
+        // Dataset 0 = Customer (area), Dataset 1 = Sales (line), Dataset 2 = Revenue (line)
+        salesCustomerChart.data.datasets[0].data = customerSource;
+        salesCustomerChart.data.datasets[1].data = salesSource;
+        salesCustomerChart.data.datasets[2].data = revenueSource;
+
+        titleEl.textContent = (currentChartViewMode === 'location')
+            ? 'Customer · Sales · Revenue by Location'
+            : 'Customer · Sales · Revenue';
+
         salesCustomerChart.update();
     }
 
@@ -2026,6 +2148,126 @@
                     row.style.display = 'none';
                 }
             }
+        });
+    }
+
+    // === AJAX Period & Date Filter ===
+    function applyPeriodFilter(period, btn) {
+        // Update active class on preset buttons
+        document.querySelectorAll('.period-btn').forEach(function(b) {
+            b.classList.remove('active');
+        });
+        if (btn) {
+            btn.classList.add('active');
+        }
+
+        fetchFilteredData({ period: period });
+    }
+
+    function applyCustomDateFilter(e) {
+        e.preventDefault();
+        var startDate = document.getElementById('filterStartDate').value;
+        var endDate = document.getElementById('filterEndDate').value;
+
+        if (!startDate || !endDate) {
+            alert('Please select both start and end dates.');
+            return false;
+        }
+
+        // Remove active class from period buttons
+        document.querySelectorAll('.period-btn').forEach(function(b) {
+            b.classList.remove('active');
+        });
+
+        fetchFilteredData({
+            start_date: startDate,
+            end_date: endDate
+        });
+        return false;
+    }
+
+    function fetchFilteredData(params) {
+        var url = new URL("{{ route('vendor.dashboard.filter_data', $vendorid) }}", window.location.origin);
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+
+        // Show loading state on Apply button if form submitted
+        var applyBtn = document.getElementById('applyFilterBtn');
+        if (applyBtn) {
+            applyBtn.disabled = true;
+            applyBtn.textContent = 'Applying...';
+        }
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (applyBtn) {
+                applyBtn.disabled = false;
+                applyBtn.textContent = 'Apply';
+            }
+
+            if (data.success) {
+                // Update global data variables
+                periodLabels = data.salesTrendLabels;
+                periodRevenue = data.salesTrendRevenue;
+                periodSales = data.salesTrendOrders;
+                periodCustomers = data.salesTrendCustomers;
+                periodVisitors = data.salesTrendVisitors;
+
+                locationLabels = data.locationLabels;
+                locationRevenue = data.locationRevenue;
+                locationSales = data.locationSales;
+                locationCustomers = data.locationCustomers;
+                locationVisitors = data.locationVisitors;
+
+                returningPercent = data.returningCustomersPercent;
+                returningCount = data.returningCustomersCount;
+                totalBuyers = data.customerCount;
+                totalViewers = data.totalViews;
+
+                // Sync the date inputs
+                if (data.startDate) document.getElementById('filterStartDate').value = data.startDate;
+                if (data.endDate) document.getElementById('filterEndDate').value = data.endDate;
+
+                // Update date text
+                document.getElementById('filterDateText').textContent = data.filterText;
+
+                // Update metric cards
+                document.getElementById('metricOrderCount').textContent = new Intl.NumberFormat().format(data.orderCount);
+                document.getElementById('metricProductCount').textContent = new Intl.NumberFormat().format(data.productCount);
+                document.getElementById('metricCustomerCount').textContent = new Intl.NumberFormat().format(data.customerCount);
+                document.getElementById('metricViewerCount').textContent = new Intl.NumberFormat().format(data.totalViews);
+                document.getElementById('metricSalesCount').textContent = new Intl.NumberFormat().format(data.completedOrdersCount);
+                document.getElementById('metricRevenueValue').textContent = '₹' + new Intl.NumberFormat().format(data.completedOrdersTotalValue);
+
+                // Update charts
+                updateMainChart();
+
+                // Update gauge chart
+                var activeGaugeTab = document.querySelector('.gauge-tab.active');
+                var gaugeType = 'returning';
+                if (activeGaugeTab) {
+                    var onclickAttr = activeGaugeTab.getAttribute('onclick');
+                    if (onclickAttr && onclickAttr.includes('customer_visitors')) {
+                        gaugeType = 'customer_visitors';
+                    }
+                }
+                switchGaugeTab(gaugeType, activeGaugeTab || document.querySelector('.gauge-tab'));
+            } else {
+                console.error('Failed to load filtered dashboard data.');
+            }
+        })
+        .catch(error => {
+            if (applyBtn) {
+                applyBtn.disabled = false;
+                applyBtn.textContent = 'Apply';
+            }
+            console.error('Error fetching filtered data:', error);
         });
     }
 </script>

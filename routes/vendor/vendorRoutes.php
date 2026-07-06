@@ -87,6 +87,13 @@ Route::post(
 	->name('vendor.toggle_status')
 	->middleware('auth');
 
+Route::get(
+	'dashboard/{id}/filter-data',
+	[DashboardController::class, 'vendorDashboardFilterData']
+)
+	->name('vendor.dashboard.filter_data')
+	->middleware('auth');
+
 Route::get('dashboard.php', function() {
 	$id = null;
 	if (auth()->check() && (int) auth()->user()->status === 2) {
