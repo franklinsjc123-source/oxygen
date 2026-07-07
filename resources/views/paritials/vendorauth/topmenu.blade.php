@@ -1,10 +1,20 @@
 @php
     $vendorProfile = null;
+    $staff = null;
+    $staffImage = asset('assets/images/dashboard/man.jpeg');
     if (session()->get('login_id')) {
-        $vendorProfile = App\Models\vendor\vendorcreate::select('shop_name','owner_name','profile_image')
+        $vendorProfile = App\Models\vendor\vendorcreate::select('shop_name','owner_name','profile_image','staff_id')
             ->where('id', session()->get('login_id'))->first();
+            
+        if (isset($vendorProfile->staff_id)) {
+            $staff = App\Models\Staffcreates::find($vendorProfile->staff_id);
+            if ($staff && isset($staff->profileimage) && $staff->profileimage != '-' && file_exists(public_path('assets/images/staffcreate/' . $staff->profileimage))) {
+                $staffImage = asset('assets/images/staffcreate/' . $staff->profileimage);
+            }
+        }
     }
     $vName = optional($vendorProfile)->shop_name ?: (optional($vendorProfile)->owner_name ?: 'Vendor');
+    $vRole = optional($vendorProfile)->owner_name ?: 'Vendor Panel';
     $vImg = optional($vendorProfile)->profile_image && file_exists(public_path('assets/images/vendor/profile/' . $vendorProfile->profile_image))
         ? asset('assets/images/vendor/profile/' . $vendorProfile->profile_image)
         : asset('assets/images/dashboard/man.jpeg');
@@ -24,7 +34,7 @@
 .admin-mmenu-box { max-width:296px; width:100%; height:100%; overflow-y:auto; background:#192c3a; box-shadow:1px 0 5px rgba(0,0,0,0.5); transform:translateX(-296px); -webkit-transform:translateX(-296px); transition:transform 0.4s; -webkit-transition:-webkit-transform 0.4s; padding:30px 20px; -webkit-overflow-scrolling:touch; }
 .admin-mmenu-wrap.open .admin-mmenu-box { transform:translateX(0); -webkit-transform:translateX(0); }
 .admin-mmenu-user { text-align:center; padding:0 0 30px; border-bottom:1px solid rgba(255,255,255,0.05); margin-bottom:20px; }
-.admin-mmenu-user img { width:70px; height:70px; border-radius:50%; box-shadow:0 0 20px rgba(69,162,223,0.4); border:2px solid #192c3a; }
+.admin-mmenu-user img { width:70px; height:70px; border-radius:50%; box-shadow:0 0 20px rgba(69,162,223,0.4); border:2px solid #192c3a; object-fit: cover; }
 .admin-mmenu-user h6 { color:#ff6b6b; margin:15px 0 5px; font-size:16px; font-weight:700; text-transform:uppercase; letter-spacing:1px; }
 .admin-mmenu-user p { color:#7d91a1; margin:0; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:1px; }
 .admin-mmenu ul { list-style:none; padding:0; margin:0; }
@@ -54,6 +64,136 @@
         margin-left: 0 !important;
     }
 }
+/* Mobile RM Card styles */
+.rm-card-mobile-drawer {
+    background: linear-gradient(135deg, #ff7a59 0%, #ff5252 100%);
+    border-radius: 12px;
+    padding: 10px 12px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 15px rgba(255, 122, 89, 0.25);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: none;
+    position: relative;
+}
+
+.rm-card-mobile-drawer::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.rm-card-mobile-drawer:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 122, 89, 0.4);
+}
+
+.rm-left-wrapper {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    flex: 1;
+}
+
+.rm-avatar-container {
+    position: relative;
+    width: 34px;
+    height: 34px;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.rm-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.rm-card-mobile-drawer:hover .rm-avatar {
+    border-color: #ffffff;
+    transform: scale(1.05);
+}
+
+.rm-status-dot {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    width: 9px;
+    height: 9px;
+    background-color: #2ecc71;
+    border: 1.5px solid #ff7a59;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1.5px rgba(46, 204, 113, 0.4);
+    animation: pulse-green-rm 2s infinite;
+}
+
+@keyframes pulse-green-rm {
+    0% {
+        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 5px rgba(46, 204, 113, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
+    }
+}
+
+.rm-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    flex: 1;
+}
+
+.rm-name {
+    margin: 0;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    text-transform: uppercase;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rm-phone {
+    margin: 2px 0 0 0;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rm-phone:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.rm-phone i {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.9);
+}
 </style>
 
 <div class="admin-mmenu-wrap" id="admMobileMenu">
@@ -63,7 +203,7 @@
         <div class="admin-mmenu-user">
             <img src="{{ $vImg }}" alt="Vendor">
             <h6>{{ $vName }}</h6>
-            <p>Vendor Panel</p>
+            <p>{{ $vRole }}</p>
         </div>
         <ul class="admin-mmenu">
             @if(session()->get('login_id'))
@@ -115,6 +255,22 @@
             <li><a href="{{ url('vendor/logout') }}"><i data-feather="log-out"></i> <span class="text-label">Logout</span></a></li>
             @endif
         </ul>
+        @if(isset($staff) && $staff)
+            <div class="rm-card-mobile-drawer" style="margin-top: 30px; margin-bottom: 10px;">
+                <div class="rm-left-wrapper">
+                    <div class="rm-avatar-container">
+                        <img class="rm-avatar" src="{{ $staffImage }}" alt="RM">
+                        <div class="rm-status-dot"></div>
+                    </div>
+                    <div class="rm-info">
+                        <h6 class="rm-name" title="RM: {{ $staff->fullname ?? $staff->username }}">{{ $staff->fullname ?? $staff->username }}</h6>
+                        <a href="tel:{{ $staff->mobileno }}" class="rm-phone" title="{{ $staff->mobileno }}">
+                            <i class="fa fa-phone"></i> {{ $staff->mobileno }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 </div>
 

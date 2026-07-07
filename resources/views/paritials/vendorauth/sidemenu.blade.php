@@ -42,7 +42,7 @@
             <h6 class="mt-3 f-14">{{ $vendorName }}</h6>
             <p>{{ $vendorRole }}</p>
         </div>
-        <ul class="sidebar-menu" style="padding-bottom: 60px;">
+        <ul class="sidebar-menu">
             @if (session()->get('login_id'))
             <li><a class="sidebar-header" href="{{ url('vendor/dashboard/'.session()->get('login_id')) }}"><i
                         data-feather="home"></i><span>Dashboard</span></a></li>
@@ -159,147 +159,15 @@
                 <li><a class="sidebar-header" href="#"><i data-feather="bar-chart"></i><span>Reports</span></a>
                 </li>
             @endif
-            <li><a class="sidebar-header" href="{{ route('logout') }}"><i
+             <li><a class="sidebar-header" href="{{ route('logout') }}"><i
                         data-feather="log-out"></i><span>Logout</span></a>
             </li>
 
             @endif
             
-            @if(isset($staff) && $staff)
-            <style>
-                .rm-card {
-                    background: linear-gradient(135deg, #ff7a59 0%, #ff5252 100%);
-                    border-radius: 12px;
-                    padding: 10px 12px;
-                    margin: 25px 0 40px 0;
-                    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-                    box-shadow: 0 4px 15px rgba(255, 122, 89, 0.25);
-                    position: relative;
-                    overflow: hidden;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    border: none;
-                }
-
-                .rm-card::before {
-                    content: '';
-                    position: absolute;
-                    top: -50%;
-                    left: -50%;
-                    width: 200%;
-                    height: 200%;
-                    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
-                    pointer-events: none;
-                }
-
-                .rm-card:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 8px 25px rgba(255, 122, 89, 0.4);
-                }
-
-                .rm-left-wrapper {
-                    display: flex;
-                    align-items: center;
-                    min-width: 0;
-                    flex: 1;
-                }
-
-                .rm-avatar-container {
-                    position: relative;
-                    width: 34px;
-                    height: 34px;
-                    margin-right: 8px;
-                    flex-shrink: 0;
-                }
-
-                .rm-avatar {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    border-radius: 50%;
-                    border: 2px solid rgba(255, 255, 255, 0.4);
-                    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-                    transition: all 0.3s ease;
-                }
-
-                .rm-card:hover .rm-avatar {
-                    border-color: #ffffff;
-                    transform: scale(1.05);
-                }
-
-                .rm-status-dot {
-                    position: absolute;
-                    bottom: 0px;
-                    right: 0px;
-                    width: 9px;
-                    height: 9px;
-                    background-color: #2ecc71;
-                    border: 1.5px solid #ff7a59;
-                    border-radius: 50%;
-                    box-shadow: 0 0 0 1.5px rgba(46, 204, 113, 0.4);
-                    animation: pulse-green-rm 2s infinite;
-                }
-
-                @keyframes pulse-green-rm {
-                    0% {
-                        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7);
-                    }
-                    70% {
-                        box-shadow: 0 0 0 5px rgba(46, 204, 113, 0);
-                    }
-                    100% {
-                        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
-                    }
-                }
-
-                .rm-info {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    min-width: 0;
-                    flex: 1;
-                }
-
-                .rm-name {
-                    margin: 0;
-                    color: #ffffff;
-                    font-size: 13px;
-                    font-weight: 700;
-                    letter-spacing: 0.3px;
-                    white-space: nowrap;
-                    text-transform: uppercase;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                }
-
-                .rm-phone {
-                    margin: 2px 0 0 0;
-                    font-size: 12px;
-                    color: rgba(255, 255, 255, 0.9);
-                    display: flex;
-                    align-items: center;
-                    gap: 5px;
-                    text-decoration: none;
-                    transition: color 0.2s ease;
-                    font-weight: 500;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                }
-
-                .rm-phone:hover {
-                    color: #ffffff;
-                    text-decoration: underline;
-                }
-
-                .rm-phone i {
-                    font-size: 10px;
-                    color: rgba(255, 255, 255, 0.9);
-                }
-
-            </style>
-            <div class="rm-card">
+        </ul>
+        @if(isset($staff) && $staff)
+            <div class="rm-card rm-card-mobile">
                 <div class="rm-left-wrapper">
                     <div class="rm-avatar-container">
                         <img class="rm-avatar lazyloaded blur-up" src="{{ $staffImage }}" alt="RM">
@@ -313,8 +181,188 @@
                     </div>
                 </div>
             </div>
-            @endif
-            
-        </ul>
+        @endif
     </div>
+    @if(isset($staff) && $staff)
+    <style>
+        .sidebar-menu {
+            padding-bottom: 110px !important;
+        }
+
+        .rm-card {
+            background: linear-gradient(135deg, #ff7a59 0%, #ff5252 100%);
+            border-radius: 12px;
+            padding: 10px 12px;
+            margin: 0;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 15px rgba(255, 122, 89, 0.25);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: none;
+        }
+
+        .rm-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .rm-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 122, 89, 0.4);
+        }
+
+        .rm-left-wrapper {
+            display: flex;
+            align-items: center;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .rm-avatar-container {
+            position: relative;
+            width: 34px;
+            height: 34px;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        .rm-avatar {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .rm-card:hover .rm-avatar {
+            border-color: #ffffff;
+            transform: scale(1.05);
+        }
+
+        .rm-status-dot {
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            width: 9px;
+            height: 9px;
+            background-color: #2ecc71;
+            border: 1.5px solid #ff7a59;
+            border-radius: 50%;
+            box-shadow: 0 0 0 1.5px rgba(46, 204, 113, 0.4);
+            animation: pulse-green-rm 2s infinite;
+        }
+
+        @keyframes pulse-green-rm {
+            0% {
+                box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 5px rgba(46, 204, 113, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
+            }
+        }
+
+        .rm-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .rm-name {
+            margin: 0;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            text-transform: uppercase;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .rm-phone {
+            margin: 2px 0 0 0;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            transition: color 0.2s ease;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .rm-phone:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+        .rm-phone i {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Desktop specific styles */
+        @media (min-width: 992px) {
+            .rm-card-desktop {
+                display: flex !important;
+                position: absolute;
+                bottom: 15px;
+                left: 10px;
+                right: 10px;
+                z-index: 10;
+            }
+            .rm-card-mobile {
+                display: none !important;
+            }
+        }
+
+        /* Mobile specific styles */
+        @media (max-width: 991px) {
+            .rm-card-desktop {
+                display: none !important;
+            }
+            .rm-card-mobile {
+                display: flex !important;
+                position: relative;
+                margin: 20px 15px;
+                z-index: 10;
+            }
+            .sidebar-menu {
+                padding-bottom: 20px !important;
+            }
+        }
+    </style>
+    <div class="rm-card rm-card-desktop">
+        <div class="rm-left-wrapper">
+            <div class="rm-avatar-container">
+                <img class="rm-avatar lazyloaded blur-up" src="{{ $staffImage }}" alt="RM">
+                <div class="rm-status-dot"></div>
+            </div>
+            <div class="rm-info">
+                <h6 class="rm-name" title="RM: {{ $staff->fullname ?? $staff->username }}">{{ $staff->fullname ?? $staff->username }}</h6>
+                <a href="tel:{{ $staff->mobileno }}" class="rm-phone" title="{{ $staff->mobileno }}">
+                    <i class="fa fa-phone"></i> {{ $staff->mobileno }}
+                </a>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
