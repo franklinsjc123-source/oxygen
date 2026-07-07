@@ -807,10 +807,14 @@ class DashboardController extends Controller
                 if ($totalQueriedViews > 0) {
                     $salesTrendVisitors[$dayKey] = isset($visitorsMap[$dayKey]) ? $visitorsMap[$dayKey] : 0;
                 } else {
-                    $seed = crc32($dayKey);
-                    $base = 5 + (abs($seed) % 6); // 5 to 10
-                    $multiplier = 8 + (abs($seed) % 8); // 8 to 15
-                    $salesTrendVisitors[$dayKey] = ($custCount * $multiplier) + ($ordersCount * 3) + $base;
+                    if ($orderCount > 0) {
+                        $seed = crc32($dayKey);
+                        $base = 5 + (abs($seed) % 6); // 5 to 10
+                        $multiplier = 8 + (abs($seed) % 8); // 8 to 15
+                        $salesTrendVisitors[$dayKey] = ($custCount * $multiplier) + ($ordersCount * 3) + $base;
+                    } else {
+                        $salesTrendVisitors[$dayKey] = 0;
+                    }
                 }
             }
         } else {
@@ -861,10 +865,14 @@ class DashboardController extends Controller
                 if ($totalQueriedViews > 0) {
                     $salesTrendVisitors[$monthKey] = isset($visitorsMap[$monthKey]) ? $visitorsMap[$monthKey] : 0;
                 } else {
-                    $seed = crc32($monthKey);
-                    $base = 150 + (abs($seed) % 100);
-                    $multiplier = 12 + (abs($seed) % 10);
-                    $salesTrendVisitors[$monthKey] = ($custCount * $multiplier) + ($ordersCount * 10) + $base;
+                    if ($orderCount > 0) {
+                        $seed = crc32($monthKey);
+                        $base = 150 + (abs($seed) % 100);
+                        $multiplier = 12 + (abs($seed) % 10);
+                        $salesTrendVisitors[$monthKey] = ($custCount * $multiplier) + ($ordersCount * 10) + $base;
+                    } else {
+                        $salesTrendVisitors[$monthKey] = 0;
+                    }
                 }
             }
         }
@@ -943,23 +951,53 @@ class DashboardController extends Controller
         $locationCustomers = [];
         $locationVisitors = [];
 
+        $top8 = [];
+        $others = [];
         $locCount = 0;
         foreach ($dbLocationStats as $loc) {
             $locCount++;
             if ($locCount <= 8) {
-                $locationLabels[] = $loc->location;
-                $locationRevenue[] = (float) $loc->total_revenue;
-                $locationSales[] = (int) $loc->total_sales;
-                $locationCustomers[] = (int) $loc->total_customers;
+                $top8[] = $loc;
+            } else {
+                $others[] = $loc;
             }
+        }
+
+        foreach ($top8 as $loc) {
+            $locationLabels[] = $loc->location;
+            $locationRevenue[] = (float) $loc->total_revenue;
+            $locationSales[] = (int) $loc->total_sales;
+            $locationCustomers[] = (int) $loc->total_customers;
+        }
+
+        if (!empty($others)) {
+            $otherRevenue = 0.0;
+            $otherSales = 0;
+            $otherCustomers = 0;
+            foreach ($others as $loc) {
+                $otherRevenue += (float) $loc->total_revenue;
+                $otherSales += (int) $loc->total_sales;
+                $otherCustomers += (int) $loc->total_customers;
+            }
+            $locationLabels[] = 'Others';
+            $locationRevenue[] = $otherRevenue;
+            $locationSales[] = $otherSales;
+            $locationCustomers[] = $otherCustomers;
         }
 
         // Beautiful seed fallbacks if empty or only Unknown
         if (empty($locationLabels) || (count($locationLabels) === 1 && $locationLabels[0] === 'Unknown')) {
-            $locationLabels = ['Mylapore', 'Anna Road GPO', 'Park Town', 'Triplicane', 'Egmore', 'Royapettah', 'Nungambakkam', 'Adyar'];
-            $locationRevenue = [45000, 38000, 32000, 28000, 24000, 19000, 15000, 12000];
-            $locationSales = [90, 76, 64, 56, 48, 38, 30, 24];
-            $locationCustomers = [65, 54, 45, 40, 34, 27, 21, 17];
+            if ($orderCount > 0) {
+                $locationLabels = ['Mylapore', 'Anna Road GPO', 'Park Town', 'Triplicane', 'Egmore', 'Royapettah', 'Nungambakkam', 'Adyar'];
+                $locationRevenue = [45000, 38000, 32000, 28000, 24000, 19000, 15000, 12000];
+                $locationSales = [90, 76, 64, 56, 48, 38, 30, 24];
+                $locationCustomers = [65, 54, 45, 40, 34, 27, 21, 17];
+            } else {
+                $locationLabels = ['Mylapore', 'Anna Road GPO', 'Park Town', 'Triplicane', 'Egmore', 'Royapettah', 'Nungambakkam', 'Adyar'];
+                $locationRevenue = [0, 0, 0, 0, 0, 0, 0, 0];
+                $locationSales = [0, 0, 0, 0, 0, 0, 0, 0];
+                $locationCustomers = [0, 0, 0, 0, 0, 0, 0, 0];
+            }
         } else {
             // Fill up to 8 if needed with realistic areas for visual excellence
             $seedCities = ['Sowcarpet', 'T. Nagar', 'Velachery', 'Tambaram', 'Guindy', 'Thiruvanmiyur', 'Besant Nagar', 'Chromepet'];
@@ -968,9 +1006,15 @@ class DashboardController extends Controller
                 $city = $seedCities[$idx];
                 if (!in_array($city, $locationLabels)) {
                     $locationLabels[] = $city;
-                    $locationRevenue[] = 1500 + (rand(1, 10) * 100);
-                    $locationSales[] = rand(3, 8);
-                    $locationCustomers[] = rand(2, 6);
+                    if ($orderCount > 0) {
+                        $locationRevenue[] = 1500 + (rand(1, 10) * 100);
+                        $locationSales[] = rand(3, 8);
+                        $locationCustomers[] = rand(2, 6);
+                    } else {
+                        $locationRevenue[] = 0.0;
+                        $locationSales[] = 0;
+                        $locationCustomers[] = 0;
+                    }
                 }
                 $idx++;
             }
@@ -978,11 +1022,15 @@ class DashboardController extends Controller
 
         // Calculate visitors proportionally for each location
         foreach ($locationCustomers as $key => $custCount) {
-            $salesCount = $locationSales[$key];
-            $seed = crc32($locationLabels[$key]);
-            $base = 10 + (abs($seed) % 15);
-            $multiplier = 10 + (abs($seed) % 10);
-            $locationVisitors[] = ($custCount * $multiplier) + ($salesCount * 4) + $base;
+            if ($orderCount > 0) {
+                $salesCount = $locationSales[$key];
+                $seed = crc32($locationLabels[$key]);
+                $base = 10 + (abs($seed) % 15);
+                $multiplier = 10 + (abs($seed) % 10);
+                $locationVisitors[] = ($custCount * $multiplier) + ($salesCount * 4) + $base;
+            } else {
+                $locationVisitors[] = 0;
+            }
         }
 
         $salesLocationLabels = $locationLabels;
@@ -1254,6 +1302,14 @@ class DashboardController extends Controller
                     $realStatsBySubId[$stat->sub_id] = $stat;
                 }
 
+                $groupedSubCategories = [
+                    'All' => [],
+                    'Men' => [],
+                    'Women' => [],
+                    'Kids' => [],
+                    'Living' => []
+                ];
+
                 foreach ($assignedSubCategories as $sub) {
                     $subId = $sub->id;
                     $subName = $sub->category_sub_name;
@@ -1278,16 +1334,50 @@ class DashboardController extends Controller
                         $custCount = $realStatsBySubId[$subId]->customer_count;
                     }
 
-                    foreach ([$tabKey, 'All'] as $tk) {
-                        $subcategoryStats[$tk]['labels'][] = $subName;
-                        $subcategoryStats[$tk]['products'][] = $prodCount;
-                        if ($prodCount > 0) {
-                            $subcategoryStats[$tk]['sales'][] = $salesCount * 1000 ?: 500;
-                            $subcategoryStats[$tk]['customers'][] = $custCount ?: 1;
-                        } else {
-                            $subcategoryStats[$tk]['sales'][] = 0;
-                            $subcategoryStats[$tk]['customers'][] = 0;
+                    $salesVal = ($orderCount > 0 && $prodCount > 0) ? ($salesCount * 1000 ?: 500) : 0;
+                    $custVal = ($orderCount > 0 && $prodCount > 0) ? ($custCount ?: 1) : 0;
+
+                    $item = [
+                        'label' => $subName,
+                        'products' => $prodCount,
+                        'sales' => $salesVal,
+                        'customers' => $custVal,
+                        'sales_count' => $salesCount
+                    ];
+
+                    $groupedSubCategories[$tabKey][] = $item;
+                    $groupedSubCategories['All'][] = $item;
+                }
+
+                // Sort desc by sales_count and slice top 8, sum the rest into 'Others'
+                foreach ($groupedSubCategories as $tk => $items) {
+                    usort($items, function($a, $b) {
+                        return $b['sales_count'] <=> $a['sales_count'];
+                    });
+
+                    $top8 = array_slice($items, 0, 8);
+                    $others = array_slice($items, 8);
+
+                    foreach ($top8 as $item) {
+                        $subcategoryStats[$tk]['labels'][] = $item['label'];
+                        $subcategoryStats[$tk]['products'][] = $item['products'];
+                        $subcategoryStats[$tk]['sales'][] = $item['sales'];
+                        $subcategoryStats[$tk]['customers'][] = $item['customers'];
+                    }
+
+                    if (!empty($others)) {
+                        $otherProducts = 0;
+                        $otherSales = 0.0;
+                        $otherCustomers = 0;
+                        foreach ($others as $item) {
+                            $otherProducts += $item['products'];
+                            $otherSales += $item['sales'];
+                            $otherCustomers += $item['customers'];
                         }
+                        $subcategoryStats[$tk]['labels'][] = 'Others';
+                        $subcategoryStats[$tk]['products'][] = $otherProducts;
+                        $subcategoryStats[$tk]['sales'][] = $otherSales;
+                        $subcategoryStats[$tk]['customers'][] = $otherCustomers;
                     }
                 }
             }
@@ -1309,6 +1399,14 @@ class DashboardController extends Controller
             ->get();
 
         if ($dbOffersList->isNotEmpty()) {
+            $groupedOffers = [
+                'All' => [],
+                'Men' => [],
+                'Women' => [],
+                'Kids' => [],
+                'Living' => []
+            ];
+
             foreach ($dbOffersList as $offer) {
                 // Get products with this offer
                 $offerProdStats = DB::table('products')
@@ -1338,21 +1436,53 @@ class DashboardController extends Controller
                     }
                 }
 
-                $salesVal = (float) ($offerProdStats->sales_count * 1000 ?: 500);
+                $salesVal = $orderCount > 0 ? (float) ($offerProdStats->sales_count * 1000 ?: 500) : 0.0;
                 $prodCount = (int) $offerProdStats->product_count;
                 $custCount = (int) $offerProdStats->customer_count;
+                $salesCount = (int) $offerProdStats->sales_count;
 
-                // Populate All tab
-                $offerStats['All']['labels'][] = $offer->title;
-                $offerStats['All']['sales'][] = $salesVal;
-                $offerStats['All']['products'][] = $prodCount;
-                $offerStats['All']['customers'][] = $custCount;
+                $item = [
+                    'label' => $offer->title,
+                    'products' => $prodCount,
+                    'sales' => $salesVal,
+                    'customers' => $custCount,
+                    'sales_count' => $salesCount
+                ];
 
-                // Populate specific category tab
-                $offerStats[$tabKey]['labels'][] = $offer->title;
-                $offerStats[$tabKey]['sales'][] = $salesVal;
-                $offerStats[$tabKey]['products'][] = $prodCount;
-                $offerStats[$tabKey]['customers'][] = $custCount;
+                $groupedOffers[$tabKey][] = $item;
+                $groupedOffers['All'][] = $item;
+            }
+
+            // Now sort desc by sales_count and take top 8, sum the rest into 'Others'
+            foreach ($groupedOffers as $tk => $items) {
+                usort($items, function($a, $b) {
+                    return $b['sales_count'] <=> $a['sales_count'];
+                });
+
+                $top8 = array_slice($items, 0, 8);
+                $others = array_slice($items, 8);
+
+                foreach ($top8 as $item) {
+                    $offerStats[$tk]['labels'][] = $item['label'];
+                    $offerStats[$tk]['products'][] = $item['products'];
+                    $offerStats[$tk]['sales'][] = $item['sales'];
+                    $offerStats[$tk]['customers'][] = $item['customers'];
+                }
+
+                if (!empty($others)) {
+                    $otherProducts = 0;
+                    $otherSales = 0.0;
+                    $otherCustomers = 0;
+                    foreach ($others as $item) {
+                        $otherProducts += $item['products'];
+                        $otherSales += $item['sales'];
+                        $otherCustomers += $item['customers'];
+                    }
+                    $offerStats[$tk]['labels'][] = 'Others';
+                    $offerStats[$tk]['products'][] = $otherProducts;
+                    $offerStats[$tk]['sales'][] = $otherSales;
+                    $offerStats[$tk]['customers'][] = $otherCustomers;
+                }
             }
         }
 
@@ -1697,10 +1827,14 @@ class DashboardController extends Controller
                 if ($totalQueriedViews > 0) {
                     $salesTrendVisitors[$dayKey] = isset($visitorsMap[$dayKey]) ? $visitorsMap[$dayKey] : 0;
                 } else {
-                    $seed = crc32($dayKey);
-                    $base = 5 + (abs($seed) % 6);
-                    $multiplier = 8 + (abs($seed) % 8);
-                    $salesTrendVisitors[$dayKey] = ($custCount * $multiplier) + ($ordersCount * 3) + $base;
+                    if ($orderCount > 0) {
+                        $seed = crc32($dayKey);
+                        $base = 5 + (abs($seed) % 6);
+                        $multiplier = 8 + (abs($seed) % 8);
+                        $salesTrendVisitors[$dayKey] = ($custCount * $multiplier) + ($ordersCount * 3) + $base;
+                    } else {
+                        $salesTrendVisitors[$dayKey] = 0;
+                    }
                 }
             }
         }
@@ -1739,22 +1873,52 @@ class DashboardController extends Controller
         $locationCustomers = [];
         $locationVisitors = [];
 
+        $top8 = [];
+        $others = [];
         $locCount = 0;
         foreach ($dbLocationStats as $loc) {
             $locCount++;
             if ($locCount <= 8) {
-                $locationLabels[] = $loc->location;
-                $locationRevenue[] = (float) $loc->total_revenue;
-                $locationSales[] = (int) $loc->total_sales;
-                $locationCustomers[] = (int) $loc->total_customers;
+                $top8[] = $loc;
+            } else {
+                $others[] = $loc;
             }
         }
 
+        foreach ($top8 as $loc) {
+            $locationLabels[] = $loc->location;
+            $locationRevenue[] = (float) $loc->total_revenue;
+            $locationSales[] = (int) $loc->total_sales;
+            $locationCustomers[] = (int) $loc->total_customers;
+        }
+
+        if (!empty($others)) {
+            $otherRevenue = 0.0;
+            $otherSales = 0;
+            $otherCustomers = 0;
+            foreach ($others as $loc) {
+                $otherRevenue += (float) $loc->total_revenue;
+                $otherSales += (int) $loc->total_sales;
+                $otherCustomers += (int) $loc->total_customers;
+            }
+            $locationLabels[] = 'Others';
+            $locationRevenue[] = $otherRevenue;
+            $locationSales[] = $otherSales;
+            $locationCustomers[] = $otherCustomers;
+        }
+
         if (empty($locationLabels) || (count($locationLabels) === 1 && $locationLabels[0] === 'Unknown')) {
-            $locationLabels = ['Mylapore', 'Anna Road GPO', 'Park Town', 'Triplicane', 'Egmore', 'Royapettah', 'Nungambakkam', 'Adyar'];
-            $locationRevenue = [45000, 38000, 32000, 28000, 24000, 19000, 15000, 12000];
-            $locationSales = [90, 76, 64, 56, 48, 38, 30, 24];
-            $locationCustomers = [65, 54, 45, 40, 34, 27, 21, 17];
+            if ($orderCount > 0) {
+                $locationLabels = ['Mylapore', 'Anna Road GPO', 'Park Town', 'Triplicane', 'Egmore', 'Royapettah', 'Nungambakkam', 'Adyar'];
+                $locationRevenue = [45000, 38000, 32000, 28000, 24000, 19000, 15000, 12000];
+                $locationSales = [90, 76, 64, 56, 48, 38, 30, 24];
+                $locationCustomers = [65, 54, 45, 40, 34, 27, 21, 17];
+            } else {
+                $locationLabels = ['Mylapore', 'Anna Road GPO', 'Park Town', 'Triplicane', 'Egmore', 'Royapettah', 'Nungambakkam', 'Adyar'];
+                $locationRevenue = [0, 0, 0, 0, 0, 0, 0, 0];
+                $locationSales = [0, 0, 0, 0, 0, 0, 0, 0];
+                $locationCustomers = [0, 0, 0, 0, 0, 0, 0, 0];
+            }
         } else {
             $seedCities = ['Sowcarpet', 'T. Nagar', 'Velachery', 'Tambaram', 'Guindy', 'Thiruvanmiyur', 'Besant Nagar', 'Chromepet'];
             $idx = 0;
@@ -1762,20 +1926,30 @@ class DashboardController extends Controller
                 $city = $seedCities[$idx];
                 if (!in_array($city, $locationLabels)) {
                     $locationLabels[] = $city;
-                    $locationRevenue[] = 1500 + (rand(1, 10) * 100);
-                    $locationSales[] = rand(3, 8);
-                    $locationCustomers[] = rand(2, 6);
+                    if ($orderCount > 0) {
+                        $locationRevenue[] = 1500 + (rand(1, 10) * 100);
+                        $locationSales[] = rand(3, 8);
+                        $locationCustomers[] = rand(2, 6);
+                    } else {
+                        $locationRevenue[] = 0.0;
+                        $locationSales[] = 0;
+                        $locationCustomers[] = 0;
+                    }
                 }
                 $idx++;
             }
         }
 
         foreach ($locationCustomers as $key => $custCountVal) {
-            $salesCountVal = $locationSales[$key];
-            $seed = crc32($locationLabels[$key]);
-            $base = 10 + (abs($seed) % 15);
-            $multiplier = 10 + (abs($seed) % 10);
-            $locationVisitors[] = ($custCountVal * $multiplier) + ($salesCountVal * 4) + $base;
+            if ($orderCount > 0) {
+                $salesCountVal = $locationSales[$key];
+                $seed = crc32($locationLabels[$key]);
+                $base = 10 + (abs($seed) % 15);
+                $multiplier = 10 + (abs($seed) % 10);
+                $locationVisitors[] = ($custCountVal * $multiplier) + ($salesCountVal * 4) + $base;
+            } else {
+                $locationVisitors[] = 0;
+            }
         }
 
         // Returning Customers
@@ -2416,30 +2590,49 @@ class DashboardController extends Controller
         $expiredDate = date('Y-m-d H:i:s', strtotime("+$totalDays days"));
         $nextRenewalDate = date('Y-m-d H:i:s', strtotime("+$totalDays days"));
 
-        $updated = DB::table('vendor_details')
-            ->where('id', $vendorId)
-            ->update([
-                'package_id' => $package->id,
-                'purchase_date' => $purchaseDate,
-                'expired_date' => $expiredDate,
-                'next_renewal_date' => $nextRenewalDate,
-                'wallet' => $package->wallet,
-                'commission' => $package->commission,
-                'validity' => $package->validity,
-                'description' => $package->description,
+        try {
+            DB::table('vendor_details')
+                ->where('id', $vendorId)
+                ->update([
+                    'package_id' => $package->id,
+                    'purchase_date' => $purchaseDate,
+                    'expired_date' => $expiredDate,
+                    'next_renewal_date' => $nextRenewalDate,
+                    'wallet' => $package->wallet,
+                    'commission' => $package->commission,
+                    'validity' => $package->validity,
+                    'description' => $package->description,
+                    'updated_at' => now()
+                ]);
+
+            // Insert payment record into payments table
+            DB::table('payments')->insert([
+                'order_id' => 'RENEW-' . $vendorId . '-' . time(),
+                'razorpay_payment_id' => 'pay_renew_' . \Illuminate\Support\Str::random(10),
+                'razorpay_order_id' => 'order_renew_' . \Illuminate\Support\Str::random(10),
+                'razorpay_signature' => 'sig_renew_' . \Illuminate\Support\Str::random(20),
+                'amount' => (float) $package->price,
+                'status' => 'Captured',
+                'payment_data' => json_encode([
+                    'vendor_id' => $vendorId,
+                    'package_id' => $package->id,
+                    'package_name' => $package->name,
+                    'validity_days' => $totalDays,
+                    'type' => 'vendor_renewal'
+                ]),
+                'created_at' => now(),
                 'updated_at' => now()
             ]);
 
-        if ($updated) {
             return response()->json([
                 'success' => true,
                 'message' => 'Subscription plan updated successfully!',
                 'plan_name' => $package->name,
                 'expired_date' => date('d M Y', strtotime($expiredDate))
             ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to process payment and update plan: ' . $e->getMessage()], 500);
         }
-
-        return response()->json(['success' => false, 'message' => 'Failed to update plan. Please try again.'], 500);
     }
 
     public function toggleStatus(Request $request)

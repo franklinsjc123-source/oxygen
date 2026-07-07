@@ -32,7 +32,7 @@
         /* General styling */
         .dashboard-container {
             font-family: 'Inter', 'Work Sans', sans-serif;
-            padding: 20px 20px 30px 20px;
+            /* padding: 20px 20px 30px 20px; */
         }
 
         /* Profile Card styling */
@@ -1810,7 +1810,10 @@
                         color: '#94a3b8',
                         padding: 8,
                         callback: function(value) {
-                            if (value >= 1000) return '₹' + (value / 1000).toFixed(1) + 'K';
+                            if (value >= 1000) {
+                                var kValue = value / 1000;
+                                return '₹' + (kValue % 1 === 0 ? kValue : kValue.toFixed(1)) + 'K';
+                            }
                             return '₹' + value;
                         }
                     },
