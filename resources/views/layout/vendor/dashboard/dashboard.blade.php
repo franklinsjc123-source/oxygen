@@ -35,6 +35,23 @@
             /* padding: 20px 20px 30px 20px; */
         }
 
+        .mobile-address {
+            display: none !important;
+        }
+        .desktop-address {
+            display: flex !important;
+        }
+
+        .custom-date-inputs {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+        .custom-date-buttons {
+            display: flex !important;
+            gap: 8px !important;
+        }
+
         /* Profile Card styling */
         .profile-card {
             background: #ffffff;
@@ -465,9 +482,28 @@
                 height: auto !important;
                 padding: 12px !important;
                 gap: 12px !important;
+                flex-wrap: wrap !important;
             }
-            .shop-profile-banner > div:first-child,
-            .shop-profile-banner > div:first-child img {
+            .mobile-address {
+                display: block !important;
+                margin-top: 2px !important;
+            }
+            .desktop-address {
+                display: none !important;
+            }
+            .active-orders-tabs {
+                flex-wrap: nowrap !important;
+                gap: 6px !important;
+            }
+            .tab-btn {
+                padding: 8px 4px !important;
+                font-size: 11.5px !important;
+                flex: 1 !important;
+                text-align: center !important;
+                white-space: nowrap !important;
+            }
+            .shop-profile-logo-container,
+            .shop-profile-logo-container img {
                 width: 48px !important;
                 height: 48px !important;
             }
@@ -489,9 +525,11 @@
                 margin-top: 2px !important;
             }
             .shop-profile-info p span {
-                -webkit-line-clamp: unset !important;
-                overflow: visible !important;
-                display: block !important;
+                display: -webkit-box !important;
+                -webkit-line-clamp: 2 !important;
+                -webkit-box-orient: vertical !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
             }
             .shop-profile-status-badge {
                 position: absolute !important;
@@ -513,6 +551,50 @@
                 word-break: break-word !important;
                 overflow: visible !important;
                 text-overflow: clip !important;
+            }
+            .filter-bar {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                padding: 16px !important;
+            }
+            .filter-controls {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                width: 100% !important;
+                gap: 12px !important;
+            }
+            .period-selector {
+                width: 100% !important;
+            }
+            .period-btn {
+                flex: 1 !important;
+                text-align: center !important;
+                padding: 6px 0 !important;
+            }
+            #customDateFilterForm {
+                width: 100% !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 10px !important;
+            }
+            .custom-date-inputs {
+                width: 100% !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                gap: 8px !important;
+            }
+            .custom-date-inputs input {
+                flex: 1 !important;
+                width: 100% !important;
+            }
+            .custom-date-buttons {
+                width: 100% !important;
+                display: flex !important;
+                gap: 8px !important;
+            }
+            .custom-date-buttons button {
+                flex: 1 !important;
             }
         }
     </style>
@@ -546,44 +628,46 @@
                 <div class="profile-card" style="padding: 0; overflow: hidden; position: relative;">
                     <!-- Modern Header Banner with Shop Image, Name and Address -->
                     <div class="shop-profile-banner">
-                        <!-- Profile Image -->
-                        <div style="width: 56px; height: 56px; flex-shrink: 0; position: relative;">
-                            @if(!empty($vendorDetails->profile_image) && file_exists(public_path('assets/images/vendor/profile/' . $vendorDetails->profile_image)))
-                                <img src="{{ asset('assets/images/vendor/profile/' . $vendorDetails->profile_image) }}" style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.15);" alt="Profile">
-                            @else
-                                <img src="{{ asset('assets/images/dashboard/man.jpeg') }}" style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.15);" alt="Profile">
-                            @endif
-                        </div>
-                        
-                        <!-- Shop Info next to the image -->
-                        <div class="shop-profile-info">
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                                <h4 style="font-size: 20px; font-weight: 700; color: #ffffff; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                    {{ $vendorDetails->shop_name ?? 'ABC Garments' }}
-                                </h4>
-                                <div style="display: flex; gap: 2px; align-items: center; flex-shrink: 0; background-color: rgba(255, 255, 255, 0.15); padding: 2px 6px; border-radius: 12px;">
-                                    <i class="fa fa-star" style="color: #f1c40f; font-size: 12px;"></i>
-                                    <span style="font-size: 11px; font-weight: 700; color: #ffffff; margin-left: 2px;">5.0</span>
-                                </div>
+                        <div class="shop-profile-header-main" style="display: flex; align-items: center; gap: 12px; flex-grow: 1; min-width: 0; width: 100%;">
+                            <!-- Profile Image -->
+                            <div class="shop-profile-logo-container" style="width: 56px; height: 56px; flex-shrink: 0; position: relative;">
+                                @if(!empty($vendorDetails->profile_image) && file_exists(public_path('assets/images/vendor/profile/' . $vendorDetails->profile_image)))
+                                    <img src="{{ asset('assets/images/vendor/profile/' . $vendorDetails->profile_image) }}" style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.15);" alt="Profile">
+                                @else
+                                    <img src="{{ asset('assets/images/dashboard/man.jpeg') }}" style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.15);" alt="Profile">
+                                @endif
                             </div>
                             
-                            <p style="font-size: 13px; color: #ffffff; margin: 0; display: flex; align-items: flex-start; gap: 4px; line-height: 1.35;">
-                                <i class="fa fa-map-marker" style="color: #ffffff; margin-top: 2px; font-size: 12px; width: 12px; text-align: center; flex-shrink: 0;"></i>
-                                <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                                    #{{ $vendorDetails->address ?? '38' }}
-                                    @if(!empty($vendorDetails->address1)), {{ $vendorDetails->address1 }} @endif
-                                    @if(!empty($vendorDetails->city)), {{ $vendorDetails->city }} @endif
-                                    @if(!empty($vendorDetails->state)), {{ $vendorDetails->state }} @endif
-                                    @if(!empty($vendorDetails->pincode)) - {{ $vendorDetails->pincode }} @endif
-                                </span>
-                            </p>
-                            @if(!empty($vendorDetails->location_map))
-                                <div style="margin-top: 4px;">
-                                    <a href="{{ $vendorDetails->location_map }}" target="_blank" style="background-color: rgba(255, 255, 255, 0.15); color: #ffffff; padding: 2px 8px; border-radius: 4px; font-size: 10.5px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 3px;">
-                                        <i class="fa fa-map-marker" style="font-size: 9.5px;"></i> Map View
-                                    </a>
+                            <!-- Shop Info next to the image -->
+                            <div class="shop-profile-info">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                    <h4 style="font-size: 20px; font-weight: 700; color: #ffffff; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        {{ $vendorDetails->shop_name ?? 'ABC Garments' }}
+                                    </h4>
+                                    <div style="display: flex; gap: 2px; align-items: center; flex-shrink: 0; background-color: rgba(255, 255, 255, 0.15); padding: 2px 6px; border-radius: 12px;">
+                                        <i class="fa fa-star" style="color: #f1c40f; font-size: 12px;"></i>
+                                        <span style="font-size: 11px; font-weight: 700; color: #ffffff; margin-left: 2px;">5.0</span>
+                                    </div>
                                 </div>
-                            @endif
+                                
+                                <p class="desktop-address" style="font-size: 13px; color: #ffffff; margin: 0; display: flex; align-items: flex-start; gap: 4px; line-height: 1.35;">
+                                    <i class="fa fa-map-marker" style="color: #ffffff; margin-top: 2px; font-size: 12px; width: 12px; text-align: center; flex-shrink: 0;"></i>
+                                    <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                        #{{ $vendorDetails->address ?? '38' }}
+                                        @if(!empty($vendorDetails->address1)), {{ $vendorDetails->address1 }} @endif
+                                        @if(!empty($vendorDetails->city)), {{ $vendorDetails->city }} @endif
+                                        @if(!empty($vendorDetails->state)), {{ $vendorDetails->state }} @endif
+                                        @if(!empty($vendorDetails->pincode)) - {{ $vendorDetails->pincode }} @endif
+                                    </span>
+                                </p>
+                                @if(!empty($vendorDetails->location_map))
+                                    <div class="desktop-address" style="margin-top: 4px;">
+                                        <a href="{{ $vendorDetails->location_map }}" target="_blank" style="background-color: rgba(255, 255, 255, 0.15); color: #ffffff; padding: 2px 8px; border-radius: 4px; font-size: 10.5px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 3px;">
+                                            <i class="fa fa-map-marker" style="font-size: 9.5px;"></i> Map View
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                         
                         <div class="shop-profile-status-badge">
@@ -591,6 +675,20 @@
                                 <span id="vendorStatusDot" class="{{ (int)($vendorDetails->status ?? 1) === 1 ? 'status-dot-active' : '' }}" style="width: 6px; height: 6px; border-radius: 50%; background-color: {{ (int)($vendorDetails->status ?? 1) === 1 ? '#2ecc71' : '#e74c3c' }}; display: inline-block;"></span>
                                 <span id="vendorStatusText">{{ (int)($vendorDetails->status ?? 1) === 1 ? 'Active' : 'Inactive' }}</span>
                             </button>
+                        </div>
+
+                        <!-- Mobile-only address block -->
+                        <div class="mobile-address" style="display: none; width: 100%; margin-top: 2px !important;">
+                            <p style="font-size: 12px; color: #ffffff; margin: 0; display: flex; align-items: flex-start; gap: 4px; line-height: 1.35;">
+                                <i class="fa fa-map-marker" style="color: #ffffff; margin-top: 2px; font-size: 12px; width: 12px; text-align: center; flex-shrink: 0;"></i>
+                                <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                    #{{ $vendorDetails->address ?? '38' }}
+                                    @if(!empty($vendorDetails->address1)), {{ $vendorDetails->address1 }} @endif
+                                    @if(!empty($vendorDetails->city)), {{ $vendorDetails->city }} @endif
+                                    @if(!empty($vendorDetails->state)), {{ $vendorDetails->state }} @endif
+                                    @if(!empty($vendorDetails->pincode)) - {{ $vendorDetails->pincode }} @endif
+                                </span>
+                            </p>
                         </div>
                     </div>
 
@@ -764,7 +862,7 @@
                     $shippedOrders = $activeOrders->filter(fn($o) => $o->order_status === 'Dispatch');
                 @endphp
                 
-                <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+                <div class="active-orders-tabs" style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
                     <button class="tab-btn active" onclick="switchActiveTab('pending', this)">
                         Pending ({{ count($pendingOrders) }})
                     </button>
@@ -960,17 +1058,15 @@
                 
                 <!-- Custom Date Form (AJAX powered) -->
                 <form id="customDateFilterForm" class="d-flex align-items-center gap-2 m-0 flex-wrap" onsubmit="return applyCustomDateFilter(event)">
-                    <div class="input-group input-group-sm" style="width: auto; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);">
-                        <span class="input-group-text bg-white" style="border-right: none; border-color: #cbd5e1; border-top-left-radius: 8px; border-bottom-left-radius: 8px;"><i class="fa fa-calendar-o" style="color: #64748b; font-size: 11px;"></i></span>
-                        <input type="date" id="filterStartDate" class="form-control form-control-sm" value="{{ $startDate }}" style="border-left: none; border-color: #cbd5e1; font-size: 12px; font-weight: 500; color: #334155; width: 135px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; height: 32px;">
+                    <div class="custom-date-inputs">
+                        <input type="date" id="filterStartDate" class="form-control form-control-sm" value="{{ $startDate }}" style="border-color: #cbd5e1; border-radius: 8px; font-size: 12px; font-weight: 500; color: #334155; width: 135px; height: 32px; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);">
+                        <span style="font-size: 12px; color: #64748b; font-weight: 600; padding: 0 4px;">to</span>
+                        <input type="date" id="filterEndDate" class="form-control form-control-sm" value="{{ $endDate }}" style="border-color: #cbd5e1; border-radius: 8px; font-size: 12px; font-weight: 500; color: #334155; width: 135px; height: 32px; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);">
                     </div>
-                    <span style="font-size: 12px; color: #64748b; font-weight: 600; padding: 0 4px;">to</span>
-                    <div class="input-group input-group-sm" style="width: auto; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);">
-                        <span class="input-group-text bg-white" style="border-right: none; border-color: #cbd5e1; border-top-left-radius: 8px; border-bottom-left-radius: 8px;"><i class="fa fa-calendar-o" style="color: #64748b; font-size: 11px;"></i></span>
-                        <input type="date" id="filterEndDate" class="form-control form-control-sm" value="{{ $endDate }}" style="border-left: none; border-color: #cbd5e1; font-size: 12px; font-weight: 500; color: #334155; width: 135px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; height: 32px;">
+                    <div class="custom-date-buttons">
+                        <button type="submit" id="applyFilterBtn" class="btn btn-sm text-white" style="background-color: #183543; border-radius: 8px; font-size: 12px; font-weight: 600; padding: 0 16px; border: none; height: 32px; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(24, 53, 67, 0.15);">Apply</button>
+                        <button type="button" class="btn btn-sm btn-light d-inline-flex align-items-center justify-content-center" onclick="applyPeriodFilter('month', document.querySelector('.period-btn:last-child'))" style="border-radius: 8px; font-size: 12px; font-weight: 600; padding: 0 12px; border: 1px solid #cbd5e1; height: 32px; background-color: #f8fafc;">Clear</button>
                     </div>
-                    <button type="submit" id="applyFilterBtn" class="btn btn-sm text-white" style="background-color: #183543; border-radius: 8px; font-size: 12px; font-weight: 600; padding: 0 16px; border: none; height: 32px; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(24, 53, 67, 0.15);">Apply</button>
-                    <button type="button" class="btn btn-sm btn-light d-inline-flex align-items-center justify-content-center" onclick="applyPeriodFilter('month', document.querySelector('.period-btn:last-child'))" style="border-radius: 8px; font-size: 12px; font-weight: 600; padding: 0 12px; border: 1px solid #cbd5e1; height: 32px; background-color: #f8fafc;">Clear</button>
                 </form>
             </div>
         </div>

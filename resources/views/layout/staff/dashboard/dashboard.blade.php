@@ -684,8 +684,8 @@
                             <!-- Left Sub-Tabs -->
                             <div class="d-flex align-items-center gap-1">
                                 <ul class="activity-nav-pills" id="double-left-tabs">
-                                    <li><button type="button" class="activity-nav-link active" onclick="switchDoubleLeftTab(this, 'target')">Target</button></li>
-                                    <li><button type="button" class="activity-nav-link" onclick="switchDoubleLeftTab(this, 'client')">Customer · Sales · Revenue</button></li>
+                                    <li><button type="button" class="activity-nav-link" onclick="switchDoubleLeftTab(this, 'target')">Target</button></li>
+                                    <li><button type="button" class="activity-nav-link active" onclick="switchDoubleLeftTab(this, 'client')">Customer · Sales · Revenue</button></li>
                                 </ul>
                             </div>
                             <!-- Right Sub-Tabs -->
@@ -1066,7 +1066,7 @@ function switchProspectTab(btn, tab) {
 document.addEventListener('DOMContentLoaded', function() {
     renderPerformanceChart('employee', 'revenue');
     renderProspectsChart('pipeline');
-    renderDoubleChart('target', 'period');
+    renderDoubleChart('client', 'period');
     renderGaugeChart('client');
 });
 
@@ -1077,7 +1077,7 @@ const gaugeStats = @json($gaugeStats);
 let doubleChartInstance = null;
 let gaugeChartInstance = null;
 
-let activeDoubleLeftTab = 'target';
+let activeDoubleLeftTab = 'client';
 let activeDoubleRightTab = 'period';
 
 function renderDoubleChart(leftTab, rightTab) {
