@@ -1368,8 +1368,9 @@
                 
                 <!-- Sliding Pill Tab Selector -->
                 <div style="display: flex; justify-content: center; margin-top: 14px; width: 100%;">
-                    <div style="background-color: rgba(255, 255, 255, 0.08); border-radius: 30px; padding: 3px; display: flex; position: relative; width: 330px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                    <div style="background-color: rgba(255, 255, 255, 0.08); border-radius: 30px; padding: 3px; display: flex; position: relative; width: 390px; border: 1px solid rgba(255, 255, 255, 0.1);">
                         <button type="button" class="duration-tab active" onclick="switchDurationGroup('12', this)" style="flex: 1; border: none; background: transparent; padding: 6px 12px; font-size: 11.5px; font-weight: 700; border-radius: 26px; cursor: pointer; transition: all 0.3s; color: #ffffff; z-index: 2; outline: none;">12 Months</button>
+                        <button type="button" class="duration-tab" onclick="switchDurationGroup('6', this)" style="flex: 1; border: none; background: transparent; padding: 6px 12px; font-size: 11.5px; font-weight: 700; border-radius: 26px; cursor: pointer; transition: all 0.3s; color: #94a3b8; z-index: 2; outline: none;">6 Months</button>
                         <button type="button" class="duration-tab" onclick="switchDurationGroup('3', this)" style="flex: 1; border: none; background: transparent; padding: 6px 12px; font-size: 11.5px; font-weight: 700; border-radius: 26px; cursor: pointer; transition: all 0.3s; color: #94a3b8; z-index: 2; outline: none;">3 Months</button>
                         <button type="button" class="duration-tab" onclick="switchDurationGroup('1', this)" style="flex: 1; border: none; background: transparent; padding: 6px 12px; font-size: 11.5px; font-weight: 700; border-radius: 26px; cursor: pointer; transition: all 0.3s; color: #94a3b8; z-index: 2; outline: none;">1 Month</button>
                         <!-- Sliding Background Pill -->
@@ -1498,6 +1499,7 @@
     var dbPackages = @json($packages);
     var packageGroups = {
         '12': [],
+        '6': [],
         '3': [],
         '1': []
     };
@@ -1507,8 +1509,12 @@
         var groupKey = '1';
         if (validity >= 360) {
             groupKey = '12';
+        } else if (validity >= 170) {
+            groupKey = '6';
         } else if (validity >= 80) {
             groupKey = '3';
+        } else {
+            groupKey = '1';
         }
         
         // Parse features list from description HTML
@@ -1635,10 +1641,9 @@
                     <div style="text-align: center; margin-bottom: 10px;">
                         <h5 style="font-size: 13px; font-weight: 700; color: #64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">${pkg.name}</h5>
                         
-                        <div style="background: ${theme.bgGradient}; border-radius: 30px; padding: 4px 10px; display: inline-flex; align-items: center; justify-content: center; gap: 3px; border: 1px solid rgba(0,0,0,0.02); min-width: 110px;">
-                           <span style="font-size: 12px; font-weight: 800; color: ${theme.primary}; align-self: flex-start; margin-top: 1px;">₹</span>
-                           <span style="font-size: 18px; font-weight: 800; color: ${theme.primary}; line-height: 1;">${pkg.price.toLocaleString('en-IN')}</span>
-                           <span style="font-size: 10px; font-weight: 600; color: #718096; margin-left: 1px; align-self: flex-end; margin-bottom: 1px;">/ ${pkg.days} days</span>
+                        <div style="background: ${theme.bgGradient}; border-radius: 30px; padding: 5px 14px; display: inline-flex; align-items: center; justify-content: center; gap: 3px; border: 1px solid rgba(0,0,0,0.02);">
+                           <span style="font-size: 14px; font-weight: 800; color: ${theme.primary}; align-self: flex-start; margin-top: 1px;">₹</span>
+                           <span style="font-size: 21px; font-weight: 800; color: ${theme.primary}; line-height: 1;">${pkg.price.toLocaleString('en-IN')}</span>
                         </div>
                     </div>
 
