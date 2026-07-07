@@ -34,9 +34,10 @@
     </div>
     <div class="sidebar custom-scrollbar mt-3">
         <div class="sidebar-user text-center">
-            <div>
+            <div style="position: relative; display: inline-block;">
                 <img class="img-60 rounded-circle lazyloaded blur-up"
-                    src="{{ $vendorImage }}" alt="{{ $vendorName }}">
+                    src="{{ $vendorImage }}" alt="{{ $vendorName }}"
+                    style="width: 60px !important; height: 60px !important; object-fit: cover !important; border: 2px solid rgba(255, 255, 255, 0.4); box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin: 0 auto; display: block;">
             </div>
             <h6 class="mt-3 f-14">{{ $vendorName }}</h6>
             <p>{{ $vendorRole }}</p>
