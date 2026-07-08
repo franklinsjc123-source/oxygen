@@ -2559,6 +2559,15 @@ class DashboardController extends Controller
             return response()->json(['success' => false, 'message' => 'Package ID is required.'], 400);
         }
 
+        // Validate Razorpay payment ID
+        $razorpayPaymentId = $request->input('razorpay_payment_id');
+        if (empty($razorpayPaymentId)) {
+            return response()->json(['success' => false, 'message' => 'Payment was not completed. Please try again.'], 400);
+        }
+
+        $razorpayOrderId = $request->input('razorpay_order_id', '');
+        $razorpaySignature = $request->input('razorpay_signature', '');
+
         $package = DB::table('packages')->where('id', $packageId)->where('status', 1)->first();
         if (!$package) {
             return response()->json(['success' => false, 'message' => 'Package not found or inactive.'], 404);
@@ -2576,6 +2585,9 @@ class DashboardController extends Controller
             return response()->json(['success' => false, 'message' => 'Unauthorized or vendor session expired.'], 401);
         }
 
+        // Get vendor details for reference
+        $vendor = DB::table('vendor_details')->where('id', $vendorId)->first();
+
         // Update vendor details
         $purchaseDate = date('Y-m-d H:i:s');
         $validityDays = (int) $package->validity;
@@ -2591,6 +2603,9 @@ class DashboardController extends Controller
         $nextRenewalDate = date('Y-m-d H:i:s', strtotime("+$totalDays days"));
 
         try {
+            DB::beginTransaction();
+
+            // Update vendor subscription details
             DB::table('vendor_details')
                 ->where('id', $vendorId)
                 ->update([
@@ -2605,12 +2620,14 @@ class DashboardController extends Controller
                     'updated_at' => now()
                 ]);
 
+            $orderId = 'RENEW-' . $vendorId . '-' . time();
+
             // Insert payment record into payments table
             DB::table('payments')->insert([
-                'order_id' => 'RENEW-' . $vendorId . '-' . time(),
-                'razorpay_payment_id' => 'pay_renew_' . \Illuminate\Support\Str::random(10),
-                'razorpay_order_id' => 'order_renew_' . \Illuminate\Support\Str::random(10),
-                'razorpay_signature' => 'sig_renew_' . \Illuminate\Support\Str::random(20),
+                'order_id' => $orderId,
+                'razorpay_payment_id' => $razorpayPaymentId,
+                'razorpay_order_id' => $razorpayOrderId,
+                'razorpay_signature' => $razorpaySignature,
                 'amount' => (float) $package->price,
                 'status' => 'Captured',
                 'payment_data' => json_encode([
@@ -2624,6 +2641,27 @@ class DashboardController extends Controller
                 'updated_at' => now()
             ]);
 
+            // Insert record into subscription_payments table
+            DB::table('subscription_payments')->insert([
+                'vendor_id' => $vendorId,
+                'vendor_name' => $vendor->shop_name ?? ($vendor->owner_name ?? ''),
+                'package_id' => $package->id,
+                'package_name' => $package->name,
+                'amount' => (float) $package->price,
+                'validity_days' => $totalDays,
+                'purchase_date' => $purchaseDate,
+                'expired_date' => $expiredDate,
+                'razorpay_payment_id' => $razorpayPaymentId,
+                'razorpay_order_id' => $razorpayOrderId,
+                'razorpay_signature' => $razorpaySignature,
+                'payment_status' => 'Captured',
+                'payment_method' => 'Razorpay',
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+
+            DB::commit();
+
             return response()->json([
                 'success' => true,
                 'message' => 'Subscription plan updated successfully!',
@@ -2631,6 +2669,7 @@ class DashboardController extends Controller
                 'expired_date' => date('d M Y', strtotime($expiredDate))
             ]);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json(['success' => false, 'message' => 'Failed to process payment and update plan: ' . $e->getMessage()], 500);
         }
     }

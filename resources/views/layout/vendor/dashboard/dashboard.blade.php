@@ -1410,6 +1410,7 @@
 </style>
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
     // === Vendor Status Toggle ===
     function toggleVendorStatus() {
@@ -1679,57 +1680,112 @@
             background: '#ffffff'
         }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Processing Payment...',
-                    html: 'Simulating secure payment gateway connection. Please do not close this window.',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                        
-                        // Submit AJAX call to renew plan
-                        $.ajax({
-                            url: "{{ route('vendor.renew_package') }}",
-                            type: "POST",
-                            data: {
-                                _token: "{{ csrf_token() }}",
-                                package_id: packageId
-                            },
-                            success: function(response) {
-                                if (response.success) {
-                                    setTimeout(function() {
+                // Close the renewal modal first
+                var renewalModalEl = document.getElementById('renewalModal');
+                var renewalModal = bootstrap.Modal.getInstance(renewalModalEl);
+                if (renewalModal) renewalModal.hide();
+
+                // Open Razorpay Checkout
+                var amountInPaise = Math.round(price * 100);
+                var options = {
+                    "key": "{{ config('services.razorpay.key') }}",
+                    "amount": amountInPaise,
+                    "currency": "INR",
+                    "name": "{{ $vendorDetails->shop_name ?? 'Oxygen Store' }}",
+                    "description": packageName + " - Subscription Renewal",
+                    "handler": function (response) {
+                        // Payment successful — send to backend
+                        Swal.fire({
+                            title: 'Verifying Payment...',
+                            html: 'Please wait while we activate your plan.',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+
+                                $.ajax({
+                                    url: "{{ route('vendor.renew_package') }}",
+                                    type: "POST",
+                                    data: {
+                                        _token: "{{ csrf_token() }}",
+                                        package_id: packageId,
+                                        razorpay_payment_id: response.razorpay_payment_id,
+                                        razorpay_order_id: response.razorpay_order_id || '',
+                                        razorpay_signature: response.razorpay_signature || ''
+                                    },
+                                    success: function(res) {
+                                        if (res.success) {
+                                            Swal.fire({
+                                                title: 'Plan Activated!',
+                                                html: 'Your plan has been updated to <strong>' + res.plan_name + '</strong>!<br>Expiring on: ' + res.expired_date,
+                                                icon: 'success',
+                                                confirmButtonColor: '#0ca678'
+                                            }).then(() => {
+                                                window.location.reload();
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                title: 'Error',
+                                                text: res.message || 'Failed to activate plan.',
+                                                icon: 'error',
+                                                confirmButtonColor: '#183543'
+                                            });
+                                        }
+                                    },
+                                    error: function(xhr) {
+                                        var msg = 'Payment received but plan activation failed. Please contact support with Payment ID: ' + response.razorpay_payment_id;
+                                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                                            msg = xhr.responseJSON.message;
+                                        }
                                         Swal.fire({
-                                            title: 'Plan Activated!',
-                                            text: 'Your plan has been updated successfully to ' + response.plan_name + '! Expiring on: ' + response.expired_date,
-                                            icon: 'success',
-                                            confirmButtonColor: '#0ca678'
-                                        }).then(() => {
-                                            window.location.reload();
+                                            title: 'Activation Error',
+                                            text: msg,
+                                            icon: 'warning',
+                                            confirmButtonColor: '#183543'
                                         });
-                                    }, 1500);
-                                } else {
-                                    Swal.fire({
-                                        title: 'Error',
-                                        text: response.message || 'Failed to update plan.',
-                                        icon: 'error',
-                                        confirmButtonColor: '#183543'
-                                    });
-                                }
-                            },
-                            error: function(xhr) {
-                                var msg = 'Failed to process renewal. Please try again.';
-                                if (xhr.responseJSON && xhr.responseJSON.message) {
-                                    msg = xhr.responseJSON.message;
-                                }
-                                Swal.fire({
-                                    title: 'Transaction Failed',
-                                    text: msg,
-                                    icon: 'error',
-                                    confirmButtonColor: '#183543'
+                                    }
                                 });
                             }
                         });
+                    },
+                    "prefill": {
+                        "name": "{{ $vendorDetails->owner_name ?? '' }}",
+                        "email": "{{ $vendorDetails->email ?? '' }}",
+                        "contact": "{{ $vendorDetails->mobile_number1 ?? '' }}"
+                    },
+                    "theme": {
+                        "color": "#183543"
+                    },
+                    "modal": {
+                        "ondismiss": function() {
+                            Swal.fire({
+                                title: 'Payment Cancelled',
+                                text: 'You cancelled the payment. No charges were made.',
+                                icon: 'info',
+                                confirmButtonColor: '#183543'
+                            });
+                        }
                     }
-                });
+                };
+
+                try {
+                    var rzp = new Razorpay(options);
+                    rzp.on('payment.failed', function (response) {
+                        Swal.fire({
+                            title: 'Payment Failed',
+                            html: 'Reason: ' + (response.error.description || 'Unknown error') + '<br><small>Code: ' + (response.error.code || '') + '</small>',
+                            icon: 'error',
+                            confirmButtonColor: '#183543'
+                        });
+                    });
+                    rzp.open();
+                } catch (e) {
+                    Swal.fire({
+                        title: 'Gateway Error',
+                        text: 'Could not initialize payment gateway. Please try again later.',
+                        icon: 'error',
+                        confirmButtonColor: '#183543'
+                    });
+                }
             }
         });
     }
