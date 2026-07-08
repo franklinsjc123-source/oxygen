@@ -476,12 +476,14 @@
                 <div class="col-xl-5 col-lg-12 mb-4">
                     <div class="employee-card">
                         <!-- iOS Status Toggle -->
+                        @if($showDetails->employee_id !== 'ADMIN-001' && strtolower($showDetails->designation) !== 'admin' && strtolower($showDetails->designation) !== 'administrator')
                         <div class="employee-toggle">
                             <label class="switch-ios">
                                 <input type="checkbox" checked disabled>
                                 <span class="slider-ios"></span>
                             </label>
                         </div>
+                        @endif
                         
                         <div class="employee-card-top">
                             <div class="employee-avatar-wrapper">

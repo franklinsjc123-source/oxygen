@@ -81,6 +81,12 @@ Route::get('dashboard/{id}',
      ->name('staffdashboard')
     ->middleware('auth');
 
+Route::get('dashboard/{id}/filter-data', 
+[DashboardController::class, 'staffdashboard'])
+     ->name('staff.dashboard.filter_data')
+    ->middleware('auth');
+
+
 Route::get('dashboard.php', function() {
 	$id = null;
 	if (auth()->check() && (int) auth()->user()->status === 3) {

@@ -2018,7 +2018,7 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function staffdashboard($id)
+    public function staffdashboard(Request $request, $id)
     {
         $Staffcreates = Staffcreates::where('employee_id', $id)->get();
         if ($Staffcreates->isEmpty()) {
@@ -2030,6 +2030,28 @@ class DashboardController extends Controller
         Session::put('roll', $roll);
 
         $staffDbId = $staffDetails->id;
+
+        $period = $request->input('period');
+        if ($period) {
+            if ($period === 'today') {
+                $startDate = date('Y-m-d');
+                $endDate = date('Y-m-d');
+            } elseif ($period === 'week') {
+                $startDate = date('Y-m-d', strtotime('-6 days'));
+                $endDate = date('Y-m-d');
+            } elseif ($period === 'month') {
+                $startDate = date('Y-m-d', strtotime('-29 days'));
+                $endDate = date('Y-m-d');
+            }
+        } else {
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+            if (!$startDate || !$endDate) {
+                $period = 'month'; // Default period preset
+                $startDate = date('Y-m-d', strtotime('-29 days'));
+                $endDate = date('Y-m-d');
+            }
+        }
 
         // Fetch counts for this staff member
         $vendorQuery = DB::table('vendor_details')->where('staff_id', $staffDbId);
@@ -2044,26 +2066,34 @@ class DashboardController extends Controller
         }
         $productCount = $productQuery->count();
 
-        $orderIdsQuery = DB::table('ecom_order_product')
-            ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
-            ->join('products', 'products.id', '=', 'products_details.products_id');
+        // Orders placed against these vendors count (all statuses)
+        $orderCount = 0;
         if (!empty($vendorIds)) {
-            $orderIdsQuery->whereIn('products.login_id', $vendorIds);
-        } else {
-            $orderIdsQuery->whereIn('products.login_id', [-1]);
+            $orderQuery = DB::table('ecom_order_product as eop')
+                ->join('products_details as pd', 'pd.id', '=', 'eop.product_id')
+                ->join('products as p', 'p.id', '=', 'pd.products_id')
+                ->whereIn('p.login_id', $vendorIds);
+            if ($startDate && $endDate) {
+                $orderQuery->whereBetween('eop.created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+            }
+            $orderCount = $orderQuery->distinct('eop.order_id')->count('eop.order_id');
         }
-        $matchingOrderIds = $orderIdsQuery->distinct('ecom_order_product.order_id')->pluck('ecom_order_product.order_id')->toArray();
 
-        $orderQuery = DB::table('ecom_order_info');
-        if (!empty($matchingOrderIds)) {
-            $orderQuery->whereIn('order_id', $matchingOrderIds);
-        } else {
-            $orderQuery->whereIn('order_id', [-1]);
+        // Customers count placing orders against these vendors
+        $customerCount = 0;
+        if (!empty($vendorIds)) {
+            $customerQuery = DB::table('ecom_order_product as eop')
+                ->join('products_details as pd', 'pd.id', '=', 'eop.product_id')
+                ->join('products as p', 'p.id', '=', 'pd.products_id')
+                ->join('ecom_order_info as eoi', 'eoi.order_id', '=', 'eop.order_id')
+                ->whereIn('p.login_id', $vendorIds);
+            if ($startDate && $endDate) {
+                $customerQuery->whereBetween('eop.created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+            }
+            $customerCount = $customerQuery->distinct('eoi.customer_id')->count('eoi.customer_id');
         }
-        $orderCount = $orderQuery->count();
 
-        $customerCount = $orderQuery->distinct('customer_id')->count('customer_id');
-
+        // Viewers (Number of viewers) for this staff member
         $vendorProfileViews = DB::table('vendor_details')->where('staff_id', $staffDbId)->sum('view_count') ?? 0;
         $productQueryViews = DB::table('products')->where('logintype', 'Vendor');
         if (!empty($vendorIds)) {
@@ -2074,17 +2104,32 @@ class DashboardController extends Controller
         $productViews = $productQueryViews->sum('view_count') ?? 0;
         $totalViews = $vendorProfileViews + $productViews;
 
-        // Completed orders total value for this staff member
-        $completedOrdersQuery = DB::table('ecom_order_product')
-            ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
-            ->join('products', 'products.id', '=', 'products_details.products_id')
-            ->where('ecom_order_product.order_status', 'Delivered');
+        // Completed orders total value (Delivered status only) for this staff member
+        $completedOrdersTotalValueSum = 0;
         if (!empty($vendorIds)) {
-            $completedOrdersQuery->whereIn('products.login_id', $vendorIds);
-        } else {
-            $completedOrdersQuery->whereIn('products.login_id', [-1]);
+            $completedOrdersQuery = DB::table('ecom_order_product as eop')
+                ->join('products_details as pd', 'pd.id', '=', 'eop.product_id')
+                ->join('products as p', 'p.id', '=', 'pd.products_id')
+                ->whereIn('p.login_id', $vendorIds)
+                ->where('eop.order_status', 'Delivered');
+            if ($startDate && $endDate) {
+                $completedOrdersQuery->whereBetween('eop.created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+            }
+            $completedOrdersTotalValueSum = $completedOrdersQuery->sum('eop.total_price') ?? 0;
         }
-        $completedOrdersTotalValueSum = $completedOrdersQuery->sum('ecom_order_product.total_price') ?? 0;
+
+        // Total orders amount (all statuses) for this staff member
+        $totalOrderAmountSum = 0;
+        if (!empty($vendorIds)) {
+            $totalOrderAmountQuery = DB::table('ecom_order_product as eop')
+                ->join('products_details as pd', 'pd.id', '=', 'eop.product_id')
+                ->join('products as p', 'p.id', '=', 'pd.products_id')
+                ->whereIn('p.login_id', $vendorIds);
+            if ($startDate && $endDate) {
+                $totalOrderAmountQuery->whereBetween('eop.created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+            }
+            $totalOrderAmountSum = $totalOrderAmountQuery->sum('eop.total_price') ?? 0;
+        }
 
         // Activities for this staff member
         $todayDate = date('Y-m-d');
@@ -2166,7 +2211,7 @@ class DashboardController extends Controller
 
         $salesRecords = [];
         if (!empty($staffVendorIds)) {
-            $salesRecords = DB::table('ecom_order_product as eop')
+            $salesRecordsQuery = DB::table('ecom_order_product as eop')
                 ->join('products_details as pd', 'pd.id', '=', 'eop.product_id')
                 ->join('products as p', 'p.id', '=', 'pd.products_id')
                 ->join('vendor_details as vd', 'vd.id', '=', 'p.login_id')
@@ -2174,8 +2219,11 @@ class DashboardController extends Controller
                 ->where('p.logintype', 'Vendor')
                 ->where('p.flag', 1)
                 ->where('eop.order_status', 'Delivered')
-                ->whereIn('vd.id', $staffVendorIds)
-                ->select(
+                ->whereIn('vd.id', $staffVendorIds);
+            if ($startDate && $endDate) {
+                $salesRecordsQuery->whereBetween('eop.created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+            }
+            $salesRecords = $salesRecordsQuery->select(
                     'vd.staff_id',
                     'vd.id as vendor_id',
                     'vd.shop_name',
@@ -2274,10 +2322,12 @@ class DashboardController extends Controller
         ];
 
         // Right Card: Pipeline stages, Win %, Reference
-        $activitiesDb = DB::table('activity_trakcers')
-            ->where('createdby', $id)
-            ->select('pipline', 'win', 'reference')
-            ->get();
+        $activitiesQuery = DB::table('activity_trakcers')
+            ->where('createdby', $id);
+        if ($startDate && $endDate) {
+            $activitiesQuery->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+        }
+        $activitiesDb = $activitiesQuery->select('pipline', 'win', 'reference')->get();
 
         $pipelineMap = [
             'Appointment Fixed' => 0,
@@ -2343,45 +2393,77 @@ class DashboardController extends Controller
 
         // Left Dynamic Line Chart Data (Revenue vs. Target, Client vs. Revenue)
         $currentYear = date('Y');
-        $monthlyStats = [];
-        for ($m = 1; $m <= 12; $m++) {
-            $monthName = date('M', mktime(0, 0, 0, $m, 1));
-            $monthlyStats[$monthName] = [
-                'revenue' => 0.0,
-                'clients' => 0,
-                'client_ids' => []
-            ];
-        }
+        $trendStats = [];
+        $trendLabels = [];
 
         $yearlySales = [];
         if (!empty($staffVendorIds)) {
-            $yearlySales = DB::table('ecom_order_product as eop')
+            $yearlySalesQuery = DB::table('ecom_order_product as eop')
                 ->join('products_details as pd', 'pd.id', '=', 'eop.product_id')
                 ->join('products as p', 'p.id', '=', 'pd.products_id')
                 ->join('ecom_order_info as eoi', 'eoi.order_id', '=', 'eop.order_id')
                 ->where('p.logintype', 'Vendor')
                 ->where('p.flag', 1)
                 ->where('eop.order_status', 'Delivered')
-                ->whereIn('p.login_id', $staffVendorIds)
-                ->whereYear('eop.created_at', $currentYear)
-                ->select('eoi.customer_id', 'eop.total_price', 'eop.created_at')
-                ->get();
+                ->whereIn('p.login_id', $staffVendorIds);
+            if ($startDate && $endDate) {
+                $yearlySalesQuery->whereBetween('eop.created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+            } else {
+                $yearlySalesQuery->whereYear('eop.created_at', $currentYear);
+            }
+            $yearlySales = $yearlySalesQuery->select('eoi.customer_id', 'eop.total_price', 'eop.created_at')->get();
         }
 
-        foreach ($yearlySales as $sale) {
-            $monthName = date('M', strtotime($sale->created_at));
-            if (isset($monthlyStats[$monthName])) {
-                $monthlyStats[$monthName]['revenue'] += (float) $sale->total_price;
-                if (!in_array($sale->customer_id, $monthlyStats[$monthName]['client_ids'])) {
-                    $monthlyStats[$monthName]['client_ids'][] = $sale->customer_id;
-                    $monthlyStats[$monthName]['clients']++;
+        if ($startDate && $endDate) {
+            $dateRange = new \DatePeriod(
+                new \DateTime($startDate),
+                new \DateInterval('P1D'),
+                (new \DateTime($endDate))->modify('+1 day')
+            );
+            foreach ($dateRange as $date) {
+                $dayLabel = $date->format('d M');
+                $trendLabels[] = $dayLabel;
+                $trendStats[$dayLabel] = [
+                    'revenue' => 0.0,
+                    'clients' => 0,
+                    'client_ids' => []
+                ];
+            }
+            foreach ($yearlySales as $sale) {
+                $dayLabel = date('d M', strtotime($sale->created_at));
+                if (isset($trendStats[$dayLabel])) {
+                    $trendStats[$dayLabel]['revenue'] += (float) $sale->total_price;
+                    if (!in_array($sale->customer_id, $trendStats[$dayLabel]['client_ids'])) {
+                        $trendStats[$dayLabel]['client_ids'][] = $sale->customer_id;
+                        $trendStats[$dayLabel]['clients']++;
+                    }
+                }
+            }
+        } else {
+            for ($m = 1; $m <= 12; $m++) {
+                $monthName = date('M', mktime(0, 0, 0, $m, 1));
+                $trendLabels[] = $monthName;
+                $trendStats[$monthName] = [
+                    'revenue' => 0.0,
+                    'clients' => 0,
+                    'client_ids' => []
+                ];
+            }
+            foreach ($yearlySales as $sale) {
+                $monthName = date('M', strtotime($sale->created_at));
+                if (isset($trendStats[$monthName])) {
+                    $trendStats[$monthName]['revenue'] += (float) $sale->total_price;
+                    if (!in_array($sale->customer_id, $trendStats[$monthName]['client_ids'])) {
+                        $trendStats[$monthName]['client_ids'][] = $sale->customer_id;
+                        $trendStats[$monthName]['clients']++;
+                    }
                 }
             }
         }
 
         $locationStats = [];
         if (!empty($staffVendorIds)) {
-            $locSales = DB::table('ecom_order_product as eop')
+            $locSalesQuery = DB::table('ecom_order_product as eop')
                 ->join('products_details as pd', 'pd.id', '=', 'eop.product_id')
                 ->join('products as p', 'p.id', '=', 'pd.products_id')
                 ->join('vendor_details as vd', 'vd.id', '=', 'p.login_id')
@@ -2389,9 +2471,11 @@ class DashboardController extends Controller
                 ->where('p.logintype', 'Vendor')
                 ->where('p.flag', 1)
                 ->where('eop.order_status', 'Delivered')
-                ->whereIn('vd.id', $staffVendorIds)
-                ->select('vd.route', 'eoi.customer_id', 'eop.total_price')
-                ->get();
+                ->whereIn('vd.id', $staffVendorIds);
+            if ($startDate && $endDate) {
+                $locSalesQuery->whereBetween('eop.created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+            }
+            $locSales = $locSalesQuery->select('vd.route', 'eoi.customer_id', 'eop.total_price')->get();
 
             foreach ($locSales as $sale) {
                 $loc = !empty($sale->route) ? $sale->route : 'Unknown';
@@ -2415,12 +2499,12 @@ class DashboardController extends Controller
         });
         $topLocations = array_slice($locationStats, 0, 10, true);
 
-        $monthlyLabels = array_keys($monthlyStats);
-        $monthlyRevenueVals = array_column($monthlyStats, 'revenue');
-        $monthlyClientVals = array_column($monthlyStats, 'clients');
+        $monthlyLabels = $trendLabels;
+        $monthlyRevenueVals = array_column($trendStats, 'revenue');
+        $monthlyClientVals = array_column($trendStats, 'clients');
         
         $targetVal = (float) ($staffDetails->monthlytarget ?? 0);
-        $monthlyTargetVals = array_fill(0, 12, $targetVal);
+        $monthlyTargetVals = array_fill(0, count($monthlyLabels), $targetVal);
 
         $locationLabels = array_keys($topLocations);
         $locationRevenueVals = array_map(function($loc) { return round($loc['revenue'], 2); }, $topLocations);
@@ -2450,52 +2534,76 @@ class DashboardController extends Controller
         $totalOrdersCount = 0;
         $completedOrdersCount = 0;
         if (!empty($staffVendorIds)) {
-            $totalOrdersCount = DB::table('ecom_order_product as eop')
+            $totalOrdersQuery = DB::table('ecom_order_product as eop')
+                ->join('products_details as pd', 'pd.id', '=', 'eop.product_id')
+                ->join('products as p', 'p.id', '=', 'pd.products_id')
+                ->whereIn('p.login_id', $staffVendorIds);
+            
+            $completedOrdersQuery = DB::table('ecom_order_product as eop')
                 ->join('products_details as pd', 'pd.id', '=', 'eop.product_id')
                 ->join('products as p', 'p.id', '=', 'pd.products_id')
                 ->whereIn('p.login_id', $staffVendorIds)
-                ->count();
+                ->where('eop.order_status', 'Delivered');
 
-            $completedOrdersCount = DB::table('ecom_order_product as eop')
-                ->join('products_details as pd', 'pd.id', '=', 'eop.product_id')
-                ->join('products as p', 'p.id', '=', 'pd.products_id')
-                ->whereIn('p.login_id', $staffVendorIds)
-                ->where('eop.order_status', 'Delivered')
-                ->count();
+            if ($startDate && $endDate) {
+                $totalOrdersQuery->whereBetween('eop.created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+                $completedOrdersQuery->whereBetween('eop.created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+            }
+
+            $totalOrdersCount = $totalOrdersQuery->count();
+            $completedOrdersCount = $completedOrdersQuery->count();
         }
         $clientRate = $totalOrdersCount > 0 ? round(($completedOrdersCount / $totalOrdersCount) * 100, 1) : 0;
 
-        $totalProspectsCount = DB::table('activity_trakcers')->where('createdby', $id)->count();
+        $totalProspectsQuery = DB::table('activity_trakcers')->where('createdby', $id);
+        if ($startDate && $endDate) {
+            $totalProspectsQuery->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+        }
+        $totalProspectsCount = $totalProspectsQuery->count();
+
         $totalClientsCount = 0;
         if (!empty($staffVendorIds)) {
-            $totalClientsCount = DB::table('ecom_order_product as eop')
+            $totalClientsQuery = DB::table('ecom_order_product as eop')
                 ->join('products_details as pd', 'pd.id', '=', 'eop.product_id')
                 ->join('products as p', 'p.id', '=', 'pd.products_id')
                 ->join('ecom_order_info as eoi', 'eoi.order_id', '=', 'eop.order_id')
-                ->whereIn('p.login_id', $staffVendorIds)
-                ->distinct('eoi.customer_id')
-                ->count('eoi.customer_id');
-        }
-        $prospectRate = ($totalProspectsCount + $totalClientsCount) > 0 ? round(($totalClientsCount / ($totalProspectsCount + $totalClientsCount)) * 100, 1) : 0;
+                ->whereIn('p.login_id', $staffVendorIds);
 
-        $totalVendorsCount = $vendorCount;
-        $renewedVendorsCount = DB::table('vendor_details')
+            if ($startDate && $endDate) {
+                $totalClientsQuery->whereBetween('eop.created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+            }
+
+            $totalClientsCount = $totalClientsQuery->distinct('eoi.customer_id')->count('eoi.customer_id');
+        }
+        $prospectRate = $totalProspectsCount > 0 ? round(($totalClientsCount / $totalProspectsCount) * 100, 1) : 0;
+
+        $totalVendorsQuery = DB::table('vendor_details')->where('staff_id', $staffDetails->id);
+        $renewedVendorsQuery = DB::table('vendor_details')
             ->where('staff_id', $staffDetails->id)
-            ->where('expired_date', '>', date('Y-m-d H:i:s'))
-            ->count();
+            ->where('expired_date', '>', date('Y-m-d H:i:s'));
+        if ($startDate && $endDate) {
+            $totalVendorsQuery->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+            $renewedVendorsQuery->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+        }
+        $totalVendorsCount = $totalVendorsQuery->count();
+        $renewedVendorsCount = $renewedVendorsQuery->count();
         $loyalRate = $totalVendorsCount > 0 ? round(($renewedVendorsCount / $totalVendorsCount) * 100, 1) : 0;
 
         $auctionSalesCount = 0;
         $auctionSalesSum = 0;
         if (!empty($staffVendorIds)) {
-            $auctionSales = DB::table('ecom_order_product as eop')
+            $auctionSalesQuery = DB::table('ecom_order_product as eop')
                 ->join('products_details as pd', 'pd.id', '=', 'eop.product_id')
                 ->join('products as p', 'p.id', '=', 'pd.products_id')
                 ->join('auctions as a', 'a.product_id', '=', 'p.id')
                 ->whereIn('p.login_id', $staffVendorIds)
-                ->where('eop.order_status', 'Delivered')
-                ->select(DB::raw('SUM(eop.total_price) as sum_price'), DB::raw('COUNT(*) as count'))
-                ->first();
+                ->where('eop.order_status', 'Delivered');
+
+            if ($startDate && $endDate) {
+                $auctionSalesQuery->whereBetween('eop.created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+            }
+
+            $auctionSales = $auctionSalesQuery->select(DB::raw('SUM(eop.total_price) as sum_price'), DB::raw('COUNT(*) as count'))->first();
             
             $auctionSalesSum = (float) ($auctionSales->sum_price ?? 0);
             $auctionSalesCount = (int) ($auctionSales->count ?? 0);
@@ -2504,33 +2612,59 @@ class DashboardController extends Controller
         $gaugeStats = [
             'client' => [
                 'rate' => $clientRate,
-                'stat1_label' => 'Total Orders',
+                'stat1_label' => 'Orders',
                 'stat1_value' => $totalOrdersCount,
-                'stat2_label' => 'Completed Orders',
+                'stat2_label' => 'Completed',
                 'stat2_value' => $completedOrdersCount
             ],
             'prospect' => [
                 'rate' => $prospectRate,
-                'stat1_label' => 'Total Prospects',
+                'stat1_label' => 'Prospects',
                 'stat1_value' => $totalProspectsCount,
-                'stat2_label' => 'Converted Clients',
+                'stat2_label' => 'Clients',
                 'stat2_value' => $totalClientsCount
             ],
             'loyal' => [
                 'rate' => $loyalRate,
-                'stat1_label' => 'Total Vendors',
+                'stat1_label' => 'Clients',
                 'stat1_value' => $totalVendorsCount,
-                'stat2_label' => 'Active/Renewed',
+                'stat2_label' => 'Renewal',
                 'stat2_value' => $renewedVendorsCount
             ],
             'auction' => [
                 'rate' => ($completedOrdersTotalValueSum > 0) ? round(($auctionSalesSum / $completedOrdersTotalValueSum) * 100, 1) : 0,
-                'stat1_label' => 'Total Sales (₹)',
+                'stat1_label' => 'Total Sales',
                 'stat1_value' => round($completedOrdersTotalValueSum, 1),
-                'stat2_label' => 'Bid Sales (₹)',
+                'stat2_label' => 'Bid Sales',
                 'stat2_value' => round($auctionSalesSum, 1)
             ]
         ];
+
+        $filterText = 'Showing cumulative data';
+        if ($startDate && $endDate) {
+            $filterText = 'Showing data from ' . \Carbon\Carbon::parse($startDate)->format('M d, Y') . ' to ' . \Carbon\Carbon::parse($endDate)->format('M d, Y');
+        }
+
+        if ($request->ajax() || $request->wantsJson() || $request->routeIs('staff.dashboard.filter_data')) {
+            return response()->json([
+                'success' => true,
+                'orderCount' => $orderCount,
+                'productCount' => $productCount,
+                'customerCount' => $customerCount,
+                'vendorCount' => $vendorCount,
+                'totalViews' => $totalViews,
+                'completedOrdersTotalValueSum' => $completedOrdersTotalValueSum,
+                'totalOrderAmountSum' => $totalOrderAmountSum,
+                'top10Data' => $top10Data,
+                'activityStats' => $activityStats,
+                'doubleChartsData' => $doubleChartsData,
+                'gaugeStats' => $gaugeStats,
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+                'period' => $period,
+                'filterText' => $filterText
+            ]);
+        }
 
         return view('layout.staff.dashboard.dashboard')->with([
             'vendorid' => $id,
@@ -2541,6 +2675,7 @@ class DashboardController extends Controller
             'customerCount' => $customerCount,
             'totalViews' => $totalViews,
             'completedOrdersTotalValueSum' => $completedOrdersTotalValueSum,
+            'totalOrderAmountSum' => $totalOrderAmountSum,
             'todayActivities' => $todayActivities,
             'upcomingActivities' => $upcomingActivities,
             'pastDueActivities' => $pastDueActivities,
@@ -2548,7 +2683,11 @@ class DashboardController extends Controller
             'top10Data' => $top10Data,
             'activityStats' => $activityStats,
             'doubleChartsData' => $doubleChartsData,
-            'gaugeStats' => $gaugeStats
+            'gaugeStats' => $gaugeStats,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'period' => $period,
+            'filterText' => $filterText
         ]);
     }
 
