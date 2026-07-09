@@ -714,14 +714,6 @@
                                     </p>
                                 </div>
                             </div>
-                            
-                            <!-- iOS Status Toggle -->
-                            <div class="employee-toggle">
-                                <label class="switch-ios" style="margin: 0;">
-                                    <input type="checkbox" checked disabled>
-                                    <span class="slider-ios"></span>
-                                </label>
-                            </div>
                         </div>
                         
                         <!-- Details and Info grid at bottom -->
