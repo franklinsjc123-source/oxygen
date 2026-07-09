@@ -67,8 +67,12 @@ use Illuminate\Support\Facades\Route;
                                 $possibleStaffRoute = 'staff' . $submenu->link;
                                 if (Route::has($possibleStaffRoute)) {
                                     $finalRoute = route($possibleStaffRoute);
+                                } elseif (Route::has($possibleStaffRoute . '.index')) {
+                                    $finalRoute = route($possibleStaffRoute . '.index');
                                 } elseif (Route::has('staff.' . $submenu->link)) {
                                     $finalRoute = route('staff.' . $submenu->link);
+                                } elseif (Route::has('staff.' . $submenu->link . '.index')) {
+                                    $finalRoute = route('staff.' . $submenu->link . '.index');
                                 } elseif ($submenu->link == 'order') {
                                     $finalRoute = route('stafforder');
                                 } elseif ($submenu->link == 'transaction') {

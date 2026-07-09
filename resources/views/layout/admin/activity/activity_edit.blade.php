@@ -11,7 +11,11 @@
 <div class="page-body-wrapper">
 	
 	<!-- Page Sidebar Start-->
-	@include('paritials.auth.sidemenu');
+	@if(request()->is('staff/*') || (session()->get('log_type') != 'Admin'))
+		@include('paritials.staffauth.sidemenu');
+	@else
+		@include('paritials.auth.sidemenu');
+	@endif
 	<!-- Page Sidebar Ends-->
 	
 	<!-- Right sidebar Start-->
@@ -33,7 +37,7 @@
                         </div>
                         <div class="col-lg-6">
                             <ol class="breadcrumb pull-right">
-                            <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="{{ (request()->is('staff/*') || (session()->get('log_type') != 'Admin')) ? route('staffdashboard', session()->get('login_id')) : url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
 							
 							<li class="breadcrumb-item active">Activity Tracker</li>
                             </ol>
@@ -53,7 +57,7 @@
                               
                                 <div class="tab-content" id="top-tabContent">
                                    
-                                <form action="{{ route('activity_trackers.update', $tracker->id) }}" method="POST">
+                                <form action="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.update' : 'activity_trackers.update', $tracker->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
 									

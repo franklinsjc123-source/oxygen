@@ -12,7 +12,11 @@
 <div class="page-body-wrapper">
 	
 	<!-- Page Sidebar Start-->
-	@include('paritials.auth.sidemenu');
+	@if(request()->is('staff/*') || (session()->get('log_type') != 'Admin'))
+		@include('paritials.staffauth.sidemenu');
+	@else
+		@include('paritials.auth.sidemenu');
+	@endif
 	<!-- Page Sidebar Ends-->
 	
 	<!-- Right sidebar Start-->
@@ -34,7 +38,7 @@
                         </div>
                         <div class="col-lg-6">
                             <ol class="breadcrumb pull-right">
-                            <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="{{ (request()->is('staff/*') || (session()->get('log_type') != 'Admin')) ? route('staffdashboard', session()->get('login_id')) : url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
 							
 							<li class="breadcrumb-item active">Activity Tracker</li>
                             </ol>
@@ -54,7 +58,7 @@
                               
                                 <div class="tab-content" id="top-tabContent">
 
-        <h3><a href="{{ route('activity_trackers.create') }}" class="btn btn-primary"> New Vendor Tracker</a></h3>
+        <h3><a href="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.create' : 'activity_trackers.create') }}" class="btn btn-primary"> New Vendor Tracker</a></h3>
         
 
         <table class="table" id="table"  data-click-to-select="true"  data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true"  data-show-refresh="true" data-key-events="true"  data-resizable="true" data-cookie="true"
@@ -66,7 +70,7 @@
                                    
                                     <th data-field="branch" data-sortable="true"> BRANCH</th>
                                    
-                                   <th data-field="Pipeline" data-sortable="true">PIPELINE</th>
+                                    <th data-field="Pipeline" data-sortable="true">PIPELINE</th>
 								   
 								   <th data-field="reference" data-sortable="true">REFERENCE</th>
 								   
@@ -77,7 +81,7 @@
                                       
 									 <th data-field="reason" data-sortable="true">Reason </th>
                                      <th data-field="status" data-sortable="true">STATUS</th>
-                                        <th>Action</th>
+                                         <th>Action</th>
                                     </tr>
             </thead>
             <tbody>
@@ -120,9 +124,9 @@
                                         
                                         <td>
                                             <div class="d-flex" style="gap: 5px; white-space: nowrap;">
-                                                <a href="{{ route('activity_trackers.show', $tracker->id) }}" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i> </a>
-                                                <a href="{{ route('activity_trackers.edit', $tracker->id) }}" class="btn btn-warning btn-sm"><i class="fa fa-pencil"></i> </a>
-                                                <form action="{{ route('activity_trackers.destroy', $tracker->id) }}" method="POST" style="margin: 0;" onsubmit="return confirmDelete(event, this);">
+                                                <a href="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.show' : 'activity_trackers.show', $tracker->id) }}" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i> </a>
+                                                <a href="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.edit' : 'activity_trackers.edit', $tracker->id) }}" class="btn btn-warning btn-sm"><i class="fa fa-pencil"></i> </a>
+                                                <form action="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.destroy' : 'activity_trackers.destroy', $tracker->id) }}" method="POST" style="margin: 0;" onsubmit="return confirmDelete(event, this);">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button class="btn btn-danger btn-sm" type="submit"><i class="fa fa-trash"></i></button>

@@ -201,9 +201,9 @@ Route::Post('/Ajaxpackage', [VendorcreateController::class, 'Ajaxpackage'])->nam
 
 
 //activity
-Route::get('activity/create', [ActivityController::class, 'create'])->name('staffactivitycreate');
+Route::get('activity/create', [\App\Http\Controllers\ActivityTrackerController::class, 'create'])->name('staffactivitycreate');
 
-Route::get('activity/list', [ActivityController::class, 'list'])->name('staffactivitylist');
+Route::get('activity/list', [\App\Http\Controllers\ActivityTrackerController::class, 'index'])->name('staffactivitylist');
 
 //Master
 
@@ -273,6 +273,13 @@ Route::resource('whatsapp',  WhAppController::class,['names' => 'staffwhatsapp']
 Route::resource('facebook',  FaceBookController::class,['names' => 'stafffacebook']);
 Route::resource('instagram',  InstaController::class,['names' => 'staffinstagram']);
 Route::resource('oxygen',  OxygenController::class,['names' => 'staffoxygen']);
+
+// activity trackers
+Route::post('activity_trackers/status/{id}', [\App\Http\Controllers\ActivityTrackerController::class, 'activity'])->name('staffactivity_trackers.status');
+Route::get('activity/edit/{id}', [\App\Http\Controllers\ActivityTrackerController::class, 'activityedit'])->name('staffactivity.edit');
+Route::resource('activity_trackers', \App\Http\Controllers\ActivityTrackerController::class, ['names' => 'staffactivity_trackers']);
+Route::get('activity/employee/', [\App\Http\Controllers\ActivityTrackerController::class, 'employeeactivity'])->name('staffactivity.employee');
+
 
 
 

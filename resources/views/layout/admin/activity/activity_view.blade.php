@@ -41,7 +41,11 @@
 <div class="page-body-wrapper">
 	
 	<!-- Page Sidebar Start-->
-	@include('paritials.auth.sidemenu');
+	@if(request()->is('staff/*') || (session()->get('log_type') != 'Admin'))
+		@include('paritials.staffauth.sidemenu');
+	@else
+		@include('paritials.auth.sidemenu');
+	@endif
 	<!-- Page Sidebar Ends-->
 	
 	<!-- Right sidebar Start-->
@@ -63,7 +67,7 @@
                         </div>
                         <div class="col-lg-6">
                             <ol class="breadcrumb pull-right">
-                            <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="{{ (request()->is('staff/*') || (session()->get('log_type') != 'Admin')) ? route('staffdashboard', session()->get('login_id')) : url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
 							
 							<li class="breadcrumb-item active">Activity Tracker</li>
                             </ol>
@@ -84,7 +88,7 @@
                                 <div class="tab-content" id="top-tabContent">
 								
                                  @if($page=='Edit')  
-                                <form action="{{ route('activity_trackers.status', $tracker->vendor_id) }}" method="POST">
+                                <form action="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.status' : 'activity_trackers.status', $tracker->vendor_id) }}" method="POST">
                                     @csrf
 									
 										
@@ -160,7 +164,7 @@
                                                 </div>
                                     </form>
 									@else
-									<form action="{{ route('activity_trackers.status', $tracker->id) }}" method="POST">
+									<form action="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.status' : 'activity_trackers.status', $tracker->id) }}" method="POST">
                                     @csrf
 									
 										
@@ -238,7 +242,7 @@
 									@endif
 									</div>
                                     
-									<h3>Activity Tracking <a href="{{ route('vendorcreate.show', $vid) }}" class="btn btn-warning"><i class="fa fa-plus"></i> Add Vendor </a></h3>
+									<h3>Activity Tracking <a href="{{ route(request()->is('staff/*') ? 'staffvendorcreate.show' : 'vendorcreate.show', $vid) }}" class="btn btn-warning"><i class="fa fa-plus"></i> Add Vendor </a></h3>
     <table class="table table-bordered track_tbl">
         <thead>
             <tr>
@@ -262,7 +266,7 @@
                 <td>{{$act->win}}</td>
 				<td>{{date('d-M-Y',strtotime($act->next_follow_date))}}</td>
                 <td>{{$act->reason}}</td>
-				<td><a href="{{ route('activity.edit', $act->id) }}" class="btn btn-warning"><i class="fa fa-pencil"></i> </a>
+				<td><a href="{{ route(request()->is('staff/*') ? 'staffactivity.edit' : 'activity.edit', $act->id) }}" class="btn btn-warning"><i class="fa fa-pencil"></i> </a>
 				</td>
             </tr>
 			@endforeach

@@ -150,12 +150,13 @@ class ActivityTrackerController extends Controller
             'reason' => $request->reason,
         ];
         StaffActivity::create($activity);
-       // $flasher->addSuccess('Activity Tracker Created successfully!');
-        return redirect()->route('activity_trackers.index')->with('success', 'Activity Tracker Created successfully');
+        $routePrefix = request()->is('staff/*') ? 'staff' : '';
+        return redirect()->route($routePrefix ? 'staffactivity_trackers.index' : 'activity_trackers.index')->with('success', 'Activity Tracker Created successfully');
     }
     catch (\Throwable $th) {
         $flasher->addError('Something Error!!' . $th);
-       return redirect()->route('activity_trackers.index');
+        $routePrefix = request()->is('staff/*') ? 'staff' : '';
+        return redirect()->route($routePrefix ? 'staffactivity_trackers.index' : 'activity_trackers.index');
     }
     }
     public function show($id)
@@ -198,6 +199,7 @@ class ActivityTrackerController extends Controller
             'next_follow_date' => $request->next_follow_date,
             'reason' => $request->reason,
         ];
+        $routePrefix = request()->is('staff/*') ? 'staff' : '';
         if($request->id)
         {
             $tracker = StaffActivity::findOrFail($request->id);
@@ -213,7 +215,7 @@ class ActivityTrackerController extends Controller
                 ]);
             }
             
-            return redirect()->route('activity.edit', $request->id)->with('success', 'Activity Tracker Updated');
+            return redirect()->route($routePrefix ? 'staffactivity.edit' : 'activity.edit', $request->id)->with('success', 'Activity Tracker Updated');
         }
         else
         {
@@ -228,9 +230,8 @@ class ActivityTrackerController extends Controller
                 ]);
             }
             
-            return redirect()->route('activity_trackers.show', $id)->with('success', 'Activity Tracker Updated');
+            return redirect()->route($routePrefix ? 'staffactivity_trackers.show' : 'activity_trackers.show', $id)->with('success', 'Activity Tracker Updated');
         }
-        //return redirect()->route('activity_trackers.index')->with('success', 'Activity Tracker Updated');
     }
 
     public function update(Request $request, $id)
@@ -268,7 +269,8 @@ class ActivityTrackerController extends Controller
             'manufacturer_details' => $request->manufacturer_details,
         ]);
 
-        return redirect()->route('activity_trackers.index')->with('success', 'Activity Tracker Updated');
+        $routePrefix = request()->is('staff/*') ? 'staff' : '';
+        return redirect()->route($routePrefix ? 'staffactivity_trackers.index' : 'activity_trackers.index')->with('success', 'Activity Tracker Updated');
     }
 
     public function destroy($id)
@@ -277,7 +279,8 @@ class ActivityTrackerController extends Controller
         $tracker = ActivityTracker::findOrFail($id);
         $tracker->delete();
 
-        return redirect()->route('activity_trackers.index')->with('success', 'Activity Tracker Deleted');
+        $routePrefix = request()->is('staff/*') ? 'staff' : '';
+        return redirect()->route($routePrefix ? 'staffactivity_trackers.index' : 'activity_trackers.index')->with('success', 'Activity Tracker Deleted');
     }
 }
 
