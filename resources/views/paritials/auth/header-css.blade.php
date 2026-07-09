@@ -110,4 +110,11 @@
     .JCLRgripDrag {
         border-left: none !important;
     }
+
+    /* ── SweetAlert2 Modal Sizing & Styling Overrides ── */
+    .swal2-popup {
+        font-size: 1.6rem !important;
+        width: 500px !important;
+        max-width: 90% !important;
+    }
 </style>
