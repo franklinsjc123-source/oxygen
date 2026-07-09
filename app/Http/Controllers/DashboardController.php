@@ -2195,6 +2195,93 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        $transactionsList = [];
+        $activitiesList = [];
+        if (!empty($vendorIds)) {
+            $dbTransactions = DB::table('ecom_order_product')
+                ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
+                ->join('products', 'products.id', '=', 'products_details.products_id')
+                ->join('ecom_order_info', 'ecom_order_info.order_id', '=', 'ecom_order_product.order_id')
+                ->whereIn('products.login_id', $vendorIds)
+                ->where('products.logintype', 'Vendor')
+                ->where('products.flag', 1)
+                ->select(
+                    'ecom_order_info.order_id',
+                    'ecom_order_info.payment_type',
+                    'ecom_order_info.payment_status',
+                    'ecom_order_info.created_at',
+                    'ecom_order_info.customer_firstname',
+                    'ecom_order_info.customer_lastname',
+                    'ecom_order_info.grand_total',
+                    'ecom_order_info.customer_city'
+                )
+                ->groupBy(
+                    'ecom_order_info.order_id',
+                    'ecom_order_info.payment_type',
+                    'ecom_order_info.payment_status',
+                    'ecom_order_info.created_at',
+                    'ecom_order_info.customer_firstname',
+                    'ecom_order_info.customer_lastname',
+                    'ecom_order_info.grand_total',
+                    'ecom_order_info.customer_city'
+                )
+                ->orderByDesc('ecom_order_info.created_at')
+                ->limit(5)
+                ->get();
+
+            foreach ($dbTransactions as $tx) {
+                $transactionsList[] = [
+                    'order_no' => '#' . $tx->order_id,
+                    'customer' => $tx->customer_firstname . ' ' . $tx->customer_lastname,
+                    'initials' => strtoupper(substr($tx->customer_firstname, 0, 1) . (substr($tx->customer_lastname, 0, 1) ?: '')),
+                    'date' => date('d/m/Y', strtotime($tx->created_at)),
+                    'location' => $tx->customer_city ?: 'N/A',
+                    'amount' => '₹' . number_format($tx->grand_total, 2),
+                    'status' => $tx->payment_status === 'Paid' ? 'Paid' : 'Pending'
+                ];
+            }
+
+            $realActivities = DB::table('ecom_order_product')
+                ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
+                ->join('products', 'products.id', '=', 'products_details.products_id')
+                ->join('ecom_order_info', 'ecom_order_product.order_id', '=', 'ecom_order_info.order_id')
+                ->whereIn('products.login_id', $vendorIds)
+                ->where('products.logintype', 'Vendor')
+                ->where('products.flag', 1)
+                ->select(
+                    'ecom_order_info.customer_firstname',
+                    'ecom_order_info.customer_lastname',
+                    'ecom_order_product.order_status',
+                    'ecom_order_product.created_at'
+                )
+                ->orderByDesc('ecom_order_product.id')
+                ->limit(4)
+                ->get();
+
+            foreach ($realActivities as $act) {
+                $cust = $act->customer_firstname . ' ' . $act->customer_lastname;
+                $initials = strtoupper(substr($act->customer_firstname, 0, 1) . (substr($act->customer_lastname, 0, 1) ?: ''));
+                $timeAgo = \Carbon\Carbon::parse($act->created_at)->diffForHumans();
+                $status = $act->order_status;
+                
+                if ($status === 'Pending') {
+                    $activitiesList[] = [
+                        'text' => "$cust placed an Order.",
+                        'time' => $timeAgo,
+                        'initials' => $initials,
+                        'color' => '#f08c00'
+                    ];
+                } else {
+                    $activitiesList[] = [
+                        'text' => "$cust's Order status updated to $status.",
+                        'time' => $timeAgo,
+                        'initials' => $initials,
+                        'color' => '#0ca678'
+                    ];
+                }
+            }
+        }
+
         // Dynamic Interactive Charts Data
         $subStaffList = DB::table('staffother')
             ->where('created_by', $staffDetails->id)
@@ -2680,6 +2767,8 @@ class DashboardController extends Controller
             'upcomingActivities' => $upcomingActivities,
             'pastDueActivities' => $pastDueActivities,
             'recentActivities' => $recentActivities,
+            'transactionsList' => $transactionsList,
+            'activitiesList' => $activitiesList,
             'top10Data' => $top10Data,
             'activityStats' => $activityStats,
             'doubleChartsData' => $doubleChartsData,

@@ -811,8 +811,66 @@
             </div>
         </div>
 
+        <!-- Activity Tracker Section -->
+        <div class="container-fluid mt-4">
+            <div class="activity-tracker-container">
+                <div class="activity-header">
+                    <h4 class="activity-title">Activity Tracker</h4>
+                    
+                    <div class="d-flex align-items-center gap-3">
+                        <ul class="activity-nav-pills">
+                            <li><button type="button" class="activity-nav-link active" onclick="switchActivityTab(event, 'tab-today')">Today</button></li>
+                            <li><button type="button" class="activity-nav-link" onclick="switchActivityTab(event, 'tab-upcoming')">Upcoming</button></li>
+                            <li><button type="button" class="activity-nav-link" onclick="switchActivityTab(event, 'tab-pastdue')">Past Due</button></li>
+                        </ul>
+                        <a href="{{ url('staff/activity_trackers') }}" class="view-all-link" style="color: #64748b; font-size: 13px; font-weight: 600; text-decoration: none; margin-left: 15px;">View All &gt;&gt;</a>
+                    </div>
+                </div>
+                
+                <!-- Tab Panels -->
+                <div id="tab-today" class="activity-tab-content">
+                    <div class="activity-grid">
+                        @forelse($todayActivities as $index => $act)
+                            @include('layout.admin.dashboard.activity_card', ['act' => $act, 'index' => $index])
+                        @empty
+                            <div class="col-12 text-center py-5 text-muted w-100" style="grid-column: 1 / -1;">
+                                <i class="fa fa-calendar-check-o fa-2x mb-3 text-secondary"></i>
+                                <p class="mb-0">No follow-ups scheduled for today.</p>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+                
+                <div id="tab-upcoming" class="activity-tab-content" style="display: none;">
+                    <div class="activity-grid">
+                        @forelse($upcomingActivities as $index => $act)
+                            @include('layout.admin.dashboard.activity_card', ['act' => $act, 'index' => $index])
+                        @empty
+                            <div class="col-12 text-center py-5 text-muted w-100" style="grid-column: 1 / -1;">
+                                <i class="fa fa-calendar-plus-o fa-2x mb-3 text-secondary"></i>
+                                <p class="mb-0">No upcoming follow-ups scheduled.</p>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+                
+                <div id="tab-pastdue" class="activity-tab-content" style="display: none;">
+                    <div class="activity-grid">
+                        @forelse($pastDueActivities as $index => $act)
+                            @include('layout.admin.dashboard.activity_card', ['act' => $act, 'index' => $index])
+                        @empty
+                            <div class="col-12 text-center py-5 text-muted w-100" style="grid-column: 1 / -1;">
+                                <i class="fa fa-calendar-times-o fa-2x mb-3 text-secondary"></i>
+                                <p class="mb-0">No past due follow-ups.</p>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Period Filter Bar -->
-        <div class="container-fluid mb-4">
+        <div class="container-fluid mt-4 mb-4">
             <div class="filter-bar d-flex justify-content-between align-items-center flex-wrap gap-3" style="background: #ffffff; padding: 16px 24px; border-radius: 16px; border: 1px solid #edf2f7; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02);">
                 <div class="filter-title d-flex align-items-center gap-3">
                     <div style="background-color: rgba(24, 53, 67, 0.08); width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
@@ -978,113 +1036,107 @@
             </div>
         </div>
 
-        <!-- Activity Tracker Section -->
-        <div class="container-fluid mt-4">
-            <div class="activity-tracker-container">
-                <div class="activity-header">
-                    <h4 class="activity-title">Activity Tracker</h4>
-                    
-                    <div class="d-flex align-items-center gap-3">
-                        <ul class="activity-nav-pills">
-                            <li><button type="button" class="activity-nav-link active" onclick="switchActivityTab(event, 'tab-today')">Today</button></li>
-                            <li><button type="button" class="activity-nav-link" onclick="switchActivityTab(event, 'tab-upcoming')">Upcoming</button></li>
-                            <li><button type="button" class="activity-nav-link" onclick="switchActivityTab(event, 'tab-pastdue')">Past Due</button></li>
-                        </ul>
-                        <a href="{{ url('staff/activity_trackers') }}" class="view-all-link" style="color: #64748b; font-size: 13px; font-weight: 600; text-decoration: none; margin-left: 15px;">View All &gt;&gt;</a>
-                    </div>
-                </div>
-                
-                <!-- Tab Panels -->
-                <div id="tab-today" class="activity-tab-content">
-                    <div class="activity-grid">
-                        @forelse($todayActivities as $index => $act)
-                            @include('layout.admin.dashboard.activity_card', ['act' => $act, 'index' => $index])
-                        @empty
-                            <div class="col-12 text-center py-5 text-muted w-100" style="grid-column: 1 / -1;">
-                                <i class="fa fa-calendar-check-o fa-2x mb-3 text-secondary"></i>
-                                <p class="mb-0">No follow-ups scheduled for today.</p>
-                            </div>
-                        @endforelse
-                    </div>
-                </div>
-                
-                <div id="tab-upcoming" class="activity-tab-content" style="display: none;">
-                    <div class="activity-grid">
-                        @forelse($upcomingActivities as $index => $act)
-                            @include('layout.admin.dashboard.activity_card', ['act' => $act, 'index' => $index])
-                        @empty
-                            <div class="col-12 text-center py-5 text-muted w-100" style="grid-column: 1 / -1;">
-                                <i class="fa fa-calendar-plus-o fa-2x mb-3 text-secondary"></i>
-                                <p class="mb-0">No upcoming follow-ups scheduled.</p>
-                            </div>
-                        @endforelse
-                    </div>
-                </div>
-                
-                <div id="tab-pastdue" class="activity-tab-content" style="display: none;">
-                    <div class="activity-grid">
-                        @forelse($pastDueActivities as $index => $act)
-                            @include('layout.admin.dashboard.activity_card', ['act' => $act, 'index' => $index])
-                        @empty
-                            <div class="col-12 text-center py-5 text-muted w-100" style="grid-column: 1 / -1;">
-                                <i class="fa fa-calendar-times-o fa-2x mb-3 text-secondary"></i>
-                                <p class="mb-0">No past due follow-ups.</p>
-                            </div>
-                        @endforelse
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Recent Orders Feed -->
+        <!-- ================= NEW WIDGETS ROW 2 ================= -->
         <div class="container-fluid mt-4 mb-4">
-            <div class="card tab2-card" style="background-color:#80808014; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 4px 20px 0 rgba(0,0,0,0.02); border-radius: 8px;">
-                <div class="card-header" style="border-bottom: 1px solid rgba(0,0,0,0.08); background-color: #fff; padding: 15px 20px; border-top-left-radius: 8px; border-top-right-radius: 8px;">
-                    <h4 style="margin: 0; font-size: 15px; font-weight: 600; color: #192c3a; text-transform: none; letter-spacing: 0;">Recent Orders</h4>
-                </div>
-                <div class="card-body" style="padding: 20px;">
-                    <div class="tab-content">
-                        <div class="tab-pane active show fade">
-                            <div class="row pt-3 products-admin ratio_asos">
-                                <div class="col-xl-12 col-md-12">
-                                    <div class="card" style="border: none; box-shadow: none; margin: 0;">
-                                        <div class="card-body product-box" style="padding: 0;">
-                                            <div class="row">
-                                                <ul style="list-style: none; padding: 0; margin: 0; width: 100%;">
-                                                    @forelse($recentActivities as $activity)
-                                                    <li>
-                                                        <div class="media" style="align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.05);">
-                                                            <div class="col-md-1" style="max-width: 45px; padding: 0;">
-                                                                @if(!empty($activity->product_image) && file_exists(public_path('assets/images/products/' . $activity->product_image)))
-                                                                    <img src="{{ asset('assets/images/products/' . $activity->product_image) }}" class="img-fluid img-30 me-2 blur-up lazyloaded" style="width: 35px; height: 35px; object-fit: cover; border-radius: 4px;" alt=""/>
-                                                                @else
-                                                                    <img src="{{ asset('assets/images/products/blouse.jpg') }}" class="img-fluid img-30 me-2 blur-up lazyloaded" style="width: 35px; height: 35px; object-fit: cover; border-radius: 4px;" alt=""/>
-                                                                @endif
-                                                            </div>
-                                                            <div class="col-md-11" style="padding-left: 15px;">
-                                                                <h5 class="mt-0" style="font-size: 14px; font-weight: 500; color: #192c3a; margin-bottom: 2px;">
-                                                                    <span class="font-secondary" style="font-weight: 600;">{{ ucwords(trim($activity->customer_firstname . ' ' . $activity->customer_lastname)) }}</span> 
-                                                                    ordered 
-                                                                    <strong style="color: #02cccd;">{{ $activity->product_name }}</strong> 
-                                                                    (Qty: {{ $activity->product_quantity }})
-                                                                </h5>
-                                                                <span class="text-secondary" style="font-size: 12px; display: block; margin-top: 2px;">
-                                                                    <i class="fa fa-clock-o me-1"></i> {{ \Carbon\Carbon::parse($activity->created_at)->diffForHumans() }} 
-                                                                    <span class="badge {{ $activity->order_status == 'Delivered' ? 'badge-success' : 'badge-warning' }} ms-2" style="font-size: 10px; padding: 3px 8px;">{{ $activity->order_status }}</span>
-                                                                </span>
-                                                            </div>
+            <div class="row">
+                <!-- Left: Transaction Table -->
+                <div class="col-lg-8 col-md-12 mb-4">
+                    <div class="card" style="border-radius: 20px; border: none; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02); height: 100%;">
+                        <div class="card-header" style="background-color: transparent; border: none; padding: 24px 24px 12px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <h4 style="font-weight: 700; color: #1a202c; margin: 0; font-size: 18px;">Transaction</h4>
+                                <a href="{{ route('stafftransaction') }}" style="font-size: 12.5px; font-weight: 600; color: #5c67f2; text-decoration: none;">See History</a>
+                            </div>
+                            <!-- Transaction Filter Tabs -->
+                            <div style="display: flex; gap: 16px; align-items: center;">
+                                <span class="tx-tab active" onclick="filterTransactions('All', this)" style="cursor: pointer; font-size: 12px; font-weight: 700; color: #5c67f2; border-bottom: 2px solid #5c67f2; padding-bottom: 4px; transition: all 0.2s;">All</span>
+                                <span class="tx-tab" onclick="filterTransactions('Paid', this)" style="cursor: pointer; font-size: 12px; font-weight: 600; color: #a0aec0; padding-bottom: 4px; transition: all 0.2s;">Paid</span>
+                                <span class="tx-tab" onclick="filterTransactions('Pending', this)" style="cursor: pointer; font-size: 12px; font-weight: 600; color: #a0aec0; padding-bottom: 4px; transition: all 0.2s;">Pending</span>
+                            </div>
+                        </div>
+                        <div class="card-body" style="padding: 0 24px 24px 24px;">
+                            <div class="table-responsive">
+                                <table class="table table-borderless align-middle" style="margin: 0;">
+                                    <thead>
+                                        <tr style="border-bottom: 1px solid #edf2f7;">
+                                            <th style="font-size: 11px; font-weight: 600; color: #718096; text-transform: uppercase; padding: 12px 8px;">Order No.</th>
+                                            <th style="font-size: 11px; font-weight: 600; color: #718096; text-transform: uppercase; padding: 12px 8px;">Date</th>
+                                            <th style="font-size: 11px; font-weight: 600; color: #718096; text-transform: uppercase; padding: 12px 8px;">Customer</th>
+                                            <th style="font-size: 11px; font-weight: 600; color: #718096; text-transform: uppercase; padding: 12px 8px;">Location</th>
+                                            <th style="font-size: 11px; font-weight: 600; color: #718096; text-transform: uppercase; padding: 12px 8px;">Amount</th>
+                                            <th style="font-size: 11px; font-weight: 600; color: #718096; text-transform: uppercase; padding: 12px 8px;">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse($transactionsList as $tx)
+                                            <tr class="tx-row" data-status="{{ $tx['status'] }}" style="border-bottom: 1px solid #f7fafc; transition: all 0.2s;">
+                                                <td style="font-size: 13.5px; font-weight: 700; color: #2d3748; padding: 16px 8px;">{{ $tx['order_no'] }}</td>
+                                                <td style="font-size: 13px; color: #718096; font-weight: 500; padding: 16px 8px;">{{ $tx['date'] }}</td>
+                                                <td style="padding: 16px 8px;">
+                                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                                        @php
+                                                            $colors = ['#5c67f2', '#e67e22', '#2ecc71', '#e74c3c', '#9b59b6', '#00cec9'];
+                                                            $bg = $colors[abs(crc32($tx['customer'])) % count($colors)];
+                                                        @endphp
+                                                        <div style="width: 32px; height: 32px; border-radius: 50%; background-color: {{ $bg }}20; color: {{ $bg }}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">
+                                                            {{ $tx['initials'] }}
                                                         </div>
-                                                    </li>
-                                                    @empty
-                                                    <li class="text-center py-4">
-                                                        <h6 class="text-muted">No recent orders found.</h6>
-                                                    </li>
-                                                    @endforelse
-                                                </ul>
-                                            </div>
+                                                        <span style="font-size: 13.5px; font-weight: 600; color: #2d3748;">{{ $tx['customer'] }}</span>
+                                                    </div>
+                                                </td>
+                                                <td style="font-size: 13px; color: #718096; font-weight: 600; padding: 16px 8px;">{{ $tx['location'] }}</td>
+                                                <td style="font-size: 13.5px; font-weight: 700; color: #2d3748; padding: 16px 8px;">{{ $tx['amount'] }}</td>
+                                                <td style="padding: 16px 8px;">
+                                                    <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: {{ $tx['status'] === 'Paid' ? '#2ecc71' : '#a0aec0' }};">
+                                                        <span style="width: 6px; height: 6px; border-radius: 50%; background-color: {{ $tx['status'] === 'Paid' ? '#2ecc71' : '#a0aec0' }}; display: inline-block;"></span>
+                                                        {{ $tx['status'] }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="6" style="text-align: center; padding: 40px; color: #a0aec0; font-size: 14px; font-weight: 500;">
+                                                    <div style="margin-bottom: 8px;"><i class="fa fa-receipt" style="font-size: 24px; color: #cbd5e1;"></i></div>
+                                                    No transactions found
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Recent Activities -->
+                <div class="col-lg-4 col-md-12 mb-4">
+                    <div class="card" style="border-radius: 20px; border: none; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02); height: 100%;">
+                        <div class="card-header" style="background-color: transparent; border: none; padding: 24px 24px 12px 24px; display: flex; justify-content: space-between; align-items: center;">
+                            <h4 style="font-weight: 700; color: #1a202c; margin: 0; font-size: 18px;">Recent Activities</h4>
+                            <div style="display: flex; gap: 8px;">
+                                <a href="#" style="font-size: 12px; font-weight: 600; color: #718096; text-decoration: none;">Cancel</a>
+                                <a href="#" style="font-size: 12px; font-weight: 700; color: #5c67f2; text-decoration: none; border-bottom: 2px solid #5c67f2; padding-bottom: 2px;">All</a>
+                            </div>
+                        </div>
+                        <div class="card-body" style="padding: 12px 24px 24px 24px;">
+                            <div style="display: flex; flex-direction: column; gap: 20px;">
+                                @forelse($activitiesList as $act)
+                                    <div style="display: flex; align-items: flex-start; gap: 14px;">
+                                        <div style="width: 38px; height: 38px; border-radius: 50%; background-color: {{ $act['color'] }}20; color: {{ $act['color'] }}; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; position: relative;">
+                                            {{ $act['initials'] }}
+                                        </div>
+                                        <div style="flex-grow: 1;">
+                                            <p style="font-size: 13.5px; color: #2d3748; font-weight: 600; margin: 0 0 2px 0; line-height: 1.4;">{{ $act['text'] }}</p>
+                                            <span style="font-size: 11px; color: #a0aec0; font-weight: 500;">{{ $act['time'] }}</span>
                                         </div>
                                     </div>
-                                </div>
+                                @empty
+                                    <div style="text-align: center; padding: 40px 0; color: #a0aec0; font-size: 14px; font-weight: 500; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                        <i class="fa fa-bell-slash" style="font-size: 24px; color: #cbd5e1;"></i>
+                                        <span>No recent activities found</span>
+                                    </div>
+                                @endforelse
                             </div>
                         </div>
                     </div>
@@ -1095,6 +1147,32 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+// === Transaction Filter ===
+function filterTransactions(status, el) {
+    document.querySelectorAll('.tx-tab').forEach(function(tab) {
+        tab.classList.remove('active');
+        tab.style.color = '#a0aec0';
+        tab.style.borderBottom = 'none';
+        tab.style.fontWeight = '600';
+    });
+    el.classList.add('active');
+    el.style.color = '#5c67f2';
+    el.style.borderBottom = '2px solid #5c67f2';
+    el.style.fontWeight = '700';
+
+    document.querySelectorAll('.tx-row').forEach(function(row) {
+        if (status === 'All') {
+            row.style.display = '';
+        } else {
+            var rowStatus = row.getAttribute('data-status');
+            if (rowStatus === status) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    });
+}
 function switchActivityTab(evt, tabId) {
     // Hide all activity tab contents
     document.querySelectorAll('.activity-tab-content').forEach(function(content) {
