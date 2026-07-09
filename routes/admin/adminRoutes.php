@@ -84,6 +84,10 @@ Route::get('dashboard', [DashboardController::class, 'admindashboard'])
     ->name('admindashboard')
     ->middleware('auth');
 
+Route::get('dashboard/filter-data', [DashboardController::class, 'admindashboard'])
+    ->name('admin.dashboard.filter_data')
+    ->middleware('auth');
+
 Route::get('dashboard.php', function() {
     return redirect()->route('admindashboard');
 });
