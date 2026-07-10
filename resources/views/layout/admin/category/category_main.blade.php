@@ -183,7 +183,7 @@
                                                                 data-bs-target="#exampleeditModal"data-original-title="Edit"><i
                                                                     class="fa fa-pencil"></i>
                                                             </a> --}}
-															 @if (session()->get('log_type') == 'Admin')
+															 {{-- @if (session()->get('log_type') == 'Admin')
                                                             <form
                                                                 action="{{ route('category.main.destroy', $categories->id) }}"
                                                                 method="post">
@@ -193,7 +193,7 @@
                                                                         class="fa fa-trash"></i>
                                                                 </button>
                                                             </form>
-															@endif
+															@endif --}}
                                                         </span>
                                                     </td>
                                                 </tr>

@@ -145,18 +145,11 @@
                                                 <?php
                                                 $login_id = str_pad($products->login_id, 4, '0', STR_PAD_LEFT);
                                                 $pro_id = str_pad($products->id, 5, '0', STR_PAD_LEFT);
-                                                $vendar_id = App\Models\User::where('login_id',$products->login_id)->get();
-                                                
-                                                // $produ = App\Models\vendor\vendorcreate::where('user_id',$vendar_id[0]->id)->get();
-                                                // $zonename = App\Models\Zonal::get();
-                                                //dd($vendar_id[0]->id);
-                                                  $produ = \DB::table('vendor_details')
-                                                            ->leftjoin('zonals', 'vendor_details.zone', '=', 'zonals.id')
-                                                            ->select('vendor_details.*', 'zonals.name')
-                                                            ->where('vendor_details.user_id', $vendar_id[0]->id)
-                                                            ->get();
-
-                                                
+                                                $produ = \DB::table('vendor_details')
+                                                          ->leftJoin('zonals', 'vendor_details.zone', '=', 'zonals.id')
+                                                          ->select('vendor_details.*', 'zonals.name')
+                                                          ->where('vendor_details.user_id', $products->login_id)
+                                                          ->get();
                                                 ?>
                                                 
                                                 <td>

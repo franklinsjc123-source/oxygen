@@ -201,28 +201,18 @@
                                                    $totalQty = (int) ($stockSummary->total_qty ?? 0);
                                                    $lowLimit = (int) ($stockSummary->low_limit ?? 0);
                                                    $isLowStock = $lowLimit > 0 && $totalQty <= $lowLimit;
-                                                     $produ = App\Models\User::where('login_id', $products->login_id)
-                                                       ->join('vendor_details', 'vendor_details.user_id',  '=', 'users.id')
-                                                       ->select('vendor_details.zone')
+                                                     $produ = \DB::table('vendor_details')
+                                                       ->leftJoin('zonals', 'vendor_details.zone', '=', 'zonals.id')
+                                                       ->select('vendor_details.*', 'zonals.name as zone_name')
+                                                       ->where('vendor_details.user_id', $products->login_id)
                                                        ->get();
 
-                                                
-                                               
-                                                if(count($produ) > 0)
-                                                    {
-                                                        
-                                                         $zone = $produ[0]->zone;
-                                                    }else{
-                                                        $zone = '--';
-                                                    }
-                                                                                               
-                                                // if(count($produ) > 0)
-                                                //     {
-                                                        
-                                                //          $zone = $produ[0]->zone;
-                                                //     }else{
-                                                //         $zone = '--';
-                                                //     }
+                                                 if(count($produ) > 0 && !empty($produ[0]->zone_name))
+                                                     {
+                                                          $zone = $produ[0]->zone_name;
+                                                     }else{
+                                                          $zone = '--';
+                                                     }
                                                    ?>
                                                 <td>{{ $zone.'-'.$login_id.'-'.$pro_id}}</td>
                                                
