@@ -89,6 +89,15 @@
             flex-grow: 1;
             min-width: 0;
             color: #ffffff;
+            padding-right: 50px;
+        }
+
+        .employee-address-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .employee-name {
@@ -511,6 +520,28 @@
         }
 
         @media (max-width: 575px) {
+            .employee-profile-banner {
+                padding: 16px !important;
+                gap: 12px !important;
+            }
+            .employee-info-main {
+                padding-right: 0 !important;
+            }
+            .employee-name {
+                white-space: normal !important;
+                word-break: break-word !important;
+            }
+            .employee-role {
+                white-space: normal !important;
+                overflow: visible !important;
+                text-overflow: clip !important;
+            }
+            .employee-address-text {
+                display: block !important;
+                overflow: visible !important;
+                -webkit-line-clamp: unset !important;
+                text-overflow: clip !important;
+            }
             .metrics-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 12px;
@@ -520,6 +551,9 @@
             }
             .employee-card-bottom {
                 grid-template-columns: 1fr;
+            }
+            .activity-tracker-container {
+                padding: 16px !important;
             }
             .activity-header {
                 flex-direction: column !important;
@@ -533,7 +567,9 @@
             .activity-nav-pills {
                 width: 100% !important;
                 display: flex !important;
-                gap: 6px !important;
+                flex-wrap: nowrap !important;
+                gap: 4px !important;
+                overflow: hidden !important;
             }
             .activity-nav-pills li {
                 flex: 1 !important;
@@ -542,9 +578,10 @@
             .activity-nav-pills li button {
                 width: 100% !important;
                 text-align: center !important;
-                padding: 6px 4px !important;
-                font-size: 11px !important;
+                padding: 6px 2px !important;
+                font-size: 10.5px !important;
                 white-space: nowrap !important;
+                letter-spacing: -0.2px !important;
             }
             .chart-sub-pill-container {
                 width: 100% !important;
@@ -560,29 +597,35 @@
                 border-radius: 6px !important;
                 white-space: nowrap !important;
             }
-            /* Specific overrides for Activity Tracker header on mobile to prevent wrapping */
-            .activity-tracker-container .activity-header > div.d-flex {
-                width: 100% !important;
-                justify-content: space-between !important;
-                flex-wrap: nowrap !important;
-            }
-            .activity-tracker-container .activity-nav-pills {
-                width: auto !important;
-                flex-wrap: nowrap !important;
-                flex: 1 !important;
-            }
-            .activity-tracker-container .activity-nav-pills li {
-                flex: 1 !important;
-            }
-            .activity-tracker-container .activity-nav-pills li button {
-                padding: 6px 8px !important;
-                font-size: 11px !important;
-            }
             .activity-tracker-container .view-all-link {
-                margin-left: 8px !important;
-                white-space: nowrap !important;
-                font-size: 11px !important;
+                display: none !important;
             }
+            .mobile-view-all {
+                display: block !important;
+                margin-top: 16px;
+            }
+        }
+
+        .mobile-view-all {
+            display: none;
+        }
+        .view-all-mobile-btn {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            padding: 10px 16px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            color: #475569;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .view-all-mobile-btn:hover {
+            background-color: #edf2f7;
+            color: #1e293b;
         }
 
         /* Dynamic Chart Custom Styles */
@@ -699,7 +742,7 @@
                                 </div>
                                 
                                 <!-- Employee Info next to the image -->
-                                <div class="employee-info-main" style="padding-right: 50px;">
+                                <div class="employee-info-main">
                                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
                                         <h4 class="employee-name" title="{{ $staffDetails->fullname }}">{{ $staffDetails->fullname }}</h4>
                                     </div>
@@ -708,7 +751,7 @@
                                     </div>
                                     <p class="employee-address" title="{{ $staffDetails->curr_addr ?? 'Address not specified' }}">
                                         <i class="fa fa-map-marker" style="color: #ffffff; margin-top: 2px; font-size: 12px; width: 12px; text-align: center; flex-shrink: 0;"></i>
-                                        <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                        <span class="employee-address-text">
                                             {{ $staffDetails->curr_addr ?? 'Address not specified' }}
                                         </span>
                                     </p>
@@ -857,6 +900,11 @@
                             </div>
                         @endforelse
                     </div>
+                </div>
+                
+                <!-- Mobile View All Button -->
+                <div class="mobile-view-all">
+                    <a href="{{ url('admin/activity_trackers') }}" class="view-all-mobile-btn">View All &gt;&gt;</a>
                 </div>
             </div>
         </div>
@@ -1052,12 +1100,12 @@
                                 <table class="table table-borderless align-middle" style="margin: 0;">
                                     <thead>
                                         <tr style="border-bottom: 1px solid #edf2f7;">
-                                            <th style="font-size: 11px; font-weight: 600; color: #718096; text-transform: uppercase; padding: 12px 8px;">Order No.</th>
-                                            <th style="font-size: 11px; font-weight: 600; color: #718096; text-transform: uppercase; padding: 12px 8px;">Date</th>
-                                            <th style="font-size: 11px; font-weight: 600; color: #718096; text-transform: uppercase; padding: 12px 8px;">Customer</th>
-                                            <th style="font-size: 11px; font-weight: 600; color: #718096; text-transform: uppercase; padding: 12px 8px;">Location</th>
-                                            <th style="font-size: 11px; font-weight: 600; color: #718096; text-transform: uppercase; padding: 12px 8px;">Amount</th>
-                                            <th style="font-size: 11px; font-weight: 600; color: #718096; text-transform: uppercase; padding: 12px 8px;">Status</th>
+                                            <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Order No.</th>
+                                            <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Date</th>
+                                            <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Customer</th>
+                                            <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Location</th>
+                                            <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Amount</th>
+                                            <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
