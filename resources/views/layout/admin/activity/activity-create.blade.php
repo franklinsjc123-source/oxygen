@@ -404,13 +404,13 @@
     form.validation-attempted :is(input, select, textarea).form-control:invalid,
     form.validation-attempted :is(input, select, textarea).form-select:invalid,
     form.validation-attempted textarea:invalid {
-        border-color: #dc3545 !important;
-        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+        /* border-color: #dc3545 !important; */
+        /* box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important; */
     }
 
     .invalid-field {
-        border-color: #dc3545 !important;
-        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+        /* border-color: #dc3545 !important; */
+        /* box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important; */
     }
 
     /* Keep invalid inputs red even when focused */
@@ -422,9 +422,9 @@
     form.validation-attempted select.form-select.invalid-field:focus,
     form.validation-attempted textarea.invalid-field,
     form.validation-attempted textarea.invalid-field:focus {
-        border-color: #dc3545 !important;
-        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
-        outline: 0 !important;
+        /* border-color: #dc3545 !important; */
+        /* box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important; */
+        /* outline: 0 !important; */
     }
 </style>
 <script>

@@ -902,9 +902,9 @@ class ProductsController extends Controller
                 $products_details->quantity = $request->quantity[$key];
                 $products_details->retail_price = $request->retail_price[$key];
                 $products_details->selling_price = $request->selling_price[$key];
-                $products_details->sku = $request->sku[$key];
-                $products_details->return_replace = $request->return_replace[$key] ?? 1;
-                $products_details->r_days = $request->r_days[$key];
+                $products_details->sku = is_array($request->sku) ? ($request->sku[$key] ?? '') : ($request->sku ?? '');
+                $products_details->return_replace = is_array($request->return_replace) ? ($request->return_replace[$key] ?? 'Return') : ($request->return_replace ?? 'Return');
+                $products_details->r_days = is_array($request->r_days) ? ($request->r_days[$key] ?? 0) : ($request->r_days ?? 0);
                 $products_details->low_stock_limit = $request->low_stock_limit[$key];
                 //$products_details->threshold = $request->threshold[$key];
                 $products_details->login_id =$login_id;

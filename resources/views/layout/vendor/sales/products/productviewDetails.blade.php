@@ -141,6 +141,7 @@
                                                                         </option>
                                                                         <?php } ?>
                                                                     </select>
+                                            <div class="invalid-feedback-custom">Please select return/replacement option</div>
                                                                 </div>
                                 
                                                                
@@ -148,6 +149,7 @@
                                                                 <div class="col-md-3">
                                                                     <input type="text" name="r_days[]" placeholder="Days"
                                                                         class="form-control" required value="{{ $productdetails->r_days }}">
+                                            <div class="invalid-feedback-custom">Please enter return days</div>
                                                                 </div>  
                                                                 <div class="col-md-3">
                                                                     <input type="number" name="low_stock_limit[]"

@@ -1005,9 +1005,9 @@ public function store(Request $request, FlasherInterface $flasher)
                     $products_details->quantity = $quantities[$key] ?? 0;
                     $products_details->retail_price = $retailPrices[$key] ?? 0;
                     $products_details->selling_price = $sellingPrices[$key] ?? 0;
-                    $products_details->sku = $skus[$key] ?? '';
-                    $products_details->return_replace = $returnReplaces[$key] ?? 'Return';
-                    $products_details->r_days = $rDays[$key] ?? 0;
+                    $products_details->sku = is_array($skus) ? ($skus[$key] ?? '') : ($request->input('sku') ?? '');
+                    $products_details->return_replace = is_array($returnReplaces) ? ($returnReplaces[$key] ?? 'Return') : ($request->input('return_replace') ?? 'Return');
+                    $products_details->r_days = is_array($rDays) ? ($rDays[$key] ?? 0) : ($request->input('r_days') ?? 0);
                     $products_details->low_stock_limit = $lowStockLimits[$key] ?? 0;
                     $products_details->save();
                 }            

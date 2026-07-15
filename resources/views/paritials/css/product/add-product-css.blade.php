@@ -17,4 +17,15 @@
   border: none;
   background-color: transparent;
 }
-</style>
+
+        .invalid-feedback-custom {
+            display: none;
+            color: #dc3545;
+            font-size: 1.05rem;
+            margin-top: 0.25rem;
+        }
+        form.validation-attempted :invalid ~ .invalid-feedback-custom,
+        form.validation-attempted .invalid-field ~ .invalid-feedback-custom {
+            display: block !important;
+        }
+    </style>

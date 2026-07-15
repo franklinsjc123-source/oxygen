@@ -438,16 +438,18 @@
                             <option value="XXL">XXL</option><option value="3XL">3XL </option>
                             <option value="3XL">4XL </option><option value="3XL">5XL</option>
                         </select>
-                        <select class="form-select form-select-lg mt-4 text-secondary" name="return_replace[${x}]"> 
-                            <option selected hidden class="">Return / Replacement</option>
+                        <select class="form-select form-select-lg mt-4 text-secondary" name="return_replace[${x}]" required> 
+                            <option selected value="" hidden class="">Return / Replacement</option>
                             <option value="1">Return</option>
                             <option value="2">Replacement</option>
                         </select>
+                        <div class="invalid-feedback-custom">Please select return/replacement option</div>
                     </div>
 
                     <div class="col-md-2">
                         <input type="number" class="form-control mt-1" placeholder="Qty" name="quantity[${x}]">
-                        <input type="text" name="r_days[${x}]" placeholder="Days" class="form-control mt-4">
+                        <input type="text" name="r_days[${x}]" placeholder="Days" class="form-control mt-4" required>
+                        <div class="invalid-feedback-custom">Please enter return days</div>
                     </div>
                     
                     <div class="col-md-2">
