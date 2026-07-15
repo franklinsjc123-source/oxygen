@@ -322,6 +322,7 @@ public function store(Request $request, FlasherInterface $flasher)
         $product->product_name = $request->product_name;
         $product->tax_id = $request->tax_id;
         $product->gst_id = $request->gst_id;
+        $product->hsncode = $request->hsncode;
         $product->description = $request->description;
         $product->weight = $request->weight;
         $product->length = $request->length;
@@ -652,8 +653,11 @@ public function store(Request $request, FlasherInterface $flasher)
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id, $category_sub = null, FlasherInterface $flasher)
+    public function edit($id, $category_sub = null, FlasherInterface $flasher = null)
     {
+        if (!$flasher) {
+            $flasher = app(FlasherInterface::class);
+        }
         $login_id = session()->get('login_id');
         //  echo $id;exit();
         $products = Products::where('flag', 1)->where('product_id', $id)->first();
@@ -663,7 +667,26 @@ public function store(Request $request, FlasherInterface $flasher)
         }
         $category = Category::where('status',1)->get();
         $category_main_data = CategoryMain::where('status',1)->get();
-        $CategorySub = CategorySub::where('status',1)->get();
+        
+        $vendorcreate = vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
+        $subcategoryarray = array_values(array_filter(array_map('intval', array_map('trim', explode(',', (string) optional($vendorcreate)->sub_category_ids)))));
+        if ($products && !in_array((int)$products->category_sub, $subcategoryarray)) {
+            $subcategoryarray[] = (int)$products->category_sub;
+        }
+        $CategorySub = DB::table('category_sub as t1')
+            ->leftJoin('category as t2', 't1.category_id', '=', 't2.id')
+            ->leftJoin('category_main as t3', 't1.category_main_id', '=', 't3.id')
+            ->select(
+                't1.id',
+                't1.category_id',
+                't1.category_main_id',
+                't1.category_sub_name',
+                't2.category_name',
+                't3.category_main_name'
+            )
+            ->where('t1.status', 1)
+            ->whereIn('t1.id', !empty($subcategoryarray) ? $subcategoryarray : [0])
+            ->get();
         
         $gst = GST::where('status',1)->get();
         $offer = Offer::where('created_by_id',$login_id)->where('status',1)->get();
@@ -800,8 +823,8 @@ public function store(Request $request, FlasherInterface $flasher)
               		// dd($products)
     //    ->join('zonals', 'zonals.id', '=', 'routes.zonal_id')
     //           		->get(['pincode.id','routes.name as routename', 'zonals.name as zonalname','pincode.name', 'pincode.area','pincode.post_region']);
-        // dd($productdetails);
-    return view('layout.vendor.products.EditProduct')
+        $colors = ProductColor::all();
+        return view('layout.vendor.products.EditProduct')
             ->with([
                 "product" =>$products,
                 "category_main_data" => $category_main_data,
@@ -815,7 +838,8 @@ public function store(Request $request, FlasherInterface $flasher)
                 "productdetailss"=>$productdetails,
                 "cates" =>$cate,
                 "productsAttri"=> $productsAttri,
-                "productcollection" => $productcollection 
+                "productcollection" => $productcollection,
+                "colors" => $colors
             ]);
     
         // } catch(\Throwable $th) {
@@ -856,6 +880,7 @@ public function store(Request $request, FlasherInterface $flasher)
             $Products->product_name = $request->input('product_name');
             $Products->tax_id = $request->input('tax_id');
             $Products->gst_id = $request->input('gst_id');
+            $Products->hsncode = $request->input('hsncode');
             $Products->product_image = $filename ?? "-";
             $Products->description = $request->input('description');
             $Products->weight = $request->input('weight');
@@ -886,6 +911,14 @@ public function store(Request $request, FlasherInterface $flasher)
                 
                 $attrColors = $request->input('attrcolor') ?: [];
                 $attrSizes = $request->input('attrsize') ?: [];
+                $selectedAttrId = $request->input('selected_attribute_id1');
+                $attrGroupName = 'Size';
+                if ($selectedAttrId) {
+                    $attrGroup = AttributeGroup::find($selectedAttrId);
+                    if ($attrGroup) {
+                        $attrGroupName = $attrGroup->attribute_group_refname ?? $attrGroup->attribute_group_name ?? 'Size';
+                    }
+                }
                 $quantities = $request->input('quantity') ?: [];
                 $retailPrices = $request->input('retail_price') ?: [];
                 $sellingPrices = $request->input('selling_price') ?: [];
@@ -961,11 +994,13 @@ public function store(Request $request, FlasherInterface $flasher)
                         $products_details->product_detail_image = json_encode($prarr);
                     }
                  
+                    $products_details->color = $attrColors[$key] ?? null;
+                    $products_details->size = $attrSizes[$key] ?? null;
                     $products_details->attributevalue1 = $attrColors[$key] ?? null;
                     $products_details->attributename1 = 'Color';
                     $products_details->attributevalue2 = $attrSizes[$key] ?? null;
                     if (!empty($products_details->attributevalue2)) {
-                        $products_details->attributename2 = 'Size';
+                        $products_details->attributename2 = $attrGroupName;
                     }
                     $products_details->quantity = $quantities[$key] ?? 0;
                     $products_details->retail_price = $retailPrices[$key] ?? 0;

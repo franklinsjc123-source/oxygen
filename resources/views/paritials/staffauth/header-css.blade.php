@@ -114,4 +114,12 @@ background-color: transparent;
     width: 500px !important;
     max-width: 90% !important;
 }
+
+/* Make form-select match form-control size and height */
+.form-select {
+    padding: .5rem 2.25rem .5rem .75rem !important;
+    font-size: 1.5rem !important;
+    line-height: 1.5 !important;
+    height: auto !important;
+}
     </style>

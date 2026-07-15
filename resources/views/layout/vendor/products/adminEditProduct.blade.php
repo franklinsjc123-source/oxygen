@@ -62,7 +62,7 @@
                                                 <div class="row">
                                                     <div class="col-md-4">
                                                         <div class="form-group">
-                                                            <h5 class="fw-bold"> Primary / Main Category</h5>
+                                                            <label class="fw-bold">Primary / Main Category</label>
                                                             <div class="form-group">
                                                                 <select class="js-select2 form-control" id="main_category"
                                                                     name="category_main" required>
@@ -108,7 +108,7 @@
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="form-group">
-                                                            <h5 class="fw-bold">Category</h5>
+                                                            <label class="fw-bold">Category</label>
                                                             <div id="clothing">
                                                                 <select class="js-select2 form-control" name="category"
                                                                     id="category"  required>
@@ -122,7 +122,7 @@
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="form-group">
-                                                            <h5 class="fw-bold">Sub Category</h5>
+                                                            <label class="fw-bold">Sub Category</label>
                                                             <div id="clothing">
                                                                 <select class="js-select2 form-control" name="category_sub"
                                                                     id="sub_category"  required>
@@ -341,7 +341,7 @@
                                                                             <label class="text-center  fw-bold mt-2">Offers</label>
                                                                         </div>
                                                                         <div class="col-md-3 ">
-                                                                            <select class="form-select form-select-lg text-secondary"
+                                                                            <select class="form-control text-secondary"
                                                                                 id="offtype" name="offer">
                                                                                 <option value="">Select</option>
                                                                                 {{-- <option selected hidden value="">Select Here
@@ -376,7 +376,7 @@
                                                                             <label class="text-center  fw-bold mt-2">Collection</label>
                                                                         </div>
                                                                         <div class="col-md-4 ">
-                                                                            <select class="form-select form-select-lg text-secondary"
+                                                                            <select class="form-control text-secondary"
                                                                                 id="collection" name="collection">
                                                                                 {{-- <option selected hidden value="">Select Here
                                                                                 </option> --}}
@@ -591,7 +591,7 @@
         //             let options;
         //             attributes +=
         //                 `<div class='col-md-2'>
-        //                 <select class='form-select form-select-lg text-secondary' name='attributeDetails` + nat + `[]'>
+        //                 <select class='form-control text-secondary' name='attributeDetails` + nat + `[]'>
         //                 <option selected value='' hidden> --Select ${attr.attribute_name}--</option>
         //                 ${(function fun(array) {
         //                     for (let index = 0; index < array.length; index++) {
@@ -652,7 +652,7 @@
         //         //                         class="form-control" required  >
         //         //                 </div> 
         //         //                 <div class="col-md-2">
-        //         //                     <select class="form-select form-select-lg text-secondary"
+        //         //                     <select class="form-control text-secondary"
         //         //                         name="return_replace[]" required>
         //         //                         <option selected value="" hidden>
         //         //                             Return /
@@ -704,7 +704,7 @@
                     let options;
                     specifications +=
                         `<tr><td>${spec.name}</td><td>
-                            <select class='form-select form-select-lg text-secondary' name='specify_value[]'>
+                            <select class='form-control text-secondary' name='specify_value[]'>
                             <option selected value='' hidden> --Select ${spec.name}--</option>
                             ${(function fun(array) {
                                 for (let index = 0; index < array.length; index++) {
@@ -800,7 +800,7 @@
             if (x < max_fields) { //max input box allowed
                 x++; //text box increment
                
-            $(wrapper).append('<div class="w "><div class="row mt-2"><div class="col-md-3"> <div class="form-group"><label class="text-secondary fw-bold">Upload main image</label><input class="form-control " type="file" id="im'+x+'" onchange="previewImg(this)"  name="nproducts[]" accept="image/*"> </div></div><div class="col-md-9"> <div class="row"><div class="col-md-2"><select class="form-select form-select-lg text-secondary attrsize" name ="attrsize[]" id ="attrsize'+x+'"></select></div><div class="col-md-2"><select class="form-select form-select-lg text-secondary attrcolor" name="attrcolor[]" id ="attrcolor'+x+'"></select></div><div class="col-md-2"> <input type="text" name="retail_price[]" placeholder="Retail Price" class="form-control" required></div><div class="col-md-2"><input type="text" name="selling_price[]" placeholder="Selling Price" class="form-control" required></div><div class="col-md-2"><input type="number" class="form-control" placeholder="Qty" name="quantity[]" required></div> </div><div class="row mt-3"><div class="col-md-2"><input type="text" name="sku[]" placeholder="SKU"  class="form-control" required  ></div><div class="col-md-2"><select class="form-select form-select-lg text-secondary"  name="return_replace[]" required><option selected value="" hidden>Return /Replacement</option><option value="1">Return</option><option value="2">Replacement</option></select></div><div class="col-md-2"><input type="text" name="r_days[]" placeholder="Days"  class="form-control" required></div>  <div class="col-md-2"><input type="number" name="low_stock_limit[]"  placeholder="Low Stock Limit" class="form-control" required></div>  <div class="col-md-1 "> <a href="#" class="remove_field h6 btn btn-sm bg-warning m-0" style="text-decoration: none;background-color:red;">remove</a></div>  <div class="col-md-3"><span class="text-danger fw-bold" id="bill_month'+x+'_err"></span></div></div><br></div><div class="row " onload = "addmore()"" ><div class="col-md-12 " id="r'+x+'"></div> </div>'
+            $(wrapper).append('<div class="w "><div class="row mt-2"><div class="col-md-3"> <div class="form-group"><label class="text-secondary fw-bold">Upload main image</label><input class="form-control " type="file" id="im'+x+'" onchange="previewImg(this)"  name="nproducts[]" accept="image/*"> </div></div><div class="col-md-9"> <div class="row"><div class="col-md-2"><select class="form-control text-secondary attrsize" name ="attrsize[]" id ="attrsize'+x+'"></select></div><div class="col-md-2"><select class="form-control text-secondary attrcolor" name="attrcolor[]" id ="attrcolor'+x+'"></select></div><div class="col-md-2"> <input type="text" name="retail_price[]" placeholder="Retail Price" class="form-control" required></div><div class="col-md-2"><input type="text" name="selling_price[]" placeholder="Selling Price" class="form-control" required></div><div class="col-md-2"><input type="number" class="form-control" placeholder="Qty" name="quantity[]" required></div> </div><div class="row mt-3"><div class="col-md-2"><input type="text" name="sku[]" placeholder="SKU"  class="form-control" required  ></div><div class="col-md-2"><select class="form-control text-secondary"  name="return_replace[]" required><option selected value="" hidden>Return /Replacement</option><option value="1">Return</option><option value="2">Replacement</option></select></div><div class="col-md-2"><input type="text" name="r_days[]" placeholder="Days"  class="form-control" required></div>  <div class="col-md-2"><input type="number" name="low_stock_limit[]"  placeholder="Low Stock Limit" class="form-control" required></div>  <div class="col-md-1 "> <a href="#" class="remove_field h6 btn btn-sm bg-warning m-0" style="text-decoration: none;background-color:red;">remove</a></div>  <div class="col-md-3"><span class="text-danger fw-bold" id="bill_month'+x+'_err"></span></div></div><br></div><div class="row " onload = "addmore()"" ><div class="col-md-12 " id="r'+x+'"></div> </div>'
                      ); //add input box
                
             }
@@ -898,7 +898,7 @@
     //                 let options;
     //                 attribute += ` <div class="col-md-2">${attr.attribute_name}</div>
     //                             <div class="col-md-2">
-    //                         <select class='form-select form-select-lg text-secondary' name='atttibute_value[]'>
+    //                         <select class='form-control text-secondary' name='atttibute_value[]'>
     //                         <option selected value='' hidden> --Select ${attr.attribute_name}--</option>
     //                         ${(function fun(array) {
     //                             for (let index = 0; index < array.length; index++) {

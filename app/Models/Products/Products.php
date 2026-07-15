@@ -42,7 +42,8 @@ class Products extends Model
         "collection",
         "flag",
         "status",
-        "created_by"
+        "created_by",
+        "hsncode"
     ];
 
     /**

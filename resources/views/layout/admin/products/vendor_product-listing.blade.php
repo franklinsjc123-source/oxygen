@@ -637,43 +637,42 @@
               });  
               if(allVals.length <=0)  
               {  
-                  alert("Please select row.");  
+                  Swal.fire({
+                      icon: 'warning',
+                      title: 'Oops...',
+                      text: 'Please select row.'
+                  });
               }  else {  
-  
-                 // alert("Accept.");  
-                  var check = confirm("Are you sure you want to Active this row?");  
-                  if(check == true){  
-                      var join_selected_values = allVals.join(","); 
-  
-  
-  
-  
-  
-                      $.ajax({
-  
-                          url: "{{route('vendorproductbulkactive')}}", 
-                          type: "POST",
-                          data: {
-                              "_token": "{{ csrf_token() }}",
-                              "ids": join_selected_values,
-                               "sts":"1"
-  
-                          },
-  
-                          dataType: "json",
-                          success: function (data) {
-                          // alert(data);
-                            
-                               location.reload();
-                          },
-                          error: function (data) {
-                              console.log('Error:', data);
-                          }
+                  Swal.fire({
+                      title: 'Are you sure?',
+                      text: "Are you sure you want to Active this row?",
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Yes, Active it!'
+                  }).then((result) => {
+                      if (result.isConfirmed) {
+                          var join_selected_values = allVals.join(","); 
+
+                          $.ajax({
+                              url: "{{route('vendorproductbulkactive')}}", 
+                              type: "POST",
+                              data: {
+                                  "_token": "{{ csrf_token() }}",
+                                  "ids": join_selected_values,
+                                  "sts":"1"
+                              },
+                              dataType: "json",
+                              success: function (data) {
+                                   location.reload();
+                              },
+                              error: function (data) {
+                                  console.log('Error:', data);
+                              }
                           });
-  
-  
-                     
-                  }  
+                      }
+                  });
               }  
           });
         /*End*/
@@ -695,37 +694,44 @@
               });  
               if(allVals.length <=0)  
               {  
-                  alert("Please select row.");  
+                  Swal.fire({
+                      icon: 'warning',
+                      title: 'Oops...',
+                      text: 'Please select row.'
+                  });
               }  else {  
-  
-                 // alert("Accept.");  
-                  var check = confirm("Are you sure you want to DeActive this row?");  
-                  if(check == true){  
-                      var join_selected_values = allVals.join(","); 
-                      $.ajax({
-                          url: "{{route('vendorproductbulkdeactive')}}", 
-                          type: "POST",
-                          data: {
-                              "_token": "{{ csrf_token() }}",
-                              "ids": join_selected_values,
-                               "sts":"0"
-                          },
-  
-                          dataType: "json",
-                          success: function (data) {
-                          // alert(data);
-                            
-                               location.reload();
-                          },
-                          error: function (data) {
-                              console.log('Error:', data);
-                          }
+                  Swal.fire({
+                      title: 'Are you sure?',
+                      text: "Are you sure you want to DeActive this row?",
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Yes, DeActive it!'
+                  }).then((result) => {
+                      if (result.isConfirmed) {
+                          var join_selected_values = allVals.join(","); 
+                          $.ajax({
+                              url: "{{route('vendorproductbulkdeactive')}}", 
+                              type: "POST",
+                              data: {
+                                  "_token": "{{ csrf_token() }}",
+                                  "ids": join_selected_values,
+                                  "sts":"0"
+                              },
+                              dataType: "json",
+                              success: function (data) {
+                                   location.reload();
+                              },
+                              error: function (data) {
+                                  console.log('Error:', data);
+                              }
                           });
-  
-                  }  
+                      }
+                  });
               }  
           });
-       /*End*/
+        /*End*/
 
        $(document).on('change', '.status-toggle', function() {
            var productId = $(this).data('id');
@@ -742,7 +748,11 @@
                dataType: "json",
                error: function() {
                    $(this).prop('checked', !$(this).is(':checked'));
-                   alert('Status update failed.');
+                   Swal.fire({
+                       icon: 'error',
+                       title: 'Error',
+                       text: 'Status update failed.'
+                   });
                }.bind(this)
            });
        });

@@ -715,198 +715,128 @@
 
                 </div>
                 @endfor
-                <div class="col-md-12">
-                    <div class="row">
-                      
-                        <div class="col-xl-12">
-                            <div class="card p-3">
-                                <div class="card-body ">
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <h4 class="text-start fw-bold ">Shipping </h4>
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <div class="col-md-3">
-                                                        <div class="next-input--stylized">
-                                                            <input type="number" class="form-control"
-                                                                name="weight" placeholder="Weight (g)">
-                                                        </div>
-                                                    </div>
 
-                                                    <div class="col-md-3">
-                                                        <div class="form-group mb-3">
-                                                            <div class="next-input--stylized">
-                                                                <input type="number" class="form-control"
-                                                                    placeholder="Length (cm)" name="length"
-                                                                    value="">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group mb-3">
-                                                            <div class="next-input--stylized">
-                                                                <input type="number" class="form-control"
-                                                                    name="width" placeholder="Width (cm)">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3 ">
-                                                        <div class="form-group mb-3">
-                                                            <div class="next-input--stylized">
 
-                                                                <input type="number" class="form-control"
-                                                                    name="height" placeholder="Height (cm)">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                
-                                            </div>
-                                        </div>
+                <div class="row mt-3">
+                    <!-- Shipping Information Section -->
+                    <div class="col-xl-12">
+                        <div class="card shadow-sm border-0 mb-4">
+                            <div class="card-body p-4">
+                                <h5 class="fw-bold text-dark mb-3">Shipping Information</h5>
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold text-dark mb-1">Weight (g)</label>
+                                        <input type="number" class="form-control" name="weight" placeholder="Weight (g)">
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-
-                        <div class="col-xl-12">
-                            <div class="row">
-                                <div class="col-xl-12">
-                                    <div class="card p-3">
-                                        <div class="card-body">
-                                            <div class="conatiner">
-                                                <div class="row mt-3">
-                                                    <div class="col-md-12 ">
-                                                        <h4 class="fw-bold">Specification</h4>
-                                                    </div>
-                                                    <div class="col-md-2 text-start">
-                                                        <span class="text-dark fw-bold"
-                                                            id="specify_length"></span>
-                                                    </div>
-
-                                                </div>
-                                                <table class="table table-bordered ">
-                                                    <tbody class="spectable">
-                                                        @if(!empty($specification))
-                                                        @foreach (collect($specification)->chunk(2) as $specPair)
-                                                        <tr>
-                                                            @foreach ($specPair as $spec)
-                                                            @php
-                                                            $spec_val = json_decode($spec->specification_values, true) ?: [];
-                                                            @endphp
-                                                            <td style="width: 20%; vertical-align: middle;">{{ $spec->specification_group_name }}</td>
-                                                            <td style="width: 30%;">
-                                                                <input type="hidden" name="spec_id[]" value="{{ $spec->id }}">
-                                                                <select class='form-select form-select-lg text-secondary' name='specify_value[{{ $spec->id}}]'>
-                                                                    <option selected value='' hidden> --Select {{ $spec->specification_group_name}}--</option>
-                                                                    @foreach( $spec_val as $spval )
-                                                                    <option value='{{ $spval }}'> {{ $spval }}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                                <input type="hidden" name="specify_attribute[{{ $spec->id}}]" value="{{ $spec->specification_group_name}}">
-                                                            </td>
-                                                            @endforeach
-                                                            @if($specPair->count() === 1)
-                                                            <td></td>
-                                                            <td></td>
-                                                            @endif
-                                                        </tr>
-                                                        @endforeach
-                                                        @endif
-                                                    </tbody>
-                                                </table>
-
-                                            </div>
-                                        </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold text-dark mb-1">Length (cm)</label>
+                                        <input type="number" class="form-control" placeholder="Length (cm)" name="length" value="">
                                     </div>
-                                </div>
-
-                                <div class="col-xl-12">
-                                    <div class="card p-3">
-                                        <div class="card-body">
-                                            <div class="conatiner">
-                                                <div class="row mt-3">
-                                                    <div class="col-md-12 ">
-                                                        <h4 class="fw-bold">Offers & Collection</h4>
-                                                    </div>
-                                                </div>
-                                                <div class="row mt-3">
-                                                    <div class="col-md-1">
-                                                        <label class="text-center  fw-bold mt-2">Offers</label>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <select class="form-select form-select-lg text-secondary"
-                                                            id="offtype" name="offers">
-                                                            <option value="">Select</option>
-
-
-                                                            @foreach ($offers as $offer)
-                                                                @php
-                                                                    $offerLabel = "";
-                                                                    if($offer->type == "Buy X Get Y Free") {
-                                                                        $offerLabel = 'Buy ' . $offer->buy . ' get ' . $offer->getoffer . ' free';
-                                                                    } elseif($offer->type == "Buy X @ Y") {
-                                                                        $offerLabel = 'Buy ' . $offer->buyproduct . ' get amount ' . $offer->getamt;
-                                                                    } else {
-                                                                        $offerLabel = $offer->type;
-                                                                    }
-                                                                @endphp
-                                                                <option value="{{ $offer->id }}">
-                                                                    {{ $offerLabel }}
-                                                                </option>
-                                                            @endforeach
-                                                            {{-- <option value="Buy 3 Get 1 Free">Buy 3 Get 1 Free
-                                                                    </option>
-                                                                    <option value="Buy 1 Get 1 Free">Buy 1 Get 1 Free
-                                                                    </option>
-                                                                    <option value="Buy 3 @ 999">Buy 3 @ 999</option>
-                                                                    <option value="None">None</option> --}}
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                    </div>
-                                                    <div class="col-md-1">
-                                                        <label class="text-center  fw-bold mt-2">Collection</label>
-                                                    </div>
-                                                    <div class="col-md-4 ">
-                                                        <select class="form-select form-select-lg text-secondary"
-                                                            id="collection" name="collection">
-                                                             <option selected hidden value="">Select Here
-                                                            </option>
-                                                            @foreach ($productcollection as $productcollection)
-                                                            <option id="{{ $productcollection->id }}"
-                                                                value="{{ $productcollection->name }}">
-                                                                {{ $productcollection->name }}
-                                                            </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold text-dark mb-1">Width (cm)</label>
+                                        <input type="number" class="form-control" name="width" placeholder="Width (cm)">
                                     </div>
-                                </div>
-
-                                <div class="col-xl-12 d-flex  justify-content-end">
-                                    <div class="form-group mt-5 d-inline">
-                                        &nbsp;
-                                    </div>
-                                    <div class="d-inline  text-white">
-                                        <button class="btn btn-primary w-100"
-                                            type="submit">
-                                            Save
-                                        </button>
-                                    </div>
-                                    <div class="d-inline px-2 text-white">
-                                        <a href="{{ route('vendorproducts.crud.listing') }}" class="btn btn-secondary w-100 " type="button">
-                                            Close
-                                        </a>
+                                    <div class="col-md-3">
+                                        <label class="form-label fw-bold text-dark mb-1">Height (cm)</label>
+                                        <input type="number" class="form-control" name="height" placeholder="Height (cm)">
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Specifications Section -->
+                    <div class="col-xl-12">
+                        <div class="card shadow-sm border-0 mb-4">
+                            <div class="card-body p-4">
+                                <h5 class="fw-bold text-dark mb-3">Specifications</h5>
+                                <table class="table table-hover table-bordered m-0 align-middle">
+                                    <tbody class="spectable">
+                                        @if(!empty($specification))
+                                        @foreach (collect($specification)->chunk(2) as $specPair)
+                                        <tr>
+                                            @foreach ($specPair as $spec)
+                                            @php
+                                            $spec_val = json_decode($spec->specification_values, true) ?: [];
+                                            @endphp
+                                            <td style="width: 20%; vertical-align: middle;">{{ $spec->specification_group_name }}</td>
+                                            <td style="width: 30%;">
+                                                <input type="hidden" name="spec_id[]" value="{{ $spec->id }}">
+                                                <select class='form-control text-secondary' name='specify_value[{{ $spec->id}}]'>
+                                                    <option selected value='' hidden> --Select {{ $spec->specification_group_name}}--</option>
+                                                    @foreach( $spec_val as $spval )
+                                                    <option value='{{ $spval }}'> {{ $spval }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <input type="hidden" name="specify_attribute[{{ $spec->id}}]" value="{{ $spec->specification_group_name}}">
+                                            </td>
+                                            @endforeach
+                                            @if($specPair->count() === 1)
+                                            <td></td>
+                                            <td></td>
+                                            @endif
+                                        </tr>
+                                        @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Offers & Collection Section -->
+                    <div class="col-xl-12">
+                        <div class="card shadow-sm border-0 mb-4">
+                            <div class="card-body p-4">
+                                <h5 class="fw-bold text-dark mb-3">Offers & Collection</h5>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold text-dark mb-1">Offers</label>
+                                        <select class="form-control text-secondary" id="offtype" name="offers">
+                                            <option value="">Select</option>
+                                            @foreach ($offers as $offer)
+                                                @php
+                                                    $offerLabel = "";
+                                                    if($offer->type == "Buy X Get Y Free") {
+                                                        $offerLabel = 'Buy ' . $offer->buy . ' get ' . $offer->getoffer . ' free';
+                                                    } elseif($offer->type == "Buy X @ Y") {
+                                                        $offerLabel = 'Buy ' . $offer->buyproduct . ' get amount ' . $offer->getamt;
+                                                    } else {
+                                                        $offerLabel = $offer->type;
+                                                    }
+                                                @endphp
+                                                <option value="{{ $offer->id }}">
+                                                    {{ $offerLabel }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold text-dark mb-1">Collection</label>
+                                        <select class="form-control text-secondary" id="collection" name="collection">
+                                            <option selected hidden value="">Select Here</option>
+                                            @foreach ($productcollection as $productcol)
+                                            <option id="{{ $productcol->id }}" value="{{ $productcol->name }}">
+                                                {{ $productcol->name }}
+                                            </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="col-xl-12 d-flex justify-content-end mb-4">
+                        <div class="d-inline text-white" style="width: 120px;">
+                            <button class="btn btn-primary w-100" type="submit">Save</button>
+                        </div>
+                        <div class="d-inline px-2 text-white" style="width: 120px;">
+                            <a href="{{ route('vendorproducts.crud.listing') }}" class="btn btn-secondary w-100" type="button">Close</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
             </form>
             @endif
         </div>

@@ -62,7 +62,7 @@
                                                 <div class="row">
                                                     <div class="col-md-4">
                                                         <div class="form-group">
-                                                            <h5 class="fw-bold"> Primary / Main Category</h5>
+                                                            <label class="fw-bold">Primary / Main Category</label>
                                                             <div class="form-group">
                                                                 <select class="js-select2 form-control" id="main_category"
                                                                     name="category_main" required>
@@ -108,7 +108,7 @@
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="form-group">
-                                                            <h5 class="fw-bold">Category</h5>
+                                                            <label class="fw-bold">Category</label>
                                                             <div id="clothing">
                                                                 <select class="js-select2 form-control" name="category"
                                                                     id="category"  required>
@@ -122,7 +122,7 @@
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="form-group">
-                                                            <h5 class="fw-bold">Sub Category</h5>
+                                                            <label class="fw-bold">Sub Category</label>
                                                             <div id="clothing">
                                                                 <select class="js-select2 form-control" name="category_sub"
                                                                     id="sub_category"  required>

@@ -124,7 +124,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold"> Primary / Main Category</h5>
+                                                        <label class="fw-bold">Primary / Main Category</label>
                                                         <div class="form-group">
                                                             <select class="js-select2 form-control" id="main_category"
                                                                 name="category_main" required>
@@ -142,7 +142,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Category</h5>
+                                                        <label class="fw-bold">Category</label>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="category"
                                                                 id="category"  required>
@@ -156,7 +156,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Sub Category</h5>
+                                                        <label class="fw-bold">Sub Category</label>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="category_sub"
                                                                 id="sub_category" disabled required>
@@ -170,7 +170,7 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">No.of Products</h5>
+                                                        <label class="fw-bold">No.of Products</label>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="nproduct"
                                                                 id="nproduct" required>
@@ -187,7 +187,7 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Add Product Informations</h5>
+                                                        <label class="fw-bold d-block">&nbsp;</label>
                                                         <div id="clothing">
                                                             <button type="submit" class="btn btn-primary"> Add Informations </button>
                                                         </div>
@@ -222,7 +222,7 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <h5 class="fw-bold"> Primary / Main Category</h5>
+                                                    <label class="fw-bold">Primary / Main Category</label>
                                                     <div class="form-group">
                                                         <select class="js-select2 form-control" id="main_category"
                                                             name="category_main" disabled required>
@@ -240,7 +240,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <h5 class="fw-bold">Category</h5>
+                                                    <label class="fw-bold">Category</label>
                                                     <div id="clothing">
                                                         <select class="js-select2 form-control" name="category"
                                                             id="category" disabled required>
@@ -256,7 +256,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <h5 class="fw-bold">Sub Category</h5>
+                                                    <label class="fw-bold">Sub Category</label>
                                                     <div id="clothing">
                                                         <select class="js-select2 form-control" name="category_sub"
                                                             id="sub_category" disabled required>
@@ -272,7 +272,7 @@
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <h5 class="fw-bold">No.of Products</h5>
+                                                    <label class="fw-bold">No.of Products</label>
                                                     <div id="clothing">
                                                         <select class="js-select2 form-control" name="nproduct"
                                                             id="sub_category" disabled required>
@@ -317,7 +317,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold"> Primary / Main Category</h5>
+                                                        <label class="fw-bold">Primary / Main Category</label>
                                                         <div class="form-group">
                                                             <select class="js-select2 form-control" id="main_category"
                                                                 name="category_main1" disabled required>
@@ -336,7 +336,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Category</h5>
+                                                        <label class="fw-bold">Category</label>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="category1"
                                                                 id="category" disabled required>
@@ -352,7 +352,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Sub Category</h5>
+                                                        <label class="fw-bold">Sub Category</label>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="category_sub1"
                                                                 id="sub_category" disabled required>
@@ -368,7 +368,7 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">No.of Products</h5>
+                                                        <label class="fw-bold">No.of Products</label>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="nproduct1"
                                                                 id="sub_category" disabled required>
@@ -396,91 +396,84 @@
                                     <div class="card">
                                         <div class="card-body">
 
-                                            <div class="col-md-12 digital-add needs-validation">
-                                                <div class="row">
-                                                    <div class="col-md-9">
-                                                        <div class="form-group mt-2">
-                                                            <label for=""
-                                                                class="col-form-label pt-0 fw-bold"><span>*</span> Product
-                                                                Name</label>
-                                                            <input class="form-control" id="validationCustom01"
-                                                                type="text" name="product_name" required>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label class="col-form-label  fw-bold"><span
-                                                                class="text-danger">*</span>Product Status</label>
-                                                        <select class="custom-select form-control text-secondary"
-                                                            id="gs" onchange="r()" name="tax_id" required>
-                                                            <option value="1">Active</option>
-                                                            <option value="0">De-Active</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
+                                             <div class="col-md-12 digital-add needs-validation">
+                                                 <div class="row g-3">
+                                                     <div class="col-md-9">
+                                                         <div class="form-group">
+                                                             <label class="form-label fw-bold text-dark">Product Name <span class="text-danger">*</span></label>
+                                                             <input class="form-control" id="validationCustom01"
+                                                                 type="text" name="product_name" required>
+                                                             <div class="invalid-feedback-custom">Please enter product name</div>
+                                                         </div>
+                                                     </div>
+                                                     <div class="col-md-3">
+                                                         <div class="form-group">
+                                                             <label class="form-label fw-bold text-dark">Product Status <span class="text-danger">*</span></label>
+                                                             <select class="custom-select form-control text-secondary"
+                                                                 id="gs" onchange="r()" name="tax_id" required>
+                                                                 <option value="1">Active</option>
+                                                                 <option value="0">De-Active</option>
+                                                             </select>
+                                                         </div>
+                                                     </div>
+                                                 </div>
 
-                                                <div class="card">
-                                                    <div class="card-header">
-                                                        <h5><span style="color: red;">*</span>Product Images</h5>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <div class="row">
-                                                            <div class="col-md-3">
-                                                                <h6>Upload Main Image</h6>
-                                                                <input class="form-control" type="file" id="mainImg" accept="image/*"
-                                                                    name="mainImage" />
+                                                 <div class="row g-3 mt-2">
+                                                     <div class="col-md-3">
+                                                         <div class="form-group">
+                                                             <label class="form-label fw-bold text-dark">Upload Main Image <span class="text-danger">*</span></label>
+                                                             <input class="form-control" type="file" id="mainImg" accept="image/*"
+                                                                 name="mainImage" required/>
+                                                             <div class="invalid-feedback-custom">Please select product image</div>
+                                                         </div>
+                                                     </div>
+                                                     <div class="col-md-3">
+                                                         <div class="form-group">
+                                                             <label class="form-label fw-bold text-dark">Tax <span class="text-danger">*</span></label>
+                                                             <select class="custom-select form-control text-secondary"
+                                                                 id="gs" onchange="r()" name="tax_id" required>
+                                                                 <option value="1">Included</option>
+                                                                 <option value="0">Excluded</option>
+                                                             </select>
+                                                             <div class="invalid-feedback-custom">Please select tax type</div>
+                                                         </div>
+                                                     </div>
 
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <label class="col-form-label col-md-3 fw-bold"><span
-                                                                        class="text-danger">*</span>Tax</label>
-                                                                <select class="custom-select form-control text-secondary"
-                                                                    id="gs" onchange="r()" name="tax_id" required>
-                                                                    <option value="1">Included</option>
-                                                                    <option value="0">Excluded</option>
-                                                                </select>
-                                                            </div>
+                                                     <div class="col-md-3">
+                                                         <div class="form-group">
+                                                             <label class="form-label fw-bold text-dark">GST <span class="text-danger">*</span></label>
+                                                             <select class="custom-select form-control dropdown text-secondary"
+                                                                 id="gst1" onchange="r()" required name="gst_id">
+                                                                 <option value="" selected hidden value="">--Select GST %--</option>
+                                                                 @foreach ($gst as $gs)
+                                                                 <option value="{{ $gs->value }}">{{ $gs->gst_name }}
+                                                                 </option>
+                                                                 @endforeach
+                                                             </select>
+                                                             <div class="invalid-feedback-custom">Please select GST percentage</div>
+                                                         </div>
+                                                     </div>
+                                                     <div class="col-md-3">
+                                                         <div class="form-group">
+                                                             <label class="form-label fw-bold text-dark">HSN CODE <span class="text-danger">*</span></label>
+                                                             <input class="form-control" id="validationCustom01"
+                                                                 type="text" name="hsncode" required>
+                                                             <div class="invalid-feedback-custom">Please enter HSN code</div>
+                                                         </div>
+                                                     </div>
+                                                 </div>
 
-                                                            <div class="col-md-3">
-                                                                <label class="col-form-label col-md-3 fw-bold "><span
-                                                                        class="text-danger">*</span>GST</label>
-                                                                <select class="custom-select form-control dropdown text-secondary"
-                                                                    id="gst1" onchange="r()" required name="gst_id">
-                                                                    <option value="" selected hidden value="">--Select
-                                                                        GST %--</option>
-                                                                    @foreach ($gst as $gs)
-                                                                    <option value="{{ $gs->value }}">{{ $gs->gst_name }}
-                                                                    </option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <label class="col-form-label  fw-bold"><span
-                                                                        class="text-danger">*</span>HSN CODE</label>
-                                                                <input class="form-control" id="validationCustom01"
-                                                                    type="text" name="hsncode" >
-                                                            </div>
-                                                        </div>
-                                                        <div class="row" id="ming_preview">
-                                                        </div>
-                                                       
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <hr>
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <h5>Product Description</h5>
-                                                </div>
-                                                <div class="card-body">
-                                                    <div class="digital-add needs-validation">
-                                                        <div class="form-group mb-0">
-                                                            <div class="description-sm">
-                                                                <textarea id="description" cols="10" required rows="4" name="description"></textarea>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                                 <div class="row" id="ming_preview">
+                                                 </div>
+
+                                                 <div class="form-group mt-3">
+                                                     <label class="form-label fw-bold text-dark">Product Description <span class="text-danger">*</span></label>
+                                                     <div class="description-sm">
+                                                         <textarea id="description" cols="10" rows="4" name="description" required class="form-control"></textarea>
+                                                         <div class="invalid-feedback-custom">Please enter product description</div>
+                                                     </div>
+                                                 </div>
+                                             </div>
                                         </div>
                                     </div>
                                 </div>
@@ -500,10 +493,10 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group p-1">
-                                            <label class="text-danger">(Image Accepted files : jpg, jpeg, png, web)</label>
+                                            <label class="text-danger">(Image Accepted files : jpg, jpeg, png, web) <span class="text-danger">*</span></label>
 
-                                            <input type="file" id="imageUpload{{ $i }}" name="imageUpload{{ $i }}[]" multiple accept="image/*" onchange="previewImages({{ $i }})">
-
+                                            <input type="file" id="imageUpload{{ $i }}" name="imageUpload{{ $i }}[]" multiple accept="image/*" onchange="previewImages({{ $i }})" required>
+                                            <div class="invalid-feedback-custom">Please upload at least one image</div>
                                         </div>
                                     </div>
 
@@ -534,7 +527,7 @@
                                     </div>
 
                                     <div class="form-group col-md-2">
-                                        <label> Return Days</label>
+                                        <label> Return Days <span class="text-danger">*</span></label>
                                         <input type="text" name="r_days[{{ $i }}]" placeholder="Days"
                                             class="form-control" required>
                                     </div>

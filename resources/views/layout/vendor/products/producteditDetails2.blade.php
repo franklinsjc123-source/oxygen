@@ -52,7 +52,7 @@
                                                             <div class="row">
                                                              
                                                                 <div class="col-md-2">
-                                                                    <select class="form-select form-select-lg text-secondary"
+                                                                    <select class="form-control text-secondary"
                                                                     name="attrcolor[]" id="attrcolor" required>
 
                                                                     @foreach ($attribute as $attri)
@@ -84,7 +84,7 @@
                                                                 </div>
                                                           
                                                                 <div class="col-md-2">
-                                                                    <select class="form-select form-select-lg text-secondary"
+                                                                    <select class="form-control text-secondary"
                                                                     name="attrsize[]" id="attrsize" required>
                                                                     @foreach ($attribute as $attri)
                                                                     @if($attri->attribute_name == 'size')
@@ -146,7 +146,7 @@
                                                                 </div> 
                                                                
                                                                 <div class="col-md-2">
-                                                                    <select class="form-select form-select-lg text-secondary"
+                                                                    <select class="form-control text-secondary"
                                                                         name="return_replace[]" required>
                                                                         <?php
                                                                             $returnRaw = (string) ($productdetails->return_replace ?? '1');

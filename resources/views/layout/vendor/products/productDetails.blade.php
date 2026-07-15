@@ -113,12 +113,12 @@
                                                         <div class="col-md-9">                                                            
                                                             <div class="row">                                                             
                                                                 <div class="col-md-2">
-                                                                    <select class="form-select form-select-lg text-secondary attrsize" name = "attrsize[]" id ="attrsize">
+                                                                    <select class="form-control text-secondary attrsize" name = "attrsize[]" id ="attrsize">
                                                                         <option hidden>Size</option>
                                                                     </select>        
                                                                 </div>                                                                    
                                                                     <div class="col-md-2">
-                                                                     <select class="form-select form-select-lg text-secondary attrcolor"
+                                                                     <select class="form-control text-secondary attrcolor"
                                                                             name="attrcolor[]" id ="attrcolor">
                                                                             <option hidden>Color</option>
                                                                         </select>  
@@ -146,7 +146,7 @@
                                                                 </div>
                                                                
                                                                 <div class="col-md-2">
-                                                                    <select class="form-select form-select-lg text-secondary"
+                                                                    <select class="form-control text-secondary"
                                                                         name="return_replace[]">
                                                                         
                                                                         <option selected value="">Select</option>
@@ -476,7 +476,7 @@ $(function() {
     //                 let options;
     //                 attribute += ` <div class="col-md-2">${attr.attribute_name}</div>
     //                             <div class="col-md-2">
-    //                         <select class='form-select form-select-lg text-secondary' name='atttibute_value[]'>
+    //                         <select class='form-control text-secondary' name='atttibute_value[]'>
     //                         <option selected value='' hidden> --Select ${attr.attribute_name}--</option>
     //                         ${(function fun(array) {
     //                             for (let index = 0; index < array.length; index++) {

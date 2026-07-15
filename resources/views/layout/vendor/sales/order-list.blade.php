@@ -192,7 +192,7 @@
                                                                             
                                                                                     <div class="col-md-3">Change Status	</div>
                                                                                             <div class="col-md-6">
-                                                                                                        <select class="form-select form-select-lg" name="status"  id="o_status" required="">
+                                                                                                        <select class="form-control" name="status"  id="o_status" required="">
                                                                                                                 <option selected disabled>--Select--</option>
                                                                                                                 <option value="Accept">Accept</option>
                                                                                                                 <option value="Dispatch">Dispatch</option>
@@ -316,7 +316,7 @@
                                                                         
                                                                                 <div class="col-md-3">Change Status	</div>
                                                                                         <div class="col-md-6">
-                                                                                                    <select class="form-select form-select-lg" name="status" id ="a_status" required="">
+                                                                                                    <select class="form-control" name="status" id ="a_status" required="">
                                                                                                             <option selected disabled>--Select--</option>
                                                                                                             <option value="Accept">Accept</option>
                                                                                                             <option value="Dispatch">Dispatch</option>
@@ -438,7 +438,7 @@
                                                             
                                                                     <div class="col-md-3">Change Status	</div>
                                                                             <div class="col-md-6">
-                                                                                        <select class="form-select form-select-lg" name="status"  id="d_status" required="">
+                                                                                        <select class="form-control" name="status"  id="d_status" required="">
                                                                                                 <option selected disabled>--Select--</option>
                                                                                                 <option value="Accept">Accept</option>
                                                                                                 <option value="Dispatch">Dispatch</option>
@@ -564,7 +564,7 @@
                                                                         
                                                                                 <div class="col-md-3">Change Status	</div>
                                                                                         <div class="col-md-6">
-                                                                                                    <select class="form-select form-select-lg" name="status" id="deli_status" required="">
+                                                                                                    <select class="form-control" name="status" id="deli_status" required="">
                                                                                                             <option selected disabled>--Select--</option>
                                                                                                             <option value="Accept">Accept</option>
                                                                                                             <option value="Dispatch">Dispatch</option>
@@ -690,7 +690,7 @@
                                                                         
                                                                                 <div class="col-md-3">Change Status	</div>
                                                                                         <div class="col-md-6">
-                                                                                                    <select class="form-select form-select-lg" name="status" id="return_status" required="">
+                                                                                                    <select class="form-control" name="status" id="return_status" required="">
                                                                                                             <option selected disabled>--Select--</option>
                                                                                                             <option value="Accept">Accept</option>
                                                                                                             <option value="Dispatch">Dispatch</option>
@@ -814,7 +814,7 @@
                                                                     
                                                                             <div class="col-md-3">Change Status	</div>
                                                                                     <div class="col-md-6">
-                                                                                                <select class="form-select form-select-lg" name="status" id="can_status" required="">
+                                                                                                <select class="form-control" name="status" id="can_status" required="">
                                                                                                         <option selected disabled>--Select--</option>
                                                                                                         <option value="Accept">Accept</option>
                                                                                                         <option value="Dispatch">Dispatch</option>

@@ -152,7 +152,7 @@
                                                                 </div> 
                                                                
                                                                 <div class="col-md-2">
-                                                                    <label style="color:gray"for="javascript">Return</label><br>
+                                                                    <label style="color:gray"for="javascript">Return <span class="text-danger">*</span></label><br>
                                                                     <select class="form-select form-select-lg text-secondary"
                                                                         name="return_replace[]" required>
                                                                         <?php if($productdetails->return_replace == 1) { ?>
@@ -197,7 +197,7 @@
                                                                
                                 
                                                                 <div class="col-md-2">
-                                                                    <label style="color:gray"for="javascript">Return Days</label><br>
+                                                                    <label style="color:gray"for="javascript">Return Days <span class="text-danger">*</span></label><br>
                                                                     <input type="text" name="r_days[]" placeholder="Days"
                                                                         class="form-control" required value="{{ $productdetails->r_days }}">
                                                                 </div>  

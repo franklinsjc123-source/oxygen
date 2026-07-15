@@ -92,28 +92,25 @@
                                     <div class="row g-3">
                                         <!-- Color -->
                                         <div class="col-md-4">
-                                            <label class="form-label fw-bold text-secondary mb-1">Color</label>
+                                            <label class="form-label fw-bold text-dark mb-1">Color <span class="text-danger">*</span></label>
                                             <select class="form-select text-secondary" name="attrcolor[]" id="attrcolor" required>
                                                 @if(!empty($currentColor))
                                                     <option value="{{ $currentColor }}" selected>{{ $currentColor }}</option>
                                                 @endif
-                                                @foreach ($attribute as $attri)
-                                                    @php
-                                                        $attrName = strtolower($attri->attribute_name ?? $attri->attribute_group_name ?? '');
-                                                        $attrValues = json_decode($attri->value ?? $attri->attribute_values ?? '[]', true) ?: [];
-                                                    @endphp
-                                                    @if($attrName == 'color')
-                                                        @foreach($attrValues as $val)
-                                                            <option value="{{ $val }}" {{ ($val == $currentColor) ? 'selected' : '' }}>{{ $val }}</option>
-                                                        @endforeach
-                                                    @endif
-                                                @endforeach
+                                                @if(!empty($colors))
+                                                    @foreach ($colors as $color)
+                                                        @if($color->color_name != $currentColor)
+                                                            <option value="{{ $color->color_name }}" style="background-color: {{ $color->color_code }}">{{ $color->color_name }}</option>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
                                             </select>
+                                            <div class="invalid-feedback-custom">Please select color</div>
                                         </div>
                                         
                                         <!-- Size -->
                                         <div class="col-md-4">
-                                            <label class="form-label fw-bold text-secondary mb-1">Size</label>
+                                            <label class="form-label fw-bold text-dark mb-1">Size <span class="text-danger">*</span></label>
                                             <select class="form-select text-secondary" name="attrsize[]" id="attrsize" required>
                                                 @if(!empty($currentSize))
                                                     <option value="{{ $currentSize }}" selected>{{ $currentSize }}</option>
@@ -123,59 +120,69 @@
                                                         $attrName = strtolower($attri->attribute_name ?? $attri->attribute_group_name ?? '');
                                                         $attrValues = json_decode($attri->value ?? $attri->attribute_values ?? '[]', true) ?: [];
                                                     @endphp
-                                                    @if($attrName == 'size')
+                                                    @if($attrName !== 'color')
                                                         @foreach($attrValues as $val)
-                                                            <option value="{{ $val }}" {{ ($val == $currentSize) ? 'selected' : '' }}>{{ $val }}</option>
+                                                            @if($val != $currentSize)
+                                                                <option value="{{ $val }}">{{ $val }}</option>
+                                                            @endif
                                                         @endforeach
                                                     @endif
                                                 @endforeach
                                             </select>
+                                            <div class="invalid-feedback-custom">Please select size</div>
                                         </div>
                                         
                                         <!-- Retail Price -->
                                         <div class="col-md-4">
-                                            <label class="form-label fw-bold text-secondary mb-1">Retail Price</label>
+                                            <label class="form-label fw-bold text-dark mb-1">Retail Price <span class="text-danger">*</span></label>
                                             <input type="text" name="retail_price[]" placeholder="Retail Price" class="form-control" required value="{{ $productdetails->retail_price }}">
+                                            <div class="invalid-feedback-custom">Please enter retail price</div>
                                         </div>
                                         
                                         <!-- Selling Price -->
                                         <div class="col-md-4">
-                                            <label class="form-label fw-bold text-secondary mb-1">Selling Price</label>
+                                            <label class="form-label fw-bold text-dark mb-1">Selling Price <span class="text-danger">*</span></label>
                                             <input type="text" name="selling_price[]" placeholder="Selling Price" class="form-control" required value="{{ $productdetails->selling_price }}">
+                                            <div class="invalid-feedback-custom">Please enter selling price</div>
                                         </div>
                                         
                                         <!-- Quantity -->
                                         <div class="col-md-4">
-                                            <label class="form-label fw-bold text-secondary mb-1" id="lowstack{{ $qtyinc }}">Quantity</label>
+                                            <label class="form-label fw-bold text-dark mb-1" id="lowstack{{ $qtyinc }}">Quantity <span class="text-danger">*</span></label>
                                             <input type="number" class="qty form-control" id="qty{{ $qtyinc }}" placeholder="Qty" name="quantity[]" required value="{{ $productdetails->quantity }}">
+                                            <div class="invalid-feedback-custom">Please enter quantity</div>
                                         </div>
                                         
                                         <!-- SKU -->
                                         <div class="col-md-4">
-                                            <label class="form-label fw-bold text-secondary mb-1">SKU</label>
+                                            <label class="form-label fw-bold text-dark mb-1">SKU <span class="text-danger">*</span></label>
                                             <input type="text" name="sku[]" placeholder="SKU" class="form-control" required value="{{ $productdetails->sku }}">
+                                            <div class="invalid-feedback-custom">Please enter SKU</div>
                                         </div>
                                         
                                         <!-- Return Policy -->
                                         <div class="col-md-4">
-                                            <label class="form-label fw-bold text-secondary mb-1">Return / Replacement</label>
-                                            <select class="form-select text-secondary" name="return_replace[]">
+                                            <label class="form-label fw-bold text-dark mb-1">Return / Replacement <span class="text-danger">*</span></label>
+                                            <select class="form-select text-secondary" name="return_replace[]" required>
                                                 <option value="">Select</option>
                                                 <option value="Return" {{ $productdetails->return_replace == 'Return' ? 'selected' : '' }}>Return</option>
                                                 <option value="Replacement" {{ $productdetails->return_replace == 'Replacement' ? 'selected' : '' }}>Replacement</option>
                                             </select>
+                                            <div class="invalid-feedback-custom">Please select return/replacement option</div>
                                         </div>
                                         
                                         <!-- Return Days -->
                                         <div class="col-md-4">
-                                            <label class="form-label fw-bold text-secondary mb-1">Return Days</label>
-                                            <input type="text" name="r_days[]" placeholder="Days" class="form-control" value="{{ $productdetails->r_days }}">
+                                            <label class="form-label fw-bold text-dark mb-1">Return Days <span class="text-danger">*</span></label>
+                                            <input type="text" name="r_days[]" placeholder="Days" class="form-control" required value="{{ $productdetails->r_days }}">
+                                            <div class="invalid-feedback-custom">Please enter return days</div>
                                         </div>
                                         
                                         <!-- Low Stock Limit -->
                                         <div class="col-md-4">
-                                            <label class="form-label fw-bold text-secondary mb-1">Low Stock Limit</label>
+                                            <label class="form-label fw-bold text-dark mb-1">Low Stock Limit <span class="text-danger">*</span></label>
                                             <input type="number" name="low_stock_limit[]" id="low_stock_limit{{ $inc }}" placeholder="Low Stock Limit" class="low_stock_limit form-control" required value="{{ $productdetails->low_stock_limit }}">
+                                            <div class="invalid-feedback-custom">Please enter low stock limit</div>
                                         </div>
                                     </div>
                                 </div>
@@ -188,7 +195,7 @@
                                             <!-- Main Image -->
                                             <div class="col-6">
                                                 <div class="border rounded p-2 text-center bg-light position-relative">
-                                                    <span class="d-block mb-1 small fw-bold text-secondary">Main Image</span>
+                                                    <span class="d-block mb-1 small fw-bold text-dark">Main Image <span class="text-danger">*</span></span>
                                                     <div class="img-preview-box mb-2">
                                                         <img class="img-thumb" id="mainr{{ $key }}" src="{{ isset($p_imgs[0]) && !empty($p_imgs[0]) ? url('assets/images/products/detail/'.$p_imgs[0]) : '' }}" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ isset($p_imgs[0]) && !empty($p_imgs[0]) ? '' : 'display:none;' }}" />
                                                     </div>
@@ -203,7 +210,7 @@
                                             <!-- Sub Image 1 -->
                                             <div class="col-6">
                                                 <div class="border rounded p-2 text-center bg-light position-relative">
-                                                    <span class="d-block mb-1 small fw-bold text-secondary">Sub Image 1</span>
+                                                    <span class="d-block mb-1 small fw-bold text-dark">Sub Image 1</span>
                                                     <div class="img-preview-box mb-2">
                                                         <img class="img-thumb" id="sub1r{{ $key }}" src="{{ isset($p_imgs[1]) && !empty($p_imgs[1]) ? url('assets/images/products/detail/'.$p_imgs[1]) : '' }}" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ isset($p_imgs[1]) && !empty($p_imgs[1]) ? '' : 'display:none;' }}" />
                                                     </div>
@@ -218,7 +225,7 @@
                                             <!-- Sub Image 2 -->
                                             <div class="col-6 mt-2">
                                                 <div class="border rounded p-2 text-center bg-light position-relative">
-                                                    <span class="d-block mb-1 small fw-bold text-secondary">Sub Image 2</span>
+                                                    <span class="d-block mb-1 small fw-bold text-dark">Sub Image 2</span>
                                                     <div class="img-preview-box mb-2">
                                                         <img class="img-thumb" id="sub2r{{ $key }}" src="{{ isset($p_imgs[2]) && !empty($p_imgs[2]) ? url('assets/images/products/detail/'.$p_imgs[2]) : '' }}" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ isset($p_imgs[2]) && !empty($p_imgs[2]) ? '' : 'display:none;' }}" />
                                                     </div>
@@ -233,7 +240,7 @@
                                             <!-- Sub Image 3 -->
                                             <div class="col-6 mt-2">
                                                 <div class="border rounded p-2 text-center bg-light position-relative">
-                                                    <span class="d-block mb-1 small fw-bold text-secondary">Sub Image 3</span>
+                                                    <span class="d-block mb-1 small fw-bold text-dark">Sub Image 3</span>
                                                     <div class="img-preview-box mb-2">
                                                         <img class="img-thumb" id="sub3r{{ $key }}" src="{{ isset($p_imgs[3]) && !empty($p_imgs[3]) ? url('assets/images/products/detail/'.$p_imgs[3]) : '' }}" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ isset($p_imgs[3]) && !empty($p_imgs[3]) ? '' : 'display:none;' }}" />
                                                     </div>

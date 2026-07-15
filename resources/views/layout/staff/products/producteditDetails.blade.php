@@ -165,6 +165,7 @@
                                                                         @endif
                                                                         @endforeach
                                                                     </select>
+                                                                    <div class="invalid-feedback-custom">Please select color</div>
                                                                     </div>                                                          
                                                                     <div class="col-md-2">
                                                                         <label style="color:gray"for="javascript">Size</label><br>
@@ -192,6 +193,7 @@
                                                                         @endif
                                                                         @endforeach
                                                                       </select>
+                                                                      <div class="invalid-feedback-custom">Please select size</div>
                                                                     </div>
                                                               
                                                                     <div class="col-md-2">
@@ -199,17 +201,20 @@
 
                                                                         <input type="text" name="retail_price[]"
                                                                             placeholder="Retail Price" class="form-control" required value="{{ $productdetails->retail_price }}">
+                                                                        <div class="invalid-feedback-custom">Please enter retail price</div>
                                                                     </div>
                                                                     <div class="col-md-2">
                                                                         <label style="color:gray"for="javascript">Selling price</label><br>
                                                                         <input type="text" name="selling_price[]"
                                                                             placeholder="Selling Price" class="form-control" required value="{{ $productdetails->selling_price }}">
+                                                                        <div class="invalid-feedback-custom">Please enter selling price</div>
                                                                     </div>
                                                                     {{$qtyinc=$key + 1;}}
                                                                     <div class="col-md-2">
                                                                         <label id="lowstack{{$qtyinc}}" style="color:gray"for="javascript">Quantity</label><br>
                                                                         <input type="number" class="qty form-control" id="qty{{$qtyinc}}"
                                                                             placeholder="Qty" name="quantity[]" required value="{{ $productdetails->quantity }}">
+                                                                        <div class="invalid-feedback-custom">Please enter quantity</div>
                                                                     </div>  
                                                                 </div>
                                                         
@@ -218,12 +223,13 @@
                                                                     <label style="color:gray"for="javascript">SKU</label><br>
                                                                     <input type="text" name="sku[]" placeholder="SKU"
                                                                         class="form-control" required  value="{{ $productdetails->sku }}">
+                                                                    <div class="invalid-feedback-custom">Please enter SKU</div>
                                                                         {{-- <input type="hidden" name="product_attri_id[]" placeholder=""
                                                                         class="form-control" required  value="{{ $productsAttri->id }}"> --}}
                                                                 </div> 
                                                                
                                                                 <div class="col-md-2" style="margin-right: 5%;">
-                                                                    <label style="color:gray"for="javascript">Return</label><br>
+                                                                    <label style="color:gray"for="javascript">Return <span class="text-danger">*</span></label><br>
                                                                     <select class="form-select form-select-lg text-secondary" name="return_replace[]">
                                                                         <option value="">Select</option>
                                                                         <option value="Return" {{ $productdetails->return_replace == 'Return' ? 'selected' : '' }}>
@@ -238,7 +244,7 @@
                                                                
                                 
                                                                 <div class="col-md-2">
-                                                                    <label style="color:gray"for="javascript">Return Days</label><br>
+                                                                    <label style="color:gray"for="javascript">Return Days <span class="text-danger">*</span></label><br>
                                                                     <input type="text" name="r_days[]" placeholder="Days"
                                                                         class="form-control" value="{{ $productdetails->r_days }}">
                                                                 </div>  
@@ -247,6 +253,7 @@
                                                                     <label  style="color:gray"for="javascript">Low Stack</label><br>
                                                                     <input type="number" name="low_stock_limit[]" id="low_stock_limit{{$inc}}" 
                                                                         placeholder="Low Stock Limit" class="low_stock_limit form-control" required value="{{ $productdetails->low_stock_limit }}">  
+                                                                    <div class="invalid-feedback-custom">Please enter low stock limit</div>  
                                                                 </div>  
                                                                    
                                                                 @if($key > 0)

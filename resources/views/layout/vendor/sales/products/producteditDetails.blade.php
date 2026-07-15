@@ -53,7 +53,7 @@
                                                              
                                                                 <div class="col-md-2">
                                                                     <label style="color:gray"for="javascript">Color</label><br>
-                                                                    <select class="form-select form-select-lg text-secondary"
+                                                                    <select class="form-control text-secondary"
                                                                     name="attrcolor[]" id="attrcolor" required>
 
                                                                     @foreach ($attribute as $attri)
@@ -86,7 +86,7 @@
                                                           
                                                                 <div class="col-md-2">
                                                                     <label style="color:gray"for="javascript">Size</label><br>
-                                                                    <select class="form-select form-select-lg text-secondary"
+                                                                    <select class="form-control text-secondary"
                                                                     name="attrsize[]" id="attrsize" required>
                                                                     @foreach ($attribute as $attri)
                                                                     @if($attri->attribute_name == 'size')
@@ -152,8 +152,8 @@
                                                                 </div> 
                                                                
                                                                 <div class="col-md-2">
-                                                                    <label style="color:gray"for="javascript">Return</label><br>
-                                                                    <select class="form-select form-select-lg text-secondary"
+                                                                    <label style="color:gray"for="javascript">Return <span class="text-danger">*</span></label><br>
+                                                                    <select class="form-control text-secondary"
                                                                         name="return_replace[]" required>
                                                                         <?php if($productdetails->return_replace == 1) { ?>
                                                                         <option selected value="1">
@@ -197,7 +197,7 @@
                                                                
                                 
                                                                 <div class="col-md-2">
-                                                                    <label style="color:gray"for="javascript">Return Days</label><br>
+                                                                    <label style="color:gray"for="javascript">Return Days <span class="text-danger">*</span></label><br>
                                                                     <input type="text" name="r_days[]" placeholder="Days"
                                                                         class="form-control" required value="{{ $productdetails->r_days }}">
                                                                 </div>  

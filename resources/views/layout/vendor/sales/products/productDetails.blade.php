@@ -64,11 +64,11 @@
                                                              
                                                                 
                                                                 <div class="col-md-2">
-                                                                    <select class="form-select form-select-lg text-secondary attrsize" name ="attrsize[]" id ="attrsize"></select>        
+                                                                    <select class="form-control text-secondary attrsize" name ="attrsize[]" id ="attrsize"></select>        
                                                                  </div>
                                                                     
                                                                     <div class="col-md-2">
-                                                                     <select class="form-select form-select-lg text-secondary attrcolor"
+                                                                     <select class="form-control text-secondary attrcolor"
                                                                             name="attrcolor[]" id ="attrcolor"></select>  
                                                                      </div>
 
@@ -99,7 +99,7 @@
                                                                 </div>
                                                                
                                                                 <div class="col-md-2">
-                                                                    <select class="form-select form-select-lg text-secondary"
+                                                                    <select class="form-control text-secondary"
                                                                         name="return_replace[]" required>
                                                                         <option selected value="1">
                                                                             Return /
@@ -178,7 +178,7 @@
                                                                 class="form-control" required>
                                                         </div>
                                                         <div class="col-md-2">
-                                                            <select class="form-select form-select-lg text-secondary"
+                                                            <select class="form-control text-secondary"
                                                                 name="return_replace[]" required>
                                                                 <option selected value="" hidden>
                                                                     Return /
@@ -243,7 +243,7 @@
                                                                 class="form-control" required>
                                                         </div>
                                                         <div class="col-md-2">
-                                                            <select class="form-select form-select-lg text-secondary"
+                                                            <select class="form-control text-secondary"
                                                                 name="return_replace[]" required>
                                                                 <option selected value="" hidden>
                                                                     Return /
@@ -449,7 +449,7 @@ $(function() {
     //                 let options;
     //                 attribute += ` <div class="col-md-2">${attr.attribute_name}</div>
     //                             <div class="col-md-2">
-    //                         <select class='form-select form-select-lg text-secondary' name='atttibute_value[]'>
+    //                         <select class='form-control text-secondary' name='atttibute_value[]'>
     //                         <option selected value='' hidden> --Select ${attr.attribute_name}--</option>
     //                         ${(function fun(array) {
     //                             for (let index = 0; index < array.length; index++) {

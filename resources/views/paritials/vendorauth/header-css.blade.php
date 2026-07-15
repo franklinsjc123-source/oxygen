@@ -114,4 +114,40 @@ background-color: transparent;
     width: 500px !important;
     max-width: 90% !important;
 }
+
+/* ── Table Toolbar Buttons Always Visible ── */
+.fixed-table-toolbar .columns > .btn,
+.fixed-table-toolbar .columns > .btn-group > .btn,
+.fixed-table-toolbar .columns button[name="refresh"],
+.fixed-table-toolbar .columns button[name="toggle"],
+.fixed-table-toolbar .columns button[name="paginationSwitch"],
+.fixed-table-toolbar .columns .keep-open > button {
+    display: inline-block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    background-color: #fff !important;
+    border: 1px solid #ccc !important;
+    color: #333 !important;
+}
+.fixed-table-toolbar .columns > .btn:hover,
+.fixed-table-toolbar .columns > .btn-group > .btn:hover,
+.fixed-table-toolbar .columns button[name="refresh"]:hover,
+.fixed-table-toolbar .columns button[name="toggle"]:hover,
+.fixed-table-toolbar .columns .keep-open > button:hover {
+    background-color: #e6e6e6 !important;
+    border-color: #adadad !important;
+}
+/* Ensure glyphicon icons inside toolbar buttons are visible */
+.fixed-table-toolbar .columns .glyphicon,
+.fixed-table-toolbar .columns .icon-refresh {
+    color: #333 !important;
+}
+
+/* Make form-select match form-control size and height */
+.form-select {
+    padding: .5rem 2.25rem .5rem .75rem !important;
+    font-size: 1.5rem !important;
+    line-height: 1.5 !important;
+    height: auto !important;
+}
     </style>

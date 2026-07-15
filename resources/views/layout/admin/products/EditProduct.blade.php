@@ -45,7 +45,25 @@
                 background: white;
                 color: black;
             }
-    </style>
+            .invalid-feedback-custom {
+                display: none;
+                color: #dc3545;
+                font-size: 1.05rem;
+                margin-top: 0.25rem;
+            }
+            form.validation-attempted :invalid ~ .invalid-feedback-custom,
+            form.validation-attempted .invalid-field ~ .invalid-feedback-custom {
+                display: block !important;
+            }
+            form.validation-attempted :invalid {
+                border-color: #ced4da !important;
+                box-shadow: none !important;
+            }
+            label, .form-label {
+                margin-top: 0px !important;
+                margin-bottom: 2px !important;
+            }
+        </style>
         <div class="page-body text-secondary fcolor">
             <form action="{{ route('products.crud.update',$product->id) }}" method="POST" enctype="multipart/form-data">
                 
@@ -77,419 +95,322 @@
 
                 <!-- Container-fluid starts-->
                 {{-- @foreach ($products as $product) --}}
-                <div class="container-fluid fcolor">
+                                <div class="container-fluid fcolor">
                     <div class="row product-adding">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="col-xl-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="col-md-12">
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <h5 class="fw-bold"> Primary / Main Category</h5>
-                                                            <div class="form-group">
-                                                                <select class="js-select2 form-control" id="main_category"
-                                                                    name="category_main" required>
-                                                                    {{-- <option selected hidden value="">-- Select --
-                                                                    </option> --}}
-                                                                   <!-- <option selected  value="
-                                                                    {{-- {{ $product->id }}"> --}}
-
-                                                                    {{-- {{ $product->category_main }} --}}
-                                                                    </option> -->
-                                                                    
-                                                                    {{-- @foreach ($category as $categories)
-                                                                    
-                                                                    <option id="{{ $categories->id }}"
-                                                                        value="{{ $categories->id }}" {{ ($categories->id == $product->category)?'selected':'';}}>
-                                                                        {{ $categories->category_name }}
-                                                                    </option>
-                                                                @endforeach   --}}
-
-
-
-                                                                      @foreach ($category_main_data as $category_main)
-                                                                    
-                                                                        <option id="{{ $category_main->id }}"
-                                                                            value="{{ $category_main->id }}" {{ ($category_main->id==$product->category_main)?'selected':'';}}>
-                                                                            {{ $category_main->category_main_name }}
-                                                                        </option>
-                                                                    @endforeach  
-                                                                    {{-- @foreach ($category_main_data as $category_main)
-                                                                    <option id="{{ $category_main->id }}"
-                                                                        value="{{ $category_main->id}}">
-                                                                        {{ $category_main->category_main_name }}
-                                                                    </option> 
-                                                                @endforeach--}}
-
-                                                                    
-                                                                </select>
-
-
-                                                                
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <h5 class="fw-bold">Category</h5>
-                                                            <div id="clothing">
-                                                                <select class="js-select2 form-control" name="category"
-                                                                    id="category"  required>
-                                                                    {{-- <option value="" selected hidden>Select Main
-                                                                        Category</option> --}}
-
-                                                                        <option value="{{ $product->category }}" selected> {{ optional($cates->first())->category_name }}</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <h5 class="fw-bold">Sub Category</h5>
-                                                            <div id="clothing">
-                                                                <select class="js-select2 form-control" name="category_sub"
-                                                                    id="sub_category"  required>
-                                                                    {{-- <option selected hidden value="">Select
-                                                                        Category
-                                                                    </option> --}}
-
-                                                                    <option value="{{ $product->category_sub }}" selected> {{ optional($cates->first())->category_sub_name }}</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-12 digital-add needs-validation">
-                                                <div class="row">
-                                                    <div class="col-md-8">
-                                                        <div class="form-group mt-2">
-                                                            <label for=""
-                                                                class="col-form-label pt-0 fw-bold"><span>*</span> Product
-                                                                Name</label>
-                                                            <input class="form-control" id="validationCustom01"
-                                                                type="text" name="product_name" required value="{{ $product->product_name }}">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <label class="col-form-label col-md-3 fw-bold"><span
-                                                                class="text-danger">*</span>Tax</label>
-                                                        <select class="custom-select form-control text-secondary"
-                                                            id="gs" onchange="r()" name="tax_id" required>
-                                                            {{-- <option value="1">Included</option>
-                                                            <option value="0">Excluded</option> --}}
-                                                            <option value="1" {{ $product->tax_id == 1 ? 'selected' : ''}}>Included</option>
-                                                            <option value="0" {{ $product->tax_id == 0 ? 'selected' : ''}}>Excluded</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="col-md-2">
-                                                        <label class="col-form-label col-md-3 fw-bold "><span
-                                                                class="text-danger">*</span>Gst</label>
-                                                        <select class="custom-select form-control dropdown text-secondary"
-                                                            id="gst1" onchange="r()" required name="gst_id" required>
-                                                            {{-- <option value="" selected hidden value="">--Select
-                                                                Gst %--</option> --}}
-                                                                 @foreach ($gst as $gst)
-                                                                <option value="{{ $gst->value }}" {{ $product->gst_id == $gst->value ? 'selected' : ''}}>{{ $gst->gst_name }}
-                                                                </option>
-                                                            @endforeach
-                                                            {{-- @foreach ($gst as $gst)
-                                                                <option value="{{ $gst->gst_value }}">{{ $gst->gst_name }}
-                                                                </option>
-                                                            @endforeach --}}
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                @include('layout.admin.products.producteditDetails')
-
-
-                                                <div class="card mt-3">
-                                                    <div class="card-header bg-light">
-                                                        <h5 class="m-0 fw-bold text-dark">Product Main Image</h5>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <div class="row align-items-center">
-                                                            <div class="col-md-4 text-center">
-                                                                <div class="border rounded p-3 bg-light" style="max-width: 200px; margin: 0 auto;">
-                                                                    <div class="img-preview-box mb-2 d-flex align-items-center justify-content-center" style="height: 150px; overflow: hidden;">
-                                                                        <img src="{{ !empty($product->product_image) ? url('assets/images/products/'.$product->product_image) : '' }}" id="productMainImgPreview" class="img-fluid rounded" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ !empty($product->product_image) ? '' : 'display: none;' }}">
-                                                                    </div>
-                                                                    <span class="btn btn-xs btn-outline-primary btn-productimg w-100 position-relative">
-                                                                        <i class="fa fa-cloud-upload"></i> Upload Image
-                                                                        <input class="form-control" type="file" id="productMainImgInput" name="mainImage" accept="image/*" style="position: absolute; top: 0; left: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer;">
-                                                                    </span>
-                                                                    <input type="hidden" name="oldmainImage" value="{{ $product->product_image }}">
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-8">
-                                                                <p class="text-secondary small mb-1">Upload a high-quality main image for your product display.</p>
-                                                                <ul class="text-secondary small ps-3 mb-0">
-                                                                    <li>Supported formats: JPG, PNG, WEBP, GIF</li>
-                                                                    <li>Recommend resolution: 800 x 800 pixels</li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="card">
-                                                    <div class="card-header">
-                                                        <h5>Product Description</h5>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <div class="digital-add needs-validation">
-                                                            <div class="form-group mb-0">
-                                                                <div class="description-sm">
-                                                                    <textarea id="description" cols="10" required rows="4" name="description">{{$product->description}}</textarea>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="card mt-3">
-                                                    <div class="card-header bg-light">
-                                                        <h5 class="m-0 fw-bold text-dark">Shipping Information</h5>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <div class="row g-3">
-                                                            <div class="col-md-3">
-                                                                <label class="form-label fw-bold text-secondary mb-1">Weight (g)</label>
-                                                                <input type="number" class="form-control" name="weight" placeholder="Weight (g)" value="{{$product->weight}}">
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <label class="form-label fw-bold text-secondary mb-1">Length (cm)</label>
-                                                                <input type="number" class="form-control" placeholder="Length (cm)" name="length" value="{{ $product->length }}">
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <label class="form-label fw-bold text-secondary mb-1">Width (cm)</label>
-                                                                <input type="number" class="form-control" name="width" placeholder="Width (cm)" value="{{ $product->width }}">
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <label class="form-label fw-bold text-secondary mb-1">Height (cm)</label>
-                                                                <input type="number" class="form-control" name="height" placeholder="Height (cm)" value="{{$product->height}}">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="card mt-3">
-                                                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                                                        <h5 class="m-0 fw-bold text-dark">Specifications</h5>
-                                                        <span class="text-secondary fw-bold" id="specify_length"></span>
-                                                    </div>
-                                                    <div class="card-body p-0">
-                                                        <div class="table-responsive">
-                                                            <table class="table table-hover table-bordered m-0 align-middle">
-                                                                <thead class="table-light">
-                                                                    <tr>
-                                                                        <th style="width: 40%;">Specification Name</th>
-                                                                        <th style="width: 60%;">Value</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody class="spectable">
-                                                                    @php
-                                                                        $specById = [];
-                                                                        $specByName = [];
-                                                                        foreach ($productspecs as $ps) {
-                                                                            if (!empty($ps->spec_id)) {
-                                                                                $specById[$ps->spec_id] = $ps->specify_value;
-                                                                            }
-                                                                            if (!empty($ps->specify_attribute)) {
-                                                                                $specByName[$ps->specify_attribute] = $ps->specify_value;
-                                                                            }
-                                                                        }
-                                                                    @endphp
-                                                                    @foreach ($specification as $spec)
-                                                                        @php
-                                                                            $specValues = json_decode($spec->specification_values ?? '[]', true) ?: [];
-                                                                            $selectedValue = $specById[$spec->id] ?? ($specByName[$spec->specification_group_name] ?? '');
-                                                                        @endphp
-                                                                        <tr>
-                                                                            <td>
-                                                                                <div class="form-check m-0 d-flex align-items-center">
-                                                                                    <input class="form-check-input m-0" type="checkbox" id="spec_id_{{ $spec->id }}" name="spec_id[]" value="{{ $spec->id }}" {{ $selectedValue !== '' ? 'checked' : '' }}>
-                                                                                    <label class="form-check-label fw-bold text-secondary ms-2 mb-0" for="spec_id_{{ $spec->id }}">
-                                                                                        {{ $spec->specification_group_name }}
-                                                                                    </label>
-                                                                                </div>
-                                                                                <input type="hidden" name="specify_attribute[{{ $spec->id }}]" value="{{ $spec->specification_group_name }}">
-                                                                            </td>
-                                                                            <td>
-                                                                                <select class="form-select text-secondary" name="specify_value[{{ $spec->id }}]" id="specify_value_{{ $spec->id }}">
-                                                                                    <option value="" hidden {{ $selectedValue === '' ? 'selected' : '' }}>-- Select {{ $spec->specification_group_name }} --</option>
-                                                                                    @foreach ($specValues as $specify_val)
-                                                                                        <option value="{{ $specify_val }}" {{ $specify_val == $selectedValue ? 'selected' : '' }}>{{ $specify_val }}</option>
-                                                                                    @endforeach
-                                                                                </select>
-                                                                            </td>
-                                                                        </tr>
-                                                                    @endforeach
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                </div>
-            
-                                                    <div class="col-xl-12">
-                                                        <div class="card p-3">
-                                                            <div class="card-body">
-                                                                <div class="conatiner">
-                                                                    <div class="row mt-3">
-                                                                        <div class="col-md-12 ">
-                                                                            <h4 class="fw-bold">Offers & Collection</h4>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="row mt-3">
-                                                                        <div class="col-md-1">
-                                                                            <label class="text-center  fw-bold mt-2">Offers</label>
-                                                                        </div>
-                                                                        <div class="col-md-3 ">
-                                                                            <select class="form-select form-select-lg text-secondary"
-                                                                                id="offtype" name="offer">
-                                                                                <option value="">Select</option>
-                                                                                {{-- <option selected hidden value="">Select Here
-                                                                                </option>
-                                                                                <option value="Buy 3 Get 1 Free">Buy 3 Get 1 Free
-                                                                                </option>
-                                                                                <option value="Buy 1 Get 1 Free">Buy 1 Get 1 Free
-                                                                                </option>
-                                                                                <option value="Buy 3 @ 999">Buy 3 @ 999</option>
-                                                                                <option value="None">None</option> --}}
-            
-                                                                                @foreach ($offers as $offer)
-                                                                                @php
-                                                                                    $offerLabel = "";
-                                                                                    if($offer->type == "Buy X Get Y Free") {
-                                                                                        $offerLabel = 'Buy ' . $offer->buy . ' get ' . $offer->getoffer . ' free';
-                                                                                    } elseif($offer->type == "Buy X @ Y") {
-                                                                                        $offerLabel = 'Buy ' . $offer->buyproduct . ' get amount ' . $offer->getamt;
-                                                                                    } else {
-                                                                                        $offerLabel = $offer->type;
-                                                                                    }
-                                                                                @endphp
-                                                                                <option value="{{ $offer->id }}" {{ ($offerLabel == $product->offers || $offer->id == $product->offers)?'selected':'' }}>
-                                                                                    {{ $offerLabel }}
-                                                                                </option>
-                                                                                 @endforeach
-            
-                                                                                {{-- <option>{{ $product->offers }}</option> --}}
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="col-md-1">
-                                                                            <label class="text-center  fw-bold mt-2">Collection</label>
-                                                                        </div>
-                                                                        <div class="col-md-4 ">
-                                                                            <select class="form-select form-select-lg text-secondary"
-                                                                                id="collection" name="collection">
-                                                                                {{-- <option selected hidden value="">Select Here
-                                                                                </option> --}}
-                                                                                @foreach ($productcollection as $item )
-                                                                                <option value="{{ $item->name }}" {{ ($item->name == $product->collection)?'selected':'';}}>{{ $item->name }}</option>
-                                                                                @endforeach
-                                                                                {{-- <option value="1">New Arrivals</option>
-                                                                                <option value="2">Best Collection
-                                                                                </option>
-                                                                                <option value="3">Brand Material</option> --}}
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-            
-                                                    <div class="col-xl-12 d-flex  justify-content-end">
-                                                        <div class="form-group mt-5 d-inline">
-                                                            &nbsp;
-                                                        </div>
-                                                        <div class="d-inline  text-white">
-                                                            <button class="btn btn-primary w-100"
-                                                                onclick="return confirm('Are you sure, you want to Update it?')"
-                                                                type="submit">
-                                                                Save
-                                                            </button>
-                                                        </div>
-                                                        <div class="d-inline px-2 text-white">
-                                                            <a href="#" class="btn btn-secondary w-100 " type="button">
-                                                                Close
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
                         <div class="col-md-12">
-                            <div class="row">
-                                <div class="row">
-                                    <div class="col-xl-12">
-                                        <div class="card p-3">
-                                            {{-- <div class="card-head ">
-                                                <div class="form-group">
-                                                    <div class="row">
-                                                        <h4 class="text-start fw-bold ">Shipping</h4>
-                                                        <div class="card-body">
-                                                            <div class="row">
-                                                                <div class="col-md-3">
-                                                                    <div class="next-input--stylized">
-                                                                        <input type="number" class="form-control"
-                                                                            name="weight" placeholder="Weight (g)" value="{{$product->weight}}">
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group mb-3">
-                                                                        <div class="next-input--stylized">
-                                                                            <input type="number" class="form-control"
-                                                                                placeholder="Length (cm)" name="length"
-                                                                                value="{{ $product->length }}">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group mb-3">
-                                                                        <div class="next-input--stylized">
-                                                                            <input type="number" class="form-control"
-                                                                                name="width" placeholder="Width (cm)" value="{{ $product->width }}">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-3 ">
-                                                                    <div class="form-group mb-3">
-                                                                        <div class="next-input--stylized">
-
-                                                                            <input type="number" class="form-control"
-                                                                                name="height" placeholder="Height (cm)" value="{{$product->height}}">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div> --}}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-12">
+                            <div class="card shadow-sm border-0 mb-4">
+                                <div class="card-body p-4">
                                     
-                                </div>
-                            </div>
+                                     <!-- Category Selection -->
+                                     <div class="row g-3">
+                                         <!-- Primary / Main Category -->
+                                         <div class="col-md-4">
+                                             <div class="form-group">
+                                                 <label class="form-label fw-bold text-dark">Primary / Main Category</label>
+                                                 <select class="js-select2 form-control text-secondary" id="main_category" disabled required>
+                                                     @foreach ($category_main_data as $category_main)
+                                                         <option id="{{ $category_main->id }}"
+                                                             value="{{ $category_main->id }}" {{ ($category_main->id==$product->category_main)?'selected':'';}}>
+                                                             {{ $category_main->category_main_name }}
+                                                         </option>
+                                                     @endforeach  
+                                                 </select>
+                                                 <input type="hidden" name="category_main" value="{{ $product->category_main }}">
+                                             </div>
+                                         </div>
+                                         
+                                         <!-- Category -->
+                                         <div class="col-md-4">
+                                             <div class="form-group">
+                                                 <label class="form-label fw-bold text-dark">Category</label>
+                                                 <select class="js-select2 form-control text-secondary" id="category" disabled required>
+                                                     <option value="{{ $product->category }}" selected> {{ optional($cates->first())->category_name }}</option>
+                                                 </select>
+                                                 <input type="hidden" name="category" value="{{ $product->category }}">
+                                             </div>
+                                         </div>
+                                         
+                                         <!-- Sub Category -->
+                                         <div class="col-md-4">
+                                             <div class="form-group">
+                                                 <label class="form-label fw-bold text-dark">Sub Category</label>
+                                                 <select class="js-select2 form-control text-secondary" id="sub_category" disabled required>
+                                                     <option value="{{ $product->category_sub }}" selected> {{ optional($cates->first())->category_sub_name }}</option>
+                                                 </select>
+                                                 <input type="hidden" name="category_sub" value="{{ $product->category_sub }}">
+                                             </div>
+                                         </div>
+                                     </div>
+
+                                     <!-- Attribute Configuration -->
+                                     @php
+                                         $selectedAttributeId = null;
+                                         $firstDetail = isset($productdetailss) && count($productdetailss) > 0 ? $productdetailss->first() : null;
+                                         $attributesList = isset($attribute) ? $attribute : collect();
+                                         if ($firstDetail && count($attributesList) > 0) {
+                                             $attrName2 = strtolower($firstDetail->attributename2 ?? '');
+                                             $attrName3 = strtolower($firstDetail->attributename3 ?? '');
+                                             foreach ($attributesList as $attr) {
+                                                 $groupName = strtolower($attr->attribute_group_name ?? '');
+                                                 $refName = strtolower($attr->attribute_group_refname ?? '');
+                                                 if ($groupName === $attrName2 || $groupName === $attrName3 || $refName === $attrName2 || $refName === $attrName3) {
+                                                     $selectedAttributeId = $attr->id;
+                                                     break;
+                                                 }
+                                             }
+                                         }
+                                         $is_color = 'no';
+                                         if ($firstDetail && strtolower($firstDetail->attributename1 ?? '') === 'color' && !empty($firstDetail->attributevalue1)) {
+                                             $is_color = 'yes';
+                                         }
+                                         $nproduct = isset($productdetailss) && count($productdetailss) > 0 ? $productdetailss->max('common_product') : 1;
+                                     @endphp
+
+                                     <div class="row g-3 mt-1">
+                                         <!-- Attribute -->
+                                         <div class="col-md-6">
+                                             <div class="form-group">
+                                                 <label class="form-label fw-bold text-dark">Attribute</label>
+                                                 <select class="form-select text-secondary" id="selected_attribute_summary" disabled required>
+                                                     <option value="">Select Attribute</option>
+                                                     @foreach ($attributesList as $attr)
+                                                         <option value="{{ $attr->id }}" {{ $selectedAttributeId == $attr->id ? 'selected' : '' }}>
+                                                             {{ $attr->attribute_group_refname }}
+                                                         </option>
+                                                     @endforeach
+                                                 </select>
+                                                 <input type="hidden" name="selected_attribute_id1" value="{{ $selectedAttributeId }}">
+                                             </div>
+                                         </div>
+
+                                         <!-- Is Color Available? -->
+                                         <div class="col-md-6">
+                                             <div class="form-group">
+                                                 <label class="form-label fw-bold text-dark">Is Color Available?</label>
+                                                 <select class="form-select text-secondary" id="is_color_summary" disabled required>
+                                                     <option value="yes" {{ $is_color == 'yes' ? 'selected' : '' }}>Yes</option>
+                                                     <option value="no" {{ $is_color == 'no' ? 'selected' : '' }}>No</option>
+                                                 </select>
+                                                 <input type="hidden" name="is_color_summary" value="{{ $is_color }}">
+                                             </div>
+                                         </div>
+                                     </div>
+
+                                     <!-- Basic Details -->
+                                     <div class="row g-3 mt-1">
+                                         <!-- Product Name -->
+                                         <div class="col-md-6">
+                                             <div class="form-group">
+                                                 <label class="form-label fw-bold text-dark">Product Name <span class="text-danger">*</span></label>
+                                                 <input class="form-control" id="validationCustom01" type="text" name="product_name" required value="{{ $product->product_name }}">
+                                                 <div class="invalid-feedback-custom">Please enter product name</div>
+                                             </div>
+                                         </div>
+                                         
+                                         <!-- Tax -->
+                                         <div class="col-md-2">
+                                             <div class="form-group">
+                                                 <label class="form-label fw-bold text-dark">Tax <span class="text-danger">*</span></label>
+                                                 <select class="custom-select form-control text-secondary" id="gs" onchange="r()" name="tax_id" required>
+                                                     <option value="1" {{ $product->tax_id == 1 ? 'selected' : ''}}>Included</option>
+                                                     <option value="0" {{ $product->tax_id == 0 ? 'selected' : ''}}>Excluded</option>
+                                                 </select>
+                                                 <div class="invalid-feedback-custom">Please select tax type</div>
+                                             </div>
+                                         </div>
+
+                                         <!-- GST -->
+                                         <div class="col-md-2">
+                                             <div class="form-group">
+                                                 <label class="form-label fw-bold text-dark">GST <span class="text-danger">*</span></label>
+                                                 <select class="custom-select form-control dropdown text-secondary" id="gst1" onchange="r()" required name="gst_id" required>
+                                                     @foreach ($gst as $gst_item)
+                                                         <option value="{{ $gst_item->value }}" {{ $product->gst_id == $gst_item->value ? 'selected' : ''}}>{{ $gst_item->gst_name }}</option>
+                                                     @endforeach
+                                                 </select>
+                                                 <div class="invalid-feedback-custom">Please select GST percentage</div>
+                                             </div>
+                                         </div>
+                                         
+                                         <!-- HSN Code -->
+                                         <div class="col-md-2">
+                                             <div class="form-group">
+                                                 <label class="form-label fw-bold text-dark">HSN CODE <span class="text-danger">*</span></label>
+                                                 <input class="form-control" type="text" name="hsncode" value="{{ $product->hsncode }}" required>
+                                                 <div class="invalid-feedback-custom">Please enter HSN code</div>
+                                             </div>
+                                         </div>
+                                     </div>
+
+                                     <!-- Variant Details Subview -->
+                                     @include('layout.admin.products.producteditDetails')
+
+                                     <!-- Product Main Image -->
+                                     <div class="row g-3 mt-3">
+                                         <div class="col-md-3">
+                                             <div class="form-group">
+                                                 <label class="form-label fw-bold text-dark">Upload Main Image <span class="text-danger">*</span></label>
+                                                 <input class="form-control" type="file" id="productMainImgInput" name="mainImage" accept="image/*">
+                                                 <input type="hidden" name="oldmainImage" value="{{ $product->product_image }}">
+                                             </div>
+                                         </div>
+                                         <div class="col-md-3">
+                                             <div class="img-preview-box p-1 border rounded bg-white d-flex align-items-center justify-content-center" style="height: 120px; width: 120px; overflow: hidden;">
+                                                 <img src="{{ !empty($product->product_image) ? url('assets/images/products/'.$product->product_image) : '' }}" id="productMainImgPreview" class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ !empty($product->product_image) ? '' : 'display: none;' }}">
+                                             </div>
+                                         </div>
+                                     </div>
+
+                                     <!-- Product Description -->
+                                     <div class="form-group mt-3">
+                                         <label class="form-label fw-bold text-dark">Product Description <span class="text-danger">*</span></label>
+                                         <textarea id="description" class="form-control" required rows="5" name="description">{{ $product->description }}</textarea>
+                                         <div class="invalid-feedback-custom">Please enter product description</div>
+                                     </div>
+                                 </div>
+                             </div>
+
+                             <!-- Shipping Information Card -->
+                             <div class="card shadow-sm border-0 mb-4">
+                                 <div class="card-body p-4">
+                                     <!-- Shipping Information -->
+                                     <h5 class="fw-bold text-dark mb-3">Shipping Information</h5>
+                                     <div class="row g-3">
+                                         <div class="col-md-3">
+                                             <label class="form-label fw-bold text-dark">Weight (g)</label>
+                                             <input type="number" class="form-control" name="weight" placeholder="Weight (g)" value="{{ $product->weight }}">
+                                         </div>
+                                         <div class="col-md-3">
+                                             <label class="form-label fw-bold text-dark">Length (cm)</label>
+                                             <input type="number" class="form-control" placeholder="Length (cm)" name="length" value="{{ $product->length }}">
+                                         </div>
+                                         <div class="col-md-3">
+                                             <label class="form-label fw-bold text-dark">Width (cm)</label>
+                                             <input type="number" class="form-control" name="width" placeholder="Width (cm)" value="{{ $product->width }}">
+                                         </div>
+                                         <div class="col-md-3">
+                                             <label class="form-label fw-bold text-dark">Height (cm)</label>
+                                             <input type="number" class="form-control" name="height" placeholder="Height (cm)" value="{{ $product->height }}">
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+
+                             <!-- Specifications Card -->
+                             <div class="card shadow-sm border-0 mb-4">
+                                 <div class="card-body p-4">
+                                     <!-- Specifications -->
+                                     <h5 class="fw-bold text-dark mb-3">Specifications</h5>
+                                     <div class="table-responsive">
+                                         <table class="table table-hover table-bordered m-0 align-middle">
+                                             <thead class="table-light">
+                                                 <tr>
+                                                     <th style="width: 40%;">Specification Name</th>
+                                                     <th style="width: 60%;">Value</th>
+                                                 </tr>
+                                             </thead>
+                                             <tbody class="spectable">
+                                                 @php
+                                                     $specById = [];
+                                                     $specByName = [];
+                                                     foreach ($productspecs as $ps) {
+                                                         if (!empty($ps->spec_id)) {
+                                                             $specById[$ps->spec_id] = $ps->specify_value;
+                                                         }
+                                                         if (!empty($ps->specify_attribute)) {
+                                                             $specByName[$ps->specify_attribute] = $ps->specify_value;
+                                                         }
+                                                     }
+                                                 @endphp
+                                                 @foreach ($specification as $spec)
+                                                     @php
+                                                         $specValues = json_decode($spec->specification_values ?? '[]', true) ?: [];
+                                                         $selectedValue = $specById[$spec->id] ?? ($specByName[$spec->specification_group_name] ?? '');
+                                                     @endphp
+                                                     <tr>
+                                                         <td>
+                                                             <div class="form-check m-0 d-flex align-items-center">
+                                                                 <input class="form-check-input m-0" type="checkbox" id="spec_id_{{ $spec->id }}" name="spec_id[]" value="{{ $spec->id }}" {{ $selectedValue !== '' ? 'checked' : '' }}>
+                                                                 <label class="form-check-label fw-bold text-dark ms-2 mb-0" for="spec_id_{{ $spec->id }}">
+                                                                     {{ $spec->specification_group_name }}
+                                                                 </label>
+                                                             </div>
+                                                             <input type="hidden" name="specify_attribute[{{ $spec->id }}]" value="{{ $spec->specification_group_name }}">
+                                                         </td>
+                                                         <td>
+                                                             <select class="form-control text-secondary" name="specify_value[{{ $spec->id }}]" id="specify_value_{{ $spec->id }}">
+                                                                 <option value="" hidden {{ $selectedValue === '' ? 'selected' : '' }}>-- Select {{ $spec->specification_group_name }} --</option>
+                                                                 @foreach ($specValues as $specify_val)
+                                                                     <option value="{{ $specify_val }}" {{ $specify_val == $selectedValue ? 'selected' : '' }}>{{ $specify_val }}</option>
+                                                                 @endforeach
+                                                             </select>
+                                                         </td>
+                                                     </tr>
+                                                 @endforeach
+                                             </tbody>
+                                         </table>
+                                     </div>
+                                 </div>
+                             </div>
+
+                             <!-- Offers & Collection Card -->
+                             <div class="card shadow-sm border-0 mb-4">
+                                 <div class="card-body p-4">
+                                     <!-- Offers & Collection -->
+                                     <h5 class="fw-bold text-dark mb-3">Offers & Collection</h5>
+                                     <div class="row g-3">
+                                         <div class="col-md-6">
+                                             <div class="form-group">
+                                                 <label class="form-label fw-bold text-dark">Offers</label>
+                                                 <select class="form-control text-secondary" id="offtype" name="offer">
+                                                     <option value="">Select Offer</option>
+                                                     @foreach ($offers as $offer)
+                                                         @php
+                                                             $offerLabel = "";
+                                                             if($offer->type == "Buy X Get Y Free") {
+                                                                 $offerLabel = 'Buy ' . $offer->buy . ' get ' . $offer->getoffer . ' free';
+                                                             } elseif($offer->type == "Buy X @ Y") {
+                                                                 $offerLabel = 'Buy ' . $offer->buyproduct . ' get amount ' . $offer->getamt;
+                                                             } else {
+                                                                 $offerLabel = $offer->type;
+                                                             }
+                                                         @endphp
+                                                         <option value="{{ $offer->id }}" {{ ($offerLabel == $product->offers || $offer->id == $product->offers) ? 'selected' : '' }}>
+                                                             {{ $offerLabel }}
+                                                         </option>
+                                                     @endforeach
+                                                 </select>
+                                             </div>
+                                         </div>
+                                         <div class="col-md-6">
+                                             <div class="form-group">
+                                                 <label class="form-label fw-bold text-dark">Collection</label>
+                                                 <select class="form-control text-secondary" id="collection" name="collection">
+                                                     <option value="">Select Collection</option>
+                                                     @foreach ($productcollection as $item)
+                                                         <option value="{{ $item->name }}" {{ ($item->name == $product->collection) ? 'selected' : '' }}>{{ $item->name }}</option>
+                                                     @endforeach
+                                                 </select>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+
+                             <!-- Action Buttons -->
+                             <div class="row mt-4">
+                                         <div class="col-12 d-flex justify-content-end gap-2">
+                                             <button class="btn btn-primary px-4 py-2" onclick="return confirm('Are you sure you want to update this product?')" type="submit">
+                                                 Save
+                                             </button>
+                                             <a href="{{ route('products.crud.listing') }}" class="btn btn-secondary px-4 py-2">
+                                                 Close
+                                             </a>
+                                         </div>
+                                     </div>
                         </div>
                     </div>
                 </div>
-
-
-                {{-- @endforeach --}}
             </form>
         </div>
     </div>
@@ -820,29 +741,35 @@
                 '                    <div class="col-md-4">' +
                 '                        <label class="form-label fw-bold text-secondary mb-1">Color</label>' +
                 '                        <select class="form-select text-secondary attrcolor" name="attrcolor[]" id="attrcolor'+x+'"><option hidden>Color</option></select>' +
+                '                        <div class="invalid-feedback-custom">Please select color</div>' +
                 '                    </div>' +
                 '                    <div class="col-md-4">' +
                 '                        <label class="form-label fw-bold text-secondary mb-1">Size</label>' +
                 '                        <select class="form-select text-secondary attrsize" name="attrsize[]" id="attrsize'+x+'"><option hidden>Size</option></select>' +
+                '                        <div class="invalid-feedback-custom">Please select size</div>' +
                 '                    </div>' +
                 '                    <div class="col-md-4">' +
                 '                        <label class="form-label fw-bold text-secondary mb-1">Retail Price</label>' +
                 '                        <input type="text" name="retail_price[]" placeholder="Retail Price" class="form-control" required>' +
+                '                        <div class="invalid-feedback-custom">Please enter retail price</div>' +
                 '                    </div>' +
                 '                    <div class="col-md-4">' +
                 '                        <label class="form-label fw-bold text-secondary mb-1">Selling Price</label>' +
                 '                        <input type="text" name="selling_price[]" placeholder="Selling Price" class="form-control" required>' +
+                '                        <div class="invalid-feedback-custom">Please enter selling price</div>' +
                 '                    </div>' +
                 '                    <div class="col-md-4">' +
                 '                        <label class="form-label fw-bold text-secondary mb-1" id="lowstack'+(x+1)+'">Quantity</label>' +
                 '                        <input type="number" class="qty form-control" id="qty'+(x+1)+'" placeholder="Qty" name="quantity[]" required>' +
+                '                        <div class="invalid-feedback-custom">Please enter quantity</div>' +
                 '                    </div>' +
                 '                    <div class="col-md-4">' +
                 '                        <label class="form-label fw-bold text-secondary mb-1">SKU</label>' +
                 '                        <input type="text" name="sku[]" placeholder="SKU" class="form-control" required>' +
+                '                        <div class="invalid-feedback-custom">Please enter SKU</div>' +
                 '                    </div>' +
                 '                    <div class="col-md-4">' +
-                '                        <label class="form-label fw-bold text-secondary mb-1">Return / Replacement</label>' +
+                '                        <label class="form-label fw-bold text-secondary mb-1">Return / Replacement <span class="text-danger">*</span></label>' +
                 '                        <select class="form-select text-secondary" name="return_replace[]">' +
                 '                            <option value="">Select</option>' +
                 '                            <option value="Return">Return</option>' +
@@ -850,12 +777,13 @@
                 '                        </select>' +
                 '                    </div>' +
                 '                    <div class="col-md-4">' +
-                '                        <label class="form-label fw-bold text-secondary mb-1">Return Days</label>' +
+                '                        <label class="form-label fw-bold text-secondary mb-1">Return Days <span class="text-danger">*</span></label>' +
                 '                        <input type="text" name="r_days[]" placeholder="Days" class="form-control">' +
                 '                    </div>' +
                 '                    <div class="col-md-4">' +
                 '                        <label class="form-label fw-bold text-secondary mb-1">Low Stock Limit</label>' +
                 '                        <input type="number" name="low_stock_limit[]" id="low_stock_limit'+(x+1)+'" placeholder="Low Stock Limit" class="low_stock_limit form-control" required>' +
+                '                        <div class="invalid-feedback-custom">Please enter low stock limit</div>' +
                 '                    </div>' +
                 '                </div>' +
                 '            </div>' +
@@ -1138,5 +1066,95 @@
                     }
                 console.log(files);
                 }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const shouldSkipValidation = function(el) {
+            const name = (el.getAttribute('name') || '').toLowerCase();
+            return name === 'specification'
+                || name.indexOf('sku[') === 0
+                || name.indexOf('shipping_container') === 0;
+        };
+
+        const markRequiredInvalidFields = function(form) {
+            form.querySelectorAll('input[required], select[required], textarea[required]').forEach(function(el) {
+                if (el.disabled || shouldSkipValidation(el)) return;
+                const value = (el.value || '').trim();
+                if (value === '' || !el.checkValidity()) {
+                    el.classList.add('invalid-field');
+                } else {
+                    el.classList.remove('invalid-field');
+                }
+            });
+
+            // Main image validation (required if no existing image)
+            const mainImgInput = form.querySelector('#productMainImgInput');
+            const oldMainImgInput = form.querySelector('input[name="oldmainImage"]');
+            if (mainImgInput && oldMainImgInput) {
+                if (mainImgInput.value === '' && oldMainImgInput.value === '') {
+                    mainImgInput.classList.add('invalid-field');
+                    mainImgInput.setCustomValidity('Please upload main image');
+                } else {
+                    mainImgInput.classList.remove('invalid-field');
+                    mainImgInput.setCustomValidity('');
+                }
+            }
+
+            // Variant main images validation (required if no existing variant main image)
+            form.querySelectorAll('input[name="mainimg[]"]').forEach(function(variantImgInput) {
+                const container = variantImgInput.closest('.position-relative');
+                if (container) {
+                    const oldImgInput = container.querySelector('input[type="hidden"]');
+                    if (oldImgInput) {
+                        if (variantImgInput.value === '' && oldImgInput.value === '') {
+                            variantImgInput.classList.add('invalid-field');
+                            variantImgInput.setCustomValidity('Please upload variant main image');
+                        } else {
+                            variantImgInput.classList.remove('invalid-field');
+                            variantImgInput.setCustomValidity('');
+                        }
+                    }
+                }
+            });
+        };
+
+        document.querySelectorAll('form').forEach(function(form) {
+            // Reset custom validity on image change
+            form.querySelectorAll('#productMainImgInput, input[name="mainimg[]"]').forEach(function(el) {
+                el.addEventListener('change', function() {
+                    el.setCustomValidity('');
+                    el.classList.remove('invalid-field');
+                });
+            });
+            form.querySelectorAll('input, select, textarea').forEach(function(el) {
+                el.addEventListener('input', function() {
+                    if (el.checkValidity()) {
+                        el.classList.remove('invalid-field');
+                    }
+                });
+                el.addEventListener('change', function() {
+                    if (el.checkValidity()) {
+                        el.classList.remove('invalid-field');
+                    }
+                });
+            });
+
+            form.querySelectorAll('button[type="submit"], input[type="submit"]').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    form.classList.add('validation-attempted');
+                    markRequiredInvalidFields(form);
+                });
+            });
+
+            form.addEventListener('submit', function(e) {
+                markRequiredInvalidFields(form);
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    form.classList.add('validation-attempted');
+                    form.reportValidity();
+                }
+            });
+        });
+    });
     </script>
 @endsection

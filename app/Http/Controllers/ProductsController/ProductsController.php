@@ -348,8 +348,19 @@ class ProductsController extends Controller
      
     public function store(Request $request, FlasherInterface $flasher)
     {
-       // return 'adminstore';
-        // echo 'test';
+        $request->validate([
+            'category' => 'required',
+            'category_main' => 'required',
+            'category_sub' => 'required',
+            'product_name' => 'required|string|max:255',
+            'tax_id' => 'required',
+            'gst_id' => 'required',
+            'description' => 'required',
+            'mainImage' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'retail_price.*.*' => 'required|numeric|min:0.01',
+            'selling_price.*.*' => 'required|numeric|min:0',
+        ]);
+
          $products = new Products();
         // print_r($products);
         $login_id = session()->get('login_id');//Auth::user()->id; // 
@@ -383,6 +394,7 @@ class ProductsController extends Controller
             $products->product_name = $request->product_name;
             $products->tax_id = $request->tax_id;
             $products->gst_id = $request->gst_id;
+            $products->hsncode = $request->hsncode;
             $products->product_image = $filename ?? "-";
             $products->description = $request->description;
             $products->weight = $request->weight;
@@ -629,6 +641,7 @@ class ProductsController extends Controller
     //    ->join('zonals', 'zonals.id', '=', 'routes.zonal_id')
     //           		->get(['pincode.id','routes.name as routename', 'zonals.name as zonalname','pincode.name', 'pincode.area','pincode.post_region']);
 
+        $colors = ProductColor::all();
         return view('layout.admin.products.EditProduct')
             ->with([
                 "product" =>$products,
@@ -643,7 +656,8 @@ class ProductsController extends Controller
                 "productdetailss"=>$productdetails,
                 "cates" =>$cate,
                 "productsAttri"=> $productsAttri,
-                "productcollection" => $productcollection 
+                "productcollection" => $productcollection,
+                "colors" => $colors
             ]);
     
         } catch(\Throwable $th) {
@@ -661,6 +675,16 @@ class ProductsController extends Controller
      */
     public function update(Request $request, $id, FlasherInterface $flasher)
     {      
+        $request->validate([
+            'category' => 'required',
+            'category_main' => 'required',
+            'category_sub' => 'required',
+            'product_name' => 'required|string|max:255',
+            'tax_id' => 'required',
+            'gst_id' => 'required',
+            'description' => 'required',
+            'mainImage' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
         try{
         //
@@ -686,6 +710,7 @@ class ProductsController extends Controller
         $Products->product_name = $request->input('product_name');
         $Products->tax_id = $request->input('tax_id');
         $Products->gst_id = $request->input('gst_id');
+        $Products->hsncode = $request->input('hsncode');
         $Products->product_image = $filename ?? "-";
 
         $Products->description = $request->input('description');
@@ -703,6 +728,16 @@ class ProductsController extends Controller
         $filename1 = '';
     
        
+        $attrColors = $request->input('attrcolor') ?: [];
+        $attrSizes = $request->input('attrsize') ?: [];
+        $selectedAttrId = $request->input('selected_attribute_id1');
+        $attrGroupName = 'Size';
+        if ($selectedAttrId) {
+            $attrGroup = AttributeGroup::find($selectedAttrId);
+            if ($attrGroup) {
+                $attrGroupName = $attrGroup->attribute_group_refname ?? $attrGroup->attribute_group_name ?? 'Size';
+            }
+        }
         $np = count($request->product_details_id);
        
         if($np > 0){
@@ -858,7 +893,12 @@ class ProductsController extends Controller
              
                 $products_details->color = isset($request->attrcolor[$key]) ? $request->attrcolor[$key] : NULL;
                 $products_details->size = isset($request->attrsize[$key]) ? $request->attrsize[$key] : NULL;
-                                // $products_details->size = $request->attrsize[$key];
+                $products_details->attributevalue1 = $attrColors[$key] ?? null;
+                $products_details->attributename1 = 'Color';
+                $products_details->attributevalue2 = $attrSizes[$key] ?? null;
+                if (!empty($products_details->attributevalue2)) {
+                    $products_details->attributename2 = $attrGroupName;
+                }
                 $products_details->quantity = $request->quantity[$key];
                 $products_details->retail_price = $request->retail_price[$key];
                 $products_details->selling_price = $request->selling_price[$key];

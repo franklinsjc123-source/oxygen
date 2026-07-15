@@ -102,7 +102,7 @@
                                                                 
                                                                
                                                                 <div class="col-md-3">
-                                                                    <select class="form-select form-select-lg text-secondary"
+                                                                    <select class="form-control text-secondary"
                                                                         name="return_replace[]" required>
                                                                         <?php if($productdetails->return_replace == 1) { ?>
                                                                         <option selected value="1">
