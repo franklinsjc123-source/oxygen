@@ -150,6 +150,7 @@ Route::post('productbulkactive', [ProductsController::class, 'productbulkactive'
 Route::post('productbulkdeactive', [ProductsController::class, 'productbulkdeactive'])->name('staffproductbulkdeactive');
 Route::get('product_export', [ProductsController::class, 'get_Product_data'])->name('staffproduct.export');
 Route::post("products/details_update", [ProductsController::class, "updateProductDetails"])->name('staffproducts.details.update');
+Route::get('get_product_details', [ProductsController::class, 'getProductDetails'])->name('staffgetProductDetails');
 
 Route::resource('attribute-listing', AttributeController::class, ['names' => 'staffattribute.master']);
 
@@ -189,6 +190,7 @@ Route::controller(AuctionController::class)->group(function(){
 Route::resource('offer/create', OfferController::class, ['names' => 'staffoffer.main']);
 
 Route::resource('offer/list', OfferController::class, ['names' => 'staffoffer.list']);
+Route::post('offer/changestatus', [OfferController::class, 'changestatus'])->name('staffoffer.changestatus');
 
 
 //staff

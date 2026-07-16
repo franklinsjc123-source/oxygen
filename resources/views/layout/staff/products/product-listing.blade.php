@@ -21,19 +21,19 @@
 
         <!-- Right sidebar Ends-->
         <style>
-                    icon-shape {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            vertical-align: middle;
-        }
+        /*            icon-shape {*/
+        /*    display: inline-flex;*/
+        /*    align-items: center;*/
+        /*    justify-content: center;*/
+        /*    text-align: center;*/
+        /*    vertical-align: middle;*/
+        /*}*/
 
-            .icon-sm {
-                width: 2rem;
-                height: 2rem;
-                
-            }
+        /*    .icon-sm {*/
+        /*        width: 2rem;*/
+        /*        height: 2rem;*/
+        /*        */
+        /*    }*/
 
 
             .handle-counter { overflow: hidden; }
@@ -120,18 +120,43 @@
                     <div class="col-sm-12">
 
                         <div class="card">
-                            <div class="mt-3 action-buttons-container">
-                                <a href="{{ route('products.crud.index') }}">
+                            <div class="mt-3 action-buttons-container" id="toolbar">
+                                <a href="{{ route('staffproducts.crud.index') }}">
                                     <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add
                                         Product
                                     </button>
                                 </a>
 
-                                <button class="btn border-warning text-warning delete">Delete</button>
-                                <button class="btn border-success text-success act">Active</button>
+                                {{-- Commented out to adhere to read-only deletion policy --}}
+                                {{-- <button class="btn border-warning text-warning delete">Delete</button> --}}
+                                <button class="btn border-success text-success active">Active</button>
                                 <button class="btn border-danger text-danger deactive">De-Active</button>
                             </div>
 
+                            <div class="card-body">
+                                <form action="{{ route('importpincode') }}"
+                                      method="POST"
+                                      enctype="multipart/form-data">
+                                    @csrf
+                                     {{-- <div class="row">
+                                         <div class="col col-sm-6">
+                                    <input type="file" name="file"
+                                           class="">
+                                    </div> --}}
+                                    <div class="col col-sm-2">
+                                        </div>
+                                    <div class="col col-sm-4">
+                                    {{-- <button class="btn btn-success">
+                                           Import Pincode
+                                        </button> --}}
+                                       <a href="{{ route('staffproduct.export') }}" class="btn btn-success px-2 " data-toggle="tooltip" data-placement="top" title="Report" data-original-title="Report"><i
+                                        class="fa fa-list"></i> Download Report</a>   
+                                    </div>
+                                       
+                                    </div>
+                                </form>
+                            </div>
+                            
                             <div class="datatable-dashv1-list custom-datatable-overright">
                                 <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id"
                                     data-sort-order="asc" data-mobile-responsive="true" data-toggle="table"
@@ -141,7 +166,8 @@
 
                                     <thead>
                                         <tr class="">
-                                            <th style="width: 5%"data-field="dd" data-checkbox="true" data-sortable="true"></th>
+                                            <th><input type="checkbox" class ="checkbox" id="checkboxesMain"></th>
+                                            
                                             <th style="width: 10%" data-field="PId" data-sortable="true">PRODUCT Id</th>
                                             
                                             <th style="width: 10%" data-field="id" data-sortable="true">IMAGE</th>
@@ -152,9 +178,10 @@
                                             <th style="width: 5%" data-field="tags" data-sortable="true">TAGS </th>
                                             <th style="width: 5%" data-field="offer" data-sortable="true">OFFER </th>
                                            
-                                            <th style="width: 10%" data-field="startDate" data-sortable="true">START DATE </th>
-                                            <th style="width: 10%" data-field="endDate" data-sortable="true">END DATE </th>
+                                            <!--<th style="width: 10%" data-field="startDate" data-sortable="true">START DATE </th>-->
+                                            <!--<th style="width: 10%" data-field="endDate" data-sortable="true">END DATE </th>-->
                                             <th style="width: 5%" data-field="status" data-sortable="true">STATUS</th>
+                                            <th style="width: 10%" data-field="created_by" data-sortable="true">CREATED BY</th>
                                             <th style="width: 20%" data-field="action" data-sortable="true">Action</th>
                                         </tr>
                                     </thead>
@@ -162,8 +189,30 @@
                                        {{-- @dd($offers); --}}
                                         @foreach ($products_list as $products)
                                             <tr>
-                                                <td></td>
-                                                <td>#{{ $loop->iteration }}</td>
+                                                <td><input type="checkbox" class="checkbox" data-id="{{ $products->id }}"></td>
+                                                 <?php
+                                               $login_id = str_pad($products->login_id, 4, '0', STR_PAD_LEFT);
+                                               $pro_id = str_pad($products->id, 5, '0', STR_PAD_LEFT);
+                                               $stockSummary = App\Models\Products\ProductsDetails::where('products_id', $products->product_id)
+                                                    ->selectRaw('COALESCE(SUM(quantity),0) as total_qty, COALESCE(MAX(low_stock_limit),0) as low_limit')
+                                                    ->first();
+                                               $totalQty = (int) ($stockSummary->total_qty ?? 0);
+                                               $lowLimit = (int) ($stockSummary->low_limit ?? 0);
+                                               $isLowStock = $lowLimit > 0 && $totalQty <= $lowLimit;
+                                                $produ = \DB::table('vendor_details')
+                                                     ->leftJoin('zonals', 'vendor_details.zone', '=', 'zonals.id')
+                                                     ->select('vendor_details.*', 'zonals.name as zone_name')
+                                                     ->where('vendor_details.user_id', $products->login_id)
+                                                     ->get();
+
+                                                 if(count($produ) > 0 && !empty($produ[0]->zone_name))
+                                                     {
+                                                          $zone = $produ[0]->zone_name;
+                                                     }else{
+                                                          $zone = '';
+                                                     }
+                                                 ?>
+                                                 <td>{{ (!empty($zone) ? $zone : '') . '-'.$login_id . '-'.$pro_id }}</td>
                                                
                                                 <td>
                                                     <div class="d-flex">
@@ -171,32 +220,32 @@
                                                             alt="" class="img-fluid img-40 me-2 blur-up lazyloaded">
                                                     </div>
                                                 </td>
-                                                <td> 
-                                                    
-                                                    {{ $products->product_name }}</td>
+                                                <td>
+                                                    <div>{{ $products->product_name }}</div>
+                                                    @if($isLowStock)
+                                                        <small class="text-danger d-block">Low stock: {{ $totalQty }} left (limit {{ $lowLimit }})</small>
+                                                    @endif
+                                                </td>
 
                                                 <td class="text-center">
                                                     <span class="fw-bold">
-                                                        <a href="#" data-id={{ $products->id }}
-                                                            class="text-danger productDetails" data-bs-toggle="modal"
-                                                            data-original-title="test"
-                                                            data-bs-target="#stockModal">{{ $products->product_details_cnt }}</a>
+                                                        <a href="#" data-id={{ $products->id }} title="Stock Quantity"
+                                                            class="text-danger " onclick="getquantity('{{ $products->id }}')">{{ $totalQty }}</a>
                                                     </span>
                                                 </td>
                                                 {{-- @dd($product_price->selling_price); --}}
                                                   {{-- <td>{{ $product_price->selling_price}} </td> --}}
                                                 {{-- <td>{{ $products->category_sub}} </td> --}}
-                                                <?php
-                                                $categorysubcount = count($categorysub);
-                                               
-                                                for($i=0; $i< $categorysubcount; $i++){
-                                                 ?>
-                                                @if($categorysub[$i]->id == $products->category_sub)
-                                                <td>{{ $categorysub[$i]->category_sub_name}} </td>
-                                                @endif
-                                                <?php
+                                                @php
+                                                    $subcat_name = '-';
+                                                    foreach($categorysub as $csub) {
+                                                        if($csub->id == $products->category_sub) {
+                                                            $subcat_name = $csub->category_sub_name;
+                                                            break;
+                                                        }
                                                     }
-                                                ?>
+                                                @endphp
+                                                <td>{{ $subcat_name }}</td>
                                                 <td>{{$products->collection}}</td>
                                                 
                                                 <td>
@@ -232,46 +281,63 @@
                                                 </td>
                                                     {{-- <td>{{ $products->selling_price }}</td> --}}
                                                   
-                                                <td class="">11-June-2022</td>
-                                                <td class="">15-Dec-2022</td>
+                                                <!--<td class="">11-June-2022</td>-->
+                                                <!--<td class="">15-Dec-2022</td>-->
 
                                                 <td>
                                                     <label class="switch">
-                                                        <input type="checkbox"
-                                                            onclick="return confirm('Are you sure, you want to Change it?')"
-                                                            checked id="togBtn">
-                                                        <div class="slider round">
-                                                            <!--ADDED HTML -->
-                                                            <span class="off">Inactive </span>
-                                                            <span class="on">Active</span>
-                                                            <!--END-->
-                                                        </div>
-                                                    </label>
-                                                    {{-- @if ($products->status == 1)
-                                                        <span class="badge badge-success px-4">Active</span>
-                                                    @else
-                                                        <span class="badge badge-danger px-4">InActive</span>
-                                                    @endif   palani --}}
+                                                         @if($products->status  == 1)
+                                                         <input type="checkbox"
+                                                             class="status-toggle"
+                                                             data-id="{{ $products->id }}"
+                                                             checked id="togBtn">
+                                                         @else
+                                                             <input type="checkbox"
+                                                             class="status-toggle"
+                                                             data-id="{{ $products->id }}"
+                                                              id="togBtn">
+                                                         @endif
+                                                         <div class="slider round">
+                                                             <!--ADDED HTML -->
+                                                             <span class="on">Active</span>
+                                                             <span class="off">Inactive </span>                                                                
+                                                             <!--END-->
+                                                         </div>
+                                                     </label>
 
                                                 </td>
                                                 <td>
+                                                    @if($products->logintype == 'Vendor')
+                                                        @php
+                                                            $vendorName = App\Models\vendor\vendorcreate::where('user_id', $products->login_id)->value('shop_name') ?? 'Vendor';
+                                                        @endphp
+                                                        {{ $vendorName }}
+                                                    @else
+                                                        Admin
+                                                    @endif
+                                                </td>
+                                                <td>
                                                     <div class="mt-2 d-flex">
-                                                         {{-- <a href="{{ route('products.crud.view', $products->id) }}"
-                                                            class="btn btn-secondary mx-1"><i class="fab fa-mdb"></i>
-                                                        </a>  --}}
+                                                         {{-- <a href="{{ route('staffproducts.crud.view', $products->id) }}"
+                                                             class="btn btn-secondary mx-1"><i class="fab fa-mdb"></i>
+                                                         </a>  --}}
 
-                                                         <a href="{{ route('products.crud.edit', ['id'=>$products->id, 'sub_id'=>$products->category_sub]) }}"
-                                                            class="btn btn-secondary mx-1"><i class="fa fa-pencil"></i>
-                                                        </a> 
-                                                        <form action="{{ route('products.crud.destroy', $products->id) }}"
+                                                        <a href="{{ route('staffproducts.crud.edit', ['id'=>$products->id, 'sub_id'=>$products->category_sub]) }}"
+                                                             class="btn btn-secondary mx-1"><i class="fa fa-pencil"></i>
+                                                        </a>
+                                                        {{-- Commented out to respect read-only deletion policy --}}
+                                                        {{--
+                                                        @if (session()->get('log_type') == 'Admin')
+                                                        <form action="{{ route('staffproducts.crud.destroy', $products->id) }}"
                                                             method="post">
                                                             @method('DELETE')
                                                             @csrf
-                                                            <button type="submit" class="btn btn-warning mx-1"
-                                                                onclick="return confirm('Are you sure, you want to delete it?')"><i
-                                                                    class="fa fa-trash"></i>
+                                                            <button type="button" class="btn btn-warning mx-1 delete-btn"><i
+                                                                    class="fa fa-trash" title="Delete"></i>
                                                             </button>
                                                         </form>
+                                                        @endif
+                                                        --}}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -364,7 +430,7 @@
                         @csrf
                         <div class="modal-body">
                             <div class="container-fluid">
-                                <div id="modal_body">
+                                <div id="modal_body1">
 
 
                                     <div class="container">
@@ -410,118 +476,343 @@
             </div>
         </div> --}}
         <!-- offer model end -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title f-w-600" id="exampleModalLabel">Stock Edit </h5>
-                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span
-                                    aria-hidden="true">×</span></button>
-                        </div>
-                        <form action="{{ route('offer.update') }}" method="post">
-                            @csrf
-                            <div class="modal-body">
-                                <div class="container-fluid">
-                                    <div id="modal_body">
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="modal-footer">
-                                <a href="category.php" onclick="return confirm('Are you sure, you want to Save it?')">
-                                    <button type="sub" class="btn btn-primary" type="button">Save</button></a>
-                                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+        
         </div>
     </div>
-
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title f-w-600" id="exampleModalLabel">Stock Edit</h5>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            </div>
+            <form action="{{ route('staffproducts.details.update') }}" method="post">
+                @csrf
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div id="modal_body">
+                            <!-- Dynamic content will be appended here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
     <script src="//code.jquery.com/jquery.min.js"></script>
-    <script src="app/js/handleCounter.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            // AJAX REQUEST
-            const getAjaxValue = (url, method, callback) => {
-                $.ajax({
-                    url: url,
-                    type: method,
-                    data: {
-                        "_token": "{{ csrf_token() }}"
-                    },
-                    dataType: "json",
-                    success: callback
-                });
+    <!-- <script src="app/js/handleCounter.js"></script> -->
+   
+    
+    <!-- Delete all Product -->
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $(document).on('click', '#checkboxesMain', function() {
+            
+            if ($(this).prop('checked')) {
+                
+                $(".checkbox").prop('checked', true);
+            } else {
+                $(".checkbox").prop('checked', false);
             }
+        });
+ 
+        $('.delete').on('click', function(e) {
+            var allVals = [];  
+            $(".checkbox:checked").each(function() {  
+                allVals.push($(this).attr('data-id'));
+            });  
+            if(allVals.length <=0)  
+            {  
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: 'Please select row.'
+                });
+            }  else {  
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to delete the selected rows?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var join_selected_values = allVals.join(","); 
 
-            // Get Product Details
-            $(".productDetails").click(function() {
-                let product_id = $(this).attr("data-id");
-                let url = '{{ route('getProductDetails') }}?product_id=' + product_id;
+                        $.ajax({
+                            url: "{{ url('staff/productbulkdelete') }}", 
+                            type: "POST",
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                "ids": join_selected_values,
+                                 "sts":"0"
+                            },
+                            dataType: "json",
+                            success: function (data) {
+                                 location.reload();
+                            },
+                            error: function (data) {
+                                console.log('Error:', data);
+                            }
+                        });
+                    }
+                });
+            }  
+        });
+    /*Delete End*/
 
-                let method = 'GET';
-                getAjaxValue(url, method, function(data) {
+        /*Active*/
+        $(document).on('click', '#checkboxesMain', function() {
+            
+            if ($(this).prop('checked')) {
+                
+                $(".checkbox").prop('checked', true);
+            } else {
+                $(".checkbox").prop('checked', false);
+            }
+        });
+   
+          $('.active').on('click', function(e) {
+              var allVals = [];  
+              $(".checkbox:checked").each(function() {  
+                  allVals.push($(this).attr('data-id'));
+              });  
+              if(allVals.length <=0)  
+              {  
+                  Swal.fire({
+                      icon: 'warning',
+                      title: 'Oops...',
+                      text: 'Please select row.'
+                  });
+              }  else {  
+                  Swal.fire({
+                      title: 'Are you sure?',
+                      text: "Are you sure you want to Active this row?",
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Yes, Active it!'
+                  }).then((result) => {
+                      if (result.isConfirmed) {
+                          var join_selected_values = allVals.join(","); 
 
-                    $('#modal_body').empty();
+                          $.ajax({
+                              url: "{{ url('staff/productbulkactive') }}", 
+                              type: "POST",
+                              data: {
+                                  "_token": "{{ csrf_token() }}",
+                                  "ids": join_selected_values,
+                                  "sts":"1"
+                              },
+                              dataType: "json",
+                              success: function (data) {
+                                   location.reload();
+                              },
+                              error: function (data) {
+                                  console.log('Error:', data);
+                              }
+                          });
+                      }
+                  });
+              }  
+          });
+        /*End*/
+       /*De Active*/
+       $(document).on('click', '#checkboxesMain', function() {
+            
+            if ($(this).prop('checked')) {
+                
+                $(".checkbox").prop('checked', true);
+            } else {
+                $(".checkbox").prop('checked', false);
+            }
+        });
+   
+          $('.deactive').on('click', function(e) {
+              var allVals = [];  
+              $(".checkbox:checked").each(function() {  
+                  allVals.push($(this).attr('data-id'));
+              });  
+              if(allVals.length <=0)  
+              {  
+                  Swal.fire({
+                      icon: 'warning',
+                      title: 'Oops...',
+                      text: 'Please select row.'
+                  });
+              }  else {  
+                  Swal.fire({
+                      title: 'Are you sure?',
+                      text: "Are you sure you want to DeActive this row?",
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Yes, DeActive it!'
+                  }).then((result) => {
+                      if (result.isConfirmed) {
+                          var join_selected_values = allVals.join(","); 
+                          $.ajax({
+                              url: "{{ url('staff/productbulkdeactive') }}", 
+                              type: "POST",
+                              data: {
+                                  "_token": "{{ csrf_token() }}",
+                                  "ids": join_selected_values,
+                                  "sts":"0"
+                              },
+                              dataType: "json",
+                              success: function (data) {
+                                   location.reload();
+                              },
+                              error: function (data) {
+                                  console.log('Error:', data);
+                              }
+                          });
+                      }
+                  });
+              }  
+          });
+        /*End*/
 
-                    $('#modal_body').append(
-                        `<input type="text" name="product_id" class="d-none" value=${product_id}>`
-                    )
+       $(document).on('change', '.status-toggle', function() {
+           var productId = $(this).data('id');
+           var nextStatus = $(this).is(':checked') ? '1' : '0';
 
-                    $.each(data, function(key, productDetails) {
-                        $('#modal_body').append(
-                            `
-                            <div class="row mb-2">
-                                <div class="col-md-2">
-                                  
-                                    <input type="text" name="sku[]" class="form-control" value=${productDetails.sku}>
-                                </div>
-                                <div class="col-md-2">
-                                 
-                                    <input type="text" name="attributevalue1[]" class="form-control" value=${productDetails.attributevalue1}>
-                                </div>
-                                <div class="col-md-2">
-                                  
-                                    <input type="text" name="attributevalue2[]" class="form-control" value=${productDetails.attributevalue2}>
-                                </div>
-                                <div class="col-md-2">
-                                  
-                                    <input type="text" name="quantity[]" class="form-control" value=${productDetails.quantity}>
-                                </div>
-                                <div class="col-md-2">
-                                  
-                                    <input type="text" name="retail_price[]" class="form-control" value=${productDetails.retail_price}>
-                                </div>
-                              
+           $.ajax({
+               url: nextStatus === '1' ? "{{ url('staff/productbulkactive') }}" : "{{ url('staff/productbulkdeactive') }}",
+               type: "POST",
+               data: {
+                   "_token": "{{ csrf_token() }}",
+                   "ids": String(productId),
+                   "sts": nextStatus
+               },
+               dataType: "json",
+               error: function() {
+                   $(this).prop('checked', !$(this).is(':checked'));
+                   Swal.fire({
+                       icon: 'error',
+                       title: 'Error',
+                       text: 'Status update failed.'
+                   });
+               }.bind(this)
+           });
+       });
+    });
+    function getAjaxValue(url, method, callback) {
+    $.ajax({
+        url: url,
+        type: method,
+        success: function(data) {
+            callback(data);
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX Error:', status, error);
+            alert('An error occurred while fetching data.');
+        }
+    });
+}
 
-                               
-                            </div>
-                            `
-                        );
-                    });
-                })
+function getquantity(id) {
+    let product_id = id;
+   // alert(product_id);
 
-            });
+    let url = `{{ route('staffgetProductDetails') }}?product_id=${product_id}`;
+    let method = 'GET';
 
-        })
+    getAjaxValue(url, method, function(data) {
+        $('#modal_body').empty();
+        $('#modal_body').append(
+            `<input type="text" name="product_id" class="d-none" value="${product_id}">`
+        );
 
-        $('#handleCounter').handleCounter({
-        minimum: 1,
-        maximize: null,
-        })
-        $('#handleCounter').handleCounter({
-        onChange: function(){},
-        onMinimum: function(){},
-        onMaximize: function(){}
-        })
+        $.each(data, function(key, productDetails) {
+            $('#modal_body').append(createProductRow(productDetails));
+        });
 
+        $('#exampleModal').modal('show');
+    });
+}
 
-       
-    </script>
+    function createProductRow(productDetails) {
+        const attributeRows = [
+            [productDetails.attributename1, productDetails.attributevalue1],
+            [productDetails.attributename2, productDetails.attributevalue2],
+            [productDetails.attributename3, productDetails.attributevalue3],
+        ].filter(function(item) {
+            return item[0] && item[1];
+        }).map(function(item) {
+            return `<div>${item[0]} : ${item[1]}</div>`;
+        }).join('');
+
+        return `
+            <div class="row mb-2 align-items-end">
+            <div class="col-md-3">
+                <label>Attributes</label>
+                <div class="form-control bg-light" style="height:auto;min-height:38px;">${attributeRows || '-'}</div>
+                <input type="hidden" name="prodt_id[]" class="form-control" value=${productDetails.id}>
+            </div>
+            
+            <div class="col-md-2">
+                <label>No of Product</label> 
+                <input type="text" name="quantity[]" class="form-control" value=${productDetails.quantity}>
+            </div>
+                <div class="col-md-2">
+                <label>low stock limit</label>
+                <input type="text" name="low_stock_limit[]" class="form-control" value=${productDetails.low_stock_limit}>
+            </div>
+                <div class="col-md-2">
+                <label> MRP</label> 
+                <input type="text" name="retail_price[]" class="form-control" value=${productDetails.retail_price}>
+            </div>
+            <div class="col-md-3">
+                <label> Selling Price</label> 
+                <input type="text" name="selling_price[]" class="form-control" value=${productDetails.selling_price}>
+            </div>
+            
+
+            
+        </div><hr>
+        `;
+    }
+
+    // Delete SweetAlert
+    $(document).on('click', '.delete-btn', function(e) {
+        e.preventDefault();
+        var form = $(this).closest('form');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to delete it?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    .swal2-popup {
+        font-size: 1.6rem !important;
+        width: 500px !important;
+        max-width: 90% !important;
+    }
+</style>
 @endsection
-
