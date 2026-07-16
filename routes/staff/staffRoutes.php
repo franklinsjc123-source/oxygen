@@ -197,6 +197,7 @@ Route::resource('vendorcreate', VendorcreateController::class, ['names' => 'staf
 Route::get('vendor/list', [VendorcreateController::class, 'list'])->name('staffvendor-list');
 
 Route::Post('/Ajaxpackage', [VendorcreateController::class, 'Ajaxpackage'])->name('staffAjaxpackage');
+Route::Post('/picodedetailsreceived', [VendorcreateController::class, 'picodedetailsreceived'])->name('staffpicodedetailsreceived');
 
 
 

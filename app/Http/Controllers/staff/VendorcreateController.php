@@ -12,11 +12,6 @@ use App\Models\vendor\packages;
 use App\Models\vendor\vendorcreate;
 use App\Models\Route;
 use App\Models\Zonal;
-use App\Models\State;
-use App\Models\City;
-use App\Models\Category\CategoryMain;
-use App\Models\Category\Category;
-use App\Models\Staffcreates;
 use App\Helper\ImageUploadHelper\ImageUploadHelper;
 use Flasher\Prime\FlasherInterface;
 use DB;
@@ -24,8 +19,37 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB as FacadesDB;
 use App\Models\Master\Attribute\AttributeGroup;
 use App\Models\Master\Specification\SpecificationGroup;
+use App\Models\Staffcreates;
+use App\Models\State;
+use App\Models\City;
+use App\Models\PinCode\PinCode;
+use App\Models\Category\CategorySub;
+use App\Models\Category\Category;
+use App\Models\Category\CategoryMain;
+
 class VendorcreateController extends Controller
 {
+    private function sanitizeGstNumber(?string $gstNumber): string
+    {
+        $gstNumber = strtoupper(trim((string) $gstNumber));
+        $gstNumber = preg_replace('/\s+/', '', $gstNumber);
+
+        // Respect DB column size to avoid SQLSTATE[22001] (Data too long).
+        try {
+            $columnMeta = FacadesDB::select("SHOW COLUMNS FROM vendor_details LIKE 'gst_number'");
+            if (!empty($columnMeta[0]->Type) && preg_match('/varchar\((\d+)\)/i', $columnMeta[0]->Type, $m)) {
+                $maxLen = (int) $m[1];
+                if ($maxLen > 0) {
+                    $gstNumber = substr($gstNumber, 0, $maxLen);
+                }
+            }
+        } catch (\Throwable $th) {
+            // Fallback: GSTIN standard length.
+            $gstNumber = substr($gstNumber, 0, 15);
+        }
+
+        return $gstNumber;
+    }
 
    private $PROFILE_IMAGE_PATH = "assets/images/vendor/profile";
    private $GST_IMAGE_PATH = "assets/images/vendor/gst";
@@ -44,7 +68,7 @@ class VendorcreateController extends Controller
         $City = City::all();
         $CategoryMain = CategoryMain::where('status', 1)->select('id', 'category_main_name')->get();
         $Category = Category::where('status', 1)->select('id', 'main_category_id', 'category_name')->get();
-        $CategorySub = DB::table('category_sub as t1')
+        $CategorySub = FacadesDB::table('category_sub as t1')
             ->join('category as t2', 't1.category_id', '=', 't2.id')
             ->join('category_main as t3', 't1.category_main_id', '=', 't3.id')
             ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
@@ -67,7 +91,7 @@ class VendorcreateController extends Controller
         );
     }
 
-    public function list()
+     public function list()
      {
         $vendorlist = vendorcreate::All();
        // return view('layout.admin.vendor.list')->with("vendorlist");
@@ -133,23 +157,14 @@ class VendorcreateController extends Controller
 
        
 
-        $profilename = '';
-        if ($request->hasFile('profile_image')) {
-            $profile_file = $request->profile_image;
-            $profilename = ImageUploadHelper::storeImage($profile_file, $this->PROFILE_IMAGE_PATH);
-        }
+        $profile_file = $request->profile_image;
+        $profilename = ImageUploadHelper::storeImage($profile_file, $this->PROFILE_IMAGE_PATH);
 
-        $gst_file_name = '';
-        if ($request->hasFile('gst')) {
-            $gst_file = $request->gst;
-            $gst_file_name = ImageUploadHelper::storeImage($gst_file, $this->GST_IMAGE_PATH);
-        }
+        $gst_file = $request->gst;
+        $gst_file_name = ImageUploadHelper::storeImage($gst_file, $this->GST_IMAGE_PATH);
 
-        $othername = '';
-        if ($request->hasFile('other_documents')) {
-            $other_file = $request->other_documents;
-            $othername = ImageUploadHelper::storeImage($other_file, $this->OTHER_IMAGE_PATH);
-        }
+        $other_file = $request->other_documents;
+        $othername = ImageUploadHelper::storeImage($other_file, $this->OTHER_IMAGE_PATH);
 
         try {
            /// $vendor->shop_name = $request->shop_name;
@@ -176,9 +191,6 @@ class VendorcreateController extends Controller
             $vendor->zone = $request->zone;
             $vendor->route = $request->route;
             $vendor->location_map = $request->location_map;
-            $vendor->latitude = $request->latitude;
-            $vendor->longitude = $request->longitude;
-            $vendor->aadhar_no = $request->aadhar_no;
             $vendor->aadhar_no = $request->aadhar_no;
             $vendor->gst_number = $request->gst_number;
 
@@ -227,7 +239,7 @@ class VendorcreateController extends Controller
             //$user->id = $id;
             //$user->admin_id = 0;
             $user->login_id = $ven;
-            $user->name     = $request->created_by;
+            $user->name     = $request->owner_name;
             $user->firstName = $request->shop_name;
             $user->lastName =  $request->owner_name;
             $user->email =   $request->email;
@@ -318,17 +330,29 @@ class VendorcreateController extends Controller
     {
         $vendorcreate = vendorcreate::find($id);
 
-        $package = packages::All();
-        $route=Route::all();
-        $Zonal=Zonal::all();
-
+        $package = packages::all();
+        $route = Route::all();
+        $Zonal = Zonal::all();
+        $CategoryMain = CategoryMain::where('status', 1)->select('id', 'category_main_name')->get();
+        $Category = Category::where('status', 1)->select('id', 'main_category_id', 'category_name')->get();
+        $CategorySub = DB::table('category_sub as t1')
+            ->join('category as t2', 't1.category_id', '=', 't2.id')
+            ->join('category_main as t3', 't1.category_main_id', '=', 't3.id')
+            ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
+            ->where('t1.status', 1)
+            ->get();
+        $staffs = Staffcreates::all();
         return view('layout.staff.vendor.vendor-edit')
-        ->with([
-           "vendorcreate" => $vendorcreate,
-           "package", $package,
-           "route" => $route,
-           "zone" =>$Zonal
-        ]);
+            ->with([
+                "vendorcreate" => $vendorcreate,
+                "package" => $package,
+                "route" => $route,
+                "zone" => $Zonal,
+                "CategoryMain" => $CategoryMain,
+                "Category" => $Category,
+                "CategorySub" => $CategorySub,
+                "staffs" => $staffs
+            ]);
     }
 
     /**
@@ -340,79 +364,48 @@ class VendorcreateController extends Controller
      */
     public function update(Request $request, $id,  FlasherInterface $flasher)
     {
-    //    $vendorupdate = vendorcreate::find($id);
-      
-    //    $vendor = $request->all();
-    //    $vendorupdate->update($vendor);
-    //   return "gyjgyj";
-
-
-
         $vendor = vendorcreate::find($id);
         $statement = FacadesDB::select("SHOW TABLE STATUS LIKE 'vendor_details'");
-       // echo $statement;
-         
-    //   dd($user_id);
-       // exit();
 
-       //$user_id = $statement[0]-> Auto_increment;
-       $profile_image = '';
-       $gst = '';
-       $other_documents = '';
-    
-            if(isset($request->profile_image))
-            {
-            
-                $file = $request->profile_image;
-                if ($file !== null) {
+        $profile_image = '';
+        $gst = '';
+        $other_documents = '';
+
+        if (isset($request->profile_image)) {
+            $file = $request->profile_image;
+            if ($file !== null) {
                 $profile_image = ImageUploadHelper::storeImage($file, $this->PROFILE_IMAGE_PATH);
-                }
-            } else{
-               
-                $profile_image = $request->oldprofile_image;
             }
-            if(isset($request->gst))
-            {
-            
-                $file = $request->gst;
-                if ($file !== null) {
+        } else {
+            $profile_image = $request->oldprofile_image;
+        }
+
+        if (isset($request->gst)) {
+            $file = $request->gst;
+            if ($file !== null) {
                 $gst = ImageUploadHelper::storeImage($file, $this->GST_IMAGE_PATH);
-                }
-            } else{
-               
-                $gst = $request->oldprofile_image;
             }
-            if(isset($request->other_documents))
-            {
-            
-                $file = $request->other_documents;
-                if ($file !== null) {
+        } else {
+            $gst = $request->oldgst;
+        }
+
+        if (isset($request->other_documents)) {
+            $file = $request->other_documents;
+            if ($file !== null) {
                 $other_documents = ImageUploadHelper::storeImage($file, $this->OTHER_IMAGE_PATH);
-                }
-            } else{
-               
-                $other_documents = $request->oldprofile_image;
             }
-       // $profile_file = $request->profile_image;
-       // $profilename = ImageUploadHelper::storeImage($profile_file, $this->PROFILE_IMAGE_PATH);
-
-       // $gst_file = $request->gst;
-       // $gst_file_name = ImageUploadHelper::storeImage($gst_file, $this->GST_IMAGE_PATH);
-
-       // $other_file = $request->other_documents;
-       // $othername = ImageUploadHelper::storeImage($other_file, $this->OTHER_IMAGE_PATH);
+        } else {
+            $other_documents = $request->oldother_documents;
+        }
 
         try {
-           /// $vendor->shop_name = $request->shop_name;
-         
-            //$vendor->user_id = $user_id;
             $vendor->created_by = $request->created_by;
             $vendor->username = $request->username;
             $vendor->pass = $request->pass;
-            if($request->pass == $request->pass1){
+            if ($request->pass == $request->pass1) {
                 $vendor->pass1 = $request->pass1;
             }
-            
+
             $vendor->shop_name = $request->shop_name;
             $vendor->owner_name = $request->owner_name;
             $vendor->business_category = $request->business_category;
@@ -430,8 +423,8 @@ class VendorcreateController extends Controller
             $vendor->latitude = $request->latitude;
             $vendor->longitude = $request->longitude;
             $vendor->aadhar_no = $request->aadhar_no;
-            $vendor->aadhar_no = $request->aadhar_no;
-            $vendor->gst_number = $request->gst_number;
+            $vendor->gst_number = $this->sanitizeGstNumber($request->gst_number);
+            $vendor->staff_id = $request->staff_id;
 
             $selectedSubCategoryIds = $request->input('sub_category_ids', []);
             if (empty($selectedSubCategoryIds) && $request->filled('sub_category_ids_csv')) {
@@ -440,32 +433,29 @@ class VendorcreateController extends Controller
             $selectedSubCategoryIds = array_values(array_unique(array_filter($selectedSubCategoryIds)));
             $vendor->sub_category_ids = !empty($selectedSubCategoryIds) ? implode(',', $selectedSubCategoryIds) : '';
 
-
-            $vendor->profile_image = $profile_image;            
+            $vendor->profile_image = $profile_image;
             $vendor->gst = $gst;
             $vendor->other_documents = $other_documents;
 
-
             $vendor->package_id = $request->package;
-            // $vendor->package_name=$request->package_name;
             $vendor->purchase_date  = $request->purchase_date;
             $vendor->expired_date = $request->expired_date;
             $vendor->next_renewal_date = $request->next_renewal_date;
-            
+
             $vendor->wallet = $request->wallet;
             $vendor->commission = $request->commission;
+            $vendor->description = $request->description;
             $vendor->grace_days = $request->grace_days;
             $vendor->validity = $request->validity;
             $vendor->status = 1;
             $vendor->flag = 1;
 
-
             $vendor->bank_name = $request->bank_name;
             $vendor->ac_no = $request->ac_no;
-                    $ac_no  = $request->ac_no;
-                    $ac_no1  =$request->ac_no1;
-            if($ac_no  == $ac_no1){
-            $vendor->ac_no1 = $ac_no;
+            $ac_no  = $request->ac_no;
+            $ac_no1  = $request->ac_no1;
+            if ($ac_no  == $ac_no1) {
+                $vendor->ac_no1 = $ac_no;
             }
             $vendor->ifsc = $request->ifsc;
             $vendor->upi = $request->upi;
@@ -476,16 +466,14 @@ class VendorcreateController extends Controller
             $vendor->facebook_link = $request->facebook_link;
             $vendor->whatsapp_number = $request->whatsapp_number;
 
-            // echo $vendor;
-            // exit();
             $vedorregisterd = $vendor->save();
 
-            if($vedorregisterd){
+            if ($vedorregisterd) {
                 $user = User::where('login_id', $id)->first();
                 if (!$user) {
                     $user = new User();
                 }
-                $user->name     = $request->created_by;
+                $user->name     = $request->owner_name;
                 $user->firstName = $request->shop_name;
                 $user->lastName =  $request->owner_name;
                 $user->email =   $request->email;
@@ -497,8 +485,6 @@ class VendorcreateController extends Controller
                 $user->status = 2;
                 $user->save();
 
-                // Seed sub_category_mapping for the vendor from admin attribute/specification group assignments
-                // Clean up old mappings that are no longer assigned to this vendor
                 if (!empty($selectedSubCategoryIds)) {
                     FacadesDB::table('sub_category_mapping')
                         ->where('vendor_id', $id)
@@ -511,7 +497,6 @@ class VendorcreateController extends Controller
                     foreach ($selectedSubCategoryIds as $subCatId) {
                         $subCatId = (int) $subCatId;
 
-                        // Find admin attribute groups that include this sub-category
                         $attrIds = [];
                         foreach ($adminAttrGroups as $ag) {
                             $agSubIds = array_map('intval', array_filter(explode(',', $ag->sub_category_ids ?? '')));
@@ -520,12 +505,11 @@ class VendorcreateController extends Controller
                             }
                         }
 
-                        // Find admin specification groups that include this sub-category
                         $specIds = [];
                         foreach ($adminSpecGroups as $sg) {
                             $sgSubIds = array_map('intval', array_filter(explode(',', $sg->sub_category_ids ?? '')));
                             if (in_array($subCatId, $sgSubIds)) {
-                                $specIds[] = $sg->id;
+                                    $specIds[] = $sg->id;
                             }
                         }
 
@@ -544,21 +528,16 @@ class VendorcreateController extends Controller
                         ->where('vendor_id', $id)
                         ->delete();
                 }
-            }else{
+            } else {
                 $flasher->addError('Something Error!! =>');
-               //return 'failde'   ;
-               
             }
 
-            
             $flasher->addSuccess('vendor Information has been updated successfully!');
             return redirect()->route('staffvendor-list');
         } catch (\Throwable $th) {
-            //$flasher->addError('Something Error!!');
             $flasher->addError('Something Error!! =>' . $th);
-             return redirect()->route('staffvendorcreate.edit');
+            return redirect()->route('staffvendorcreate.edit', $id);
         }
-        
     }
 
     /**
@@ -591,5 +570,16 @@ class VendorcreateController extends Controller
             $flasher->addError('Something Error!');
             return redirect()->route('staffvendor-list');
         }
+    }
+
+    public function picodedetailsreceived(Request $request)
+    {
+        $pincode = $request->pincode;
+
+        $ppincode = PinCode::select('pincode.*', 'zonals.*')
+            ->join('zonals', 'pincode.zonal_id', '=', 'zonals.id')
+            ->where('pincode.name', $pincode)->get();
+
+        return response()->json($ppincode);
     }
 }
