@@ -114,15 +114,19 @@ Route::post('orderbulkstatusupdate', [SalesController::class, 'stafforderbulksta
 // Category Main
 Route::resource('category_main', CategoryMainController::class, ['names' => 'staffcategory.main']);
 Route::post('category_main/update/{id}', [CategoryMainController::class, 'update'])->name('staffcategory_main_update');
+Route::post('category_main/changestatus', [CategoryMainController::class, 'changestatus'])->name('staffcategory.main.changestatus');
 //category
 Route::resource('category', CategoryController::class, ['names' => 'staffcategory']);
 Route::post('category/update/{id}', [CategoryController::class, 'update'])->name('staffcategory_update');
 Route::post('category/changestatus', [CategoryController::class, 'changestatus'])->name('staffcategory.changestatus');
 
-Route::post('subcategory/update/{id}', [CategorySubController::class, 'update'])->name('staffsubcategory_update');
-
 // Category Sub
 Route::resource('category_sub', CategorySubController::class, ['names' => 'staffcategory.sub']);
+Route::post('category_sub/update/{id}', [CategorySubController::class, 'update'])->name('subcategory_update');
+Route::post('category_sub/changestatus', [CategorySubController::class, 'changestatus'])->name('staffcategory.sub.changestatus');
+
+Route::post('subcategory/update/{id}', [CategorySubController::class, 'update'])->name('staffsubcategory_update');
+
 
 
 
@@ -141,6 +145,11 @@ Route::get("products/edit/{id}/{sub_id?}", [ProductsController::class, "edit"])-
 
 Route::post("products/offerupdate", [ProductsController::class, "offerupdate"])->name('offer.update');
 Route::get('products/getsubproductdetails', [ProductsController::class, 'getsubproductdetails'])->name('getsubproductdetails');
+Route::post('productbulkdelete', [ProductsController::class, 'productbulkdelete'])->name('staffproductbulkdelete');
+Route::post('productbulkactive', [ProductsController::class, 'productbulkactive'])->name('staffproductbulkactive');
+Route::post('productbulkdeactive', [ProductsController::class, 'productbulkdeactive'])->name('staffproductbulkdeactive');
+Route::get('product_export', [ProductsController::class, 'get_Product_data'])->name('staffproduct.export');
+Route::post("products/details_update", [ProductsController::class, "updateProductDetails"])->name('staffproducts.details.update');
 
 Route::resource('attribute-listing', AttributeController::class, ['names' => 'staffattribute.master']);
 

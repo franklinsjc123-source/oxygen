@@ -31,7 +31,7 @@
                         </div>
                         <div class="col-lg-6">
                             <ol class="breadcrumb pull-right">
-                                <li class="breadcrumb-item"><a href="dashboard.php"><i data-feather="home"></i></a></li>
+                                <li class="breadcrumb-item"><a href="{{ url('staff/dashboard/'.session()->get('login_id')) }}"><i data-feather="home"></i></a></li>
                                 <li class="breadcrumb-item active">Main Category</li>
                             </ol>
                         </div>
@@ -51,7 +51,6 @@
                                     data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus"></i> Add
                                     Category</button>
 
-                                <div class="btn-popup pull-right">
                                     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
                                         data-backdrop="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -64,7 +63,7 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     <form class="" method="post"
-                                                        action="{{ route('category.main.store') }}"
+                                                        action="{{ route('staffcategory.main.store') }}"
                                                         enctype="multipart/form-data">
                                                         @csrf
                                                         <div class="form">
@@ -80,6 +79,18 @@
 
                                                                 <input class="form-control" name="main_category_image"
                                                                     type="file" accept="image/*">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="validationCustom01" class="mb-1">Sort Order
+                                                                    :</label>
+                                                                <input class="form-control" name="main_category_sortorder"
+                                                                    id="" type="number" required="true">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="validationCustom01" class="mb-1">Meta Keyword / Tags
+                                                                    :</label>
+                                                                <textarea class="form-control" name="main_category_keywords"
+                                                                    id="" type="text" required="true"></textarea>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label for="validationCustom01"
@@ -104,7 +115,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
 
                                 <div class="datatable-dashv1-list custom-datatable-overright">
@@ -119,6 +129,8 @@
                                                 <th data-field="id" data-sortable="true">Id</th>
                                                 <th data-field="image" data-sortable="true">Image</th>
                                                 <th data-field="category" data-sortable="true">Category</th>
+                                                <th data-field="Keywords" data-sortable="true">Meta Keywords</th>
+                                                <th data-field="Order" data-sortable="true">Sort Order</th>
                                                 <th data-field="status" data-sortable="true">Status</th>
                                                 <th>Action</th>
                                             </tr>
@@ -127,7 +139,7 @@
 
                                             @foreach ($category_main as $categories)
                                                 <tr>
-                                                    <td>#{{ $loop->iteration }}</td>
+                                                    <td>{{str_pad($loop->iteration, 4, '0', STR_PAD_LEFT);  }}</td>
                                                     <td>
                                                         <div class="d-flex">
                                                             <img src="{{ asset('assets/images/categoryMain') . '/' . $categories->category_main_image }}"
@@ -138,30 +150,25 @@
                                                     <td>
                                                         {{ $categories->category_main_name }}
                                                     </td>
-                                                    <?php
-                                                    // dd($categories);
-                                                    ?>
+                                                    <td>
+                                                        {{ $categories->category_main_keywords }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $categories->category_main_sortorder }}
+                                                    </td>
                                                     <td>
                                                         <label class="switch">
-                                                            {{-- $status = $pin->status --}}
-                                                            
-                                                             @if($categories->status  == 1){
                                                              <input type="checkbox"
-                                                                 onclick="return confirm('you want to Change it?  Please Click Edit Button')"
-                                                                 checked id="togBtn">
-                                                             }@else{
-                                                                 <input type="checkbox"
-                                                                 onclick="return confirm('you want to Change it?  Please Click Edit Button')" 
-                                                                  id="togBtn">
-                                                             }
-                                                             @endif
-                                                             <div class="slider round">
-                                                                 <!--ADDED HTML -->
-                                                                 <span class="on">Active</span>
-                                                                 <span class="off">Inactive </span>                                                                
-                                                                 <!--END-->
-                                                             </div>
-                                                         </label>
+                                                                    class="toggle-status"
+                                                                    data-id="{{ $categories->id }}"
+                                                                    {{ $categories->status == 1 ? 'checked' : '' }}>
+                                                              <div class="slider round">
+                                                                  <!--ADDED HTML -->
+                                                                  <span class="on">Active</span>
+                                                                  <span class="off">Inactive </span>                                                                
+                                                                  <!--END-->
+                                                              </div>
+                                                          </label>
 
                                                     </td>
 
@@ -169,18 +176,12 @@
                                                         <span class="d-flex">
                                                             <button type="button" class="edit_category_main btn btn-secondary mx-1" value="{{ $categories->id }}">
                                                                 <i class="fa fa-pencil"></i></button>
-                                                            {{-- <a href="#" class="btn btn-secondary mx-1"
-                                                                data-bs-toggle="modal" data-original-title="test"
-                                                                data-bs-target="#exampleeditModal"data-original-title="Edit"><i
-                                                                    class="fa fa-pencil"></i>
-                                                            </a> --}}
                                                             {{-- <form
-                                                                action="{{ route('category.main.destroy', $categories->id) }}"
+                                                                action="{{ route('staffcategory.main.destroy', $categories->id) }}"
                                                                 method="post">
                                                                 @method('DELETE')
                                                                 @csrf
-                                                                <button type="submit" class="btn btn-warning mx-1"
-                                                                    onclick="return confirm('Are you sure, you want to delete it?')"><i
+                                                                <button type="button" class="btn btn-warning mx-1 delete-btn"><i
                                                                         class="fa fa-trash"></i>
                                                                 </button>
                                                             </form> --}}
@@ -203,7 +204,6 @@
 
 
               {{-- edit modal start--}}
-              <div class="btn-popup pull-right">
                 <div class="modal fade" id="exampleeditModal" tabindex="-1" role="dialog"
                     data-backdrop="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -234,7 +234,19 @@
                                                 type="file"  accept="image/*">
 
                                                 <input class="form-control" name="oldeditmain_category_image" id="oldeditmain_category_image"
-                                                type="hidden"  accept="image/*"> 
+                                                type="hidden" value=""  accept="image/*"> 
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="validationCustom01" class="mb-1">Sort Order
+                                                :</label>
+                                            <input class="form-control" id="editmain_category_sortorder" name="editmain_category_sortorder"
+                                                id="" type="number" required="true">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="validationCustom01" class="mb-1">Meta Keyword / Tags
+                                                :</label>
+                                            <textarea class="form-control" name="editmain_category_keywords" id="editmain_category_keywords"
+                                                id="" type="text" required="true"></textarea>
                                         </div>
                                         <div class="form-group">
                                             <label for="validationCustom01"
@@ -259,7 +271,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
             {{-- edit model end --}}
         </div>
 
@@ -269,10 +280,8 @@ $(document).on('click','.edit_category_main', function(e){
       
     e.preventDefault();
     var cate_id = $(this).val();
-  //  alert(cate_id);
-    //    console.log(pin_id);
     $('#exampleeditModal').modal('show');
-    var url ="{{route('category.main.edit', ":cate_id")}}";
+    var url ="{{route('staffcategory.main.edit', ":cate_id")}}";
         url = url.replace(":cate_id", cate_id);
     $.ajax({
      
@@ -280,70 +289,101 @@ $(document).on('click','.edit_category_main', function(e){
           type: "get",
           dataType: 'json',
           success: function (response) {
-              // console.log(response);
-             //alert(response);
                 if(response.status == 404)
                 {
-                //  alert('test');
                 $('successmessage').html('');
                 $('successmessage').addClass('alert alert-danger');
                 $('successmessage').text(response.message);
                 }
                 else{
                     $('#editmain_category_name').val(response.category_main.category_main_name);
-                  //alert(response.category_main.category_main_name);
-                  $('#cate_id').val(cate_id);
-					// var sts = response.category_main.status;
-					//  //alert(sts);
-					// if(sts == 49)
-					// {
-					// 	$('#editstatus').val(1);
-
-					// }
-					// else{
-					// 	$('#editstatus').val(0);
-					// }
+                    $('#editmain_category_sortorder').val(response.category_main.category_main_sortorder);
+                    $('#editmain_category_keywords').val(response.category_main.category_main_keywords);
+                    $('#cate_id').val(cate_id);
                     $('#editstatus').val(response.category_main.status);
                     $('#editmain_category_image').val();		
-					 $('#oldeditmain_category_image').val(response.category_main.category_main_image);
-                   
-                  
-                    // alert(response.category_main.category_main_image);
+                    $('#oldeditmain_category_image').val(response.category_main.category_main_image);
                 }
-     
-                
-         
             }
-        
       });
-
     });
 
 
     /*update category*/
     $(document).on('submit','#updatecate', function(e){
         e.preventDefault();
-         var updatecate_id = $('#cate_id').val();
-        // alert(cate_id);
+        var updatecate_id = $('#cate_id').val();
         let editformDate = new FormData($('#updatecate')[0]);
-        var url ="{{route('category_main_update', ":updatecate_id")}}";
+        var url ="{{route('staffcategory_main_update', ":updatecate_id")}}";
 
         url = url.replace(":updatecate_id", updatecate_id);
         $.ajax({
             url:url,       
             type:"POST",
-             data: editformDate,
-          //  dataType: 'json',
+            data: editformDate,
             contentType:false,
             processData:false,
             success: function (response) {
-            //    alert(response);
-            window.location.reload();
+                window.location.reload();
             }
-
      });
-        
     });
-        </script>
-    @endsection
 
+    $(document).ready(function() {
+        $(".modal").on("hidden.bs.modal", function() {
+            $(this).find('form').trigger('reset');
+        });
+
+        // Toggle Status
+        $(document).on('change', '.toggle-status', function() {
+            var status = $(this).prop('checked') == true ? 1 : 0;
+            var category_id = $(this).data('id');
+            
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "{{ route('staffcategory.main.changestatus') }}",
+                data: {
+                    '_token': '{{ csrf_token() }}',
+                    'status': status,
+                    'id': category_id
+                },
+                success: function(data){
+                    console.log(data.success);
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        });
+
+        // Delete SweetAlert
+        $(document).on('click', '.delete-btn', function(e) {
+            e.preventDefault();
+            var form = $(this).closest('form');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to delete it?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <style>
+            .swal2-popup {
+                font-size: 1.6rem !important;
+                width: 500px !important;
+                max-width: 90% !important;
+            }
+        </style>
+    @endsection
