@@ -143,7 +143,10 @@ class VendorcreateController extends Controller
      */
     public function store(Request $request, FlasherInterface $flasher)
     {
-
+        if (User::where('username', $request->username)->exists() || vendorcreate::where('username', $request->username)->exists()) {
+            $flasher->addError('Username already exists!');
+            return redirect()->back()->withInput()->with('error', 'Username already exists!');
+        }
 
         $vendor = new vendorcreate();
         $statement = FacadesDB::select("SHOW TABLE STATUS LIKE 'vendor_details'");
@@ -581,5 +584,12 @@ class VendorcreateController extends Controller
             ->where('pincode.name', $pincode)->get();
 
         return response()->json($ppincode);
+    }
+
+    public function checkUsername(Request $request)
+    {
+        $username = $request->username;
+        $exists = User::where('username', $username)->exists() || vendorcreate::where('username', $username)->exists();
+        return response()->json(['exists' => $exists]);
     }
 }

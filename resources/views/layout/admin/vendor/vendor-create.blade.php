@@ -128,11 +128,12 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> User
+                                                        <label for="username" class="col-xl-4 col-md-4"><span>*</span> User
                                                             Name</label>
                                                         <div class="col-xl-8 col-md-8">
-                                                            <input class="form-control" id="validationCustom0"
-                                                                type="text" name="username" required>
+                                                            <input class="form-control" id="username"
+                                                                type="text" name="username" required autocomplete="off">
+                                                            <span id="username_alert" class="mt-1 d-block" style="font-weight: bold;"></span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1016,13 +1017,19 @@
 
                 // Extra check for password match if in step 1 (Personal Information)
                 if (currentTab.attr('id') === 'top-profile') {
-                    var pass = $('#pass').val();
-                    var confirm_pass = $('#confirm_pass').val();
-                    if (pass !== confirm_pass) {
+                    if (!isUsernameValid) {
                         valid = false;
-                        $('#confirm_pass').focus();
-                        document.getElementById('wrong_pass_alert').style.color = 'red';
-                        document.getElementById('wrong_pass_alert').innerHTML = '☒ Use same password';
+                        $('#username').focus();
+                        $('#username_alert').css('color', 'red').html('☒ Username already exists');
+                    } else {
+                        var pass = $('#pass').val();
+                        var confirm_pass = $('#confirm_pass').val();
+                        if (pass !== confirm_pass) {
+                            valid = false;
+                            $('#confirm_pass').focus();
+                            document.getElementById('wrong_pass_alert').style.color = 'red';
+                            document.getElementById('wrong_pass_alert').innerHTML = '☒ Use same password';
+                        }
                     }
                 }
 
@@ -1312,6 +1319,63 @@
 
 
         /*Password valitation*/
+        var isUsernameValid = true;
+
+        function updateSubmitButtonState() {
+            var pass = $('#pass').val();
+            var confirm_pass = $('#confirm_pass').val();
+            var passwordsMatch = (pass === confirm_pass && pass !== '');
+
+            var ac_no = $('#ac_no').val();
+            var ac_no1 = $('#ac_no1').val();
+            var acNosMatch = (ac_no === ac_no1 && ac_no !== '');
+
+            var $createBtn = $('#create');
+            if (isUsernameValid && passwordsMatch && acNosMatch) {
+                $createBtn.prop('disabled', false).css('opacity', '1');
+            } else {
+                $createBtn.prop('disabled', true).css('opacity', '0.4');
+            }
+        }
+
+        $(document).ready(function() {
+            $('#username').on('keyup change blur input', function() {
+                var username = $(this).val().trim();
+                var $alert = $('#username_alert');
+
+                if (username.length === 0) {
+                    $alert.text('');
+                    isUsernameValid = false;
+                    updateSubmitButtonState();
+                    return;
+                }
+
+                $.ajax({
+                    url: "{{ route('checkUsername') }}",
+                    type: "POST",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "username": username
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.exists) {
+                            $alert.css('color', 'red').html('☒ Username already exists');
+                            isUsernameValid = false;
+                        } else {
+                            $alert.css('color', 'green').html('🗹 Username available');
+                            isUsernameValid = true;
+                        }
+                        updateSubmitButtonState();
+                    },
+                    error: function() {
+                        isUsernameValid = true;
+                        updateSubmitButtonState();
+                    }
+                });
+            });
+        });
+
         function validate_password() {
 
             var pass = document.getElementById('pass').value;
@@ -1319,15 +1383,12 @@
             if (pass != confirm_pass) {
                 document.getElementById('wrong_pass_alert').style.color = 'red';
                 document.getElementById('wrong_pass_alert').innerHTML = '☒ Use same password';
-                document.getElementById('create').disabled = true;
-                document.getElementById('create').style.opacity = (0.4);
             } else {
                 document.getElementById('wrong_pass_alert').style.color = 'green';
                 document.getElementById('wrong_pass_alert').innerHTML =
                     '🗹 Password Matched';
-                document.getElementById('create').disabled = false;
-                document.getElementById('create').style.opacity = (1);
             }
+            updateSubmitButtonState();
         }
         /*Account no valitation*/
 
@@ -1339,15 +1400,12 @@
             if (ac_no != ac_no1) {
                 document.getElementById('wrong_ac_no_alert').style.color = 'red';
                 document.getElementById('wrong_ac_no_alert').innerHTML = '☒ Use same account number';
-                document.getElementById('create').disabled = true;
-                document.getElementById('create').style.opacity = (0.4);
             } else {
                 document.getElementById('wrong_ac_no_alert').style.color = 'green';
                 document.getElementById('wrong_ac_no_alert').innerHTML =
                     '🗹 Acount number Matched';
-                document.getElementById('create').disabled = false;
-                document.getElementById('create').style.opacity = (1);
             }
+            updateSubmitButtonState();
         }
 
         function wrong_ac_no_alert() {

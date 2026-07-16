@@ -210,6 +210,7 @@ Route::get('vendor/list', [VendorcreateController::class, 'list'])->name('staffv
 
 Route::Post('/Ajaxpackage', [VendorcreateController::class, 'Ajaxpackage'])->name('staffAjaxpackage');
 Route::Post('/picodedetailsreceived', [VendorcreateController::class, 'picodedetailsreceived'])->name('staffpicodedetailsreceived');
+Route::post('/check-username', [VendorcreateController::class, 'checkUsername'])->name('staffCheckUsername');
 
 
 

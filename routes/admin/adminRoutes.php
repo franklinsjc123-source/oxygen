@@ -402,6 +402,7 @@ Route::get('vendor/list', [VendorcreateController::class, 'list'])->name('vendor
 
 Route::Post('/Ajaxpackage', [VendorcreateController::class, 'Ajaxpackage'])->name('Ajaxpackage');
 Route::Post('/picodedetailsreceived', [VendorcreateController::class, 'picodedetailsreceived'])->name('picodedetailsreceived');
+Route::post('/check-username', [VendorcreateController::class, 'checkUsername'])->name('checkUsername');
 
 // coupon
 
