@@ -1357,22 +1357,21 @@
 <!-- Subscription Renewal Modal -->
 <!-- Subscription Renewal Modal -->
 <div class="modal fade" id="renewalModal" tabindex="-1" aria-labelledby="renewalModalLabel" aria-hidden="true" style="backdrop-filter: blur(8px); background-color: rgba(15, 23, 42, 0.3);">
-    <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 1250px;">
+    <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 1100px;">
         <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.15); overflow: hidden; background: #ffffff;">
             
             <!-- Modal Header -->
-            <div class="modal-header" style="background: linear-gradient(135deg, #183543 0%, #0f2430 100%); border: none; padding: 18px 24px; display: flex; flex-direction: column; align-items: center; position: relative;">
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="position: absolute; right: 18px; top: 18px; opacity: 0.8; transition: all 0.2s; border: none; background: transparent; color: white; font-size: 20px; font-weight: 300; line-height: 1; outline: none;">&times;</button>
+            <div class="modal-header" style="background: linear-gradient(135deg, #183543 0%, #0f2430 100%); border: none; padding: 12px 24px; display: flex; flex-direction: column; align-items: center; position: relative;">
+                <button type="button" data-bs-dismiss="modal" aria-label="Close" style="position: absolute; right: 18px; top: 18px; opacity: 0.8; transition: all 0.2s; border: none; background: transparent; color: #ffffff; font-size: 28px; font-weight: 300; line-height: 1; outline: none; cursor: pointer;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">&times;</button>
                 <h3 class="modal-title text-white" id="renewalModalLabel" style="font-weight: 800; font-size: 19px; margin-bottom: 4px; letter-spacing: -0.5px;">Subscription Renewal Plans</h3>
-                <p style="color: #94a3b8; font-size: 12px; margin: 0; font-weight: 500; text-align: center;">Select the ideal plan to unlock premium features and accelerate your store's growth.</p>
                 
                 <!-- Sliding Pill Tab Selector -->
                 <div style="display: flex; justify-content: center; margin-top: 14px; width: 100%;">
                     <div style="background-color: rgba(255, 255, 255, 0.08); border-radius: 30px; padding: 3px; display: flex; position: relative; width: 390px; border: 1px solid rgba(255, 255, 255, 0.1);">
                         <button type="button" class="duration-tab active" onclick="switchDurationGroup('12', this)" style="flex: 1; border: none; background: transparent; padding: 6px 12px; font-size: 11.5px; font-weight: 700; border-radius: 26px; cursor: pointer; transition: all 0.3s; color: #ffffff; z-index: 2; outline: none;">12 Months</button>
-                        <button type="button" class="duration-tab" onclick="switchDurationGroup('6', this)" style="flex: 1; border: none; background: transparent; padding: 6px 12px; font-size: 11.5px; font-weight: 700; border-radius: 26px; cursor: pointer; transition: all 0.3s; color: #94a3b8; z-index: 2; outline: none;">6 Months</button>
-                        <button type="button" class="duration-tab" onclick="switchDurationGroup('3', this)" style="flex: 1; border: none; background: transparent; padding: 6px 12px; font-size: 11.5px; font-weight: 700; border-radius: 26px; cursor: pointer; transition: all 0.3s; color: #94a3b8; z-index: 2; outline: none;">3 Months</button>
-                        <button type="button" class="duration-tab" onclick="switchDurationGroup('1', this)" style="flex: 1; border: none; background: transparent; padding: 6px 12px; font-size: 11.5px; font-weight: 700; border-radius: 26px; cursor: pointer; transition: all 0.3s; color: #94a3b8; z-index: 2; outline: none;">1 Month</button>
+                        <button type="button" class="duration-tab" onclick="switchDurationGroup('6', this)" style="flex: 1; border: none; background: transparent; padding: 6px 12px; font-size: 11.5px; font-weight: 700; border-radius: 26px; cursor: pointer; transition: all 0.3s; color: #ffffff; z-index: 2; outline: none;">6 Months</button>
+                        <button type="button" class="duration-tab" onclick="switchDurationGroup('3', this)" style="flex: 1; border: none; background: transparent; padding: 6px 12px; font-size: 11.5px; font-weight: 700; border-radius: 26px; cursor: pointer; transition: all 0.3s; color: #ffffff; z-index: 2; outline: none;">3 Months</button>
+                        <button type="button" class="duration-tab" onclick="switchDurationGroup('1', this)" style="flex: 1; border: none; background: transparent; padding: 6px 12px; font-size: 11.5px; font-weight: 700; border-radius: 26px; cursor: pointer; transition: all 0.3s; color: #ffffff; z-index: 2; outline: none;">1 Month</button>
                         <!-- Sliding Background Pill -->
                         <div id="durationPillBg" style="position: absolute; top: 3px; bottom: 3px; left: 3px; width: 106px; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 26px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; box-shadow: 0 3px 8px rgba(29, 78, 216, 0.3);"></div>
                     </div>
@@ -1579,7 +1578,7 @@
         // Update active class on buttons
         document.querySelectorAll('.duration-tab').forEach(function(btn) {
             btn.classList.remove('active');
-            btn.style.color = '#94a3b8';
+            btn.style.color = '#ffffff';
         });
         el.classList.add('active');
         el.style.color = '#ffffff';
@@ -1613,10 +1612,10 @@
             var popularBadgeHtml = '';
             var currentPlanBadgeHtml = '';
 
-            if (pkg.type === 'business') {
-                cardStyle = 'border-radius: 14px; border: 2.5px solid #3b82f6; background: #ffffff; padding: 16px 14px; height: 100%; display: flex; flex-direction: column; position: relative; transition: all 0.3s ease; box-shadow: 0 8px 20px -5px rgba(59, 130, 246, 0.15); transform: scale(1.01);';
-                popularBadgeHtml = '<div style="position: absolute; top: -11px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #ffffff; padding: 2px 10px; border-radius: 20px; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 3px 6px rgba(29, 78, 216, 0.25); white-space: nowrap; z-index: 10;">Most Popular</div>';
-            }
+            // if (pkg.type === 'business') {
+            //     cardStyle = 'border-radius: 14px; border: 2.5px solid #3b82f6; background: #ffffff; padding: 16px 14px; height: 100%; display: flex; flex-direction: column; position: relative; transition: all 0.3s ease; box-shadow: 0 8px 20px -5px rgba(59, 130, 246, 0.15); transform: scale(1.01);';
+            //     popularBadgeHtml = '<div style="position: absolute; top: -11px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #ffffff; padding: 2px 10px; border-radius: 20px; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 3px 6px rgba(29, 78, 216, 0.25); white-space: nowrap; z-index: 10;">Most Popular</div>';
+            // }
 
             if (isCurrentPlan) {
                 cardStyle += ' border-color: #0ca678; box-shadow: 0 8px 20px -5px rgba(12, 166, 120, 0.15);';

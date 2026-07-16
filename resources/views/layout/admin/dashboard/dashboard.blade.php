@@ -928,6 +928,19 @@
                     </div>
                 </div>
                 <div class="filter-controls d-flex align-items-center gap-3 flex-wrap">
+                    <!-- Employee Filter Dropdown -->
+                    <div class="employee-filter-container d-flex align-items-center gap-2">
+                        <div style="background-color: rgba(24, 53, 67, 0.08); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fa fa-user" style="color: #183543; font-size: 14px;"></i>
+                        </div>
+                        <select id="filterStaffId" class="form-control form-control-sm" style="border-color: #cbd5e1; border-radius: 8px; font-size: 12px; font-weight: 600; color: #334155; width: 180px; height: 32px; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); cursor: pointer; display: inline-block; vertical-align: middle;" onchange="applyStaffFilter(this.value)">
+                            <option value="">All Employees</option>
+                            @foreach($subStaffList as $staff)
+                                <option value="{{ $staff->id }}" {{ (isset($selectedStaffId) && $selectedStaffId == $staff->id) ? 'selected' : '' }}>{{ $staff->fullname }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
                     <div class="period-selector d-flex p-1" style="border-radius: 30px; background-color: #f1f5f9; border: 1px solid #e2e8f0;">
                         <button type="button" class="period-btn {{ $period === 'today' ? 'active' : '' }}" onclick="applyPeriodFilter('today', this)" style="padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; text-align: center; border: none; cursor: pointer;">Today</button>
                         <button type="button" class="period-btn {{ $period === 'week' ? 'active' : '' }}" onclick="applyPeriodFilter('week', this)" style="padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; text-align: center; border: none; cursor: pointer;">Week</button>
@@ -1648,6 +1661,16 @@ function switchGaugeTab(btn, tab) {
     renderGaugeChart(activeGaugeTab);
 }
 
+function applyStaffFilter(staffId) {
+    var url = new URL(window.location.href);
+    if (staffId) {
+        url.searchParams.set('staff_id', staffId);
+    } else {
+        url.searchParams.delete('staff_id');
+    }
+    window.location.href = url.toString();
+}
+
 // === AJAX Period & Date Filter ===
 function applyPeriodFilter(period, btn) {
     // Update active class on preset buttons
@@ -1686,6 +1709,11 @@ function applyCustomDateFilter(e) {
 function fetchFilteredData(params) {
     var url = new URL("{{ route('admin.dashboard.filter_data') }}", window.location.origin);
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+
+    var staffSelect = document.getElementById('filterStaffId');
+    if (staffSelect && staffSelect.value) {
+        url.searchParams.append('staff_id', staffSelect.value);
+    }
 
     var applyBtn = document.getElementById('applyFilterBtn');
     if (applyBtn) {

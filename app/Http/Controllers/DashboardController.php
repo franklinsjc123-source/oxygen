@@ -22,6 +22,8 @@ class DashboardController extends Controller
             return redirect()->route('staffdashboard', session()->get('login_id') ?? auth()->user()->login_id);
         }
 
+        $staffId = $request->input('staff_id');
+
         $period = $request->input('period');
         if ($period) {
             if ($period === 'today') {
@@ -46,6 +48,9 @@ class DashboardController extends Controller
 
         // Fetch counts overall
         $vendorQuery = DB::table('vendor_details');
+        if ($staffId) {
+            $vendorQuery->where('staff_id', $staffId);
+        }
         $vendorCount = $vendorQuery->count();
         $vendorIds = $vendorQuery->pluck('id')->toArray();
 
@@ -85,7 +90,11 @@ class DashboardController extends Controller
         }
 
         // Viewers overall
-        $vendorProfileViews = DB::table('vendor_details')->sum('view_count') ?? 0;
+        if ($staffId) {
+            $vendorProfileViews = DB::table('vendor_details')->where('staff_id', $staffId)->sum('view_count') ?? 0;
+        } else {
+            $vendorProfileViews = DB::table('vendor_details')->sum('view_count') ?? 0;
+        }
         $productQueryViews = DB::table('products')->where('logintype', 'Vendor');
         if (!empty($vendorIds)) {
             $productQueryViews->whereIn('login_id', $vendorIds);
@@ -135,6 +144,9 @@ class DashboardController extends Controller
                 't3.mobileno as staff_mobile',
                 't3.email as staff_email'
             );
+        if ($staffId) {
+            $baseActivityQuery->where('t3.id', $staffId);
+        }
 
         $activities = $baseActivityQuery->orderByDesc('t1.id')->get();
 
@@ -280,9 +292,12 @@ class DashboardController extends Controller
             ->get();
         $subStaffIds = $subStaffList->pluck('id')->toArray();
 
-        $staffVendors = DB::table('vendor_details')
-            ->select('id', 'shop_name', 'city', 'staff_id')
-            ->get();
+        $staffVendorsQuery = DB::table('vendor_details')
+            ->select('id', 'shop_name', 'city', 'staff_id');
+        if ($staffId) {
+            $staffVendorsQuery->where('staff_id', $staffId);
+        }
+        $staffVendors = $staffVendorsQuery->get();
         $staffVendorIds = $staffVendors->pluck('id')->toArray();
 
         $salesRecords = [];
@@ -632,9 +647,13 @@ class DashboardController extends Controller
         }
         $clientRate = $totalOrdersCount > 0 ? round(($completedOrdersCount / $totalOrdersCount) * 100, 1) : 0;
 
-        $totalProspectsQuery = DB::table('activity_trakcers');
+        $totalProspectsQuery = DB::table('activity_trakcers as t1');
+        if ($staffId) {
+            $totalProspectsQuery->leftJoin('staffother as t3', DB::raw('t1.createdby COLLATE utf8mb4_unicode_ci'), '=', 't3.employee_id')
+                ->where('t3.id', $staffId);
+        }
         if ($startDate && $endDate) {
-            $totalProspectsQuery->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+            $totalProspectsQuery->whereBetween('t1.created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
         }
         $totalProspectsCount = $totalProspectsQuery->count();
 
@@ -657,6 +676,10 @@ class DashboardController extends Controller
         $totalVendorsQuery = DB::table('vendor_details');
         $renewedVendorsQuery = DB::table('vendor_details')
             ->where('expired_date', '>', date('Y-m-d H:i:s'));
+        if ($staffId) {
+            $totalVendorsQuery->where('staff_id', $staffId);
+            $renewedVendorsQuery->where('staff_id', $staffId);
+        }
         if ($startDate && $endDate) {
             $totalVendorsQuery->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
             $renewedVendorsQuery->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
@@ -735,6 +758,24 @@ class DashboardController extends Controller
             'rating' => 5
         ];
 
+        if ($staffId) {
+            $selectedStaff = DB::table('staffother')->where('id', $staffId)->first();
+            if ($selectedStaff) {
+                $staffDetails = (object)[
+                    'fullname' => $selectedStaff->fullname,
+                    'designation' => $selectedStaff->designation ?? 'Staff Member',
+                    'curr_addr' => $selectedStaff->curr_addr ?? 'Address not specified',
+                    'zone_id' => $selectedStaff->zone_id ?? 'N/A',
+                    'employee_id' => $selectedStaff->employee_id,
+                    'email' => $selectedStaff->email,
+                    'mobileno' => $selectedStaff->mobileno,
+                    'a_mobileno' => $selectedStaff->a_mobileno,
+                    'profileimage' => $selectedStaff->profileimage,
+                    'rating' => 5
+                ];
+            }
+        }
+
         if ($request->ajax() || $request->wantsJson() || $request->routeIs('admin.dashboard.filter_data')) {
             return response()->json([
                 'success' => true,
@@ -779,7 +820,9 @@ class DashboardController extends Controller
             'startDate' => $startDate,
             'endDate' => $endDate,
             'period' => $period,
-            'filterText' => $filterText
+            'filterText' => $filterText,
+            'subStaffList' => $subStaffList,
+            'selectedStaffId' => $staffId
         ]);
     }public function vendordashboard(Request $request, $id = null)
     {
