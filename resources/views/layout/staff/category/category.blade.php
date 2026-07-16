@@ -52,8 +52,6 @@
                                     data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus"></i>Add
                                     Category</button>
 
-                                <div class="btn-popup pull-right">
-
                                     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
                                         data-backdrop="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -65,7 +63,7 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     <form class="" method="post"
-                                                        action="{{ route('category.store') }}"
+                                                        action="{{ route('staffcategory.store') }}"
                                                         enctype="multipart/form-data">
                                                         @csrf
                                                         <div class="form">
@@ -98,6 +96,18 @@
                                                                     type="file" accept="image/*" required>
                                                             </div>
                                                             <div class="form-group">
+                                                                <label for="validationCustom01" class="mb-1">Sort Order
+                                                                    :</label>
+                                                                <input class="form-control" name="category_sortorder"
+                                                                    id="" type="number" required="true">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="validationCustom01" class="mb-1">Meta Keyword / Tags
+                                                                    :</label>
+                                                                <textarea class="form-control" name="category_keywords"
+                                                                    id="" type="text" required="true"></textarea>
+                                                            </div>
+                                                            <div class="form-group">
                                                                 <label for="validationCustom01"
                                                                     class="mb-1">Status</label>
                                                                 <select class="custom-select w-100 form-control"
@@ -117,14 +127,89 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                             </div>
 
+                            <div class="datatable-dashv1-list custom-datatable-overright">
 
+                                <table class="table" id="table" data-click-to-select="true" data-sort-name="id"
+                                    data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true"
+                                    data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="true"
+                                    data-key-events="true" data-show-columns="true" data-resizable="true" data-cookie="true"
+                                    data-show-export="true" data-click-to-select="true" data-toolbar="#toolbar">
 
-{{-- EDIT PAGE --}}
+                                    <thead>
+                                        <tr>
+                                            <th data-field="id" data-sortable="true">Id</th>
+                                            <th data-field="image" data-sortable="true">Image</th>
+                                            <th data-field="subcategory" data-sortable="true">Main Category</th>
+                                            <th data-field="category" data-sortable="true">Category</th>
+                                            <th data-field="Keywords" data-sortable="true">Meta Keywords</th>
+                                            <th data-field="Order" data-sortable="true">Sort Order</th>
+                                            <th data-field="status" data-sortable="true">Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($category as $categories)
+                                            <tr>
+                                               <td>{{str_pad($loop->iteration, 4, '0', STR_PAD_LEFT);  }}</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <img src="{{ asset('assets/images/category') . '/' . $categories->category_image }}"
+                                                            alt=""
+                                                            class="img-fluid img-30 me-2 blur-up lazyloaded">
+                                                    </div>
+                                                </td>
 
-<div class="btn-popup pull-right">
+                                                <td>{{ $categories->category_main_name }}</td>
+                                                <td>{{ $categories->category_name }}</td>
+                                                <td>
+                                                    {{ $categories->category_keywords }}
+                                                </td>
+                                                <td>
+                                                    {{ $categories->category_sortorder }}
+                                                </td>
+                                                <td>
+                                                    <label class="switch">
+                                                        <input type="checkbox"
+                                                               class="toggle-status"
+                                                               data-id="{{ $categories->id }}"
+                                                               {{ $categories->status == 1 ? 'checked' : '' }}>
+                                                         <div class="slider round">
+                                                             <!--ADDED HTML -->
+                                                             <span class="on">Active</span>
+                                                             <span class="off">Inactive </span>                                                                
+                                                             <!--END-->
+                                                         </div>
+                                                     </label>
+                                                </td>
+                                                <td>
+                                                    <span class="d-flex">
+                                                        <button type="button" class="edit_catagory btn btn-secondary mx-1" data-bs-toggle="modal" data-original-title="Edit" value="{{$categories->id}}" id="edit_catagory">
+                                                            <i class="fa fa-pencil"></i> </button>
+                                                        
+                                                         {{-- <form action="{{ route('staffcategory.destroy', $categories->id) }}"
+                                                            method="post">
+                                                            @method('DELETE')
+                                                            @csrf
+                                                            <button type="button" class="btn btn-warning mx-1 delete-btn"><i
+                                                                    class="fa fa-trash"></i>
+                                                            </button>
+                                                        </form> --}}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Container-fluid Ends-->
+        {{-- EDIT PAGE --}}
 
     <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog"
         data-backdrop="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -169,7 +254,19 @@
                                 <input class="form-control" name="editcategory_image" id="editcategory_image"
                                     type="file" accept="image/*" >
                                     <input class="form-control" name="oldeditcategory_image" id="oldeditcategory_image"
-                                    type="hidden"  accept="image/*"> 
+                                    type="hidden" value="" accept="image/*"> 
+                            </div>
+                            <div class="form-group">
+                                <label for="validationCustom01" class="mb-1">Sort Order
+                                    :</label>
+                                <input class="form-control" id="editcategory_sortorder" name="editcategory_sortorder"
+                                    id="" type="number" required="true">
+                            </div>
+                            <div class="form-group">
+                                <label for="validationCustom01" class="mb-1">Meta Keyword / Tags
+                                    :</label>
+                                <textarea class="form-control" id="editcategory_keywords" name="editcategory_keywords"
+                                    id="" type="text" required="true"></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="validationCustom01"
@@ -192,106 +289,6 @@
         </div>
     </div>
 </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-                            <div class="datatable-dashv1-list custom-datatable-overright">
-
-
-                                <table class="table" id="table" data-click-to-select="true" data-sort-name="id"
-                                    data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true"
-                                    data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="true"
-                                    data-key-events="true" data-show-columns="true" data-resizable="true" data-cookie="true"
-                                    data-show-export="true" data-click-to-select="true" data-toolbar="#toolbar">
-
-                                    <thead>
-                                        <tr>
-                                            <th data-field="id" data-sortable="true">Id</th>
-                                            <th data-field="image" data-sortable="true">Image</th>
-                                            <th data-field="subcategory" data-sortable="true">Main Category</th>
-                                            <th data-field="category" data-sortable="true">Category</th>
-
-                                            <th data-field="status" data-sortable="true">Status</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($category as $categories)
-                                            <tr>
-                                                <td>#{{ $loop->iteration }}</td>
-                                                <td>
-                                                    <div class="d-flex">
-                                                        <img src="{{ asset('assets/images/category') . '/' . $categories->category_image }}"
-                                                            alt=""
-                                                            class="img-fluid img-30 me-2 blur-up lazyloaded">
-                                                    </div>
-                                                </td>
-
-                                                <td>{{ $categories->category_main_name }}</td>
-                                                <td>{{ $categories->category_name }}</td>
-                                                <td>
-                                                    <label class="switch">
-                                                        {{-- $status = $pin->status --}}
-                                                        
-                                                         @if($categories->status  == 1){
-                                                         <input type="checkbox"
-                                                             onclick="return confirm('you want to Change it?  Please Click Edit Button')"
-                                                             checked id="togBtn">
-                                                         }@else{
-                                                             <input type="checkbox"
-                                                             onclick="return confirm('you want to Change it?  Please Click Edit Button')" 
-                                                              id="togBtn">
-                                                         }
-                                                         @endif
-                                                         <div class="slider round">
-                                                             <!--ADDED HTML -->
-                                                             <span class="on">Active</span>
-                                                             <span class="off">Inactive </span>                                                                
-                                                             <!--END-->
-                                                         </div>
-                                                     </label>
-                                                </td>
-                                                <td>
-                                                    <span class="d-flex">
-                                                        <button type="button" class="edit_catagory btn btn-secondary mx-1" data-bs-toggle="modal" data-original-title="Edit" value="{{$categories->id}}" id="edit_catagory">
-                                                            <i class="fa fa-pencil"></i> </button>
-                                                        {{-- <a href="#" class="btn btn-secondary mx-1"
-                                                            data-bs-toggle="modal" data-original-title="test"
-                                                            data-bs-target="#exampleModal"data-original-title="Edit"><i
-                                                                class="fa fa-pencil"></i> </a>--}}
-                                                        
-                                                        
-                                                        <form action="{{ route('category.destroy', $categories->id) }}"
-                                                            method="post">
-                                                            @method('DELETE')
-                                                            @csrf
-                                                            <button type="submit" class="btn btn-warning mx-1"
-                                                                onclick="return confirm('Are you sure, you want to delete it?')"><i
-                                                                    class="fa fa-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Container-fluid Ends-->
 
     </div>
 @endsection
@@ -301,127 +298,114 @@
 
 $(document).on('click','#edit_catagory', function(e){
         
-        
     e.preventDefault();
     var id = $(this).val();
-    //    console.log(pin_id);
-     $('#exampleModal1').modal('show');
-      // alert (designation_id)
-	   //e.preventDefault();
-	  // var pin_id = $(this).val();
-	      console.log(id);
+    console.log(id);
+    $('#exampleModal1').modal('show');
 
-		 var url= "{{ route('category.edit', ":id") }}";
-		 url = url.replace(":id", id);
+    var url= "{{ route('staffcategory.edit', ":id") }}";
+    url = url.replace(":id", id);
 
-		  $.ajax({
-        //   data: $('').serialize(),    {{ url('admin/zonalupdate') }}/"+id+"/update"
-             // url: "{{ url('admin/zonalupdate') }}/"+updateid,{{ route('designation.master.store') }}
-         // console.log('yghtyj');
-		 
-		 url: url,          
-          type: "get",
-          dataType: 'json',
-          success: function (response) {
-              // console.log(response);
-            // alert('test');
-                if(response.status == 404)
-                {
-                 alert('test');
+    $.ajax({
+        url: url,          
+        type: "get",
+        dataType: 'json',
+        success: function (response) {
+            if(response.status == 404)
+            {
+                alert('test');
                 $('successmessage').html('');
                 $('successmessage').addClass('alert alert-danger');
                 $('successmessage').text(response.message);
-                }
-                else{
-					//alert([designation]);
-                    $('#edit_id').val(response.Category.id);
-					$('#editmain_category_id').val(response.Category.main_category_id);
-                    $('#editcategory_name').val(response.Category.category_name);
-                    $('#oldeditcategory_image').val(response.Category.category_image);
-                    $('#editstatus').val(response.Category.status);                    
-                }  
             }
-        
-      });
-   
-	   });
+            else{
+                $('#edit_id').val(response.Category.id);
+                $('#editmain_category_id').val(response.Category.main_category_id);
+                $('#editcategory_name').val(response.Category.category_name);
+                $('#oldeditcategory_image').val(response.Category.category_image);
+                
+                $('#editcategory_sortorder').val(response.Category.category_sortorder);
+                $('#editcategory_keywords').val(response.Category.category_keywords);
+                $('#editstatus').val(response.Category.status);                    
+            }  
+        }
+    });
+});
 
+$(document).on('submit','#UPDATEFORM', function(e){
+    e.preventDefault();
+    var updatecate_id = $('#edit_id').val();
+    let editformDate = new FormData($('#UPDATEFORM')[0]);
+    var url ="{{route('staffcategory_update', ":updatecate_id")}}";
 
-
-
-
-       $(document).on('submit','#UPDATEFORM', function(e){
-        e.preventDefault();
-         var updatecate_id = $('#edit_id').val();
-        // alert(updatecate_id);
-        let editformDate = new FormData($('#UPDATEFORM')[0]);
-        var url ="{{route('category_update', ":updatecate_id")}}";
-
-        url = url.replace(":updatecate_id", updatecate_id);
-        $.ajax({
-            url:url,       
-            type:"POST",
-             data: editformDate,
-          //  dataType: 'json',
-            contentType:false,
-            processData:false,
-            success: function (response) {
-            //    alert(response);
+    url = url.replace(":updatecate_id", updatecate_id);
+    $.ajax({
+        url:url,       
+        type:"POST",
+        data: editformDate,
+        contentType:false,
+        processData:false,
+        success: function (response) {
             window.location.reload();
-            }
+        }
+    });
+});
 
-     });
-        
+$(document).ready(function() {
+    $(".modal").on("hidden.bs.modal", function() {
+        $(this).find('form').trigger('reset');
     });
 
+    // Toggle Status
+    $(document).on('change', '.toggle-status', function() {
+        var status = $(this).prop('checked') == true ? 1 : 0;
+        var category_id = $(this).data('id');
+        
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "{{ route('staffcategory.changestatus') }}",
+            data: {
+                '_token': '{{ csrf_token() }}',
+                'status': status,
+                'id': category_id
+            },
+            success: function(data){
+                console.log(data.success);
+            },
+            error: function(xhr, status, error) {
+                console.log(error);
+            }
+        });
+    });
+});
 
-    //    $(document).on('click','#btn_update', function(e){
-        
-        
-	// 	e.preventDefault();
-    //     var id = $('#edit_id').val();
-	// 	var editmain_category_id = $('#editmain_category_id').val();
-	// var editcategory_name = $('#editcategory_name').val();
-    // //var editcategory_image = $('#editcategory_image').val();
-	// var editstatus = $('#editstatus').val();
-	// 		  console.log(id);
-	// alert (id);
-	// 		//  var url= "{{ route('category.update', ":id") }}";
-	// 		//  url = url.replace(":id", id);
-	// 		 urlll = urlll.replace(":id", id);
-	// 		 $.ajax({
-    //     //   data: $('').serialize(),    {{ url('admin/zonalupdate') }}/"+id+"/update"
-    //          // url: "{{ url('admin/zonalupdate') }}/"+updateid,
-    //      url : urlll,
-    //      type: "PUT",
-    //      //_token : `{{csrf_token()}}`,
-	// 	//  data: {_token : `{{csrf_token()}}`,
-    //     //  main_category_id:editmain_category_id,
-    //     //  category_name:editcategory_name,
-    //     //  //category_image:editcategory_image,
-    //     //     status:editstatus
-    //    // },
-    //      dataType: 'json',
-    //       success: function (response) {
-    //            console.log(response);
-    //         // alert('test');
-    //             if(response.status == 404)
-    //             {
-    //              alert('test');
-    //             $('successmessage').html('');
-    //             $('successmessage').addClass('alert alert-danger');
-    //             $('successmessage').text(response.message);
-    //             }
-    //             else{
-    //                 alert (response);
-	// 				location.reload(); 
-					
-    //             }  
-    //         }
-        
-    //   });
-	   
-	// });
+// Delete SweetAlert
+$(document).on('click', '.delete-btn', function(e) {
+    e.preventDefault();
+    var form = $(this).closest('form');
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to delete it?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            form.submit();
+        }
+    });
+});
 
-    </script>
-    @endpush
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    .swal2-popup {
+        font-size: 1.6rem !important;
+        width: 500px !important;
+        max-width: 90% !important;
+    }
+</style>
+@endpush

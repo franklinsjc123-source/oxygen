@@ -11,6 +11,8 @@ use Flasher\Prime\FlasherInterface;
 use Illuminate\Http\Request;
 use Intervention\Image\ImageManagerStatic as Image;
 use DB;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -52,53 +54,60 @@ class CategoryController extends Controller
      */
     public function store(Request $request, FlasherInterface $flasher)
     {
+        $validator = Validator::make($request->all(), [
+            'main_category_id' => 'required',
+            'category_name' => [
+                'required',
+                Rule::unique('category', 'category_name')
+                    ->where('main_category_id', $request->main_category_id),
+            ],
+        ]);
+
+        if ($validator->fails()) {
+            $flasher->addError('Category Name already exists for this Main Category!');
+            return redirect()
+                ->route('staffcategory.index')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $category = new Category();
         $statement = DB::select("SHOW TABLE STATUS LIKE 'category'");
         $next_maincategory_id = $statement[0]->Auto_increment;
-        // $file = $request->category_image;
 
-        // if ($file !== null) $filename = ImageUploadHelper::storeImage($file, $this->image_path);
-
-
-        if($request->file('category_image'))
-        {   
+        if ($request->file('category_image')) {
             $category_image = $request->file('category_image');
-            
-            $image = $next_maincategory_id."_image.".$category_image->getClientOriginalExtension();
-            
+
+            $image = $next_maincategory_id . "_image." . $category_image->getClientOriginalExtension();
+
             $img = Image::make($category_image->getRealPath());
-            
-            $img->resize(500, 300, function ($constraint) {
-                
-                $constraint->aspectRatio();
-                
-            })->save($this->image_path.'/'.$image);
-            
-            
-            
+
+            $image_path = "assets/images/category";
+            $img->fit(400, 400)->save($image_path . '/' . $image);
+
             $filename =  $image;
-        }
-        else
-        {
-            $filename ="";
+        } else {
+            $filename = "";
         }
 
         try {
             $category->main_category_id = $request->main_category_id;
             $category->category_name = $request->category_name;
+            $category->category_sortorder = $request->category_sortorder;
+            $category->category_keywords = $request->category_keywords;
 
             $category->category_image = $filename ?? "-";
 
             $category->status = $request->catstatus ?? "1";
             $category->flag = 0;
-            $category->created_by = 1 /*auth()->user()->id*/;
+            $category->created_by = auth()->check() ? auth()->user()->id : 1;
             $category->save();
             $flasher->addSuccess('New Category Added successfully!');
-            return redirect()->route('category.index');
+            return redirect()->route('staffcategory.index');
         } catch (\Throwable $th) {
             dd($th);
             $flasher->addError('Something Error!!');
-            return redirect()->route('category.index');
+            return redirect()->route('staffcategory.index');
         }
     }
 
@@ -123,10 +132,8 @@ class CategoryController extends Controller
     {
         $Category = Category::find($id);
          
-        
         return response()->json([
             'Category'=>$Category
-             //$zone_data
         ]);
     }
 
@@ -139,83 +146,51 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id, FlasherInterface $flasher)
     {
-
-         
-       // return ($id);
-
-    //    if(isset($request->editcategory_image))
-    //    {
-    //      $file = $request->editcategory_image;
-    //      if ($file !== null) {
-    //      $filename = ImageUploadHelper::storeImage($file, $this->image_path);
-    //      }
-    //     } else{
-
-           
-    //         $filename = $request->oldeditcategory_image;
-    //     }
-
-    if($request->file('editcategory_image'))
-        {   
+        if ($request->file('editcategory_image')) {
             $category_image = $request->file('editcategory_image');
-            
-            $image=$id."_image.".$category_image->getClientOriginalExtension();
-            
+
+            $image = $id . "_image." . $category_image->getClientOriginalExtension();
+
             $img = Image::make($category_image->getRealPath());
-            
-            $img->resize(500, 300, function ($constraint) {
-                
-                $constraint->aspectRatio();
-                
-            })->save($this->image_path.'/'.$image);
-            
-            
-            
+            $image_path = "assets/images/category";
+            $img->fit(400, 400)->save($image_path . '/' . $image);
+
             $filename =  $image;
-        }
-        else
-        {
-            $filename ="";
+        } else {
+            $filename = $request->oldeditcategory_image;
         }
 
-
-
-
-
-         try {
+        try {
             $category =  Category::find($id);
-             $category->main_category_id = $request->editmain_category_id;
-             
-             $category->category_name = $request->editcategory_name;
-             $category->category_image = $filename ?? "-";
+            $category->main_category_id = $request->editmain_category_id;
+            
+            $category->category_name = $request->editcategory_name;
+            $category->category_sortorder = $request->editcategory_sortorder;
+            $category->category_keywords = $request->editcategory_keywords;
+            $category->category_image = $filename ?? "-";
             
             $category->status = $request->editstatus;
-             $category->flag = 0;
-             $category->created_by = 1 ;
+            $category->flag = 0;
+            $category->created_by = auth()->check() ? auth()->user()->id : 1;
             
-             $category->update();
-             //return ($id);
-            $flasher->addSuccess('New Category Added successfully!');
-            //  return response()->json([
+            $category->update();
+            $flasher->addSuccess('Category Updated successfully!');
+            return redirect()->route('staffcategory.index');
+        } catch (\Throwable $th) {
+            $flasher->addError('Something Error!!');
+            return redirect()->route('staffcategory.index');
+        }
+    }
 
-            //           'Category'=>'stored'
-                   
-            //       ]);
-             return redirect()->route('category.index');
-          } catch (\Throwable $th) {
-             // dd($th);
-              $flasher->addError('Something Error!!');
-              return redirect()->route('category.index');
-          }
-              
-        
-        //  $Category = Category::find($id);
-        //  $input  = $request->all();
-        //  $Category->update($input);
-        //  return response()->json([
-        //      'Category'=>$Category
-           
-        //  ]);
+    public function changestatus(Request $request)
+    {
+        $category = Category::find($request->id);
+        if ($category) {
+            $category->status = $request->status;
+            $category->save();
+            return response()->json(['success' => 'Status changed successfully.']);
+        }
+        return response()->json(['error' => 'Category not found.'], 404);
     }
 
     /**
@@ -228,16 +203,15 @@ class CategoryController extends Controller
     {
         try {
             $image = Category::find($id);
-            //unlink($this->image_path . "/" . $image->category_image);
             $file = $this->image_path . "/" . $image->category_image;
 
-            if (!file_exists($file)) unlink($file);
+            if (file_exists($file)) unlink($file);
             Category::where("id", $id)->delete();
             $flasher->addsuccess('Category Removed!');
-            return redirect()->route('category.index');
+            return redirect()->route('staffcategory.index');
         } catch (\Throwable $th) {
             $flasher->addError('Something Error!');
-            return redirect()->route('category.index');
+            return redirect()->route('staffcategory.index');
         }
     }
 
@@ -253,3 +227,4 @@ class CategoryController extends Controller
         return response()->json($sub_category_data);
     }
 }
+

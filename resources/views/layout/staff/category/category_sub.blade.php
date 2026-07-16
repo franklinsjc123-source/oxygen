@@ -298,7 +298,7 @@
                                                                 data-bs-target="#exampleModal"data-original-title="Edit"><i
                                                                     class="fa fa-pencil"></i>
                                                             </a> --}}
-                                                            <form
+                                                            {{-- <form
                                                                 action="{{ route('category.sub.destroy', $sub_category->me_id) }}"
                                                                 method="post">
                                                                 @method('DELETE')
@@ -307,7 +307,7 @@
                                                                     onclick="return confirm('Are you sure, you want to delete it?')"><i
                                                                         class="fa fa-trash"></i>
                                                                 </button>
-                                                            </form>
+                                                            </form> --}}
                                                         </span>
                                                     </td>
                                                 </tr>

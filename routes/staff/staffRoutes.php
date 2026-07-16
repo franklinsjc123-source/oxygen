@@ -117,6 +117,7 @@ Route::post('category_main/update/{id}', [CategoryMainController::class, 'update
 //category
 Route::resource('category', CategoryController::class, ['names' => 'staffcategory']);
 Route::post('category/update/{id}', [CategoryController::class, 'update'])->name('staffcategory_update');
+Route::post('category/changestatus', [CategoryController::class, 'changestatus'])->name('staffcategory.changestatus');
 
 Route::post('subcategory/update/{id}', [CategorySubController::class, 'update'])->name('staffsubcategory_update');
 
