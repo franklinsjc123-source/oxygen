@@ -212,6 +212,89 @@
             });
         });
     </script>
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        (function() {
+            // Inject global SweetAlert2 styling for size consistency
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .swal2-popup {
+                    font-size: 1.6rem !important;
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Override native alert
+            window.alert = function(message) {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: 'Notification',
+                        text: message,
+                        icon: 'info',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    console.log("Native Alert:", message);
+                }
+            };
+
+            // Override native confirm
+            const nativeConfirm = window.confirm;
+            window.confirm = function(message) {
+                const event = window.event;
+                if (!event) {
+                    return nativeConfirm(message);
+                }
+
+                const target = event.currentTarget || event.target || event.srcElement;
+                if (target && target.dataset && target.dataset.swalConfirmed === 'true') {
+                    delete target.dataset.swalConfirmed;
+                    return true;
+                }
+
+                event.preventDefault();
+                event.stopPropagation();
+                if (event.stopImmediatePropagation) {
+                    event.stopImmediatePropagation();
+                }
+
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: message,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            if (target) {
+                                target.dataset.swalConfirmed = 'true';
+                                if (target.tagName === 'FORM') {
+                                    target.submit();
+                                } else {
+                                    target.click();
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    return nativeConfirm(message);
+                }
+
+                return false;
+            };
+
+            // Alias swal to Swal.fire for backward compatibility
+            if (typeof Swal !== 'undefined') {
+                window.swal = Swal.fire;
+            }
+        })();
+    </script>
     </body>
 
     </html>
