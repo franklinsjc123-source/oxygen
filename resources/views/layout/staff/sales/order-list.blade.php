@@ -137,7 +137,7 @@
             
                                                             <td>{{ $attribute->orders_id }}</td>
             
-                                                            <td>{{ $attribute->order_date }}</td>
+                                                            <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
             
                                                             <td>                                          
                                                                 {{ $attribute->product_quantity }}
@@ -170,7 +170,7 @@
 															
                                                             <td><span> <button  id ="btnnew" value= "{{ $attribute->id }}" class="btnnew badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
 															
-                                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                    </span></td>
                                                            
                                                         </tr>
                                                     @endforeach
@@ -281,7 +281,7 @@
         
                                                         <td>{{ $attribute->orders_id }}</td>
         
-                                                        <td>{{ $attribute->order_date }}</td>
+                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
         
                                                         <td>                                          
                                                             {{ $attribute->product_quantity }}
@@ -316,7 +316,7 @@
                                                             <button  id ="btnaccess" value= "{{ $attribute->id }}" class="btnaccess badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                                                           
                                                         
-                                                                <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                </span></td>
                                                        
                                                     </tr>
                                                 @endforeach
@@ -424,7 +424,7 @@
 
                                             <td>{{ $attribute->orders_id }}</td>
 
-                                            <td>{{ $attribute->order_date }}</td>
+                                            <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
 
                                             <td>                                          
                                                 {{ $attribute->product_quantity }}
@@ -459,7 +459,7 @@
                                                 
                                                 <button  id ="btndispatch" value= "{{ $attribute->id }}" class="btndispatch badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                                             
-                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                    </span></td>
                                            
                                         </tr>
                                     @endforeach
@@ -569,7 +569,7 @@
             
                                                         <td>{{ $attribute->orders_id }}</td>
             
-                                                        <td>{{ $attribute->order_date }}</td>
+                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
             
                                                         <td>                                          
                                                             {{ $attribute->product_quantity }}
@@ -604,7 +604,7 @@
                                                             
                                                             <button  id ="btndelivered" value= "{{ $attribute->id }}" class="btndelivered badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                                                         
-                                                                <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                </span></td>
                                                        
                                                     </tr>
                                                 @endforeach
@@ -714,7 +714,7 @@
             
                                                         <td>{{ $attribute->orders_id }}</td>
             
-                                                        <td>{{ $attribute->order_date }}</td>
+                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
             
                                                         <td>                                          
                                                             {{ $attribute->product_quantity }}
@@ -750,7 +750,7 @@
                                                             
                                                             <button  id ="btnreturn" value= "{{ $attribute->id }}" class="btnreturn badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                                                         
-                                                                <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                </span></td>
                                                        
                                                     </tr>
                                                 @endforeach
@@ -858,7 +858,7 @@
         
                                                     <td>{{ $attribute->orders_id }}</td>
         
-                                                    <td>{{ $attribute->order_date }}</td>
+                                                    <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
         
                                                     <td>                                          
                                                         {{ $attribute->product_quantity }}
@@ -893,7 +893,7 @@
                                                     <td><span> 
                                                         <button  id ="btncancel" value= "{{ $attribute->id }}" class="btncancel badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="" data-original-title="Edit"><i class="fa fa-pencil"></i> </button>
                                                     
-                                                            <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                            </span></td>
                                                    
                                                 </tr>
                                             @endforeach
@@ -1007,7 +1007,7 @@
 														<td><p class="text-center" style="border:1px solid #f90000;color:#f90000;border-radius:5px;">Cancel</p></td>
 															
                                                             <td><span> <a href="#" class="badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="#can" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
-                                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                    </span></td>
 
 
                                                         </tr>
@@ -1034,7 +1034,7 @@
 															<td><p class="text-center" style="border:1px solid #f90000;color:#f90000;border-radius:5px;">Cancel</p></td>
 															
                                                             <td><span> <a href="#" class="badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
-                                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                    </span></td>
 
 
                                                         </tr>

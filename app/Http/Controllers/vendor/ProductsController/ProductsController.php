@@ -908,7 +908,7 @@ public function store(Request $request, FlasherInterface $flasher)
             $Products->collection = $request->input('collection');
             $Products->flag = 1;
             $Products->status = 1;
-            $Products->created_by = 1;
+            $Products->created_by = $login_id;
             $Products->save();
 
             $detailsIds = $request->input('product_details_id') ?: [];

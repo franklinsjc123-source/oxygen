@@ -135,7 +135,7 @@
                                                     <tr>
                                                         <td><input type="checkbox" class="sub_chk" data-id="{{$attribute->id}}"></td>
                                                         <td>{{ $attribute->order_id }}</td>
-                                                        <td>{{ $attribute->order_date }}</td>
+                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
                                                         <td>       
                                                             <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
                                                                                     class="img-fluid img-30 me-2 blur-up lazyloaded" onerror="this.onerror=null;this.src='/website_assets/images/icons/no_product.png';" alt="">
@@ -162,7 +162,7 @@
                                                                     data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
                                                                     data-toggle="tooltip" data-placement="top" title="View Details">
                                                                     <i class="fa fa-eye"></i>
-                                                                </a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="btn btn-warning btn-sm delete-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a>
+                                                                </a>
                                                             </span>
                                                         </td>
                                                     </tr>
@@ -259,7 +259,7 @@
                                                     <tr>
                                                         <td><input type="checkbox" class="sub_chk" data-id="{{$attribute->id}}"></td>
                                                         <td>{{ $attribute->order_id }}</td>
-                                                        <td>{{ $attribute->order_date }}</td>
+                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
                                                         <td>       
                                                             <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
                                                                                     class="img-fluid img-30 me-2 blur-up lazyloaded" onerror="this.onerror=null;this.src='/website_assets/images/icons/no_product.png';" alt="">
@@ -286,7 +286,7 @@
                                                                     data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
                                                                     data-toggle="tooltip" data-placement="top" title="View Details">
                                                                     <i class="fa fa-eye"></i>
-                                                                </a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="btn btn-warning btn-sm delete-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a>
+                                                                </a>
                                                             </span>
                                                         </td>
                                                     </tr>
@@ -381,7 +381,7 @@
                                                     <tr>
                                                         <td><input type="checkbox" class="sub_chk" data-id="{{$attribute->id}}"></td>
                                                         <td>{{ $attribute->order_id }}</td>
-                                                        <td>{{ $attribute->order_date }}</td>
+                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
                                                         <td>       
                                                             <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
                                                                                     class="img-fluid img-30 me-2 blur-up lazyloaded" onerror="this.onerror=null;this.src='/website_assets/images/icons/no_product.png';" alt="">
@@ -408,7 +408,7 @@
                                                                     data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
                                                                     data-toggle="tooltip" data-placement="top" title="View Details">
                                                                     <i class="fa fa-eye"></i>
-                                                                </a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="btn btn-warning btn-sm delete-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a>
+                                                                </a>
                                                             </span>
                                                         </td>
                                                     </tr>
@@ -507,7 +507,7 @@
                                                     <tr>
                                                         <td><input type="checkbox" class="sub_chk" data-id="{{$attribute->id}}"></td>
                                                         <td>{{ $attribute->order_id }}</td>
-                                                        <td>{{ $attribute->order_date }}</td>
+                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
                                                         <td>       
                                                             <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
                                                                                     class="img-fluid img-30 me-2 blur-up lazyloaded" onerror="this.onerror=null;this.src='/website_assets/images/icons/no_product.png';" alt="">
@@ -534,7 +534,7 @@
                                                                     data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
                                                                     data-toggle="tooltip" data-placement="top" title="View Details">
                                                                     <i class="fa fa-eye"></i>
-                                                                </a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="btn btn-warning btn-sm delete-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a>
+                                                                </a>
                                                             </span>
                                                         </td>
                                                     </tr>
@@ -633,7 +633,7 @@
                                                     <tr>
                                                         <td><input type="checkbox" class="sub_chk" data-id="{{$attribute->id}}"></td>
                                                         <td>{{ $attribute->order_id }}</td>
-                                                        <td>{{ $attribute->order_date }}</td>
+                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
                                                         <td>       
                                                             <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
                                                                                     class="img-fluid img-30 me-2 blur-up lazyloaded" onerror="this.onerror=null;this.src='/website_assets/images/icons/no_product.png';" alt="">
@@ -660,7 +660,7 @@
                                                                     data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
                                                                     data-toggle="tooltip" data-placement="top" title="View Details">
                                                                     <i class="fa fa-eye"></i>
-                                                                </a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="btn btn-warning btn-sm delete-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a>
+                                                                </a>
                                                             </span>
                                                         </td>
                                                     </tr>
@@ -757,7 +757,7 @@
                                                     <tr>
                                                         <td><input type="checkbox" class="sub_chk" data-id="{{$attribute->id}}"></td>
                                                         <td>{{ $attribute->order_id }}</td>
-                                                        <td>{{ $attribute->order_date }}</td>
+                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
                                                         <td>       
                                                             <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
                                                                                     class="img-fluid img-30 me-2 blur-up lazyloaded" onerror="this.onerror=null;this.src='/website_assets/images/icons/no_product.png';" alt="">
@@ -784,7 +784,7 @@
                                                                     data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
                                                                     data-toggle="tooltip" data-placement="top" title="View Details">
                                                                     <i class="fa fa-eye"></i>
-                                                                </a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="btn btn-warning btn-sm delete-btn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a>
+                                                                </a>
                                                             </span>
                                                         </td>
                                                     </tr>
@@ -1499,7 +1499,7 @@ $('#delmaster').on('click', function(e) {
             </div>
             <div class="modal-body">
                 <div class="text-center mb-3">
-                    <img id="modal-product-image" src="" alt="Product Image" style="max-height: 200px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <img id="modal-product-image" src="" alt="Product Image" style="max-height: 100px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
                 </div>
                 <table class="table table-bordered table-striped mt-3">
                     <tbody>
@@ -1545,8 +1545,8 @@ $('#delmaster').on('click', function(e) {
 </style>
 <script>
     $(document).ready(function() {
-        // Handle view details modal data population
-        $('.view-product-details').on('click', function() {
+        // Handle view details modal data population using event delegation
+        $(document).on('click', '.view-product-details', function() {
             $('#modal-product-id').text($(this).data('id'));
             $('#modal-product-name').text($(this).data('name'));
             $('#modal-product-size').text($(this).data('size') || 'N/A');
@@ -1554,28 +1554,6 @@ $('#delmaster').on('click', function(e) {
             $('#modal-product-qty').text($(this).data('qty'));
             $('#modal-product-total').text('₹' + $(this).data('total'));
             $('#modal-product-image').attr('src', $(this).data('image'));
-        });
-        
-        // Handle delete SweetAlert
-        $('.delete-btn').on('click', function(e) {
-            e.preventDefault();
-            let link = $(this).attr('href');
-            if (link === '#') {
-                return;
-            }
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = link;
-                }
-            });
         });
     });
 </script>

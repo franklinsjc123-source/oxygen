@@ -171,7 +171,7 @@
             
                                                             <td>{{ $attribute->order_id }}</td>
             
-                                                            <td>{{ $attribute->order_date }}</td>
+                                                            <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
             
                                                             <td>       
                                                                 
@@ -204,7 +204,7 @@
    data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
    data-toggle="tooltip" data-placement="top" title="View Details">
    <i class="fa fa-eye"></i>
-</a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+</a></span></td>
                                                            @endif
                                                         </tr>
                                                     @endforeach
@@ -309,7 +309,7 @@
         
                                                         <td>{{ $attribute->order_id }}</td>
         
-                                                        <td>{{ $attribute->order_date }}</td>
+                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
         
                                                         <td>       
                                                             
@@ -343,7 +343,7 @@
    data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
    data-toggle="tooltip" data-placement="top" title="View Details">
    <i class="fa fa-eye"></i>
-</a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+</a></span></td>
                                                        @endif
                                                     </tr>
                                                 @endforeach
@@ -446,7 +446,7 @@
 
                                             <td>{{ $attribute->order_id }}</td>
 
-                                            <td>{{ $attribute->order_date }}</td>
+                                            <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
 
                                             <td>       
                                                 
@@ -480,7 +480,7 @@
    data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
    data-toggle="tooltip" data-placement="top" title="View Details">
    <i class="fa fa-eye"></i>
-</a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+</a></span></td>
                                            @endif
                                         </tr>
                                     @endforeach
@@ -583,7 +583,7 @@
             
                                                         <td>{{ $attribute->order_id }}</td>
             
-                                                        <td>{{ $attribute->order_date }}</td>
+                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
             
                                                         <td>       
                                                             
@@ -617,7 +617,7 @@
    data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
    data-toggle="tooltip" data-placement="top" title="View Details">
    <i class="fa fa-eye"></i>
-</a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+</a></span></td>
                                                        @endif
                                                     </tr>
                                                 @endforeach
@@ -720,7 +720,7 @@
             
                                                         <td>{{ $attribute->order_id }}</td>
             
-                                                        <td>{{ $attribute->order_date }}</td>
+                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
             
                                                         <td>       
                                                             
@@ -754,7 +754,7 @@
    data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
    data-toggle="tooltip" data-placement="top" title="View Details">
    <i class="fa fa-eye"></i>
-</a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+</a></span></td>
                                                        @endif
                                                     </tr>
                                                 @endforeach
@@ -855,7 +855,7 @@
         
                                                     <td>{{ $attribute->order_id }}</td>
         
-                                                    <td>{{ $attribute->order_date }}</td>
+                                                    <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
         
                                                     <td>       
                                                         
@@ -886,7 +886,7 @@
    data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
    data-toggle="tooltip" data-placement="top" title="View Details">
    <i class="fa fa-eye"></i>
-</a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+</a></span></td>
                                                    @endif
                                                 </tr>
                                             @endforeach
@@ -1004,7 +1004,7 @@
    data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
    data-toggle="tooltip" data-placement="top" title="View Details">
    <i class="fa fa-eye"></i>
-</a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+</a></span></td>
 
 
                                                         </tr>
@@ -1042,7 +1042,7 @@
    data-bs-toggle="modal" data-bs-target="#viewDetailsModal"
    data-toggle="tooltip" data-placement="top" title="View Details">
    <i class="fa fa-eye"></i>
-</a>&nbsp;<a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+</a></span></td>
 
 
                                                         </tr>
@@ -1732,7 +1732,7 @@ $(document).ready(function () {
             </div>
             <div class="modal-body">
                 <div class="text-center mb-3">
-                    <img id="modal-product-image" src="" alt="Product Image" style="max-height: 200px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <img id="modal-product-image" src="" alt="Product Image" style="max-height: 100px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
                 </div>
                 <table class="table table-bordered table-striped mt-3">
                     <tbody>

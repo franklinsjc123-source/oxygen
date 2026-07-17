@@ -636,9 +636,46 @@ class CartController extends Controller
 		// Order Product insert end 
 		Session::put('order_id', $order_id);
 
-		$details = ['order_id' => $order_id];
-		//$sendmail= \Mail::to($email)->send(new \App\Mail\OrderMail($details));
-		//return redirect('/Successful');
+		// Send order confirmation email to customer
+		if (!empty($customerEmail)) {
+			try {
+				$orderProducts = Ecom_Order_product::where('order_id', $order_id)->get();
+				$productList = [];
+				foreach ($orderProducts as $op) {
+					$productList[] = [
+						'name' => $op->product_name,
+						'size' => $op->product_size,
+						'qty' => $op->product_quantity,
+						'price' => $op->product_price,
+						'total' => $op->total_price,
+					];
+				}
+
+				$orderData = [
+					'order_id' => $order_id,
+					'order_date' => $order->order_date,
+					'customer_name' => trim($customerFirstname . ' ' . $customerLastname),
+					'mobile' => $customerMobile,
+					'address' => $customerAddress,
+					'address1' => $customerAddress1,
+					'city' => $customerCity,
+					'state' => $customerState,
+					'pincode' => $customerPincode,
+					'payment_type' => $paymentType,
+					'total_amount' => $totalAmount,
+					'discount_amount' => $discountAmount,
+					'shipping_charge' => $shippingCharge,
+					'gst_charge' => $gstCharge,
+					'grand_total' => $grandTotal,
+					'products' => $productList,
+				];
+
+				\Mail::to($customerEmail)->send(new \App\Mail\OrderMail($orderData));
+			} catch (\Exception $e) {
+				\Log::error('Order confirmation email failed for order ' . $order_id . ': ' . $e->getMessage());
+			}
+		}
+
 		return redirect()->route('order_success', ['orders_id' => $order_id]);
 	}
 	public function order_list(Request $request, $id)

@@ -124,7 +124,7 @@
 															
                                                             <td><span> <a href="#" class="badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="#New" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
 															
-                                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                    </span></td>
 
 
                                                         </tr>
@@ -151,7 +151,7 @@
 															<td><p class="text-center" style="border:1px solid #f90000;color:#f90000;border-radius:5px;">Cancel</p></td>
 															
                                                             <td><span> <a href="#" class="badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
-                                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                    </span></td>
 
 
                                                         </tr>
@@ -268,7 +268,7 @@
 															<td><p class="text-center" style="border:1px solid #ffc000;color:#ffc000;border-radius:5px;">Accept</p></td>
 															
                                                             <td><span> <a href="#" class="badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="#accept" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
-                                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                    </span></td>
 
 
                                                         </tr>
@@ -295,7 +295,7 @@
 															<td><p class="text-center" style="border:1px solid #ffc000;color:#ffc000;border-radius:5px;">Accept</p></td>
 															
                                                             <td><span> <a href="#" class="badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
-                                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                    </span></td>
 
 
                                                         </tr>
@@ -409,7 +409,7 @@
 															<td><p class="text-primary" style="border:1px solid blue;color:#ffc000;border-radius:5px;">Dispatch</p></td>
 															
                                                             <td><span> <a href="#" class="badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="#Dispatch" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
-                                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                    </span></td>
 
 
                                                         </tr>
@@ -436,7 +436,7 @@
 														<td><p class="text-primary" style="border:1px solid blue;color:#ffc000;border-radius:5px;">Dispatch</p></td>
 															
                                                             <td><span> <a href="#" class="badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
-                                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                    </span></td>
 
 
                                                         </tr>
@@ -550,7 +550,7 @@
 														<td><p class="text-success" style="border:1px solid green;border-radius:5px;">Delivered</p></td>
 															
                                                             <td><span> <a href="#" class="badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="#delivere" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
-                                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                    </span></td>
 
 
                                                         </tr>
@@ -577,7 +577,7 @@
 															<td><p class="text-success" style="border:1px solid green;border-radius:5px;">Delivered</p></td>
 															
                                                             <td><span> <a href="#" class="badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
-                                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                    </span></td>
 
 
                                                         </tr>
@@ -693,7 +693,7 @@
 															<td><p class="text-center" style="border:1px solid #f90000;color:#f90000;border-radius:5px;">Return</p></td>
 															
                                                             <td><span> <a href="#" class="badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="#return" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
-                                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                    </span></td>
 
 
                                                         </tr>
@@ -720,7 +720,7 @@
 															<td><p class="text-center" style="border:1px solid #f90000;color:#f90000;border-radius:5px;">Return</p></td>
 															
                                                             <td><span> <a href="#" class="badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
-                                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                    </span></td>
 
 
                                                         </tr>
@@ -832,7 +832,7 @@
 														<td><p class="text-center" style="border:1px solid #f90000;color:#f90000;border-radius:5px;">Cancel</p></td>
 															
                                                             <td><span> <a href="#" class="badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="#can" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
-                                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                    </span></td>
 
 
                                                         </tr>
@@ -859,7 +859,7 @@
 															<td><p class="text-center" style="border:1px solid #f90000;color:#f90000;border-radius:5px;">Cancel</p></td>
 															
                                                             <td><span> <a href="#" class="badge badge-secondary px-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
-                                                                    <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td>
+                                                                    </span></td>
 
 
                                                         </tr>
