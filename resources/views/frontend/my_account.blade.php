@@ -288,28 +288,61 @@
                                                                 @endforeach
                                                             @endif
                                                             <div class="d-flex justify-content-end gap-2 mt-2">
-                                                                @if(!empty($invoice->can_cancel))
+                                                                @if(!empty($invoice->can_cancel) && strtolower($order->order_status) !== 'delivered')
                                                                     <form method="POST" action="{{ route('my-account.invoice.cancel', $invoice->invoice_id) }}" onsubmit="return confirm('Cancel this order item?');">
                                                                         @csrf
-                                                                        <button type="submit" class="btn btn-outline btn-danger btn-sm btn-rounded">Cancel</button>
+                                                                        <button type="submit" class="btn btn-danger btn-sm btn-rounded" style="background-color: #d22e2e !important; color: #fff !important; border: 1px solid #d22e2e !important;">Cancel</button>
                                                                     </form>
                                                                 @endif
                                                                 @if(!empty($invoice->can_return))
-                                                                    <form method="POST" action="{{ route('my-account.invoice.return', $invoice->invoice_id) }}" onsubmit="return confirm('Raise return request for this item?');">
+                                                                    @php
+                                                                        $allowReturn = false;
+                                                                        $allowReplacement = false;
+                                                                        if (isset($invoice->products) && count($invoice->products) > 0) {
+                                                                            foreach($invoice->products as $p) {
+                                                                                $rr = (int)($p->return_replace ?? 0);
+                                                                                if ($rr === 1 || $rr === 2) {
+                                                                                    $allowReturn = true;
+                                                                                }
+                                                                                if ($rr === 1 || $rr === 3) {
+                                                                                    $allowReplacement = true;
+                                                                                }
+                                                                            }
+                                                                        } else {
+                                                                            $allowReturn = true;
+                                                                        }
+                                                                    @endphp
+
+                                                                    @if($allowReturn)
+                                                                    <form id="return-form-{{ $invoice->invoice_id }}" method="POST" action="{{ route('my-account.invoice.return', $invoice->invoice_id) }}">
                                                                         @csrf
-                                                                        <button type="submit" class="btn btn-outline btn-primary btn-sm btn-rounded">Return</button>
+                                                                        <input type="hidden" name="request_type" value="Return">
+                                                                        <input type="hidden" name="reason" id="return-reason-{{ $invoice->invoice_id }}">
+                                                                        <button type="button" class="btn btn-outline btn-primary btn-sm btn-rounded mr-2" onclick="submitReturnRequest('{{ $invoice->invoice_id }}', 'Return')">Return</button>
                                                                     </form>
+                                                                    @endif
+
+                                                                    @if($allowReplacement)
+                                                                    <form id="replace-form-{{ $invoice->invoice_id }}" method="POST" action="{{ route('my-account.invoice.return', $invoice->invoice_id) }}">
+                                                                        @csrf
+                                                                        <input type="hidden" name="request_type" value="Replacement">
+                                                                        <input type="hidden" name="reason" id="replace-reason-{{ $invoice->invoice_id }}">
+                                                                        <button type="button" class="btn btn-outline btn-warning btn-sm btn-rounded" onclick="submitReturnRequest('{{ $invoice->invoice_id }}', 'Replacement')">Replacement</button>
+                                                                    </form>
+                                                                    @endif
                                                                 @elseif(!empty($invoice->return_deadline))
                                                                     <small class="text-muted align-self-center">Return till {{ $invoice->return_deadline }}</small>
                                                                 @endif
                                                             </div>
                                                         </div>
                                                     @endforeach
+                                                    @if(strtolower($order->order_status) === 'delivered')
                                                     <div class="text-right">
                                                         <a href="{{ url('invoice-pdf/'.$order->id) }}" class="btn btn-dark btn-rounded btn-sm" target="_blank">
                                                             Download Invoice
                                                         </a>
                                                     </div>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -710,6 +743,32 @@
             el.classList.remove('active', 'show', 'in');
         });
         pane.classList.add('active', 'show', 'in');
+    }
+
+    function submitReturnRequest(invoiceId, type) {
+        Swal.fire({
+            title: type + ' Request',
+            input: 'textarea',
+            inputLabel: 'Reason for ' + type.toLowerCase() + ':',
+            inputPlaceholder: 'Please type the reason here...',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Submit',
+            preConfirm: (reason) => {
+                if (!reason || reason.trim() === '') {
+                    Swal.showValidationMessage('Reason is required');
+                }
+                return reason;
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const formId = (type === 'Return' ? 'return-form-' : 'replace-form-') + invoiceId;
+                const reasonInputId = (type === 'Return' ? 'return-reason-' : 'replace-reason-') + invoiceId;
+                document.getElementById(reasonInputId).value = result.value;
+                document.getElementById(formId).submit();
+            }
+        });
     }
 
     function toggleOrderDetails(orderId) {

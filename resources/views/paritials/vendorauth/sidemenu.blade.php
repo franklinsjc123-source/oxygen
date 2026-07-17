@@ -83,6 +83,7 @@
                 <ul class="sidebar-submenu">
                     <li><a href="{{ route('vendor.order') }}"><i class="fa fa-circle"></i>Orders</a></li>
                     <li><a href="{{ route('vendor.transaction') }}"><i class="fa fa-circle"></i>Transactions</a></li>
+                    <li><a href="{{ route('vendor.returns') }}"><i class="fa fa-circle"></i>Returns & Replacements</a></li>
                 </ul>
             </li>
             {{-- <li><a class="sidebar-header" href=""><i data-feather="gift"></i><span>Coupons</span><i

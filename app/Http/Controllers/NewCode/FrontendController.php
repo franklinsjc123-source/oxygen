@@ -3212,12 +3212,26 @@ class FrontendController extends Controller
             return redirect()->back()->with('error', 'Return window has expired.');
         }
 
+        $requestType = $request->input('request_type', 'Return');
+        $reason = $request->input('reason', '');
+        $newStatus = ($requestType === 'Replacement') ? 'Replacement' : 'Return';
+
         DB::table('ecom_invoice')
             ->where('invoice_id', $invoiceId)
             ->update([
-                'status' => 'Return',
+                'status' => $newStatus,
                 'updated_at' => now(),
             ]);
+
+        DB::table('ecom_return_requests')->insert([
+            'invoice_id' => $invoiceId,
+            'customer_id' => $customerId,
+            'request_type' => $requestType,
+            'reason' => $reason,
+            'status' => 'Pending',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         $detailIds = collect(explode(',', (string) ($invoice->product_detail_ids ?? '')))
             ->map(fn($val) => (int) trim($val))
@@ -3233,15 +3247,15 @@ class FrontendController extends Controller
             DB::table('ecom_order_product')
                 ->where('order_id', $orderRow->order_id)
                 ->whereIn('product_id', $detailIds->all())
-                ->update(['order_status' => 'Return']);
+                ->update(['order_status' => $newStatus]);
 
             DB::table('ecom_order_info')
                 ->where('order_id', $orderRow->order_id)
-                ->update(['order_status' => 'Return']);
+                ->update(['order_status' => $newStatus]);
         }
 
         $this->syncOrderStatusByInvoice($customerId, $invoiceId);
-        return redirect()->to(route('myAccount') . '#account-orders')->with('success', 'Return request submitted.');
+        return redirect()->to(route('myAccount') . '#account-orders')->with('success', $requestType . ' request submitted successfully.');
     }
 
     private function syncOrderStatusByInvoice(string $customerId, string $invoiceId): void

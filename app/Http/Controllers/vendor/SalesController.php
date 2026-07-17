@@ -451,4 +451,139 @@ class SalesController extends Controller
     {
         return view('layout.vendor.sales.order-transaction');
     }
+
+    public function returns()
+    {
+        $vendorId = session()->get('login_id');
+        $returns = DB::table('ecom_return_requests')
+            ->join('ecom_invoice', 'ecom_invoice.invoice_id', '=', 'ecom_return_requests.invoice_id')
+            ->leftJoin('ecom_customer_info', 'ecom_customer_info.customer_id', '=', 'ecom_return_requests.customer_id')
+            ->where('ecom_invoice.vendor_id', $vendorId)
+            ->select(
+                'ecom_return_requests.*',
+                'ecom_customer_info.customer_firstname',
+                'ecom_customer_info.customer_lastname',
+                'ecom_customer_info.customer_mobileno',
+                'ecom_customer_info.customer_email',
+                'ecom_invoice.product_detail_ids',
+                'ecom_invoice.line_qty',
+                'ecom_invoice.total_amount'
+            )
+            ->orderBy('ecom_return_requests.id', 'desc')
+            ->get();
+
+        foreach ($returns as $item) {
+            $detailIds = collect(explode(',', (string) ($item->product_detail_ids ?? '')))
+                ->map(fn($val) => (int) trim($val))
+                ->filter()
+                ->values();
+
+            $item->products = $detailIds->isNotEmpty()
+                ? DB::table('products_details')
+                    ->join('products', 'products.product_id', '=', 'products_details.products_id')
+                    ->whereIn('products_details.id', $detailIds->all())
+                    ->select('products.product_name', 'products.product_image')
+                    ->get()
+                : collect();
+        }
+
+        return view('layout.vendor.sales.returns', compact('returns'));
+    }
+
+    public function updateReturnStatus(Request $request, $id)
+    {
+        $status = $request->input('status');
+        $allowedStatuses = ['Pending', 'Approved', 'Rejected'];
+        if (!in_array($status, $allowedStatuses, true)) {
+            return redirect()->back()->with('error', 'Invalid status.');
+        }
+
+        $vendorId = session()->get('login_id');
+        $returnRequest = DB::table('ecom_return_requests')
+            ->join('ecom_invoice', 'ecom_invoice.invoice_id', '=', 'ecom_return_requests.invoice_id')
+            ->where('ecom_invoice.vendor_id', $vendorId)
+            ->where('ecom_return_requests.id', $id)
+            ->select('ecom_return_requests.*')
+            ->first();
+
+        if (!$returnRequest) {
+            return redirect()->back()->with('error', 'Request not found or unauthorized.');
+        }
+
+        DB::table('ecom_return_requests')->where('id', $id)->update([
+            'status' => $status,
+            'updated_at' => now(),
+        ]);
+
+        if ($status === 'Rejected') {
+            DB::table('ecom_invoice')
+                ->where('invoice_id', $returnRequest->invoice_id)
+                ->update([
+                    'status' => 'Delivered',
+                    'updated_at' => now(),
+                ]);
+
+            $invoice = DB::table('ecom_invoice')
+                ->where('invoice_id', $returnRequest->invoice_id)
+                ->first();
+
+            if ($invoice) {
+                $detailIds = collect(explode(',', (string) ($invoice->product_detail_ids ?? '')))
+                    ->map(fn($val) => (int) trim($val))
+                    ->filter()
+                    ->values();
+
+                $orderRow = DB::table('ecom_order')
+                    ->whereRaw("FIND_IN_SET(?, invoice_ids)", [$returnRequest->invoice_id])
+                    ->first();
+
+                if ($orderRow && $detailIds->isNotEmpty()) {
+                    DB::table('ecom_order_product')
+                        ->where('order_id', $orderRow->order_id)
+                        ->whereIn('product_id', $detailIds->all())
+                        ->update(['order_status' => 'Delivered']);
+
+                    DB::table('ecom_order_info')
+                        ->where('order_id', $orderRow->order_id)
+                        ->update(['order_status' => 'Delivered']);
+                }
+            }
+        } elseif ($status === 'Approved') {
+            $newInvoiceStatus = ($returnRequest->request_type === 'Replacement') ? 'Replacement' : 'Return';
+            DB::table('ecom_invoice')
+                ->where('invoice_id', $returnRequest->invoice_id)
+                ->update([
+                    'status' => $newInvoiceStatus,
+                    'updated_at' => now(),
+                ]);
+
+            $invoice = DB::table('ecom_invoice')
+                ->where('invoice_id', $returnRequest->invoice_id)
+                ->first();
+
+            if ($invoice) {
+                $detailIds = collect(explode(',', (string) ($invoice->product_detail_ids ?? '')))
+                    ->map(fn($val) => (int) trim($val))
+                    ->filter()
+                    ->values();
+
+                $orderRow = DB::table('ecom_order')
+                    ->whereRaw("FIND_IN_SET(?, invoice_ids)", [$returnRequest->invoice_id])
+                    ->first();
+
+                if ($orderRow && $detailIds->isNotEmpty()) {
+                    DB::table('ecom_order_product')
+                        ->where('order_id', $orderRow->order_id)
+                        ->whereIn('product_id', $detailIds->all())
+                        ->update(['order_status' => $newInvoiceStatus]);
+
+                    DB::table('ecom_order_info')
+                        ->where('order_id', $orderRow->order_id)
+                        ->update(['order_status' => $newInvoiceStatus]);
+                }
+            }
+        }
+
+        return redirect()->back()->with('success', 'Return status updated to ' . $status);
+    }
 }

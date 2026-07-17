@@ -234,6 +234,8 @@ Route::get('transaction', [SalesController::class, 'transaction'])->name('transa
 
 Route::get('order', [SalesController::class, 'order'])->name('order');
 Route::post('orderstatusupdate/{id}', [SalesController::class, 'orderstatusupdate'])->name('orderstatusupdate');
+Route::get('returns', [SalesController::class, 'returns'])->name('returns');
+Route::post('returns/status/{id}', [SalesController::class, 'updateReturnStatus'])->name('returns.status');
 
 Route::post('orderbulkstatusupdate', [SalesController::class, 'orderbulkstatusupdate'])->name('orderbulkstatusupdate');
 

@@ -241,6 +241,8 @@ Route::get('get_product_details', [ProductsController::class, 'getProductDetails
 Route::get('order', [SalesController::class, 'order'])->name('vendor.order');
 Route::get('Print_invoice/{id}', [SalesController::class, 'print_invoice'])->name('vendor.print_invoice');
 Route::get('transaction', [SalesController::class, 'transaction'])->name('vendor.transaction');
+Route::get('returns', [SalesController::class, 'returns'])->name('vendor.returns');
+Route::post('returns/status/{id}', [SalesController::class, 'updateReturnStatus'])->name('vendor.returns.status');
 //coupon
 Route::get('coupon/create', [CouponController::class, 'create']);
 
