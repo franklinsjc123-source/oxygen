@@ -286,13 +286,21 @@ class ProductsController extends Controller
 
 public function store(Request $request, FlasherInterface $flasher)
 {
-    $request->validate([
+    $rules = [
         'product_name' => 'required|string|max:255',
         'retail_price.*.*' => 'required|numeric|min:0.01',
         'selling_price.*.*' => 'required|numeric|min:0',
-        'imageUpload.*.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        'mainImage' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-    ]);
+        'mainImage' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
+    ];
+
+    $np = $request->nproduct;
+    if ($np > 0) {
+        for ($i = 1; $i <= $np; $i++) {
+            $rules['imageUpload' . $i . '.*'] = 'nullable|image|mimes:jpeg,png,jpg|max:1024';
+        }
+    }
+
+    $request->validate($rules);
 
     DB::beginTransaction();
 
@@ -858,6 +866,15 @@ public function store(Request $request, FlasherInterface $flasher)
     public function update(Request $request, $id, FlasherInterface $flasher)
     {      
         try {
+            $request->validate([
+                'product_name' => 'required|string|max:255',
+                'mainImage' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
+                'mainimg.*' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
+                'subimg1.*' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
+                'subimg2.*' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
+                'subimg3.*' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
+            ]);
+
             $login_id = session()->get('login_id');
             $Products = Products::find($id);
             if (!$Products) {

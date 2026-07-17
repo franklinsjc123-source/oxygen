@@ -356,7 +356,7 @@ class ProductsController extends Controller
             'tax_id' => 'required',
             'gst_id' => 'required',
             'description' => 'required',
-            'mainImage' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'mainImage' => 'required|image|mimes:jpeg,png,jpg|max:1024',
             'retail_price.*.*' => 'required|numeric|min:0.01',
             'selling_price.*.*' => 'required|numeric|min:0',
         ]);
@@ -424,7 +424,7 @@ class ProductsController extends Controller
                 $arr=[];
 
                 $request->validate([
-                    'imageUpload.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust validation as needed
+                    'imageUpload'.$i.'.*' => 'image|mimes:jpeg,png,jpg|max:1024', // Adjust validation as needed
                 ]);
             
               
@@ -683,7 +683,11 @@ class ProductsController extends Controller
             'tax_id' => 'required',
             'gst_id' => 'required',
             'description' => 'required',
-            'mainImage' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'mainImage' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
+            'mainimg.*' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
+            'subimg1.*' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
+            'subimg2.*' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
+            'subimg3.*' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
         ]);
 
         try{

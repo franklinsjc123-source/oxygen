@@ -54,7 +54,7 @@
                             aria-labelledby="top-home-tab">
                             <div class="col-xl-12">
                                 <div class="col-md-12" style="" id="dis1">
-                                    <div class="form-group p-1"><label class="text-danger">(Image size 150x250, accepted files : jpg, jpeg, png, web)</label>
+                                    <div class="text-muted small mb-2">Upload Format: jpg, jpeg, png</div>
                                         <div class="row">
                                             <div id="append" style="">
                                                 <span id="s1" class="badge bg-secondary text-white"></span>

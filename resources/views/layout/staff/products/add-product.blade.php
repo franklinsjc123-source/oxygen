@@ -560,6 +560,7 @@
                                                                 <label class="form-label fw-bold text-dark">Upload Main Image <span class="text-danger">*</span></label>
                                                                 <input class="form-control" type="file" id="mainImg" accept="image/*"
                                                                     name="mainImage" required/>
+                                                                <div class="text-muted small mt-1">Upload Format: jpg, jpeg, png</div>
                                                                 <div class="invalid-feedback-custom">Please upload main image</div>
 
                                                             </div>
@@ -633,9 +634,10 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group p-1">
-                                            <label class="form-label fw-bold text-dark">Variant Image <span class="text-danger">*</span> <span class="text-muted small">(Accepted: jpg, jpeg, png, web)</span></label>
+                                            <label class="form-label fw-bold text-dark">Variant Image <span class="text-danger">*</span></label>
 
                                             <input type="file" id="imageUpload{{ $i }}" name="imageUpload{{ $i }}[]" multiple accept="image/*" onchange="previewImages({{ $i }})" required>
+                                            <div class="text-muted small mt-1">Upload Format: jpg, jpeg, png</div>
                                             <div class="invalid-feedback-custom">Please upload variant image</div>
 
                                         </div>
@@ -1105,6 +1107,32 @@
                     form.reportValidity();
                 }
             });
+        });
+
+        document.addEventListener('change', function(e) {
+            if (e.target && e.target.type === 'file') {
+                const maxSizeBytes = 1024 * 1024; // 1 MB
+                const allowedExtensions = ['jpg', 'jpeg', 'png'];
+                const files = e.target.files;
+                if (files && files.length > 0) {
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+                        const extension = file.name.split('.').pop().toLowerCase();
+                        if (!allowedExtensions.includes(extension)) {
+                            alert('Only JPG, JPEG, and PNG images are allowed. Selected file: ' + file.name);
+                            e.target.value = '';
+                            e.target.dispatchEvent(new Event('change', { bubbles: true }));
+                            break;
+                        }
+                        if (file.size > maxSizeBytes) {
+                            alert('Image size must not exceed 1 MB. Selected file: ' + file.name + ' (' + (file.size / (1024 * 1024)).toFixed(2) + ' MB)');
+                            e.target.value = '';
+                            e.target.dispatchEvent(new Event('change', { bubbles: true }));
+                            break;
+                        }
+                    }
+                }
+            }
         });
     });
 
