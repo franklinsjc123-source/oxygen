@@ -79,7 +79,6 @@
                                        
                                     <th data-field="fdate" data-sortable="true"> FOLLOW-UP DATE </th>
                                       
-									 <th data-field="reason" data-sortable="true">Reason </th>
                                      <th data-field="status" data-sortable="true">STATUS</th>
                                          <th>Action</th>
                                     </tr>
@@ -113,9 +112,6 @@
 										
                                         <td>
                                          {{ date('d-M-Y',strtotime($tracker->next_follow_date)) }}
-										</td>
-										<td>
-                                        {{ $tracker->reason }}
 										</td>
 											<td>
 										<span class="badge border border-success text-success"> {{ $tracker->pipline }}</span>

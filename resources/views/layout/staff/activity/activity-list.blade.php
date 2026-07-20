@@ -75,7 +75,6 @@
                                        
                                     <th data-field="fdate" data-sortable="true"> FOLLOW-UP DATE </th>
                                       
-									 <th data-field="reason" data-sortable="true">Reason </th>
                                      <th data-field="status" data-sortable="true">STATUS</th>
                                         <th>Action</th>
                                     </tr>
@@ -107,9 +106,6 @@
 										
                                         <td>
 										Jul 12,2022
-										</td>
-										<td>
-										Specific if any
 										</td>
 											<td>
 										<span class="badge border border-primary text-primary">Dispatch</span>
@@ -146,9 +142,6 @@
 										
                                         <td>
 										Jul 12,2022
-										</td>
-										<td>
-										Specific if any
 										</td>
 											<td>
 										<span class="badge border border-success text-success">Delivered</span>

@@ -155,7 +155,7 @@ class ActivityTrackerController extends Controller
                 'pipline' => $request->pipe,
                 'win' => $request->win,          
                 'next_follow_date' => $nextFollowDate,
-                'reason' => $reason,
+                'reason' => $reason ?? '',
             ];
             StaffActivity::create($activity);
 
