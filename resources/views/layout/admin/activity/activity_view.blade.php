@@ -59,19 +59,13 @@
                 <div class="page-header">
                     <div class="row">
                         <div class="col-lg-6">
-                            <div class="page-header-left">
-                                <h3 class="d-flex align-items-center">
-                                    Activity Tracker
-                                    <a href="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.index' : 'activity_trackers.index') }}" class="btn btn-primary btn-sm ms-3" style="margin-left: 15px;"><i class="fa fa-arrow-left"></i> Back</a>
-                                </h3>
-                            </div>
+                            <ol class="breadcrumb pull-left" style="margin-bottom: 0;">
+                                <li class="breadcrumb-item"><a href="{{ (request()->is('staff/*') || (session()->get('log_type') != 'Admin')) ? route('staffdashboard', session()->get('login_id')) : url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
+                                <li class="breadcrumb-item active">Activity Tracker</li>
+                            </ol>
                         </div>
                         <div class="col-lg-6">
-                            <ol class="breadcrumb pull-right">
-                            <li class="breadcrumb-item"><a href="{{ (request()->is('staff/*') || (session()->get('log_type') != 'Admin')) ? route('staffdashboard', session()->get('login_id')) : url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
-							
-							<li class="breadcrumb-item active">Activity Tracker</li>
-                            </ol>
+                            <a href="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.index' : 'activity_trackers.index') }}" class="btn btn-primary pull-right"><i class="fa fa-arrow-left"></i> Back</a>
                         </div>
                     </div>
                 </div>
@@ -95,7 +89,7 @@
                                         <div class="row g-3">
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label class="form-label font-weight-bold" style="font-size: 0.95rem; font-weight: 600; color: #334155;">Pipeline <span class="text-danger">*</span></label>
+                                                    <label class="form-label font-weight-bold">Pipeline <span class="text-danger">*</span></label>
                                                     <select class="custom-select w-100 form-control" name="pipe" required="">
                                                         <option value="">--Select--</option>
                                                         <option value="Appoinment Fixed" {{($tracker->pipline=='Appoinment Fixed')?'selected':''}}>Appoinment Fixed</option>
@@ -110,7 +104,7 @@
 
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label class="form-label font-weight-bold" style="font-size: 0.95rem; font-weight: 600; color: #334155;">Win % <span class="text-danger">*</span></label>
+                                                    <label class="form-label font-weight-bold">Win % <span class="text-danger">*</span></label>
                                                     <select class="custom-select w-100 form-control" name="win" required="">
                                                         <option value="">--Select--</option>
                                                         <option value="10%-25%" {{($tracker->win=='10%-25%')?'selected':''}}>10%-25%</option>
@@ -123,20 +117,20 @@
 
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label class="form-label font-weight-bold" style="font-size: 0.95rem; font-weight: 600; color: #334155;">Next Follow-up Date <span class="text-danger">*</span></label>
+                                                    <label class="form-label font-weight-bold">Next Follow-up Date <span class="text-danger">*</span></label>
                                                     <input class="form-control" id="next_follow_date" type="date" required="" name="next_follow_date" value="{{ old('next_follow_date', $tracker->next_follow_date) }}">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-12 mt-3">
                                                 <div class="form-group">
-                                                    <label class="form-label font-weight-bold" style="font-size: 0.95rem; font-weight: 600; color: #334155;">Reason <span class="text-danger">*</span></label>
+                                                    <label class="form-label font-weight-bold">Reason <span class="text-danger">*</span></label>
                                                     <textarea class="form-control" rows="3" id="validationCustom1" type="text" required="" name="reason" placeholder="Enter reason or notes...">{{ old('reason', $tracker->reason) }}</textarea>
                                                 </div>
                                             </div>
 
                                             <div class="col-md-12 text-end mt-3 d-flex justify-content-end">
-                                                <button class="btn btn-primary px-4 py-2" type="submit" style="font-size: 0.95rem; font-weight: 500;">
+                                                <button class="btn btn-primary px-4 py-2" type="submit">
                                                     <i class="fa fa-save me-1"></i> Update Status
                                                 </button>
                                             </div>
@@ -149,7 +143,7 @@
                                         <div class="row g-3">
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label class="form-label font-weight-bold" style="font-size: 0.95rem; font-weight: 600; color: #334155;">Pipeline <span class="text-danger">*</span></label>
+                                                    <label class="form-label font-weight-bold">Pipeline <span class="text-danger">*</span></label>
                                                     <select class="custom-select w-100 form-control" name="pipe" required="">
                                                         <option value="">--Select--</option>
                                                         <option value="Appoinment Fixed">Appoinment Fixed</option>
@@ -164,7 +158,7 @@
 
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label class="form-label font-weight-bold" style="font-size: 0.95rem; font-weight: 600; color: #334155;">Win % <span class="text-danger">*</span></label>
+                                                    <label class="form-label font-weight-bold">Win % <span class="text-danger">*</span></label>
                                                     <select class="custom-select w-100 form-control" name="win" required="">
                                                         <option value="">--Select--</option>
                                                         <option value="10%-25%">10%-25%</option>
@@ -177,20 +171,20 @@
 
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label class="form-label font-weight-bold" style="font-size: 0.95rem; font-weight: 600; color: #334155;">Next Follow-up Date <span class="text-danger">*</span></label>
+                                                    <label class="form-label font-weight-bold">Next Follow-up Date <span class="text-danger">*</span></label>
                                                     <input class="form-control" id="next_follow_date" type="date" required="" name="next_follow_date" value="">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-12 mt-3">
                                                 <div class="form-group">
-                                                    <label class="form-label font-weight-bold" style="font-size: 0.95rem; font-weight: 600; color: #334155;">Reason <span class="text-danger">*</span></label>
+                                                    <label class="form-label font-weight-bold">Reason <span class="text-danger">*</span></label>
                                                     <textarea class="form-control" rows="3" id="validationCustom1" type="text" required="" name="reason" placeholder="Enter reason or notes..."></textarea>
                                                 </div>
                                             </div>
 
                                             <div class="col-md-12 text-end mt-3 d-flex justify-content-end">
-                                                <button class="btn btn-primary px-4 py-2" type="submit" style="font-size: 0.95rem; font-weight: 500;">
+                                                <button class="btn btn-primary px-4 py-2" type="submit">
                                                     <i class="fa fa-save me-1"></i> Save Status
                                                 </button>
                                             </div>
@@ -200,37 +194,39 @@
                                 </div>
 									</div>
                                     
-									<h3>Activity Tracking <a href="{{ route(request()->is('staff/*') ? 'staffvendorcreate.show' : 'vendorcreate.show', $vid) }}" class="btn btn-warning"><i class="fa fa-plus"></i> Add Vendor </a> <a href="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.index' : 'activity_trackers.index') }}" class="btn btn-secondary ms-2" style="margin-left: 10px;"><i class="fa fa-arrow-left"></i> Back</a></h3>
-    <table class="table table-bordered track_tbl">
-        <thead>
-            <tr>
-                <th></th>
-				<th>Date/Time</th>
-                <th>Status</th>
-                <th>Win</th>
-                <th>Next follow Date</th>
-                <th>Reason</th>
-				<th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-		@foreach($activity  as $act)
-		<tr class="active">
-                <td class="track_dot">
-                    <span class="track_line"></span>
-                </td>
-                <td>{{date('d-M-Y H:i',strtotime($act->created_at))}}</td>
-                <td>{{$act->pipline}}</td>
-                <td>{{$act->win}}</td>
-				<td>{{date('d-M-Y',strtotime($act->next_follow_date))}}</td>
-                <td>{{$act->reason}}</td>
-				<td><a href="{{ route(request()->is('staff/*') ? 'staffactivity.edit' : 'activity.edit', $act->id) }}" class="btn btn-warning"><i class="fa fa-pencil"></i> </a>
-				</td>
-            </tr>
-			@endforeach
-            
-        </tbody>
-    </table>
+									<h3 class="d-flex justify-content-between align-items-center mb-3"><span>Activity Tracking</span> <a href="{{ route(request()->is('staff/*') ? 'staffvendorcreate.show' : 'vendorcreate.show', $vid) }}" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> Add Vendor </a></h3>
+    <div class="table-responsive">
+        <table class="table table-bordered track_tbl">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Date/Time</th>
+                    <th>Status</th>
+                    <th>Win</th>
+                    <th>Next follow Date</th>
+                    <th>Reason</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach($activity  as $act)
+            <tr class="active">
+                    <td class="track_dot">
+                        <span class="track_line"></span>
+                    </td>
+                    <td>{{\Carbon\Carbon::parse($act->updated_at)->timezone('Asia/Kolkata')->format('d-M-Y h:i A')}}</td>
+                    <td>{{$act->pipline}}</td>
+                    <td>{{$act->win}}</td>
+                    <td>{{date('d-M-Y',strtotime($act->next_follow_date))}}</td>
+                    <td>{{$act->reason}}</td>
+                    <td><a href="{{ route(request()->is('staff/*') ? 'staffactivity.edit' : 'activity.edit', $act->id) }}" class="btn btn-warning"><i class="fa fa-pencil"></i> </a>
+                    </td>
+                </tr>
+                @endforeach
+                
+            </tbody>
+        </table>
+    </div>
 							
                                     </div>
                                 </div>

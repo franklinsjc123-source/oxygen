@@ -29,19 +29,13 @@
                 <div class="page-header">
                     <div class="row">
                         <div class="col-lg-6">
-                            <div class="page-header-left">
-                                <h3 class="d-flex align-items-center">
-                                    Activity Tracker
-                                    <a href="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.index' : 'activity_trackers.index') }}" class="btn btn-primary btn-sm ms-3" style="margin-left: 15px;"><i class="fa fa-arrow-left"></i> Back</a>
-                                </h3>
-                            </div>
+                            <ol class="breadcrumb pull-left" style="margin-bottom: 0;">
+                                <li class="breadcrumb-item"><a href="{{ (request()->is('staff/*') || (session()->get('log_type') != 'Admin')) ? route('staffdashboard', session()->get('login_id')) : url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
+                                <li class="breadcrumb-item active">Activity Tracker</li>
+                            </ol>
                         </div>
                         <div class="col-lg-6">
-                            <ol class="breadcrumb pull-right">
-                            <li class="breadcrumb-item"><a href="{{ (request()->is('staff/*') || (session()->get('log_type') != 'Admin')) ? route('staffdashboard', session()->get('login_id')) : url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
-							
-							<li class="breadcrumb-item active">Activity Tracker</li>
-                            </ol>
+                            <a href="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.index' : 'activity_trackers.index') }}" class="btn btn-primary pull-right"><i class="fa fa-arrow-left"></i> Back</a>
                         </div>
                     </div>
                 </div>
