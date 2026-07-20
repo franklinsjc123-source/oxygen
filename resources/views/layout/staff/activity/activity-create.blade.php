@@ -109,7 +109,7 @@
 										<div class="form-group row">
 											<label for="validationCustom0" class="col-xl-4 col-md-4">  Mobile Number <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="validationCustom0" type="text" required="" name="moble" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+												<input class="form-control" id="validationCustom0" type="text" required="" name="mobile" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
 												<span class="invalid-feedback-msg">Please enter a valid 10-digit mobile number</span>
 											</div>
 										</div>
@@ -282,7 +282,7 @@
 <div class="form-group row">
 											<label for="validationCustom2" class="col-xl-4 col-md-4">Next Follow-up Date <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-7">
-												<input class="form-control" id="example"  type="date" required="" name="follow-up-date">
+												<input class="form-control" id="example"  type="date" required="" name="next_follow_date">
 											</div>
 										</div>
 </div>
@@ -291,7 +291,7 @@
 										<div class="form-group row">
 											<label for="validationCustom0" class="col-xl-4 col-md-4">Status <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
-												<select class="custom-select w-100 form-control" name="reference" required="">
+												<select class="custom-select w-100 form-control" name="status" required="">
 																<option value="">--Select--</option>
 																
 																<option value="Accepted">Accepted</option>
@@ -311,7 +311,7 @@
 										<div class="form-group row">
 											<label for="validationCustom1" class="col-xl-2 col-md-2">Reason</label>
 											<div class="col-xl-10 col-md-10">
-												<textarea class="form-control" rows="3" id="validationCustom1" type="text" name="address"></textarea>
+												<textarea class="form-control" rows="3" id="validationCustom1" type="text" name="reason"></textarea>
 											</div>
 										</div>
 										

@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Flasher\Prime\FlasherInterface;
+use Illuminate\Support\Facades\Log;
 
 use App\Models\Zonal;
 use App\Models\State;
@@ -116,48 +117,57 @@ class ActivityTrackerController extends Controller
         ]);*/
 
         // Create the new tracker
-        try{
+        try {
+            $mobile = $request->mobile ?? $request->moble;
+            $nextFollowDate = $request->next_follow_date ?? $request->input('follow-up-date');
+            $status = $request->status ?? $request->input('status');
+            $reason = $request->reason ?? $request->input('reason');
+            $address = $request->address2 ?? $request->address;
+
             $lastid = ActivityTracker::create([
-            'shop_name' => $request->shopname,
-            'owner_name' => $request->ownername,
-            'business_category' => $request->businesscategory,
-            'email' => $request->email,
-            'mobile_number' => $request->mobile,
-            'mobile_number1' => $request->alternatemobile,
-            'address' => $request->address2,
-            'address1' => $request->address1,
-            'state' => $request->state,
-            'city' => $request->city,
-            'pincode' => $request->pincode,
-            'location_map' => $request->locationmap,
-            'zone' => $request->zone,
-            'area' => $request->route,
-            'pipline' => $request->pipe,
-            'win' => $request->win,
-            'reference' => $request->reference,
-            'next_follow_date' => $request->next_follow_date,
-            'createdby' => session()->get('login_id'), // Assuming you're using authentication
-            'status' => $request->status,
-            'reason' => $request->reason,
-            'manufacturer_type' => $request->manufacturer_type,
-            'manufacturer_details' => $request->manufacturer_details,
-        ])->id;
-        $activity=[
-            'vendor_id' =>  $lastid,
-            'pipline' => $request->pipe,
-            'win' => $request->win,          
-            'next_follow_date' => $request->next_follow_date,
-            'reason' => $request->reason,
-        ];
-        StaffActivity::create($activity);
-        $routePrefix = request()->is('staff/*') ? 'staff' : '';
-        return redirect()->route($routePrefix ? 'staffactivity_trackers.index' : 'activity_trackers.index')->with('success', 'Activity Tracker Created successfully');
-    }
-    catch (\Throwable $th) {
-        $flasher->addError('Something Error!!' . $th);
-        $routePrefix = request()->is('staff/*') ? 'staff' : '';
-        return redirect()->route($routePrefix ? 'staffactivity_trackers.index' : 'activity_trackers.index');
-    }
+                'shop_name' => $request->shopname,
+                'owner_name' => $request->ownername,
+                'business_category' => $request->businesscategory,
+                'email' => $request->email,
+                'mobile_number' => $mobile,
+                'mobile_number1' => $request->alternatemobile,
+                'address' => $address,
+                'address1' => $request->address1,
+                'state' => $request->state,
+                'city' => $request->city,
+                'pincode' => $request->pincode,
+                'location_map' => $request->locationmap,
+                'zone' => $request->zone,
+                'area' => $request->route ?? $request->area,
+                'pipline' => $request->pipe,
+                'win' => $request->win,
+                'reference' => $request->reference,
+                'next_follow_date' => $nextFollowDate,
+                'createdby' => session()->get('login_id'),
+                'status' => $status,
+                'reason' => $reason,
+                'manufacturer_type' => $request->manufacturer_type,
+                'manufacturer_details' => $request->manufacturer_details,
+            ])->id;
+
+            $activity = [
+                'vendor_id' => $lastid,
+                'pipline' => $request->pipe,
+                'win' => $request->win,          
+                'next_follow_date' => $nextFollowDate,
+                'reason' => $reason,
+            ];
+            StaffActivity::create($activity);
+
+            $routePrefix = request()->is('staff/*') ? 'staff' : '';
+            return redirect()->route($routePrefix ? 'staffactivity_trackers.index' : 'activity_trackers.index')->with('success', 'Activity Tracker Created successfully');
+        }
+        catch (\Throwable $th) {
+            Log::error('ActivityTracker Store Error: ' . $th->getMessage());
+            $flasher->addError('Error creating activity tracker: ' . $th->getMessage());
+            $routePrefix = request()->is('staff/*') ? 'staff' : '';
+            return redirect()->route($routePrefix ? 'staffactivity_trackers.index' : 'activity_trackers.index');
+        }
     }
     public function show($id)
     {
