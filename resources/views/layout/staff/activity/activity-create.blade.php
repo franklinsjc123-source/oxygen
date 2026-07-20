@@ -60,7 +60,7 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4">  Shop Name</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4">  Shop Name <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
 												<input class="form-control" id="validationCustom0" type="text" required="" name="shopname">
 											</div>
@@ -68,7 +68,7 @@
 </div>
 <div class="col-md-6">
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4"> Owner Name</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4"> Owner Name <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
 												<input class="form-control" id="validationCustom0" type="text" required="" name="ownername">
 											</div>
@@ -80,7 +80,7 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4"> Business Category</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4"> Business Category <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
 												<input class="form-control" id="validationCustom0" type="text" required="" name="businesscategory">
 											</div>
@@ -88,7 +88,7 @@
 </div>
 <div class="col-md-6">
 <div class="form-group row">
-											<label for="validationCustom2" class="col-xl-4 col-md-4">E-Mail</label>
+											<label for="validationCustom2" class="col-xl-4 col-md-4">E-Mail <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-7">
 												<input class="form-control" id="validationCustom2" type="email" required="" name="email">
 											</div>
@@ -107,9 +107,10 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4">  Mobile Number</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4">  Mobile Number <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="validationCustom0" type="text" required="" name="moble">
+												<input class="form-control" id="validationCustom0" type="text" required="" name="moble" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+												<span class="invalid-feedback-msg">Please enter a valid 10-digit mobile number</span>
 											</div>
 										</div>
 </div>
@@ -117,7 +118,8 @@
 										<div class="form-group row">
 											<label for="validationCustom0" class="col-xl-4 col-md-4">Alternate Number</label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="validationCustom0" type="text" required="" name="alternatemobile">
+												<input class="form-control" id="validationCustom0" type="text" name="alternatemobile" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+												<span class="invalid-feedback-msg">Please enter a valid 10-digit alternate number</span>
 											</div>
 										</div>
 </div>
@@ -128,7 +130,7 @@
 										<div class="form-group row">
 											<label for="validationCustom0" class="col-xl-4 col-md-4"> Address Line 1</label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="validationCustom0" type="text" required="" name="address1">
+												<input class="form-control" id="validationCustom0" type="text" name="address1">
 											</div>
 										</div>
 </div>
@@ -136,7 +138,7 @@
 										<div class="form-group row">
 											<label for="validationCustom0" class="col-xl-4 col-md-4">Address Line 2</label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="validationCustom0" type="text" required="" name="address2">
+												<input class="form-control" id="validationCustom0" type="text" name="address2">
 											</div>
 										</div>
 </div>
@@ -145,7 +147,7 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom01" class="col-xl-4 col-md-4">State :</label>
+											<label for="validationCustom01" class="col-xl-4 col-md-4">State <span class="text-danger">*</span> :</label>
 											<div class="col-xl-8 col-md-8">
 
 
@@ -163,7 +165,7 @@
 </div>
 <div class="col-md-6">
 <div class="form-group row">
-											<label for="validationCustom01" class="col-xl-4 col-md-4">City:</label>
+											<label for="validationCustom01" class="col-xl-4 col-md-4">City <span class="text-danger">*</span>:</label>
 											<div class="col-xl-8 col-md-8">
 												<select class="custom-select w-100 form-control" name="city" required="">
 																<option value="">--Select--</option>
@@ -182,9 +184,10 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="pincode" class="col-xl-4 col-md-4"> Pincode</label>
+											<label for="pincode" class="col-xl-4 col-md-4"> Pincode <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="pincode" type="text" required="" name="pincode">
+												<input class="form-control" id="pincode" type="text" required="" name="pincode" maxlength="6" pattern="[0-9]{6}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+												<span class="invalid-feedback-msg">Please enter a valid 6-digit pincode</span>
 											</div>
 										</div>
 </div>
@@ -192,7 +195,7 @@
 										<div class="form-group row">
 											<label for="validationCustom0" class="col-xl-4 col-md-4">Location Map</label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="validationCustom0" type="text" required="" name="locationmap">
+												<input class="form-control" id="validationCustom0" type="text" name="locationmap">
 											</div>
 										</div>
 </div>
@@ -202,7 +205,7 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="zone" class="col-xl-4 col-md-4"> Zone</label>
+											<label for="zone" class="col-xl-4 col-md-4"> Zone <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
 												<input class="form-control" id="zone" readonly type="text" required="" name="zone">
 											</div>
@@ -210,7 +213,7 @@
 </div>
 <div class="col-md-6">
 <div class="form-group row">
-											<label for="route" class="col-xl-4 col-md-4">Area</label>
+											<label for="route" class="col-xl-4 col-md-4">Area <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-7">
 												<input class="form-control" id="route" readonly type="text" required="" name="route">
 											</div>
@@ -222,7 +225,7 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4">Pipeline</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4">Pipeline <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
 												<select class="custom-select w-100 form-control" name="pipe" required="">
 																<option value="">--Select--</option>
@@ -241,7 +244,7 @@
 <div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4">Win %</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4">Win % <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
 												<select class="custom-select w-100 form-control" name="win" required="">
 																<option value="">--Select--</option>
@@ -259,7 +262,7 @@
 <div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4">Reference</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4">Reference <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
 												<select class="custom-select w-100 form-control" name="reference" required="">
 																<option value="">--Select--</option>
@@ -277,7 +280,7 @@
 
 <div class="col-md-6">
 <div class="form-group row">
-											<label for="validationCustom2" class="col-xl-4 col-md-4">Next Follow-up Date</label>
+											<label for="validationCustom2" class="col-xl-4 col-md-4">Next Follow-up Date <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-7">
 												<input class="form-control" id="example"  type="date" required="" name="follow-up-date">
 											</div>
@@ -286,7 +289,7 @@
 <div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4">Status</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4">Status <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
 												<select class="custom-select w-100 form-control" name="reference" required="">
 																<option value="">--Select--</option>
@@ -308,7 +311,7 @@
 										<div class="form-group row">
 											<label for="validationCustom1" class="col-xl-2 col-md-2">Reason</label>
 											<div class="col-xl-10 col-md-10">
-												<textarea class="form-control" rows="3" id="validationCustom1" type="text" required="" name="address"></textarea>
+												<textarea class="form-control" rows="3" id="validationCustom1" type="text" name="address"></textarea>
 											</div>
 										</div>
 										

@@ -65,7 +65,7 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4">  Shop Name</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4">  Shop Name <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
 												<input class="form-control" id="validationCustom0" type="text" required="" name="shopname" value="{{ old('shopname', $tracker->shop_name) }}">
 											</div>
@@ -73,7 +73,7 @@
 </div>
 <div class="col-md-6">
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4"> Owner Name</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4"> Owner Name <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
 												<input class="form-control" id="validationCustom0" type="text" required="" name="ownername" value="{{ old('ownername', $tracker->owner_name) }}">
 											</div>
@@ -85,7 +85,7 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4"> Business Category</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4"> Business Category <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
 												<input class="form-control" id="validationCustom0" type="text" required="" name="businesscategory" value="{{ old('businesscategory', $tracker->business_category) }}">
 											</div>
@@ -93,7 +93,7 @@
 </div>
 <div class="col-md-6">
 <div class="form-group row">
-											<label for="validationCustom2" class="col-xl-4 col-md-4">E-Mail</label>
+											<label for="validationCustom2" class="col-xl-4 col-md-4">E-Mail <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-7">
 												<input class="form-control" id="validationCustom2" type="email" required="" name="email" value="{{ old('email', $tracker->email) }}">
 											</div>
@@ -112,9 +112,9 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4">  Mobile Number</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4">  Mobile Number <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="validationCustom0" type="text" required="" name="mobile" value="{{ old('mobile', $tracker->mobile_number) }}">
+												<input class="form-control" id="validationCustom0" type="text" required="" name="mobile" value="{{ old('mobile', $tracker->mobile_number) }}" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
 											</div>
 										</div>
 </div>
@@ -122,7 +122,7 @@
 										<div class="form-group row">
 											<label for="validationCustom0" class="col-xl-4 col-md-4">Alternate Number</label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="validationCustom0" type="text" required="" name="alternatemobile" value="{{ old('alternatemobile', $tracker->mobile_number1) }}">
+												<input class="form-control" id="validationCustom0" type="text" name="alternatemobile" value="{{ old('alternatemobile', $tracker->mobile_number1) }}" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
 											</div>
 										</div>
 </div>
@@ -133,7 +133,7 @@
 										<div class="form-group row">
 											<label for="validationCustom0" class="col-xl-4 col-md-4"> Address Line 1</label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="validationCustom0" type="text" required="" name="address1" value="{{ old('address1', $tracker->address) }}">
+												<input class="form-control" id="validationCustom0" type="text" name="address1" value="{{ old('address1', $tracker->address) }}">
 											</div>
 										</div>
 </div>
@@ -141,7 +141,7 @@
 										<div class="form-group row">
 											<label for="validationCustom0" class="col-xl-4 col-md-4">Address Line 2</label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="validationCustom0" type="text" required="" name="address2" value="{{ old('address2', $tracker->address1) }}">
+												<input class="form-control" id="validationCustom0" type="text" name="address2" value="{{ old('address2', $tracker->address1) }}">
 											</div>
 										</div>
 </div>
@@ -150,7 +150,7 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom01" class="col-xl-4 col-md-4">State :</label>
+											<label for="validationCustom01" class="col-xl-4 col-md-4">State <span class="text-danger">*</span> :</label>
 											<div class="col-xl-8 col-md-8">
 
 
@@ -168,7 +168,7 @@
                                         </div>
                                         <div class="col-md-6">
                                         <div class="form-group row">
-											<label for="validationCustom01" class="col-xl-4 col-md-4">City:</label>
+											<label for="validationCustom01" class="col-xl-4 col-md-4">City <span class="text-danger">*</span>:</label>
 											<div class="col-xl-8 col-md-8">
 												<select class="custom-select w-100 form-control" name="city" required="">
 																<option value="">--Select--</option>
@@ -187,9 +187,9 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="pincode" class="col-xl-4 col-md-4"> Pincode</label>
+											<label for="pincode" class="col-xl-4 col-md-4"> Pincode <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="pincode" type="text" required="" name="pincode" value="{{ old('pincode', $tracker->pincode) }}">
+												<input class="form-control" id="pincode" type="text" required="" name="pincode" value="{{ old('pincode', $tracker->pincode) }}" maxlength="6" pattern="[0-9]{6}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
 											</div>
 										</div>
 </div>
@@ -198,7 +198,7 @@
 											<label for="validationCustom0" class="col-xl-4 col-md-4">Location Map</label>
 											<div class="col-xl-8 col-md-8">
 												<div class="input-group mb-2">
-													<input class="form-control" id="location_map" type="text" name="locationmap" required placeholder="Select location on map" value="{{ old('locationmap', $tracker->location_map) }}" readonly>
+													<input class="form-control" id="location_map" type="text" name="locationmap" placeholder="Select location on map" value="{{ old('locationmap', $tracker->location_map) }}" readonly>
 													<button class="btn btn-primary" id="btn_open_map" type="button" data-bs-toggle="modal" data-bs-target="#vendorMapModal">
 														<i class="fa fa-map-marker"></i> Pick on Map
 													</button>
@@ -218,9 +218,9 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="zone" class="col-xl-4 col-md-4"> Zone</label>
+											<label for="zone" class="col-xl-4 col-md-4"> Zone <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
-											<select class="form-control" name="zone" id="zone">
+											<select class="form-control" name="zone" id="zone" required="">
 
 												<option value=''>Select zone</option>
 
@@ -232,7 +232,7 @@
 </div>
 <div class="col-md-6">
 <div class="form-group row">
-											<label for="route" class="col-xl-4 col-md-4">Area</label>
+											<label for="route" class="col-xl-4 col-md-4">Area <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-7">
 												<input class="form-control" id="route"  type="text" required="" name="route" value="{{ old('route', $tracker->area) }}">
 											</div>
@@ -244,7 +244,7 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4">Pipeline</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4">Pipeline <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
 												<select class="custom-select w-100 form-control" name="pipe" required="">
 																<option value="">--Select--</option>
@@ -263,7 +263,7 @@
 <div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4">Win %</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4">Win % <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
 												<select class="custom-select w-100 form-control" name="win" required="">
 																<option value="">--Select--</option>
@@ -281,7 +281,7 @@
 <div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4">Reference</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4">Reference <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
 												<select class="custom-select w-100 form-control" name="reference" required="">
 																<option value="">--Select--</option>
@@ -299,7 +299,7 @@
 
 <div class="col-md-6">
 <div class="form-group row">
-											<label for="validationCustom2" class="col-xl-4 col-md-4">Next Follow-up Date</label>
+											<label for="validationCustom2" class="col-xl-4 col-md-4">Next Follow-up Date <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
 												<input class="form-control" id="next_follow_date"  type="date" required="" name="next_follow_date" value="{{ old('next_follow_date', $tracker->next_follow_date) }}">
 											</div>
@@ -310,7 +310,7 @@
 <div class="row">
 	<div class="col-md-6">
 		<div class="form-group row">
-			<label for="validationCustom0" class="col-xl-4 col-md-4">Status</label>
+			<label for="validationCustom0" class="col-xl-4 col-md-4">Status <span class="text-danger">*</span></label>
 			<div class="col-xl-8 col-md-8">
 				<select class="custom-select w-100 form-control" name="status" required="">
 					<option value="">--Select--</option>
@@ -327,7 +327,7 @@
 		<div class="form-group row">
 			<label for="validationCustom1" class="col-xl-4 col-md-4">Reason</label>
 			<div class="col-xl-8 col-md-8">
-				<textarea class="form-control" rows="3" id="validationCustom1" type="text" required="" name="reason">{{ old('reason', $tracker->reason) }}</textarea>
+				<textarea class="form-control" rows="3" id="validationCustom1" name="reason">{{ old('reason', $tracker->reason) }}</textarea>
 			</div>
 		</div>
 	</div>
@@ -336,7 +336,7 @@
 <div class="row">
 	<div class="col-md-6">									
 		<div class="form-group row">
-			<label for="manufacturer_type" class="col-xl-4 col-md-4">Source Type</label>
+			<label for="manufacturer_type" class="col-xl-4 col-md-4">Source Type <span class="text-danger">*</span></label>
 			<div class="col-xl-8 col-md-8">
 				<select class="custom-select w-100 form-control" name="manufacturer_type" required="">
 					<option value="">--Select--</option>
@@ -354,7 +354,7 @@
 		<div class="form-group row">
 			<label for="manufacturer_details" class="col-xl-4 col-md-4">Manufacturer Details</label>
 			<div class="col-xl-8 col-md-8">
-				<textarea class="form-control" rows="3" id="manufacturer_details" type="text" required="" name="manufacturer_details">{{ old('manufacturer_details', $tracker->manufacturer_details) }}</textarea>
+				<textarea class="form-control" rows="3" id="manufacturer_details" name="manufacturer_details">{{ old('manufacturer_details', $tracker->manufacturer_details) }}</textarea>
 			</div>
 		</div>
 	</div>	
