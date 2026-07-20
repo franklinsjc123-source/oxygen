@@ -187,9 +187,9 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4"> Pincode</label>
+											<label for="pincode" class="col-xl-4 col-md-4"> Pincode</label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="validationCustom0" type="text" required="" name="pincode" value="{{ old('pincode', $tracker->pincode) }}">
+												<input class="form-control" id="pincode" type="text" required="" name="pincode" value="{{ old('pincode', $tracker->pincode) }}">
 											</div>
 										</div>
 </div>
@@ -218,7 +218,7 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4"> Zone</label>
+											<label for="zone" class="col-xl-4 col-md-4"> Zone</label>
 											<div class="col-xl-8 col-md-8">
 											<select class="form-control" name="zone" id="zone">
 
@@ -232,9 +232,9 @@
 </div>
 <div class="col-md-6">
 <div class="form-group row">
-											<label for="validationCustom2" class="col-xl-4 col-md-4">Area</label>
+											<label for="route" class="col-xl-4 col-md-4">Area</label>
 											<div class="col-xl-8 col-md-7">
-												<input class="form-control" id="validationCustom2"  type="text" required="" name="route" value="{{ old('route', $tracker->area) }}">
+												<input class="form-control" id="route"  type="text" required="" name="route" value="{{ old('route', $tracker->area) }}">
 											</div>
 										</div>
 </div>
@@ -508,6 +508,34 @@
         $('#vendorMapModal').on('shown.bs.modal', function() {
             initMap();
             setTimeout(function(){ map.invalidateSize(); }, 200);
+        });
+
+        $('#pincode').on('change blur keyup', function() {
+            var pincode = $(this).val().trim();
+            if (pincode.length === 6) {
+                $.ajax({
+                    url: "{{ route(request()->is('staff/*') ? 'staffpicodedetailsreceived' : 'picodedetailsreceived') }}",
+                    method: 'POST',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        pincode: pincode
+                    },
+                    success: function(response) {
+                        if (response && response.length > 0) {
+                            var zoneName = response[0].name;
+                            var areaName = response[0].area;
+                            if ($('#zone option[value="' + zoneName + '"]').length === 0) {
+                                $('#zone').append('<option value="' + zoneName + '">' + zoneName + '</option>');
+                            }
+                            $('#zone').val(zoneName);
+                            $('#route').val(areaName);
+                        }
+                    },
+                    error: function() {
+                        // Handle errors silently
+                    }
+                });
+            }
         });
     });
 </script>
