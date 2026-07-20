@@ -414,6 +414,7 @@ Route::post('/check-username', [VendorcreateController::class, 'checkUsername'])
 //Route::resource('coupon', CouponController::class, ['names' => 'coupon']);
 
 Route::resource('staffrole',StaffRoleController::class, ['names' => 'staffrole']);
+Route::post('activity_trackers/check-mobile', [ActivityTrackerController::class, 'checkMobile'])->name('checkActivityMobile');
 Route::post('activity_trackers/status/{id}', [ActivityTrackerController::class, 'activity'])->name('activity_trackers.status');
 Route::get('activity/edit/{id}', [ActivityTrackerController::class, 'activityedit'])->name('activity.edit');
 Route::resource('activity_trackers', ActivityTrackerController::class);

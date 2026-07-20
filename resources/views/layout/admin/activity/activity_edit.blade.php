@@ -115,6 +115,8 @@
 											<label for="validationCustom0" class="col-xl-4 col-md-4">  Mobile Number <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
 												<input class="form-control" id="validationCustom0" type="text" required="" name="mobile" value="{{ old('mobile', $tracker->mobile_number) }}" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+												<span class="invalid-feedback-msg">Please enter a valid 10-digit mobile number</span>
+												<span class="mobile-exists-msg text-danger" style="display:none; font-size: 1.05rem; font-weight: 400;">Mobile number already exists!</span>
 											</div>
 										</div>
 </div>
@@ -508,6 +510,40 @@
         $('#vendorMapModal').on('shown.bs.modal', function() {
             initMap();
             setTimeout(function(){ map.invalidateSize(); }, 200);
+        });
+
+        $('input[name="mobile"]').on('input blur change', function() {
+            var mobile = $(this).val().trim();
+            var $input = $(this);
+            var $msg = $input.siblings('.mobile-exists-msg');
+            var $submitBtn = $input.closest('form').find('button[type="submit"]');
+
+            if (mobile.length === 10) {
+                $.ajax({
+                    url: "{{ route(request()->is('staff/*') ? 'staffcheckActivityMobile' : 'checkActivityMobile') }}",
+                    method: 'POST',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        mobile: mobile,
+                        ignore_id: "{{ $tracker->id }}"
+                    },
+                    success: function(response) {
+                        if (response.exists) {
+                            $msg.show();
+                            $input.addClass('is-invalid');
+                            $submitBtn.prop('disabled', true);
+                        } else {
+                            $msg.hide();
+                            $input.removeClass('is-invalid');
+                            $submitBtn.prop('disabled', false);
+                        }
+                    }
+                });
+            } else {
+                $msg.hide();
+                $input.removeClass('is-invalid');
+                $submitBtn.prop('disabled', false);
+            }
         });
 
         $('#pincode').on('change blur keyup', function() {

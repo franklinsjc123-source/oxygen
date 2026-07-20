@@ -119,6 +119,12 @@ class ActivityTrackerController extends Controller
         // Create the new tracker
         try {
             $mobile = $request->mobile ?? $request->moble;
+            if ($mobile && ActivityTracker::where('mobile_number', $mobile)->orWhere('mobile_number1', $mobile)->exists()) {
+                $flasher->addError('Mobile number already exists!');
+                $routePrefix = request()->is('staff/*') ? 'staff' : '';
+                return redirect()->back()->withInput();
+            }
+
             $nextFollowDate = $request->next_follow_date ?? $request->input('follow-up-date');
             $status = $request->status ?? $request->input('status');
             $reason = $request->reason ?? $request->input('reason');
@@ -246,10 +252,14 @@ class ActivityTrackerController extends Controller
 
     public function update(Request $request, $id)
     {
-        //dd($request->email);// Validate incoming request
-        $request->validate([
-            // Same as store validation rules
-        ]);
+        $mobile = $request->mobile ?? $request->moble;
+        if ($mobile && ActivityTracker::where('id', '!=', $id)->where(function($q) use ($mobile) {
+            $q->where('mobile_number', $mobile)->orWhere('mobile_number1', $mobile);
+        })->exists()) {
+            $flasher = app(\Flasher\Prime\FlasherInterface::class);
+            $flasher->addError('Mobile number already exists!');
+            return redirect()->back()->withInput();
+        }
 
         // Update tracker data
         $tracker = ActivityTracker::findOrFail($id);
@@ -291,6 +301,25 @@ class ActivityTrackerController extends Controller
 
         $routePrefix = request()->is('staff/*') ? 'staff' : '';
         return redirect()->route($routePrefix ? 'staffactivity_trackers.index' : 'activity_trackers.index')->with('success', 'Activity Tracker Deleted');
+    }
+
+    public function checkMobile(Request $request)
+    {
+        $mobile = $request->mobile;
+        if (!$mobile || strlen($mobile) !== 10) {
+            return response()->json(['exists' => false]);
+        }
+        $query = ActivityTracker::where(function($q) use ($mobile) {
+            $q->where('mobile_number', $mobile)
+              ->orWhere('mobile_number1', $mobile);
+        });
+
+        if ($request->filled('ignore_id')) {
+            $query->where('id', '!=', $request->ignore_id);
+        }
+
+        $exists = $query->exists();
+        return response()->json(['exists' => $exists]);
     }
 }
 

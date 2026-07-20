@@ -291,6 +291,7 @@ Route::resource('instagram',  InstaController::class,['names' => 'staffinstagram
 Route::resource('oxygen',  OxygenController::class,['names' => 'staffoxygen']);
 
 // activity trackers
+Route::post('activity_trackers/check-mobile', [\App\Http\Controllers\ActivityTrackerController::class, 'checkMobile'])->name('staffcheckActivityMobile');
 Route::post('activity_trackers/status/{id}', [\App\Http\Controllers\ActivityTrackerController::class, 'activity'])->name('staffactivity_trackers.status');
 Route::get('activity/edit/{id}', [\App\Http\Controllers\ActivityTrackerController::class, 'activityedit'])->name('staffactivity.edit');
 Route::resource('activity_trackers', \App\Http\Controllers\ActivityTrackerController::class, ['names' => 'staffactivity_trackers']);
