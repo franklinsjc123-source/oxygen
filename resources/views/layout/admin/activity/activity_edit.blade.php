@@ -30,8 +30,9 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="page-header-left">
-                            <h3>Activity Tracker
-								
+                                <h3 class="d-flex align-items-center">
+                                    Activity Tracker
+                                    <a href="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.index' : 'activity_trackers.index') }}" class="btn btn-primary btn-sm ms-3" style="margin-left: 15px;"><i class="fa fa-arrow-left"></i> Back</a>
                                 </h3>
                             </div>
                         </div>

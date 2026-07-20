@@ -60,8 +60,9 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="page-header-left">
-                            <h3>Activity Tracker
-								
+                                <h3 class="d-flex align-items-center">
+                                    Activity Tracker
+                                    <a href="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.index' : 'activity_trackers.index') }}" class="btn btn-primary btn-sm ms-3" style="margin-left: 15px;"><i class="fa fa-arrow-left"></i> Back</a>
                                 </h3>
                             </div>
                         </div>
@@ -87,162 +88,119 @@
                               
                                 <div class="tab-content" id="top-tabContent">
 								
-                                 @if($page=='Edit')  
-                                <form action="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.status' : 'activity_trackers.status', $tracker->vendor_id) }}" method="POST">
-                                    @csrf
-									
-										
-
-									<div class="row">
-										<div class="col-md-4">
-											
-										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4">Pipeline</label>
-											<div class="col-xl-8 col-md-8">
-												<select class="custom-select w-100 form-control" name="pipe" required="">
-																<option value="">--Select--</option>
-																
-																<option value="Appoinment Fixed" {{($tracker->pipline=='Appoinment Fixed')?'selected':''}}>Appoinment Fixed</option>
-																<option value="Package Explained" {{($tracker->pipline=='Package Explained')?'selected':''}}>Package Explained</option>
-																<option value="Negotiating" {{($tracker->pipline=='Negotiating')?'selected':''}}>Negotiating</option>
-																<option value="Pending Decision" {{($tracker->pipline=='Pending Decision')?'selected':''}}>Pending Decision</option>
-																<option value="Not Interested" {{($tracker->pipline=='Not Interested')?'selected':''}}>Not Interested</option>
-																<option value="Interested" {{($tracker->pipline=='Interested')?'selected':''}}>Interested</option>
-															</select>
-											</div>
-										</div>
-									</div>
-
-									<div class="col-md-4">
-											
-										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4">Win %</label>
-											<div class="col-xl-8 col-md-8">
-												<select class="custom-select w-100 form-control" name="win" required="">
-																<option value="">--Select--</option>
-																
-																<option value="10%-25%" {{($tracker->win=='10%-25%')?'selected':''}}>10%-25%</option>
-																<option value="25%-50%" {{($tracker->win=='25%-50%')?'selected':''}}>25%-50%</option>
-																<option value="50%-75%" {{($tracker->win=='50%-75%')?'selected':''}}>50%-75%</option>
-																<option value="75%-100%" {{($tracker->win=='75%-100%')?'selected':''}}>75%-100%</option>
-																
-															</select>
-											</div>
-										</div>
-									</div>
-
-									
-
-
-									<div class="col-md-4">
-									<div class="form-group row">
-											<label for="validationCustom2" class="col-xl-4 col-md-4">Next Follow-up Date</label>
-											<div class="col-xl-8 col-md-7">
-												<input class="form-control" id="next_follow_date"  type="date" required="" name="next_follow_date" value="{{ old('next_follow_date', $tracker->next_follow_date) }}">
-											</div>
-										</div>
-									</div>
-									
-									</div>
-										
-									
-										<div class="form-group row">
-											<label for="validationCustom1" class="col-xl-1 col-md-1">Reason</label>
-											<div class="col-xl-9 col-md-9">
-												<textarea class="form-control" rows="3" id="validationCustom1" type="text" required="" name="reason">{{ old('reason', $tracker->reason) }}</textarea>
-											</div>
-											<div class="col-xl-2 col-md-2">
-												<button class="btn  px-5 btn-lg btn-primary" type="submit">Update </button>
-											</div>    
-										</div>
-										
-
-										<input class="form-control" id="id"  type="hidden"  name="id" value="{{ old('id', $tracker->id) }}">
-																
-											<div class="modal-footer">  
-                                                   
+                                 <div class="card p-3 mb-4 shadow-sm" style="border-radius: 8px; border: 1px solid #e2e8f0; background: #fff;">
+                                  @if($page=='Edit')  
+                                    <form action="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.status' : 'activity_trackers.status', $tracker->vendor_id) }}" method="POST">
+                                        @csrf
+                                        <div class="row g-3">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label font-weight-bold" style="font-size: 0.95rem; font-weight: 600; color: #334155;">Pipeline <span class="text-danger">*</span></label>
+                                                    <select class="custom-select w-100 form-control" name="pipe" required="">
+                                                        <option value="">--Select--</option>
+                                                        <option value="Appoinment Fixed" {{($tracker->pipline=='Appoinment Fixed')?'selected':''}}>Appoinment Fixed</option>
+                                                        <option value="Package Explained" {{($tracker->pipline=='Package Explained')?'selected':''}}>Package Explained</option>
+                                                        <option value="Negotiating" {{($tracker->pipline=='Negotiating')?'selected':''}}>Negotiating</option>
+                                                        <option value="Pending Decision" {{($tracker->pipline=='Pending Decision')?'selected':''}}>Pending Decision</option>
+                                                        <option value="Not Interested" {{($tracker->pipline=='Not Interested')?'selected':''}}>Not Interested</option>
+                                                        <option value="Interested" {{($tracker->pipline=='Interested')?'selected':''}}>Interested</option>
+                                                    </select>
                                                 </div>
-                                    </form>
-									@else
-									<form action="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.status' : 'activity_trackers.status', $tracker->id) }}" method="POST">
-                                    @csrf
-									
-										
+                                            </div>
 
-									<div class="row">
-										<div class="col-md-4">
-											
-										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4">Pipeline</label>
-											<div class="col-xl-8 col-md-8">
-												<select class="custom-select w-100 form-control" name="pipe" required="">
-																<option value="">--Select--</option>
-																
-																<option value="Appoinment Fixed">Appoinment Fixed</option>
-																<option value="Package Explained">Package Explained</option>
-																<option value="Negotiating" >Negotiating</option>
-																<option value="Pending Decision" >Pending Decision</option>
-																<option value="Not Interested" >Not Interested</option>
-																<option value="Interested" >Interested</option>
-															</select>
-											</div>
-										</div>
-									</div>
-
-									<div class="col-md-4">
-											
-										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4">Win %</label>
-											<div class="col-xl-8 col-md-8">
-												<select class="custom-select w-100 form-control" name="win" required="">
-																<option value="">--Select--</option>
-																
-																<option value="10%-25%" >10%-25%</option>
-																<option value="25%-50%" >25%-50%</option>
-																<option value="50%-75%" >50%-75%</option>
-																<option value="75%-100%" >75%-100%</option>
-																
-															</select>
-											</div>
-										</div>
-									</div>
-
-									
-
-
-									<div class="col-md-4">
-									<div class="form-group row">
-											<label for="validationCustom2" class="col-xl-4 col-md-4">Next Follow-up Date</label>
-											<div class="col-xl-8 col-md-7">
-												<input class="form-control" id="next_follow_date"  type="date" required="" name="next_follow_date" value="">
-											</div>
-										</div>
-									</div>
-									
-									</div>
-										
-									
-										<div class="form-group row">
-											<label for="validationCustom1" class="col-xl-1 col-md-1">Reason</label>
-											<div class="col-xl-9 col-md-9">
-												<textarea class="form-control" rows="3" id="validationCustom1" type="text" required="" name="reason"></textarea>
-											</div>
-											<div class="col-xl-2 col-md-2">
-												<button class="btn  px-5 btn-lg btn-primary" type="submit">Save </button>
-											</div>    
-										</div>
-										
-
-										<input class="form-control" id="id"  type="hidden"  name="id" value="">
-																
-											<div class="modal-footer">  
-                                                   
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label font-weight-bold" style="font-size: 0.95rem; font-weight: 600; color: #334155;">Win % <span class="text-danger">*</span></label>
+                                                    <select class="custom-select w-100 form-control" name="win" required="">
+                                                        <option value="">--Select--</option>
+                                                        <option value="10%-25%" {{($tracker->win=='10%-25%')?'selected':''}}>10%-25%</option>
+                                                        <option value="25%-50%" {{($tracker->win=='25%-50%')?'selected':''}}>25%-50%</option>
+                                                        <option value="50%-75%" {{($tracker->win=='50%-75%')?'selected':''}}>50%-75%</option>
+                                                        <option value="75%-100%" {{($tracker->win=='75%-100%')?'selected':''}}>75%-100%</option>
+                                                    </select>
                                                 </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label font-weight-bold" style="font-size: 0.95rem; font-weight: 600; color: #334155;">Next Follow-up Date <span class="text-danger">*</span></label>
+                                                    <input class="form-control" id="next_follow_date" type="date" required="" name="next_follow_date" value="{{ old('next_follow_date', $tracker->next_follow_date) }}">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 mt-3">
+                                                <div class="form-group">
+                                                    <label class="form-label font-weight-bold" style="font-size: 0.95rem; font-weight: 600; color: #334155;">Reason <span class="text-danger">*</span></label>
+                                                    <textarea class="form-control" rows="3" id="validationCustom1" type="text" required="" name="reason" placeholder="Enter reason or notes...">{{ old('reason', $tracker->reason) }}</textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 text-end mt-3 d-flex justify-content-end">
+                                                <button class="btn btn-primary px-4 py-2" type="submit" style="font-size: 0.95rem; font-weight: 500;">
+                                                    <i class="fa fa-save me-1"></i> Update Status
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <input class="form-control" id="id" type="hidden" name="id" value="{{ old('id', $tracker->id) }}">
                                     </form>
-									@endif
+                                  @else
+                                    <form action="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.status' : 'activity_trackers.status', $tracker->id) }}" method="POST">
+                                        @csrf
+                                        <div class="row g-3">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label font-weight-bold" style="font-size: 0.95rem; font-weight: 600; color: #334155;">Pipeline <span class="text-danger">*</span></label>
+                                                    <select class="custom-select w-100 form-control" name="pipe" required="">
+                                                        <option value="">--Select--</option>
+                                                        <option value="Appoinment Fixed">Appoinment Fixed</option>
+                                                        <option value="Package Explained">Package Explained</option>
+                                                        <option value="Negotiating">Negotiating</option>
+                                                        <option value="Pending Decision">Pending Decision</option>
+                                                        <option value="Not Interested">Not Interested</option>
+                                                        <option value="Interested">Interested</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label font-weight-bold" style="font-size: 0.95rem; font-weight: 600; color: #334155;">Win % <span class="text-danger">*</span></label>
+                                                    <select class="custom-select w-100 form-control" name="win" required="">
+                                                        <option value="">--Select--</option>
+                                                        <option value="10%-25%">10%-25%</option>
+                                                        <option value="25%-50%">25%-50%</option>
+                                                        <option value="50%-75%">50%-75%</option>
+                                                        <option value="75%-100%">75%-100%</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label font-weight-bold" style="font-size: 0.95rem; font-weight: 600; color: #334155;">Next Follow-up Date <span class="text-danger">*</span></label>
+                                                    <input class="form-control" id="next_follow_date" type="date" required="" name="next_follow_date" value="">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 mt-3">
+                                                <div class="form-group">
+                                                    <label class="form-label font-weight-bold" style="font-size: 0.95rem; font-weight: 600; color: #334155;">Reason <span class="text-danger">*</span></label>
+                                                    <textarea class="form-control" rows="3" id="validationCustom1" type="text" required="" name="reason" placeholder="Enter reason or notes..."></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 text-end mt-3 d-flex justify-content-end">
+                                                <button class="btn btn-primary px-4 py-2" type="submit" style="font-size: 0.95rem; font-weight: 500;">
+                                                    <i class="fa fa-save me-1"></i> Save Status
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                  @endif
+                                </div>
 									</div>
                                     
-									<h3>Activity Tracking <a href="{{ route(request()->is('staff/*') ? 'staffvendorcreate.show' : 'vendorcreate.show', $vid) }}" class="btn btn-warning"><i class="fa fa-plus"></i> Add Vendor </a></h3>
+									<h3>Activity Tracking <a href="{{ route(request()->is('staff/*') ? 'staffvendorcreate.show' : 'vendorcreate.show', $vid) }}" class="btn btn-warning"><i class="fa fa-plus"></i> Add Vendor </a> <a href="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.index' : 'activity_trackers.index') }}" class="btn btn-secondary ms-2" style="margin-left: 10px;"><i class="fa fa-arrow-left"></i> Back</a></h3>
     <table class="table table-bordered track_tbl">
         <thead>
             <tr>
