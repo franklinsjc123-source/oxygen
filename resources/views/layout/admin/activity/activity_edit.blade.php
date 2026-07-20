@@ -115,7 +115,7 @@
 											<label for="validationCustom0" class="col-xl-4 col-md-4">  Mobile Number <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
 												<input class="form-control" id="validationCustom0" type="text" required="" name="mobile" value="{{ old('mobile', $tracker->mobile_number) }}" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-												<span class="invalid-feedback-msg">Please enter a valid 10-digit mobile number</span>
+												<span class="mobile-length-msg text-danger" style="display:none; font-size: 1.05rem; font-weight: 400;">Please enter a valid 10-digit mobile number</span>
 												<span class="mobile-exists-msg text-danger" style="display:none; font-size: 1.05rem; font-weight: 400;">Mobile number already exists!</span>
 											</div>
 										</div>
@@ -515,10 +515,16 @@
         $('input[name="mobile"]').on('input blur change', function() {
             var mobile = $(this).val().trim();
             var $input = $(this);
-            var $msg = $input.siblings('.mobile-exists-msg');
+            var $lengthMsg = $input.siblings('.mobile-length-msg');
+            var $existsMsg = $input.siblings('.mobile-exists-msg');
             var $submitBtn = $input.closest('form').find('button[type="submit"]');
 
-            if (mobile.length === 10) {
+            if (mobile.length > 0 && mobile.length < 10) {
+                $lengthMsg.show();
+                $existsMsg.hide();
+                $submitBtn.prop('disabled', true);
+            } else if (mobile.length === 10) {
+                $lengthMsg.hide();
                 $.ajax({
                     url: "{{ route(request()->is('staff/*') ? 'staffcheckActivityMobile' : 'checkActivityMobile') }}",
                     method: 'POST',
@@ -529,19 +535,17 @@
                     },
                     success: function(response) {
                         if (response.exists) {
-                            $msg.show();
-                            $input.addClass('is-invalid');
+                            $existsMsg.show();
                             $submitBtn.prop('disabled', true);
                         } else {
-                            $msg.hide();
-                            $input.removeClass('is-invalid');
+                            $existsMsg.hide();
                             $submitBtn.prop('disabled', false);
                         }
                     }
                 });
             } else {
-                $msg.hide();
-                $input.removeClass('is-invalid');
+                $lengthMsg.hide();
+                $existsMsg.hide();
                 $submitBtn.prop('disabled', false);
             }
         });
