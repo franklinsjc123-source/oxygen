@@ -545,7 +545,7 @@
                                             <div class="card">
                                                 <div class="card-header d-flex justify-content-between align-items-center">
                                                     <label class="form-label fw-bold text-dark fs-5 m-0">Product Description <span class="text-danger">*</span></label>
-                                                    <button type="button" class="btn btn-sm text-white" id="btn-generate-desc" style="background-color: #183543 !important; border-color: #183543 !important; color: #ffffff !important;"><i class="fa fa-magic"></i> Generate Description</button>
+                                                    {{-- <button type="button" class="btn btn-sm text-white" id="btn-generate-desc" style="background-color: #183543 !important; border-color: #183543 !important; color: #ffffff !important;"><i class="fa fa-magic"></i> Generate Description</button> --}}
                                                 </div>
                                                 <div class="card-body">
                                                     <div class="digital-add needs-validation">
