@@ -1148,7 +1148,7 @@
             var height = $('input[name="height"]').val();
             
             // Gather details for each variant
-            var variantsCount = {{ $nproduct }};
+            var variantsCount = {{ $nproduct ?? 1 }};
             var variantSections = [];
             
             for (var i = 1; i <= variantsCount; i++) {
