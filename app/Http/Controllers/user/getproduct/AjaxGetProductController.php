@@ -222,14 +222,73 @@ class AjaxGetProductController extends Controller
  		 
 	}
 
+	public function track_order_page()
+	{
+		if (!session('username') && !session('userId')) {
+			return redirect()->to('Cuslogin')->with('error', 'Please login to track your order.');
+		}
+		return view('website.front-end.track_order_search');
+	}
+
+	public function track_order_search(Request $request)
+	{
+		if (!session('username') && !session('userId')) {
+			return redirect()->to('Cuslogin')->with('error', 'Please login to track your order.');
+		}
+
+		$request->validate([
+			'orders_id' => 'required|string',
+		]);
+
+		$query = Orders::where('orders_id', $request->orders_id);
+
+		if ($request->filled('phone')) {
+			$query->where('phone', $request->phone);
+		}
+
+		$order_info = $query->first();
+
+		if (!$order_info) {
+			return redirect()->route('track_order_page')
+				->with('error', 'No order found with the given Order ID. Please check and try again.')
+				->withInput();
+		}
+
+		// Ensure the order belongs to the logged-in user
+		if ($order_info->User_id != session('userId')) {
+			return redirect()->route('track_order_page')
+				->with('error', 'You are not authorized to track this order.')
+				->withInput();
+		}
+
+		return redirect()->route('order_tracking', ['orders_id' => $order_info->orders_id]);
+	}
+
 	public function order_tracking($orders_id)
 	{
+		if (!session('username') && !session('userId')) {
+			return redirect()->to('Cuslogin')->with('error', 'Please login to track your order.');
+		}
 		
-		$order_info = orders::where('orders_id',$orders_id)->first(); 
+		$order_info = orders::where('orders_id',$orders_id)->first();
+
+		if (!$order_info) {
+			return redirect()->route('track_order_page')
+				->with('error', 'Order details not found.');
+		}
+
+		// Ensure the order belongs to the logged-in user
+		if ($order_info->User_id != session('userId')) {
+			return redirect()->route('track_order_page')
+				->with('error', 'You are not authorized to track this order.');
+		}
+
+		$order_products = ordersproduct::where('order_id',$orders_id)->get();
 		 return view('website.front-end.order_tracking')->
 		 with([
 			"orders_id"=>$orders_id,
-			"order_info"=>$order_info
+			"order_info"=>$order_info,
+			"order_products"=>$order_products
 		]);
 	}
 

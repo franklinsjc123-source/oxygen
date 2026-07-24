@@ -215,6 +215,9 @@ Route::get('checklogin', [AjaxGetProductController::class, 'checklogin'])->name(
 
 Route::get('order_success/{orders_id}', [AjaxGetProductController::class, 'order_success'])->name('order_success');
 
+Route::get('track-order', [AjaxGetProductController::class, 'track_order_page'])->name('track_order_page');
+Route::post('track-order', [AjaxGetProductController::class, 'track_order_search'])->name('track_order_search');
+
 Route::get('order_tracking/{orders_id}', [AjaxGetProductController::class, 'order_tracking'])->name('order_tracking');
 
 Route::get('ordersdetails', [AjaxGetProductController::class, 'ordersdetails'])->name('ordersdetails');
