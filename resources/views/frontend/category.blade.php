@@ -71,17 +71,44 @@
                             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
                             transition: box-shadow 0.25s ease;
                         }
+
+                        /* Mobile Category Image & Text Size reduction */
+                        @media (max-width: 479px) {
+                            .category-ellipse .category-media {
+                                width: 55px !important;
+                                height: 55px !important;
+                                min-width: 55px !important;
+                                min-height: 55px !important;
+                                margin: 0 auto !important;
+                            }
+                            .category-ellipse .category-media img {
+                                width: 100% !important;
+                                height: 100% !important;
+                                object-fit: cover !important;
+                            }
+                            .category-ellipse.sc-active .category-media {
+                                padding: 2px !important;
+                            }
+                            .category-ellipse.sc-active .category-media img {
+                                border-width: 1.5px !important;
+                            }
+                            .category-ellipse .category-name {
+                                font-size: 10px !important;
+                                line-height: 1.2 !important;
+                                margin-top: 4px !important;
+                            }
+                        }
                     </style>
 
                     <!-- Start of Shop Category -->
                     <div class="shop-default-category category-ellipse-section mb-6">
                         <div class="swiper-container swiper-theme shadow-swiper"
                             data-swiper-options="{
-                            'spaceBetween': 20,
-                            'slidesPerView': 2,
+                            'spaceBetween': 10,
+                            'slidesPerView': 4,
                             'breakpoints': {
                                 '480': {
-                                    'slidesPerView': 3
+                                    'slidesPerView': 4
                                 },
                                 '576': {
                                     'slidesPerView': 4
@@ -98,7 +125,7 @@
                                 }
                             }
                         }">
-                            <div class="swiper-wrapper row gutter-lg cols-xl-8 cols-lg-7 cols-md-6 cols-sm-4 cols-xs-3 cols-2">
+                            <div class="swiper-wrapper row gutter-lg cols-xl-8 cols-lg-7 cols-md-6 cols-sm-4 cols-xs-4 cols-4">
                               
                               	@foreach($sub_categories_menu as $sc )
 

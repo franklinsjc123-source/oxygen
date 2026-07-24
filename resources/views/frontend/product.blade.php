@@ -1,9 +1,34 @@
- @extends('app_template')
+@extends('app_template')
  @section('title','Vendor Products')
  @section('content')
  <!-- Start of Main -->
  <main class="main mb-10 pb-1">
     <style>
+        /* Mobile horizontal scroll for product detail tabs */
+        @media (max-width: 767px) {
+            .product-tabs .nav-tabs {
+                display: flex !important;
+                flex-wrap: nowrap !important;
+                overflow-x: auto !important;
+                white-space: nowrap !important;
+                -webkit-overflow-scrolling: touch !important;
+                border-bottom: 1px solid #eee !important;
+                padding-bottom: 2px !important;
+            }
+            .product-tabs .nav-tabs::-webkit-scrollbar {
+                display: none !important;
+            }
+            .product-tabs .nav-tabs .nav-item {
+                flex: 0 0 auto !important;
+                margin-right: 15px !important;
+                margin-bottom: 0 !important;
+            }
+            .product-tabs .nav-tabs .nav-link {
+                padding: 8px 10px !important;
+                font-size: 13px !important;
+            }
+        }
+
         /* Global override for product variations to ensure they display correctly */
         .product-single .product-color-swatch .color {
             display: inline-flex !important;

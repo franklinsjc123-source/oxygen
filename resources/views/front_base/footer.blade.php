@@ -197,9 +197,59 @@
    <!-- End of Footer -->
    </div>
    <!-- End of Page Wrapper -->
+    <!-- Custom Sticky Footer Styling -->
+    <style>
+        .sticky-footer.fix-bottom {
+            background-color: #ffffff !important;
+            box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.08) !important;
+            border-top: 1px solid rgba(0, 0, 0, 0.05) !important;
+            padding: 8px 0 !important;
+            height: auto !important;
+            display: flex !important;
+            justify-content: space-around !important;
+            align-items: center !important;
+        }
+        .sticky-footer .sticky-link {
+            flex: 1 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #666666 !important;
+            text-decoration: none !important;
+            transition: all 0.25s ease !important;
+            gap: 2px !important;
+        }
+        .sticky-footer .sticky-link i {
+            font-size: 20px !important;
+            color: #555555 !important;
+            transition: all 0.25s ease !important;
+        }
+        .sticky-footer .sticky-link p {
+            font-size: 10px !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            margin: 0 !important;
+            color: #777777 !important;
+            transition: all 0.25s ease !important;
+        }
+        
+        /* Active & Hover States */
+        .sticky-footer .sticky-link:hover i,
+        .sticky-footer .sticky-link.active i {
+            color: #0088dd !important;
+            transform: translateY(-2px) !important;
+        }
+        .sticky-footer .sticky-link:hover p,
+        .sticky-footer .sticky-link.active p {
+            color: #0088dd !important;
+            font-weight: 800 !important;
+        }
+    </style>
 
-   <!-- Start of Sticky Footer -->
-   <div class="sticky-footer sticky-content fix-bottom">
+    <!-- Start of Sticky Footer -->
+    <div class="sticky-footer sticky-content fix-bottom">
        <a href="{{ url('home') }}" class="sticky-link active">
            <i class="w-icon-home"></i>
            <p>Home</p>
@@ -227,7 +277,7 @@
        </a>
 
        <a href="{{ url('main-category/men') }}" class="sticky-link">
-           <i class="w-icon-grid"></i>
+           <i class="w-icon-category"></i>
            <p>Products</p>
        </a>
    </div>
