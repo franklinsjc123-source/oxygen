@@ -725,36 +725,61 @@
 
      </div>
 <style>
+.brands-wrapper .swiper-wrapper {
+    align-items: flex-start !important;
+}
 .vendor-figure {
-    display: block;
-    margin: 15px auto 10px auto;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
     text-align: center;
 }
 
-.vendor-img-wrap {
-    display: block;
+.vendor-img-link {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-decoration: none !important;
 }
 
-.vendor-profile-img {
+.vendor-img-wrap {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     width: 120px !important;
     height: 120px !important;
     border-radius: 50% !important;
-    object-fit: cover !important;
-    margin: 0 auto;
-    display: block;
-    
-    /* Premium initial look */
+    overflow: hidden !important;
     border: 3px solid #ffffff;
     box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    background-color: #f5f6f9;
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+    flex-shrink: 0 !important;
+}
+
+.vendor-profile-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
+    display: block;
 }
 
 /* Background Section */
 .custom-shops-section {
     background: linear-gradient(180deg, #f8f9fa 0%, #edf1f5 100%);
-    padding: 60px 0;
+    padding: 40px 0;
     border-top: 1px solid #eaeaea;
-    margin-top: 40px;
+    margin-top: 25px;
+}
+
+.swiper-slide-vendor center {
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .vendor-name {
@@ -762,18 +787,30 @@
     font-size: 15px;
     color: #333;
     transition: color 0.3s ease;
-    margin-top: 8px;
+    margin-top: 6px;
     letter-spacing: 0.3px;
     padding: 0 5px;
+    min-height: 36px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
 }
 
 /* Hover effects */
 .swiper-slide-vendor {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
     cursor: pointer;
     text-align: center;
+    padding-top: 5px !important;
 }
 
-.swiper-slide-vendor:hover .vendor-profile-img {
+.swiper-slide-vendor:hover .vendor-img-wrap {
     transform: translateY(-8px) scale(1.05); /* Lift up and scale slightly */
     box-shadow: 0 15px 30px rgba(0, 136, 221, 0.25);
     border-color: #0088dd; /* Ring highlight */
@@ -786,10 +823,10 @@
 /* --- MOBILE SPECIFIC MEDIA QUERIES --- */
 @media (max-width: 991px) {
     .custom-shops-section {
-        padding: 40px 0 !important;
-        margin-top: 25px !important;
+        padding: 30px 0 !important;
+        margin-top: 20px !important;
     }
-    .vendor-profile-img {
+    .vendor-img-wrap {
         width: 100px !important;
         height: 100px !important;
     }
@@ -797,41 +834,45 @@
 
 @media (max-width: 768px) {
     .custom-shops-section {
-        padding: 30px 0 !important;
-        margin-top: 20px !important;
+        padding: 20px 0 !important;
+        margin-top: 15px !important;
     }
     .custom-shops-section h2.title {
-        font-size: 22px !important;
-        margin-bottom: 20px !important;
+        font-size: 20px !important;
+        margin-bottom: 12px !important;
     }
     /* Strictly force the images to be round circles */
-    .vendor-profile-img {
+    .vendor-img-wrap {
         width: 80px !important;
         height: 80px !important;
-        border-width: 2px;
+        border-width: 2px !important;
     }
     .vendor-name {
-        font-size: 13px !important;
+        font-size: 12px !important;
+        min-height: 30px !important;
     }
 }
 
 @media (max-width: 480px) {
     .custom-shops-section {
-        padding: 15px 0 !important;
-        margin-top: 15px !important;
+        padding: 10px 0 !important;
+        margin-top: 10px !important;
     }
     .custom-shops-section h2.title {
-        font-size: 18px !important;
-        margin-bottom: 15px !important;
+        font-size: 17px !important;
+        margin-bottom: 8px !important;
     }
     /* Very strict exact pixels to override any global resizing */
-    .vendor-profile-img {
-        width: 65px !important;
-        height: 65px !important;
+    .vendor-img-wrap {
+        width: 70px !important;
+        height: 70px !important;
+        border-width: 2px !important;
     }
     .vendor-name {
-        font-size: 11px !important;
-        margin-top: 6px;
+        font-size: 10px !important;
+        margin-top: 4px;
+        line-height: 1.2;
+        min-height: 24px !important;
     }
 }
 </style>
@@ -846,8 +887,8 @@
                         'disableOnInteraction': false
                     },
                     'loop': true,
-                    'spaceBetween': 50,
-                    'slidesPerView': 2,
+                    'spaceBetween': 20,
+                    'slidesPerView': 3,
                     'breakpoints': {
                         '576': {
                             'slidesPerView': 3
@@ -863,7 +904,7 @@
                         }
                     }
                 }">
-             <div class="swiper-wrapper row cols-xl-8 cols-lg-6 cols-md-4 cols-sm-3 cols-2">
+             <div class="swiper-wrapper row cols-xl-8 cols-lg-6 cols-md-4 cols-sm-3 cols-3">
 
                  <?php if (isset($vendorcreate)) {
                         foreach ($vendorcreate as $row) { ?>
@@ -906,8 +947,8 @@
                     'disableOnInteraction': false
                 },
                 'loop': true,
-                'spaceBetween': 50,
-                'slidesPerView': 2,
+                'spaceBetween': 20,
+                'slidesPerView': 3,
                 'breakpoints': {
                     '576': {
                         'slidesPerView': 3
@@ -923,7 +964,7 @@
                     }
                 }
             }">
-             <div class="swiper-wrapper row cols-xl-8 cols-lg-6 cols-md-4 cols-sm-3 cols-2">
+             <div class="swiper-wrapper row cols-xl-8 cols-lg-6 cols-md-4 cols-sm-3 cols-3">
 
                  @isset($locations)
                     @foreach($locations as $key=>$row)
