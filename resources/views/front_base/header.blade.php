@@ -745,8 +745,108 @@
             position: static !important;
         }
 
-        .main-nav .menu > li > a {
-            position: relative !important;
+
+            /* Mobile Category Nav Bar styles */
+            .mobile-categories-nav-wrapper {
+                background: #f8fcff;
+                border-bottom: 1px solid #ddecf8;
+                padding: 4px 0;
+                overflow-x: auto;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
+            .mobile-categories-nav-wrapper::-webkit-scrollbar {
+                display: none;
+            }
+            .mobile-categories-nav {
+                display: flex;
+                padding: 0 15px;
+                gap: 12px;
+            }
+            .mobile-cat-nav-item {
+                font-size: 14px;
+                font-weight: 700;
+                color: #333333;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                padding-bottom: 1px;
+                border-bottom: 2px solid transparent;
+                transition: all 0.3s ease;
+            }
+            .mobile-cat-nav-item.active {
+                color: #0088dd;
+                border-bottom-color: #0088dd;
+            }
+            .mobile-cat-nav-item i {
+                font-size: 10px;
+                transition: transform 0.3s;
+            }
+            .mobile-cat-nav-item.active i {
+                transform: rotate(180deg);
+            }
+
+            /* Mobile Category Dropdowns styles */
+            .mobile-categories-dropdowns {
+                position: relative;
+                z-index: 1000;
+            }
+            .mobile-cat-dropdown-panel {
+                background: #ffffff;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                border-bottom: 2px solid #0088dd;
+                max-height: 380px;
+                overflow-y: auto;
+                padding: 6px 10px;
+                display: none;
+                animation: slideDown 0.3s ease;
+            }
+            @keyframes slideDown {
+                from { opacity: 0; transform: translateY(-10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .mobile-cat-group {
+                margin-bottom: 6px;
+            }
+            .mobile-cat-group:last-child {
+                margin-bottom: 0;
+            }
+            .mobile-cat-title {
+                font-size: 13px;
+                font-weight: 700;
+                color: #0088dd;
+                text-transform: uppercase;
+                margin-bottom: 3px;
+                border-bottom: 1px solid #f0f0f0;
+                padding-bottom: 2px;
+            }
+            .mobile-cat-title a {
+                color: inherit;
+                text-decoration: none;
+            }
+            .mobile-cat-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            .mobile-cat-list li {
+                width: calc(50% - 5px);
+            }
+            .mobile-cat-list li a {
+                font-size: 12px;
+                color: #666666;
+                text-decoration: none;
+                display: block;
+                padding: 1px 0;
+                transition: color 0.2s;
+            }
+            .mobile-cat-list li a:hover, .mobile-cat-list li a:active {
+                color: #0088dd;
+            }
         }
     </style>
 
@@ -953,6 +1053,111 @@
                     </a>
                 </div>
 
+                <!-- Mobile Category Navigation Bar -->
+                <div class="mobile-categories-nav-wrapper d-md-none">
+                    <div class="mobile-categories-nav">
+                        @if(isset($menCategory) && $menCategory)
+                            <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-men">Men <i class="w-icon-angle-down"></i></a>
+                        @endif
+                        @if(isset($womenCategory) && $womenCategory)
+                            <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-women">Women <i class="w-icon-angle-down"></i></a>
+                        @endif
+                        @if(isset($kidsCategory) && $kidsCategory)
+                            <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-kids">Kids <i class="w-icon-angle-down"></i></a>
+                        @endif
+                        @if(isset($livingCategory) && $livingCategory)
+                            <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-living">Living <i class="w-icon-angle-down"></i></a>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Dropdown Menus for Mobile Categories -->
+                <div class="mobile-categories-dropdowns d-md-none">
+                    @if(isset($menCategory) && $menCategory && count($menCategory->submenu) > 0)
+                        <div class="mobile-cat-dropdown-panel" id="mobile-cat-men" style="display:none;">
+                            @foreach($menCategory->submenu as $submenus)
+                                <div class="mobile-cat-group">
+                                    <h6 class="mobile-cat-title">
+                                        <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
+                                    </h6>
+                                    @if(count($submenus->childmenu) > 0)
+                                        <ul class="mobile-cat-list">
+                                            @foreach($submenus->childmenu as $childmenus)
+                                                <li>
+                                                    <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id) . '/' . ($childmenus->slug ?? $childmenus->id)) }}">{{ $childmenus->category_sub_name }}</a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    @if(isset($womenCategory) && $womenCategory && count($womenCategory->submenu) > 0)
+                        <div class="mobile-cat-dropdown-panel" id="mobile-cat-women" style="display:none;">
+                            @foreach($womenCategory->submenu as $submenus)
+                                <div class="mobile-cat-group">
+                                    <h6 class="mobile-cat-title">
+                                        <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
+                                    </h6>
+                                    @if(count($submenus->childmenu) > 0)
+                                        <ul class="mobile-cat-list">
+                                            @foreach($submenus->childmenu as $childmenus)
+                                                <li>
+                                                    <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id) . '/' . ($childmenus->slug ?? $childmenus->id)) }}">{{ $childmenus->category_sub_name }}</a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    @if(isset($kidsCategory) && $kidsCategory && count($kidsCategory->submenu) > 0)
+                        <div class="mobile-cat-dropdown-panel" id="mobile-cat-kids" style="display:none;">
+                            @foreach($kidsCategory->submenu as $submenus)
+                                <div class="mobile-cat-group">
+                                    <h6 class="mobile-cat-title">
+                                        <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
+                                    </h6>
+                                    @if(count($submenus->childmenu) > 0)
+                                        <ul class="mobile-cat-list">
+                                            @foreach($submenus->childmenu as $childmenus)
+                                                <li>
+                                                    <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id) . '/' . ($childmenus->slug ?? $childmenus->id)) }}">{{ $childmenus->category_sub_name }}</a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    @if(isset($livingCategory) && $livingCategory && count($livingCategory->submenu) > 0)
+                        <div class="mobile-cat-dropdown-panel" id="mobile-cat-living" style="display:none;">
+                            @foreach($livingCategory->submenu as $submenus)
+                                <div class="mobile-cat-group">
+                                    <h6 class="mobile-cat-title">
+                                        <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
+                                    </h6>
+                                    @if(count($submenus->childmenu) > 0)
+                                        <ul class="mobile-cat-list">
+                                            @foreach($submenus->childmenu as $childmenus)
+                                                <li>
+                                                    <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id) . '/' . ($childmenus->slug ?? $childmenus->id)) }}">{{ $childmenus->category_sub_name }}</a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+
                 <script>
                     document.addEventListener('DOMContentLoaded', function() {
                         var mobileInput = document.getElementById('search_mobile');
@@ -971,6 +1176,46 @@
                                 mobileInput.dispatchEvent(new Event('input'));
                             });
                         }
+
+                        // Mobile Category Navigation Dropdown Interaction
+                        var catLinks = document.querySelectorAll('.mobile-cat-nav-item');
+                        var panels = document.querySelectorAll('.mobile-cat-dropdown-panel');
+                        
+                        catLinks.forEach(function(link) {
+                            link.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                
+                                var targetId = this.getAttribute('data-target');
+                                var targetPanel = document.getElementById(targetId);
+                                var isActive = this.classList.contains('active');
+                                
+                                // Close all panels
+                                panels.forEach(function(panel) {
+                                    panel.style.display = 'none';
+                                });
+                                catLinks.forEach(function(l) {
+                                    l.classList.remove('active');
+                                });
+                                
+                                if (!isActive && targetPanel) {
+                                    this.classList.add('active');
+                                    targetPanel.style.display = 'block';
+                                }
+                            });
+                        });
+                        
+                        // Close panel if clicked outside
+                        document.addEventListener('click', function(e) {
+                            if (!e.target.closest('.mobile-categories-nav-wrapper') && !e.target.closest('.mobile-categories-dropdowns')) {
+                                panels.forEach(function(panel) {
+                                    panel.style.display = 'none';
+                                });
+                                catLinks.forEach(function(l) {
+                                    l.classList.remove('active');
+                                });
+                            }
+                        });
                     });
                 </script>
 
