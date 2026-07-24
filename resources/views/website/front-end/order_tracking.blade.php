@@ -42,7 +42,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-12">
-                    <h3>Status for Order No: {{$order_info->orders_id}}</h3>
+                    <h3>Status for Order No: {{$order_info->order_id}}</h3>
                     <div class="wrapper">
                         @php
                             $statuses = ['Placed', 'Accept', 'Dispatch', 'Delivered'];
@@ -83,7 +83,7 @@
                                             <span>Customer number</span>
                                         </div>
                                         <div class="right">
-                                            <span>{{$order_info->orders_id}}</span>
+                                            <span>{{$order_info->order_id}}</span>
                                         </div>
                                     </li>
                                     <li>
@@ -120,13 +120,13 @@
                                         </div>
                                         <div class="right">
                                             <ul class="order-detail">
-                                                <li>Name:{{$order_info->firstname}}{{$order_info->lastname}}</li>
-                                                <li>Address: {{$order_info->address}}</li>
-                                                <li>Town:{{$order_info->town}}</li>
+                                                <li>Name:{{$order_info->customer_firstname}} {{$order_info->customer_lastname}}</li>
+                                                <li>Address: {{$order_info->customer_address}}</li>
+                                                <li>Town:{{$order_info->customer_city}}</li>
                                                 
-                                                <li>State:{{$order_info->state}}</li>
-                                                <li>Country:{{$order_info->country}}</li>
-                                                <li>Contact No:{{$order_info->phone}}</li>
+                                                <li>State:{{$order_info->customer_state}}</li>
+                                                <li>Country:{{$order_info->customer_pincode}}</li>
+                                                <li>Contact No:{{$order_info->customer_mobileno}}</li>
                                             </ul>
                                     
                                         </div>

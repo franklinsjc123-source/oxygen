@@ -5,8 +5,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\Products\ProductsDetails;
 use App\Models\Products\Products;
-use App\Models\order\Orders;
-use App\Models\order\ordersproduct;
+use App\Models\Ecom_Orders;
+use App\Models\Ecom_Order_product;
 use App\Models\coupon\coupon;
 use App\Models\auction\auction;
 use App\Http\Controllers\user\PhonePecontroller;
@@ -240,10 +240,10 @@ class AjaxGetProductController extends Controller
 			'orders_id' => 'required|string',
 		]);
 
-		$query = Orders::where('orders_id', $request->orders_id);
+		$query = Ecom_Orders::where('order_id', $request->orders_id);
 
 		if ($request->filled('phone')) {
-			$query->where('phone', $request->phone);
+			$query->where('customer_mobileno', $request->phone);
 		}
 
 		$order_info = $query->first();
@@ -255,13 +255,14 @@ class AjaxGetProductController extends Controller
 		}
 
 		// Ensure the order belongs to the logged-in user
-		if ($order_info->User_id != session('userId')) {
+		$customerId = session('customerId') ?? session('userId');
+		if ($order_info->customer_id != $customerId) {
 			return redirect()->route('track_order_page')
 				->with('error', 'You are not authorized to track this order.')
 				->withInput();
 		}
 
-		return redirect()->route('order_tracking', ['orders_id' => $order_info->orders_id]);
+		return redirect()->route('order_tracking', ['orders_id' => $order_info->order_id]);
 	}
 
 	public function order_tracking($orders_id)
@@ -270,7 +271,7 @@ class AjaxGetProductController extends Controller
 			return redirect()->to('Cuslogin')->with('error', 'Please login to track your order.');
 		}
 		
-		$order_info = orders::where('orders_id',$orders_id)->first();
+		$order_info = Ecom_Orders::where('order_id',$orders_id)->first();
 
 		if (!$order_info) {
 			return redirect()->route('track_order_page')
@@ -278,12 +279,13 @@ class AjaxGetProductController extends Controller
 		}
 
 		// Ensure the order belongs to the logged-in user
-		if ($order_info->User_id != session('userId')) {
+		$customerId = session('customerId') ?? session('userId');
+		if ($order_info->customer_id != $customerId) {
 			return redirect()->route('track_order_page')
 				->with('error', 'You are not authorized to track this order.');
 		}
 
-		$order_products = ordersproduct::where('order_id',$orders_id)->get();
+		$order_products = Ecom_Order_product::where('order_id',$orders_id)->get();
 		 return view('website.front-end.order_tracking')->
 		 with([
 			"orders_id"=>$orders_id,
