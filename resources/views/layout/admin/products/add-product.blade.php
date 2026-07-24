@@ -604,7 +604,10 @@
                                             <hr>
                                             <div class="card shadow-sm border-0 mb-4">
                                                 <div class="card-body p-4">
-                                                    <label class="form-label fw-bold text-dark h5 mb-3">Product Description <span class="text-danger">*</span></label>
+                                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                                        <label class="form-label fw-bold text-dark h5 m-0">Product Description <span class="text-danger">*</span></label>
+                                                        <button type="button" class="btn btn-sm text-white" id="btn-generate-desc" style="background-color: #183543 !important; border-color: #183543 !important; color: #ffffff !important;"><i class="fa fa-magic"></i> Generate Description</button>
+                                                    </div>
                                                     <div class="digital-add needs-validation">
                                                         <div class="form-group mb-0">
                                                             <div class="description-sm">
@@ -1205,6 +1208,118 @@
     $(document).ready(function() {
 
        $('.ckeditor').ckeditor();
+
+        $('#btn-generate-desc').click(function() {
+            var descParts = [];
+
+            // Gather categories & attributes
+            var mainCat = $('#main_category option:selected').text().trim();
+            if (mainCat.indexOf('--') === 0 || mainCat === '') mainCat = '';
+            
+            var cat = $('#category option:selected').text().trim();
+            if (cat.indexOf('--') === 0 || cat === '') cat = '';
+            
+            var subCat = $('#sub_category option:selected').text().trim();
+            if (subCat.indexOf('--') === 0 || subCat === '') subCat = '';
+            
+            var attribute = $('#selected_attribute_summary option:selected').text().trim();
+            if (attribute.indexOf('--') === 0 || attribute === '') attribute = '';
+            
+            var colorAvail = $('#is_color_summary option:selected').text().trim();
+            if (colorAvail.indexOf('--') === 0 || colorAvail === '') colorAvail = '';
+
+            var introPara = "";
+            if (mainCat || cat || subCat) {
+                var catChain = [mainCat, cat, subCat].filter(Boolean).join(" > ");
+                introPara = "Discover our premium quality product under the " + catChain + " category.";
+                if (attribute) {
+                    introPara += " Designed with " + attribute + " specifications.";
+                }
+                if (colorAvail) {
+                    introPara += " Color options available: " + colorAvail + ".";
+                }
+                introPara += " Excellent styling and durable build, perfect for your needs.";
+                
+                descParts.push(introPara);
+            }
+            
+            // Gather shipping details (general)
+            var weight = $('input[name="weight"]').val();
+            var length = $('input[name="length"]').val();
+            var width = $('input[name="width"]').val();
+            var height = $('input[name="height"]').val();
+            
+            // Gather details for each variant
+            var variantsCount = {{ $nproduct }};
+            var variantSections = [];
+            
+            for (var i = 1; i <= variantsCount; i++) {
+                var sku = $('input[name="sku[' + i + ']"]').val();
+                var returnReplace = $('select[name="return_replace[' + i + ']"]').val();
+                var rDays = $('input[name="r_days[' + i + ']"]').val();
+                
+                // Color Select
+                var color = $('#attrcolor' + i).val() || $('select[name="attributecolorval[' + i + '][]"]').val();
+                
+                // Size / Attributes Selects
+                var attributes = [];
+                $('select[name^="attributeval[' + i + ']"]').each(function() {
+                    var val = $(this).val();
+                    if (val) {
+                        attributes.push(val);
+                    }
+                });
+                
+                var mrp = $('input[name="retail_price[' + i + '][]"]').val();
+                var sellingPrice = $('input[name="selling_price[' + i + '][]"]').val();
+                var qty = $('input[name="quantity[' + i + '][]"]').val();
+                var lowStock = $('input[name="low_stock_limit[' + i + '][]"]').val();
+                
+                // Only build section if at least some details are filled
+                if (sku || color || attributes.length > 0 || mrp || sellingPrice) {
+                    var items = [];
+                    if (sku) items.push("SKU: " + sku);
+                    if (color) items.push("Color: " + color);
+                    if (attributes.length > 0) items.push("Size/Spec: " + attributes.join(', '));
+                    if (mrp) items.push("MRP: ₹" + mrp);
+                    if (sellingPrice) items.push("Selling Price: ₹" + sellingPrice);
+                    if (qty) items.push("Stock Quantity: " + qty);
+                    if (lowStock) items.push("Low Stock Alert: " + lowStock);
+                    if (returnReplace) {
+                        var returnStr = "Return/Replacement: " + returnReplace;
+                        if (rDays) returnStr += " (within " + rDays + " Days)";
+                        items.push(returnStr);
+                    }
+                    
+                    variantSections.push("Product Variant #" + i + " Details:\n" + items.map(function(it) { return "• " + it; }).join("\n"));
+                }
+            }
+            
+            if (variantSections.length > 0) {
+                descParts.push(variantSections.join("\n\n"));
+            }
+            
+            var shippingItems = [];
+            if (weight) shippingItems.push("Weight: " + weight + " g");
+            if (length || width || height) {
+                shippingItems.push("Dimensions: " + (length || 0) + " cm x " + (width || 0) + " cm x " + (height || 0) + " cm");
+            }
+            
+            if (shippingItems.length > 0) {
+                descParts.push("Shipping & Dimensions:\n" + shippingItems.map(function(it) { return "• " + it; }).join("\n"));
+            }
+            
+            var generatedText = descParts.join("\n\n");
+            if (generatedText.trim() !== "") {
+                if (typeof CKEDITOR !== 'undefined' && CKEDITOR.instances.description) {
+                    CKEDITOR.instances.description.setData(generatedText.replace(/\n/g, '<br>'));
+                } else {
+                    $('#description').val(generatedText);
+                }
+            } else {
+                alert("Please fill in some product details (SKU, Prices, Color, Size, etc.) to generate the description.");
+            }
+        });
 
     });
 
