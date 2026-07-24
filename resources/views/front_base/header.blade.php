@@ -844,8 +844,25 @@
                 padding: 1px 0;
                 transition: color 0.2s;
             }
-            .mobile-cat-list li a:hover, .mobile-cat-list li a:active {
-                color: #0088dd;
+            /* Auction Pulse Icon Animation */
+            .auction-pulse-btn {
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                color: #183543 !important;
+                padding: 0 5px !important;
+                border-bottom: none !important;
+                margin-left: auto !important;
+            }
+            .auction-pulse-btn i {
+                font-size: 18px !important;
+                animation: gavelPulse 1.2s infinite ease-in-out !important;
+                color: #183543 !important;
+            }
+            @keyframes gavelPulse {
+                0% { transform: scale(1); filter: drop-shadow(0 0 1px rgba(24,53,67,0.4)); }
+                50% { transform: scale(1.4); filter: drop-shadow(0 0 6px rgba(24,53,67,0.8)); }
+                100% { transform: scale(1); filter: drop-shadow(0 0 1px rgba(24,53,67,0.4)); }
             }
         }
     </style>
@@ -1068,6 +1085,7 @@
                         @if(isset($livingCategory) && $livingCategory)
                             <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-living">Living <i class="w-icon-angle-down"></i></a>
                         @endif
+                        <a href="{{ url('auction') }}" class="auction-pulse-btn" title="Live Auction"><i class="fas fa-gavel"></i></a>
                     </div>
                 </div>
 

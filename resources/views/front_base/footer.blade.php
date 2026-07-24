@@ -317,6 +317,7 @@
                             <li><a href="{{ url('home') }}">Home</a></li>
                             <li><a href="{{ url('shops') }}">Shops</a></li>
                             <li><a href="{{ url('offers') }}">Offer Products</a></li>
+                            <li><a href="{{ url('auction') }}">Auction</a></li>
                             <li><a href="{{ url('track-order') }}">Track Order</a></li>
                     </ul>
                 </div>
