@@ -85,15 +85,15 @@
                                    
                                    <tr>
                                        <td>#9877106</td>
-                                       <td>03/June/2022 <br> 7.30 Am </td>
+                                       <td>03-06-2022 07:30 AM</td>
 									   <td>3</td>
                                        <td> <span class="text-primary">Vendor </span> <br> <span>SKAP MULTISERVICE </span> </td>
-                                       <td>10/June/2022</td>
+                                       <td>10-06-2022</td>
                                       <td>1000</td>
                                       
                                        <td>COD</td>
 									   <td><span style="color: #fff;" class="badge badge-success px-2">Transferd</span></td>
-									   <td>03/June/2022</td>
+									   <td>03-06-2022</td>
                                        <td>3</td>
                                        <td>1000</td>
                                        
@@ -102,15 +102,15 @@
 
   <tr>
                                        <td>#9877106</td>
-                                       <td>03/June/2022 <br> 7.30 Am </td>
+                                       <td>03-06-2022 07:30 AM</td>
 									   <td>3</td>
                                        <td> <span class="text-danger">Admin </span> </span> </td>
-                                       <td>10/June/2022</td>
+                                       <td>10-06-2022</td>
                                       <td>1000</td>
                                       
                                        <td>COD</td>
 									   <td><span style="color: #fff;" class="badge badge-success px-2">Transferd</span></td>
-									   <td>03/June/2022</td>
+									   <td>03-06-2022</td>
                                        <td>3</td>
                                        <td>1000</td>
                                        
@@ -118,15 +118,15 @@
 </tr>
   <tr>
                                        <td>#9877106</td>
-                                       <td>03/June/2022 <br> 7.30 Am </td>
+                                       <td>03-06-2022 07:30 AM</td>
 									   <td>3</td>
                                        <td> <span class="text-primary">Vendor </span> <br> <span>SKAP MULTISERVICE </span> </td>
-                                       <td>10/June/2022</td>
+                                       <td>10-06-2022</td>
                                       <td>1000</td>
                                       
                                        <td>COD</td>
 									   <td><span style="color: #fff;" class="badge badge-success px-2">Transferd</span></td>
-									   <td>03/June/2022</td>
+									   <td>03-06-2022</td>
                                        <td>3</td>
                                        <td>1000</td>
                                        

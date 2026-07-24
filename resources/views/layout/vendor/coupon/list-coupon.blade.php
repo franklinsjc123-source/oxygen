@@ -103,9 +103,9 @@
        @else
        <td>{{ $coupondata->minimum_requirment_quantity }}</td>
        @endif
-       <td>{{ $coupondata->start_date }}</td>
-     
-       <td>{{ $coupondata->end_date   }}</td>
+        <td>{{ $coupondata->start_date ? date('d-m-Y', strtotime($coupondata->start_date)) : '' }}</td>
+      
+        <td>{{ $coupondata->end_date ? date('d-m-Y', strtotime($coupondata->end_date)) : '' }}</td>
 		
         <td>
 <label class="switch">

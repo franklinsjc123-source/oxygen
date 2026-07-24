@@ -135,7 +135,7 @@
                                                     <tr>
                                                         <td><input type="checkbox" class="sub_chk" data-id="{{$attribute->id}}"></td>
                                                         <td>{{ $attribute->order_id }}</td>
-                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
+                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}</td>
                                                         <td>       
                                                             <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
                                                                                     class="img-fluid img-30 me-2 blur-up lazyloaded" onerror="this.onerror=null;this.src='/website_assets/images/icons/no_product.png';" alt="">
@@ -179,7 +179,7 @@
                                             <!-- Modal Header -->
                                             <div class="modal-header">
                                                 <h4 class="modal-title">Status</h4>
-                                                <button type="button" class="btn-close text-danger" data-bs-dismiss="modal"></button>
+                                                <button type="button" class="btn-close text-danger" data-bs-dismiss="modal" style="background: none; border: none; font-size: 24px; font-weight: bold; line-height: 1; opacity: 0.7;"><span aria-hidden="true">&times;</span></button>
                                             </div>
 
                                             <!-- Modal body -->
@@ -259,7 +259,7 @@
                                                     <tr>
                                                         <td><input type="checkbox" class="sub_chk" data-id="{{$attribute->id}}"></td>
                                                         <td>{{ $attribute->order_id }}</td>
-                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
+                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}</td>
                                                         <td>       
                                                             <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
                                                                                     class="img-fluid img-30 me-2 blur-up lazyloaded" onerror="this.onerror=null;this.src='/website_assets/images/icons/no_product.png';" alt="">
@@ -303,7 +303,7 @@
                                         <!-- Modal Header -->
                                         <div class="modal-header">
                                             <h4 class="modal-title">Status</h4>
-                                            <button type="button" class="btn-close text-danger" data-bs-dismiss="modal"></button>
+                                            <button type="button" class="btn-close text-danger" data-bs-dismiss="modal" style="background: none; border: none; font-size: 24px; font-weight: bold; line-height: 1; opacity: 0.7;"><span aria-hidden="true">&times;</span></button>
                                         </div>
 
                                         <!-- Modal body -->
@@ -381,7 +381,7 @@
                                                     <tr>
                                                         <td><input type="checkbox" class="sub_chk" data-id="{{$attribute->id}}"></td>
                                                         <td>{{ $attribute->order_id }}</td>
-                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
+                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}</td>
                                                         <td>       
                                                             <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
                                                                                     class="img-fluid img-30 me-2 blur-up lazyloaded" onerror="this.onerror=null;this.src='/website_assets/images/icons/no_product.png';" alt="">
@@ -425,7 +425,7 @@
                             <!-- Modal Header -->
                             <div class="modal-header">
                                 <h4 class="modal-title">Status</h4>
-                                <button type="button" class="btn-close text-danger" data-bs-dismiss="modal"></button>
+                                <button type="button" class="btn-close text-danger" data-bs-dismiss="modal" style="background: none; border: none; font-size: 24px; font-weight: bold; line-height: 1; opacity: 0.7;"><span aria-hidden="true">&times;</span></button>
                             </div>
 
                             <!-- Modal body -->
@@ -507,7 +507,7 @@
                                                     <tr>
                                                         <td><input type="checkbox" class="sub_chk" data-id="{{$attribute->id}}"></td>
                                                         <td>{{ $attribute->order_id }}</td>
-                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
+                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}</td>
                                                         <td>       
                                                             <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
                                                                                     class="img-fluid img-30 me-2 blur-up lazyloaded" onerror="this.onerror=null;this.src='/website_assets/images/icons/no_product.png';" alt="">
@@ -551,7 +551,7 @@
                                         <!-- Modal Header -->
                                         <div class="modal-header">
                                             <h4 class="modal-title">Status</h4>
-                                            <button type="button" class="btn-close text-danger" data-bs-dismiss="modal"></button>
+                                            <button type="button" class="btn-close text-danger" data-bs-dismiss="modal" style="background: none; border: none; font-size: 24px; font-weight: bold; line-height: 1; opacity: 0.7;"><span aria-hidden="true">&times;</span></button>
                                         </div>
         
                                         <!-- Modal body -->
@@ -633,7 +633,7 @@
                                                     <tr>
                                                         <td><input type="checkbox" class="sub_chk" data-id="{{$attribute->id}}"></td>
                                                         <td>{{ $attribute->order_id }}</td>
-                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
+                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}</td>
                                                         <td>       
                                                             <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
                                                                                     class="img-fluid img-30 me-2 blur-up lazyloaded" onerror="this.onerror=null;this.src='/website_assets/images/icons/no_product.png';" alt="">
@@ -677,7 +677,7 @@
                                         <!-- Modal Header -->
                                         <div class="modal-header">
                                             <h4 class="modal-title">Status</h4>
-                                            <button type="button" class="btn-close text-danger" data-bs-dismiss="modal"></button>
+                                            <button type="button" class="btn-close text-danger" data-bs-dismiss="modal" style="background: none; border: none; font-size: 24px; font-weight: bold; line-height: 1; opacity: 0.7;"><span aria-hidden="true">&times;</span></button>
                                         </div>
         
                                         <!-- Modal body -->
@@ -757,7 +757,7 @@
                                                     <tr>
                                                         <td><input type="checkbox" class="sub_chk" data-id="{{$attribute->id}}"></td>
                                                         <td>{{ $attribute->order_id }}</td>
-                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
+                                                        <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}</td>
                                                         <td>       
                                                             <img src="{{ asset('assets/images/products/detail') . '/' . $attribute->product_image }}"
                                                                                     class="img-fluid img-30 me-2 blur-up lazyloaded" onerror="this.onerror=null;this.src='/website_assets/images/icons/no_product.png';" alt="">
@@ -801,7 +801,7 @@
                                     <!-- Modal Header -->
                                     <div class="modal-header">
                                         <h4 class="modal-title">Status</h4>
-                                        <button type="button" class="btn-close text-danger" data-bs-dismiss="modal"></button>
+                                        <button type="button" class="btn-close text-danger" data-bs-dismiss="modal" style="background: none; border: none; font-size: 24px; font-weight: bold; line-height: 1; opacity: 0.7;"><span aria-hidden="true">&times;</span></button>
                                     </div>
     
                                     <!-- Modal body -->
@@ -1495,7 +1495,7 @@ $('#delmaster').on('click', function(e) {
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Product Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: none; border: none; font-size: 24px; font-weight: bold; line-height: 1; opacity: 0.7; color: #000;"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
                 <div class="text-center mb-3">
