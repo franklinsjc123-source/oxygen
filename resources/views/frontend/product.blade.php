@@ -1199,10 +1199,10 @@
                                                 <h4 class="product-name"><a href="{{ url('products/' . ($product->slug ?? $product->id)) }}">{{ $product->product_name }}</a></h4>
                                                 <div class="ratings-container">
                                                     <div class="ratings-full">
-                                                        <span class="ratings" style="width: 100%;"></span>
+                                                        <span class="ratings" style="width: {{ $product->avg_rating > 0 ? ($product->avg_rating / 5) * 100 : 0 }}%;"></span>
                                                         <span class="tooltiptext tooltip-top"></span>
                                                     </div>
-                                                    <a href="product-default.html" class="rating-reviews">(3 reviews)</a>
+                                                    <a href="#" class="rating-reviews">({{ $product->review_count ?? 0 }} Reviews)</a>
                                                 </div>
                                                 <div class="product-pa-wrapper">
                                                         <div class="product-price">₹{{ $product->selling_price }}</div>

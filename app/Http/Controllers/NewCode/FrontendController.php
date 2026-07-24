@@ -1287,6 +1287,10 @@ class FrontendController extends Controller
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
             ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
             ->leftJoin('master_offers', 'master_offers.id', '=', 'products.offers')
+            ->leftJoin('ratings', function ($join) {
+                $join->on('ratings.products_id', '=', 'products.id')
+                    ->where('ratings.status', 1);
+            })
             ->select(
                 'products.id',
                 'products.slug',
@@ -1297,7 +1301,9 @@ class FrontendController extends Controller
                 'master_offers.type as offer_type',
                 'master_offers.discount_type as discount_type',
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
-                DB::raw('MIN(products_details.selling_price) as selling_price')
+                DB::raw('MIN(products_details.selling_price) as selling_price'),
+                DB::raw('AVG(ratings.star_rating) as avg_rating'),
+                DB::raw('COUNT(ratings.id) as review_count')
             )
             ->where('products.vendor_id', $vendor_id)
             ->where('products.offers', $offer_id)

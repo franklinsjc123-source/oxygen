@@ -70,10 +70,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5>Return & Replacement Requests List</h5>
-                        </div>
+                    <div class="card tab2-card">
                         <div class="card-body">
                             @if(session('success'))
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -88,19 +85,19 @@
                                 </div>
                             @endif
 
-                            <div class="table-responsive">
-                                <table class="table table-striped table-bordered align-middle">
-                                    <thead class="table-dark">
+                            <div class="datatable-dashv1-list custom-datatable-overright">
+                                <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-show-columns="true" data-sort-order="desc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="true" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="true" data-click-to-select="true" data-toolbar="#toolbar">
+                                    <thead>
                                         <tr>
-                                            <th>ID</th>
-                                            <th>Date</th>
-                                            <th>Customer Info</th>
-                                            <th>Invoice ID</th>
-                                            <th>Products</th>
-                                            <th>Type</th>
-                                            <th>Reason</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
+                                            <th data-field="id" data-sortable="true">ID</th>
+                                            <th data-field="date" data-sortable="true">DATE</th>
+                                            <th data-field="customer" data-sortable="true">CUSTOMER INFO</th>
+                                            <th data-field="invoice" data-sortable="true">INVOICE ID</th>
+                                            <th data-field="products" data-sortable="true">PRODUCTS</th>
+                                            <th data-field="type" data-sortable="true">TYPE</th>
+                                            <th data-field="reason" data-sortable="true">REASON</th>
+                                            <th data-field="status" data-sortable="true">STATUS</th>
+                                            <th data-field="action" data-sortable="true">ACTION</th>
                                         </tr>
                                     </thead>
                                     <tbody>
