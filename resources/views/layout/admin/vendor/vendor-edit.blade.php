@@ -13,6 +13,20 @@
             -webkit-text-security: disc;
             text-security: disc;
         }
+        .invalid-feedback-custom {
+            display: none;
+            color: #dc3545;
+            font-size: 1.05rem;
+            margin-top: 0.25rem;
+        }
+        form.validation-attempted :invalid ~ .invalid-feedback-custom,
+        form.validation-attempted .invalid-field ~ .invalid-feedback-custom {
+            display: block !important;
+        }
+        form.validation-attempted :invalid {
+            border-color: #ced4da !important;
+            box-shadow: none !important;
+        }
     </style>
 
     <!-- page-wrapper Start-->
@@ -96,7 +110,7 @@
                                                     class="fw-bold mx-2 gothic">Support</span></span></a>
                                     </li>
                                 </ul>
-                                <form class="" method="post"
+                                <form class="needs-validation" novalidate method="post"
                                     action="{{ route('vendorcreate.update', $vendorcreate->id) }}"
                                     enctype="multipart/form-data">
                                     @method('PUT')
@@ -121,12 +135,12 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> User
-                                                            Name</label>
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4">User Name <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom0"
                                                                 value="{{ $vendorcreate->username }}" type="text"
                                                                 name="username" required>
+                                                            <div class="invalid-feedback-custom">Please enter user name</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -135,49 +149,58 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Password
-                                                        </label>
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4">Password <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
-                                                            <input class="form-control" id="pass"
-                                                                value="{{ $vendorcreate->pass }}" type="text"
-                                                                name="pass" required>
+                                                            <div class="position-relative">
+                                                                <input class="form-control pe-5" id="pass"
+                                                                    value="{{ $vendorcreate->pass }}" type="password"
+                                                                    name="pass" required>
+                                                                <span class="position-absolute toggle-password" style="right: 15px; top: 19px; transform: translateY(-50%); cursor: pointer;">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </span>
+                                                                <div class="invalid-feedback-custom">Please enter password</div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Confirm
-                                                            Password</label>
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4">Confirm Password <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
-                                                            <input class="form-control" id="confirm_pass" type="text"
-                                                                value="{{ $vendorcreate->pass1 }}" name="pass1"
-                                                                onkeyup="validate_password()" required>
+                                                            <div class="position-relative">
+                                                                <input class="form-control pe-5" id="confirm_pass" type="password"
+                                                                    value="{{ $vendorcreate->pass1 }}" name="pass1"
+                                                                    onkeyup="validate_password()" required>
+                                                                <span class="position-absolute toggle-password" style="right: 15px; top: 19px; transform: translateY(-50%); cursor: pointer;">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </span>
+                                                                <div class="invalid-feedback-custom" id="confirm_pass_feedback">Please enter confirm password</div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <span id="wrong_pass_alert"></span>
                                             </div>
 
                                             <div class="row">
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Shop
-                                                            Name</label>
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4">Shop Name <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom0"
                                                                 value="{{ $vendorcreate->shop_name }}" type="text"
                                                                 name="shop_name" required>
+                                                            <div class="invalid-feedback-custom">Please enter shop name</div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Owner
-                                                            Name</label>
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4">Owner Name <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="" type="text"
                                                                 value="{{ $vendorcreate->owner_name }}" name="owner_name" required>
+                                                            <div class="invalid-feedback-custom">Please enter owner name</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -199,10 +222,11 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
                                                         <label for="validationCustom2"
-                                                            class="col-xl-4 col-md-4"><span>*</span> E.Mail</label>
-                                                        <div class="col-xl-8 col-md-7">
+                                                            class="col-xl-4 col-md-4">E-Mail <span class="text-danger">*</span></label>
+                                                        <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="email" type="email"
                                                                 value="{{ $vendorcreate->email }}" name="email" required>
+                                                            <div class="invalid-feedback-custom">Please enter e-mail</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -212,12 +236,12 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Mobile
-                                                            Number</label>
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4">Mobile Number <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="m_number" type="text"
                                                                 value="{{ $vendorcreate->mobile_number1 }}"
                                                                 name="mobile_number1" required>
+                                                            <div class="invalid-feedback-custom">Please enter mobile number</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -237,12 +261,12 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Address
-                                                            I</label>
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4">Address I <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom0"
                                                                 value="{{ $vendorcreate->address }}" type="text"
                                                                 name="address1" required>
+                                                            <div class="invalid-feedback-custom">Please enter address</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -262,8 +286,7 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom01" class="col-xl-4 col-md-4"><span>*</span> State
-                                                            :</label>
+                                                        <label for="validationCustom01" class="col-xl-4 col-md-4">State <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <select class="custom-select w-100 form-control"
                                                                 name="state" required>
@@ -273,13 +296,14 @@
                                                                 <option value="tamilnadu">TamilNadu</option>
                                                                 <option value="kerala">Kerala</option>
                                                             </select>
+                                                            <div class="invalid-feedback-custom">Please select state</div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
                                                         <label for="validationCustom01"
-                                                            class="col-xl-4 col-md-4"><span>*</span> City:</label>
+                                                            class="col-xl-4 col-md-4">City <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <select class="custom-select w-100 form-control"
                                                                 name="city" required>
@@ -289,6 +313,7 @@
                                                                 <option value="chennai">Chennai</option>
                                                                 <option value="trichy">Trichy</option>
                                                             </select>
+                                                            <div class="invalid-feedback-custom">Please select city</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -298,11 +323,12 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
                                                         <label for="validationCustom0" class="col-xl-4 col-md-4">
-                                                            <span>*</span> Pincode</label>
+                                                            Pincode <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
-                                                            <input class="form-control" id="pincode" type="text"
+                                                             <input class="form-control" id="pincode" type="text"
                                                                 value="{{ $vendorcreate->pincode }}" name="pincode"
                                                                 maxlength="6" minlength="6" pattern="[0-9]{6}" required>
+                                                            <div class="invalid-feedback-custom">Please enter pincode</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -334,7 +360,7 @@
 
                                                     <div class="form-group row">
                                                         <label for="validationCustom0" class="col-xl-4 col-md-4">
-                                                            <span>*</span> Zone</label>
+                                                            Zone <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             @php
                                                                 $currentZoneLabel = $vendorcreate->zone;
@@ -354,17 +380,19 @@
                                                                         {{ $zo->name }} </option>
                                                                 @endforeach
                                                             </select>
+                                                            <div class="invalid-feedback-custom">Please select zone</div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
                                                         <label for="validationCustom2"
-                                                            class="col-xl-4 col-md-4"><span>*</span> Area</label>
-                                                        <div class="col-xl-8 col-md-7">
+                                                            class="col-xl-4 col-md-4">Area <span class="text-danger">*</span></label>
+                                                        <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="route"
                                                                 value="{{ $vendorcreate->route }}" type="text"
                                                                 name="route" required>
+                                                            <div class="invalid-feedback-custom">Please enter area</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -374,23 +402,23 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"> <span>*</span> AADHAR
-                                                            NUMBER</label>
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4">Aadhar Number <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="aadharcard"
                                                                 value="{{ $vendorcreate->aadhar_no }}" type="text"
                                                                 name="aadhar_no" maxlength="16" minlength="16" pattern="[0-9]{16}" required>
+                                                            <div class="invalid-feedback-custom">Please enter Aadhar number</div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label for="validationCustom2" class="col-xl-4 col-md-4"><span>*</span> GST
-                                                            NUMBER</label>
-                                                        <div class="col-xl-8 col-md-7">
+                                                        <label for="validationCustom2" class="col-xl-4 col-md-4">GST number <span class="text-danger">*</span></label>
+                                                        <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom2"
                                                                 value="{{ $vendorcreate->gst_number }}" type="text"
                                                                 name="gst_number" required>
+                                                            <div class="invalid-feedback-custom">Please enter GST number</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -399,7 +427,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label class="col-xl-4 col-md-4"><span>*</span> Staff (RM)</label>
+                                                        <label class="col-xl-4 col-md-4">Staff (RM) <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <select class="form-control" name="staff_id" required>
                                                                 <option value="">Select Staff</option>
@@ -409,6 +437,7 @@
                                                                     </option>
                                                                 @endforeach
                                                             </select>
+                                                            <div class="invalid-feedback-custom">Please select staff</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -566,8 +595,7 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom01" class="col-xl-4 col-md-4"><span>*</span> Pack
-                                                            :</label>
+                                                        <label for="validationCustom01" class="col-xl-4 col-md-4">Pack <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             @php
                                                                 $pack = App\Models\vendor\packages::where(
@@ -589,6 +617,7 @@
                                                                     </option>
                                                                 @endforeach
                                                             </select>
+                                                            <div class="invalid-feedback-custom">Please select package</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -712,17 +741,16 @@
                                                 <div class="col-md-12">
 
                                                     <div class="form-group row">
-                                                        <label for="bank_name" class="col-xl-3 col-md-3"><span>*</span>Account
-                                                            Holder Name</label>
+                                                        <label for="bank_name" class="col-xl-3 col-md-3">Account Holder Name <span class="text-danger">*</span></label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="bank_name" name="bank_name"
                                                                 type="text" value="{{ $vendorcreate->bank_name }}" required>
+                                                            <div class="invalid-feedback-custom">Please enter account holder name</div>
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group row">
-                                                        <label for="ac_no" class="col-xl-3 col-md-3"><span>*</span>Account
-                                                            Number</label>
+                                                        <label for="ac_no" class="col-xl-3 col-md-3">Account Number <span class="text-danger">*</span></label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no" name="ac_no"
                                                                 type="password" value="{{ $vendorcreate->ac_no }}"
@@ -732,12 +760,12 @@
                                                                 onpaste="return false" oncontextmenu="return false"
                                                                 onselectstart="return false"
                                                                 style="user-select: none;">
+                                                            <div class="invalid-feedback-custom">Please enter account number</div>
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group row">
-                                                        <label for="ac_no1" class="col-xl-3 col-md-3"><span>*</span>Confirm
-                                                            Account Number</label>
+                                                        <label for="ac_no1" class="col-xl-3 col-md-3">Confirm Account Number <span class="text-danger">*</span></label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no1" name="ac_no1"
                                                                 type="text" value="{{ $vendorcreate->ac_no1 }}"
@@ -748,16 +776,18 @@
                                                                 onpaste="return false" oncontextmenu="return false"
                                                                 onselectstart="return false"
                                                                 style="user-select: none;">
+                                                            <div class="invalid-feedback-custom" id="confirm_ac_no_feedback">Please enter confirm account number</div>
                                                         </div>
                                                         <span id="wrong_ac_no_alert"></span>
                                                     </div>
 
                                                     <div class="form-group row">
-                                                        <label for="ifsc" class="col-xl-3 col-md-3"><span>*</span>IFSC Code</label>
+                                                        <label for="ifsc" class="col-xl-3 col-md-3">IFSC Code <span class="text-danger">*</span></label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ifsc" name="ifsc"
                                                                 type="text" value="{{ $vendorcreate->ifsc }}" 
                                                                 required maxlength="11" minlength="11">
+                                                            <div class="invalid-feedback-custom">Please enter IFSC code</div>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -775,7 +805,7 @@
 
                                                     <div class="form-group row">
                                                         <div class="col-xl-3 col-md-3">
-                                                            <label><span>*</span><img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg"
+                                                            <label>UPI <span class="text-danger">*</span> <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg"
                                                                 width="80px" alt="UPI Logo"></label>
                                                         </div>
                                                         <div class="col-xl-9 col-md-9">
@@ -783,6 +813,7 @@
                                                                 type="text" value="{{ $vendorcreate->upi }}"
                                                                 required maxlength="10" inputmode="numeric"
                                                                 autocomplete="off" spellcheck="false">
+                                                            <div class="invalid-feedback-custom">Please enter UPI number</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1077,6 +1108,9 @@
                 const inputs = currentTab.find('input[required], select[required], textarea[required], [required]');
                 let valid = true;
 
+                // Add validation-attempted to show validation errors
+                $('form.needs-validation').addClass('validation-attempted');
+
                 inputs.each(function() {
                     if (!this.checkValidity()) {
                         valid = false;
@@ -1338,40 +1372,47 @@
 
         /*Password valitation*/
         function validate_password() {
-
             var pass = document.getElementById('pass').value;
-            var confirm_pass = document.getElementById('confirm_pass').value;
-            if (pass != confirm_pass) {
-                document.getElementById('wrong_pass_alert').style.color = 'red';
-                document.getElementById('wrong_pass_alert').innerHTML = '☒ Use same password';
-                document.getElementById('create').disabled = true;
-                document.getElementById('create').style.opacity = (0.4);
+            var confirmInput = document.getElementById('confirm_pass');
+            var confirm_pass = confirmInput.value;
+            var feedback = document.getElementById('confirm_pass_feedback');
+            var submitBtn = document.getElementById('create');
+
+            if (confirm_pass === '') {
+                confirmInput.setCustomValidity("Please enter confirm password");
+                if (feedback) feedback.innerHTML = "Please enter confirm password";
+                if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = 0.4; }
+            } else if (pass !== confirm_pass) {
+                confirmInput.setCustomValidity("Passwords do not match");
+                if (feedback) feedback.innerHTML = "Passwords do not match";
+                if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = 0.4; }
             } else {
-                document.getElementById('wrong_pass_alert').style.color = 'green';
-                document.getElementById('wrong_pass_alert').innerHTML =
-                    '🗹 Password Matched';
-                document.getElementById('create').disabled = false;
-                document.getElementById('create').style.opacity = (1);
+                confirmInput.setCustomValidity("");
+                if (feedback) feedback.innerHTML = "";
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = 1; }
             }
         }
         /*Account no valitation*/
 
         function validate_acno() {
-
-
             var ac_no = document.getElementById('ac_no').value;
-            var ac_no1 = document.getElementById('ac_no1').value;
-            if (ac_no != ac_no1) {
-                document.getElementById('wrong_ac_no_alert').style.color = 'red';
-                document.getElementById('wrong_ac_no_alert').innerHTML = '☒ Use same account number';
-                document.getElementById('create').disabled = true;
-                document.getElementById('create').style.opacity = (0.4);
+            var confirmAcInput = document.getElementById('ac_no1');
+            var ac_no1 = confirmAcInput.value;
+            var feedback = document.getElementById('confirm_ac_no_feedback');
+            var submitBtn = document.getElementById('create');
+
+            if (ac_no1 === '') {
+                confirmAcInput.setCustomValidity("Please enter confirm account number");
+                if (feedback) feedback.innerHTML = "Please enter confirm account number";
+                if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = 0.4; }
+            } else if (ac_no !== ac_no1) {
+                confirmAcInput.setCustomValidity("Account numbers do not match");
+                if (feedback) feedback.innerHTML = "Account numbers do not match";
+                if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = 0.4; }
             } else {
-                document.getElementById('wrong_ac_no_alert').style.color = 'green';
-                document.getElementById('wrong_ac_no_alert').innerHTML =
-                    '🗹 Acount number Matched';
-                document.getElementById('create').disabled = false;
-                document.getElementById('create').style.opacity = (1);
+                confirmAcInput.setCustomValidity("");
+                if (feedback) feedback.innerHTML = "";
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = 1; }
             }
         }
 
@@ -1410,6 +1451,25 @@
                     }
                 });
 
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '.toggle-password', function() {
+                const input = $(this).siblings('input');
+                const icon = $(this).find('i');
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    input.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+
+            $('form.needs-validation').on('submit', function() {
+                $(this).addClass('validation-attempted');
             });
         });
     </script>

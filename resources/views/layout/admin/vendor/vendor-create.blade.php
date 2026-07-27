@@ -12,6 +12,20 @@
             -webkit-text-security: disc;
             text-security: disc;
         }
+        .invalid-feedback-custom {
+            display: none;
+            color: #dc3545;
+            font-size: 1.05rem;
+            margin-top: 0.25rem;
+        }
+        form.validation-attempted :invalid ~ .invalid-feedback-custom,
+        form.validation-attempted .invalid-field ~ .invalid-feedback-custom {
+            display: block !important;
+        }
+        form.validation-attempted :invalid {
+            border-color: #ced4da !important;
+            box-shadow: none !important;
+        }
     </style>
 
 
@@ -98,7 +112,7 @@
                                     </li>
                                 </ul>
 
-                                <form class="" id="vendor-create-form" method="post" action="{{ route('vendorcreate.store') }}"
+                                <form class="needs-validation" id="vendor-create-form" novalidate method="post" action="{{ route('vendorcreate.store') }}"
                                     enctype="multipart/form-data">
                                     @csrf
                                     @if(session('error'))
@@ -128,11 +142,11 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label for="username" class="col-xl-4 col-md-4"><span>*</span> User
-                                                            Name</label>
+                                                        <label for="username" class="col-xl-4 col-md-4">User Name <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="username"
                                                                 type="text" name="username" required autocomplete="off">
+                                                            <div class="invalid-feedback-custom">Please enter user name</div>
                                                             <span id="username_alert" class="mt-1 d-block" style="font-weight: bold;"></span>
                                                         </div>
                                                     </div>
@@ -142,48 +156,57 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Password
-                                                        </label>
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4">Password <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
-                                                            <input class="form-control" id="pass" type="text"
-                                                                name="pass" required>
+                                                            <div class="position-relative">
+                                                                <input class="form-control pe-5" id="pass" type="password"
+                                                                    name="pass" required>
+                                                                 <span class="position-absolute toggle-password" style="right: 15px; top: 19px; transform: translateY(-50%); cursor: pointer;">
+                                                                     <i class="fa fa-eye"></i>
+                                                                 </span>
+                                                                 <div class="invalid-feedback-custom">Please enter password</div>
+                                                             </div>
+                                                         </div>
+                                                     </div>
+                                                 </div>
+                                                 <div class="col-md-6">
+                                                     <div class="form-group row">
+                                                         <label for="validationCustom0" class="col-xl-4 col-md-4">Confirm Password <span class="text-danger">*</span></label>
+                                                         <div class="col-xl-8 col-md-8">
+                                                             <div class="position-relative">
+                                                                 <input class="form-control pe-5" id="confirm_pass" type="password"
+                                                                     name="pass1" onkeyup="validate_password()" required>
+                                                                 <span class="position-absolute toggle-password" style="right: 15px; top: 19px; transform: translateY(-50%); cursor: pointer;">
+                                                                     <i class="fa fa-eye"></i>
+                                                                 </span>
+                                                                <div class="invalid-feedback-custom" id="confirm_pass_feedback">Please enter confirm password</div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Confirm
-                                                            Password</label>
-                                                        <div class="col-xl-8 col-md-8">
-                                                            <input class="form-control" id="confirm_pass" type="text"
-                                                                name="pass1" onkeyup="validate_password()" required>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <span id="wrong_pass_alert"></span>
                                             </div>
 
                                             <div class="row">
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Shop
-                                                            Name</label>
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4">Shop Name <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom0"
                                                                 type="text" name="shop_name"
                                                                 value="{{ old('shop_name', @$tracker->shop_name) }}" required>
+                                                            <div class="invalid-feedback-custom">Please enter shop name</div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Owner
-                                                            Name</label>
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4">Owner Name <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="" type="text"
                                                                 name="owner_name"
                                                                 value="{{ old('owner_name', @$tracker->owner_name) }}" required>
+                                                            <div class="invalid-feedback-custom">Please enter owner name</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -205,11 +228,12 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
                                                         <label for="validationCustom2"
-                                                            class="col-xl-4 col-md-4"><span>*</span> E.Mail</label>
+                                                            class="col-xl-4 col-md-4">E-Mail <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="email" type="email"
                                                                 name="email"
                                                                 value="{{ old('email', @$tracker->email) }}" required>
+                                                            <div class="invalid-feedback-custom">Please enter e-mail</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -219,12 +243,12 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Mobile
-                                                            Number</label>
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4">Mobile Number <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="m_number" type="text"
                                                                 name="mobile_number1"
                                                                 value="{{ old('mobile_number1', @$tracker->mobile_number) }}" required>
+                                                            <div class="invalid-feedback-custom">Please enter mobile number</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -244,12 +268,12 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Address
-                                                            I</label>
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4">Address I <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom0"
                                                                 type="text" name="address1"
                                                                 value="{{ old('address1', @$tracker->address) }}" required>
+                                                            <div class="invalid-feedback-custom">Please enter address</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -269,11 +293,10 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom01" class="col-xl-4 col-md-4"><span>*</span> State
-                                                            :</label>
+                                                        <label for="validationCustom01" class="col-xl-4 col-md-4">State <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <select class="custom-select w-100 form-control"
-                                                                name="state" required="">
+                                                                name="state" required>
                                                                 <option value="">--Select--</option>
 
                                                                 @foreach ($State as $st)
@@ -283,16 +306,17 @@
                                                                 @endforeach
 
                                                             </select>
+                                                            <div class="invalid-feedback-custom">Please select state</div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
                                                         <label for="validationCustom01"
-                                                            class="col-xl-4 col-md-4"><span>*</span> City:</label>
+                                                            class="col-xl-4 col-md-4">City <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <select class="custom-select w-100 form-control"
-                                                                name="city" required="">
+                                                                name="city" required>
                                                                 <option value="">--Select--</option>
 
                                                                 @foreach ($City as $ct)
@@ -302,6 +326,7 @@
                                                                 @endforeach
 
                                                             </select>
+                                                            <div class="invalid-feedback-custom">Please select city</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -311,12 +336,13 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
                                                         <label for="validationCustom0" class="col-xl-4 col-md-4">
-                                                            <span>*</span> Pincode</label>
+                                                            Pincode <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                              <input class="form-control" id="pincode" type="text"
                                                                 name="pincode" maxlength="6" minlength="6"
                                                                 pattern="[0-9]{6}" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                                                 value="{{ old('pincode', @$tracker->pincode) }}" required>
+                                                            <div class="invalid-feedback-custom">Please enter pincode</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -347,7 +373,7 @@
 
                                                     <div class="form-group row">
                                                         <label for="validationCustom0" class="col-xl-4 col-md-4">
-                                                            <span>*</span> Zone</label>
+                                                            Zone <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
 
                                                             <select class="form-control" name="zone" id="zone" required>
@@ -360,6 +386,7 @@
                                                                         {{ $zo->name }} </option>
                                                                 @endforeach
                                                             </select>
+                                                            <div class="invalid-feedback-custom">Please select zone</div>
 
                                                             {{-- <input class="form-control" id="validationCustom0"
                                                                 type="text" name="zone"> --}}
@@ -369,11 +396,12 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
                                                         <label for="validationCustom2"
-                                                            class="col-xl-4 col-md-4"><span>*</span> Area</label>
+                                                            class="col-xl-4 col-md-4">Area <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" type="text" id="route"
                                                                 name="route"
                                                                 value="{{ old('route', @$tracker->area) }}" required>
+                                                            <div class="invalid-feedback-custom">Please enter area</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -383,22 +411,22 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Aadhar
-                                                            Number</label>
+                                                        <label for="validationCustom0" class="col-xl-4 col-md-4">Aadhar Number <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control"
                                                                 type="text" name="aadhar_no" id="aadharcard" required 
                                                                 maxlength="16" minlength="16" pattern="[0-9]{16}" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                                            <div class="invalid-feedback-custom">Please enter Aadhar number</div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label for="validationCustom2" class="col-xl-4 col-md-4"><span>*</span> GST
-                                                            number</label>
+                                                        <label for="validationCustom2" class="col-xl-4 col-md-4">GST number <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom2"
                                                                 type="text" name="gst_number" required>
+                                                            <div class="invalid-feedback-custom">Please enter GST number</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -407,7 +435,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label class="col-xl-4 col-md-4"><span>*</span> Staff (RM)</label>
+                                                        <label class="col-xl-4 col-md-4">Staff (RM) <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <select class="form-control" name="staff_id" required>
                                                                 <option value="">Select Staff</option>
@@ -415,6 +443,7 @@
                                                                     <option value="{{ $staff->id }}">{{ $staff->fullname ?? $staff->username }}</option>
                                                                 @endforeach
                                                             </select>
+                                                            <div class="invalid-feedback-custom">Please select staff</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -491,13 +520,15 @@
                                             aria-labelledby="top-upload-tab">
                                             <div class="form-group mt-4 row">
                                                 <label for="validationCustom1"
-                                                    class="col-xl-2 col-md-2"><span>*</span>Profile Image</label>
+                                                    class="col-xl-2 col-md-2">Profile Image <span class="text-danger">*</span></label>
                                                 <div class="col-xl-10 col-md-10">
                                                     <input class="form-control" id="fileUpload" type="file"
                                                         name="profile_image" multiple accept="image/*,.pdf" required />
                                                     <div id="image-holder"></div>
+                                                    <div class="invalid-feedback-custom">Please upload profile image</div>
                                                 </div>
                                             </div>
+
                                             <div class="form-group row">
                                                 <label for="validationCustom1"
                                                     class="col-xl-2 col-md-2">GST</label>
@@ -522,8 +553,7 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom01" class="col-xl-4 col-md-4"><span>*</span> Pack
-                                                            :</label>
+                                                        <label for="validationCustom01" class="col-xl-4 col-md-4">Pack <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             @php
                                                                 $pack = App\Models\vendor\packages::where(
@@ -543,6 +573,7 @@
                                                                     </option>
                                                                 @endforeach
                                                             </select>
+                                                            <div class="invalid-feedback-custom">Please select package</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -643,17 +674,16 @@
                                                 <div class="col-md-12">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-3 col-md-3"><span>*</span> Account
-                                                            Holder Name</label>
+                                                        <label for="validationCustom0" class="col-xl-3 col-md-3">Account Holder Name <span class="text-danger">*</span></label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="bank_name" type="text"
                                                                 name="bank_name" required>
+                                                            <div class="invalid-feedback-custom">Please enter account holder name</div>
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-3 col-md-3"><span>*</span> Account
-                                                            Number</label>
+                                                        <label for="validationCustom0" class="col-xl-3 col-md-3">Account Number <span class="text-danger">*</span></label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no" type="password"
                                                                 name="ac_no" inputmode="numeric" pattern="[0-9]*"
@@ -663,12 +693,12 @@
                                                                 onpaste="return false" oncontextmenu="return false"
                                                                 onselectstart="return false"
                                                                 style="user-select: none;">
+                                                            <div class="invalid-feedback-custom">Please enter account number</div>
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-3 col-md-3"><span>*</span> Confirm
-                                                            Account Number</label>
+                                                        <label for="validationCustom0" class="col-xl-3 col-md-3">Confirm Account Number <span class="text-danger">*</span></label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no1" type="text"
                                                                 name="ac_no1" onkeyup="validate_acno()"
@@ -679,16 +709,17 @@
                                                                 onpaste="return false" oncontextmenu="return false"
                                                                 onselectstart="return false"
                                                                 style="user-select: none;">
+                                                            <div class="invalid-feedback-custom" id="confirm_ac_no_feedback">Please enter confirm account number</div>
                                                         </div>
                                                         <span id="wrong_ac_no_alert"></span>
                                                     </div>
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-3 col-md-3"><span>*</span> IFSC
-                                                            Code </label>
+                                                        <label for="validationCustom0" class="col-xl-3 col-md-3">IFSC Code <span class="text-danger">*</span></label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ifsc" type="text"
                                                                 name="ifsc" maxlength="11" minlength="11" required>
+                                                            <div class="invalid-feedback-custom">Please enter IFSC code</div>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -706,7 +737,7 @@
 
                                                     <div class="form-group row">
                                                         <div class="col-xl-3 col-md-3">
-                                                            <span>*</span> <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg"
+                                                            UPI <span class="text-danger">*</span> <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg"
                                                                 width="80px">
                                                         </div>
                                                         <div class="col-xl-9 col-md-9">
@@ -714,6 +745,7 @@
                                                                 name="upi" maxlength="10" inputmode="numeric"
                                                                 pattern="[0-9]{10}" autocomplete="off"
                                                                 spellcheck="false" required>
+                                                            <div class="invalid-feedback-custom">Please enter UPI number</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1002,6 +1034,9 @@
                 const currentTab = $('#top-tabContent .tab-pane.active');
                 const inputs = currentTab.find('input[required], select[required], textarea[required], [required]');
                 let valid = true;
+
+                // Add validation-attempted to show validation errors
+                $('#vendor-create-form').addClass('validation-attempted');
 
                 inputs.each(function() {
                     if (!this.checkValidity()) {
@@ -1377,33 +1412,40 @@
         });
 
         function validate_password() {
-
             var pass = document.getElementById('pass').value;
-            var confirm_pass = document.getElementById('confirm_pass').value;
-            if (pass != confirm_pass) {
-                document.getElementById('wrong_pass_alert').style.color = 'red';
-                document.getElementById('wrong_pass_alert').innerHTML = '☒ Use same password';
+            var confirmInput = document.getElementById('confirm_pass');
+            var confirm_pass = confirmInput.value;
+            var feedback = document.getElementById('confirm_pass_feedback');
+
+            if (confirm_pass === '') {
+                confirmInput.setCustomValidity("Please enter confirm password");
+                if (feedback) feedback.innerHTML = "Please enter confirm password";
+            } else if (pass !== confirm_pass) {
+                confirmInput.setCustomValidity("Passwords do not match");
+                if (feedback) feedback.innerHTML = "Passwords do not match";
             } else {
-                document.getElementById('wrong_pass_alert').style.color = 'green';
-                document.getElementById('wrong_pass_alert').innerHTML =
-                    '🗹 Password Matched';
+                confirmInput.setCustomValidity("");
+                if (feedback) feedback.innerHTML = "";
             }
             updateSubmitButtonState();
         }
         /*Account no valitation*/
 
         function validate_acno() {
-
-
             var ac_no = document.getElementById('ac_no').value;
-            var ac_no1 = document.getElementById('ac_no1').value;
-            if (ac_no != ac_no1) {
-                document.getElementById('wrong_ac_no_alert').style.color = 'red';
-                document.getElementById('wrong_ac_no_alert').innerHTML = '☒ Use same account number';
+            var confirmAcInput = document.getElementById('ac_no1');
+            var ac_no1 = confirmAcInput.value;
+            var feedback = document.getElementById('confirm_ac_no_feedback');
+
+            if (ac_no1 === '') {
+                confirmAcInput.setCustomValidity("Please enter confirm account number");
+                if (feedback) feedback.innerHTML = "Please enter confirm account number";
+            } else if (ac_no !== ac_no1) {
+                confirmAcInput.setCustomValidity("Account numbers do not match");
+                if (feedback) feedback.innerHTML = "Account numbers do not match";
             } else {
-                document.getElementById('wrong_ac_no_alert').style.color = 'green';
-                document.getElementById('wrong_ac_no_alert').innerHTML =
-                    '🗹 Acount number Matched';
+                confirmAcInput.setCustomValidity("");
+                if (feedback) feedback.innerHTML = "";
             }
             updateSubmitButtonState();
         }
@@ -1448,7 +1490,20 @@
     </script>
     <script>
         $(document).ready(function() {
+            $(document).on('click', '.toggle-password', function() {
+                const input = $(this).siblings('input');
+                const icon = $(this).find('i');
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    input.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+
             $('#vendor-create-form').on('submit', function(e) {
+                $(this).addClass('validation-attempted');
                 var totalSize = 0;
                 var maxPostSize = 8 * 1024 * 1024; // 8MB
                 var maxFileSize = 2 * 1024 * 1024; // 2MB
