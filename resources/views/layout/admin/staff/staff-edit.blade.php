@@ -3,6 +3,22 @@
 
 @include('paritials.js.staff.staff-create-js')
 
+<style>
+    .invalid-feedback-custom {
+        display: none;
+        color: #dc3545;
+        font-size: 1.05rem;
+        margin-top: 0.25rem;
+    }
+    form.validation-attempted :invalid ~ .invalid-feedback-custom,
+    form.validation-attempted .invalid-field ~ .invalid-feedback-custom {
+        display: block !important;
+    }
+    form.validation-attempted :invalid {
+        border-color: #ced4da !important;
+        box-shadow: none !important;
+    }
+</style>
 
 <!-- page-wrapper Start-->
 @include('paritials.auth.topmenu');
@@ -77,10 +93,10 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4">  Employee ID</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4">Employee ID <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="emp_id" type="" required="true" name="emp_id" value="{{$staff->employee_id}}">
-												
+												<input class="form-control" id="emp_id" type="text" required name="emp_id" value="{{$staff->employee_id}}">
+												<div class="invalid-feedback-custom">Please enter employee ID</div>
 											</div>
 											<span style=" color:red">
 												@error('empid')
@@ -91,9 +107,10 @@
 										</div>
 										<div class="col-md-6">
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4"> User Name</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4">User Name <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="username" type="text" required="true" name="username" value="{{$staff->username}}">
+												<input class="form-control" id="username" type="text" required name="username" value="{{$staff->username}}">
+												<div class="invalid-feedback-custom">Please enter user name</div>
 											</div>
 										</div>
 									</div>
@@ -103,18 +120,20 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4"> Full Name</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4">Full Name <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="fullname" type="text" required="true" name="fullname" value="{{$staff->fullname}}">
+												<input class="form-control" id="fullname" type="text" required name="fullname" value="{{$staff->fullname}}">
+												<div class="invalid-feedback-custom">Please enter full name</div>
 											</div>
 										</div>
 									</div>
 									<div class="col-md-6">
 									<div class="form-group row">
-											<label for="validationCustom2" class="col-xl-4 col-md-4">Date Of Birth</label>
+											<label for="validationCustom2" class="col-xl-4 col-md-4">Date Of Birth <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-7">
-												<input class="form-control" id="dob" type="date" required="true" name="dob" value="{{$staff->dob}}"
+												<input class="form-control" id="dob" type="date" required name="dob" value="{{$staff->dob}}"
 												placeholder="dd/mm/yy">
+												<div class="invalid-feedback-custom">Please select date of birth</div>
 											</div>
 										</div>
 									</div>
@@ -128,30 +147,31 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom01" class="col-xl-4 col-md-4">Department :</label>
+											<label for="validationCustom01" class="col-xl-4 col-md-4">Department <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
 
 
-											<select class="custom-select w-100 form-control" id="department" name="department" required="true">
+											<select class="custom-select w-100 form-control" id="department" name="department" required>
 																<option value="">--Select--</option>
 																@foreach ($department as $item)
 																<option value="{{$item->id}}" {{  ($staff->department == $item->id) ? 'selected' : ''}} >{{$item->name}}</option>
 																@endforeach
 															</select>
-											
+											<div class="invalid-feedback-custom">Please select department</div>
 											</div>
 										</div>
 										</div>
 										<div class="col-md-6">
 										<div class="form-group row">
-											<label for="validationCustom01" class="col-xl-4 col-md-4">Desgination:</label>
+											<label for="validationCustom01" class="col-xl-4 col-md-4">Designation <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
-												<select class="custom-select w-100 form-control" id="designation" name="designation"  required="true">
+												<select class="custom-select w-100 form-control" id="designation" name="designation" required>
 																<option value="">--Select--</option>
 																@foreach ($designation as $item1)
 																<option value="{{$item1->id}}" {{  ($staff->designation == $item1->id) ? 'selected' : ''}}>{{$item1->designation}}</option>
 																@endforeach
-												</select>
+															</select>
+												<div class="invalid-feedback-custom">Please select designation</div>
 											</div>
 										</div>
 										</div>
@@ -161,9 +181,10 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4">  Mobile Number</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4">Mobile Number <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="mobileno"  type="text" required="true" name="mobileno" value="{{$staff->mobileno}}">
+												<input class="form-control" id="mobileno"  type="text" required name="mobileno" value="{{$staff->mobileno}}">
+												<div class="invalid-feedback-custom">Please enter mobile number</div>
 											</div>
 										</div>
 									</div>
@@ -171,15 +192,16 @@
 										<div class="form-group row">
 											<label for="validationCustom0" class="col-xl-4 col-md-4">Alternate Number</label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="a_mobileno" type="text" required="true" name="a_mobileno" value="{{$staff->a_mobileno}}">
+												<input class="form-control" id="a_mobileno" type="text" name="a_mobileno" value="{{$staff->a_mobileno}}">
 											</div>
 										</div>
 									</div>
 									<div class="col-md-6">
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4">E-Mail</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4">E-Mail <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="email" type="email" required="true" name="email" value="{{$staff->email}}">
+												<input class="form-control" id="email" type="email" required name="email" value="{{$staff->email}}">
+												<div class="invalid-feedback-custom">Please enter e-mail</div>
 											</div>
 										</div>
 									</div>
@@ -188,9 +210,9 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4"> Qualification</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4">Qualification</label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="qualification" type="text" required="true" name="qualification" value="{{$staff->qualification}}">
+												<input class="form-control" id="qualification" type="text" name="qualification" value="{{$staff->qualification}}">
 											</div>
 										</div>
 									</div>
@@ -198,7 +220,7 @@
 										<div class="form-group row">
 											<label for="validationCustom0" class="col-xl-4 col-md-4">Experience</label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="experience" type="text" required="true" name="experience" value="{{$staff->exprience}}">
+												<input class="form-control" id="experience" type="text" name="experience" value="{{$staff->exprience}}">
 											</div>
 										</div>
 									</div>
@@ -208,18 +230,19 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom0" class="col-xl-4 col-md-4"> Blood Group</label>
+											<label for="validationCustom0" class="col-xl-4 col-md-4">Blood Group</label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="bloodgroup" type="text" required="true" name="bloodgroup" value="{{$staff->bloodgroup}}">
+												<input class="form-control" id="bloodgroup" type="text" name="bloodgroup" value="{{$staff->bloodgroup}}">
 											</div>
 										</div>
 										</div>
 										<div class="col-md-6">
 										<div class="form-group row">
-											<label for="validationCustom2" class="col-xl-4 col-md-4">Date of Joining</label>
+											<label for="validationCustom2" class="col-xl-4 col-md-4">Date of Joining <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-7">
-												<input class="form-control" id="doj" type="date" required="true" name="doj" value="{{$staff->doj}}"
+												<input class="form-control" id="doj" type="date" required name="doj" value="{{$staff->doj}}"
 												placeholder="dd/mm/yy">
+												<div class="invalid-feedback-custom">Please select date of joining</div>
 											</div>
 										</div>
 										</div>
@@ -227,15 +250,17 @@
 										
 									
 										<div class="form-group row">
-											<label for="validationCustom1" class="col-xl-2 col-md-2">Permanent Address</label>
+											<label for="validationCustom1" class="col-xl-2 col-md-2">Permanent Address <span class="text-danger">*</span></label>
 											<div class="col-xl-10 col-md-10">
-												<textarea class="form-control" rows="3" id="permanant_addr" type="text" required="true" name="permanant_addr">{{$staff->permanant_addr}}</textarea>
+												<textarea class="form-control" rows="3" id="permanant_addr" type="text" required name="permanant_addr">{{$staff->permanant_addr}}</textarea>
+												<div class="invalid-feedback-custom">Please enter permanent address</div>
 											</div>
 										</div>
 										<div class="form-group row">
-											<label for="validationCustom1" class="col-xl-2 col-md-2">Current Address</label>
+											<label for="validationCustom1" class="col-xl-2 col-md-2">Current Address <span class="text-danger">*</span></label>
 											<div class="col-xl-10 col-md-10">
-												<textarea class="form-control" rows="3" id="curr_addr" type="text" required="true" name="curr_addr">{{$staff->curr_addr}}</textarea>
+												<textarea class="form-control" rows="3" id="curr_addr" type="text" required name="curr_addr">{{$staff->curr_addr}}</textarea>
+												<div class="invalid-feedback-custom">Please enter current address</div>
 											</div>
 										</div>
 
@@ -243,17 +268,25 @@
 										<div class="col-md-6">
 											
 										<div class="form-group row">
-											<label for="validationCustom3" class="col-xl-4 col-md-4"><span>*</span> Password</label>
+											<label for="validationCustom3" class="col-xl-4 col-md-4">Password <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="password" type="password" required="true"name="password" value="{{$staff->password}}">
+												<div class="position-relative">
+													<input class="form-control" id="password" type="password" required name="password" style="padding-right: 40px;" value="{{$staff->password}}">
+													<i class="fa-regular fa-eye position-absolute" id="togglePassword" style="right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; z-index: 10;"></i>
+													<div class="invalid-feedback-custom">Please enter password</div>
+												</div>
 											</div>
 										</div>
 										</div>
 										<div class="col-md-6">
 										<div class="form-group row">
-											<label for="validationCustom4" class="col-xl-4 col-md-4"><span>*</span> Confirm Password</label>
+											<label for="validationCustom4" class="col-xl-4 col-md-4">Confirm Password <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="confirm_password" type="password" required="true" name="confirm_password" value="{{$staff->password}}">
+												<div class="position-relative">
+													<input class="form-control" id="confirm_password" type="password" required name="confirm_password" style="padding-right: 40px;" value="{{$staff->password}}">
+													<i class="fa-regular fa-eye position-absolute" id="toggleConfirmPassword" style="right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; z-index: 10;"></i>
+													<div class="invalid-feedback-custom" id="confirm_password_feedback">Please enter confirm password</div>
+												</div>
 											</div>
 											<span style=" color:red" id="wrong_pass_alert">
 												@error('confirm_password')
@@ -288,27 +321,24 @@
 										 <div class="form-group row">
                                                 <label for="validationCustom1" class="col-xl-2 col-md-2">Profile Image</label>
                                                 <div class="col-xl-10 col-md-10">
-                                                    <input class="form-control" id="profileimage"  type="file"  name="profileimage" multiple />
+                                                    <input class="form-control" id="profileimage" type="file"  name="profileimage" multiple />
 													<input class="form-control" id="oldprofileimage"  type="hidden" value="{{$staff->profileimage}}"  name="oldprofileimage" multiple />
-
 													<div id="image-holder1"></div>
                                                 </div>
                                             </div>
 											<div class="form-group row">
-                                                <label for="validationCustom1" class="col-xl-2 col-md-2"><span>*</span>Aadhar Card</label>
+                                                <label for="validationCustom1" class="col-xl-2 col-md-2">Aadhar Card</label>
                                                 <div class="col-xl-10 col-md-10">
                                                     <input class="form-control" id="aatherimage" type="file"  name="aatherimage" multiple />
 													<input class="form-control" id="oldaatherimage"  type="hidden" value="{{$staff->aatherimage}}"  name="oldaatherimage" multiple />
-
 													<div id="image-holder"></div>
                                                 </div>
                                             </div>
 											<div class="form-group row">
-                                                <label for="validationCustom1" class="col-xl-2 col-md-2"><span>*</span>Pan Card</label>
+                                                <label for="validationCustom1" class="col-xl-2 col-md-2">Pan Card</label>
                                                 <div class="col-xl-10 col-md-10">
                                                     <input class="form-control" id="pancard" type="file"  name="pancard" multiple />
 													<input class="form-control" id="oldpancard"  type="hidden" value="{{$staff->pancard}}"  name="oldpancard" multiple />
-
 													<div id="image-holder1"></div>
                                                 </div>
                                             </div>
@@ -319,7 +349,6 @@
                                                 <div class="col-xl-10 col-md-10">
                                                     <input class="form-control" id="otherdoc" type="file"  name="otherdoc" multiple />
 													<input class="form-control" id="oldotherdoc" type="hidden"  value="{{$staff->otherdoc}}"  name="oldotherdoc" multiple />
-
 													<div id="image-holder1"></div>
                                                 </div>
                                             </div>
@@ -334,36 +363,19 @@
 												<div class="col-md-6">
 													
 												<div class="form-group row">
-													<label for="validationCustom0" class="col-xl-4 col-md-4">Monthly Salary</label>
+													<label for="validationCustom0" class="col-xl-4 col-md-4">Monthly Salary <span class="text-danger">*</span></label>
 													<div class="col-xl-8 col-md-8">
-														<input class="form-control" id="monthlysalary" type="text" required="" value="{{$staff->monthlysalary}}" name="monthlysalary">
+														<input class="form-control" id="monthlysalary" type="text" required name="monthlysalary" value="{{$staff->monthlysalary}}">
+														<div class="invalid-feedback-custom">Please enter monthly salary</div>
 													</div>
 												</div>
 												</div>
 												<div class="col-md-6">
 												<div class="form-group row">
-													<label for="validationCustom0" class="col-xl-4 col-md-4">CTC</label>
+													<label for="validationCustom0" class="col-xl-4 col-md-4">CTC <span class="text-danger">*</span></label>
 													<div class="col-xl-8 col-md-8">
-														<input class="form-control" id="ctc" type="text" required="" value="{{$staff->ctc}}"  name="ctc">
-													</div>
-												</div>
-												</div>
-												</div>
-												<div class="row">
-												<div class="col-md-6">
-													
-												<div class="form-group row">
-													<label for="validationCustom0" class="col-xl-4 col-md-4">Daily Target</label>
-													<div class="col-xl-8 col-md-8">
-														<input class="form-control" id="dailytarget" type="text" required="" value="{{$staff->dailytarget}}" name="dailytarget">
-													</div>
-												</div>
-												</div>
-												<div class="col-md-6">
-												<div class="form-group row">
-													<label for="validationCustom0" class="col-xl-4 col-md-4">Monthly Target</label>
-													<div class="col-xl-8 col-md-8">
-														<input class="form-control" id="monthlytarget" type="text" required="" value="{{$staff->monthlytarget}}" name="monthlytarget">
+														<input class="form-control" id="ctc" type="text" required name="ctc" value="{{$staff->ctc}}">
+														<div class="invalid-feedback-custom">Please enter CTC</div>
 													</div>
 												</div>
 												</div>
@@ -372,38 +384,50 @@
 												<div class="col-md-6">
 													
 												<div class="form-group row">
-													<label for="validationCustom01" class="col-xl-4 col-md-4">Zone:</label>
+													<label for="validationCustom0" class="col-xl-4 col-md-4">Daily Target <span class="text-danger">*</span></label>
+													<div class="col-xl-8 col-md-8">
+														<input class="form-control" id="dailytarget" type="text" required name="dailytarget" value="{{$staff->dailytarget}}">
+														<div class="invalid-feedback-custom">Please enter daily target</div>
+													</div>
+												</div>
+												</div>
+												<div class="col-md-6">
+												<div class="form-group row">
+													<label for="validationCustom0" class="col-xl-4 col-md-4">Monthly Target <span class="text-danger">*</span></label>
+													<div class="col-xl-8 col-md-8">
+														<input class="form-control" id="monthlytarget" type="text" required name="monthlytarget" value="{{$staff->monthlytarget}}">
+														<div class="invalid-feedback-custom">Please enter monthly target</div>
+													</div>
+												</div>
+												</div>
+												</div>
+												<div class="row">
+												<div class="col-md-6">
+													
+												<div class="form-group row">
+													<label for="validationCustom01" class="col-xl-4 col-md-4">Zone <span class="text-danger">*</span></label>
 													<div class="col-xl-8 col-md-8">
 
 
-													<select class="custom-select w-100 form-control" required="" name ="zone_id" id ="zone_id" value="{{$staff->zone_id}}">
-																		{{-- <option value="">--Select--</option> --}}
-																		{{-- <option value="{{$staff->zone_id}}" selected >{{$staff->zone_id}}</option> --}}
-																		@foreach($zone as $zo){
-																			<option  value="{{$zo->id}}"   {{  ($staff->zone_id == $zo->id) ? 'selected' : ''}}>{{$zo->name}}</option>															
-																			{{-- <option value="{{$zo->id}}">{{$zo->name}}</option> --}}
-																		}
+													<select class="custom-select w-100 form-control" name="zone_id" required>
+																		@foreach($zone as $zo)
+																			<option value="{{$zo->id}}" {{  ($staff->zone_id == $zo->id) ? 'selected' : ''}}>{{$zo->name}}</option>															
 																		@endforeach 
-																		
 																	</select>
-													
+													<div class="invalid-feedback-custom">Please select zone</div>
 													</div>
 												</div>
 												</div>
 												<div class="col-md-6">
 												<div class="form-group row">
-													<label for="validationCustom01" class="col-xl-4 col-md-4">Route:</label>
+													<label for="validationCustom01" class="col-xl-4 col-md-4">Route <span class="text-danger">*</span></label>
 													<div class="col-xl-8 col-md-8">
-														<select class="custom-select w-100 form-control" name ="route_id" id ="route_id" value="{{$staff->route_id}}" required="">
-																		{{-- <option value="">--Select--</option> --}}
-																		
-																	
-																		@foreach($rdata as $d){
-																			<option  value="{{$d->id}}"   {{  ($staff->route_id == $d->id) ? 'selected' : ''}}>{{$d->name}}</option>
-																			{{-- <option value="{{$d->id}}">{{$d->name}}</option> --}}
-																		}
+														<select class="custom-select w-100 form-control" name="route_id" required>
+																		@foreach($rdata as $d)
+																			<option value="{{$d->id}}" {{  ($staff->route_id == $d->id) ? 'selected' : ''}}>{{$d->name}}</option>
 																		@endforeach  
 																	</select>
+														<div class="invalid-feedback-custom">Please select route</div>
 													</div>
 												</div>
 												</div>
@@ -446,25 +470,12 @@
 @endsection
 @push('scripts')
 
-{{-- <script>
-
-function Validate() {
-        var password = document.getElementById("Password").value;
-		alert(password);
-        var confirmPassword = document.getElementById("confirm_password").value;
-        if (password != confirmPassword) {
-            alert("Passwords do not match.");
-            return false;
-        }
-        return true;
-    }
-	</script> --}}
-
 <script>
 function save() {
 	alert('vendor has been added successfully');
 	window.location.href='{{route("vendor-list")}}'
 }
+
 function getAjaxValue(url, method, callback) {
                 $.ajax({
                     url: url,
@@ -476,15 +487,15 @@ function getAjaxValue(url, method, callback) {
                     success: callback
                 });
             }
-$('#department').on('change', function() {
+
+            // Main Categoy Id
+            $('#department').on('change', function() {
                 let department = $(this).val();
                 let url = '{{ route('getstaffdepartment') }}?department=' + department;
                 let method = 'GET';
                 getAjaxValue(url, method, function(data) {
                     $('#designation').empty();
-					//alert(data);
                     $.each(data, function(key, category) {
-
                         $('#designation').append(
                             `<option value="${category.id}" selected>${category.designation}</option>`
                         );
@@ -502,10 +513,43 @@ $('#department').on('change', function() {
                 return idx >= 0 ? idx : 0;
             }
 
+            function checkPasswordMatch() {
+                const pass = $('#password').val() || '';
+                const confirmPass = $('#confirm_password').val() || '';
+                const confirmInput = document.getElementById('confirm_password');
+                const feedback = $('#confirm_password_feedback');
+
+                if (confirmInput) {
+                    if (confirmPass === '') {
+                        confirmInput.setCustomValidity("Please enter confirm password");
+                        feedback.text("Please enter confirm password");
+                    } else if (pass !== confirmPass) {
+                        confirmInput.setCustomValidity("Passwords do not match");
+                        feedback.text("Passwords do not match");
+                    } else {
+                        confirmInput.setCustomValidity("");
+                        feedback.text("");
+                    }
+                }
+            }
+
+            $('#password, #confirm_password').on('input change', function() {
+                checkPasswordMatch();
+            });
+
             function isCurrentTabValid() {
-                const currentTab = $('#top-tabContent > .tab-pane.active');
+                const currentTab = $('#top-tabContent .tab-pane.active');
+
+                // If in step 1, validate password match first
+                if (currentTab.attr('id') === 'top-profile') {
+                    checkPasswordMatch();
+                }
+
                 const inputs = currentTab.find('input[required], select[required], textarea[required], [required]');
                 let valid = true;
+
+                // Add validation-attempted to show validation errors
+                $('form.needs-validation').addClass('validation-attempted');
 
                 inputs.each(function() {
                     if (!this.checkValidity()) {
@@ -516,22 +560,6 @@ $('#department').on('change', function() {
                         return false;
                     }
                 });
-
-                if (!valid) return false;
-
-                // Extra check for password match if in step 1 (Personal Information)
-                if (currentTab.attr('id') === 'top-profile') {
-                    var pass = $('#password').val();
-                    var confirm_pass = $('#confirm_password').val();
-                    if (pass !== confirm_pass) {
-                        valid = false;
-                        $('#confirm_password').focus();
-                        document.getElementById('wrong_pass_alert').style.color = 'red';
-                        document.getElementById('wrong_pass_alert').innerHTML = '☒ Use same password';
-                    } else {
-                        document.getElementById('wrong_pass_alert').innerHTML = '';
-                    }
-                }
 
                 return valid;
             }
@@ -589,6 +617,26 @@ $('#department').on('change', function() {
                     }
                 }
                 showTab(targetIdx);
+            });
+
+            $('form.needs-validation').on('submit', function(e) {
+                $(this).addClass('validation-attempted');
+                if (!this.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            });
+
+            $('#togglePassword').on('click', function() {
+                const type = $('#password').attr('type') === 'password' ? 'text' : 'password';
+                $('#password').attr('type', type);
+                $(this).toggleClass('fa-eye fa-eye-slash');
+            });
+
+            $('#toggleConfirmPassword').on('click', function() {
+                const type = $('#confirm_password').attr('type') === 'password' ? 'text' : 'password';
+                $('#confirm_password').attr('type', type);
+                $(this).toggleClass('fa-eye fa-eye-slash');
             });
 
             showTab(getActiveIndex());
