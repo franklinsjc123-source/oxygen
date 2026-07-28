@@ -246,7 +246,7 @@
                                                         <label for="validationCustom0" class="col-xl-4 col-md-4">Mobile Number <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="m_number" type="text"
-                                                                name="mobile_number1"
+                                                                name="mobile_number1" maxlength="10" pattern="[0-9]{10}"
                                                                 value="{{ old('mobile_number1', @$tracker->mobile_number) }}" required>
                                                             <div class="invalid-feedback-custom">Please enter mobile number</div>
                                                         </div>
@@ -258,7 +258,7 @@
                                                             Number</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="alter_no" type="text"
-                                                                name="mobile_number2"
+                                                                name="mobile_number2" maxlength="10" pattern="[0-9]{10}"
                                                                 value="{{ old('mobile_number2', @$tracker->mobile_number1) }}">
                                                         </div>
                                                     </div>
@@ -672,12 +672,11 @@
                                             aria-labelledby="top-bank-tab">
                                             <div class="row mt-4">
                                                 <div class="col-md-12">
-
                                                     <div class="form-group row">
                                                         <label for="validationCustom0" class="col-xl-3 col-md-3">Account Holder Name <span class="text-danger">*</span></label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="bank_name" type="text"
-                                                                name="bank_name" required>
+                                                                name="bank_name">
                                                             <div class="invalid-feedback-custom">Please enter account holder name</div>
                                                         </div>
                                                     </div>
@@ -687,7 +686,6 @@
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no" type="password"
                                                                 name="ac_no" inputmode="numeric" pattern="[0-9]*"
-                                                                required
                                                                 autocomplete="off" spellcheck="false"
                                                                 oncopy="return false" oncut="return false"
                                                                 onpaste="return false" oncontextmenu="return false"
@@ -703,7 +701,6 @@
                                                             <input class="form-control" id="ac_no1" type="text"
                                                                 name="ac_no1" onkeyup="validate_acno()"
                                                                 inputmode="numeric" pattern="[0-9]*"
-                                                                required
                                                                 autocomplete="off" spellcheck="false"
                                                                 oncopy="return false" oncut="return false"
                                                                 onpaste="return false" oncontextmenu="return false"
@@ -718,7 +715,7 @@
                                                         <label for="validationCustom0" class="col-xl-3 col-md-3">IFSC Code <span class="text-danger">*</span></label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ifsc" type="text"
-                                                                name="ifsc" maxlength="11" minlength="11" required>
+                                                                name="ifsc" maxlength="11" minlength="11">
                                                             <div class="invalid-feedback-custom">Please enter IFSC code</div>
                                                         </div>
                                                     </div>
@@ -744,7 +741,7 @@
                                                             <input class="form-control" id="upi" type="text"
                                                                 name="upi" maxlength="10" inputmode="numeric"
                                                                 pattern="[0-9]{10}" autocomplete="off"
-                                                                spellcheck="false" required>
+                                                                spellcheck="false">
                                                             <div class="invalid-feedback-custom">Please enter UPI number</div>
                                                         </div>
                                                     </div>
@@ -755,51 +752,46 @@
                                         <div class="tab-pane fade show " id="top-setting" role="tabpanel"
                                             aria-labelledby="top-setting-tab">
 
-                                            <div class="container ">
-                                                <div class=" mt-5">
-                                                    <div class="row">
-                                                        <div class="col-md-3">
+                                            <div class="row mt-4">
+                                                <div class="col-md-3">
 
-                                                            <input type="checkbox" class="form-check-input"
-                                                                id="check1" name="option1" value="mobile">
-                                                            <label class="form-check-label fw-bold" for="check1">Mobile
-                                                                support</label>
-                                                        </div>
+                                                    <input type="checkbox" class="form-check-input"
+                                                        id="check1" name="option1" value="mobile">
+                                                    <label class="form-check-label fw-bold" for="check1">Mobile
+                                                        support</label>
+                                                </div>
 
-                                                        <div class="col-md-3">
-                                                            <input type="checkbox" class="form-check-input"
-                                                                id="check2" name="option2" value="delivery">
-                                                            <label class="form-check-label fw-bold"
-                                                                for="check2">Delivery
-                                                                support</label>
-                                                        </div>
-
-                                                        <div class="row mt-3">
-
-                                                            <label for="validationCustom1"
-                                                                class="col-xl-1 col-md-1">Comments:</label>
-                                                            <div class="col-xl-5 col-md-5">
-                                                                <textarea class="form-control" rows="3" id="validationCustom1" type="text" name="comments"></textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row mt-3">
-                                                            <div class="col-md-4">
-                                                                <label class="fw-bold">Instagram Link</label>
-                                                                <input class="form-control" type="text" name="instagram_link" placeholder="https://instagram.com/username">
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <label class="fw-bold">Facebook Link</label>
-                                                                <input class="form-control" type="text" name="facebook_link" placeholder="https://facebook.com/username">
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <label class="fw-bold">WhatsApp Number</label>
-                                                                <input class="form-control" type="text" name="whatsapp_number" placeholder="e.g. 919876543210">
-                                                            </div>
-                                                        </div><br>
-                                                    </div>
-
+                                                <div class="col-md-3">
+                                                    <input type="checkbox" class="form-check-input"
+                                                        id="check2" name="option2" value="delivery">
+                                                    <label class="form-check-label fw-bold"
+                                                        for="check2">Delivery
+                                                        support</label>
                                                 </div>
                                             </div>
+
+                                            <div class="row mt-3">
+
+                                                <label for="validationCustom1"
+                                                    class="col-xl-1 col-md-1">Comments:</label>
+                                                <div class="col-xl-5 col-md-5">
+                                                    <textarea class="form-control" rows="3" id="validationCustom1" type="text" name="comments"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col-md-4">
+                                                    <label class="fw-bold">Instagram Link</label>
+                                                    <input class="form-control" type="text" name="instagram_link" placeholder="https://instagram.com/username">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="fw-bold">Facebook Link</label>
+                                                    <input class="form-control" type="text" name="facebook_link" placeholder="https://facebook.com/username">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="fw-bold">WhatsApp Number</label>
+                                                    <input class="form-control" type="text" name="whatsapp_number" placeholder="e.g. 919876543210">
+                                                </div>
+                                            </div><br>
                                         </div>
 
                                     </div>
@@ -1081,7 +1073,7 @@
                 if (currentTab.attr('id') === 'top-upload') {
                     var totalSize = 0;
                     var maxPostSize = 8 * 1024 * 1024; // 8MB
-                    var maxFileSize = 2 * 1024 * 1024; // 2MB
+                    var maxFileSize = 1 * 1024 * 1024; // 1MB
                     var fileTooLarge = false;
                     var offendingFileName = '';
 
@@ -1100,7 +1092,7 @@
 
                     if (fileTooLarge) {
                         valid = false;
-                        alert('The file "' + offendingFileName + '" exceeds the 2MB size limit. Please upload smaller files.');
+                        alert('The file "' + offendingFileName + '" exceeds the 1MB size limit. Please upload smaller files.');
                     } else if (totalSize > maxPostSize) {
                         valid = false;
                         alert('The total size of the uploaded files exceeds the 8MB limit. Please upload smaller files.');
@@ -1109,13 +1101,39 @@
 
                 // Extra check for step 4 (Bank Details)
                 if (currentTab.attr('id') === 'top-bank') {
-                    var ac_no = $('#ac_no').val();
-                    var ac_no1 = $('#ac_no1').val();
-                    if (ac_no !== ac_no1) {
+                    var bank_name = $('#bank_name').val().trim();
+                    var ac_no = $('#ac_no').val().trim();
+                    var ac_no1 = $('#ac_no1').val().trim();
+                    var ifsc = $('#ifsc').val().trim();
+                    var upi = $('#upi').val().trim();
+
+                    var has_bank_any = (bank_name !== '' || ac_no !== '' || ac_no1 !== '' || ifsc !== '');
+                    var has_bank_all = (bank_name !== '' && ac_no !== '' && ac_no1 !== '' && ifsc !== '');
+                    var has_upi = (upi !== '');
+
+                    if (!has_upi && !has_bank_any) {
                         valid = false;
-                        $('#ac_no1').focus();
-                        document.getElementById('wrong_ac_no_alert').style.color = 'red';
-                        document.getElementById('wrong_ac_no_alert').innerHTML = '☒ Use same account number';
+                        alert('Please fill out either Bank Details or UPI details.');
+                        $('#bank_name').focus();
+                    } else if (has_bank_any && !has_bank_all) {
+                        valid = false;
+                        $('#bank_name, #ac_no, #ac_no1, #ifsc').each(function() {
+                            if (this.value.trim() === '') {
+                                this.setCustomValidity('Please fill out this field.');
+                                this.reportValidity();
+                                $(this).focus();
+                                return false;
+                            } else {
+                                this.setCustomValidity('');
+                            }
+                        });
+                    } else if (has_bank_all) {
+                        if (ac_no !== ac_no1) {
+                            valid = false;
+                            $('#ac_no1').focus();
+                            document.getElementById('wrong_ac_no_alert').style.color = 'red';
+                            document.getElementById('wrong_ac_no_alert').innerHTML = '☒ Use same account number';
+                        }
                     }
                 }
 
@@ -1363,10 +1381,11 @@
 
             var ac_no = $('#ac_no').val();
             var ac_no1 = $('#ac_no1').val();
-            var acNosMatch = (ac_no === ac_no1 && ac_no !== '');
+            var upi = $('#upi').val();
+            var bankOrUpiValid = (upi !== '') || (ac_no === ac_no1 && ac_no !== '');
 
             var $createBtn = $('#create');
-            if (isUsernameValid && passwordsMatch && acNosMatch) {
+            if (isUsernameValid && passwordsMatch && bankOrUpiValid) {
                 $createBtn.prop('disabled', false).css('opacity', '1');
             } else {
                 $createBtn.prop('disabled', true).css('opacity', '0.4');
@@ -1502,11 +1521,59 @@
                 }
             });
 
+            $('#m_number, #alter_no').on('input', function() {
+                this.value = this.value.replace(/\D/g, '').slice(0, 10);
+            });
+
+            function initBankUpiValidation() {
+                var bank_name = $('#bank_name').val().trim();
+                var ac_no = $('#ac_no').val().trim();
+                var ac_no1 = $('#ac_no1').val().trim();
+                var ifsc = $('#ifsc').val().trim();
+                var upi = $('#upi').val().trim();
+
+                var has_bank_any = (bank_name !== '' || ac_no !== '' || ac_no1 !== '' || ifsc !== '');
+                var has_upi = (upi !== '');
+
+                if (has_upi) {
+                    $('#bank_name, #ac_no, #ac_no1, #ifsc').prop('required', false);
+                    $('#upi').prop('required', true);
+                } else if (has_bank_any) {
+                    $('#bank_name, #ac_no, #ac_no1, #ifsc').prop('required', true);
+                    $('#upi').prop('required', false);
+                } else {
+                    $('#bank_name, #ac_no, #ac_no1, #ifsc').prop('required', false);
+                    $('#upi').prop('required', false);
+                }
+            }
+
+            $('#bank_name, #ac_no, #ac_no1, #ifsc, #upi').on('input change', function() {
+                initBankUpiValidation();
+                updateSubmitButtonState();
+            });
+
+            initBankUpiValidation();
+
+            $('input[type="file"]').on('change', function() {
+                const files = this.files;
+                if (files && files.length > 0) {
+                    const maxLimit = 1 * 1024 * 1024; // 1MB
+                    for (let i = 0; i < files.length; i++) {
+                        if (files[i].size > maxLimit) {
+                            alert('File "' + files[i].name + '" exceeds the maximum limit of 1MB.');
+                            this.value = ''; // Reset input
+                            updateSubmitButtonState();
+                            return;
+                        }
+                    }
+                }
+            });
+
             $('#vendor-create-form').on('submit', function(e) {
                 $(this).addClass('validation-attempted');
                 var totalSize = 0;
                 var maxPostSize = 8 * 1024 * 1024; // 8MB
-                var maxFileSize = 2 * 1024 * 1024; // 2MB
+                var maxFileSize = 1 * 1024 * 1024; // 1MB
                 var fileTooLarge = false;
                 var offendingFileName = '';
                 
@@ -1525,7 +1592,7 @@
 
                 if (fileTooLarge) {
                     e.preventDefault();
-                    alert('The file "' + offendingFileName + '" exceeds the 2MB size limit. Please upload smaller files.');
+                    alert('The file "' + offendingFileName + '" exceeds the 1MB size limit. Please upload smaller files.');
                     return false;
                 }
 

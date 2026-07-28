@@ -241,7 +241,7 @@
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="m_number" type="text"
                                                                 value="{{ $vendorcreate->mobile_number1 }}"
-                                                                name="mobile_number1" required>
+                                                                name="mobile_number1" maxlength="10" pattern="[0-9]{10}" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -252,7 +252,7 @@
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="alter_no" type="text"
                                                                 value="{{ $vendorcreate->mobile_number2 }}"
-                                                                name="mobile_number2">
+                                                                name="mobile_number2" maxlength="10" pattern="[0-9]{10}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -740,7 +740,8 @@
                                                             Holder Name</label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="bank_name" name="bank_name"
-                                                                type="text" value="{{ $vendorcreate->bank_name }}" required>
+                                                                type="text" value="{{ $vendorcreate->bank_name }}">
+                                                            <div class="invalid-feedback-custom">Please enter account holder name</div>
                                                         </div>
                                                     </div>
 
@@ -750,12 +751,13 @@
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no" name="ac_no"
                                                                 type="password" value="{{ $vendorcreate->ac_no }}"
-                                                                required inputmode="numeric" pattern="[0-9]*"
+                                                                inputmode="numeric" pattern="[0-9]*"
                                                                 autocomplete="off" spellcheck="false"
                                                                 oncopy="return false" oncut="return false"
                                                                 onpaste="return false" oncontextmenu="return false"
                                                                 onselectstart="return false"
                                                                 style="user-select: none;">
+                                                            <div class="invalid-feedback-custom">Please enter account number</div>
                                                         </div>
                                                     </div>
 
@@ -765,13 +767,14 @@
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no1" name="ac_no1"
                                                                 type="text" value="{{ $vendorcreate->ac_no1 }}"
-                                                                required onkeyup="validate_acno()"
+                                                                onkeyup="validate_acno()"
                                                                 inputmode="numeric" pattern="[0-9]*"
                                                                 autocomplete="off" spellcheck="false"
                                                                 oncopy="return false" oncut="return false"
                                                                 onpaste="return false" oncontextmenu="return false"
                                                                 onselectstart="return false"
                                                                 style="user-select: none;">
+                                                            <div class="invalid-feedback-custom" id="confirm_ac_no_feedback">Please enter confirm account number</div>
                                                         </div>
                                                         <span id="wrong_ac_no_alert"></span>
                                                     </div>
@@ -781,7 +784,8 @@
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ifsc" name="ifsc"
                                                                 type="text" value="{{ $vendorcreate->ifsc }}" 
-                                                                required maxlength="11" minlength="11">
+                                                                maxlength="11" minlength="11">
+                                                            <div class="invalid-feedback-custom">Please enter IFSC code</div>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -805,8 +809,9 @@
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="upi" name="upi"
                                                                 type="text" value="{{ $vendorcreate->upi }}"
-                                                                required maxlength="10" inputmode="numeric"
+                                                                maxlength="10" inputmode="numeric"
                                                                 autocomplete="off" spellcheck="false">
+                                                            <div class="invalid-feedback-custom">Please enter UPI number</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -816,64 +821,58 @@
                                         <div class="tab-pane fade show " id="top-setting" role="tabpanel"
                                             aria-labelledby="top-setting-tab">
 
-                                            <div class="container ">
-                                                <div class=" mt-5">
-                                                    <div class="row">
-                                                        <div class="col-md-3">
+                                            <div class="row mt-4">
+                                                <div class="col-md-3">
 
-                                                            <input type="checkbox" class="form-check-input"
-                                                                id="check1" name="option1"
-                                                                {{ $vendorcreate->option1 == 'mobile' ? 'checked' : '' }}
-                                                                value="mobile">
-                                                            <label class="form-check-label fw-bold" for="check1">Mobile
-                                                                support</label>
-                                                        </div>
-
-                                                        <div class="col-md-3">
-                                                            <input type="checkbox" class="form-check-input"
-                                                                id="check2" name="option2"
-                                                                {{ $vendorcreate->option2 == 'delivery' ? 'checked' : '' }}
-                                                                value="delivery">
-                                                            <label class="form-check-label fw-bold"
-                                                                for="check2">Delivery
-                                                                support</label>
-                                                        </div>
-
-                                                        <div class="row mt-3">
-
-                                                            <label for="validationCustom1"
-                                                                class="col-xl-1 col-md-1">Comments:</label>
-                                                            <div class="col-xl-5 col-md-5">
-                                                                <textarea class="form-control" rows="3" id="validationCustom1" type="text" name="comments">{{ $vendorcreate->comments }}</textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row mt-3">
-                                                            <div class="col-md-4">
-                                                                <label class="fw-bold">Instagram Link</label>
-                                                                <input class="form-control" type="text" name="instagram_link" value="{{ $vendorcreate->instagram_link }}">
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <label class="fw-bold">Facebook Link</label>
-                                                                <input class="form-control" type="text" name="facebook_link" value="{{ $vendorcreate->facebook_link }}">
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <label class="fw-bold">WhatsApp Number</label>
-                                                                <input class="form-control" type="text" name="whatsapp_number" value="{{ $vendorcreate->whatsapp_number }}">
-                                                            </div>
-                                                        </div><br>
-
-                                                        <div class="justify-content-end align-items-center gap-2 mt-4 vendor-final-actions d-none"
-                                                            id="final-wizard-controls">
-                                                            <button type="button" class="btn btn-secondary px-4"
-                                                                id="wizard-prev-last-btn">Previous</button>
-                                                            <button class="btn btn-primary px-4"
-                                                                type="submit">Update</button>
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
+                                                    <input type="checkbox" class="form-check-input"
+                                                        id="check1" name="option1"
+                                                        {{ $vendorcreate->option1 == 'mobile' ? 'checked' : '' }}
+                                                        value="mobile">
+                                                    <label class="form-check-label fw-bold" for="check1">Mobile
+                                                        support</label>
                                                 </div>
+
+                                                <div class="col-md-3">
+                                                    <input type="checkbox" class="form-check-input"
+                                                        id="check2" name="option2"
+                                                        {{ $vendorcreate->option2 == 'delivery' ? 'checked' : '' }}
+                                                        value="delivery">
+                                                    <label class="form-check-label fw-bold"
+                                                        for="check2">Delivery
+                                                        support</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mt-3">
+
+                                                <label for="validationCustom1"
+                                                    class="col-xl-1 col-md-1">Comments:</label>
+                                                <div class="col-xl-5 col-md-5">
+                                                    <textarea class="form-control" rows="3" id="validationCustom1" type="text" name="comments">{{ $vendorcreate->comments }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col-md-4">
+                                                    <label class="fw-bold">Instagram Link</label>
+                                                    <input class="form-control" type="text" name="instagram_link" value="{{ $vendorcreate->instagram_link }}">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="fw-bold">Facebook Link</label>
+                                                    <input class="form-control" type="text" name="facebook_link" value="{{ $vendorcreate->facebook_link }}">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="fw-bold">WhatsApp Number</label>
+                                                    <input class="form-control" type="text" name="whatsapp_number" value="{{ $vendorcreate->whatsapp_number }}">
+                                                </div>
+                                            </div><br>
+
+                                            <div class="justify-content-end align-items-center gap-2 mt-4 vendor-final-actions d-none"
+                                                id="final-wizard-controls">
+                                                <button type="button" class="btn btn-secondary px-4"
+                                                    id="wizard-prev-last-btn">Previous</button>
+                                                <button class="btn btn-primary px-4"
+                                                    type="submit">Update</button>
+
                                             </div>
                                         </div>
 
@@ -1390,10 +1389,17 @@
         /*Account no valitation*/
 
         function validate_acno() {
-
-
             var ac_no = document.getElementById('ac_no').value;
             var ac_no1 = document.getElementById('ac_no1').value;
+            var upiVal = document.getElementById('upi').value.trim();
+
+            if (ac_no === '' && ac_no1 === '' && upiVal !== '') {
+                document.getElementById('wrong_ac_no_alert').innerHTML = '';
+                document.getElementById('create').disabled = false;
+                document.getElementById('create').style.opacity = (1);
+                return;
+            }
+
             if (ac_no != ac_no1) {
                 document.getElementById('wrong_ac_no_alert').style.color = 'red';
                 document.getElementById('wrong_ac_no_alert').innerHTML = '☒ Use same account number';
@@ -1439,6 +1445,53 @@
                 }
             });
 
+            $('#m_number, #alter_no').on('input', function() {
+                this.value = this.value.replace(/\D/g, '').slice(0, 10);
+            });
+
+            function initBankUpiValidation() {
+                var bank_name = $('#bank_name').val().trim();
+                var ac_no = $('#ac_no').val().trim();
+                var ac_no1 = $('#ac_no1').val().trim();
+                var ifsc = $('#ifsc').val().trim();
+                var upi = $('#upi').val().trim();
+
+                var has_bank_any = (bank_name !== '' || ac_no !== '' || ac_no1 !== '' || ifsc !== '');
+                var has_upi = (upi !== '');
+
+                if (has_upi) {
+                    $('#bank_name, #ac_no, #ac_no1, #ifsc').prop('required', false);
+                    $('#upi').prop('required', true);
+                } else if (has_bank_any) {
+                    $('#bank_name, #ac_no, #ac_no1, #ifsc').prop('required', true);
+                    $('#upi').prop('required', false);
+                } else {
+                    $('#bank_name, #ac_no, #ac_no1, #ifsc').prop('required', false);
+                    $('#upi').prop('required', false);
+                }
+            }
+
+            $('#bank_name, #ac_no, #ac_no1, #ifsc, #upi').on('input change', function() {
+                initBankUpiValidation();
+                validate_acno();
+            });
+
+            initBankUpiValidation();
+
+            $('input[type="file"]').on('change', function() {
+                const files = this.files;
+                if (files && files.length > 0) {
+                    const maxLimit = 1 * 1024 * 1024; // 1MB
+                    for (let i = 0; i < files.length; i++) {
+                        if (files[i].size > maxLimit) {
+                            alert('File "' + files[i].name + '" exceeds the maximum limit of 1MB.');
+                            this.value = ''; // Reset input
+                            return;
+                        }
+                    }
+                }
+            });
+
             // Dynamically inject validation feedback divs under required inputs
             $('input[required], select[required], textarea[required], [required]').each(function() {
                 if ($(this).siblings('.invalid-feedback-custom').length === 0) {
@@ -1470,6 +1523,72 @@
 
             $('#vendor-edit-form').on('submit', function(e) {
                 $(this).addClass('validation-attempted');
+
+                var bank_name = $('#bank_name').val().trim();
+                var ac_no = $('#ac_no').val().trim();
+                var ac_no1 = $('#ac_no1').val().trim();
+                var ifsc = $('#ifsc').val().trim();
+                var upi = $('#upi').val().trim();
+
+                var has_bank_any = (bank_name !== '' || ac_no !== '' || ac_no1 !== '' || ifsc !== '');
+                var has_bank_all = (bank_name !== '' && ac_no !== '' && ac_no1 !== '' && ifsc !== '');
+                var has_upi = (upi !== '');
+
+                if (!has_upi && !has_bank_any) {
+                    e.preventDefault();
+                    alert('Please fill out either Bank Details or UPI details.');
+                    $('#bank_name').focus();
+                    return false;
+                } else if (has_bank_any && !has_bank_all) {
+                    e.preventDefault();
+                    $('#bank_name, #ac_no, #ac_no1, #ifsc').each(function() {
+                        if (this.value.trim() === '') {
+                            this.setCustomValidity('Please fill out this field.');
+                            this.reportValidity();
+                            $(this).focus();
+                            return false;
+                        } else {
+                            this.setCustomValidity('');
+                        }
+                    });
+                    return false;
+                } else if (has_bank_all && ac_no !== ac_no1) {
+                    e.preventDefault();
+                    $('#ac_no1').focus();
+                    alert('Account numbers do not match.');
+                    return false;
+                }
+
+                var totalSize = 0;
+                var maxPostSize = 8 * 1024 * 1024; // 8MB
+                var maxFileSize = 1 * 1024 * 1024; // 1MB
+                var fileTooLarge = false;
+                var offendingFileName = '';
+                
+                $(this).find('input[type="file"]').each(function() {
+                    var files = this.files;
+                    if (files) {
+                        for (var i = 0; i < files.length; i++) {
+                            totalSize += files[i].size;
+                            if (files[i].size > maxFileSize) {
+                                fileTooLarge = true;
+                                offendingFileName = files[i].name;
+                            }
+                        }
+                    }
+                });
+
+                if (fileTooLarge) {
+                    e.preventDefault();
+                    alert('The file "' + offendingFileName + '" exceeds the 1MB size limit. Please upload smaller files.');
+                    return false;
+                }
+
+                if (totalSize > maxPostSize) {
+                    e.preventDefault();
+                    alert('The total size of the uploaded files exceeds the 8MB limit. Please upload smaller files.');
+                    return false;
+                }
             });
 
             $('#pincode').on('change', function() {
