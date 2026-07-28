@@ -682,7 +682,7 @@ class VendorcreateController extends Controller
     public function checkUsername(Request $request)
     {
         $username = $request->username;
-        $exists = User::where('username', $username)->exists() || vendorcreate::where('username', $username)->exists();
+        $exists = User::where('username', $username)->exists() || vendorcreate::where('username', $username)->exists() || Staffcreates::where('username', $username)->exists();
         return response()->json(['exists' => $exists]);
     }
 }

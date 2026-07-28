@@ -27,6 +27,7 @@ class StaffController extends Controller
         $Zonal=Zonal::all();
         $departmentIdsWithRoles = \App\Models\StaffRole::select('department')->distinct()->pluck('department');
         $department = Departments::where('status', 1)->whereIn('id', $departmentIdsWithRoles)->get(); 
+        $next_emp_id = Staffcreates::max('employee_id') ? Staffcreates::max('employee_id') + 1 : 100001;
 
         return view('layout.admin.staff.staff-create')
         ->with(
@@ -34,7 +35,8 @@ class StaffController extends Controller
           
                 "rdata" => $route,
                 "zone" =>$Zonal,
-                "department" => $department
+                "department" => $department,
+                "next_emp_id" => $next_emp_id
             ]
         );
 

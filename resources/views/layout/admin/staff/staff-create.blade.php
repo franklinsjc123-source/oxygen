@@ -95,7 +95,7 @@
 										<div class="form-group row">
 											<label for="validationCustom0" class="col-xl-4 col-md-4">Employee ID <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="empid" type="text" required name="empid">
+												<input class="form-control" id="empid" type="text" required name="empid" value="{{ $next_emp_id }}" readonly>
 												<div class="invalid-feedback-custom">Please enter employee ID</div>
 											</div>
 											<span style=" color:red">
@@ -110,6 +110,7 @@
 											<label for="validationCustom0" class="col-xl-4 col-md-4">User Name <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
 												<input class="form-control" id="username" type="text" required name="username">
+												<span id="username_alert" class="mt-1 d-block" style="font-weight: bold;"></span>
 												<div class="invalid-feedback-custom">Please enter user name</div>
 											</div>
 										</div>
@@ -189,8 +190,8 @@
 										<div class="form-group row">
 											<label for="validationCustom0" class="col-xl-4 col-md-4">Mobile Number <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="mobileno"  type="text" required name="mobileno">
-												<div class="invalid-feedback-custom">Please enter mobile number</div>
+												<input class="form-control" id="mobileno"  type="text" required name="mobileno" maxlength="10" pattern="[0-9]{10}">
+												<div class="invalid-feedback-custom">Please enter a valid 10-digit mobile number</div>
 											</div>
 										</div>
 									</div>
@@ -198,7 +199,7 @@
 										<div class="form-group row">
 											<label for="validationCustom0" class="col-xl-4 col-md-4">Alternate Number</label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="a_mobileno" type="text" name="a_mobileno">
+												<input class="form-control" id="a_mobileno" type="text" name="a_mobileno" maxlength="10" pattern="[0-9]{10}">
 											</div>
 										</div>
 									</div>
@@ -369,7 +370,7 @@
 												<div class="form-group row">
 													<label for="validationCustom0" class="col-xl-4 col-md-4">Monthly Salary <span class="text-danger">*</span></label>
 													<div class="col-xl-8 col-md-8">
-														<input class="form-control" id="monthlysalary" type="text" required name="monthlysalary">
+														<input class="form-control" id="monthlysalary" type="text" pattern="[0-9]+" required name="monthlysalary">
 														<div class="invalid-feedback-custom">Please enter monthly salary</div>
 													</div>
 												</div>
@@ -378,7 +379,7 @@
 												<div class="form-group row">
 													<label for="validationCustom0" class="col-xl-4 col-md-4">CTC <span class="text-danger">*</span></label>
 													<div class="col-xl-8 col-md-8">
-														<input class="form-control" id="ctc" type="text" required name="ctc">
+														<input class="form-control" id="ctc" type="text" pattern="[0-9]+" required name="ctc">
 														<div class="invalid-feedback-custom">Please enter CTC</div>
 													</div>
 												</div>
@@ -390,7 +391,7 @@
 												<div class="form-group row">
 													<label for="validationCustom0" class="col-xl-4 col-md-4">Daily Target <span class="text-danger">*</span></label>
 													<div class="col-xl-8 col-md-8">
-														<input class="form-control" id="dailytarget" type="text" required name="dailytarget">
+														<input class="form-control" id="dailytarget" type="text" pattern="[0-9]+" required name="dailytarget">
 														<div class="invalid-feedback-custom">Please enter daily target</div>
 													</div>
 												</div>
@@ -399,7 +400,7 @@
 												<div class="form-group row">
 													<label for="validationCustom0" class="col-xl-4 col-md-4">Monthly Target <span class="text-danger">*</span></label>
 													<div class="col-xl-8 col-md-8">
-														<input class="form-control" id="monthlytarget" type="text" required name="monthlytarget">
+														<input class="form-control" id="monthlytarget" type="text" pattern="[0-9]+" required name="monthlytarget">
 														<div class="invalid-feedback-custom">Please enter monthly target</div>
 													</div>
 												</div>
@@ -413,7 +414,7 @@
 													<div class="col-xl-8 col-md-8">
 
 
-													<select class="custom-select w-100 form-control" name="zone_id" required>
+													<select class="custom-select w-100 form-control" id="zone_id" name="zone_id" required>
 																		<option value="">--Select--</option>
 																		
 																		@foreach($zone as $zo){
@@ -430,14 +431,8 @@
 												<div class="form-group row">
 													<label for="validationCustom01" class="col-xl-4 col-md-4">Route <span class="text-danger">*</span></label>
 													<div class="col-xl-8 col-md-8">
-														<select class="custom-select w-100 form-control" name="route_id" required>
+														<select class="custom-select w-100 form-control" id="route_id" name="route_id" required>
 																		<option value="">--Select--</option>
-																		
-																	
-																		@foreach($rdata as $d){
-																			<option value="{{$d->id}}">{{$d->name}}</option>
-																		}
-																		@endforeach  
 																	</select>
 														<div class="invalid-feedback-custom">Please select route</div>
 													</div>
@@ -534,7 +529,28 @@ function getAjaxValue(url, method, callback) {
                 });
             });
 
+            // Zonal Route dependent dropdown
+            $('#zone_id').on('change', function() {
+                let zone_id = $(this).val();
+                if (!zone_id) {
+                    $('#route_id').html('<option value="">--Select--</option>');
+                    return;
+                }
+                let url = '{{ route('getroute') }}?zone_id=' + zone_id;
+                let method = 'GET';
+                getAjaxValue(url, method, function(data) {
+                    $('#route_id').empty();
+                    $('#route_id').append('<option value="">--Select--</option>');
+                    $.each(data, function(key, route) {
+                        $('#route_id').append(
+                            `<option value="${route.id}">${route.name}</option>`
+                        );
+                    });
+                });
+            });
+
         $(function() {
+            var isUsernameValid = true;
             const $tabLinks = $('#top-tab .nav-link');
             const $tabPanes = $('#top-tabContent > .tab-pane');
             const tabCount = $tabLinks.length;
@@ -568,12 +584,47 @@ function getAjaxValue(url, method, callback) {
                 checkPasswordMatch();
             });
 
+            $('#username').on('keyup change blur input', function() {
+                var username = $(this).val().trim();
+                var $alert = $('#username_alert');
+
+                if (username.length === 0) {
+                    $alert.text('');
+                    isUsernameValid = false;
+                    return;
+                }
+
+                $.ajax({
+                    url: "{{ route('checkUsername') }}",
+                    type: "POST",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "username": username
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.exists) {
+                            $alert.css('color', 'red').html('☒ Username already exists');
+                            isUsernameValid = false;
+                        } else {
+                            $alert.css('color', 'green').html('☑ Username available');
+                            isUsernameValid = true;
+                        }
+                    }
+                });
+            });
+
             function isCurrentTabValid() {
                 const currentTab = $('#top-tabContent .tab-pane.active');
 
                 // If in step 1, validate password match first
                 if (currentTab.attr('id') === 'top-profile') {
                     checkPasswordMatch();
+                    if (!isUsernameValid) {
+                        $('#username').focus();
+                        $('#username_alert').css('color', 'red').html('☒ Username already exists');
+                        return false;
+                    }
                 }
 
                 const inputs = currentTab.find('input[required], select[required], textarea[required], [required]');
@@ -602,24 +653,30 @@ function getAjaxValue(url, method, callback) {
                 $tabPanes.removeClass('show active');
                 const targetSelector = $($tabLinks.get(index)).attr('href');
                 $(targetSelector).addClass('show active');
+                
+                // Show/hide wizard buttons
                 syncWizardButtons();
                 window.scrollTo(0, 0);
             }
 
             function syncWizardButtons() {
-                const index = getActiveIndex();
-                const isLastTab = index === tabCount - 1;
-
-                if (isLastTab) {
-                    $('#staff-wizard-controls').removeClass('d-flex').addClass('d-none');
-                    $('.staff-final-actions').removeClass('d-none').addClass('d-flex');
+                const currentIdx = getActiveIndex();
+                if (currentIdx === 0) {
+                    $('#wizard-prev-btn').hide();
+                    $('#wizard-next-btn').show();
+                    $('#wizard-prev-last-btn').hide();
+                    $('#wizard-submit-btn').hide();
+                } else if (currentIdx === tabCount - 1) {
+                    $('#wizard-prev-btn').hide();
+                    $('#wizard-next-btn').hide();
+                    $('#wizard-prev-last-btn').show();
+                    $('#wizard-submit-btn').show();
                 } else {
-                    $('#staff-wizard-controls').removeClass('d-none').addClass('d-flex');
-                    $('.staff-final-actions').removeClass('d-flex').addClass('d-none');
+                    $('#wizard-prev-btn').show();
+                    $('#wizard-next-btn').show();
+                    $('#wizard-prev-last-btn').hide();
+                    $('#wizard-submit-btn').hide();
                 }
-
-                $('#wizard-prev-btn').toggle(index > 0);
-                $('#wizard-next-btn').toggle(index < tabCount - 1);
             }
 
             $('#wizard-next-btn').on('click', function() {
@@ -652,6 +709,13 @@ function getAjaxValue(url, method, callback) {
 
             $('form.needs-validation').on('submit', function(e) {
                 $(this).addClass('validation-attempted');
+                if (!isUsernameValid) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $('#username').focus();
+                    $('#username_alert').css('color', 'red').html('☒ Username already exists');
+                    return;
+                }
                 if (!this.checkValidity()) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -668,6 +732,14 @@ function getAjaxValue(url, method, callback) {
                 const type = $('#confirm_password').attr('type') === 'password' ? 'text' : 'password';
                 $('#confirm_password').attr('type', type);
                 $(this).toggleClass('fa-eye fa-eye-slash');
+            });
+
+            $('#mobileno, #a_mobileno').on('input', function() {
+                this.value = this.value.replace(/\D/g, '').slice(0, 10);
+            });
+
+            $('#monthlysalary, #ctc, #dailytarget, #monthlytarget').on('input', function() {
+                this.value = this.value.replace(/\D/g, '');
             });
 
             showTab(getActiveIndex());

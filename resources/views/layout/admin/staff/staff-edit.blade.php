@@ -95,7 +95,7 @@
 										<div class="form-group row">
 											<label for="validationCustom0" class="col-xl-4 col-md-4">Employee ID <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="emp_id" type="text" required name="emp_id" value="{{$staff->employee_id}}">
+												<input class="form-control" id="emp_id" type="text" required name="emp_id" value="{{$staff->employee_id}}" readonly>
 												<div class="invalid-feedback-custom">Please enter employee ID</div>
 											</div>
 											<span style=" color:red">
@@ -183,8 +183,8 @@
 										<div class="form-group row">
 											<label for="validationCustom0" class="col-xl-4 col-md-4">Mobile Number <span class="text-danger">*</span></label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="mobileno"  type="text" required name="mobileno" value="{{$staff->mobileno}}">
-												<div class="invalid-feedback-custom">Please enter mobile number</div>
+												<input class="form-control" id="mobileno"  type="text" required name="mobileno" value="{{$staff->mobileno}}" maxlength="10" pattern="[0-9]{10}">
+												<div class="invalid-feedback-custom">Please enter a valid 10-digit mobile number</div>
 											</div>
 										</div>
 									</div>
@@ -192,7 +192,7 @@
 										<div class="form-group row">
 											<label for="validationCustom0" class="col-xl-4 col-md-4">Alternate Number</label>
 											<div class="col-xl-8 col-md-8">
-												<input class="form-control" id="a_mobileno" type="text" name="a_mobileno" value="{{$staff->a_mobileno}}">
+												<input class="form-control" id="a_mobileno" type="text" name="a_mobileno" value="{{$staff->a_mobileno}}" maxlength="10" pattern="[0-9]{10}">
 											</div>
 										</div>
 									</div>
@@ -365,7 +365,7 @@
 												<div class="form-group row">
 													<label for="validationCustom0" class="col-xl-4 col-md-4">Monthly Salary <span class="text-danger">*</span></label>
 													<div class="col-xl-8 col-md-8">
-														<input class="form-control" id="monthlysalary" type="text" required name="monthlysalary" value="{{$staff->monthlysalary}}">
+														<input class="form-control" id="monthlysalary" type="text" pattern="[0-9]+" required name="monthlysalary" value="{{$staff->monthlysalary}}">
 														<div class="invalid-feedback-custom">Please enter monthly salary</div>
 													</div>
 												</div>
@@ -374,7 +374,7 @@
 												<div class="form-group row">
 													<label for="validationCustom0" class="col-xl-4 col-md-4">CTC <span class="text-danger">*</span></label>
 													<div class="col-xl-8 col-md-8">
-														<input class="form-control" id="ctc" type="text" required name="ctc" value="{{$staff->ctc}}">
+														<input class="form-control" id="ctc" type="text" pattern="[0-9]+" required name="ctc" value="{{$staff->ctc}}">
 														<div class="invalid-feedback-custom">Please enter CTC</div>
 													</div>
 												</div>
@@ -386,7 +386,7 @@
 												<div class="form-group row">
 													<label for="validationCustom0" class="col-xl-4 col-md-4">Daily Target <span class="text-danger">*</span></label>
 													<div class="col-xl-8 col-md-8">
-														<input class="form-control" id="dailytarget" type="text" required name="dailytarget" value="{{$staff->dailytarget}}">
+														<input class="form-control" id="dailytarget" type="text" pattern="[0-9]+" required name="dailytarget" value="{{$staff->dailytarget}}">
 														<div class="invalid-feedback-custom">Please enter daily target</div>
 													</div>
 												</div>
@@ -395,7 +395,7 @@
 												<div class="form-group row">
 													<label for="validationCustom0" class="col-xl-4 col-md-4">Monthly Target <span class="text-danger">*</span></label>
 													<div class="col-xl-8 col-md-8">
-														<input class="form-control" id="monthlytarget" type="text" required name="monthlytarget" value="{{$staff->monthlytarget}}">
+														<input class="form-control" id="monthlytarget" type="text" pattern="[0-9]+" required name="monthlytarget" value="{{$staff->monthlytarget}}">
 														<div class="invalid-feedback-custom">Please enter monthly target</div>
 													</div>
 												</div>
@@ -409,7 +409,7 @@
 													<div class="col-xl-8 col-md-8">
 
 
-													<select class="custom-select w-100 form-control" name="zone_id" required>
+													<select class="custom-select w-100 form-control" id="zone_id" name="zone_id" required>
 																		@foreach($zone as $zo)
 																			<option value="{{$zo->id}}" {{  ($staff->zone_id == $zo->id) ? 'selected' : ''}}>{{$zo->name}}</option>															
 																		@endforeach 
@@ -422,9 +422,11 @@
 												<div class="form-group row">
 													<label for="validationCustom01" class="col-xl-4 col-md-4">Route <span class="text-danger">*</span></label>
 													<div class="col-xl-8 col-md-8">
-														<select class="custom-select w-100 form-control" name="route_id" required>
+														<select class="custom-select w-100 form-control" id="route_id" name="route_id" required>
 																		@foreach($rdata as $d)
-																			<option value="{{$d->id}}" {{  ($staff->route_id == $d->id) ? 'selected' : ''}}>{{$d->name}}</option>
+																			@if($d->zonal_id == $staff->zone_id)
+																				<option value="{{$d->id}}" {{  ($staff->route_id == $d->id) ? 'selected' : ''}}>{{$d->name}}</option>
+																			@endif
 																		@endforeach  
 																	</select>
 														<div class="invalid-feedback-custom">Please select route</div>
@@ -498,6 +500,26 @@ function getAjaxValue(url, method, callback) {
                     $.each(data, function(key, category) {
                         $('#designation').append(
                             `<option value="${category.id}" selected>${category.designation}</option>`
+                        );
+                    });
+                });
+            });
+
+            // Zonal Route dependent dropdown
+            $('#zone_id').on('change', function() {
+                let zone_id = $(this).val();
+                if (!zone_id) {
+                    $('#route_id').html('<option value="">--Select--</option>');
+                    return;
+                }
+                let url = '{{ route('getroute') }}?zone_id=' + zone_id;
+                let method = 'GET';
+                getAjaxValue(url, method, function(data) {
+                    $('#route_id').empty();
+                    $('#route_id').append('<option value="">--Select--</option>');
+                    $.each(data, function(key, route) {
+                        $('#route_id').append(
+                            `<option value="${route.id}">${route.name}</option>`
                         );
                     });
                 });
@@ -637,6 +659,14 @@ function getAjaxValue(url, method, callback) {
                 const type = $('#confirm_password').attr('type') === 'password' ? 'text' : 'password';
                 $('#confirm_password').attr('type', type);
                 $(this).toggleClass('fa-eye fa-eye-slash');
+            });
+
+            $('#mobileno, #a_mobileno').on('input', function() {
+                this.value = this.value.replace(/\D/g, '').slice(0, 10);
+            });
+
+            $('#monthlysalary, #ctc, #dailytarget, #monthlytarget').on('input', function() {
+                this.value = this.value.replace(/\D/g, '');
             });
 
             showTab(getActiveIndex());
