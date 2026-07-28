@@ -278,7 +278,7 @@
 											<div class="col-xl-8 col-md-8">
 												<div class="position-relative">
 													<input class="form-control" id="password" type="password" required name="password" style="padding-right: 40px;">
-													<i class="fa-regular fa-eye position-absolute" id="togglePassword" style="right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; z-index: 10;"></i>
+													<i class="fa-regular fa-eye position-absolute" id="togglePassword" style="right: 15px; top: 19px; transform: translateY(-50%); cursor: pointer; z-index: 10;"></i>
 													<div class="invalid-feedback-custom">Please enter password</div>
 												</div>
 											</div>
@@ -290,7 +290,7 @@
 											<div class="col-xl-8 col-md-8">
 												<div class="position-relative">
 													<input class="form-control" id="confirm_password" type="password" required name="confirm_password" style="padding-right: 40px;">
-													<i class="fa-regular fa-eye position-absolute" id="toggleConfirmPassword" style="right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; z-index: 10;"></i>
+													<i class="fa-regular fa-eye position-absolute" id="toggleConfirmPassword" style="right: 15px; top: 19px; transform: translateY(-50%); cursor: pointer; z-index: 10;"></i>
 													<div class="invalid-feedback-custom" id="confirm_password_feedback">Please enter confirm password</div>
 												</div>
 											</div>
