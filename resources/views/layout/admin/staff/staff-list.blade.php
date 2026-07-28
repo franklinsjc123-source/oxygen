@@ -95,8 +95,8 @@
                                          @endphp
                                          <td>{{ $stf->fullname }}</br>{{ $dept ? $dept->name : 'N/A' }}</br>{{ $dept ? $dept->designation : 'N/A' }}</td>
                                          <td>{{ $stf->username }}</br>{{$stf->email}}</br>{{$stf->mobileno}}</td>
-                                         <td> Education:{{ $stf->qualification }}</br>Experience:{{$stf->exprience}}</br>DOJ:{{$stf->doj}}</td>
-                                         <td>DOB:{{ $stf->dob }}</br>Blood Group:{{$stf->bloodgroup}}</td>
+                                         <td> Education:{{ $stf->qualification }}</br>Experience:{{$stf->exprience}}</br>DOJ:{{ $stf->doj ? date('d-m-Y', strtotime($stf->doj)) : 'N/A' }}</td>
+                                         <td>DOB:{{ $stf->dob ? date('d-m-Y', strtotime($stf->dob)) : 'N/A' }}</br>Blood Group:{{$stf->bloodgroup}}</td>
                                          <td>{{ $stf->curr_addr }}</td>
                                     
                                    

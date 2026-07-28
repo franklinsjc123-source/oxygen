@@ -320,36 +320,72 @@
 											
 										 <div class="form-group row">
                                                 <label for="validationCustom1" class="col-xl-2 col-md-2">Profile Image</label>
-                                                <div class="col-xl-10 col-md-10">
-                                                    <input class="form-control" id="profileimage" type="file"  name="profileimage" multiple />
-													<input class="form-control" id="oldprofileimage"  type="hidden" value="{{$staff->profileimage}}"  name="oldprofileimage" multiple />
-													<div id="image-holder1"></div>
+                                                <div class="col-xl-10 col-md-10 d-flex align-items-center gap-3">
+                                                    <div class="flex-grow-1">
+                                                        <input class="form-control" id="profileimage" type="file"  name="profileimage" multiple />
+														<input class="form-control" id="oldprofileimage"  type="hidden" value="{{$staff->profileimage}}"  name="oldprofileimage" multiple />
+														<div id="image-holder1"></div>
+                                                    </div>
+													@if($staff->profileimage && $staff->profileimage != '-')
+														<div class="flex-shrink-0">
+															<a class="btn btn-outline-primary btn-sm px-2 py-1" href="{{ asset('assets/images/staffcreate/' . $staff->profileimage) }}" target="_blank" title="View Document">
+																<i class="fa fa-eye"></i> View Document
+															</a>
+														</div>
+													@endif
                                                 </div>
                                             </div>
 											<div class="form-group row">
-                                                <label for="validationCustom1" class="col-xl-2 col-md-2">Aadhar Card</label>
-                                                <div class="col-xl-10 col-md-10">
-                                                    <input class="form-control" id="aatherimage" type="file"  name="aatherimage" multiple />
-													<input class="form-control" id="oldaatherimage"  type="hidden" value="{{$staff->aatherimage}}"  name="oldaatherimage" multiple />
-													<div id="image-holder"></div>
+                                                <label for="validationCustom1" class="col-xl-2 col-md-2">Aadhar Card <span class="text-danger">*</span></label>
+                                                <div class="col-xl-10 col-md-10 d-flex align-items-center gap-3">
+                                                    <div class="flex-grow-1">
+                                                        <input class="form-control" id="aatherimage" type="file"  name="aatherimage" multiple />
+														<input class="form-control" id="oldaatherimage"  type="hidden" value="{{$staff->aatherimage}}"  name="oldaatherimage" multiple />
+														<div id="image-holder"></div>
+                                                    </div>
+													@if($staff->aatherimage && $staff->aatherimage != '-')
+														<div class="flex-shrink-0">
+															<a class="btn btn-outline-primary btn-sm px-2 py-1" href="{{ asset('assets/images/staffcreate/' . $staff->aatherimage) }}" target="_blank" title="View Document">
+																<i class="fa fa-eye"></i> View Document
+															</a>
+														</div>
+													@endif
                                                 </div>
                                             </div>
 											<div class="form-group row">
-                                                <label for="validationCustom1" class="col-xl-2 col-md-2">Pan Card</label>
-                                                <div class="col-xl-10 col-md-10">
-                                                    <input class="form-control" id="pancard" type="file"  name="pancard" multiple />
-													<input class="form-control" id="oldpancard"  type="hidden" value="{{$staff->pancard}}"  name="oldpancard" multiple />
-													<div id="image-holder1"></div>
+                                                <label for="validationCustom1" class="col-xl-2 col-md-2">Pan Card <span class="text-danger">*</span></label>
+                                                <div class="col-xl-10 col-md-10 d-flex align-items-center gap-3">
+                                                    <div class="flex-grow-1">
+                                                        <input class="form-control" id="pancard" type="file"  name="pancard" multiple />
+														<input class="form-control" id="oldpancard"  type="hidden" value="{{$staff->pancard}}"  name="oldpancard" multiple />
+														<div id="image-holder1"></div>
+                                                    </div>
+													@if($staff->pancard && $staff->pancard != '-')
+														<div class="flex-shrink-0">
+															<a class="btn btn-outline-primary btn-sm px-2 py-1" href="{{ asset('assets/images/staffcreate/' . $staff->pancard) }}" target="_blank" title="View Document">
+																<i class="fa fa-eye"></i> View Document
+															</a>
+														</div>
+													@endif
                                                 </div>
                                             </div>
 											
                                            
                                             <div class="form-group row">
                                                 <label for="validationCustom1" class="col-xl-2 col-md-2">Other Documents</label>
-                                                <div class="col-xl-10 col-md-10">
-                                                    <input class="form-control" id="otherdoc" type="file"  name="otherdoc" multiple />
-													<input class="form-control" id="oldotherdoc" type="hidden"  value="{{$staff->otherdoc}}"  name="oldotherdoc" multiple />
-													<div id="image-holder1"></div>
+                                                <div class="col-xl-10 col-md-10 d-flex align-items-center gap-3">
+                                                    <div class="flex-grow-1">
+                                                        <input class="form-control" id="otherdoc" type="file"  name="otherdoc" multiple />
+														<input class="form-control" id="oldotherdoc" type="hidden"  value="{{$staff->otherdoc}}"  name="oldotherdoc" multiple />
+														<div id="image-holder1"></div>
+                                                    </div>
+													@if($staff->otherdoc && $staff->otherdoc != '-')
+														<div class="flex-shrink-0">
+															<a class="btn btn-outline-primary btn-sm px-2 py-1" href="{{ asset('assets/images/staffcreate/' . $staff->otherdoc) }}" target="_blank" title="View Document">
+																<i class="fa fa-eye"></i> View Document
+															</a>
+														</div>
+													@endif
                                                 </div>
                                             </div>
                                         {{-- </form> --}}
@@ -365,7 +401,7 @@
 												<div class="form-group row">
 													<label for="validationCustom0" class="col-xl-4 col-md-4">Monthly Salary <span class="text-danger">*</span></label>
 													<div class="col-xl-8 col-md-8">
-														<input class="form-control" id="monthlysalary" type="text" pattern="[0-9]+" required name="monthlysalary" value="{{$staff->monthlysalary}}">
+														<input class="form-control" id="monthlysalary" type="text" pattern="[0-9]+" required name="monthlysalary" value="{{ (int)$staff->monthlysalary }}">
 														<div class="invalid-feedback-custom">Please enter monthly salary</div>
 													</div>
 												</div>
@@ -374,7 +410,7 @@
 												<div class="form-group row">
 													<label for="validationCustom0" class="col-xl-4 col-md-4">CTC <span class="text-danger">*</span></label>
 													<div class="col-xl-8 col-md-8">
-														<input class="form-control" id="ctc" type="text" pattern="[0-9]+" required name="ctc" value="{{$staff->ctc}}">
+														<input class="form-control" id="ctc" type="text" pattern="[0-9]+" required name="ctc" value="{{ (int)$staff->ctc }}">
 														<div class="invalid-feedback-custom">Please enter CTC</div>
 													</div>
 												</div>
@@ -386,7 +422,7 @@
 												<div class="form-group row">
 													<label for="validationCustom0" class="col-xl-4 col-md-4">Daily Target <span class="text-danger">*</span></label>
 													<div class="col-xl-8 col-md-8">
-														<input class="form-control" id="dailytarget" type="text" pattern="[0-9]+" required name="dailytarget" value="{{$staff->dailytarget}}">
+														<input class="form-control" id="dailytarget" type="text" pattern="[0-9]+" required name="dailytarget" value="{{ (int)$staff->dailytarget }}">
 														<div class="invalid-feedback-custom">Please enter daily target</div>
 													</div>
 												</div>
@@ -395,7 +431,7 @@
 												<div class="form-group row">
 													<label for="validationCustom0" class="col-xl-4 col-md-4">Monthly Target <span class="text-danger">*</span></label>
 													<div class="col-xl-8 col-md-8">
-														<input class="form-control" id="monthlytarget" type="text" pattern="[0-9]+" required name="monthlytarget" value="{{$staff->monthlytarget}}">
+														<input class="form-control" id="monthlytarget" type="text" pattern="[0-9]+" required name="monthlytarget" value="{{ (int)$staff->monthlytarget }}">
 														<div class="invalid-feedback-custom">Please enter monthly target</div>
 													</div>
 												</div>
@@ -667,6 +703,20 @@ function getAjaxValue(url, method, callback) {
 
             $('#monthlysalary, #ctc, #dailytarget, #monthlytarget').on('input', function() {
                 this.value = this.value.replace(/\D/g, '');
+            });
+
+            $('#profileimage, #aatherimage, #pancard, #otherdoc').on('change', function() {
+                const files = this.files;
+                if (files && files.length > 0) {
+                    const maxLimit = 1 * 1024 * 1024; // 1MB
+                    for (let i = 0; i < files.length; i++) {
+                        if (files[i].size > maxLimit) {
+                            alert('File "' + files[i].name + '" exceeds the maximum limit of 1MB.');
+                            this.value = ''; // Reset input
+                            return;
+                        }
+                    }
+                }
             });
 
             showTab(getActiveIndex());

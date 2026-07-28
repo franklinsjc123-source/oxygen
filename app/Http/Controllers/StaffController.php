@@ -176,7 +176,7 @@ class StaffController extends Controller
             
               $flasher->addSuccess('Data has been saved successfully!');
             //   return redirect()->route('staff.create');
-            return redirect()->back();
+             return redirect()->route('staff-list');
 
 
 

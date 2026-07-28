@@ -660,23 +660,19 @@ function getAjaxValue(url, method, callback) {
             }
 
             function syncWizardButtons() {
-                const currentIdx = getActiveIndex();
-                if (currentIdx === 0) {
-                    $('#wizard-prev-btn').hide();
-                    $('#wizard-next-btn').show();
-                    $('#wizard-prev-last-btn').hide();
-                    $('#wizard-submit-btn').hide();
-                } else if (currentIdx === tabCount - 1) {
-                    $('#wizard-prev-btn').hide();
-                    $('#wizard-next-btn').hide();
-                    $('#wizard-prev-last-btn').show();
-                    $('#wizard-submit-btn').show();
+                const index = getActiveIndex();
+                const isLastTab = index === tabCount - 1;
+
+                if (isLastTab) {
+                    $('#staff-wizard-controls').removeClass('d-flex').addClass('d-none');
+                    $('.staff-final-actions').removeClass('d-none').addClass('d-flex');
                 } else {
-                    $('#wizard-prev-btn').show();
-                    $('#wizard-next-btn').show();
-                    $('#wizard-prev-last-btn').hide();
-                    $('#wizard-submit-btn').hide();
+                    $('#staff-wizard-controls').removeClass('d-none').addClass('d-flex');
+                    $('.staff-final-actions').removeClass('d-flex').addClass('d-none');
                 }
+
+                $('#wizard-prev-btn').toggle(index > 0);
+                $('#wizard-next-btn').toggle(index < tabCount - 1);
             }
 
             $('#wizard-next-btn').on('click', function() {
@@ -740,6 +736,20 @@ function getAjaxValue(url, method, callback) {
 
             $('#monthlysalary, #ctc, #dailytarget, #monthlytarget').on('input', function() {
                 this.value = this.value.replace(/\D/g, '');
+            });
+
+            $('#profileimage, #aatherimage, #pancard, #otherdoc').on('change', function() {
+                const files = this.files;
+                if (files && files.length > 0) {
+                    const maxLimit = 1 * 1024 * 1024; // 1MB
+                    for (let i = 0; i < files.length; i++) {
+                        if (files[i].size > maxLimit) {
+                            alert('File "' + files[i].name + '" exceeds the maximum limit of 1MB.');
+                            this.value = ''; // Reset input
+                            return;
+                        }
+                    }
+                }
             });
 
             showTab(getActiveIndex());

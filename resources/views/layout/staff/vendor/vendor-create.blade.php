@@ -12,6 +12,20 @@
             -webkit-text-security: disc;
             text-security: disc;
         }
+        .invalid-feedback-custom {
+            display: none;
+            color: #dc3545;
+            font-size: 1.05rem;
+            margin-top: 0.25rem;
+        }
+        form.validation-attempted :invalid ~ .invalid-feedback-custom,
+        form.validation-attempted .invalid-field ~ .invalid-feedback-custom {
+            display: block !important;
+        }
+        form.validation-attempted :invalid {
+            border-color: #ced4da !important;
+            box-shadow: none !important;
+        }
     </style>
 
 
@@ -98,7 +112,7 @@
                                     </li>
                                 </ul>
 
-                                <form class="" id="vendor-create-form" method="post" action="{{ route('staffvendorcreate.store') }}"
+                                <form class="needs-validation" id="vendor-create-form" novalidate method="post" action="{{ route('staffvendorcreate.store') }}"
                                     enctype="multipart/form-data">
                                     @csrf
                                     @if(session('error'))
@@ -145,8 +159,13 @@
                                                         <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Password
                                                         </label>
                                                         <div class="col-xl-8 col-md-8">
-                                                            <input class="form-control" id="pass" type="text"
-                                                                name="pass" required>
+                                                            <div class="position-relative">
+                                                                <input class="form-control pe-5" id="pass" type="password"
+                                                                    name="pass" onkeyup="validate_password()" required>
+                                                                <span class="position-absolute toggle-password" style="right: 15px; top: 19px; transform: translateY(-50%); cursor: pointer;">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -155,8 +174,13 @@
                                                         <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Confirm
                                                             Password</label>
                                                         <div class="col-xl-8 col-md-8">
-                                                            <input class="form-control" id="confirm_pass" type="text"
-                                                                name="pass1" onkeyup="validate_password()" required>
+                                                            <div class="position-relative">
+                                                                <input class="form-control pe-5" id="confirm_pass" type="password"
+                                                                    name="pass1" onkeyup="validate_password()" required>
+                                                                <span class="position-absolute toggle-password" style="right: 15px; top: 19px; transform: translateY(-50%); cursor: pointer;">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1015,7 +1039,10 @@
                     }
                 });
 
-                if (!valid) return false;
+                if (!valid) {
+                    $('#vendor-create-form').addClass('validation-attempted');
+                    return false;
+                }
 
                 // Extra check for password match if in step 1 (Personal Information)
                 if (currentTab.attr('id') === 'top-profile') {
@@ -1379,16 +1406,20 @@
         });
 
         function validate_password() {
-
             var pass = document.getElementById('pass').value;
-            var confirm_pass = document.getElementById('confirm_pass').value;
-            if (pass != confirm_pass) {
-                document.getElementById('wrong_pass_alert').style.color = 'red';
-                document.getElementById('wrong_pass_alert').innerHTML = '☒ Use same password';
+            var confirmInput = document.getElementById('confirm_pass');
+            var confirm_pass = confirmInput.value;
+            var feedback = $(confirmInput).siblings('.invalid-feedback-custom')[0];
+
+            if (confirm_pass === '') {
+                confirmInput.setCustomValidity("Please enter confirm password");
+                if (feedback) feedback.innerHTML = "Please enter confirm password";
+            } else if (pass !== confirm_pass) {
+                confirmInput.setCustomValidity("Passwords do not match");
+                if (feedback) feedback.innerHTML = "Passwords do not match";
             } else {
-                document.getElementById('wrong_pass_alert').style.color = 'green';
-                document.getElementById('wrong_pass_alert').innerHTML =
-                    '🗹 Password Matched';
+                confirmInput.setCustomValidity("");
+                if (feedback) feedback.innerHTML = "";
             }
             updateSubmitButtonState();
         }
@@ -1450,7 +1481,57 @@
     </script>
     <script>
         $(document).ready(function() {
+            $(document).on('click', '.toggle-password', function() {
+                const input = $(this).siblings('input');
+                const icon = $(this).find('i');
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    input.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+
+            // Dynamically move mandatory star after the label and color it red
+            $('span:contains("*")').each(function() {
+                var parent = $(this).parent();
+                if (parent.is('label') || parent.hasClass('col-xl-3') || parent.hasClass('col-md-3')) {
+                    $(this).addClass('text-danger ms-1').appendTo(parent);
+                }
+            });
+
+            // Dynamically inject validation feedback divs under required inputs
+            $('input[required], select[required], textarea[required], [required]').each(function() {
+                if ($(this).siblings('.invalid-feedback-custom').length === 0) {
+                    var labelText = $(this).closest('.form-group').find('label').text().trim().replace(/[*:]/g, '').trim();
+                    if (!labelText) {
+                        labelText = $(this).attr('placeholder') || $(this).attr('name') || 'field';
+                    }
+                    var action = "enter";
+                    if ($(this).is('select')) {
+                        action = "select";
+                    } else if ($(this).attr('type') === 'file') {
+                        action = "upload";
+                    }
+                    var msg = "Please " + action + " " + labelText.toLowerCase();
+                    
+                    if ($(this).attr('id') === 'pass') {
+                        msg = "Please enter password";
+                    } else if ($(this).attr('id') === 'confirm_pass') {
+                        msg = "Please enter confirm password";
+                    }
+                    
+                    if ($(this).parent().hasClass('position-relative')) {
+                        $(this).parent().append('<div class="invalid-feedback-custom">' + msg + '</div>');
+                    } else {
+                        $(this).after('<div class="invalid-feedback-custom">' + msg + '</div>');
+                    }
+                }
+            });
+
             $('#vendor-create-form').on('submit', function(e) {
+                $(this).addClass('validation-attempted');
                 var totalSize = 0;
                 var maxPostSize = 8 * 1024 * 1024; // 8MB
                 var maxFileSize = 2 * 1024 * 1024; // 2MB
