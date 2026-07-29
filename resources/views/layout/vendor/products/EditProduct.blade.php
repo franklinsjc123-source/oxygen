@@ -606,10 +606,11 @@
                     '                <input type="number" name="low_stock_limit[]" id="low_stock_limit'+(x+1)+'" placeholder="Low Stock Limit" class="low_stock_limit form-control" required>' +
                     '                <div class="invalid-feedback-custom">Please enter low stock limit</div>' +
                     '            </div>' +
-                    '            <div class="col-12 mt-4">' +
-                    '                <label class="form-label fw-bold text-dark mb-0">Variant Images</label>' +
-                    '                <hr class="mt-1 mb-3 text-secondary opacity-25">' +
-                    '            </div>' +
+                    '            <div class="row variant-images-wrapper mt-3 col-12 p-0 m-0">' +
+                    '                <div class="col-12 mt-4">' +
+                    '                    <label class="form-label fw-bold text-dark mb-0">Variant Images</label>' +
+                    '                    <hr class="mt-1 mb-3 text-secondary opacity-25">' +
+                    '                </div>' +
                     '            <div class="col-md-3 col-sm-6">' +
                     '                <div class="border rounded p-2 text-center bg-light position-relative">' +
                     '                    <span class="d-block mb-1 small fw-bold text-secondary">Main Image</span>' +
@@ -662,10 +663,12 @@
                     '                    <input type="hidden" name="old_subimg3[]" value="">' +
                     '                </div>' +
                     '            </div>' +
+                    '            </div>' +
                     '        </div>' +
                     '    </div>' +
                     '</div>'
                 );
+                syncVariantImages();
 
                 $('#attrsize').find('option').each(function() {
                     $("#attrsize"+x).append("<option value= '"+$(this).val()+"'>"+$(this).val()+"</option>");
