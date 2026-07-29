@@ -268,11 +268,11 @@
                                      <!-- Variant Details Subview -->
                                      @include('layout.admin.products.producteditDetails')
 
-                                     <!-- Product Main Image -->
+                                     <!-- Product Image 1 -->
                                      <div class="row g-3 mt-3">
                                          <div class="col-md-3">
                                              <div class="form-group">
-                                                  <label class="form-label fw-bold text-dark">Upload Main Image <span class="text-danger">*</span></label>
+                                                  <label class="form-label fw-bold text-dark">Upload Image 1 <span class="text-danger">*</span></label>
                                                   <input class="form-control" type="file" id="productMainImgInput" name="mainImage" accept="image/*">
                                                   <div class="text-muted small mt-1">Upload Format: jpg, jpeg, png</div>
                                                   <input type="hidden" name="oldmainImage" value="{{ $product->product_image }}"></div>
@@ -754,46 +754,56 @@
                     '        <button class="remove_field btn btn-xs btn-danger m-0" value=""><i class="fa fa-trash"></i> Remove</button>' +
                     '    </div>' +
                     '    <div class="card-body p-4">' +
-                    '        <input type="hidden" name="product_details_id[]" value="" required>' +
-                    '        <div class="row g-3">' +
-                    '            <div class="col-md-4">' +
+                    '        <div class="variant-fields-wrapper">' +
+                    '            <input type="hidden" name="product_details_id[]" value="" required>' +
+                    '            <div class="row g-3">' +
+                    '            <div class="col-md-2 color-col-wrapper">' +
                     '                <label class="form-label fw-bold text-secondary mb-1">Color</label>' +
                     '                <select class="form-select text-secondary attrcolor" name="attrcolor[]" id="attrcolor'+x+'"><option hidden>Color</option></select>' +
                     '                <div class="invalid-feedback-custom">Please select color</div>' +
                     '            </div>' +
-                    '            <div class="col-md-4">' +
+                    '            <div class="col-md-2">' +
                     '                <label class="form-label fw-bold text-secondary mb-1">Size</label>' +
                     '                <select class="form-select text-secondary attrsize" name="attrsize[]" id="attrsize'+x+'"><option hidden>Size</option></select>' +
                     '                <div class="invalid-feedback-custom">Please select size</div>' +
                     '            </div>' +
-                    '            <div class="col-md-4">' +
+                    '            <div class="col-md-2">' +
                     '                <label class="form-label fw-bold text-secondary mb-1">Retail Price</label>' +
                     '                <input type="text" name="retail_price[]" placeholder="Retail Price" class="form-control" required>' +
                     '                <div class="invalid-feedback-custom">Please enter retail price</div>' +
                     '            </div>' +
-                    '            <div class="col-md-4">' +
+                    '            <div class="col-md-2">' +
                     '                <label class="form-label fw-bold text-secondary mb-1">Selling Price</label>' +
                     '                <input type="text" name="selling_price[]" placeholder="Selling Price" class="form-control" required>' +
                     '                <div class="invalid-feedback-custom">Please enter selling price</div>' +
                     '            </div>' +
-                    '            <div class="col-md-4">' +
+                    '            <div class="col-md-1">' +
                     '                <label class="form-label fw-bold text-secondary mb-1" id="lowstack'+(x+1)+'">Quantity</label>' +
                     '                <input type="number" class="qty form-control" id="qty'+(x+1)+'" placeholder="Qty" name="quantity[]" required>' +
                     '                <div class="invalid-feedback-custom">Please enter quantity</div>' +
                     '            </div>' +
-                    '            <div class="col-md-4">' +
+                    '            <div class="col-md-2">' +
                     '                <label class="form-label fw-bold text-secondary mb-1">Low Stock Limit</label>' +
                     '                <input type="number" name="low_stock_limit[]" id="low_stock_limit'+(x+1)+'" placeholder="Low Stock Limit" class="low_stock_limit form-control" required>' +
                     '                <div class="invalid-feedback-custom">Please enter low stock limit</div>' +
                     '            </div>' +
-                    '            <div class="row variant-images-wrapper mt-3 col-12 p-0 m-0">' +
+                    '            <div class="col-md-1 d-flex flex-column justify-content-end">' +
+                    '                <label class="form-label fw-bold text-secondary mb-1">&nbsp;</label>' +
+                    '                <div class="d-flex gap-1 justify-content-end">' +
+                    '                    <button type="button" class="btn btn-outline-danger w-100 remove-size-row-inline-btn" title="Remove Size"><i class="fa fa-trash"></i></button>' +
+                    '                    <button type="button" class="btn btn-outline-primary w-100 add-size-row-inline-btn" title="Add Size"><i class="fa fa-plus"></i></button>' +
+                    '                </div>' +
+                    '            </div>' +
+                    '            </div>' +
+                    '        </div>' +
+                    '        <div class="row variant-images-wrapper mt-3 col-12 p-0 m-0">' +
                     '                <div class="col-12 mt-4">' +
                     '                    <label class="form-label fw-bold text-dark mb-0">Variant Images</label>' +
                     '                    <hr class="mt-1 mb-3 text-secondary opacity-25">' +
                     '                </div>' +
                     '            <div class="col-md-3 col-sm-6">' +
                     '                <div class="border rounded p-2 text-center bg-light position-relative">' +
-                    '                    <span class="d-block mb-1 small fw-bold text-secondary">Main Image</span>' +
+                    '                    <span class="d-block mb-1 small fw-bold text-secondary">Image 1</span>' +
                     '                    <div class="img-preview-box mb-2">' +
                     '                        <img class="img-thumb" id="mainr'+x+'" src="" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;" />' +
                     '                    </div>' +
@@ -806,7 +816,7 @@
                     '            </div>' +
                     '            <div class="col-md-3 col-sm-6">' +
                     '                <div class="border rounded p-2 text-center bg-light position-relative">' +
-                    '                    <span class="d-block mb-1 small fw-bold text-secondary">Sub Image 1</span>' +
+                    '                    <span class="d-block mb-1 small fw-bold text-secondary">Image 2</span>' +
                     '                    <div class="img-preview-box mb-2">' +
                     '                        <img class="img-thumb" id="sub1r'+x+'" src="" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;" />' +
                     '                    </div>' +
@@ -819,7 +829,7 @@
                     '            </div>' +
                     '            <div class="col-md-3 col-sm-6">' +
                     '                <div class="border rounded p-2 text-center bg-light position-relative">' +
-                    '                    <span class="d-block mb-1 small fw-bold text-secondary">Sub Image 2</span>' +
+                    '                    <span class="d-block mb-1 small fw-bold text-secondary">Image 3</span>' +
                     '                    <div class="img-preview-box mb-2">' +
                     '                        <img class="img-thumb" id="sub2r'+x+'" src="" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;" />' +
                     '                    </div>' +
@@ -832,7 +842,7 @@
                     '            </div>' +
                     '            <div class="col-md-3 col-sm-6">' +
                     '                <div class="border rounded p-2 text-center bg-light position-relative">' +
-                    '                    <span class="d-block mb-1 small fw-bold text-secondary">Sub Image 3</span>' +
+                    '                    <span class="d-block mb-1 small fw-bold text-secondary">Image 4</span>' +
                     '                    <div class="img-preview-box mb-2">' +
                     '                        <img class="img-thumb" id="sub3r'+x+'" src="" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;" />' +
                     '                    </div>' +

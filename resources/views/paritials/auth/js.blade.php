@@ -459,6 +459,260 @@ $(document).ready(function() {
 });
 </script>
 
+<script type="text/javascript">
+$(document).ready(function() {
+    function syncVariantImages() {
+        // 1. Tag each wrapper with its original card ID (first run only)
+        $('.variant-card').each(function() {
+            let cardId = $(this).attr('id');
+            if (!cardId) return;
+            // Only tag non-cloned wrappers
+            $(this).find('.variant-fields-wrapper:not([data-inline-cloned])').each(function() {
+                if (!$(this).data('orig-card')) $(this).data('orig-card', cardId);
+            });
+            $(this).find('.variant-images-wrapper').each(function() {
+                if (!$(this).data('orig-card')) $(this).data('orig-card', cardId);
+            });
+        });
+
+        // 2. Restore non-cloned fields/images to their original card
+        $('.variant-fields-wrapper:not([data-inline-cloned])').each(function() {
+            let origCard = $(this).data('orig-card');
+            if (origCard) {
+                let $cardBody = $('#' + origCard + ' > .card-body');
+                if ($cardBody.length && !$(this).parent().is($cardBody)) {
+                    $cardBody.prepend($(this));
+                }
+            }
+        });
+        $('.variant-images-wrapper').each(function() {
+            let origCard = $(this).data('orig-card');
+            if (origCard) {
+                let $cardBody = $('#' + origCard + ' > .card-body');
+                if ($cardBody.length && !$(this).parent().is($cardBody)) {
+                    $cardBody.append($(this));
+                }
+            }
+        });
+
+        // 3. Show everything, remove temp dividers
+        $('.variant-card').show();
+        $('.variant-card .variant-card-header').show();
+        $('.variant-images-wrapper').show();
+        $('.variant-size-divider').remove();
+
+        // 4. Group by color
+        let colorGroups = {};
+        let cardOrder = [];
+        $('.variant-card').each(function(idx) {
+            let $card = $(this);
+            let cardId = $card.attr('id');
+            // Use first non-cloned color select for grouping
+            let color = $card.find('.variant-fields-wrapper:not([data-inline-cloned]) select[name="attrcolor[]"]').first().val();
+            if (!color || color === 'Color') {
+                color = '__NOCOLOR_' + idx;
+            }
+            if (!colorGroups[color]) {
+                colorGroups[color] = [];
+                cardOrder.push(color);
+            }
+            colorGroups[color].push($card);
+        });
+
+        // 5. For each color group, merge children into parent
+        cardOrder.forEach(function(color) {
+            let cards = colorGroups[color];
+            let $parent = cards[0];
+            let $parentBody = $parent.find('> .card-body');
+            let $parentImages = $parent.find('.variant-images-wrapper').first();
+
+            if (cards.length > 1) {
+                for (let i = 1; i < cards.length; i++) {
+                    let $child = cards[i];
+                    let $childFields = $child.find('.variant-fields-wrapper:not([data-inline-cloned])');
+                    let $childImages = $child.find('.variant-images-wrapper');
+
+                    // Move child fields into parent card body, before parent images
+                    $childFields.insertBefore($parentImages);
+
+                    // Hide child's images and card
+                    $childImages.hide();
+                    $child.hide();
+
+                    // Sync image hidden values
+                    syncHiddenImages($parent, $child);
+                }
+            }
+        });
+    }
+
+    function syncHiddenImages($parentCard, $childCard) {
+        let parentCardId = $parentCard.attr('id');
+        let childCardId = $childCard.attr('id');
+        if (!parentCardId || !childCardId) return;
+
+        ['old_mainimg[]', 'old_subimg1[]', 'old_subimg2[]', 'old_subimg3[]'].forEach(function(name) {
+            let $pImages = $('.variant-images-wrapper').filter(function() {
+                return $(this).data('orig-card') === parentCardId;
+            });
+            let $cImages = $('.variant-images-wrapper').filter(function() {
+                return $(this).data('orig-card') === childCardId;
+            });
+            let val = $pImages.find('input[name="' + name + '"]').val();
+            $cImages.find('input[name="' + name + '"]').val(val);
+        });
+
+        [
+            { prefix: 'p_mainimg' },
+            { prefix: 'subimg1' },
+            { prefix: 'subimg2' },
+            { prefix: 'subimg3' }
+        ].forEach(function(item) {
+            let $pImages = $('.variant-images-wrapper').filter(function() {
+                return $(this).data('orig-card') === parentCardId;
+            });
+            let $cImages = $('.variant-images-wrapper').filter(function() {
+                return $(this).data('orig-card') === childCardId;
+            });
+            let srcInput = $pImages.find('input[type="file"][id^="' + item.prefix + '"]')[0];
+            let targetInput = $cImages.find('input[type="file"][id^="' + item.prefix + '"]')[0];
+            if (srcInput && targetInput && srcInput.files && srcInput.files.length > 0) {
+                try {
+                    let dt = new DataTransfer();
+                    for (let f = 0; f < srcInput.files.length; f++) {
+                        dt.items.add(srcInput.files[f]);
+                    }
+                    targetInput.files = dt.files;
+                } catch(e) {}
+            }
+        });
+    }
+
+    // Run on page load
+    if ($('.variant-card').length) {
+        syncVariantImages();
+    }
+
+    // Re-run when color changes
+    $(document).on('change', 'select[name="attrcolor[]"]', function() {
+        let newColor = $(this).val();
+        let $parentCard = $(this).closest('.variant-card');
+        if ($parentCard.length) {
+            // Update color on ALL rows in this card (including cloned ones)
+            $parentCard.find('select[name="attrcolor[]"]').val(newColor);
+        }
+        syncVariantImages();
+    });
+
+    // Re-run when images change
+    $(document).on('change', 'input[name="mainimg[]"], input[name="subimg1[]"], input[name="subimg2[]"], input[name="subimg3[]"]', function() {
+        setTimeout(syncVariantImages, 150);
+    });
+
+    // Re-run when new variant added via "ADD MORE VARIANT" button
+    $(document).on('click', '#add_m', function() {
+        setTimeout(syncVariantImages, 300);
+    });
+
+    // ========================================================
+    // INLINE "+ Add Size" — simply clones the input row
+    // ========================================================
+    $(document).on('click', '.add-size-row-inline-btn', function(e) {
+        e.preventDefault();
+
+        let $currentRow = $(this).closest('.variant-fields-wrapper');
+        let $parentCard = $(this).closest('.variant-card');
+        let $cardBody = $parentCard.find('> .card-body');
+        let $parentImages = $cardBody.find('.variant-images-wrapper').first();
+
+        // 1. Clone the entire row (inputs + dropdowns)
+        let $newRow = $currentRow.clone(false);
+
+        // 2. Reset Size to placeholder
+        let $sizeSelect = $newRow.find('select[name="attrsize[]"]');
+        if ($sizeSelect.find('option[value=""]').length === 0 && $sizeSelect.find('option:contains("Size")').length === 0) {
+            $sizeSelect.prepend('<option value="" disabled selected hidden>Size</option>');
+        }
+        $sizeSelect.val('');
+
+        // 3. Clear input values (start with empty text boxes)
+        $newRow.find('input[name="retail_price[]"]').val('');
+        $newRow.find('input[name="selling_price[]"]').val('');
+        $newRow.find('input[name="quantity[]"]').val('');
+        $newRow.find('input[name="low_stock_limit[]"]').val('');
+        $newRow.find('input[name="product_details_id[]"]').val('');
+
+        // 4. Give unique IDs to avoid conflicts
+        let uid = Date.now();
+        $newRow.find('[id]').each(function() {
+            $(this).attr('id', $(this).attr('id') + '_c' + uid);
+        });
+
+        // 5. Mark as inline-cloned
+        $newRow.attr('data-inline-cloned', 'true');
+        $newRow.attr('data-clone-uid', uid);
+
+        // 6. Insert the cloned row before the images section
+        $newRow.insertBefore($parentImages);
+
+        // 7. Create hidden image inputs for form array alignment
+        //    (appended AFTER images wrapper so PHP array order matches)
+        let $hiddenImgs = $('<div class="cloned-row-images" data-clone-uid="' + uid + '" style="display:none !important"></div>');
+        $hiddenImgs.html(
+            '<input type="file" name="mainimg[]">' +
+            '<input type="hidden" name="old_mainimg[]" value="">' +
+            '<input type="file" name="subimg1[]">' +
+            '<input type="hidden" name="old_subimg1[]" value="">' +
+            '<input type="file" name="subimg2[]">' +
+            '<input type="hidden" name="old_subimg2[]" value="">' +
+            '<input type="file" name="subimg3[]">' +
+            '<input type="hidden" name="old_subimg3[]" value="">'
+        );
+        $cardBody.append($hiddenImgs);
+    });
+
+    // ========================================================
+    // INLINE "Remove Size" — removes cloned row
+    // ========================================================
+    $(document).on('click', '.remove-size-row-inline-btn', function(e) {
+        e.preventDefault();
+        let $wrapper = $(this).closest('.variant-fields-wrapper');
+
+        // If inline-cloned, remove the row + its hidden image inputs
+        let cloneUid = $wrapper.attr('data-clone-uid');
+        if (cloneUid) {
+            $wrapper.closest('.variant-card').find('.cloned-row-images[data-clone-uid="' + cloneUid + '"]').remove();
+            $wrapper.remove();
+            return;
+        }
+
+        // Otherwise, this is a merged row from syncVariantImages
+        let targetCardId = $wrapper.data('orig-card');
+        if (targetCardId) {
+            let $targetCard = $('#' + targetCardId);
+            let detailId = $targetCard.find('input[name="product_details_id[]"]').val();
+            if (detailId) {
+                let $removeBtn = $targetCard.find('.remove_field');
+                if ($removeBtn.length) {
+                    $removeBtn.trigger('click');
+                } else {
+                    $targetCard.remove();
+                }
+            } else {
+                $targetCard.remove();
+            }
+        }
+        $wrapper.remove();
+        setTimeout(syncVariantImages, 300);
+    });
+
+    // Re-run when variant removed
+    $(document).on('click', '.remove_field', function() {
+        setTimeout(syncVariantImages, 300);
+    });
+});
+</script>
+
 <!-- sidebar handled by assets/js/sidebar-menu.js -->
 
 

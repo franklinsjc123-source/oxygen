@@ -26,6 +26,27 @@
         cursor: inherit;
         display: block;
     }
+
+
+    .variant-card .variant-fields-wrapper:first-of-type .remove-size-row-inline-btn {
+        display: none !important;
+    }
+    .variant-card .variant-fields-wrapper:first-of-type .add-size-row-inline-btn {
+        display: inline-block !important;
+    }
+    .variant-card .variant-fields-wrapper ~ .variant-fields-wrapper label {
+        display: none !important;
+    }
+    .variant-card .variant-fields-wrapper ~ .variant-fields-wrapper .add-size-row-inline-btn {
+        display: none !important;
+    }
+    .variant-card .variant-fields-wrapper ~ .variant-fields-wrapper .remove-size-row-inline-btn {
+        display: inline-block !important;
+    }
+    .variant-card .variant-fields-wrapper ~ .variant-fields-wrapper {
+        margin-top: 15px;
+    }
+
     .variant-card {
         border: 1px solid #e3e6f0;
         border-radius: 0.35rem;
@@ -84,11 +105,12 @@
                         </div>
                         
                         <div class="card-body p-4">
-                            <input type="hidden" name="product_details_id[]" value="{{ $productdetails->id }}" required>
-                            
-                            <div class="row g-3">
+                            <div class="variant-fields-wrapper">
+                                <input type="hidden" name="product_details_id[]" value="{{ $productdetails->id }}" required>
+                                
+                                <div class="row g-3">
                                 <!-- Color -->
-                                <div class="col-md-4">
+                                <div class="col-md-2">
                                     <label class="form-label fw-bold text-dark mb-1">Color <span class="text-danger">*</span></label>
                                     <select class="form-select text-secondary" name="attrcolor[]" id="attrcolor" required>
                                         @if(!empty($currentColor))
@@ -106,7 +128,7 @@
                                 </div>
                                 
                                 <!-- Size -->
-                                <div class="col-md-4">
+                                <div class="col-md-2">
                                     <label class="form-label fw-bold text-dark mb-1">Size <span class="text-danger">*</span></label>
                                     <select class="form-select text-secondary" name="attrsize[]" id="attrsize" required>
                                         @if(!empty($currentSize))
@@ -130,35 +152,49 @@
                                 </div>
                                 
                                 <!-- Retail Price -->
-                                <div class="col-md-4">
+                                <div class="col-md-2">
                                     <label class="form-label fw-bold text-dark mb-1">Retail Price <span class="text-danger">*</span></label>
                                     <input type="text" name="retail_price[]" placeholder="Retail Price" class="form-control" required value="{{ $productdetails->retail_price }}">
                                     <div class="invalid-feedback-custom">Please enter retail price</div>
                                 </div>
                                 
                                 <!-- Selling Price -->
-                                <div class="col-md-4">
+                                <div class="col-md-2">
                                     <label class="form-label fw-bold text-dark mb-1">Selling Price <span class="text-danger">*</span></label>
                                     <input type="text" name="selling_price[]" placeholder="Selling Price" class="form-control" required value="{{ $productdetails->selling_price }}">
                                     <div class="invalid-feedback-custom">Please enter selling price</div>
                                 </div>
                                 
                                 <!-- Quantity -->
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold text-dark mb-1" id="lowstack{{ $qtyinc }}">Quantity <span class="text-danger">*</span></label>
+                                <div class="col-md-1">
+                                    <label class="form-label fw-bold text-dark mb-1" id="lowstack{{ $qtyinc }}">Qty <span class="text-danger">*</span></label>
                                     <input type="number" class="qty form-control" id="qty{{ $qtyinc }}" placeholder="Qty" name="quantity[]" required value="{{ $productdetails->quantity }}">
                                     <div class="invalid-feedback-custom">Please enter quantity</div>
                                 </div>
                                 
 
                                 <!-- Low Stock Limit -->
-                                <div class="col-md-4">
+                                <div class="col-md-2">
                                     <label class="form-label fw-bold text-dark mb-1">Low Stock Limit <span class="text-danger">*</span></label>
                                     <input type="number" name="low_stock_limit[]" id="low_stock_limit{{ $inc }}" placeholder="Low Stock Limit" class="low_stock_limit form-control" required value="{{ $productdetails->low_stock_limit }}">
                                     <div class="invalid-feedback-custom">Please enter low stock limit</div>
                                 </div>
 
-                                <!-- Variant Images Separator -->
+                                <!-- Actions -->
+                                <div class="col-md-1 d-flex flex-column justify-content-end">
+                                    <label class="form-label fw-bold text-dark mb-1">&nbsp;</label>
+                                    <div class="d-flex gap-1 justify-content-end">
+                                        <button type="button" class="btn btn-danger w-100 remove-size-row-inline-btn" title="Remove Size"><i class="fa fa-trash"></i></button>
+                                        <button type="button" class="btn btn-primary w-100 add-size-row-inline-btn" title="Add Size"><i class="fa fa-plus"></i></button>
+                                    </div>
+                                </div>
+                                </div>
+
+                                </div>
+                            </div>
+
+                            <!-- Variant Images Section -->
+                            <div class="row variant-images-wrapper mt-3 col-12 p-0 m-0">
                                 <div class="col-12 mt-4">
                                     <label class="form-label fw-bold text-dark mb-0">Variant Images</label>
                                     <hr class="mt-1 mb-3 text-secondary opacity-25">
@@ -167,7 +203,7 @@
                                 <!-- Main Image -->
                                 <div class="col-md-3 col-sm-6">
                                     <div class="border rounded p-2 text-center bg-light position-relative">
-                                        <span class="d-block mb-1 small fw-bold text-dark">Main Image <span class="text-danger">*</span></span>
+                                        <span class="d-block mb-1 small fw-bold text-dark">Image 1 <span class="text-danger">*</span></span>
                                         <div class="img-preview-box mb-2">
                                             <img class="img-thumb" id="mainr{{ $key }}" src="{{ isset($p_imgs[0]) && !empty($p_imgs[0]) ? url('assets/images/products/detail/'.$p_imgs[0]) : '' }}" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ isset($p_imgs[0]) && !empty($p_imgs[0]) ? '' : 'display:none;' }}" />
                                         </div>
@@ -179,10 +215,10 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Sub Image 1 -->
+                                <!-- Image 2 -->
                                 <div class="col-md-3 col-sm-6">
                                     <div class="border rounded p-2 text-center bg-light position-relative">
-                                        <span class="d-block mb-1 small fw-bold text-dark">Sub Image 1</span>
+                                        <span class="d-block mb-1 small fw-bold text-dark">Image 2</span>
                                         <div class="img-preview-box mb-2">
                                             <img class="img-thumb" id="sub1r{{ $key }}" src="{{ isset($p_imgs[1]) && !empty($p_imgs[1]) ? url('assets/images/products/detail/'.$p_imgs[1]) : '' }}" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ isset($p_imgs[1]) && !empty($p_imgs[1]) ? '' : 'display:none;' }}" />
                                         </div>
@@ -194,10 +230,10 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Sub Image 2 -->
+                                <!-- Image 3 -->
                                 <div class="col-md-3 col-sm-6">
                                     <div class="border rounded p-2 text-center bg-light position-relative">
-                                        <span class="d-block mb-1 small fw-bold text-dark">Sub Image 2</span>
+                                        <span class="d-block mb-1 small fw-bold text-dark">Image 3</span>
                                         <div class="img-preview-box mb-2">
                                             <img class="img-thumb" id="sub2r{{ $key }}" src="{{ isset($p_imgs[2]) && !empty($p_imgs[2]) ? url('assets/images/products/detail/'.$p_imgs[2]) : '' }}" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ isset($p_imgs[2]) && !empty($p_imgs[2]) ? '' : 'display:none;' }}" />
                                         </div>
@@ -209,10 +245,10 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Sub Image 3 -->
+                                <!-- Image 4 -->
                                 <div class="col-md-3 col-sm-6">
                                     <div class="border rounded p-2 text-center bg-light position-relative">
-                                        <span class="d-block mb-1 small fw-bold text-dark">Sub Image 3</span>
+                                        <span class="d-block mb-1 small fw-bold text-dark">Image 4</span>
                                         <div class="img-preview-box mb-2">
                                             <img class="img-thumb" id="sub3r{{ $key }}" src="{{ isset($p_imgs[3]) && !empty($p_imgs[3]) ? url('assets/images/products/detail/'.$p_imgs[3]) : '' }}" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ isset($p_imgs[3]) && !empty($p_imgs[3]) ? '' : 'display:none;' }}" />
                                         </div>
@@ -226,7 +262,7 @@
                             </div>
                         </div>
                     </div>
-                @endforeach
+                    @endforeach
             </div>
             
             <div class="input_fields_wrap"></div>
@@ -249,9 +285,9 @@
             var lowstack = $("#low_stock_limit" + ind).val();
             
             if (parseInt(quantity) > parseInt(lowstack)) {
-                $('#lowstack' + ind).html('Quantity <span class="badge bg-success ms-2">Qty In Stock</span>');
+                $('#lowstack' + ind).html('Qty <span class="text-danger">*</span>');
             } else {
-                $('#lowstack' + ind).html('Quantity <span class="badge bg-danger ms-2">Low Stock</span>');
+                $('#lowstack' + ind).html('Qty <span class="text-danger">*</span>');
             }
         });
         
@@ -264,9 +300,9 @@
             
             if (quantity && lowstack) {
                 if (parseInt(quantity) > parseInt(lowstack)) {
-                    $('#lowstack' + ind).html('Quantity <span class="badge bg-success ms-2">Qty In Stock</span>');
+                    $('#lowstack' + ind).html('Qty <span class="text-danger">*</span>');
                 } else {
-                    $('#lowstack' + ind).html('Quantity <span class="badge bg-danger ms-2">Low Stock</span>');
+                    $('#lowstack' + ind).html('Qty <span class="text-danger">*</span>');
                 }
             }
         });
