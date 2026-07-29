@@ -400,7 +400,7 @@
                                     <div class="card-body">
                                         <div class="col-md-12">
                                             <div class="row">
-                                            <div class="col-md-6">
+                                            <div class="col-md-3">
                                                     <div class="form-group">
                                                         <h5 class="fw-bold">Vendor</h5>
                                                         <div id="clothing">
@@ -418,7 +418,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-3">
                                                     <div class="form-group">
                                                         <h5 class="fw-bold"> Primary / Main Category</h5>
                                                         <div class="form-group">
