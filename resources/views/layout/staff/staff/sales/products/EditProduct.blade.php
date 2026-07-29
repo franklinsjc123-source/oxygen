@@ -1142,19 +1142,17 @@
                         if (!allowedExtensions.includes(extension)) {
                             alert('Only JPG, JPEG, and PNG images are allowed. Selected file: ' + file.name);
                             e.target.value = '';
-                            e.target.dispatchEvent(new Event('change', { bubbles: true }));
                             break;
                         }
                         if (file.size > maxSizeBytes) {
                             alert('Image size must not exceed 1 MB. Selected file: ' + file.name + ' (' + (file.size / (1024 * 1024)).toFixed(2) + ' MB)');
                             e.target.value = '';
-                            e.target.dispatchEvent(new Event('change', { bubbles: true }));
                             break;
                         }
                     }
                 }
             }
-        });
+        }, true);
     });
     </script>
 @endsection

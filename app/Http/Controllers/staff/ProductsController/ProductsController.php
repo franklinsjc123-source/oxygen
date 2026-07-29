@@ -1122,15 +1122,31 @@ class ProductsController extends Controller
     public function listing()
     {
         //return'rgdrf';
-        $products_list = Products::where('flag',1)->get();
-         $categorySub = CategorySub::where('status',1)->get();
-         $products_details = ProductsDetails::get();
+        $username = session()->get('username');
+        $login_id = session()->get('login_id');
+        $staff = \App\Models\Staffcreates::where('employee_id', $login_id)->first();
+        $staff_id = $staff ? $staff->id : null;
+
+        $vendor_user_ids = \App\Models\vendor\vendorcreate::where(function($q) use ($username, $staff_id) {
+            $q->where('created_by', $username);
+            if ($staff_id) {
+                $q->orWhere('staff_id', $staff_id);
+            }
+        })->pluck('user_id')->toArray();
+
+        $products_list = Products::where('flag', 1)
+            ->whereIn('login_id', $vendor_user_ids)
+            ->get();
+
+        $categorySub = CategorySub::where('status',1)->get();
+        $products_details = ProductsDetails::get();
         // $offer = offer::get();
         $offer = offer::where('status',1)->get();
 
         $productDetailsCount = Products::select(DB::raw('COUNT(products.id) as product_details_cnt'))
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
-			  ->where('products.flag',1)
+            ->where('products.flag', 1)
+            ->whereIn('products.login_id', $vendor_user_ids)
             ->groupBy('products.id')
             ->get();
 

@@ -93,10 +93,20 @@ class VendorcreateController extends Controller
 
      public function list()
      {
-        $vendorlist = vendorcreate::All();
+        $username = session()->get('username');
+        $login_id = session()->get('login_id');
+        $staff = \App\Models\Staffcreates::where('employee_id', $login_id)->first();
+        $staff_id = $staff ? $staff->id : null;
+
+        $vendorlist = vendorcreate::where(function($q) use ($username, $staff_id) {
+            $q->where('created_by', $username);
+            if ($staff_id) {
+                $q->orWhere('staff_id', $staff_id);
+            }
+        })->get();
+
        // return view('layout.admin.vendor.list')->with("vendorlist");
         return view('layout.staff.vendor.vendor-list')->with("vendorlist",$vendorlist);
-
 
      }
     public function Ajaxpackage(Request $request)
@@ -196,6 +206,7 @@ class VendorcreateController extends Controller
             $vendor->location_map = $request->location_map;
             $vendor->aadhar_no = $request->aadhar_no;
             $vendor->gst_number = $request->gst_number;
+            $vendor->staff_id = $request->staff_id;
 
 
             $vendor->profile_image = $profilename;

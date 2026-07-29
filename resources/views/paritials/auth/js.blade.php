@@ -451,6 +451,14 @@ $(document).ready(function() {
 });
 </script>
 
+<script type="text/javascript">
+$(document).ready(function() {
+    $(document).on('input', 'input[name="r_days"], input[name="r_days[]"], input[name^="r_days["]', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+});
+</script>
+
 <!-- sidebar handled by assets/js/sidebar-menu.js -->
 
 
