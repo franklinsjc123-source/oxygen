@@ -971,8 +971,13 @@
                                 <?php   } ?>
 
 
-                                <input type="text" class="form-control" name="keywords" id="search"
-                                    autocomplete="off" placeholder="Search in..." />
+                                <div style="position:relative; flex:1; display:flex;">
+                                    <input type="text" class="form-control" name="keywords" id="search" value="{{ request('keywords') }}"
+                                        autocomplete="off" placeholder="Search in..." style="padding-right: 30px;" />
+                                    <a href="javascript:void(0)" id="clear_desktop_search" class="clear-search-btn" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); font-size:16px; color:#666; display:none; align-items:center; justify-content:center; text-decoration:none;">
+                                        <i class="w-icon-times-solid"></i>
+                                    </a>
+                                </div>
                                 <button class="btn btn-search" type="submit"><i class="w-icon-search"></i>
                                 </button>
                                 <div class="search-suggest-box" id="search_suggest_desktop"></div>
@@ -1060,14 +1065,14 @@
                     <form method="get" action="{{ route('productsearchdetails') }}" class="mobile-search-form">
                         <div class="search-input-group">
                             <i class="w-icon-search"></i>
-                            <input type="text" name="keywords" id="search_mobile" 
+                            <input type="text" name="keywords" id="search_mobile" value="{{ request('keywords') }}"
                                 autocomplete="off" placeholder="Search for products..." />
+                            <a href="javascript:void(0)" id="clear_mobile_search" class="clear-search-btn">
+                                <i class="w-icon-times-solid"></i>
+                            </a>
                         </div>
                         <div class="search-suggest-box" id="search_suggest_mobile"></div>
                     </form>
-                    <a href="javascript:void(0)" id="clear_mobile_search" class="clear-search-btn">
-                        <i class="w-icon-times-solid"></i>
-                    </a>
                 </div>
 
                 <!-- Mobile Category Navigation Bar -->
@@ -1182,6 +1187,9 @@
                         var clearBtn = document.getElementById('clear_mobile_search');
                         
                         if (mobileInput && clearBtn) {
+                            if (mobileInput.value.length > 0) {
+                                clearBtn.style.display = 'flex';
+                            }
                             mobileInput.addEventListener('input', function() {
                                 clearBtn.style.display = (this.value.length > 0) ? 'flex' : 'none';
                             });
@@ -1192,6 +1200,24 @@
                                 mobileInput.focus();
                                 // Trigger an input event to hide suggestions
                                 mobileInput.dispatchEvent(new Event('input'));
+                            });
+                        }
+
+                        var desktopInput = document.getElementById('search');
+                        var clearDesktopBtn = document.getElementById('clear_desktop_search');
+                        if (desktopInput && clearDesktopBtn) {
+                            if (desktopInput.value.length > 0) {
+                                clearDesktopBtn.style.display = 'flex';
+                            }
+                            desktopInput.addEventListener('input', function() {
+                                clearDesktopBtn.style.display = (this.value.length > 0) ? 'flex' : 'none';
+                            });
+                            
+                            clearDesktopBtn.addEventListener('click', function() {
+                                desktopInput.value = '';
+                                clearDesktopBtn.style.display = 'none';
+                                desktopInput.focus();
+                                desktopInput.dispatchEvent(new Event('input'));
                             });
                         }
 
