@@ -272,26 +272,29 @@
                                                                          <!-- Product Image 1 -->
                                      <div class="row g-3 mt-3">
                                          <div class="col-md-6">
-                                             <div class="form-group">
-                                                 <label class="form-label fw-bold text-dark">Upload Image 1 <span class="text-danger">*</span></label>
-                                                 <input class="form-control" type="file" id="productMainImgInput" name="mainImage" accept="image/*">
-                                                 <div class="text-muted small mt-1">Upload Format: jpg, jpeg, png</div>
-                                                 <input type="hidden" name="oldmainImage" value="{{ $product->product_image }}">
+                                             <div class="d-flex align-items-start gap-4">
+                                                 <div class="form-group flex-grow-1 mb-0">
+                                                     <label class="form-label fw-bold text-dark">Main Image <span class="text-danger">*</span></label>
+                                                     <input class="form-control" type="file" id="productMainImgInput" name="mainImage" accept="image/*">
+                                                     <div class="text-muted small mt-1">Upload Format: jpg, jpeg, png</div>
+                                                     <input type="hidden" name="oldmainImage" value="{{ $product->product_image }}">
+                                                 </div>
+                                                 @if(!empty($product->product_image))
+                                                     <div class="mt-0">
+                                                         <label class="form-label fw-bold text-secondary small">Stored Image</label>
+                                                         <div class="img-preview-box p-1 border rounded bg-white d-flex align-items-center justify-content-center" style="height: 70px; width: 70px; overflow: hidden;">
+                                                             <img src="{{ url('assets/images/products/'.$product->product_image) }}" id="productMainImgPreview" class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                                                         </div>
+                                                     </div>
+                                                 @else
+                                                     <div class="mt-0" style="display: none;" id="productMainImgPreviewWrap">
+                                                         <label class="form-label fw-bold text-secondary small">Stored Image</label>
+                                                         <div class="img-preview-box p-1 border rounded bg-white d-flex align-items-center justify-content-center" style="height: 70px; width: 70px; overflow: hidden;">
+                                                             <img src="" id="productMainImgPreview" class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;">
+                                                         </div>
+                                                     </div>
+                                                 @endif
                                              </div>
-                                             @if(!empty($product->product_image))
-                                                 <div class="mt-2">
-                                                     <label class="form-label fw-bold text-secondary small">Stored Image</label>
-                                                     <div class="img-preview-box p-1 border rounded bg-white d-flex align-items-center justify-content-center" style="height: 120px; width: 120px; overflow: hidden;">
-                                                         <img src="{{ url('assets/images/products/'.$product->product_image) }}" id="productMainImgPreview" class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: contain;">
-                                                     </div>
-                                                 </div>
-                                             @else
-                                                 <div class="mt-2" style="display: none;" id="productMainImgPreviewWrap">
-                                                     <div class="img-preview-box p-1 border rounded bg-white d-flex align-items-center justify-content-center" style="height: 120px; width: 120px; overflow: hidden;">
-                                                         <img src="" id="productMainImgPreview" class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;">
-                                                     </div>
-                                                 </div>
-                                             @endif
                                          </div>
 
                                          <!-- Product Description -->
