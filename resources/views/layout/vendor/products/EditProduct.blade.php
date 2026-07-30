@@ -342,12 +342,6 @@
                                      <h5 class="fw-bold text-dark mb-3">Specifications</h5>
                                      <div class="table-responsive">
                                          <table class="table table-hover table-bordered m-0 align-middle">
-                                             <thead class="table-light">
-                                                 <tr>
-                                                     <th style="width: 40%;">Specification Name</th>
-                                                     <th style="width: 60%;">Value</th>
-                                                 </tr>
-                                             </thead>
                                              <tbody class="spectable">
                                                  @php
                                                      $specById = [];
@@ -361,31 +355,33 @@
                                                          }
                                                      }
                                                  @endphp
-                                                 @foreach ($specification as $spec)
-                                                     @php
-                                                         $specValues = json_decode($spec->specification_values ?? '[]', true) ?: [];
-                                                         $selectedValue = $specById[$spec->id] ?? ($specByName[$spec->specification_group_name] ?? '');
-                                                     @endphp
+                                                 @if(!empty($specification))
+                                                 @foreach (collect($specification)->chunk(2) as $specPair)
                                                      <tr>
-                                                         <td>
-                                                             <div class="form-check m-0 d-flex align-items-center">
-                                                                 <input class="form-check-input m-0" type="checkbox" id="spec_id_{{ $spec->id }}" name="spec_id[]" value="{{ $spec->id }}" {{ $selectedValue !== '' ? 'checked' : '' }}>
-                                                                 <label class="form-check-label fw-bold text-dark ms-2 mb-0" for="spec_id_{{ $spec->id }}">
-                                                                     {{ $spec->specification_group_name }}
-                                                                 </label>
-                                                             </div>
-                                                             <input type="hidden" name="specify_attribute[{{ $spec->id }}]" value="{{ $spec->specification_group_name }}">
-                                                         </td>
-                                                         <td>
+                                                         @foreach ($specPair as $spec)
+                                                         @php
+                                                             $specValues = json_decode($spec->specification_values ?? '[]', true) ?: [];
+                                                             $selectedValue = $specById[$spec->id] ?? ($specByName[$spec->specification_group_name] ?? '');
+                                                         @endphp
+                                                         <td style="width: 20%; vertical-align: middle;">{{ $spec->specification_group_name }}</td>
+                                                         <td style="width: 30%;">
+                                                             <input type="hidden" name="spec_id[]" value="{{ $spec->id }}">
                                                              <select class="form-control text-secondary" name="specify_value[{{ $spec->id }}]" id="specify_value_{{ $spec->id }}">
                                                                  <option value="" hidden {{ $selectedValue === '' ? 'selected' : '' }}>-- Select {{ $spec->specification_group_name }} --</option>
                                                                  @foreach ($specValues as $specify_val)
                                                                      <option value="{{ $specify_val }}" {{ $specify_val == $selectedValue ? 'selected' : '' }}>{{ $specify_val }}</option>
                                                                  @endforeach
                                                              </select>
+                                                             <input type="hidden" name="specify_attribute[{{ $spec->id }}]" value="{{ $spec->specification_group_name }}">
                                                          </td>
+                                                         @endforeach
+                                                         @if($specPair->count() === 1)
+                                                         <td></td>
+                                                         <td></td>
+                                                         @endif
                                                      </tr>
                                                  @endforeach
+                                                 @endif
                                              </tbody>
                                          </table>
                                      </div>
@@ -512,32 +508,40 @@
             getAjaxValue(url1, method1, function(data) {
                 $('.spectable').empty();
                 let specifications = '';
+                let tempArr = [];
                 $.each(data, function(key, spec) {
-                    let options = '';
-                    let specValues = JSON.parse(spec.value || '[]');
-                    for (let index = 0; index < specValues.length; index++) {
-                        options += `<option value='${specValues[index]}'> ${specValues[index]}</option>`;
-                    }
-
-                    specifications += `
-                        <tr>
-                            <td>
-                                <div class="form-check m-0 d-flex align-items-center">
-                                    <input class="form-check-input m-0" type="checkbox" id="spec_id_${spec.id}" name="spec_id[]" value="${spec.id}" checked>
-                                    <label class="form-check-label fw-bold text-secondary ms-2 mb-0" for="spec_id_${spec.id}">
-                                        ${spec.name}
-                                    </label>
-                                </div>
-                                <input type="hidden" name="specify_attribute[${spec.id}]" value="${spec.name}">
-                            </td>
-                            <td>
-                                <select class="form-control text-secondary" name="specify_value[${spec.id}]" id="specify_value_${spec.id}">
-                                    <option selected value="" hidden>-- Select ${spec.name} --</option>
-                                    ${options}
-                                </select>
-                            </td>
-                        </tr>`;
+                    tempArr.push(spec);
                 });
+                
+                for (let i = 0; i < tempArr.length; i += 2) {
+                    specifications += `<tr>`;
+                    for (let j = 0; j < 2; j++) {
+                        if (i + j < tempArr.length) {
+                            let spec = tempArr[i + j];
+                            
+                            let options = '';
+                            let specValues = JSON.parse(spec.value || '[]');
+                            for (let index = 0; index < specValues.length; index++) {
+                                options += `<option value='${specValues[index]}'> ${specValues[index]}</option>`;
+                            }
+                            
+                            specifications += `
+                                <td style="width: 20%; vertical-align: middle;">${spec.name}</td>
+                                <td style="width: 30%;">
+                                    <input type="hidden" name="spec_id[]" value="${spec.id}">
+                                    <select class='form-control text-secondary' name='specify_value[${spec.id}]'>
+                                        <option selected value='' hidden> --Select ${spec.name}--</option>
+                                        ${options}
+                                    </select>
+                                    <input type="hidden" name="specify_attribute[${spec.id}]" value="${spec.name}">
+                                </td>
+                            `;
+                        } else {
+                            specifications += `<td></td><td></td>`;
+                        }
+                    }
+                    specifications += `</tr>`;
+                }
                 $(".spectable").append(specifications);
             });
         });
