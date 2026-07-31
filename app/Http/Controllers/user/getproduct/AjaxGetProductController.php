@@ -224,16 +224,16 @@ class AjaxGetProductController extends Controller
 
 	public function track_order_page()
 	{
-		if (!session('username') && !session('userId')) {
-			return redirect()->to('Cuslogin')->with('error', 'Please login to track your order.');
+		if (!session()->has('customer_id')) {
+			return redirect()->to('home')->with('error', 'Please login to track your order.');
 		}
 		return view('website.front-end.track_order_search');
 	}
 
 	public function track_order_search(Request $request)
 	{
-		if (!session('username') && !session('userId')) {
-			return redirect()->to('Cuslogin')->with('error', 'Please login to track your order.');
+		if (!session()->has('customer_id')) {
+			return redirect()->to('home')->with('error', 'Please login to track your order.');
 		}
 
 		$request->validate([
