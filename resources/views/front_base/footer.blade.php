@@ -209,6 +209,11 @@
             justify-content: space-around !important;
             align-items: center !important;
         }
+        @media (min-width: 768px) {
+            .sticky-footer.fix-bottom {
+                display: none !important;
+            }
+        }
         .sticky-footer .sticky-link {
             flex: 1 !important;
             display: flex !important;
@@ -756,9 +761,15 @@
                                </form>
                            </div>
 
-                           <div class="tab-pane" id="sign-up">
-                               <form id="register-form" class="ebb-form" autocomplete="off" novalidate>
-                                   <div id="register-error-alert" class="text-center mb-3" style="display:none; font-weight:500; color: #ef4444 !important; font-size: 1.1rem;"></div>
+                             <div class="tab-pane" id="sign-up">
+                                <div id="register-success-panel" style="display: none; text-align: center; padding: 30px 20px;">
+                                    <i class="fas fa-check-circle" style="font-size: 60px; color: #43a047; margin-bottom: 20px;"></i>
+                                    <h4 style="font-weight: 700; color: #333; margin-bottom: 10px; font-size: 1.8rem;">Registration Successful!</h4>
+                                    <p style="color: #666; font-size: 1.3rem; margin-bottom: 25px;">Your account has been created successfully.</p>
+                                    <button type="button" class="btn btn-primary" onclick="showLoginTab()" style="border-radius: 20px; text-transform: uppercase;">Login Now</button>
+                                </div>
+                                <form id="register-form" class="ebb-form" autocomplete="off" novalidate>
+                                    <div id="register-error-alert" class="text-center mb-3" style="display:none; font-weight:500; color: #ef4444 !important; font-size: 1.1rem;"></div>
                                    <div class="form-group">
                                        <label>Customer Name *</label>
                                        <input type="text" class="form-control" name="email_1"
@@ -1702,23 +1713,8 @@
                     success: function(data) {
                         console.log(data);
                         if (data.msg == 'Success') {
-                            if (typeof swal === 'function') {
-                                try {
-                                    var s = swal("Success!", "Registered Successfully", "success");
-                                    if (s && typeof s.then === 'function') {
-                                        s.then(function() {
-                                            location.reload();
-                                        });
-                                    }
-                                } catch(e) {
-                                    console.error(e);
-                                }
-                                setTimeout(function() {
-                                    location.reload();
-                                }, 1500);
-                            } else {
-                                location.reload();
-                            }
+                            $('#register-form').hide();
+                            $('#register-success-panel').show();
                         } else {
                             $('#register-error-alert').text('Mobile Number Already Registered').show();
                         }
@@ -1733,6 +1729,22 @@
                     }
                 });
             }
+        }
+
+        function showLoginTab() {
+            // Restore register form state
+            $('#register-form').show();
+            $('#register-success-panel').hide();
+            
+            // Clear inputs
+            $('#register_username').val('');
+            $('#register_mobile').val('');
+            $('#register_email').val('');
+            $('#register_password').val('');
+            $('#register_cpassword').val('');
+            
+            // Switch to login tab
+            $('.login-register-popup .nav-tabs a[href="#sign-in"]').trigger('click');
         }
 
         function pass_verify(pass) {
