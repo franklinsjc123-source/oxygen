@@ -151,7 +151,11 @@
                        <div class="widget">
                            <h4 class="widget-title">My Account</h4>
                            <ul class="widget-body">
-                               <li><a href="#">Track My Order</a></li>
+                                @if(session('customer_id'))
+                                    <li><a href="{{ url('track-order') }}">Track My Order</a></li>
+                                @else
+                                    <li><a href="javascript:void(0)" onclick="showLoginPopup('{{ url('track-order') }}')">Track My Order</a></li>
+                                @endif
                                <li><a href="{{ url('shopping-cart') }}">View Cart</a></li>
                                <li><a style="cursor:pointer" onclick="showLoginPopup()">Sign In</a></li>
                                <li><a href="#">Help</a></li>
