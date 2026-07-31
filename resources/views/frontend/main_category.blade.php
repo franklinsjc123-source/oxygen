@@ -356,6 +356,8 @@
 
 
     <script>
+        const wishlistedProductIds = @json($wishlistedProductIds ?? []);
+
         // Accordion toggle
         function toggleFilter(header) {
             var body = header.nextElementSibling;
@@ -505,10 +507,10 @@
                                                </div>
                                             ` : ''}
                                             <div class="product-action-vertical">
-                                                <a href="${siteurl}/products/${product.slug || product.id}" class="btn-product-icon w-icon-cart"></a>
-                                                <a href="#" onclick="addwishlist('${product.id}')" class="btn-product-icon btn-wishlist w-icon-heart"><span></span></a>
-                                                <a href="javascript:void(0)" onclick="showQuickView('${product.id}')" data-id="${product.id}" class="btn-product-icon btn-quickview w-icon-search"></a>
-                                            </div>
+                                                 <a href="${siteurl}/products/${product.slug || product.id}" class="btn-product-icon w-icon-cart"></a>
+                                                 <a href="#" onclick="addwishlist('${product.id}', this)" class="btn-product-icon btn-wishlist ${wishlistedProductIds.includes(parseInt(product.id)) ? 'w-icon-heart-full' : 'w-icon-heart'}" ${wishlistedProductIds.includes(parseInt(product.id)) ? 'style="color: #ef4444 !important;"' : ''}><span></span></a>
+                                                 <a href="javascript:void(0)" onclick="showQuickView('${product.id}')" data-id="${product.id}" class="btn-product-icon btn-quickview w-icon-search"></a>
+                                             </div>
                                         </figure>
                                         <div class="product-details">
                                             <div class="sold-by" style="margin-bottom: 2px;">

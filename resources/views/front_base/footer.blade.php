@@ -899,6 +899,22 @@
    <script>
        const isCustomerLoggedIn = <?= session()->has('customer_id') ? 'true' : 'false' ?>;
 
+       window.safeSwal = function(title, text, icon) {
+           if (typeof swal === 'function') {
+               try {
+                   swal(title, text, icon);
+               } catch (e) {
+                   try {
+                       new swal(title, text, icon);
+                   } catch (err) {
+                       alert(text || title);
+                   }
+               }
+           } else {
+               alert(text || title);
+           }
+       };
+
        window.showCenterMessage = function(message, type = 'success') {
            const toast = document.getElementById('centerToast');
            if (!toast) return;
@@ -929,7 +945,7 @@
            }
        }
 
-       function addwishlist(pid) {
+       function addwishlist(pid, el) {
 
             var user_id = '<?= session()->get('customer_id') ?>';
  
@@ -957,8 +973,11 @@
                },
                dataType: "json",
                success: function(data) {
-                   swal("success!", "Wishlist Added Successfully", "success");
+                   safeSwal("Success!", "Wishlist Added Successfully", "success");
                    $('.wishcount').html(data.wishcount);
+                   if (el) {
+                       $(el).removeClass('w-icon-heart').addClass('w-icon-heart-full').css('color', '#ef4444');
+                   }
                },
                error: function(data) {
                    console.log('Error:', data);

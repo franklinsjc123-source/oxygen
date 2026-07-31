@@ -231,7 +231,7 @@
                                  @endif
 
                                  <div class="product-action-vertical">
-                                     <a href="#" onclick="addwishlist('{{  $row['id'] }}')" class="btn-product-icon btn-wishlist w-icon-heart"
+                                     <a href="#" onclick="addwishlist('{{  $row['id'] }}', this)" class="btn-product-icon btn-wishlist {{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"
                                          title="Add to wishlist"></a>
                                  </div>
                                  <div class="product-action">
@@ -305,7 +305,7 @@
                                 @endif
 
                                 <div class="product-action-vertical">
-                                    <a href="#" onclick="addwishlist('{{  $row['id'] }}')" class="btn-product-icon btn-wishlist w-icon-heart"
+                                    <a href="#" onclick="addwishlist('{{  $row['id'] }}', this)" class="btn-product-icon btn-wishlist {{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"
                                         title="Add to wishlist"></a>
                                 </div>
                                 <div class="product-action">
@@ -410,7 +410,7 @@
                                  @endif
 
                                  <div class="product-action-vertical">
-                                     <a href="#" onclick="addwishlist('{{  $row['id'] }}')" class="btn-product-icon btn-wishlist w-icon-heart"
+                                     <a href="#" onclick="addwishlist('{{  $row['id'] }}', this)" class="btn-product-icon btn-wishlist {{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"
                                          title="Add to wishlist"></a>
                                  </div>
                                  <div class="product-action"> <!--  -->
@@ -485,7 +485,7 @@
                                  @endif
 
                                  <div class="product-action-vertical">
-                                     <a href="#" onclick="addwishlist('{{  $row['id'] }}')" class="btn-product-icon btn-wishlist w-icon-heart"
+                                     <a href="#" onclick="addwishlist('{{  $row['id'] }}', this)" class="btn-product-icon btn-wishlist {{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"
                                          title="Add to wishlist"></a>
                                  </div>
                                  <div class="product-action"> <!--  -->
@@ -561,7 +561,7 @@
                                  @endif
 
                                  <div class="product-action-vertical">
-                                     <a href="#" onclick="addwishlist('{{  $row['id'] }}')" class="btn-product-icon btn-wishlist w-icon-heart"
+                                     <a href="#" onclick="addwishlist('{{  $row['id'] }}', this)" class="btn-product-icon btn-wishlist {{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"
                                          title="Add to wishlist"></a>
                                  </div>
                                  <div class="product-action"> <!--  -->
@@ -675,10 +675,10 @@
                              <img src="{{ asset('assets/images/products/' . $auction->product_image) }}" alt="Product" width="260"
                                  height="291" />
                          </a>
-                         <div class="product-action-vertical">
-                             <a href="#" onclick="addwishlist('{{ $auction->id }}')" class="btn-product-icon btn-wishlist w-icon-heart"
-                                 title="Add to wishlist"></a>
-                         </div>
+                          <div class="product-action-vertical">
+                              <a href="#" onclick="addwishlist('{{ $auction->id }}', this)" class="btn-product-icon btn-wishlist {{ in_array($auction->id, $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($auction->id, $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"
+                                  title="Add to wishlist"></a>
+                          </div>
                          <div class="product-action">
                              <a href="javascript:void(0)" onclick="showQuickView('{{ $auction->id }}')" data-id='{{ $auction->id }}' class="btn-product btn-quickview" title="Quick View">Quick
                                  View</a>

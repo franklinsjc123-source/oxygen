@@ -471,7 +471,7 @@
                                      </div>
                                      <span class="divider d-xs-show"></span>
                                      <div class="product-link-wrapper d-flex">
-                                         <a href="#" onclick="addwishlist('{{ $prouctsList['id'] }}')" class="btn-product-icon btn-wishlist w-icon-heart"><span></span></a>
+                                          <a href="#" onclick="addwishlist('{{ $prouctsList['id'] }}', this)" class="btn-product-icon btn-wishlist {{ in_array($prouctsList['id'], $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($prouctsList['id'], $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"><span></span></a>
                                      </div>
                                       
                                  </div>

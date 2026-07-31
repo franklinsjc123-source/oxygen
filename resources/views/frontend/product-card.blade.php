@@ -34,7 +34,7 @@
             @endif
             <div class="product-action-vertical">
                 <a href="{{ url('/products/'.($product->slug ?? $product->id)) }}" class="btn-product-icon  w-icon-cart"></a>
-                <a href="#" onclick="addwishlist('{{ $product->id }}')" class="btn-product-icon btn-wishlist w-icon-heart"><span></span></a>
+                <a href="#" onclick="addwishlist('{{ $product->id }}', this)" class="btn-product-icon btn-wishlist {{ in_array($product->id, $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($product->id, $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"><span></span></a>
                 <a href="#" onclick="showQuickView('{{ $product->id }}')" data-id="{{ $product->id }}" class="btn-product-icon btn-quickview w-icon-search"></a>
             </div>
         </figure>

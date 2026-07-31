@@ -3849,21 +3849,27 @@ class FrontendController extends Controller
         $id = $request->product_id;
         $ip = $request->ip();
 
-        $wishlist = wishlist::where('customer_id', $customer_id)->where('ecom_product_id', $id)->get();
+        // Resolve the variant (products_details)
+        $products = ProductsDetails::where('products_id', $id)->first();
+        if (!$products) {
+            $products = ProductsDetails::where('id', $id)->first();
+        }
 
+        if (!$products) {
+            return response()->json(['msg' => 'Failed', 'error' => 'Product details not found'], 400);
+        }
+
+        $variantId = $products->id;
+
+        $wishlist = wishlist::where('customer_id', $customer_id)->where('ecom_product_id', $variantId)->get();
         $wishCount = count($wishlist);
-
-        $products = ProductsDetails::where('id', $id)->first();
 
         $productview = Products::where('id', '=', $products->products_id)->first();
 
-
         if ($wishCount == 0) {
-
             $wishlist = new wishlist;
-
             $wishlist->ecom_wishlist_ipaddress = $ip;
-            $wishlist->ecom_product_id = $id;
+            $wishlist->ecom_product_id = $variantId;
             $wishlist->customer_id = $customer_id;
             $wishlist->ecom_product_name = $productview->product_name;
             $wishlist->save();
