@@ -57,10 +57,8 @@
                                                        @endforeach                                                    
                                                    </ul>
                                                </li>
-                                               @else
-                                               <li><a href="{{ url( 'productshow/'.$submenus->id ) }}">{{ $submenus->category_name }}</a></li> 
-                                               @endif
-                                               @endforeach
+                                                @endif
+                                                @endforeach
                                            </ul>
                                        </li>
                                        @else

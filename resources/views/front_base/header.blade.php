@@ -812,13 +812,13 @@
                 margin-bottom: 0;
             }
             .mobile-cat-title {
-                font-size: 13px;
+                font-size: 12px;
                 font-weight: 700;
                 color: #0088dd;
                 text-transform: uppercase;
-                margin-bottom: 3px;
+                margin-bottom: 2px;
                 border-bottom: 1px solid #f0f0f0;
-                padding-bottom: 2px;
+                padding-bottom: 1px;
             }
             .mobile-cat-title a {
                 color: inherit;
@@ -830,17 +830,17 @@
                 margin: 0;
                 display: flex;
                 flex-wrap: wrap;
-                gap: 6px;
+                gap: 4px;
             }
             .mobile-cat-list li {
                 width: calc(50% - 5px);
             }
             .mobile-cat-list li a {
-                font-size: 12px;
+                font-size: 11px;
                 color: #666666;
                 text-decoration: none;
                 display: block;
-                padding: 1px 0;
+                padding: 0;
                 transition: color 0.2s;
             }
             /* Auction Pulse Icon Animation */
@@ -1098,11 +1098,12 @@
                     @if(isset($menCategory) && $menCategory && count($menCategory->submenu) > 0)
                         <div class="mobile-cat-dropdown-panel" id="mobile-cat-men" style="display:none;">
                             @foreach($menCategory->submenu as $submenus)
+                                @if(count($submenus->childmenu) > 0)
                                 <div class="mobile-cat-group">
                                     <h6 class="mobile-cat-title">
                                         <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
                                     </h6>
-                                    @if(count($submenus->childmenu) > 0)
+                                    
                                         <ul class="mobile-cat-list">
                                             @foreach($submenus->childmenu as $childmenus)
                                                 <li>
@@ -1110,8 +1111,9 @@
                                                 </li>
                                             @endforeach
                                         </ul>
-                                    @endif
+                                    
                                 </div>
+                                @endif
                             @endforeach
                         </div>
                     @endif
@@ -1119,11 +1121,12 @@
                     @if(isset($womenCategory) && $womenCategory && count($womenCategory->submenu) > 0)
                         <div class="mobile-cat-dropdown-panel" id="mobile-cat-women" style="display:none;">
                             @foreach($womenCategory->submenu as $submenus)
+                                @if(count($submenus->childmenu) > 0)
                                 <div class="mobile-cat-group">
                                     <h6 class="mobile-cat-title">
                                         <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
                                     </h6>
-                                    @if(count($submenus->childmenu) > 0)
+                                    
                                         <ul class="mobile-cat-list">
                                             @foreach($submenus->childmenu as $childmenus)
                                                 <li>
@@ -1131,8 +1134,9 @@
                                                 </li>
                                             @endforeach
                                         </ul>
-                                    @endif
+                                    
                                 </div>
+                                @endif
                             @endforeach
                         </div>
                     @endif
@@ -1140,11 +1144,12 @@
                     @if(isset($kidsCategory) && $kidsCategory && count($kidsCategory->submenu) > 0)
                         <div class="mobile-cat-dropdown-panel" id="mobile-cat-kids" style="display:none;">
                             @foreach($kidsCategory->submenu as $submenus)
+                                @if(count($submenus->childmenu) > 0)
                                 <div class="mobile-cat-group">
                                     <h6 class="mobile-cat-title">
                                         <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
                                     </h6>
-                                    @if(count($submenus->childmenu) > 0)
+                                    
                                         <ul class="mobile-cat-list">
                                             @foreach($submenus->childmenu as $childmenus)
                                                 <li>
@@ -1152,8 +1157,9 @@
                                                 </li>
                                             @endforeach
                                         </ul>
-                                    @endif
+                                    
                                 </div>
+                                @endif
                             @endforeach
                         </div>
                     @endif
@@ -1161,11 +1167,12 @@
                     @if(isset($livingCategory) && $livingCategory && count($livingCategory->submenu) > 0)
                         <div class="mobile-cat-dropdown-panel" id="mobile-cat-living" style="display:none;">
                             @foreach($livingCategory->submenu as $submenus)
+                                @if(count($submenus->childmenu) > 0)
                                 <div class="mobile-cat-group">
                                     <h6 class="mobile-cat-title">
                                         <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
                                     </h6>
-                                    @if(count($submenus->childmenu) > 0)
+                                    
                                         <ul class="mobile-cat-list">
                                             @foreach($submenus->childmenu as $childmenus)
                                                 <li>
@@ -1173,8 +1180,9 @@
                                                 </li>
                                             @endforeach
                                         </ul>
-                                    @endif
+                                    
                                 </div>
+                                @endif
                             @endforeach
                         </div>
                     @endif
@@ -1431,10 +1439,6 @@
                                                                     @endforeach
                                                                 </ul>
                                                             </li>
-                                                        @else
-                                                            <li>
-                                                                <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
-                                                            </li>
                                                         @endif
                                                     @endforeach
                                                 </ul>
@@ -1457,10 +1461,6 @@
                                                                         <li><a href="{{ url('category/' . ($submenus->slug ?? $submenus->id) . '/' . ($childmenus->slug ?? $childmenus->id)) }}">{{ $childmenus->category_sub_name }}</a></li>
                                                                     @endforeach
                                                                 </ul>
-                                                            </li>
-                                                        @else
-                                                            <li>
-                                                                <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
                                                             </li>
                                                         @endif
                                                     @endforeach
@@ -1485,10 +1485,6 @@
                                                                     @endforeach
                                                                 </ul>
                                                             </li>
-                                                        @else
-                                                            <li>
-                                                                <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
-                                                            </li>
                                                         @endif
                                                     @endforeach
                                                 </ul>
@@ -1511,10 +1507,6 @@
                                                                         <li><a href="{{ url('category/' . ($submenus->slug ?? $submenus->id) . '/' . ($childmenus->slug ?? $childmenus->id)) }}">{{ $childmenus->category_sub_name }}</a></li>
                                                                     @endforeach
                                                                 </ul>
-                                                            </li>
-                                                        @else
-                                                            <li>
-                                                                <a href="{{ url('category/' . ($submenus->slug ?? $submenus->id)) }}">{{ $submenus->category_name }}</a>
                                                             </li>
                                                         @endif
                                                     @endforeach

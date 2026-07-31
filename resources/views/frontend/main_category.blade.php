@@ -78,7 +78,7 @@
                             <div class="swiper-wrapper row gutter-lg cols-xl-8 cols-lg-7 cols-md-6 cols-sm-4 cols-xs-4 cols-4">
                               
                               	@foreach($categories as $category )
-
+                                @if(count($category->childmenu) > 0)
                              
                                 <div class="swiper-slide category-wrap">
                                     <div class="category category-ellipse">
@@ -98,6 +98,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                @endif
                                 @endforeach
                               
                             </div>

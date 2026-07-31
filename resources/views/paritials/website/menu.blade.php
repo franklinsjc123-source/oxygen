@@ -134,8 +134,6 @@
                                                         </div>                                                        
                                                     </div>
                                                 </li>
-                                                @else
-                                               <li><a href="{{ url( 'Categoryproductshow/'.$submenus->id ) }}">{{ $submenus->category_name }}</a></li>
                                                 @endif
                                                @endforeach
                                             </ul>
