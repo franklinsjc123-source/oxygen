@@ -519,13 +519,16 @@
             padding: 0;
         }
 
-        .login-register-popup .login-popup {
+        .login-register-popup .custom-login-inner {
             padding: 30px 45px;
             height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            background: #ffffff;
+            background: transparent !important;
+            box-shadow: none !important;
+            border-radius: 24px !important;
+            border: none !important;
         }
 
         .login-register-popup .tab-nav-underline {
@@ -723,7 +726,7 @@
     <div class="login-register-popup mfp-hide">
         <div class="row w-100 m-0">
             <div class="col-md-12 mb-0 p-0">
-                <div class="login-popup" style="position: relative;">
+                <div class="custom-login-inner" style="position: relative;">
                    <button type="button" onclick="$.magnificPopup.close()" style="position: absolute; top: 12px; right: 16px; font-size: 28px; font-weight: 400; line-height: 1; color: #7cb8eb; background: transparent; border: none; cursor: pointer; transition: color 0.2s; z-index: 1045; padding: 0;" onmouseover="this.style.color='#0088dd'" onmouseout="this.style.color='#7cb8eb'" title="Close">&times;</button>
                    <div class="tab tab-nav-boxed tab-nav-center tab-nav-underline">
                        <ul class="nav nav-tabs text-uppercase" role="tablist">
@@ -1366,16 +1369,7 @@
                             var redirectUrl = sessionStorage.getItem('post_login_redirect') || "{{ route('myAccount') }}";
                             sessionStorage.removeItem('post_login_redirect');
                             sessionStorage.removeItem('prefill_login_mobile');
-                            if (typeof swal === 'function') {
-                                swal("Success!", "Login Successfully", "success").then(function() {
-                                    window.location.href = redirectUrl;
-                                });
-                                setTimeout(function() {
-                                    window.location.href = redirectUrl;
-                                }, 1200);
-                            } else {
-                                window.location.href = redirectUrl;
-                            }
+                            window.location.href = redirectUrl;
                         } else {
                             $('#login-error-alert').text('Invalid username or password.').show();
                         }

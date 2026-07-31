@@ -38,17 +38,17 @@ class CustomerController extends Controller
 
         if ($count1 > 0) {
             return response()->json(['msg' => 'Failed'], 200);
-        } else {
-            $statement = DB::select("SHOW TABLE STATUS LIKE 'ecom_customer_info'");
-            $next_customer_id = $statement[0]->Auto_increment;
-            $customer_id = "OXY-C" . str_pad($next_customer_id, 5, "0", STR_PAD_LEFT);
             $customer = new Ecom_Customer_info;
-            $customer->customer_id = $customer_id;
+            $customer->customer_id = '';
             $customer->customer_firstname = $request->customer_name;
             $customer->customer_email = $request->customer_email;
             $customer->customer_mobileno = $request->customer_mobileno;
             $customer->customer_password = base64_encode(base64_encode($request->customer_password));
             $customer->save();
+
+            $customer_id = "OXY-C" . str_pad($customer->id, 5, "0", STR_PAD_LEFT);
+            $customer->update(['customer_id' => $customer_id]);
+            
             Session::put('customer_id', $customer_id);
 
             $details = [
