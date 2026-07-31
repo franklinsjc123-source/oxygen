@@ -765,7 +765,6 @@
             }
             .mobile-cat-nav-item {
                 font-size: 14px;
-                font-weight: 700;
                 color: #333333;
                 text-decoration: none;
                 display: inline-flex;
