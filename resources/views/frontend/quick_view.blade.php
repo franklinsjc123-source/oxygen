@@ -180,9 +180,9 @@
                          </div>
                      </div>
                      <span class="divider d-xs-show"></span>
-                     <div class="product-link-wrapper d-flex">
-                         <a href="#" onclick="addwishlist('{{ $id }}')" class="btn-product-icon btn-wishlist w-icon-heart"><span></span></a>
-                     </div>
+                      <div class="product-link-wrapper d-flex">
+                          <a href="#" onclick="addwishlist('{{ $id }}', this)" class="btn-product-icon btn-wishlist {{ in_array($id, $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($id, $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"><span></span></a>
+                      </div>
                  </div>
              </div>
          </div>

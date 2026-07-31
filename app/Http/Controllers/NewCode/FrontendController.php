@@ -374,6 +374,12 @@ class FrontendController extends Controller
     public function vendorDetailsBySlug($slug)
     {
         $vendor = \DB::table('vendor_details')->where('slug', $slug)->where('status', 1)->first();
+        if (!$vendor) {
+            $vendor = \DB::table('vendor_details')->where('id', $slug)->where('status', 1)->first();
+            if ($vendor && !empty($vendor->slug)) {
+                return redirect()->route('shop.show', $vendor->slug, 301);
+            }
+        }
         if (!$vendor) return redirect('home');
         return $this->vendorDetails($vendor->id);
     }
