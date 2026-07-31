@@ -1589,14 +1589,27 @@
                 success: function(data) {
                     $('#btn-reset-password').prop('disabled', false).text('Reset Password');
                     if (data.status === 'success') {
-                        swal('Success!', data.msg, 'success').then(function() {
+                        var resetAndHide = function() {
                             hideForgotPasswordPanel();
                             $('#forgot_email').val('');
                             $('#forgot_new_password').val('');
                             $('#forgot_confirm_password').val('');
                             clearOtpInputs();
                             forgotEmail = '';
-                        });
+                        };
+                        if (typeof swal === 'function') {
+                            try {
+                                var s = swal('Success!', data.msg, 'success');
+                                if (s && typeof s.then === 'function') {
+                                    s.then(resetAndHide);
+                                }
+                            } catch(e) {
+                                console.error(e);
+                            }
+                            setTimeout(resetAndHide, 1500);
+                        } else {
+                            resetAndHide();
+                        }
                     } else {
                         $('#reset-error-alert').html(data.msg).css('color', '#ef4444').show();
                     }
@@ -1689,9 +1702,23 @@
                     success: function(data) {
                         console.log(data);
                         if (data.msg == 'Success') {
-                            swal("Success!", "Registered Successfully", "success").then(function() {
+                            if (typeof swal === 'function') {
+                                try {
+                                    var s = swal("Success!", "Registered Successfully", "success");
+                                    if (s && typeof s.then === 'function') {
+                                        s.then(function() {
+                                            location.reload();
+                                        });
+                                    }
+                                } catch(e) {
+                                    console.error(e);
+                                }
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1500);
+                            } else {
                                 location.reload();
-                            });
+                            }
                         } else {
                             $('#register-error-alert').text('Mobile Number Already Registered').show();
                         }
