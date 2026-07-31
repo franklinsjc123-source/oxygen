@@ -124,6 +124,114 @@ class CustomerController extends Controller
             return response()->json(['msg' => 'Success'], 200);
         }
     }
+    public function checkEmailExists(Request $request)
+    {
+        $email = $request->email;
+        if (empty($email)) {
+            return response()->json(['status' => 'error', 'msg' => 'Please enter your email address.']);
+        }
+
+        $customer = Ecom_Customer_info::where('customer_email', $email)->first();
+        if (!$customer) {
+            return response()->json(['status' => 'error', 'msg' => 'No account found with this email address.']);
+        }
+
+        // Generate 6-digit OTP
+        $otp = rand(100000, 999999);
+
+        // Store OTP in session with expiry (10 minutes)
+        session([
+            'forgot_otp' => $otp,
+            'forgot_otp_email' => $email,
+            'forgot_otp_expiry' => now()->addMinutes(10),
+            'forgot_otp_verified' => false,
+        ]);
+
+        // Send OTP via email
+        try {
+            \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\ForgotPasswordOtpMail($otp, $customer->customer_firstname));
+        } catch (\Exception $e) {
+            \Log::error("Mail sending failed: " . $e->getMessage() . "\n" . $e->getTraceAsString());
+            return response()->json(['status' => 'error', 'msg' => 'Failed to send OTP email: ' . $e->getMessage()]);
+        }
+
+        return response()->json(['status' => 'success', 'msg' => 'OTP sent to your email address.']);
+    }
+
+    public function verifyForgotOtp(Request $request)
+    {
+        $otp = $request->otp;
+        $email = $request->email;
+
+        if (empty($otp)) {
+            return response()->json(['status' => 'error', 'msg' => 'Please enter the OTP.']);
+        }
+
+        $sessionOtp = session('forgot_otp');
+        $sessionEmail = session('forgot_otp_email');
+        $sessionExpiry = session('forgot_otp_expiry');
+
+        if (!$sessionOtp || !$sessionEmail) {
+            return response()->json(['status' => 'error', 'msg' => 'OTP session expired. Please request a new OTP.']);
+        }
+
+        if (now()->greaterThan($sessionExpiry)) {
+            session()->forget(['forgot_otp', 'forgot_otp_email', 'forgot_otp_expiry', 'forgot_otp_verified']);
+            return response()->json(['status' => 'error', 'msg' => 'OTP has expired. Please request a new OTP.']);
+        }
+
+        if ($email !== $sessionEmail) {
+            return response()->json(['status' => 'error', 'msg' => 'Email mismatch. Please try again.']);
+        }
+
+        if ((string) $otp !== (string) $sessionOtp) {
+            return response()->json(['status' => 'error', 'msg' => 'Invalid OTP. Please check and try again.']);
+        }
+
+        // Mark OTP as verified
+        session(['forgot_otp_verified' => true]);
+
+        return response()->json(['status' => 'success', 'msg' => 'OTP verified successfully.']);
+    }
+
+    public function resetPasswordByEmail(Request $request)
+    {
+        $email = $request->email;
+        $newPassword = $request->new_password;
+        $confirmPassword = $request->confirm_password;
+
+        if (empty($email) || empty($newPassword) || empty($confirmPassword)) {
+            return response()->json(['status' => 'error', 'msg' => 'All fields are required.']);
+        }
+
+        // Check OTP was verified
+        if (!session('forgot_otp_verified') || session('forgot_otp_email') !== $email) {
+            return response()->json(['status' => 'error', 'msg' => 'OTP not verified. Please verify your email first.']);
+        }
+
+        if (strlen($newPassword) < 8) {
+            return response()->json(['status' => 'error', 'msg' => 'Password must be at least 8 characters.']);
+        }
+
+        if ($newPassword !== $confirmPassword) {
+            return response()->json(['status' => 'error', 'msg' => 'Passwords do not match.']);
+        }
+
+        $customer = Ecom_Customer_info::where('customer_email', $email)->first();
+        if (!$customer) {
+            return response()->json(['status' => 'error', 'msg' => 'No account found with this email address.']);
+        }
+
+        Ecom_Customer_info::where('customer_email', $email)->update([
+            'customer_password' => base64_encode(base64_encode($newPassword))
+        ]);
+
+        // Clear OTP session
+        session()->forget(['forgot_otp', 'forgot_otp_email', 'forgot_otp_expiry', 'forgot_otp_verified']);
+
+        return response()->json(['status' => 'success', 'msg' => 'Password updated successfully! You can now login.']);
+    }
+
     public function forgetmail(Request $request)
     {
 

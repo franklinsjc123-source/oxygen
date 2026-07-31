@@ -748,7 +748,7 @@
                                        <i class="fa-solid fa-eye toggle-password" onclick="togglePassword()"></i>
                                    </div>
                                    <div class="form-checkbox d-flex align-items-center justify-content-end mt-4">
-                                       <a href="javascript:void(0)" onclick="$('#forget-mail').click()">Lost your password?</a>
+                                       <a href="javascript:void(0)" onclick="showForgotPasswordPanel()">Lost your password?</a>
                                    </div>
 
                                    <button type="button" class="btn btn-success" onclick="cuslogin()"
@@ -809,7 +809,71 @@
 
                                </form>
                            </div>
-                       </div>
+                        </div>
+
+                        {{-- Forgot Password Panel --}}
+                        <div id="forgot-password-panel" style="display: none;">
+                            {{-- Step 1: Email --}}
+                            <div id="forgot-step-email">
+                                <h5 style="font-weight: 700; color: #333; margin-bottom: 6px; font-size: 1.6rem;">Forgot Password</h5>
+                                <p style="color: #888; font-size: 1.2rem; margin-bottom: 20px;">Enter your registered email to receive an OTP.</p>
+                                <div id="forgot-error-alert" class="text-center mb-3" style="display:none; font-weight:500; font-size: 1.1rem;"></div>
+                                <div class="form-group">
+                                    <label>Email Address *</label>
+                                    <input type="email" class="form-control" id="forgot_email" placeholder="E.g. john@example.com">
+                                </div>
+                                <button type="button" class="btn btn-success" onclick="sendForgotOtp()" id="btn-send-otp">Send OTP</button>
+                                <div class="text-center mt-3">
+                                    <a href="javascript:void(0)" onclick="hideForgotPasswordPanel()" style="color: #0088dd; font-size: 1.2rem;"><i class="fas fa-arrow-left" style="margin-right: 5px;"></i>Back to Sign In</a>
+                                </div>
+                            </div>
+
+                            {{-- Step 2: OTP Verification --}}
+                            <div id="forgot-step-otp" style="display: none;">
+                                <h5 style="font-weight: 700; color: #333; margin-bottom: 6px; font-size: 1.6rem;">Verify OTP</h5>
+                                <p style="color: #888; font-size: 1.2rem; margin-bottom: 5px;">We've sent a 6-digit OTP to your email.</p>
+                                <p id="forgot-otp-email-hint" style="color: #0088dd; font-size: 1.2rem; font-weight: 600; margin-bottom: 20px;"></p>
+                                <div id="otp-error-alert" class="text-center mb-3" style="display:none; font-weight:500; font-size: 1.1rem;"></div>
+                                <div class="form-group">
+                                    <label>Enter OTP *</label>
+                                    <div style="display: flex; gap: 8px; justify-content: center;">
+                                        <input type="text" class="form-control otp-input" id="otp_1" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,''); otpAutoFocus(this, 'otp_2')" style="width: 48px; height: 52px; text-align: center; font-size: 22px; font-weight: 700; border-radius: 10px; border: 2px solid #ddd; padding: 0;">
+                                        <input type="text" class="form-control otp-input" id="otp_2" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,''); otpAutoFocus(this, 'otp_3')" onkeydown="otpBackspace(event, 'otp_1')" style="width: 48px; height: 52px; text-align: center; font-size: 22px; font-weight: 700; border-radius: 10px; border: 2px solid #ddd; padding: 0;">
+                                        <input type="text" class="form-control otp-input" id="otp_3" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,''); otpAutoFocus(this, 'otp_4')" onkeydown="otpBackspace(event, 'otp_2')" style="width: 48px; height: 52px; text-align: center; font-size: 22px; font-weight: 700; border-radius: 10px; border: 2px solid #ddd; padding: 0;">
+                                        <input type="text" class="form-control otp-input" id="otp_4" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,''); otpAutoFocus(this, 'otp_5')" onkeydown="otpBackspace(event, 'otp_3')" style="width: 48px; height: 52px; text-align: center; font-size: 22px; font-weight: 700; border-radius: 10px; border: 2px solid #ddd; padding: 0;">
+                                        <input type="text" class="form-control otp-input" id="otp_5" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,''); otpAutoFocus(this, 'otp_6')" onkeydown="otpBackspace(event, 'otp_4')" style="width: 48px; height: 52px; text-align: center; font-size: 22px; font-weight: 700; border-radius: 10px; border: 2px solid #ddd; padding: 0;">
+                                        <input type="text" class="form-control otp-input" id="otp_6" maxlength="1" oninput="this.value=this.value.replace(/[^0-9]/g,'');" onkeydown="otpBackspace(event, 'otp_5')" style="width: 48px; height: 52px; text-align: center; font-size: 22px; font-weight: 700; border-radius: 10px; border: 2px solid #ddd; padding: 0;">
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-success" onclick="verifyForgotOtp()" id="btn-verify-otp">Verify OTP</button>
+                                <div class="text-center mt-3" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <a href="javascript:void(0)" onclick="showForgotStepEmail()" style="color: #0088dd; font-size: 1.2rem;"><i class="fas fa-arrow-left" style="margin-right: 5px;"></i>Back</a>
+                                    <a href="javascript:void(0)" onclick="resendForgotOtp()" id="resend-otp-link" style="color: #888; font-size: 1.2rem;">Resend OTP</a>
+                                </div>
+                            </div>
+
+                            {{-- Step 3: New Password --}}
+                            <div id="forgot-step-password" style="display: none;">
+                                <h5 style="font-weight: 700; color: #333; margin-bottom: 6px; font-size: 1.6rem;">Set New Password</h5>
+                                <p style="color: #888; font-size: 1.2rem; margin-bottom: 20px;">Create a new password for your account.</p>
+                                <div id="reset-error-alert" class="text-center mb-3" style="display:none; font-weight:500; font-size: 1.1rem;"></div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" class="form-control" id="forgot_email_display" readonly style="background: #f5f5f5; color: #888;">
+                                </div>
+                                <div class="form-group mb-4 position-relative">
+                                    <label>New Password *</label>
+                                    <input type="password" class="form-control" id="forgot_new_password" placeholder="Minimum 8 characters">
+                                    <i class="fa-solid fa-eye toggle-password-1" onclick="togglePasswordRegister('forgot_new_password', this)" style="position:absolute; right:10px; margin-top:-30px; cursor:pointer;"></i>
+                                </div>
+                                <div class="form-group mb-4 position-relative">
+                                    <label>Confirm Password *</label>
+                                    <input type="password" class="form-control" id="forgot_confirm_password" placeholder="Re-enter password">
+                                    <i class="fa-solid fa-eye toggle-password-2" onclick="togglePasswordRegister('forgot_confirm_password', this)" style="position:absolute; right:10px; margin-top:-30px; cursor:pointer;"></i>
+                                </div>
+                                <button type="button" class="btn btn-success" onclick="resetForgotPassword()" id="btn-reset-password">Reset Password</button>
+                            </div>
+                        </div>
 
                    </div>
                </div>
@@ -1312,6 +1376,236 @@
                     }
                 });
             }
+        }
+
+        // ======== Forgot Password Flow ========
+        var forgotEmail = '';
+
+        function showForgotPasswordPanel() {
+            $('.login-register-popup .nav-tabs').hide();
+            $('.login-register-popup .tab-content').hide();
+            $('#forgot-password-panel').show();
+            $('#forgot-step-email').show();
+            $('#forgot-step-otp').hide();
+            $('#forgot-step-password').hide();
+            $('#forgot-error-alert').hide();
+            $('#otp-error-alert').hide();
+            $('#reset-error-alert').hide();
+            $('#forgot_email').val('');
+            clearOtpInputs();
+            $('#forgot_new_password').val('');
+            $('#forgot_confirm_password').val('');
+            forgotEmail = '';
+        }
+
+        function hideForgotPasswordPanel() {
+            $('.login-register-popup .nav-tabs').show();
+            $('.login-register-popup .tab-content').show();
+            $('#forgot-password-panel').hide();
+            $('#forgot-step-email').show();
+            $('#forgot-step-otp').hide();
+            $('#forgot-step-password').hide();
+        }
+
+        function showForgotStepEmail() {
+            $('#forgot-step-otp').hide();
+            $('#forgot-step-password').hide();
+            $('#forgot-step-email').show();
+            $('#forgot-error-alert').hide();
+        }
+
+        // OTP input helpers
+        function otpAutoFocus(current, nextId) {
+            if (current.value.length === 1) {
+                var next = document.getElementById(nextId);
+                if (next) next.focus();
+            }
+        }
+
+        function otpBackspace(e, prevId) {
+            if (e.key === 'Backspace' && e.target.value === '') {
+                var prev = document.getElementById(prevId);
+                if (prev) { prev.focus(); prev.value = ''; }
+            }
+        }
+
+        function getOtpValue() {
+            return $('#otp_1').val() + $('#otp_2').val() + $('#otp_3').val() + $('#otp_4').val() + $('#otp_5').val() + $('#otp_6').val();
+        }
+
+        function clearOtpInputs() {
+            for (var i = 1; i <= 6; i++) { $('#otp_' + i).val(''); }
+        }
+
+        // Step 1: Send OTP
+        function sendForgotOtp() {
+            var email = $('#forgot_email').val().trim();
+            $('#forgot-error-alert').hide();
+
+            if (email === '') {
+                $('#forgot-error-alert').html('Please enter your email address.').css('color', '#ef4444').show();
+                return;
+            }
+
+            $('#btn-send-otp').prop('disabled', true).text('Sending OTP...');
+
+            $.ajax({
+                url: '<?= route("check.email.exists") ?>',
+                type: 'POST',
+                data: {
+                    '_token': '{{ csrf_token() }}',
+                    'email': email
+                },
+                dataType: 'json',
+                success: function(data) {
+                    $('#btn-send-otp').prop('disabled', false).text('Send OTP');
+                    if (data.status === 'success') {
+                        forgotEmail = email;
+                        // Mask email for display
+                        var parts = email.split('@');
+                        var masked = parts[0].substring(0, 2) + '****@' + parts[1];
+                        $('#forgot-otp-email-hint').text(masked);
+                        // Show OTP step
+                        $('#forgot-step-email').hide();
+                        $('#forgot-step-otp').show();
+                        clearOtpInputs();
+                        $('#otp-error-alert').hide();
+                        setTimeout(function() { $('#otp_1').focus(); }, 100);
+                        showCenterMessage('OTP sent to your email!', 'success');
+                    } else {
+                        $('#forgot-error-alert').html(data.msg).css('color', '#ef4444').show();
+                    }
+                },
+                error: function() {
+                    $('#btn-send-otp').prop('disabled', false).text('Send OTP');
+                    $('#forgot-error-alert').html('Something went wrong. Please try again.').css('color', '#ef4444').show();
+                }
+            });
+        }
+
+        // Resend OTP
+        function resendForgotOtp() {
+            if (!forgotEmail) return;
+            $('#otp-error-alert').hide();
+            clearOtpInputs();
+
+            $('#resend-otp-link').css('pointer-events', 'none').text('Sending...');
+
+            $.ajax({
+                url: '<?= route("check.email.exists") ?>',
+                type: 'POST',
+                data: {
+                    '_token': '{{ csrf_token() }}',
+                    'email': forgotEmail
+                },
+                dataType: 'json',
+                success: function(data) {
+                    $('#resend-otp-link').css('pointer-events', 'auto').text('Resend OTP');
+                    if (data.status === 'success') {
+                        showCenterMessage('New OTP sent to your email!', 'success');
+                    } else {
+                        $('#otp-error-alert').html(data.msg).css('color', '#ef4444').show();
+                    }
+                },
+                error: function() {
+                    $('#resend-otp-link').css('pointer-events', 'auto').text('Resend OTP');
+                    $('#otp-error-alert').html('Failed to resend OTP.').css('color', '#ef4444').show();
+                }
+            });
+        }
+
+        // Step 2: Verify OTP
+        function verifyForgotOtp() {
+            var otp = getOtpValue();
+            $('#otp-error-alert').hide();
+
+            if (otp.length !== 6) {
+                $('#otp-error-alert').html('Please enter the complete 6-digit OTP.').css('color', '#ef4444').show();
+                return;
+            }
+
+            $('#btn-verify-otp').prop('disabled', true).text('Verifying...');
+
+            $.ajax({
+                url: '<?= route("verify.forgot.otp") ?>',
+                type: 'POST',
+                data: {
+                    '_token': '{{ csrf_token() }}',
+                    'email': forgotEmail,
+                    'otp': otp
+                },
+                dataType: 'json',
+                success: function(data) {
+                    $('#btn-verify-otp').prop('disabled', false).text('Verify OTP');
+                    if (data.status === 'success') {
+                        // Show password step
+                        $('#forgot-step-otp').hide();
+                        $('#forgot-step-password').show();
+                        $('#forgot_email_display').val(forgotEmail);
+                        showCenterMessage('OTP verified!', 'success');
+                    } else {
+                        $('#otp-error-alert').html(data.msg).css('color', '#ef4444').show();
+                    }
+                },
+                error: function() {
+                    $('#btn-verify-otp').prop('disabled', false).text('Verify OTP');
+                    $('#otp-error-alert').html('Something went wrong. Please try again.').css('color', '#ef4444').show();
+                }
+            });
+        }
+
+        // Step 3: Reset Password
+        function resetForgotPassword() {
+            var email = $('#forgot_email_display').val().trim();
+            var newPassword = $('#forgot_new_password').val();
+            var confirmPassword = $('#forgot_confirm_password').val();
+            $('#reset-error-alert').hide();
+
+            if (newPassword === '') {
+                $('#reset-error-alert').html('Please enter a new password.').css('color', '#ef4444').show();
+                return;
+            }
+            if (newPassword.length < 8) {
+                $('#reset-error-alert').html('Password must be at least 8 characters.').css('color', '#ef4444').show();
+                return;
+            }
+            if (newPassword !== confirmPassword) {
+                $('#reset-error-alert').html('Passwords do not match.').css('color', '#ef4444').show();
+                return;
+            }
+
+            $('#btn-reset-password').prop('disabled', true).text('Resetting...');
+
+            $.ajax({
+                url: '<?= route("reset.password.email") ?>',
+                type: 'POST',
+                data: {
+                    '_token': '{{ csrf_token() }}',
+                    'email': email,
+                    'new_password': newPassword,
+                    'confirm_password': confirmPassword
+                },
+                dataType: 'json',
+                success: function(data) {
+                    $('#btn-reset-password').prop('disabled', false).text('Reset Password');
+                    if (data.status === 'success') {
+                        swal('Success!', data.msg, 'success').then(function() {
+                            hideForgotPasswordPanel();
+                            $('#forgot_email').val('');
+                            $('#forgot_new_password').val('');
+                            $('#forgot_confirm_password').val('');
+                            clearOtpInputs();
+                            forgotEmail = '';
+                        });
+                    } else {
+                        $('#reset-error-alert').html(data.msg).css('color', '#ef4444').show();
+                    }
+                },
+                error: function() {
+                    $('#btn-reset-password').prop('disabled', false).text('Reset Password');
+                    $('#reset-error-alert').html('Something went wrong. Please try again.').css('color', '#ef4444').show();
+                }
+            });
         }
 
        $('#forget-mail').click(function() {

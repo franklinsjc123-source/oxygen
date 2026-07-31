@@ -275,6 +275,9 @@ Route::get('AjaxPincode', [CartController::class,'GetCity']);
 
 Route::get('/Cuslogin', [CustomerController::class,'loginverify']);
 Route::get('/Forget_password', [CustomerController::class,'forgetmail']);
+Route::post('/check-email-exists', [CustomerController::class,'checkEmailExists'])->name('check.email.exists');
+Route::post('/verify-forgot-otp', [CustomerController::class,'verifyForgotOtp'])->name('verify.forgot.otp');
+Route::post('/reset-password-by-email', [CustomerController::class,'resetPasswordByEmail'])->name('reset.password.email');
 // Route::get('/CusLogout', [CustomerController::class,'logout']);
 Route::get('/CheckoutLogout', [CustomerController::class,'checkoutlogout']);
 Route::get('/CusRegister', [CustomerController::class,'register']);
