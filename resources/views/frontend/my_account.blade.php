@@ -289,11 +289,16 @@
 
         #wishlist .shop-table.wishlist-table tbody tr td:nth-child(5) .btn-default::after {
             content: "\00d7" !important;
-            font-size: 20px !important;
+            font-size: 18px !important;
             font-weight: 400 !important;
             line-height: 1 !important;
-            display: block !important;
-            color: #999 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100% !important;
+            height: 100% !important;
+            color: #888 !important;
+            transform: translateY(-1px) !important;
         }
 
         /* Empty wishlist row */

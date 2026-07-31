@@ -35,15 +35,15 @@
         left: auto !important;
         transform: none !important;
         -webkit-transform: none !important;
-        width: 28px !important;
-        min-width: 28px !important;
+        width: 22px !important;
+        min-width: 22px !important;
         flex-shrink: 0 !important;
-        height: 28px !important;
-        font-size: 1.6rem !important;
-        background: #ff3366 !important;
+        height: 22px !important;
+        font-size: 1.3rem !important;
+        background: #0088dd !important;
         border-radius: 50% !important;
         border: none !important;
-        box-shadow: 0 2px 4px rgba(255, 51, 102, 0.2) !important;
+        box-shadow: 0 2px 4px rgba(0, 136, 221, 0.2) !important;
         cursor: pointer !important;
         display: inline-flex !important;
         align-items: center !important;
@@ -61,16 +61,43 @@
 
     /* ─── MOBILE SHOPPING CART CARD LAYOUT ─── */
     @media (max-width: 767px) {
-        .cart .page-content .container,
+        .cart .page-content .container {
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            max-width: 100% !important;
+            width: 100% !important;
+            overflow: visible !important;
+        }
+
         .cart .page-content .row,
         .cart .page-content .col-lg-12 {
             padding-left: 0 !important;
             padding-right: 0 !important;
             margin-left: 0 !important;
             margin-right: 0 !important;
-            max-width: 100% !important;
             width: 100% !important;
-            overflow: visible !important;
+        }
+
+        .cart .breadcrumb-nav {
+            padding: 10px 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+        .cart .breadcrumb {
+            padding: 5px 0 !important;
+            margin-bottom: 0 !important;
+            justify-content: center !important;
+        }
+
+        .cart .page-content {
+            padding-top: 5px !important;
+        }
+
+        .cart .row.mb-10,
+        .cart .col-lg-12.mb-6 {
+            margin-bottom: 10px !important;
         }
 
         .shop-table.cart-table {
@@ -176,7 +203,7 @@
         .shop-table.cart-table tbody tr td:nth-child(4) {
             grid-area: qty !important;
             padding: 0 !important;
-            margin: 4px 0 0 0 !important;
+            margin: 0 !important;
             text-align: left !important;
             display: flex !important;
             align-items: center !important;
@@ -195,7 +222,7 @@
             flex-wrap: nowrap !important;
             flex-direction: row !important;
             background: transparent !important;
-            gap: 4px !important;
+            gap: 2px !important;
         }
 
         .shop-table.cart-table tbody tr td:nth-child(4) .form-control {
@@ -228,22 +255,22 @@
             left: auto !important;
             transform: none !important;
             -webkit-transform: none !important;
-            width: 28px !important;
-            min-width: 28px !important;
+            width: 22px !important;
+            min-width: 22px !important;
             flex-shrink: 0 !important;
-            height: 28px !important;
-            font-size: 1.6rem !important;
-            background: #ff3366 !important;
+            height: 22px !important;
+            font-size: 1.3rem !important;
+            background: #0088dd !important;
             border-radius: 50% !important;
             border: none !important;
-            box-shadow: 0 2px 4px rgba(255, 51, 102, 0.2) !important;
+            box-shadow: 0 2px 4px rgba(0, 136, 221, 0.2) !important;
             cursor: pointer !important;
             display: inline-flex !important;
             align-items: center !important;
             justify-content: center !important;
             color: #ffffff !important;
             padding: 0 !important;
-            margin: 0 4px !important;
+            margin: 0 2px !important;
             font-family: inherit !important;
             font-weight: bold !important;
             line-height: 1 !important;
@@ -281,17 +308,18 @@
         .shop-table.cart-table tbody tr td:nth-child(6) .btn-action-remove {
             width: 26px !important;
             height: 26px !important;
-            min-width: 0 !important;
+            min-width: 26px !important;
             background: #f0f0f2 !important;
             border-radius: 50% !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            color: #999 !important;
+            color: #888 !important;
             font-size: 0 !important;
             border: none !important;
             padding: 0 !important;
             margin: 0 !important;
+            overflow: hidden !important;
         }
 
         .shop-table.cart-table tbody tr td:nth-child(6) .btn-action-remove i {
@@ -303,8 +331,13 @@
             font-size: 18px !important;
             font-weight: 400 !important;
             line-height: 1 !important;
-            display: block !important;
-            color: #999 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100% !important;
+            height: 100% !important;
+            color: #888 !important;
+            transform: translateY(-1px) !important;
         }
 
         /* Empty cart row */
@@ -318,19 +351,55 @@
         .cart-action.mb-6 {
             display: flex !important;
             flex-direction: column !important;
-            align-items: center !important;
-            justify-content: center !important;
+            align-items: stretch !important;
+            width: 100% !important;
             gap: 12px !important;
             padding: 20px 0 !important;
         }
  
         .cart-action.mb-6 .btn {
-            max-width: 280px !important;
+            max-width: 100% !important;
             width: 100% !important;
-            margin: 0 auto !important;
+            margin: 0 !important;
             padding: 14px 20px !important;
             font-size: 1.3rem !important;
         }
+    }
+
+    .cart-action {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        padding: 20px 0;
+    }
+
+    .cart-action .btn-continue-shopping {
+        font-size: 1.3rem;
+        text-transform: uppercase;
+        font-weight: 700;
+        padding: 12px 24px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        max-width: 240px;
+    }
+
+    .cart-action .btn-proceed-checkout {
+        font-size: 1.3rem;
+        text-transform: uppercase;
+        font-weight: 700;
+        padding: 12px 24px;
+        background-color: #0088dd !important;
+        border-color: #0088dd !important;
+        color: #fff !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        max-width: 240px;
     }
 </style>
  <!-- Start of Main -->
@@ -367,9 +436,9 @@
                                 </tbody>
                             </table>
 
-                            <div class="cart-action mb-6" style="display: flex; gap: 15px; justify-content: space-between; flex-wrap: wrap; align-items: center; padding: 20px 0;">
-                                <a href="{{url('/')}}" class="btn btn-dark btn-rounded btn-icon-left btn-shopping mr-auto" style="width: auto !important; max-width: 240px; padding: 12px 24px; font-size: 1.3rem; text-transform: uppercase; font-weight: 700; height: auto; display: inline-flex; align-items: center; justify-content: center; gap: 8px;"><i class="w-icon-long-arrow-left"></i>Continue Shopping</a>
-                                <a href="{{url('/checkoutPage')}}" class="btn btn-dark btn-rounded btn-shopping" style="width: auto !important; max-width: 240px; padding: 12px 24px; font-size: 1.3rem; text-transform: uppercase; font-weight: 700; height: auto; background-color: #0088dd; border-color: #0088dd; color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">Proceed to checkout<i class="w-icon-long-arrow-right"></i></a>
+                            <div class="cart-action mb-6">
+                                <a href="{{url('/')}}" class="btn btn-dark btn-rounded btn-icon-left btn-shopping btn-continue-shopping"><i class="w-icon-long-arrow-left"></i>Continue Shopping</a>
+                                <a href="{{url('/checkoutPage')}}" class="btn btn-dark btn-rounded btn-shopping btn-proceed-checkout">Proceed to checkout<i class="w-icon-long-arrow-right"></i></a>
                             </div>
 
                             
