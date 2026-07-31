@@ -27,6 +27,38 @@
         color: #fff !important;
     }
 
+    .input-group button,
+    .quantity-btn {
+        position: relative !important;
+        top: auto !important;
+        right: auto !important;
+        left: auto !important;
+        transform: none !important;
+        -webkit-transform: none !important;
+        width: 28px !important;
+        min-width: 28px !important;
+        flex-shrink: 0 !important;
+        height: 28px !important;
+        font-size: 1.6rem !important;
+        background: #ff3366 !important;
+        border-radius: 50% !important;
+        border: none !important;
+        box-shadow: 0 2px 4px rgba(255, 51, 102, 0.2) !important;
+        cursor: pointer !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 4px !important;
+        font-family: inherit !important;
+        font-weight: bold !important;
+        line-height: 1 !important;
+    }
+    .input-group button + button {
+        margin-right: 0 !important;
+    }
+
     /* ─── MOBILE SHOPPING CART CARD LAYOUT ─── */
     @media (max-width: 767px) {
         .cart .page-content .container,
@@ -188,7 +220,14 @@
             margin: 0 !important;
         }
 
+        .shop-table.cart-table tbody tr td:nth-child(4) .input-group button,
         .shop-table.cart-table tbody tr td:nth-child(4) button {
+            position: relative !important;
+            top: auto !important;
+            right: auto !important;
+            left: auto !important;
+            transform: none !important;
+            -webkit-transform: none !important;
             width: 28px !important;
             min-width: 28px !important;
             flex-shrink: 0 !important;
@@ -199,7 +238,7 @@
             border: none !important;
             box-shadow: 0 2px 4px rgba(255, 51, 102, 0.2) !important;
             cursor: pointer !important;
-            display: flex !important;
+            display: inline-flex !important;
             align-items: center !important;
             justify-content: center !important;
             color: #ffffff !important;
@@ -208,31 +247,6 @@
             font-family: inherit !important;
             font-weight: bold !important;
             line-height: 1 !important;
-        }
-
-        .shop-table.cart-table tbody tr td:nth-child(4) button::before,
-        .shop-table.cart-table tbody tr td:nth-child(4) button::after {
-            font-family: inherit !important;
-        }
-
-        .shop-table.cart-table tbody tr td:nth-child(4) button.w-icon-minus::before {
-            content: "\2212" !important;
-        }
-
-        .shop-table.cart-table tbody tr td:nth-child(4) button.w-icon-plus::before {
-            content: "\002b" !important;
-        }
-
-        .shop-table.cart-table tbody tr td:nth-child(4) button.w-icon-minus {
-            order: 1 !important;
-        }
-
-        .shop-table.cart-table tbody tr td:nth-child(4) .form-control {
-            order: 2 !important;
-        }
-
-        .shop-table.cart-table tbody tr td:nth-child(4) button.w-icon-plus {
-            order: 3 !important;
         }
 
         /* ── Subtotal (5th td) ── */

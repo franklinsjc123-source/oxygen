@@ -57,9 +57,9 @@ if (isset($records) && count($records) > 0) {
     @endphp
     <td class="product-quantity text-center align-middle">
         <div class="input-group justify-content-center">
+            <button type="button" class="quantity-btn btn-minus" onclick="updateQty('{{ $row['id'] }}','Minus','{{ $domId }}')">&minus;</button>
             <input class="form-control" value="<?= $row['qty'] ?>" type="number" min="1" max="100" id="{{ $domId }}" data-item-id="{{ $row['id'] }}" readonly>
-            <button type="button" class="w-icon-plus" onclick="updateQty('{{ $row['id'] }}','Add','{{ $domId }}')"></button>
-            <button type="button" class="w-icon-minus" onclick="updateQty('{{ $row['id'] }}','Minus','{{ $domId }}')"></button>
+            <button type="button" class="quantity-btn btn-plus" onclick="updateQty('{{ $row['id'] }}','Add','{{ $domId }}')">&#43;</button>
         </div>
     </td>
     <td class="product-subtotal text-center align-middle">
