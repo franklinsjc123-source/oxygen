@@ -853,12 +853,20 @@
 
        function addwishlist(pid) {
 
-           var user_id = '<?= session()->get('customer_id') ?>';
-
-           if (user_id == 0 || user_id == '') {
-               showCenterMessage("Please Login", "error");
-               return false;
-           }
+            var user_id = '<?= session()->get('customer_id') ?>';
+ 
+            if (user_id == 0 || user_id == '') {
+                var event = window.event || arguments.callee.caller.arguments[0];
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if (event.stopImmediatePropagation) {
+                        event.stopImmediatePropagation();
+                    }
+                }
+                showLoginPopup();
+                return false;
+            }
 
            var product_id = pid;
            var url = '<?= route('add-wishlist') ?>';
