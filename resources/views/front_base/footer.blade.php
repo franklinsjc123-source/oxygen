@@ -540,6 +540,16 @@
             margin-bottom: 35px;
         }
 
+        .login-register-popup .nav-tabs {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            width: 100% !important;
+            border-bottom: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
         .login-register-popup .nav-tabs .nav-item {
             margin-bottom: -2px;
             flex: 1;
@@ -715,15 +725,42 @@
         }
 
         @media (max-width: 767px) {
-            .login-register-popup .login-popup {
-                padding: 35px 25px;
+            .login-register-popup .custom-login-inner {
+                padding: 30px 15px !important;
             }
             .login-register-popup .image-wrapper {
                 display: none;
             }
             .login-register-popup {
-                max-width: 95%;
-                border-radius: 16px;
+                width: 90vw !important;
+                max-width: 400px !important;
+                border-radius: 16px !important;
+                margin: 0 auto !important;
+                display: block !important;
+                float: none !important;
+            }
+            .login-register-popup.mfp-hide {
+                display: none !important;
+            }
+            .login-register-popup.forgot-active .nav-tabs,
+            .login-register-popup.forgot-active .tab-content {
+                display: none !important;
+            }
+            .login-register-popup .nav-tabs .nav-link {
+                padding: 12px 5px !important;
+                font-size: 1.05rem !important;
+                white-space: nowrap !important;
+            }
+            .mfp-container {
+                text-align: center !important;
+                padding-left: 10px !important;
+                padding-right: 10px !important;
+            }
+            .mfp-content {
+                display: inline-block !important;
+                text-align: left !important;
+                float: none !important;
+                margin: 0 auto !important;
             }
         }
     </style>
@@ -1410,6 +1447,7 @@
         var forgotEmail = '';
 
         function showForgotPasswordPanel() {
+            $('.login-register-popup').addClass('forgot-active');
             $('.login-register-popup .nav-tabs').hide();
             $('.login-register-popup .tab-content').hide();
             $('#forgot-password-panel').show();
@@ -1427,6 +1465,7 @@
         }
 
         function hideForgotPasswordPanel() {
+            $('.login-register-popup').removeClass('forgot-active');
             $('.login-register-popup .nav-tabs').show();
             $('.login-register-popup .tab-content').show();
             $('#forgot-password-panel').hide();
