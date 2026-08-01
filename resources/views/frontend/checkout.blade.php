@@ -295,6 +295,83 @@
               line-height: 1.6 !important;
               color: #334155 !important;
           }
+
+          /* Mobile Responsive Checkout Redesign */
+          @media (max-width: 767px) {
+              .checkout .page-content .container {
+                  padding-left: 15px !important;
+                  padding-right: 15px !important;
+                  max-width: 100% !important;
+                  width: 100% !important;
+              }
+
+              .checkout .card-body {
+                  padding: 15px !important;
+              }
+
+              .checkout .product-list {
+                  display: grid !important;
+                  grid-template-columns: 75px 1fr !important;
+                  grid-template-areas:
+                      "img name"
+                      "img meta"
+                      "img price" !important;
+                  gap: 4px 12px !important;
+                  padding: 12px !important;
+                  position: relative !important;
+                  align-items: start !important;
+              }
+
+              .checkout .product-media {
+                  grid-area: img !important;
+                  margin-right: 0 !important;
+                  width: 75px !important;
+                  height: 75px !important;
+                  border-radius: 12px !important;
+                  background: #f5f6f8 !important;
+              }
+
+              .checkout .product-details {
+                  grid-area: name !important;
+                  display: flex !important;
+                  flex-direction: column !important;
+                  gap: 2px !important;
+              }
+
+              .checkout .product-name {
+                  font-size: 1.3rem !important;
+                  margin-bottom: 0 !important;
+                  line-height: 1.3 !important;
+              }
+
+              .checkout .product-meta {
+                  font-size: 1.1rem !important;
+                  line-height: 1.2 !important;
+              }
+
+              .checkout .product-price-block {
+                  grid-area: price !important;
+                  display: block !important;
+                  text-align: left !important;
+                  padding-left: 0 !important;
+                  margin-top: 4px !important;
+                  align-items: flex-start !important;
+              }
+
+              .checkout .product-price-block .price {
+                  font-size: 1.3rem !important;
+                  font-weight: 700 !important;
+                  color: #111 !important;
+                  display: inline-block !important;
+              }
+
+              .checkout .product-price-block .total {
+                  font-size: 1.2rem !important;
+                  color: #4b5563 !important;
+                  margin-top: 2px !important;
+                  display: block !important;
+              }
+          }
      </style>
      <div class="page-content">
      <div class="container">
