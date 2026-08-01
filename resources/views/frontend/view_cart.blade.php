@@ -55,8 +55,34 @@
         font-weight: bold !important;
         line-height: 1 !important;
     }
-    .input-group button + button {
-        margin-right: 0 !important;
+    .shop-table.cart-table .product-quantity .input-group {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 4px !important;
+    }
+
+    .shop-table.cart-table .product-quantity .form-control {
+        height: 28px !important;
+        min-height: 28px !important;
+        max-height: 28px !important;
+        width: 42px !important;
+        padding: 0 !important;
+        text-align: center !important;
+        font-size: 1.3rem !important;
+        font-weight: 600 !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 4px !important;
+        background: #fff !important;
+        color: #111 !important;
+        margin: 0 !important;
+        -moz-appearance: textfield !important;
+    }
+
+    .shop-table.cart-table .product-quantity .form-control::-webkit-inner-spin-button,
+    .shop-table.cart-table .product-quantity .form-control::-webkit-outer-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0 !important;
     }
 
     /* ─── MOBILE SHOPPING CART CARD LAYOUT ─── */
@@ -311,11 +337,11 @@
             min-width: 26px !important;
             background: #f0f0f2 !important;
             border-radius: 50% !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
+            position: relative !important;
+            display: inline-block !important;
             color: #888 !important;
             font-size: 0 !important;
+            line-height: 0 !important;
             border: none !important;
             padding: 0 !important;
             margin: 0 !important;
@@ -331,13 +357,13 @@
             font-size: 18px !important;
             font-weight: 400 !important;
             line-height: 1 !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            width: 100% !important;
-            height: 100% !important;
-            color: #888 !important;
-            transform: translateY(-1px) !important;
+            position: absolute !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -54%) !important;
+            color: #777 !important;
+            margin: 0 !important;
+            padding: 0 !important;
         }
 
         /* Empty cart row */

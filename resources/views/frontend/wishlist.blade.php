@@ -162,20 +162,18 @@
             position: absolute !important;
             top: 18px !important;
             right: 0 !important;
-            width: 28px !important;
-            height: 28px !important;
-            min-width: 0 !important;
+            width: 26px !important;
+            height: 26px !important;
+            min-width: 26px !important;
             background: #f0f0f2 !important;
             border-radius: 50% !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            color: #999 !important;
+            display: inline-block !important;
+            color: #888 !important;
             font-size: 0 !important;
+            line-height: 0 !important;
             border: none !important;
             padding: 0 !important;
             margin: 0 !important;
-            line-height: 1 !important;
             overflow: hidden !important;
         }
 
@@ -184,13 +182,13 @@
             font-size: 18px !important;
             font-weight: 400 !important;
             line-height: 1 !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            width: 100% !important;
-            height: 100% !important;
-            color: #888 !important;
-            transform: translateY(-1px) !important;
+            position: absolute !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -54%) !important;
+            color: #777 !important;
+            margin: 0 !important;
+            padding: 0 !important;
         }
 
         /* Empty wishlist row */
