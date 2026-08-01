@@ -38,34 +38,34 @@ class CustomerController extends Controller
 
         if ($count1 > 0) {
             return response()->json(['msg' => 'Failed'], 200);
-            $customer = new Ecom_Customer_info;
-            $customer->customer_id = '';
-            $customer->customer_firstname = $request->customer_name;
-            $customer->customer_email = $request->customer_email;
-            $customer->customer_mobileno = $request->customer_mobileno;
-            $customer->customer_password = base64_encode(base64_encode($request->customer_password));
-            $customer->save();
-
-            $customer_id = "OXY-C" . str_pad($customer->id, 5, "0", STR_PAD_LEFT);
-            $customer->update(['customer_id' => $customer_id]);
-            
-            Session::put('customer_id', $customer_id);
-
-            $details = [
-
-                'customer_name' => $request->customer_name,    
-                'customer_email' => $request->customer_email,
-                'customer_mobileno' => $request->customer_mobileno,
-                'customer_password' => $request->customer_password
-    
-            ];
-            
-    
-           // $sendmail= \Mail::to($request->customer_email)->send(new \App\Mail\RegisterMail($details));
-    
-
-            return response()->json(['msg' => 'Success'], 200);
         }
+        
+        $customer = new Ecom_Customer_info;
+        $customer->customer_id = '';
+        $customer->customer_firstname = $request->customer_name;
+        $customer->customer_email = $request->customer_email;
+        $customer->customer_mobileno = $request->customer_mobileno;
+        $customer->customer_password = base64_encode(base64_encode($request->customer_password));
+        $customer->save();
+
+        $customer_id = "OXY-C" . str_pad($customer->id, 5, "0", STR_PAD_LEFT);
+        $customer->update(['customer_id' => $customer_id]);
+        
+        Session::put('customer_id', $customer_id);
+
+        $details = [
+
+            'customer_name' => $request->customer_name,    
+            'customer_email' => $request->customer_email,
+            'customer_mobileno' => $request->customer_mobileno,
+            'customer_password' => $request->customer_password
+
+        ];
+        
+
+       // $sendmail= \Mail::to($request->customer_email)->send(new \App\Mail\RegisterMail($details));
+
+        return response()->json(['msg' => 'Success'], 200);
     }
     public function updateaddress(Request $request)
     {
