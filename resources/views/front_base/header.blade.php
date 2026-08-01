@@ -764,7 +764,8 @@
                 gap: 12px;
             }
             .mobile-cat-nav-item {
-                font-size: 14px;
+                font-size: 13px !important;
+                font-weight: 700 !important;
                 color: #333333;
                 text-decoration: none;
                 display: inline-flex;
