@@ -515,6 +515,11 @@
             border: 1px solid rgba(0,0,0,0.05);
         }
 
+        .login-register-popup.forgot-active .nav-tabs,
+        .login-register-popup.forgot-active .tab-content {
+            display: none !important;
+        }
+
         .login-register-popup .row {
             margin: 0;
         }

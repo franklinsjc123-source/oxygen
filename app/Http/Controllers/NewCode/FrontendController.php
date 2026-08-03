@@ -282,6 +282,12 @@ class FrontendController extends Controller
 
     public function saveShippingAddress(Request $request)
     {
+        $customerId = Session::get('customer_id');
+
+        if ($customerId && $request->customer_pincode) {
+            Ecom_Customer_info::where('customer_id', $customerId)
+                ->update(['customer_pincode' => $request->customer_pincode]);
+        }
 
         if ($request->address_id) {
 
@@ -299,7 +305,7 @@ class FrontendController extends Controller
         } else {
             // ADD NEW
             Ecom_Customer_Shipping::create([
-                'customer_id' => Session::get('customer_id'),
+                'customer_id' => $customerId,
                 'customer_firstname' => $request->customer_firstname,
                 'customer_mobileno' => $request->customer_mobileno,
                 'customer_email' => $request->customer_email,

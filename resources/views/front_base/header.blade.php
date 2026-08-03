@@ -1,3 +1,19 @@
+<?php
+if (!session()->has('pincode') && session()->has('customer_id')) {
+    $customerId = session('customer_id');
+    $customerInfo = \App\Models\Ecom_Customer_info::where('customer_id', $customerId)->first();
+    if ($customerInfo && $customerInfo->customer_pincode) {
+        $pincodeRecord = \App\Models\PinCode\PinCode::where('name', $customerInfo->customer_pincode)->first();
+        if ($pincodeRecord) {
+            session([
+                'pincode' => $customerInfo->customer_pincode,
+                'pincode_area' => $pincodeRecord->area,
+                'post_region' => $pincodeRecord->post_region
+            ]);
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 

@@ -857,10 +857,12 @@
                                                 <div class="col-md-4">
                                                     <label class="fw-bold">Instagram Link</label>
                                                     <input class="form-control" type="text" name="instagram_link" value="{{ $vendorcreate->instagram_link }}">
+                                                    <div class="invalid-feedback-custom">Please enter a valid Instagram URL (e.g. https://instagram.com/username).</div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label class="fw-bold">Facebook Link</label>
                                                     <input class="form-control" type="text" name="facebook_link" value="{{ $vendorcreate->facebook_link }}">
+                                                    <div class="invalid-feedback-custom">Please enter a valid Facebook URL (e.g. https://facebook.com/username).</div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label class="fw-bold">WhatsApp Number</label>
@@ -1474,6 +1476,10 @@
                 this.value = this.value.replace(/\D/g, '').slice(0, 10);
             });
 
+            $('[name="whatsapp_number"]').on('input', function() {
+                this.value = this.value.replace(/\D/g, '').slice(0, 10);
+            });
+
             function initBankUpiValidation() {
                 var bank_name = $('#bank_name').val().trim();
                 var ac_no = $('#ac_no').val().trim();
@@ -1517,9 +1523,57 @@
                 }
             });
 
+            function validateSocialLinks() {
+                var instagram = $('[name="instagram_link"]').val().trim();
+                var facebook = $('[name="facebook_link"]').val().trim();
+                var urlRegex = /^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]{2,}\.)+[a-zA-Z]{2,}(\/.*)?$/;
+                var isInstagramVal = true;
+                var isFacebookVal = true;
+
+                if (instagram !== '') {
+                    if (!urlRegex.test(instagram) || !instagram.toLowerCase().includes('instagram.com')) {
+                        $('[name="instagram_link"]').addClass('invalid-field');
+                        isInstagramVal = false;
+                    } else {
+                        $('[name="instagram_link"]').removeClass('invalid-field');
+                    }
+                } else {
+                    $('[name="instagram_link"]').removeClass('invalid-field');
+                }
+
+                if (facebook !== '') {
+                    if (!urlRegex.test(facebook) || (!facebook.toLowerCase().includes('facebook.com') && !facebook.toLowerCase().includes('fb.com') && !facebook.toLowerCase().includes('fb.me'))) {
+                        $('[name="facebook_link"]').addClass('invalid-field');
+                        isFacebookVal = false;
+                    } else {
+                        $('[name="facebook_link"]').removeClass('invalid-field');
+                    }
+                } else {
+                    $('[name="facebook_link"]').removeClass('invalid-field');
+                }
+
+                return { isInstagramVal: isInstagramVal, isFacebookVal: isFacebookVal };
+            }
+
+            $('[name="instagram_link"], [name="facebook_link"]').on('input change', function() {
+                validateSocialLinks();
+            });
+
             $('form.needs-validation').on('submit', function(e) {
                 $(this).addClass('validation-attempted');
-                
+
+                var valResult = validateSocialLinks();
+                if (!valResult.isInstagramVal) {
+                    e.preventDefault();
+                    $('[name="instagram_link"]').focus();
+                    return false;
+                }
+                if (!valResult.isFacebookVal) {
+                    e.preventDefault();
+                    $('[name="facebook_link"]').focus();
+                    return false;
+                }
+
                 var bank_name = $('#bank_name').val().trim();
                 var ac_no = $('#ac_no').val().trim();
                 var ac_no1 = $('#ac_no1').val().trim();

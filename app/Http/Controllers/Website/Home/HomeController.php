@@ -146,8 +146,14 @@ class HomeController extends Controller
             if ($pincodeRecord) {
                 
                 Session::put('pincode', $pincode);
-                Session::put('pincode_area', $pincodeRecord->area );
-                Session::put('post_region', $pincodeRecord->post_region );
+                Session::put('pincode_area', $pincodeRecord->area);
+                Session::put('post_region', $pincodeRecord->post_region);
+
+                $customerId = Session::get('customer_id');
+                if ($customerId) {
+                    \App\Models\Ecom_Customer_info::where('customer_id', $customerId)
+                        ->update(['customer_pincode' => $pincode]);
+                }
 
                 return response()->json(['status' => 'success', 'message' => 'Pincode is valid and delivery is available.']);
             } else {
