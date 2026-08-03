@@ -1555,8 +1555,53 @@
                 return { isInstagramVal: isInstagramVal, isFacebookVal: isFacebookVal };
             }
 
+            function validateMobileNumbers() {
+                var m_number = $('#m_number').val().trim();
+                var alter_no = $('#alter_no').val().trim();
+                var isMValid = true;
+                var isAlterValid = true;
+
+                if (m_number === '') {
+                    $('#m_number').addClass('invalid-field');
+                    $('#m_number').siblings('.invalid-feedback-custom').text('Please enter mobile number');
+                    isMValid = false;
+                } else if (m_number.length !== 10) {
+                    $('#m_number').addClass('invalid-field');
+                    if ($('#m_number').siblings('.invalid-feedback-custom').length === 0) {
+                        $('#m_number').after('<div class="invalid-feedback-custom">Mobile number must be exactly 10 digits</div>');
+                    } else {
+                        $('#m_number').siblings('.invalid-feedback-custom').text('Mobile number must be exactly 10 digits');
+                    }
+                    isMValid = false;
+                } else {
+                    $('#m_number').removeClass('invalid-field');
+                }
+
+                if (alter_no !== '') {
+                    if (alter_no.length !== 10) {
+                        $('#alter_no').addClass('invalid-field');
+                        if ($('#alter_no').siblings('.invalid-feedback-custom').length === 0) {
+                            $('#alter_no').after('<div class="invalid-feedback-custom">Alternate number must be exactly 10 digits</div>');
+                        } else {
+                            $('#alter_no').siblings('.invalid-feedback-custom').text('Alternate number must be exactly 10 digits');
+                        }
+                        isAlterValid = false;
+                    } else {
+                        $('#alter_no').removeClass('invalid-field');
+                    }
+                } else {
+                    $('#alter_no').removeClass('invalid-field');
+                }
+
+                return { isMValid: isMValid, isAlterValid: isAlterValid };
+            }
+
             $('[name="instagram_link"], [name="facebook_link"]').on('input change', function() {
                 validateSocialLinks();
+            });
+
+            $('#m_number, #alter_no').on('input change', function() {
+                validateMobileNumbers();
             });
 
             $('form.needs-validation').on('submit', function(e) {
@@ -1571,6 +1616,18 @@
                 if (!valResult.isFacebookVal) {
                     e.preventDefault();
                     $('[name="facebook_link"]').focus();
+                    return false;
+                }
+
+                var mobResult = validateMobileNumbers();
+                if (!mobResult.isMValid) {
+                    e.preventDefault();
+                    $('#m_number').focus();
+                    return false;
+                }
+                if (!mobResult.isAlterValid) {
+                    e.preventDefault();
+                    $('#alter_no').focus();
                     return false;
                 }
 
