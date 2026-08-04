@@ -151,8 +151,8 @@ class CustomerController extends Controller
         try {
             \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\ForgotPasswordOtpMail($otp, $customer->customer_firstname));
         } catch (\Exception $e) {
-            \Log::error("Mail sending failed: " . $e->getMessage());
-            \Log::info("Forgot Password OTP for {$email} is: {$otp}");
+            \Illuminate\Support\Facades\Log::error("Mail sending failed: " . $e->getMessage());
+            \Illuminate\Support\Facades\Log::info("Forgot Password OTP for {$email} is: {$otp}");
             // Fallback so the user can still test/reset password if email server is not configured
             return response()->json([
                 'status' => 'success', 
