@@ -788,10 +788,11 @@
                                                      <input class="form-control" type="text" name="facebook_link" placeholder="https://facebook.com/username">
                                                      <div class="invalid-feedback-custom">Please enter a valid Facebook URL (e.g. https://facebook.com/username).</div>
                                                  </div>
-                                                 <div class="col-md-4">
-                                                     <label class="fw-bold">WhatsApp Number</label>
-                                                     <input class="form-control" type="text" name="whatsapp_number" placeholder="e.g. 919876543210">
-                                                 </div>
+                                                 <div class="col-md-4 form-group">
+                                                      <label class="fw-bold"><span>*</span> WhatsApp Number</label>
+                                                      <input class="form-control" type="text" name="whatsapp_number" placeholder="e.g. 919876543210" required>
+                                                      <div class="invalid-feedback-custom">Please enter WhatsApp number</div>
+                                                  </div>
                                              </div><br>
                                          </div>
 

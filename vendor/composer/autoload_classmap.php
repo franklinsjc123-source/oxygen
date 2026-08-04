@@ -163,6 +163,8 @@ return array(
     'App\\Imports\\ImportUser' => $baseDir . '/app/Imports/ImportUser.php',
     'App\\Imports\\Importpincode' => $baseDir . '/app/Imports/Importpincode.php',
     'App\\Mail\\AuctionWinnerMail' => $baseDir . '/app/Mail/AuctionWinnerMail.php',
+    'App\\Mail\\ForgotPasswordOtpMail' => $baseDir . '/app/Mail/ForgotPasswordOtpMail.php',
+    'App\\Mail\\OrderMail' => $baseDir . '/app/Mail/OrderMail.php',
     'App\\Models\\ActivityTracker' => $baseDir . '/app/Models/ActivityTracker.php',
     'App\\Models\\Banners\\mainslider' => $baseDir . '/app/Models/Banners/mainslider.php',
     'App\\Models\\Banners\\oxygen_adv' => $baseDir . '/app/Models/Banners/oxygen_adv.php',

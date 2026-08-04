@@ -71,7 +71,6 @@ Route::prefix('/staff')->middleware('panel.session')->group(__DIR__.'/staff/staf
 Route::prefix('/')->group(__DIR__.'/website/websiteRoutes.php');
 // Route::prefix('/user')->group(__DIR__.'/user/userRoutes.php');
 
-// if(Request::is('admin/*))
-// {
-//     require __DIR__.'/admin_routes.php;
-// }
+// Payment Callback and Pending Routes
+Route::get('/payment-callback', [App\Http\Controllers\PaymentCallbackController::class, 'paymentCallback'])->name('payment.callback');
+Route::get('/payment-pending', [App\Http\Controllers\PaymentCallbackController::class, 'paymentPending'])->name('payment.pending');

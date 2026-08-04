@@ -936,6 +936,8 @@ class ComposerStaticInitb46fe83d0cb27c02673a0058ed8b28ec
         'App\\Imports\\ImportUser' => __DIR__ . '/../..' . '/app/Imports/ImportUser.php',
         'App\\Imports\\Importpincode' => __DIR__ . '/../..' . '/app/Imports/Importpincode.php',
         'App\\Mail\\AuctionWinnerMail' => __DIR__ . '/../..' . '/app/Mail/AuctionWinnerMail.php',
+        'App\\Mail\\ForgotPasswordOtpMail' => __DIR__ . '/../..' . '/app/Mail/ForgotPasswordOtpMail.php',
+        'App\\Mail\\OrderMail' => __DIR__ . '/../..' . '/app/Mail/OrderMail.php',
         'App\\Models\\ActivityTracker' => __DIR__ . '/../..' . '/app/Models/ActivityTracker.php',
         'App\\Models\\Banners\\mainslider' => __DIR__ . '/../..' . '/app/Models/Banners/mainslider.php',
         'App\\Models\\Banners\\oxygen_adv' => __DIR__ . '/../..' . '/app/Models/Banners/oxygen_adv.php',

@@ -748,10 +748,10 @@
                                 <h6 class="product-title">share it</h6>
                                 <div class="product-icon">
                                     <ul class="product-social">
-                                        <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                                      <li><a href="#"><i class="fa fa-whatsapp"></i></a></li>
+                                        <li><a href="#"><i class="fa-brands fa-facebook-f"></i></a></li>
+                                      <li><a href="#"><i class="fa-brands fa-whatsapp"></i></a></li>
                                         <!--<li><a href="#"><i class="fa fa-twitter"></i></a></li>-->
-                                        <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                                        <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
                                         
                                     </ul>
                                 </div>

@@ -65,9 +65,9 @@
                     @if(!empty($vendorcreate->profile_image))
                     <img src="{{ asset('assets/images/vendor/profile') . '/' . $vendorcreate->profile_image }}" class="bg-size blur-up lazyloaded" height="300" width="900" alt="">
                     @endif
-                    <a href="#" class="fa fa-whatsapp" style="position: absolute; top: 90%; left: 86%; transform: translate(-50%, -50%); font-size: 30px; color: green;"></a>
-                    <a href="#" class="fa fa-facebook" style="position: absolute; top: 90%; left: 90%; transform: translate(-50%, -50%); font-size: 30px; color: blue;"></a>
-                    <a href="#" class="fa fa-instagram" style="position: absolute; top: 90%; left: 94%; transform: translate(-50%, -50%); font-size: 30px; color: pink;"></a>
+                    <a href="#" class="fa-brands fa-whatsapp" style="position: absolute; top: 90%; left: 86%; transform: translate(-50%, -50%); font-size: 30px; color: green;"></a>
+                    <a href="#" class="fa-brands fa-facebook-f" style="position: absolute; top: 90%; left: 90%; transform: translate(-50%, -50%); font-size: 30px; color: blue;"></a>
+                    <a href="#" class="fa-brands fa-instagram" style="position: absolute; top: 90%; left: 94%; transform: translate(-50%, -50%); font-size: 30px; color: pink;"></a>
                 </div>
             </div>
 

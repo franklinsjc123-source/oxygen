@@ -251,6 +251,9 @@ class VendorcreateController extends Controller
            return 'failde'   ;
            
         }
+            $vendor->payment_status = 'paid';
+            $vendor->save();
+
             $flasher->addSuccess('vendor Information has been saved successfully!');
             return redirect()->route('staffvendor-list');
         
