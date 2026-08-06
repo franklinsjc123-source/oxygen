@@ -782,39 +782,25 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
             .mobile-cat-nav-item {
                 font-size: 13px !important;
                 font-weight: 700 !important;
-                color: #333333 !important;
+                color: #333333;
                 text-decoration: none;
                 display: inline-flex;
                 align-items: center;
-                gap: 5px;
-                padding-bottom: 2px;
+                gap: 4px;
+                padding-bottom: 1px;
                 border-bottom: 2px solid transparent;
                 transition: all 0.3s ease;
-                line-height: 1.2;
             }
             .mobile-cat-nav-item.active {
-                color: #0088dd !important;
+                color: #0088dd;
                 border-bottom-color: #0088dd;
             }
             .mobile-cat-nav-item i {
-                color: inherit !important;
-            }
-            .mobile-cat-nav-item i.w-icon-angle-down {
-                font-size: 9px;
+                font-size: 10px;
                 transition: transform 0.3s;
-                margin-left: -2px;
-                display: inline-flex;
-                align-items: center;
             }
-            .mobile-cat-nav-item.active i.w-icon-angle-down {
+            .mobile-cat-nav-item.active i {
                 transform: rotate(180deg);
-            }
-            .mobile-cat-nav-item i:not(.w-icon-angle-down) {
-                font-size: 14px;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                vertical-align: middle;
             }
 
             /* Mobile Category Dropdowns styles */
@@ -1109,16 +1095,16 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                 <div class="mobile-categories-nav-wrapper d-md-none">
                     <div class="mobile-categories-nav">
                         @if(isset($menCategory) && $menCategory)
-                            <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-men"><i class="w-icon-tshirt"></i> Men <i class="w-icon-angle-down"></i></a>
+                            <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-men">Men <i class="w-icon-angle-down"></i></a>
                         @endif
                         @if(isset($womenCategory) && $womenCategory)
-                            <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-women"><i class="w-icon-tshirt2"></i> Women <i class="w-icon-angle-down"></i></a>
+                            <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-women">Women <i class="w-icon-angle-down"></i></a>
                         @endif
                         @if(isset($kidsCategory) && $kidsCategory)
-                            <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-kids"><i class="w-icon-basketball"></i> Kids <i class="w-icon-angle-down"></i></a>
+                            <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-kids">Kids <i class="w-icon-angle-down"></i></a>
                         @endif
                         @if(isset($livingCategory) && $livingCategory)
-                            <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-living"><i class="w-icon-shopify"></i> Living <i class="w-icon-angle-down"></i></a>
+                            <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-living">Living <i class="w-icon-angle-down"></i></a>
                         @endif
                         <a href="{{ url('auction') }}" class="auction-pulse-btn" title="Live Auction"><i class="fas fa-gavel"></i></a>
                     </div>
