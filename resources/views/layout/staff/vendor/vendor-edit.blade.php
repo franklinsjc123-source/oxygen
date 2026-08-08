@@ -81,33 +81,28 @@
                                 <ul class="nav nav-tabs nav-material pb-5" id="top-tab" role="tablist">
                                     <li class="nav-item"><a class="nav-link active" id="top-profile-tab"
                                             href="#top-profile" role="tab"
-                                            aria-controls="top-profile" aria-selected="true"><i data-feather="user"
-                                                class="me-2"></i><span class="fw-bold">Personal Information</span></a>
+                                            aria-controls="top-profile" aria-selected="true"><i class="fa fa-user me-2"></i><span class="fw-bold">Personal Information</span></a>
                                     </li>
                                     <li class="nav-item"><a class="nav-link " id="top-product-tab"
                                             href="#top-product" role="tab" aria-controls="top-product"
-                                            aria-selected="true"><i data-feather="user" class="me-2"></i><span
-                                                class="fw-bold">Product Category </span></a>
+                                            aria-selected="true"><i class="fa fa-list me-2"></i><span
+                                                class="fw-bold">Product Category</span></a>
                                     </li>
                                     <li class="nav-item"><a class="nav-link" id="upload-top-tab" 
                                             href="#top-upload" role="tab" aria-controls="top-upload"
-                                            aria-selected="false"><i data-feather="edit" class="me-2"></i><span
+                                            aria-selected="false"><i class="fa fa-file-text me-2"></i><span
                                                 class="fw-bold">Documents & Package</span> </a>
                                     </li>
 
 
                                     <li class="nav-item"><a class="nav-link" id="top-bank-upload" 
                                             href="#top-bank" role="tab" aria-controls="top-upload"
-                                            aria-selected="false"><i data-feather="bank" class="me-2"></i><span
-                                                class="fa fa-bank "><span class="fw-bold mx-2 gothic">Bank
-                                                    Details</span></span></a>
+                                            aria-selected="false"><i class="fa fa-bank me-2"></i><span class="fw-bold gothic">Bank Details</span></a>
                                     </li>
 
                                     <li class="nav-item"><a class="nav-link" id="upload-setting-tab" 
                                             href="#top-setting" role="tab" aria-controls="top-upload"
-                                            aria-selected="false"><i data-feather="settings" class="me-2"></i><span
-                                                class=" fa fa-solid fa-gear"><span
-                                                    class="fw-bold mx-2 gothic">Support</span></span></a>
+                                            aria-selected="false"><i class="fa fa-cog me-2"></i><span class="fw-bold gothic">Support</span></a>
                                     </li>
                                 </ul>
                                 <form class="needs-validation" id="vendor-edit-form" novalidate method="post"
