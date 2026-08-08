@@ -458,9 +458,12 @@
                                  <div class="social-links-wrapper">
                                      <div class="social-links">
                                          <div class="social-icons social-no-color border-thin">
-                                              <a href="#" class="social-icon social-facebook w-icon-facebook"></a>
-                                              <a href="#" class="social-icon social-instagram w-icon-instagram"></a>
-                                              <a href="#" class="social-icon social-whatsapp fab fa-whatsapp"></a>
+                                               <a href="{{ $vendor_details->facebook_link ?? '#' }}" target="_blank" class="social-icon social-facebook w-icon-facebook"></a>
+                                               <a href="{{ $vendor_details->instagram_link ?? '#' }}" target="_blank" class="social-icon social-instagram w-icon-instagram"></a>
+                                               @php
+                                                   $whatsappNumber = preg_replace('/[^0-9]/', '', $vendor_details->whatsapp_number ?? '');
+                                               @endphp
+                                               <a href="{{ $whatsappNumber ? 'https://wa.me/' . $whatsappNumber : '#' }}" target="_blank" class="social-icon social-whatsapp fab fa-whatsapp"></a>
                                           </div>          
                                      </div>
                                      <span class="divider d-xs-show"></span>
