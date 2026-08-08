@@ -62,10 +62,10 @@
  
              <div class="product-pa-wrapper" style="display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; flex-wrap: nowrap;">
                  <div class="product-price-home" style="font-family: monospace; font-size: 1.5rem; font-weight: 700; color: #000;">
-                    ₹{{ $product->selling_price }}
+                    <span style="font-family: Arial, sans-serif;">₹</span>{{ $product->selling_price }}
                  </div>
                  <div class="product-price-discount" style="text-decoration: line-through; color: #888; font-size: 1.1rem; font-weight: 600;">
-                    ₹{{ $product->retail_price }}
+                    <span style="font-family: Arial, sans-serif;">₹</span>{{ $product->retail_price }}
                  </div>
                  @php
                      $retailPrice = (float) ($product->retail_price ?? 0);
