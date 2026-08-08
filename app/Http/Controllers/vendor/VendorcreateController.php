@@ -254,6 +254,13 @@ class VendorcreateController extends Controller
             $vendor->instagram_link = $request->instagram_link;
             $vendor->facebook_link = $request->facebook_link;
             $vendor->whatsapp_number = $request->whatsapp_number;
+            $vendor->store_time_sunday = $request->store_time_sunday;
+            $vendor->store_time_monday = $request->store_time_monday;
+            $vendor->store_time_tuesday = $request->store_time_tuesday;
+            $vendor->store_time_wednesday = $request->store_time_wednesday;
+            $vendor->store_time_thursday = $request->store_time_thursday;
+            $vendor->store_time_friday = $request->store_time_friday;
+            $vendor->store_time_saturday = $request->store_time_saturday;
 
             // echo $vendor;
             // exit();
@@ -544,6 +551,13 @@ class VendorcreateController extends Controller
             $vendor->instagram_link = $request->instagram_link;
             $vendor->facebook_link = $request->facebook_link;
             $vendor->whatsapp_number = $request->whatsapp_number;
+            $vendor->store_time_sunday = $request->store_time_sunday;
+            $vendor->store_time_monday = $request->store_time_monday;
+            $vendor->store_time_tuesday = $request->store_time_tuesday;
+            $vendor->store_time_wednesday = $request->store_time_wednesday;
+            $vendor->store_time_thursday = $request->store_time_thursday;
+            $vendor->store_time_friday = $request->store_time_friday;
+            $vendor->store_time_saturday = $request->store_time_saturday;
 
             // echo $vendor;
             // exit();

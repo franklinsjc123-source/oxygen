@@ -61,15 +61,15 @@
                                     <!-- End of Widget -->
                                     <div class="widget widget-collapsible widget-time">
                                         <h3 class="widget-title"><span>Store Time</span></h3>
-                                        <ul class="widget-body">
-                                            <li><label>Sunday</label></li>
-                                            <li><label>Monday</label></li>
-                                            <li><label>Tuesday</label></li>
-                                            <li><label>Wednesday</label></li>
-                                            <li><label>Thursday</label></li>
-                                            <li><label>Friday</label></li>
-                                            <li><label>Saturday</label></li>
-                                        </ul>
+                                         <ul class="widget-body">
+                                             <li><label>Sunday - {{ $vendordetails->store_time_sunday ?? '-' }}</label></li>
+                                             <li><label>Monday - {{ $vendordetails->store_time_monday ?? '-' }}</label></li>
+                                             <li><label>Tuesday - {{ $vendordetails->store_time_tuesday ?? '-' }}</label></li>
+                                             <li><label>Wednesday - {{ $vendordetails->store_time_wednesday ?? '-' }}</label></li>
+                                             <li><label>Thursday - {{ $vendordetails->store_time_thursday ?? '-' }}</label></li>
+                                             <li><label>Friday - {{ $vendordetails->store_time_friday ?? '-' }}</label></li>
+                                             <li><label>Saturday - {{ $vendordetails->store_time_saturday ?? '-' }}</label></li>
+                                         </ul>
                                     </div>
                                     <!-- End of Widget -->
                                     {{-- <div class="widget widget-collapsible widget-products">
