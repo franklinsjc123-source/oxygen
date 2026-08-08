@@ -891,7 +891,7 @@
                                                         <div class="p-3" style="background: #fdfdfd; border: 1px solid #eef2f5; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; align-items: center; justify-content: space-between; gap: 15px;">
                                                             <div style="min-width: 100px;">
                                                                 <span class="fw-bold text-secondary" style="font-size: 14px; display: flex; align-items: center; gap: 6px;">
-                                                                    <i class="far fa-clock" style="color: #ff5e14;"></i> <span style="color: red;">*</span>{{ $day }}
+                                                                    <i class="far fa-clock" style="color: #ff5e14;"></i> {{ $day }}<span style="color: red;">*</span>
                                                                 </span>
                                                             </div>
                                                             <div style="flex-grow: 1;">
