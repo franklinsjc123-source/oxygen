@@ -59,18 +59,48 @@
                                         </div>
                                     </div>
                                     <!-- End of Widget -->
-                                    {{-- <div class="widget widget-collapsible widget-time">
-                                        <h3 class="widget-title"><span>Store Time</span></h3>
+                                     @php
+                                         $dayOfWeek = strtolower(\Carbon\Carbon::now('Asia/Kolkata')->format('l'));
+                                         $storeTimeKey = 'store_time_' . $dayOfWeek;
+                                         $storeTime = $vendordetails->$storeTimeKey ?? '';
+                                         $isOpen = false;
+                                         if ($storeTime && str_contains(strtolower($storeTime), 'to')) {
+                                             $parts = explode('to', strtolower($storeTime));
+                                             if (count($parts) === 2) {
+                                                 try {
+                                                     $now = \Carbon\Carbon::now('Asia/Kolkata');
+                                                     $startTime = \Carbon\Carbon::createFromFormat('g:i a', trim($parts[0]), 'Asia/Kolkata');
+                                                     $endTime = \Carbon\Carbon::createFromFormat('g:i a', trim($parts[1]), 'Asia/Kolkata');
+                                                     $startTime->setDate($now->year, $now->month, $now->day);
+                                                     $endTime->setDate($now->year, $now->month, $now->day);
+                                                     if ($now->between($startTime, $endTime)) {
+                                                         $isOpen = true;
+                                                     }
+                                                 } catch (\Exception $e) {
+                                                     try {
+                                                         $now = \Carbon\Carbon::now('Asia/Kolkata');
+                                                         $startTime = \Carbon\Carbon::parse(trim($parts[0]), 'Asia/Kolkata');
+                                                         $endTime = \Carbon\Carbon::parse(trim($parts[1]), 'Asia/Kolkata');
+                                                         if ($now->between($startTime, $endTime)) {
+                                                             $isOpen = true;
+                                                         }
+                                                     } catch (\Exception $ex) {}
+                                                 }
+                                             }
+                                         }
+                                     @endphp
+                                     <div class="widget widget-collapsible widget-time">
+                                         <h3 class="widget-title"><span>Store Time</span></h3>
                                          <ul class="widget-body">
-                                             <li><label>Sunday - {{ $vendordetails->store_time_sunday ?? '-' }}</label></li>
-                                             <li><label>Monday - {{ $vendordetails->store_time_monday ?? '-' }}</label></li>
-                                             <li><label>Tuesday - {{ $vendordetails->store_time_tuesday ?? '-' }}</label></li>
-                                             <li><label>Wednesday - {{ $vendordetails->store_time_wednesday ?? '-' }}</label></li>
-                                             <li><label>Thursday - {{ $vendordetails->store_time_thursday ?? '-' }}</label></li>
-                                             <li><label>Friday - {{ $vendordetails->store_time_friday ?? '-' }}</label></li>
-                                             <li><label>Saturday - {{ $vendordetails->store_time_saturday ?? '-' }}</label></li>
+                                             <li><span>Sunday</span>- {{ $vendordetails->store_time_sunday ?? '' }}</li>
+                                             <li><span>Monday</span>- {{ $vendordetails->store_time_monday ?? '' }}</li>
+                                             <li><span>Tuesday</span>- {{ $vendordetails->store_time_tuesday ?? '' }}</li>
+                                             <li><span>Wednesday</span>- {{ $vendordetails->store_time_wednesday ?? '' }}</li>
+                                             <li><span>Thursday</span>- {{ $vendordetails->store_time_thursday ?? '' }}</li>
+                                             <li><span>Friday</span>- {{ $vendordetails->store_time_friday ?? '' }}</li>
+                                             <li><span>Saturday</span>- {{ $vendordetails->store_time_saturday ?? '' }}</li>
                                          </ul>
-                                    </div> --}}
+                                    </div>
                                     <!-- End of Widget -->
                                     {{-- <div class="widget widget-collapsible widget-products">
                                         <h3 class="widget-title"><span>Best Selling</span></h3>
@@ -242,10 +272,15 @@
                                             <i class="w-icon-star-full"></i>
                                             4.33 rating from 3 reviews
                                         </li> --}}
-                                        <li class="store-open">
-                                            <i class="w-icon-cart"></i>
-                                            Store Open
-                                        </li>
+                                         <li class="store-open">
+                                             @if ($isOpen)
+                                                 <i class="w-icon-cart"></i>
+                                                 Store Open
+                                             @else
+                                                 <i class="w-icon-cart" style="color: #ff5b5b;"></i>
+                                                 <span style="color: #ff5b5b;">Store Closed</span>
+                                             @endif
+                                         </li>
                                     </ul>
                                     <div class="social-icons social-no-color border-thin">
                                         <a href="#" class="social-icon social-facebook w-icon-facebook"></a>
