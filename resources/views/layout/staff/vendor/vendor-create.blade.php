@@ -819,6 +819,7 @@
                                                                     required
                                                                     placeholder="e.g. 9:00 AM - 9:00 PM or Closed" 
                                                                     style="border-radius: 6px; border: 1px solid #ced4da; font-size: 13px; padding: 8px 12px; transition: border-color 0.15s ease-in-out;">
+                                                                <div class="invalid-feedback-custom" style="font-size: 11px; margin-top: 4px;">Please enter store timings for {{ $day }}</div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1720,8 +1721,28 @@
                 validateMobileNumbers();
             });
 
-            $('#vendor-create-form').on('submit', function(e) {
+             $('#vendor-create-form').on('submit', function(e) {
                 $(this).addClass('validation-attempted');
+
+                let formValid = true;
+                $(this).find('input[required], select[required], textarea[required], [required]').each(function() {
+                    if (!this.checkValidity()) {
+                        formValid = false;
+                        const tabPane = $(this).closest('.tab-pane');
+                        if (tabPane.length) {
+                            const tabId = tabPane.attr('id');
+                            $(`#top-tab a[href="#${tabId}"]`).tab('show');
+                        }
+                        this.reportValidity();
+                        $(this).focus();
+                        return false;
+                    }
+                });
+
+                if (!formValid) {
+                    e.preventDefault();
+                    return false;
+                }
 
                 var valResult = validateSocialLinks();
                 if (!valResult.isInstagramVal) {
