@@ -857,7 +857,7 @@
                                                     <input class="form-control" type="text" name="facebook_link" value="{{ $vendorcreate->facebook_link }}">
                                                     <div class="invalid-feedback-custom">Please enter a valid Facebook URL (e.g. https://facebook.com/username).</div>
                                                 </div>
-                                                <div class="col-md-4 form-group">
+                                                <div class="col-md-4">
                                                      <label class="fw-bold">WhatsApp Number <span style="color: red;">*</span></label>
                                                      <input class="form-control" type="text" name="whatsapp_number" value="{{ $vendorcreate->whatsapp_number }}" required>
                                                     <div class="invalid-feedback-custom">Please enter WhatsApp number</div>
