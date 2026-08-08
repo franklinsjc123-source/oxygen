@@ -787,7 +787,7 @@
                                                      <div class="invalid-feedback-custom">Please enter a valid Facebook URL (e.g. https://facebook.com/username).</div>
                                                  </div>
                                                 <div class="col-md-4 form-group">
-                                                      <label class="fw-bold"><span>*</span> WhatsApp Number</label>
+                                                      <label class="fw-bold">WhatsApp Number <span style="color: red;">*</span></label>
                                                       <input class="form-control" type="text" name="whatsapp_number" placeholder="e.g. 919876543210" required>
                                                       <div class="invalid-feedback-custom">Please enter WhatsApp number</div>
                                                   </div>
@@ -817,7 +817,7 @@
                                                         <div class="p-3" style="background: #fdfdfd; border: 1px solid #eef2f5; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; align-items: center; justify-content: space-between; gap: 15px;">
                                                             <div style="min-width: 100px;">
                                                                 <span class="fw-bold text-secondary" style="font-size: 14px; display: flex; align-items: center; gap: 6px;">
-                                                                    <i class="far fa-clock" style="color: #ff5e14;"></i> <span style="color: red;">*</span>{{ $day }}
+                                                                    <i class="far fa-clock" style="color: #ff5e14;"></i> {{ $day }}<span style="color: red;">*</span>
                                                                 </span>
                                                             </div>
                                                             <div style="flex-grow: 1;">
