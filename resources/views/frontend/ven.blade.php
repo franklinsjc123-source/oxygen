@@ -59,7 +59,7 @@
                                         </div>
                                     </div>
                                     <!-- End of Widget -->
-                                    <div class="widget widget-collapsible widget-time">
+                                    {{-- <div class="widget widget-collapsible widget-time">
                                         <h3 class="widget-title"><span>Store Time</span></h3>
                                          <ul class="widget-body">
                                              <li><label>Sunday - {{ $vendordetails->store_time_sunday ?? '-' }}</label></li>
@@ -70,7 +70,7 @@
                                              <li><label>Friday - {{ $vendordetails->store_time_friday ?? '-' }}</label></li>
                                              <li><label>Saturday - {{ $vendordetails->store_time_saturday ?? '-' }}</label></li>
                                          </ul>
-                                    </div>
+                                    </div> --}}
                                     <!-- End of Widget -->
                                     {{-- <div class="widget widget-collapsible widget-products">
                                         <h3 class="widget-title"><span>Best Selling</span></h3>
