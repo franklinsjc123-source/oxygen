@@ -770,11 +770,9 @@
                                              </div>
  
                                              <div class="row mt-3">
- 
-                                                 <label for="validationCustom1"
-                                                     class="col-xl-1 col-md-1">Comments:</label>
-                                                 <div class="col-xl-5 col-md-5">
-                                                     <textarea class="form-control" rows="3" id="validationCustom1" type="text" name="comments"></textarea>
+                                                 <div class="col-md-12">
+                                                     <label class="fw-bold">Comments</label>
+                                                     <textarea class="form-control" rows="3" id="validationCustom1" name="comments" placeholder="Enter comments here..."></textarea>
                                                  </div>
                                              </div>
                                              <div class="row mt-3">
@@ -819,11 +817,12 @@
                                                         <div class="p-3" style="background: #fdfdfd; border: 1px solid #eef2f5; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; align-items: center; justify-content: space-between; gap: 15px;">
                                                             <div style="min-width: 100px;">
                                                                 <span class="fw-bold text-secondary" style="font-size: 14px; display: flex; align-items: center; gap: 6px;">
-                                                                    <i class="far fa-clock" style="color: #ff5e14;"></i> {{ $day }}
+                                                                    <i class="far fa-clock" style="color: #ff5e14;"></i> <span style="color: red;">*</span>{{ $day }}
                                                                 </span>
                                                             </div>
                                                             <div style="flex-grow: 1;">
                                                                 <input class="form-control" type="text" name="store_time_{{ $key }}" 
+                                                                    required
                                                                     placeholder="e.g. 9:00 AM - 9:00 PM or Closed" 
                                                                     style="border-radius: 6px; border: 1px solid #ced4da; font-size: 13px; padding: 8px 12px; transition: border-color 0.15s ease-in-out;">
                                                             </div>
