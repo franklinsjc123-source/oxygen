@@ -450,27 +450,25 @@
                                         </div>
                                         
                                      </div>
+                                 </div> 
+
+
+                                 
+
+                                 
+
                                  <div class="social-links-wrapper">
                                      <div class="social-links">
-                                          <div class="social-icons social-no-color border-thin">
-                                              @php
-                                                  $fb_link = '#';
-                                                  $insta_link = '#';
-                                                  $wa_link = '#';
-                                                  if (!empty($vendor_details)) {
-                                                      $fb_link = $vendor_details->facebook_link ?? $vendor_details['facebook_link'] ?? '#';
-                                                      $insta_link = $vendor_details->instagram_link ?? $vendor_details['instagram_link'] ?? '#';
-                                                      $wa_number = $vendor_details->whatsapp_number ?? $vendor_details['whatsapp_number'] ?? '';
-                                                      if (!empty($wa_number)) {
-                                                          $wa_link = 'https://wa.me/' . preg_replace('/[^0-9]/', '', $wa_number);
-                                                      }
-                                                  }
-                                              @endphp
-                                              <a href="{{ $fb_link }}" @if($fb_link !== '#') target="_blank" @endif class="social-icon social-facebook w-icon-facebook"></a>
-                                              <a href="{{ $insta_link }}" @if($insta_link !== '#') target="_blank" @endif class="social-icon social-instagram w-icon-instagram"></a>
-                                              <a href="{{ $wa_link }}" @if($wa_link !== '#') target="_blank" @endif class="social-icon social-whatsapp fab fa-whatsapp"></a>
-                                          </div>
-                                      </div>
+                                         <div class="social-icons social-no-color border-thin">
+                                             <a href="#" class="social-icon social-facebook w-icon-facebook"></a>
+                                             <a href="#" class="social-icon social-twitter w-icon-twitter"></a>
+                                             <a href="#"
+                                                 class="social-icon social-pinterest fab fa-pinterest-p"></a>
+                                             <a href="#" class="social-icon social-whatsapp fab fa-whatsapp"></a>
+                                             <a href="#"
+                                                 class="social-icon social-youtube fab fa-linkedin-in"></a>
+                                         </div>
+                                     </div>
                                      <span class="divider d-xs-show"></span>
                                      <div class="product-link-wrapper d-flex">
                                           <a href="#" onclick="addwishlist('{{ $prouctsList['id'] }}', this)" class="btn-product-icon btn-wishlist {{ in_array($prouctsList['id'], $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($prouctsList['id'], $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"><span></span></a>
