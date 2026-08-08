@@ -172,9 +172,23 @@
                   <div class="social-links-wrapper">
                       <div class="social-links">
                           <div class="social-icons social-no-color border-thin">
-                              <a href="#" class="social-icon social-facebook w-icon-facebook"></a>
-                              <a href="#" class="social-icon social-instagram w-icon-instagram"></a>
-                              <a href="#" class="social-icon social-whatsapp fab fa-whatsapp"></a>
+                              @php
+                                  $fb_link = '#';
+                                  $insta_link = '#';
+                                  $wa_link = '#';
+                                  $activeProduct = $prouctsList[$id] ?? null;
+                                  if (!empty($activeProduct)) {
+                                      $fb_link = $activeProduct['facebook_link'] ?? '#';
+                                      $insta_link = $activeProduct['instagram_link'] ?? '#';
+                                      $wa_number = $activeProduct['whatsapp_number'] ?? '';
+                                      if (!empty($wa_number)) {
+                                          $wa_link = 'https://wa.me/' . preg_replace('/[^0-9]/', '', $wa_number);
+                                      }
+                                  }
+                              @endphp
+                              <a href="{{ $fb_link }}" @if($fb_link !== '#') target="_blank" @endif class="social-icon social-facebook w-icon-facebook"></a>
+                              <a href="{{ $insta_link }}" @if($insta_link !== '#') target="_blank" @endif class="social-icon social-instagram w-icon-instagram"></a>
+                              <a href="{{ $wa_link }}" @if($wa_link !== '#') target="_blank" @endif class="social-icon social-whatsapp fab fa-whatsapp"></a>
                           </div>
                       </div>
                      <span class="divider d-xs-show"></span>
