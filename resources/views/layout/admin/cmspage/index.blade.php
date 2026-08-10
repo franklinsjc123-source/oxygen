@@ -53,7 +53,7 @@
 						
 						<div class="card-body">
 							
-							<a href="{{route('cmspages.create')}}" class="btn mb-4 btn-primary"><i class="fa fa-plus"></i> Add CMS PAGES </a> 
+							{{-- <a href="{{route('cmspages.create')}}" class="btn mb-4 btn-primary"><i class="fa fa-plus"></i> Add CMS PAGES </a> --}}
 							
 							
                             <div class="datatable-dashv1-list custom-datatable-overright">
