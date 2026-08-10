@@ -101,12 +101,14 @@
        use App\Models\Category\CategoryMain;
        use App\Models\Category\Category;
        use App\Models\Category\CategorySub;
+       use App\Models\CMSPage;
        use Darryldecode\Cart\Facades\CartFacade as Cart;
        
        $categorymain = CategoryMain::orderBy('category_main_sortorder', 'asc')->get();
        $category = Category::get();
        $categorysub = CategorySub::get();
        $count = Cart::getContent()->count();
+       $cmspages = CMSPage::where('status', '1')->get();
        ?>
 
        <div class="container">
@@ -138,12 +140,9 @@
                        <div class="widget">
                            <h3 class="widget-title">SHOP</h3>
                            <ul class="widget-body">
-                               <li><a href="#">About Us</a></li>
-                               <li><a href="#">Contact Us</a></li>
-                               <li><a href="#">Terms & Conditions</a></li>
-                               <li><a href="#">Privacy Policy</a></li>
-                               <li><a href="#">Shipping Policy</a></li>
-                               <li><a href="#">Refund Policy</a></li>
+                               @foreach ($cmspages as $page)
+                                   <li><a href="{{ url('Informations/' . str_replace(' ', '-', $page->page_name)) }}">{{ $page->page_name }}</a></li>
+                               @endforeach
                            </ul>
                        </div>
                    </div>

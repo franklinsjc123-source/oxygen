@@ -255,10 +255,12 @@ class HomeController extends Controller
     }
     public function pageinfo($id)
     {
-
-        $pageinfo = CMSPage::where('page_name', $id)->where('status', '1')->first();
+        $page_name = str_replace('-', ' ', $id);
+        $pageinfo = CMSPage::whereIn('page_name', [$page_name, $id])
+            ->where('status', '1')
+            ->first();
         //dd($pageinfo);
-        return view('front_end.site.pageinfo')->with([
+        return view('frontend.pageinfo')->with([
             "pageinfo" => $pageinfo
         ]);
     }
