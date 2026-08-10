@@ -216,12 +216,10 @@
                 <span class="label">Shop Name</span>
                 <span class="value">{{ $vendor->shop_name }}</span>
             </div>
-
             <div class="detail-row">
                 <span class="label">Owner Name</span>
                 <span class="value">{{ $vendor->owner_name }}</span>
             </div>
-
             <div class="detail-row">
                 <span class="label">WhatsApp Number</span>
                 <span class="value">{{ $vendor->whatsapp_number ?: $vendor->mobile_number1 }}</span>

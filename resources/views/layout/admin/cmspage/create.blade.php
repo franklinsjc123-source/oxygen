@@ -57,7 +57,15 @@
 							<div class="col-md-5">
 								<div class="mb-3">
 									<label for="page_name" class="form-label">Page Name</label>
-									<input type="text" class="form-control" id="page_name" name="page_name" required>
+									<select class="form-control" id="page_name" name="page_name" required>
+										<option value="">Select Page Name</option>
+										<option value="About Us">About Us</option>
+										<option value="Contact Us">Contact Us</option>
+										<option value="Terms & Conditions">Terms & Conditions</option>
+										<option value="Privacy Policy">Privacy Policy</option>
+										<option value="Shipping Policy">Shipping Policy</option>
+										<option value="Refund Policy">Refund Policy</option>
+									</select>
 								</div>
 							</div>
 							<div class="col-md-5">

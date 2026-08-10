@@ -67,7 +67,15 @@
 							<div class="col-md-5">
 								<div class="mb-3">
 									<label for="page_name" class="form-label">Page Name</label>
-									<input type="text" class="form-control" id="page_name" name="page_name" value="{{ $page->page_name }}" required>
+									<select class="form-control" id="page_name" name="page_name" required>
+										<option value="">Select Page Name</option>
+										<option value="About Us" {{ $page->page_name == 'About Us' ? 'selected' : '' }}>About Us</option>
+										<option value="Contact Us" {{ $page->page_name == 'Contact Us' ? 'selected' : '' }}>Contact Us</option>
+										<option value="Terms & Conditions" {{ $page->page_name == 'Terms & Conditions' ? 'selected' : '' }}>Terms & Conditions</option>
+										<option value="Privacy Policy" {{ $page->page_name == 'Privacy Policy' ? 'selected' : '' }}>Privacy Policy</option>
+										<option value="Shipping Policy" {{ $page->page_name == 'Shipping Policy' ? 'selected' : '' }}>Shipping Policy</option>
+										<option value="Refund Policy" {{ $page->page_name == 'Refund Policy' ? 'selected' : '' }}>Refund Policy</option>
+									</select>
 								</div>
 							</div>
 							<div class="col-md-5">

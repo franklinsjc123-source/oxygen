@@ -162,7 +162,6 @@
                                <?php  if(session('customer_id')){ ?>
                                <li><a href="{{ url('myWishlist') }}">My Wishlist</a></li>
                                <?php } ?>
-                               <li><a href="#">Privacy Policy</a></li>
                            </ul>
                        </div>
                    </div>

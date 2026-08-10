@@ -87,7 +87,7 @@ class PageController extends Controller
             'page_name' => 'required|string|max:255',
             'page_title' => 'required|string|max:255',
             'page_content' => 'required|string',
-            'status' => 'required|in:draft,published,archived',
+            'status' => 'required|in:1,0',
         ]);
 
         $cmspage->update($validatedData);
