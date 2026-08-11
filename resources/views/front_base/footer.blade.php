@@ -136,6 +136,7 @@
                            </div>
                        </div>
                    </div>
+
                    <div class="col-lg-3 col-md-6 col-12">
                        <div class="widget">
                            <h3 class="widget-title">SHOP</h3>
@@ -146,6 +147,7 @@
                            </ul>
                        </div>
                    </div>
+
                    <div class="col-lg-3 col-md-6 col-12">
                        <div class="widget">
                            <h4 class="widget-title">My Account</h4>
@@ -164,6 +166,7 @@
                            </ul>
                        </div>
                    </div>
+
                    <div class="col-lg-3 col-md-6 col-12">
                        <div class="widget">
                            <h4 class="widget-title">Categories</h4>
@@ -175,6 +178,7 @@
                            </ul>
                        </div>
                    </div>
+                   
                </div>
            </div>
 

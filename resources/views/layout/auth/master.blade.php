@@ -99,6 +99,33 @@
 
 @include('paritials.auth.footer-js')
 @include('paritials.auth.js')
+
+{{-- CKEditor 4 - Global --}}
+<style>.cke_notifications_area, .cke_notification, .cke_notification_warning, .cke_notification_inner, .cke_notification_message, [class*="cke_notification"] { display: none !important; }</style>
+<script>window.CKEDITOR_BASEPATH = 'https://cdn.ckeditor.com/4.22.1/full/';</script>
+<script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
+<script>
+    if (typeof CKEDITOR !== 'undefined') {
+        CKEDITOR.config.versionCheck = false;
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof CKEDITOR !== 'undefined') {
+            // Auto-init all textareas with class 'ckeditor'
+            var els = document.querySelectorAll('textarea.ckeditor');
+            for (var i = 0; i < els.length; i++) {
+                var id = els[i].id || els[i].name;
+                if (id && !CKEDITOR.instances[id]) {
+                    CKEDITOR.replace(id, {
+                        height: 300,
+                        allowedContent: true,
+                        removePlugins: 'elementspath'
+                    });
+                }
+            }
+        }
+    });
+</script>
+
 @stack('scripts')
 </body>
 

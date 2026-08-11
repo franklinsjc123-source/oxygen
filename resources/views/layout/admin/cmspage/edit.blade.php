@@ -6,7 +6,7 @@
 <!-- Page Header Ends -->
  <style>
  
-	.cke_notification, .cke_notification_inner {
+	.cke_notifications_area, .cke_notification, .cke_notification_warning, .cke_notification_inner, .cke_notification_message, [class*="cke_notification"] {
     display: none !important;
 }
  </style>
@@ -127,29 +127,5 @@
 	
 	</div>
 	
-	</div>
-	
-	
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-   	<script src="https://cdn.ckeditor.com/4.25.1-lts/standard/ckeditor.js"></script>
-
-<script type="text/javascript">
-
-    $(document).ready(function() {
-
-       $('.ckeditor').ckeditor();
-
-    });
-
-</script>
-<script>
-	CKEDITOR.replace( 'description' );
-	CKEDITOR.replace( 'editdescription' );
-	timer = setInterval(updateDiv,100);
-    function updateDiv(){
-        var editorText = CKEDITOR.instances.editdescription.getData();
-        $('#trackingDiv').html(editorText);
-    }
-</script>
 	
 	@endsection	

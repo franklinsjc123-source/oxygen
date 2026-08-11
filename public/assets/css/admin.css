@@ -44068,3 +44068,14 @@ th {
   padding-top: 5px;
   border-bottom: 1px solid #8080801a;
 }
+
+/* Hide CKEditor notifications/warning messages */
+.cke_notifications_area,
+.cke_notification,
+.cke_notification_warning,
+.cke_notification_inner,
+.cke_notification_message,
+[class*="cke_notification"] {
+  display: none !important;
+}
+
