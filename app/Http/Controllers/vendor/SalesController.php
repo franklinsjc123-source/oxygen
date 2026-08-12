@@ -91,7 +91,8 @@ class SalesController extends Controller
             ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
             ->join('products', 'products.product_id', '=', 'products_details.products_id')
             ->where('products.logintype', '=', 'Vendor')
-            ->where('products.created_by', '=', $vendor_id);
+            ->where('products.created_by', '=', $vendor_id)
+            ->whereColumn('ecom_order_product.created_at', '>=', 'products.created_at');
     }
 
     private function vendorOwnedOrderProductQuery($vendor_id, $orderProductId)
@@ -101,7 +102,8 @@ class SalesController extends Controller
             ->join('products', 'products.product_id', '=', 'products_details.products_id')
             ->where('products.logintype', '=', 'Vendor')
             ->where('products.created_by', '=', $vendor_id)
-            ->where('ecom_order_product.id', '=', $orderProductId);
+            ->where('ecom_order_product.id', '=', $orderProductId)
+            ->whereColumn('ecom_order_product.created_at', '>=', 'products.created_at');
     }
 
     public function order()
@@ -114,6 +116,7 @@ class SalesController extends Controller
               ->join('products', 'products.product_id', '=', 'products_details.products_id')
               ->where('products.logintype', '=', 'Vendor')
 	         ->where('products.created_by', '=', $vendor_id)
+             ->whereColumn('ecom_order_product.created_at', '>=', 'products.created_at')
            ->get();
          
            
@@ -198,64 +201,34 @@ class SalesController extends Controller
 
 
             /*product*/
-             $new_product_count = Ecom_Order_product::
-                        
-                            join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
-                         ->join('products', 'products.product_id', '=', 'products_details.products_id')
-                          ->where('ecom_order_product.order_status', '=', 'Pending')
-                         ->where('products.logintype', '=', 'Vendor')
-            	         ->where('products.created_by', '=', $vendor_id)
-                         ->count();
-                         
-                         
-                          $acc_product_count = Ecom_Order_product::
-                        
-                            join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
-                         ->join('products', 'products.product_id', '=', 'products_details.products_id')
-                          ->where('ecom_order_product.order_status', '=', 'Accept')
-                         ->where('products.logintype', '=', 'Vendor')
-            	         ->where('products.created_by', '=', $vendor_id)
-                         ->count();
-                         
-                         
-                         $dis_product_count = Ecom_Order_product::
-                        
-                            join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
-                         ->join('products', 'products.product_id', '=', 'products_details.products_id')
-                          ->where('ecom_order_product.order_status', '=', 'Dispatch')
-                         ->where('products.logintype', '=', 'Vendor')
-            	        ->where('products.created_by', '=', $vendor_id)
-                         ->count();
-                         
-                         
-                          $del_product_count = Ecom_Order_product::
-                        
-                            join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
-                         ->join('products', 'products.product_id', '=', 'products_details.products_id')
-                          ->where('ecom_order_product.order_status', '=', 'Delivered')
-                         ->where('products.logintype', '=', 'Vendor')
-            	        ->where('products.created_by', '=', $vendor_id)
-                         ->count();
+             $new_product_count = $this->vendorOrderProductsQuery($vendor_id)
+                 ->where('ecom_order_product.order_status', '=', 'Pending')
+                 ->count();
+                          
+                          
+             $acc_product_count = $this->vendorOrderProductsQuery($vendor_id)
+                 ->where('ecom_order_product.order_status', '=', 'Accept')
+                 ->count();
+                          
+                          
+             $dis_product_count = $this->vendorOrderProductsQuery($vendor_id)
+                 ->where('ecom_order_product.order_status', '=', 'Dispatch')
+                 ->count();
+                          
+                          
+             $del_product_count = $this->vendorOrderProductsQuery($vendor_id)
+                 ->where('ecom_order_product.order_status', '=', 'Delivered')
+                 ->count();
                         
                         
-                         $ret_product_count = Ecom_Order_product::
-                        
-                            join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
-                         ->join('products', 'products.product_id', '=', 'products_details.products_id')
-                          ->where('ecom_order_product.order_status', '=', 'Return')
-                         ->where('products.logintype', '=', 'Vendor')
-            	        ->where('products.created_by', '=', $vendor_id)
-                         ->count();
-                         
-                         
-                            $can_product_count = Ecom_Order_product::
-                        
-                            join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
-                         ->join('products', 'products.product_id', '=', 'products_details.products_id')
-                          ->where('ecom_order_product.order_status', '=', 'Cancel')
-                         ->where('products.logintype', '=', 'Vendor')
-            	        ->where('products.created_by', '=', $vendor_id)
-                         ->count();
+             $ret_product_count = $this->vendorOrderProductsQuery($vendor_id)
+                 ->where('ecom_order_product.order_status', '=', 'Return')
+                 ->count();
+                          
+                          
+             $can_product_count = $this->vendorOrderProductsQuery($vendor_id)
+                 ->where('ecom_order_product.order_status', '=', 'Cancel')
+                 ->count();
                     
             /*end*/
 
