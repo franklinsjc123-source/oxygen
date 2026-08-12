@@ -450,12 +450,40 @@
                                         </div>
                                         
                                      </div>
-                                 </div> 
+                                  </div> 
 
 
-                                 
+                                  <!-- Delivery Options Section -->
+                                  <div class="delivery-options-wrapper" style="margin-top: 25px; margin-bottom: 25px; padding: 20px; border: 1px solid #eee; border-radius: 8px; font-family: inherit;">
+                                      <h4 style="font-size: 14px; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; color: #333; letter-spacing: 0.5px;">
+                                          DELIVERY OPTIONS <i class="w-icon-truck" style="font-size: 18px; color: #333;"></i>
+                                      </h4>
+                                      
+                                      <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                                          <div style="display: flex; align-items: center; gap: 8px; background: #f7f8fa; border: 1px solid #e1e1e1; border-radius: 4px; padding: 6px 16px; font-size: 14px; font-weight: 600; color: #222;">
+                                              <span>{{ session()->get('pincode') ?? '600020' }}</span>
+                                              <i class="fas fa-check-circle" style="color: #2ecc71; font-size: 14px;"></i>
+                                          </div>
+                                          <a href="javascript:void(0);" onclick="showPicodePopup()" style="color: #ff3f6c; font-weight: 700; font-size: 14px; text-decoration: none; border-bottom: 1px dashed #ff3f6c; padding-bottom: 2px;">Change</a>
+                                      </div>
 
-                                 <div class="social-links-wrapper">
+                                      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 14px; color: #444;">
+                                          <li style="display: flex; align-items: center; gap: 12px; font-weight: 500;">
+                                              <i class="w-icon-truck" style="font-size: 20px; color: #555;"></i>
+                                              <span>Get it by <strong style="color: #222;">{{ date('D, M j', strtotime('+3 days')) }}</strong></span>
+                                          </li>
+                                          <li style="display: flex; align-items: center; gap: 12px; font-weight: 500;">
+                                              <i class="w-icon-money" style="font-size: 20px; color: #555;"></i>
+                                              <span>Cash on Delivery</span>
+                                          </li>
+                                          <li style="display: flex; align-items: center; gap: 12px; font-weight: 500;">
+                                              <i class="w-icon-bag" style="font-size: 20px; color: #555;"></i>
+                                              <span>Easy Return Policy</span>
+                                          </li>
+                                      </ul>
+                                  </div>
+
+                                  <div class="social-links-wrapper">
                                      <div class="social-links">
                                          <div class="social-icons social-no-color border-thin">
                                                <a href="{{ $vendor_details->facebook_link ?? '#' }}" target="_blank" class="social-icon social-facebook w-icon-facebook"></a>
