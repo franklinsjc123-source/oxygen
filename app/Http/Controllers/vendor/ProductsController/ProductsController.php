@@ -290,13 +290,13 @@ public function store(Request $request, FlasherInterface $flasher)
         'product_name' => 'required|string|max:255',
         'retail_price.*.*' => 'required|numeric|min:0.01',
         'selling_price.*.*' => 'required|numeric|min:0',
-        'mainImage' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
+        'mainImage' => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
     ];
 
     $np = $request->nproduct;
     if ($np > 0) {
         for ($i = 1; $i <= $np; $i++) {
-            $rules['imageUpload' . $i . '.*'] = 'nullable|image|mimes:jpeg,png,jpg|max:1024';
+            $rules['imageUpload' . $i . '.*'] = 'nullable|image|mimes:jpeg,png,jpg|max:4096';
         }
     }
 
@@ -868,11 +868,11 @@ public function store(Request $request, FlasherInterface $flasher)
         try {
             $request->validate([
                 'product_name' => 'required|string|max:255',
-                'mainImage' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
-                'mainimg.*' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
-                'subimg1.*' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
-                'subimg2.*' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
-                'subimg3.*' => 'nullable|image|mimes:jpeg,png,jpg|max:1024',
+                'mainImage' => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
+                'mainimg.*' => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
+                'subimg1.*' => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
+                'subimg2.*' => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
+                'subimg3.*' => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
             ]);
 
             $login_id = session()->get('login_id');

@@ -868,7 +868,7 @@
 
             document.addEventListener('change', function(e) {
                 if (e.target && e.target.type === 'file') {
-                    const maxSizeBytes = 1024 * 1024; // 1 MB
+                    const maxSizeBytes = 4 * 1024 * 1024; // 1 MB
                     const allowedExtensions = ['jpg', 'jpeg', 'png'];
                     const files = e.target.files;
                     if (files && files.length > 0) {
@@ -881,7 +881,7 @@
                                 break;
                             }
                             if (file.size > maxSizeBytes) {
-                                alert('Image size must not exceed 1 MB. Selected file: ' + file.name + ' (' + (file.size / (1024 * 1024)).toFixed(2) + ' MB)');
+                                alert('Image size must not exceed 4 MB. Selected file: ' + file.name + ' (' + (file.size / (1024 * 1024)).toFixed(2) + ' MB)');
                                 e.target.value = '';
                                 break;
                             }
