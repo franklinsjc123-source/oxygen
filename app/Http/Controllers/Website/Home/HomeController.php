@@ -1296,7 +1296,7 @@ class HomeController extends Controller
         if (!is_null($minprice)) {
             $products->where('products_details.selling_price', '>=', $minprice);
         }
-        if (!is_null($maxprice)) {
+        if (!is_null($maxprice) && $maxprice < 5000) {
             $products->where('products_details.selling_price', '<=', $maxprice);
         }
 
@@ -1358,7 +1358,7 @@ class HomeController extends Controller
         if (!is_null($minprice)) {
             $products->where('products_details.selling_price', '>=', $minprice);
         }
-        if (!is_null($maxprice)) {
+        if (!is_null($maxprice) && $maxprice < 5000) {
             $products->where('products_details.selling_price', '<=', $maxprice);
         }
 
@@ -1425,7 +1425,7 @@ class HomeController extends Controller
         if (!is_null($minprice)) {
             $products->where('products_details.selling_price', '>=', $minprice);
         }
-        if (!is_null($maxprice)) {
+        if (!is_null($maxprice) && $maxprice < 5000) {
             $products->where('products_details.selling_price', '<=', $maxprice);
         }
 
@@ -1502,7 +1502,7 @@ class HomeController extends Controller
         if (!is_null($minprice)) {
             $products->where('products_details.selling_price', '>=', $minprice);
         }
-        if (!is_null($maxprice)) {
+        if (!is_null($maxprice) && $maxprice < 5000) {
             $products->where('products_details.selling_price', '<=', $maxprice);
         }
 

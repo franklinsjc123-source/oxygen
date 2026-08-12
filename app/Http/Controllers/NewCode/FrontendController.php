@@ -3679,7 +3679,7 @@ class FrontendController extends Controller
             $productsQuery->where('pd.selling_price', '>=', $minprice);
         }
 
-        if (!empty($maxprice)) {
+        if (!empty($maxprice) && $maxprice < 5000) {
             $productsQuery->where('pd.selling_price', '<=', $maxprice);
         }
 

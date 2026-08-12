@@ -183,7 +183,7 @@
                                             <div class="range-container" style="padding: 15px 5px 10px 5px;">
                                                 <div class="price-display" style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; color: #444; font-weight: 600;">
                                                     <span id="minText"><span style="font-family: Arial, sans-serif;">₹</span>0</span>
-                                                    <span id="maxText"><span style="font-family: Arial, sans-serif;">₹</span>5000</span>
+                                                    <span id="maxText"><span style="font-family: Arial, sans-serif;">₹</span>5000+</span>
                                                 </div>
                                                 <div class="double-range" style="position: relative; width: 100%; height: 6px; background: #e5e5e5; border-radius: 4px;">
                                                     <div class="slider-track" style="position: absolute; height: 100%; background: #222; border-radius: 4px; z-index: 1;"></div>
@@ -420,7 +420,11 @@
             if (max < min + 100) maxSlider.value = min + 100;
             
             minText.innerHTML = '<span style="font-family: Arial, sans-serif;">₹</span>' + minSlider.value;
-            maxText.innerHTML = '<span style="font-family: Arial, sans-serif;">₹</span>' + maxSlider.value;
+            if (max >= 5000) {
+                maxText.innerHTML = '<span style="font-family: Arial, sans-serif;">₹</span>' + maxSlider.value + '+';
+            } else {
+                maxText.innerHTML = '<span style="font-family: Arial, sans-serif;">₹</span>' + maxSlider.value;
+            }
             
             var minPercent = (minSlider.value / minSlider.max) * 100;
             var maxPercent = (maxSlider.value / maxSlider.max) * 100;
