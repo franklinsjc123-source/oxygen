@@ -347,6 +347,8 @@
                                     <a href="#" class="btn btn-primary btn-outline btn-rounded left-sidebar-toggle 
                                         btn-icon-left d-block d-lg-none"><i
                                             class="w-icon-category"></i><span>Filters</span></a>
+                                </div>
+                                <div class="toolbox-right">
                                         <div class="toolbox-item toolbox-sort select-box text-dark">
                                             <label>Sort By :</label>
                                              <select name="orderby" id="orderby" class="form-control">
@@ -358,8 +360,6 @@
                                                  <option value="price-high">Price High to Low</option>
                                              </select>
                                         </div>
-                                </div>
-                                <div class="toolbox-right">
                                     {{-- <div class="toolbox-item toolbox-show select-box">
                                         <select name="count" class="form-control">
                                             <option value="9">Show 9</option>
