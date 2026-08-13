@@ -204,8 +204,14 @@
    </div>
    <!-- End of Page Wrapper -->
     <!-- Custom Sticky Footer Styling -->
-    <style>
-        .sticky-footer.fix-bottom {
+     <style>
+         .mfp-bg {
+             z-index: 999999 !important;
+         }
+         .mfp-wrap {
+             z-index: 1000000 !important;
+         }
+         .sticky-footer.fix-bottom {
             background-color: #ffffff !important;
             box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.08) !important;
             border-top: 1px solid rgba(0, 0, 0, 0.05) !important;
@@ -1164,16 +1170,27 @@
                    _token: '{{ csrf_token() }}',
                    pincode: pincode
                },
-               success: function(response) {
-                   if (response.status === 'success') {
-                       $('#pincodeResponse').html('<p style="color: #0088dd;">' + response
-                           .message + '</p>');
-                       location.reload();
-                   } else {
-                       $('#pincodeResponse').html('<p style="color: red;">' + response
-                           .message + '</p>');
-                   }
-               },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        $('#pincodeResponse').html('<p style="color: #0088dd;">' + response
+                            .message + '</p>');
+                        // Permanently remove the click handler since pincode is now set
+                        if (window._pincodeClickHandler) {
+                            document.removeEventListener('click', window._pincodeClickHandler, true);
+                            window._pincodeClickHandler = null;
+                        }
+                        var targetUrl = sessionStorage.getItem('pincode_redirect_url');
+                        if (targetUrl) {
+                            sessionStorage.removeItem('pincode_redirect_url');
+                            window.location.href = targetUrl;
+                        } else {
+                            location.reload();
+                        }
+                    } else {
+                        $('#pincodeResponse').html('<p style="color: red;">' + response
+                            .message + '</p>');
+                    }
+                },
                error: function(xhr, status, error) {
                    $('#pincodeResponse').html(
                        '<p style="color: red;">An error occurred. Please try again.</p>'
@@ -1213,21 +1230,44 @@
 
 
 
-           // prevent duplicate timers (mobile reload issue)
-           if (window.popupTimerStarted) return;
-           window.popupTimerStarted = true;
+             // prevent duplicate listeners
+            if (window.popupListenerStarted) return;
+            window.popupListenerStarted = true;
 
-           var pincode = '{{ session()->get('pincode') ?? 0 }}';
-           var popupShown = sessionStorage.getItem('pincode_popup_shown');
+            var pincode = '{{ session()->get('pincode') ?? 0 }}';
+            var popupShown = sessionStorage.getItem('pincode_popup_shown');
 
-           if (pincode == 0) {
+            if (pincode == 0) {
+                window._pincodeClickHandler = function(e) {
+                    // Skip if click was inside the popup
+                    if (e.target.closest('.newsletter-popup') || e.target.closest('.mfp-wrap') || e.target.closest('.mfp-bg')) {
+                        return;
+                    }
+                    
+                    // Capture redirect destination URL if they clicked on a link
+                    var link = e.target.closest('a');
+                    if (link && link.getAttribute('href') && !link.getAttribute('href').startsWith('javascript:') && link.getAttribute('href') !== '#') {
+                        sessionStorage.setItem('pincode_redirect_url', link.href);
+                    } else {
+                        sessionStorage.removeItem('pincode_redirect_url');
+                    }
+                    
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Temporarily remove listener (will be re-added on popup close)
+                    document.removeEventListener('click', window._pincodeClickHandler, true);
+                    
+                    // Close active megamenu dropdowns
+                    $('.megamenu').hide();
+                    setTimeout(function() {
+                        $('.megamenu').css('display', '');
+                    }, 500);
 
-               setTimeout(function() {
-                   showPicodePopup();
-                   // sessionStorage.setItem('pincode_popup_shown', 'yes');
-               }, 3000);
-
-           }
+                    showPicodePopup();
+                };
+                document.addEventListener('click', window._pincodeClickHandler, true);
+            }
        });
 
        // popup function
@@ -1249,11 +1289,18 @@
                        });
                    },
                    close: function() {
-                       // UNLOCK scroll (VERY IMPORTANT)
+                       // UNLOCK scroll
                        $('html, body').css({
                            overflow: '',
                            height: ''
                        });
+                       // Re-attach the click listener so popup shows again on next click
+                       // (only if pincode is still not set)
+                       if (window._pincodeClickHandler) {
+                           setTimeout(function() {
+                               document.addEventListener('click', window._pincodeClickHandler, true);
+                           }, 300);
+                       }
                    }
                }
            });
