@@ -144,7 +144,8 @@
                                                  <td><input type="checkbox" class="checkbox" data-id="{{ $products->id }}"></td>
                                                 <?php
                                                 $login_id = str_pad($products->login_id, 4, '0', STR_PAD_LEFT);
-                                                $pro_id = str_pad($products->id, 5, '0', STR_PAD_LEFT);
+                                                $vendor_seq = \DB::table('products')->where('login_id', $products->login_id)->where('id', '<=', $products->id)->count();
+                                                $pro_id = str_pad($vendor_seq, 5, '0', STR_PAD_LEFT);
                                                 $produ = \DB::table('vendor_details')
                                                           ->leftJoin('zonals', 'vendor_details.zone', '=', 'zonals.id')
                                                           ->select('vendor_details.*', 'zonals.name')

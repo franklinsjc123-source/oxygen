@@ -143,7 +143,8 @@
                                                  <td><input type="checkbox" class="checkbox" data-id="{{ $products->id }}"></td>
                                                 <?php
                                                 $login_id = str_pad($products->login_id, 4, '0', STR_PAD_LEFT);
-                                                $pro_id = str_pad($products->id, 5, '0', STR_PAD_LEFT);
+                                                $vendor_seq = \DB::table('products')->where('login_id', $products->login_id)->where('id', '<=', $products->id)->count();
+                                                $pro_id = str_pad($vendor_seq, 5, '0', STR_PAD_LEFT);
                                                 $vendar_id = App\Models\User::where('login_id',$products->login_id)->get();
                                                 
                                                 // $produ = App\Models\vendor\vendorcreate::where('user_id',$vendar_id[0]->id)->get();

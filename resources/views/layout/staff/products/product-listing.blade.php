@@ -192,7 +192,8 @@
                                                 <td><input type="checkbox" class="checkbox" data-id="{{ $products->id }}"></td>
                                                  <?php
                                                $login_id = str_pad($products->login_id, 4, '0', STR_PAD_LEFT);
-                                               $pro_id = str_pad($products->id, 5, '0', STR_PAD_LEFT);
+                                               $vendor_seq = \DB::table('products')->where('login_id', $products->login_id)->where('id', '<=', $products->id)->count();
+                                               $pro_id = str_pad($vendor_seq, 5, '0', STR_PAD_LEFT);
                                                $stockSummary = App\Models\Products\ProductsDetails::where('products_id', $products->product_id)
                                                     ->selectRaw('COALESCE(SUM(quantity),0) as total_qty, COALESCE(MAX(low_stock_limit),0) as low_limit')
                                                     ->first();
