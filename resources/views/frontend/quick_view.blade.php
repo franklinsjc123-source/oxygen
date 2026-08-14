@@ -1,3 +1,10 @@
+<style>
+     .product-single .product-image > img {
+         height: 450px !important;
+         object-fit: cover !important;
+         width: 100% !important;
+     }
+ </style>
  <div class="product product-single product-popup">
      <div class="row gutter-lg">
          <div class="col-md-6 mb-4 mb-md-0">
@@ -55,12 +62,15 @@
                                 foreach ($imageList as $row) { ?>
                                   <div class="swiper-slide">
                                       <figure class="product-image">
-                                          <?php
-                                              $imagePath = 'assets/images/products/detail/' . $row;
-                                              if (!file_exists(public_path($imagePath)) && file_exists(public_path('assets/images/products/' . $row))) {
-                                                  $imagePath = 'assets/images/products/' . $row;
-                                              }
-                                          ?>
+                                           <?php
+                                               $imagePath = $row;
+                                               if (!str_contains($imagePath, 'assets/')) {
+                                                   $imagePath = 'assets/images/products/detail/' . $row;
+                                                   if (!file_exists(public_path($imagePath)) && file_exists(public_path('assets/images/products/' . $row))) {
+                                                       $imagePath = 'assets/images/products/' . $row;
+                                                   }
+                                               }
+                                           ?>
                                           <img src="<?php echo asset($imagePath) ?>"
                                               data-zoom-image="<?php echo asset($imagePath) ?>"
                                               alt="Water Boil Black Utensil" width="800" height="900">
@@ -80,12 +90,15 @@
 
                             if (isset($imageList)) {
                                 foreach ($imageList as $key => $row) { ?>
-                                  <?php
-                                      $imagePath = 'assets/images/products/detail/' . $row;
-                                      if (!file_exists(public_path($imagePath)) && file_exists(public_path('assets/images/products/' . $row))) {
-                                          $imagePath = 'assets/images/products/' . $row;
-                                      }
-                                  ?>
+                                   <?php
+                                       $imagePath = $row;
+                                       if (!str_contains($imagePath, 'assets/')) {
+                                           $imagePath = 'assets/images/products/detail/' . $row;
+                                           if (!file_exists(public_path($imagePath)) && file_exists(public_path('assets/images/products/' . $row))) {
+                                               $imagePath = 'assets/images/products/' . $row;
+                                           }
+                                       }
+                                   ?>
                                   <div onclick="setImage(this)" data-image="<?php echo asset($imagePath) ?>" class="product-thumb swiper-slide">
                                       <img  src="<?php echo asset($imagePath) ?>" alt="Product Thumb" width="103"
                                           height="116">

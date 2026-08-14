@@ -29,6 +29,13 @@
             }
         }
 
+        /* Ensure product main images have a consistent height and cover the area nicely */
+        .product-single .product-image > img {
+            height: 450px !important;
+            object-fit: cover !important;
+            width: 100% !important;
+        }
+
         /* Global override for product variations to ensure they display correctly */
         .product-single .product-color-swatch .color {
             display: inline-flex !important;
