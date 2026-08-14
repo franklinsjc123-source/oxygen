@@ -53,13 +53,19 @@
                          <?php
                             if (isset($imageList)) {
                                 foreach ($imageList as $row) { ?>
-                                 <div class="swiper-slide">
-                                     <figure class="product-image">
-                                         <img src="<?php echo asset('assets') ?>/images/products/detail/<?= $row ?>"
-                                             data-zoom-image="<?php echo asset('assets') ?>/images/products/detail/<?= $row ?>"
-                                             alt="Water Boil Black Utensil" width="800" height="900">
-                                     </figure>
-                                 </div>
+                                  <div class="swiper-slide">
+                                      <figure class="product-image">
+                                          <?php
+                                              $imagePath = 'assets/images/products/detail/' . $row;
+                                              if (!file_exists(public_path($imagePath)) && file_exists(public_path('assets/images/products/' . $row))) {
+                                                  $imagePath = 'assets/images/products/' . $row;
+                                              }
+                                          ?>
+                                          <img src="<?php echo asset($imagePath) ?>"
+                                              data-zoom-image="<?php echo asset($imagePath) ?>"
+                                              alt="Water Boil Black Utensil" width="800" height="900">
+                                      </figure>
+                                  </div>
                          <?php }
                             }   ?>
 
@@ -74,10 +80,16 @@
 
                             if (isset($imageList)) {
                                 foreach ($imageList as $key => $row) { ?>
-                                 <div onclick="setImage(this)" data-image="<?php echo asset('assets') ?>/images/products/detail/<?= $row ?>" class="product-thumb swiper-slide">
-                                     <img  src="<?php echo asset('assets') ?>/images/products/detail/<?= $row ?>" alt="Product Thumb" width="103"
-                                         height="116">
-                                 </div>
+                                  <?php
+                                      $imagePath = 'assets/images/products/detail/' . $row;
+                                      if (!file_exists(public_path($imagePath)) && file_exists(public_path('assets/images/products/' . $row))) {
+                                          $imagePath = 'assets/images/products/' . $row;
+                                      }
+                                  ?>
+                                  <div onclick="setImage(this)" data-image="<?php echo asset($imagePath) ?>" class="product-thumb swiper-slide">
+                                      <img  src="<?php echo asset($imagePath) ?>" alt="Product Thumb" width="103"
+                                          height="116">
+                                  </div>
 
                          <?php }
                             }   ?>

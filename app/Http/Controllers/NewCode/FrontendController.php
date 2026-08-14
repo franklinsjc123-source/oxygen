@@ -361,13 +361,21 @@ class FrontendController extends Controller
             ->get(['product_detail_image']);
 
         $images = [];
+
+        $product = Products::find($productId);
+        if ($product && !empty($product->product_image)) {
+            if (file_exists(public_path('assets/images/products/' . $product->product_image))) {
+                $images[] = 'assets/images/products/' . $product->product_image;
+            }
+        }
+
         foreach ($imageList as $val) {
             $decoded = json_decode($val->product_detail_image, true);
             if (is_array($decoded)) {
                 foreach ($decoded as $img) {
                     if (!empty($img)) {
                         if (file_exists(public_path('assets/images/products/detail/' . $img))) {
-                            $images[] = $img;
+                            $images[] = 'assets/images/products/detail/' . $img;
                         }
                     }
                 }
@@ -1455,12 +1463,31 @@ class FrontendController extends Controller
         // Build a mapping of common_product -> images for color-based gallery filtering
         $colorImageMap = [];
         $allDetails = ProductsDetails::where('products_id', $mainProductId)->get();
+        $productModel = Products::find($mainProductId);
+        $mainImageRelative = null;
+        if ($productModel && !empty($productModel->product_image)) {
+            if (file_exists(public_path('assets/images/products/' . $productModel->product_image))) {
+                $mainImageRelative = 'assets/images/products/' . $productModel->product_image;
+            }
+        }
+
         foreach ($allDetails as $detail) {
             $cp = $detail->common_product ?? 0;
             if (!isset($colorImageMap[$cp])) {
                 $decoded = json_decode($detail->product_detail_image, true);
                 if (is_array($decoded)) {
-                    $colorImageMap[$cp] = array_values(array_filter($decoded));
+                    $detailImages = [];
+                    foreach ($decoded as $img) {
+                        if (!empty($img)) {
+                            if (file_exists(public_path('assets/images/products/detail/' . $img))) {
+                                $detailImages[] = 'assets/images/products/detail/' . $img;
+                            }
+                        }
+                    }
+                    if ($mainImageRelative) {
+                        array_unshift($detailImages, $mainImageRelative);
+                    }
+                    $colorImageMap[$cp] = array_values(array_unique($detailImages));
                 }
             }
         }

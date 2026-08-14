@@ -243,11 +243,20 @@
                                          <?php
                                             if (isset($imageList)) {
                                                 foreach ($imageList as $row) { ?>
-                                                 <div class="swiper-slide">
-                                                     <figure class="product-image">
-                                                         <img src="<?php echo asset('assets') ?>/images/products/detail/<?php echo $row ?>"
-                                                             data-zoom-image="<?php echo asset('assets') ?>/images/products/detail/<?php echo $row ?>"
-                                                             alt="Electronics Black Wrist Watch" width="800" height="900">
+                                                  <div class="swiper-slide">
+                                                      <figure class="product-image">
+                                                           <?php
+                                                               $imagePath = $row;
+                                                               if (!str_contains($imagePath, 'assets/')) {
+                                                                   $imagePath = 'assets/images/products/detail/' . $row;
+                                                                   if (!file_exists(public_path($imagePath)) && file_exists(public_path('assets/images/products/' . $row))) {
+                                                                       $imagePath = 'assets/images/products/' . $row;
+                                                                   }
+                                                               }
+                                                           ?>
+                                                          <img src="<?php echo asset($imagePath) ?>"
+                                                              data-zoom-image="<?php echo asset($imagePath) ?>"
+                                                              alt="Electronics Black Wrist Watch" width="800" height="900">
                                                          @php
                                                           $offer_image = $prouctsList['offer_image'] ?? null;
                                                       @endphp
@@ -306,8 +315,17 @@
                                             if (isset($imageList)) {
                                                 foreach ($imageList as $row) { ?>
                                                  <div class="product-thumb swiper-slide">
-                                                     <img src="<?php echo asset('assets') ?>/images/products/detail/<?php echo $row ?>"
-                                                         alt="Product Thumb" width="800" height="900">
+                                                      <?php
+                                                          $imagePath = $row;
+                                                          if (!str_contains($imagePath, 'assets/')) {
+                                                              $imagePath = 'assets/images/products/detail/' . $row;
+                                                              if (!file_exists(public_path($imagePath)) && file_exists(public_path('assets/images/products/' . $row))) {
+                                                                  $imagePath = 'assets/images/products/' . $row;
+                                                              }
+                                                          }
+                                                      ?>
+                                                      <img src="<?php echo asset($imagePath) ?>"
+                                                          alt="Product Thumb" width="800" height="900">
                                                  </div>
                                          <?php }
                                             } ?>
@@ -1594,23 +1612,35 @@
          var mainWrapper = $mainSwiper.find('.swiper-wrapper');
          mainWrapper.empty();
          images.forEach(function(img) {
-             var slideHtml = '<div class="swiper-slide">' +
-                 '<figure class="product-image">' +
-                 '<img src="' + detailImageBase + img + '" data-zoom-image="' + detailImageBase + img + '" alt="Product Image" width="800" height="900">' +
-                 offerImageHtml +
-                 '</figure></div>';
-             mainWrapper.append(slideHtml);
-         });
+              var imgSrc = img;
+              if (!imgSrc.includes('assets/')) {
+                  imgSrc = detailImageBase + img;
+              } else {
+                  imgSrc = '{{ asset("") }}' + img;
+              }
+              var slideHtml = '<div class="swiper-slide">' +
+                  '<figure class="product-image">' +
+                  '<img src="' + imgSrc + '" data-zoom-image="' + imgSrc + '" alt="Product Image" width="800" height="900">' +
+                  offerImageHtml +
+                  '</figure></div>';
+              mainWrapper.append(slideHtml);
+          });
 
-         // Rebuild thumb slides
-         var thumbWrapper = $thumbSwiper.find('.product-thumbs');
-         thumbWrapper.empty();
-         images.forEach(function(img) {
-             var thumbHtml = '<div class="product-thumb swiper-slide">' +
-                 '<img src="' + detailImageBase + img + '" alt="Product Thumb" width="800" height="900">' +
-                 '</div>';
-             thumbWrapper.append(thumbHtml);
-         });
+          // Rebuild thumb slides
+          var thumbWrapper = $thumbSwiper.find('.product-thumbs');
+          thumbWrapper.empty();
+          images.forEach(function(img) {
+              var imgSrc = img;
+              if (!imgSrc.includes('assets/')) {
+                  imgSrc = detailImageBase + img;
+              } else {
+                  imgSrc = '{{ asset("") }}' + img;
+              }
+              var thumbHtml = '<div class="product-thumb swiper-slide">' +
+                  '<img src="' + imgSrc + '" alt="Product Thumb" width="800" height="900">' +
+                  '</div>';
+              thumbWrapper.append(thumbHtml);
+          });
 
          // Init thumb swiper first
          var thumbSwiperInstance = new Swiper($thumbSwiper[0], {

@@ -1010,7 +1010,7 @@ class ProductsController extends Controller
                             $productsAttri->products_id = $id;
                             $productsAttri->category_sub_id = $request->category_sub;
                             $productsAttri->spec_attribute = $request->specify_attri[$ke];
-                            $productsAttri->spec_value = $request->atttibute_value[$ke];exit();
+                            $productsAttri->spec_value = $request->atttibute_value[$ke];
                             $productsAttri->flag = 1;
                             $productsAttri->status = 1;
                             $productsAttri->created_by = "1";
