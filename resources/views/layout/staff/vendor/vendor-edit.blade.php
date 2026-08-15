@@ -78,35 +78,7 @@
                         <div class="card tab2-card">
                             <div class="card-body"
                                 style="font-family: 'Century Gothic',lucida grande, helvetica, verdana, arial, sans-serif;">
-                                 <style>
-                                     @media (max-width: 768px) {
-                                         #top-tab.nav-tabs {
-                                             display: flex !important;
-                                             flex-wrap: nowrap !important;
-                                             overflow-x: auto !important;
-                                             overflow-y: hidden !important;
-                                             -webkit-overflow-scrolling: touch !important;
-                                             border-bottom: 1px solid #dee2e6 !important;
-                                             padding-bottom: 10px !important;
-                                         }
-                                         #top-tab.nav-tabs::-webkit-scrollbar {
-                                             height: 4px;
-                                         }
-                                         #top-tab.nav-tabs::-webkit-scrollbar-thumb {
-                                             background-color: #ced4da;
-                                             border-radius: 4px;
-                                         }
-                                         #top-tab.nav-tabs .nav-item {
-                                             flex: 0 0 auto !important;
-                                         }
-                                         #top-tab.nav-tabs .nav-link {
-                                             white-space: nowrap !important;
-                                             padding: 8px 12px !important;
-                                             font-size: 13px !important;
-                                         }
-                                     }
-                                 </style>
-                                 <ul class="nav nav-tabs nav-material pb-5" id="top-tab" role="tablist">
+                                <ul class="nav nav-tabs nav-material pb-5" id="top-tab" role="tablist">
                                     <li class="nav-item"><a class="nav-link active" id="top-profile-tab"
                                             href="#top-profile" role="tab"
                                             aria-controls="top-profile" aria-selected="true"><i class="fa fa-user me-2"></i><span class="fw-bold">Personal Information</span></a>
