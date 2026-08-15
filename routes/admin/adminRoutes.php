@@ -153,6 +153,7 @@ Route::resource('offer/list', OfferController::class, ['names' => 'offer.list'])
 //Route::post('offer/create', [OfferController::class, 'create']);
 
 Route::post("products/addinfo", [ProductsController::class, "addinfo"])->name('products.addinfo');
+Route::get("products/addinfo", [ProductsController::class, "index"]);
 
 Route::resource("products_crud", ProductsController::class, ['names' => 'products.crud'])->middleware('auth');
 

@@ -993,6 +993,7 @@
             });
 
             $sub.removeAttr('disabled');
+            $sub.trigger('change');
         });
     });
 
@@ -1005,6 +1006,7 @@
         if (!subCategoryId) {
             $attribute.prop('disabled', true);
             $attribute.prop('required', false);
+            $attribute.trigger('change');
             return;
         }
 
@@ -1028,11 +1030,13 @@
                     $attribute.prop('disabled', true);
                     $attribute.prop('required', false);
                 }
+                $attribute.trigger('change');
             },
             error: function() {
                 $attribute.append('<option value="">Unable to load attributes</option>');
                 $attribute.prop('disabled', true);
                 $attribute.prop('required', false);
+                $attribute.trigger('change');
             }
         });
     });
