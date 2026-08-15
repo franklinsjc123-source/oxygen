@@ -524,9 +524,6 @@
                                                  </div>
  
                                                  <div class="card">
-                                                     <div class="card-header">
-                                                         <label class="form-label fw-bold text-dark fs-5">Product Images <span class="text-danger">*</span></label>
-                                                     </div>
                                                      <div class="card-body">
                                                          <div class="row">
                                                              <div class="col-md-3">

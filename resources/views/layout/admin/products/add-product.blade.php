@@ -517,7 +517,6 @@
 
                                                 <div class="card shadow-sm border-0 mb-4">
                                                     <div class="card-body p-4">
-                                                        <label class="form-label fw-bold text-dark h5 mb-3">Product Images <span class="text-danger">*</span></label>
                                                         <div class="row g-3">
                                                             <div class="col-md-3">
                                                                 <label class="form-label fw-bold text-dark">Upload Main Image <span class="text-danger">*</span></label>
