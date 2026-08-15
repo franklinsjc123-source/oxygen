@@ -41,7 +41,13 @@ class ActivityTrackerController extends Controller
                 DB::raw('t2.login_id COLLATE utf8mb4_unicode_ci')
             )        
             ->select('t1.*', 't2.name as empname', 't2.login_id as empid')
-            ->where('t1.createdby',$login_id)
+            ->where(function($q) use ($login_id) {
+                $q->where('t1.createdby', $login_id);
+                if (auth()->check()) {
+                    $q->orWhere('t1.createdby', auth()->user()->login_id)
+                      ->orWhere('t1.createdby', auth()->user()->id);
+                }
+            })
             ->get();
         }
         $user=User::where('log_type','!=','Vendor')->get();
@@ -74,7 +80,13 @@ class ActivityTrackerController extends Controller
                 DB::raw('t2.login_id COLLATE utf8mb4_unicode_ci')
             )        
             ->select('t1.*', 't2.name as empname', 't2.login_id as empid')
-            ->where('t1.createdby',$login_id)
+            ->where(function($q) use ($login_id) {
+                $q->where('t1.createdby', $login_id);
+                if (auth()->check()) {
+                    $q->orWhere('t1.createdby', auth()->user()->login_id)
+                      ->orWhere('t1.createdby', auth()->user()->id);
+                }
+            })
             ->get();
         }
         $user=User::where('log_type','!=','Vendor')->get();
