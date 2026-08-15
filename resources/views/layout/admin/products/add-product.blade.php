@@ -504,8 +504,8 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <label class="form-label fw-bold text-dark">Product Status <span class="text-danger">*</span></label>
-                                                        <select class="custom-select form-control text-secondary"
+                                                        <label class="form-label   fw-bold text-dark">Product Status <span class="text-danger">*</span></label>
+                                                        <select class="custom-select mt-2 form-control text-secondary"
                                                             id="status" name="status" required>
                                                             <option value="" hidden>--Select Status--</option>
                                                             <option value="1" selected>Active</option>
