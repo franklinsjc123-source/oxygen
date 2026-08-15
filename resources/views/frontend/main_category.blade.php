@@ -306,10 +306,11 @@
 
                         <div class="main-content">
                             <nav class="toolbox sticky-toolbox sticky-content fix-top">
-                                <div class="toolbox-left">
+                                <div class="toolbox-left" style="flex: 1; display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
                                     <a href="#" class="btn btn-primary btn-outline btn-rounded left-sidebar-toggle 
                                         btn-icon-left d-block d-lg-none"><i
                                             class="w-icon-category"></i><span>Filters</span></a>
+                                    <div id="active-filters" class="d-flex flex-wrap align-items-center" style="gap: 8px;"></div>
                                 </div>
                                 <div class="toolbox-right">
                                     <div class="toolbox-item toolbox-sort select-box text-dark">
@@ -323,22 +324,6 @@
                                              <option value="price-high">Price High to Low</option>
                                          </select>
                                     </div>
-                                    {{-- <div class="toolbox-item toolbox-show select-box">
-                                        <select name="count" class="form-control">
-                                            <option value="9">Show 9</option>
-                                            <option value="12" selected="selected">Show 12</option>
-                                            <option value="24">Show 24</option>
-                                            <option value="36">Show 36</option>
-                                        </select>
-                                    </div> --}}
-                                    {{-- <div class="toolbox-item toolbox-layout">
-                                        <a href="shop-banner-sidebar.html" class="icon-mode-grid btn-layout active">
-                                            <i class="w-icon-grid"></i>
-                                        </a>
-                                        <a href="shop-list.html" class="icon-mode-list btn-layout">
-                                            <i class="w-icon-list"></i>
-                                        </a>
-                                    </div> --}}
                                 </div>
                              </nav>
 
@@ -350,12 +335,11 @@
                                      background-color: #fff;
                                      border: 1px solid #e0e0e0;
                                      border-radius: 20px;
-                                     padding: 5px 15px;
+                                     padding: 4px 14px;
                                      font-size: 13px;
                                      color: #333;
                                      cursor: pointer;
                                      transition: all 0.2s ease;
-                                     margin-bottom: 10px;
                                  }
                                  .filter-tag:hover {
                                      border-color: #333;
@@ -371,7 +355,6 @@
                                      color: #333;
                                  }
                              </style>
-                             <div id="active-filters" class="d-flex flex-wrap align-items-center mb-3" style="gap: 8px;"></div>
 
                              <div class="product-wrapper row cols-md-5 cols-sm-2 cols-2" id="productslist">
                                
