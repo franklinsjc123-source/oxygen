@@ -1316,7 +1316,7 @@
                                      </span> 
                                      <div class="icon-box-content">
                                          <h4 class="icon-box-title">Free Shipping & Returns</h4>
-                                         <p>For all orders over ₹99</p>
+                                         <p>For all orders over ₹499</p>
                                      </div>
                                  </div>
                                  <div class="icon-box icon-box-side">
@@ -1334,7 +1334,7 @@
                                      </span>
                                      <div class="icon-box-content">
                                          <h4 class="icon-box-title">Money Back Guarantee</h4>
-                                         <p>Any back within 30 days</p>
+                                         <p>Any return within 7 - 10 work days</p>
                                      </div>
                                  </div>
                              </div>

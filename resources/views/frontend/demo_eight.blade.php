@@ -85,7 +85,7 @@
                      </span>
                      <div class="icon-box-content">
                          <h4 class="icon-box-title">Free Shipping & Returns</h4>
-                         <p class="text-default">For all orders over $99</p>
+                         <p class="text-default">For all orders over $499</p>
                      </div>
                  </div>
                  <div class="swiper-slide icon-box icon-box-side text-dark">
@@ -103,7 +103,7 @@
                      </span>
                      <div class="icon-box-content">
                          <h4 class="icon-box-title">Money Back Guarantee</h4>
-                         <p class="text-default">Any back within 30 days</p>
+                         <p class="text-default">Any return within 7 - 10 work days</p>
                      </div>
                  </div>
                  <div class="swiper-slide icon-box icon-box-side text-dark icon-box-chat">
