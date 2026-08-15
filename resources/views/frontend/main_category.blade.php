@@ -305,14 +305,14 @@
                      
 
                         <div class="main-content">
-                            <nav class="toolbox sticky-toolbox sticky-content fix-top">
-                                <div class="toolbox-left" style="flex: 1; display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
+                            <nav class="toolbox sticky-toolbox sticky-content fix-top" style="flex-wrap: wrap; gap: 8px;">
+                                <div class="toolbox-left" style="order: 1;">
                                     <a href="#" class="btn btn-primary btn-outline btn-rounded left-sidebar-toggle 
                                         btn-icon-left d-block d-lg-none"><i
                                             class="w-icon-category"></i><span>Filters</span></a>
-                                    <div id="active-filters" class="d-flex flex-wrap align-items-center" style="gap: 8px;"></div>
                                 </div>
-                                <div class="toolbox-right">
+                                <div id="active-filters" class="d-flex flex-wrap align-items-center" style="gap: 8px; flex: 1; margin: 0 10px; order: 2;"></div>
+                                <div class="toolbox-right" style="order: 3;">
                                     <div class="toolbox-item toolbox-sort select-box text-dark">
                                         <label>Sort By :</label>
                                          <select name="orderby" id="orderby" class="form-control">
@@ -328,6 +328,25 @@
                              </nav>
 
                              <style>
+                                 @media (max-width: 767px) {
+                                     .toolbox {
+                                         flex-wrap: wrap !important;
+                                         justify-content: space-between !important;
+                                     }
+                                     .toolbox-left {
+                                         order: 1 !important;
+                                     }
+                                     .toolbox-right {
+                                         order: 2 !important;
+                                     }
+                                     #active-filters {
+                                         width: 100% !important;
+                                         flex: none !important;
+                                         margin: 8px 0 0 0 !important;
+                                         order: 3 !important;
+                                     }
+                                 }
+
                                  .filter-tag {
                                      display: inline-flex;
                                      align-items: center;
