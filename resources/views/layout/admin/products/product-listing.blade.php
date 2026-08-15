@@ -230,7 +230,7 @@
                                                 <td class="text-center">
                                                     <span class="fw-bold">
                                                         <a href="#" data-id={{ $products->id }} title="Stock Quantity"
-                                                            class="text-danger " onclick="getquantity('{{ $products->id }}')">{{ $totalQty }}</a>
+                                                            class="text-danger " onclick="getquantity('{{ $products->id }}', '{{ addslashes($products->product_name) }}')">{{ $totalQty }}</a>
                                                     </span>
                                                 </td>
                                                 {{-- @dd($product_price->selling_price); --}}
@@ -484,7 +484,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title f-w-600" id="exampleModalLabel">Stock Edit</h5>
-                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close" style="background: none; border: none; font-size: 24px; color: #333; opacity: 0.8; padding: 0 10px; cursor: pointer; line-height: 1;"><span aria-hidden="true">&times;</span></button>
             </div>
             <form action="{{ route('products.details.update') }}" method="post">
                 @csrf
@@ -724,7 +724,7 @@
     });
 }
 
-function getquantity(id) {
+function getquantity(id, productName) {
     let product_id = id;
    // alert(product_id);
 
@@ -736,6 +736,14 @@ function getquantity(id) {
         $('#modal_body').append(
             `<input type="text" name="product_id" class="d-none" value="${product_id}">`
         );
+        if (productName) {
+            $('#modal_body').append(
+                `<div class="mb-4 p-3" style="background-color: #f1f5f9; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                    <span class="text-muted" style="font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Product Name</span>
+                    <h5 class="mb-0 mt-1" style="font-weight: 700; color: #1e293b;">${productName}</h5>
+                </div>`
+            );
+        }
 
         $.each(data, function(key, productDetails) {
             $('#modal_body').append(createProductRow(productDetails));
@@ -746,43 +754,45 @@ function getquantity(id) {
 }
 
     function createProductRow(productDetails) {
-        const attributeRows = [
-            [productDetails.attributename1, productDetails.attributevalue1],
-            [productDetails.attributename2, productDetails.attributevalue2],
-            [productDetails.attributename3, productDetails.attributevalue3],
-        ].filter(function(item) {
-            return item[0] && item[1];
-        }).map(function(item) {
-            return `<div>${item[0]} : ${item[1]}</div>`;
+        let attrArray = [];
+        if (productDetails.attributename1 && productDetails.attributevalue1) {
+            attrArray.push([productDetails.attributename1, productDetails.attributevalue1]);
+        } else if (productDetails.color) {
+            attrArray.push(['Color', productDetails.color]);
+        }
+        
+        if (productDetails.attributename2 && productDetails.attributevalue2) {
+            attrArray.push([productDetails.attributename2, productDetails.attributevalue2]);
+        } else if (productDetails.size) {
+            attrArray.push(['Size', productDetails.size]);
+        }
+
+        if (productDetails.attributename3 && productDetails.attributevalue3) {
+            attrArray.push([productDetails.attributename3, productDetails.attributevalue3]);
+        }
+
+        const attributeRows = attrArray.map(function(item) {
+            return `<div style="margin-bottom: 2px;"><strong>${item[0]}:</strong> <span class="text-dark">${item[1]}</span></div>`;
         }).join('');
 
         return `
             <div class="row mb-2 align-items-end">
-            <div class="col-md-3">
-                <label>Attributes</label>
-                <div class="form-control bg-light" style="height:auto;min-height:38px;">${attributeRows || '-'}</div>
-                <input type="hidden" name="prodt_id[]" class="form-control" value=${productDetails.id}>
+            <div class="col-md-6 col-12 mb-3">
+                <label class="fw-bold text-secondary" style="font-size: 13px;">Attributes</label>
+                <div style="font-size: 13px; font-weight: 500; color: #1e293b; padding: 8px 12px; background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; min-height: 38px; height: auto;">${attributeRows || '<span class="text-muted">-</span>'}</div>
+                <input type="hidden" name="prodt_id[]" class="form-control" value="${productDetails.id}">
+                <input type="hidden" name="retail_price[]" value="${productDetails.retail_price}">
+                <input type="hidden" name="selling_price[]" value="${productDetails.selling_price}">
             </div>
             
-            <div class="col-md-2">
-                <label>No of Product</label> 
-                <input type="text" name="quantity[]" class="form-control" value=${productDetails.quantity}>
+            <div class="col-md-3 col-6 mb-3">
+                <label class="fw-bold text-secondary" style="font-size: 13px;">In stock</label> 
+                <input type="text" name="quantity[]" class="form-control" value="${productDetails.quantity}" style="border-color: #3b82f6; font-weight: 700; max-width: 100%;">
             </div>
-                <div class="col-md-2">
-                <label>low stock limit</label>
-                <input type="text" name="low_stock_limit[]" class="form-control" value=${productDetails.low_stock_limit}>
+            <div class="col-md-3 col-6 mb-3">
+                <label class="fw-bold text-secondary" style="font-size: 13px;">low stock limit</label>
+                <input type="text" name="low_stock_limit[]" class="form-control" value="${productDetails.low_stock_limit}" style="border-color: #3b82f6; font-weight: 700; max-width: 100%;">
             </div>
-                <div class="col-md-2">
-                <label> MRP</label> 
-                <input type="text" name="retail_price[]" class="form-control" value=${productDetails.retail_price}>
-            </div>
-            <div class="col-md-3">
-                <label> Selling Price</label> 
-                <input type="text" name="selling_price[]" class="form-control" value=${productDetails.selling_price}>
-            </div>
-            
-
-            
         </div><hr>
         `;
     }
