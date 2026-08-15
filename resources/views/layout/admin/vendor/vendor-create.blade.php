@@ -657,7 +657,7 @@
                                                 <label for="validationCustom1"
                                                     class="col-xl-2 col-md-2">Description</label>
                                                 <div class="col-xl-10 col-md-10">
-                                                    <textarea class="form-control ckeditor" rows="3" id="description" name="description"></textarea>
+                                                    <textarea class="form-control" rows="3" id="description" name="description"></textarea>
                                                 </div>
                                             </div>
                                         </div>
