@@ -52,27 +52,33 @@
 
                     <div class="shop-default-category category-ellipse-section ">
                         <div class="swiper-container swiper-theme shadow-swiper"
-                                data-swiper-options="{
-                                'spaceBetween': 10,
-                                'slidesPerView': 4,
-                                'breakpoints': {
-                                    '480': {
-                                        'slidesPerView': 4
-                                    },
-                                    '576': {
-                                        'slidesPerView': 4
-                                    },
-                                    '768': {
-                                        'slidesPerView': 6
-                                    },
-                                    '992': {
-                                        'slidesPerView': 7
-                                    },
-                                    '1200': {
-                                        'slidesPerView': 8,
-                                        'spaceBetween': 30
-                                    }
-                                }
+                                 data-swiper-options="{
+                                 'spaceBetween': 10,
+                                 'slidesPerView': 4,
+                                 'slidesPerGroup': 4,
+                                 'breakpoints': {
+                                     '480': {
+                                         'slidesPerView': 4,
+                                         'slidesPerGroup': 4
+                                     },
+                                     '576': {
+                                         'slidesPerView': 4,
+                                         'slidesPerGroup': 4
+                                     },
+                                     '768': {
+                                         'slidesPerView': 6,
+                                         'slidesPerGroup': 6
+                                     },
+                                     '992': {
+                                         'slidesPerView': 7,
+                                         'slidesPerGroup': 7
+                                     },
+                                     '1200': {
+                                         'slidesPerView': 8,
+                                         'slidesPerGroup': 8,
+                                         'spaceBetween': 30
+                                     }
+                                 }
                             }"
                         >
                             <div class="swiper-wrapper row gutter-lg cols-xl-8 cols-lg-7 cols-md-6 cols-sm-4 cols-xs-4 cols-4">
@@ -554,9 +560,21 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error(error);
-                }
             });
         }
+
+        $(window).on('load', function() {
+            setTimeout(function() {
+                var $swiperContainer = $('.category-ellipse-section .swiper-container');
+                var swiper = $swiperContainer.data('slider');
+                if (swiper) {
+                    var activeSlide = $swiperContainer.find('.swiper-slide').has('.sc-active');
+                    if (activeSlide.length > 0) {
+                        var activeIndex = activeSlide.index();
+                        swiper.slideTo(activeIndex, 0);
+                    }
+                }
+            }, 300);
+        });
     </script>
  @endsection

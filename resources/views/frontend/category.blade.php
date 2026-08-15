@@ -106,21 +106,27 @@
                             data-swiper-options="{
                             'spaceBetween': 10,
                             'slidesPerView': 4,
+                            'slidesPerGroup': 4,
                             'breakpoints': {
                                 '480': {
-                                    'slidesPerView': 4
+                                    'slidesPerView': 4,
+                                    'slidesPerGroup': 4
                                 },
                                 '576': {
-                                    'slidesPerView': 4
+                                    'slidesPerView': 4,
+                                    'slidesPerGroup': 4
                                 },
                                 '768': {
-                                    'slidesPerView': 6
+                                    'slidesPerView': 6,
+                                    'slidesPerGroup': 6
                                 },
                                 '992': {
-                                    'slidesPerView': 7
+                                    'slidesPerView': 7,
+                                    'slidesPerGroup': 7
                                 },
                                 '1200': {
                                     'slidesPerView': 8,
+                                    'slidesPerGroup': 8,
                                     'spaceBetween': 30
                                 }
                             }
@@ -623,5 +629,19 @@
                 }
             });
         }
+
+        $(window).on('load', function() {
+            setTimeout(function() {
+                var $swiperContainer = $('.category-ellipse-section .swiper-container');
+                var swiper = $swiperContainer.data('slider');
+                if (swiper) {
+                    var activeSlide = $swiperContainer.find('.swiper-slide').has('.sc-active');
+                    if (activeSlide.length > 0) {
+                        var activeIndex = activeSlide.index();
+                        swiper.slideTo(activeIndex, 0);
+                    }
+                }
+            }, 300);
+        });
     </script>
  @endsection
