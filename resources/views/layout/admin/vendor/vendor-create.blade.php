@@ -657,7 +657,7 @@
                                                 <label for="validationCustom1"
                                                     class="col-xl-2 col-md-2">Description</label>
                                                 <div class="col-xl-10 col-md-10">
-                                                    <textarea class="form-control" readonly rows="3" id="description" type="text" name="description"></textarea>
+                                                    <textarea class="form-control ckeditor" rows="3" id="description" name="description"></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -1303,7 +1303,11 @@
                                 $('#validity').val(data.validity);
                                 $('#wallet').val(data.wallet);
                                 $('#commission').val(data.commission);
-                                $('#description').text($(data.description).text());
+                                if (typeof CKEDITOR !== 'undefined' && CKEDITOR.instances.description) {
+                                    CKEDITOR.instances.description.setData(data.description);
+                                } else {
+                                    $('#description').val(data.description);
+                                }
                                 // $('#price ').val(data.price);
                                 ///$('#price ').val(data.price);
                                 const expired_date = new Date();
