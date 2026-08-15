@@ -741,10 +741,10 @@ function getAjaxValue(url, method, callback) {
             $('#profileimage, #aatherimage, #pancard, #otherdoc').on('change', function() {
                 const files = this.files;
                 if (files && files.length > 0) {
-                    const maxLimit = 1 * 1024 * 1024; // 1MB
+                    const maxLimit = 4 * 1024 * 1024; // 4MB
                     for (let i = 0; i < files.length; i++) {
                         if (files[i].size > maxLimit) {
-                            alert('File "' + files[i].name + '" exceeds the maximum limit of 1MB.');
+                            alert('File "' + files[i].name + '" exceeds the maximum limit of 4MB.');
                             this.value = ''; // Reset input
                             return;
                         }

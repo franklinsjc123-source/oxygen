@@ -1546,10 +1546,10 @@
             $('input[type="file"]').on('change', function() {
                 const files = this.files;
                 if (files && files.length > 0) {
-                    const maxLimit = 1 * 1024 * 1024; // 1MB
+                    const maxLimit = 4 * 1024 * 1024; // 4MB
                     for (let i = 0; i < files.length; i++) {
                         if (files[i].size > maxLimit) {
-                            alert('File "' + files[i].name + '" exceeds the maximum limit of 1MB.');
+                            alert('File "' + files[i].name + '" exceeds the maximum limit of 4MB.');
                             this.value = ''; // Reset input
                             return;
                         }
@@ -1721,8 +1721,8 @@
                 }
 
                 var totalSize = 0;
-                var maxPostSize = 8 * 1024 * 1024; // 8MB
-                var maxFileSize = 1 * 1024 * 1024; // 1MB
+                var maxPostSize = 20 * 1024 * 1024; // 20MB
+                var maxFileSize = 4 * 1024 * 1024; // 4MB
                 var fileTooLarge = false;
                 var offendingFileName = '';
                 
@@ -1741,13 +1741,13 @@
 
                 if (fileTooLarge) {
                     e.preventDefault();
-                    alert('The file "' + offendingFileName + '" exceeds the 1MB size limit. Please upload smaller files.');
+                    alert('The file "' + offendingFileName + '" exceeds the 4MB size limit. Please upload smaller files.');
                     return false;
                 }
 
                 if (totalSize > maxPostSize) {
                     e.preventDefault();
-                    alert('The total size of the uploaded files exceeds the 8MB limit. Please upload smaller files.');
+                    alert('The total size of the uploaded files exceeds the 20MB limit. Please upload smaller files.');
                     return false;
                 }
             });
