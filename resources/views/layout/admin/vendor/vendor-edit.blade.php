@@ -710,7 +710,16 @@
                                                 <div class="col-xl-10 col-md-10">
 
 
-                                                     <textarea class="form-control" rows="5" id="description" name="description" type="text">{{ strip_tags(str_replace(['</li>', '<br>', '<br/>'], "\n", $vendorcreate->description)) }}</textarea>
+                                                     @php
+                                                         $displayDescription = $vendorcreate->description;
+                                                         if (empty($displayDescription) && !empty($vendorcreate->package_id)) {
+                                                             $matchedPackage = $package->firstWhere('id', $vendorcreate->package_id);
+                                                             if ($matchedPackage) {
+                                                                 $displayDescription = $matchedPackage->description;
+                                                             }
+                                                         }
+                                                     @endphp
+                                                     <textarea class="form-control" rows="5" id="description" name="description" type="text">{{ strip_tags(str_replace(['</li>', '<br>', '<br/>'], "\n", $displayDescription)) }}</textarea>
                                                     {{-- @php
                                                         $pack1 = App\Models\vendor\packages::where('status', '=', '1')->get();
                                                         
