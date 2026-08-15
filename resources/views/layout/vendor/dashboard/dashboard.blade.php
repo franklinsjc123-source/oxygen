@@ -1647,7 +1647,7 @@
                         </div>
                     </div>
 
-                    <div class="pricing-features-scroll" style="flex-grow: 1; overflow-y: auto; max-height: 150px; padding-right: 2px; margin-bottom: 12px; border-bottom: 1px solid #edf2f7; border-top: 1px solid #edf2f7; padding: 8px 0;">
+                    <div class="pricing-features-scroll" style="flex-grow: 1; overflow-y: auto; max-height: 260px; padding-right: 2px; margin-bottom: 12px; border-bottom: 1px solid #edf2f7; border-top: 1px solid #edf2f7; padding: 8px 0;">
                         ${featuresHtml}
                     </div>
 
