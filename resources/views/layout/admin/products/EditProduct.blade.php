@@ -734,19 +734,27 @@
     $(document).ready(function() {
         var max_fields = 10000000; //maximum input boxes allowed
         var wrapper = $(".input_fields_wrap"); //Fields wrapper 
-        var add_button1 = $("#add_m"); //Add button ID
-        var lis = $("#add_m").val();
-        var x = parseInt(lis) || 0; //initial text box count
 
-        $(add_button1).click(function(e) { //on add input button click
+        $(document).on('click', '#add_m', function(e) { //on add input button click
             e.preventDefault();
             
+            var x = 0;
+            $('.variant-card.w').each(function() {
+                var idAttr = $(this).attr('id');
+                if (idAttr) {
+                    var num = parseInt(idAttr.replace('variant-card-', ''));
+                    if (!isNaN(num) && num > x) {
+                        x = num;
+                    }
+                }
+            });
+            x++; //text box increment
+
             if (x < max_fields) { //max input box allowed
-                x++; //text box increment
                 $(wrapper).append(
                     '<div class="variant-card w" id="variant-card-'+x+'">' +
                     '    <div class="variant-card-header">' +
-                    '        <h6 class="m-0 fw-bold text-primary">Variant #'+x+'</h6>' +
+                    '        <h6 class="m-0 fw-bold text-primary">Variant #'+(x+1)+'</h6>' +
                     '        <button class="remove_field btn btn-xs btn-danger m-0" value=""><i class="fa fa-trash"></i> Remove</button>' +
                     '    </div>' +
                     '    <div class="card-body p-4">' +
@@ -854,23 +862,23 @@
                     '    </div>' +
                     '</div>'
                 );
+                
+                $('#attrsize').find('option').each(function() {
+                    $("#attrsize"+x).append("<option value='"+$(this).val()+"'>"+$(this).val()+"</option>");
+                });
+
+                $('#attrcolor').find('option').each(function() {
+                    var $option = $(this).clone().prop('selected', false);
+                    $("#attrcolor"+x).append($option);
+                });
+
                 syncVariantImages();
             }
-
-            $('#attrsize').find('option').each(function() {
-                $("#attrsize"+x).append("<option value= "+$(this).val()+">"+$(this).val()+"</option>");
-            });
-
-            $('#attrcolor').find('option').each(function() {
-                var $option = $(this).clone().prop('selected', false);
-                $("#attrcolor"+x).append($option);
-            });
         });
 
         $(wrapper).on("click", ".remove_field", function(e) { //user click on remove text
             e.preventDefault();
             $(this).closest('.w').remove();
-            x--;
         });
     });
 

@@ -362,12 +362,8 @@ class FrontendController extends Controller
 
         $images = [];
 
-        $product = Products::find($productId);
-        if ($product && !empty($product->product_image)) {
-            if (file_exists(public_path('assets/images/products/' . $product->product_image))) {
-                $images[] = 'assets/images/products/' . $product->product_image;
-            }
-        }
+        // Main product image excluded per user request
+
 
         foreach ($imageList as $val) {
             $decoded = json_decode($val->product_detail_image, true);
@@ -1483,9 +1479,6 @@ class FrontendController extends Controller
                                 $detailImages[] = 'assets/images/products/detail/' . $img;
                             }
                         }
-                    }
-                    if ($mainImageRelative) {
-                        array_unshift($detailImages, $mainImageRelative);
                     }
                     $colorImageMap[$cp] = array_values(array_unique($detailImages));
                 }

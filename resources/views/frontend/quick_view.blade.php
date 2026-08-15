@@ -11,78 +11,69 @@
              <div class="product-gallery product-gallery-sticky">
                  <div class="swiper-container product-single-swiper swiper-theme nav-inner">
                      <div class="swiper-wrapper row cols-1 gutter-no">
-                         <div class="swiper-slide">
-                                     <figure class="product-image">
-                                         <img id="firstImg" src="<?php echo asset('assets') ?>/images/products/<?= $prouctsList[$id]['product_image']?>"
-                                             data-zoom-image="<?php echo asset('assets') ?>/images/products/<?= $prouctsList[$id]['product_image']?>"
-                                             alt="Water Boil Black Utensil" width="800" height="900">
+                          <?php
+                             if (isset($imageList)) {
+                                 foreach ($imageList as $key => $row) { ?>
+                                   <div class="swiper-slide">
+                                       <figure class="product-image">
+                                            <?php
+                                                $imagePath = $row;
+                                                if (!str_contains($imagePath, 'assets/')) {
+                                                    $imagePath = 'assets/images/products/detail/' . $row;
+                                                    if (!file_exists(public_path($imagePath)) && file_exists(public_path('assets/images/products/' . $row))) {
+                                                        $imagePath = 'assets/images/products/' . $row;
+                                                    }
+                                                }
+                                            ?>
+                                           <img <?php if ($key === 0) { echo 'id="firstImg"'; } ?> src="<?php echo asset($imagePath) ?>"
+                                               data-zoom-image="<?php echo asset($imagePath) ?>"
+                                               alt="Water Boil Black Utensil" width="800" height="900">
 
-                                         @php
-                                             $offer_image = $prouctsList[$id]['offer_image'] ?? null;
-                                         @endphp
-                                         @if($offer_image)
-                                             <div class="product-label-group" style="position: absolute; top: 10px; left: 10px; z-index: 10; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 5px;">
-                                                 <img src="{{ asset('assets/images/offer_logo/'.$offer_image) }}" alt="Offer" style="width: 60px; height: 60px; object-fit: contain; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); border-radius: 5px;">
-                                                  @if(isset($offerDetails) && $offerDetails)
-                                                      @php
-                                                          $offerText = '';
-                                                          if ($offerDetails->type == "Buy X Get Y Free") {
-                                                              $offerText = 'Buy ' . ($offerDetails->buy ?: '1') . ' Get ' . ($offerDetails->getoffer ?: '1') . ' Free';
-                                                          } elseif ($offerDetails->type == "Cashback") {
-                                                              if (strtolower($offerDetails->cashbacktype) == 'percentage') {
-                                                                  $offerText = "Cashback {$offerDetails->cashbackvalue}% Off";
-                                                              } else {
-                                                                  $offerText = "Cashback ₹{$offerDetails->cashbackvalue} Off";
-                                                              }
-                                                          } elseif ($offerDetails->type == "Fixed Discount") {
-                                                              if (strtolower($offerDetails->discount_type) == 'percentage') {
-                                                                  $offerText = "Flat {$offerDetails->value}% Off";
-                                                              } else {
-                                                                  $offerText = "Flat ₹{$offerDetails->value} Off";
-                                                              }
-                                                          } elseif (str_contains($offerDetails->type, '@')) {
-                                                              $amt = $offerDetails->getamt ? "₹{$offerDetails->getamt}/-" : "{$offerDetails->value}%";
-                                                              $offerText = "Buy {$offerDetails->buy} @ {$amt}";
-                                                          } else {
-                                                              $offerText = $offerDetails->title ?: $offerDetails->type;
-                                                          }
-                                                      @endphp
-                                                      @if($offerText)
-                                                          <div style="background: #0088dd; color: #fff; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); white-space: nowrap;">
-                                                              {{ $offerText }}
-                                                          </div>
-                                                      @endif
-                                                  @endif
-                                             </div>
-                                         @endif
-                                     </figure>
-                                 </div>
-                         <?php
-                            if (isset($imageList)) {
-                                foreach ($imageList as $row) { ?>
-                                  <div class="swiper-slide">
-                                      <figure class="product-image">
-                                           <?php
-                                               $imagePath = $row;
-                                               if (!str_contains($imagePath, 'assets/')) {
-                                                   $imagePath = 'assets/images/products/detail/' . $row;
-                                                   if (!file_exists(public_path($imagePath)) && file_exists(public_path('assets/images/products/' . $row))) {
-                                                       $imagePath = 'assets/images/products/' . $row;
-                                                   }
-                                               }
-                                           ?>
-                                          <img src="<?php echo asset($imagePath) ?>"
-                                              data-zoom-image="<?php echo asset($imagePath) ?>"
-                                              alt="Water Boil Black Utensil" width="800" height="900">
-                                      </figure>
-                                  </div>
-                         <?php }
-                            }   ?>
-
-
+                                           <?php if ($key === 0) { ?>
+                                               @php
+                                                   $offer_image = $prouctsList[$id]['offer_image'] ?? null;
+                                               @endphp
+                                               @if($offer_image)
+                                                   <div class="product-label-group" style="position: absolute; top: 10px; left: 10px; z-index: 10; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                                                       <img src="{{ asset('assets/images/offer_logo/'.$offer_image) }}" alt="Offer" style="width: 60px; height: 60px; object-fit: contain; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); border-radius: 5px;">
+                                                        @if(isset($offerDetails) && $offerDetails)
+                                                            @php
+                                                                $offerText = '';
+                                                                if ($offerDetails->type == "Buy X Get Y Free") {
+                                                                    $offerText = 'Buy ' . ($offerDetails->buy ?: '1') . ' Get ' . ($offerDetails->getoffer ?: '1') . ' Free';
+                                                                } elseif ($offerDetails->type == "Cashback") {
+                                                                    if (strtolower($offerDetails->cashbacktype) == 'percentage') {
+                                                                        $offerText = "Cashback {$offerDetails->cashbackvalue}% Off";
+                                                                    } else {
+                                                                        $offerText = "Cashback ₹{$offerDetails->cashbackvalue} Off";
+                                                                    }
+                                                                } elseif ($offerDetails->type == "Fixed Discount") {
+                                                                    if (strtolower($offerDetails->discount_type) == 'percentage') {
+                                                                        $offerText = "Flat {$offerDetails->value}% Off";
+                                                                    } else {
+                                                                        $offerText = "Flat ₹{$offerDetails->value} Off";
+                                                                    }
+                                                                } elseif (str_contains($offerDetails->type, '@')) {
+                                                                    $amt = $offerDetails->getamt ? "₹{$offerDetails->getamt}/-" : "{$offerDetails->value}%";
+                                                                    $offerText = "Buy {$offerDetails->buy} @ {$amt}";
+                                                                } else {
+                                                                    $offerText = $offerDetails->title ?: $offerDetails->type;
+                                                                }
+                                                            @endphp
+                                                            @if($offerText)
+                                                                <div style="background: #0088dd; color: #fff; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); white-space: nowrap;">
+                                                                    {{ $offerText }}
+                                                                </div>
+                                                            @endif
+                                                        @endif
+                                                   </div>
+                                               @endif
+                                           <?php } ?>
+                                       </figure>
+                                   </div>
+                          <?php }
+                             }   ?>
                      </div>
-
-
                  </div>
                  <div class="product-thumbs-wrap swiper-container">
                      <div class="product-thumbs swiper-wrapper row cols-4 gutter-sm">

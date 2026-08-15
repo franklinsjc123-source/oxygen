@@ -303,12 +303,12 @@
         /* Period filter bar styling */
         .period-btn {
             color: #64748b;
-            text-decoration: none;
+            text-decoration: none;git 
         }
         .period-btn.active {
             background-color: #183543 !important;
             color: #ffffff !important;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px -1px rgbgit a(0, 0, 0, 0.1);
         }
         .period-btn:hover:not(.active) {
             color: #183543;
