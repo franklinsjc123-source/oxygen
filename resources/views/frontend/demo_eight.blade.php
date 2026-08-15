@@ -85,7 +85,7 @@
                      </span>
                      <div class="icon-box-content">
                          <h4 class="icon-box-title">Free Shipping & Returns</h4>
-                         <p class="text-default">For all orders over $499</p>
+                         <p class="text-default">For all orders over ₹499</p>
                      </div>
                  </div>
                  <div class="swiper-slide icon-box icon-box-side text-dark">
@@ -141,7 +141,7 @@
                      <div class="banner-content y-50">
                          <h3 class="banner-title text-capitalize ls-25 mb-0">For Men's</h3>
                          <div class="banner-price-info text-uppercase text-default ls-25 font-weight-bold">Starting
-                             at <span class="text-secondary">$29.00</span></div>
+                             at <span class="text-secondary">₹29.00</span></div>
                          <hr class="banner-divider bg-dark">
                          <a href="demo8-shop.html"
                              class="btn btn-dark btn-link btn-outline btn-icon-right btn-slide-right">
@@ -175,7 +175,7 @@
                      <div class="banner-content y-50">
                          <h3 class="banner-title text-capitalize ls-25 mb-0">For Women's</h3>
                          <div class="banner-price-info text-uppercase text-default ls-25 font-weight-bold">From Only
-                             <span class="text-secondary">$29.00</span>
+                             <span class="text-secondary">₹29.00</span>
                          </div>
                          <hr class="banner-divider bg-dark">
                          <a href="demo8-shop.html"
@@ -679,11 +679,7 @@
                               <a href="#" onclick="addwishlist('{{ $auction->id }}', this)" class="btn-product-icon btn-wishlist {{ in_array($auction->id, $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($auction->id, $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"
                                   title="Add to wishlist"></a>
                           </div>
-                         <div class="product-action">
-                             <a href="javascript:void(0)" onclick="showQuickView('{{ $auction->id }}')" data-id='{{ $auction->id }}' class="btn-product btn-quickview" title="Quick View">Quick
-                                 View</a>
-                         </div>
-                         <div class="product-countdown-container">
+                          <div class="product-countdown-container">
                              @php
                                 $endDateStr = str_replace('T', ' ', $auction->end_date);
                                 $parsedDate = \Carbon\Carbon::parse($endDateStr);

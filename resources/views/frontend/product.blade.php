@@ -4,6 +4,10 @@
  <!-- Start of Main -->
  <main class="main mb-10 pb-1">
     <style>
+        .comment-action { display: none !important; }
+        .comments li { padding: 10px 0 !important; margin: 0 !important; }
+        .comment-body { padding: 0 !important; margin: 0 !important; }
+        .comment-content { padding: 0 !important; margin: 0 !important; }
         /* Mobile horizontal scroll for product detail tabs */
         @media (max-width: 767px) {
             .product-tabs .nav-tabs {
@@ -860,7 +864,7 @@
                                                                 <h4 class="comment-author">
                                                                     <a href="#">{{ $rating->customer_name }}</a>
                                                                     <span class="comment-date">
-                                                                       {{ date('M d, Y h:i A', strtotime($rating->created_at)) }}
+                                                                       {{ \Carbon\Carbon::parse($rating->created_at)->timezone('Asia/Kolkata')->format('M d, Y h:i A') }}
                                                                     </span>
                                                                 </h4>
 
@@ -936,7 +940,7 @@
                                                                 <h4 class="comment-author">
                                                                     <a href="#">{{ $mostHelpRating->customer_name }}</a>
                                                                     <span class="comment-date">
-                                                                       {{ date('M d, Y h:i A', strtotime($mostHelpRating->created_at)) }}
+                                                                       {{ \Carbon\Carbon::parse($mostHelpRating->created_at)->timezone('Asia/Kolkata')->format('M d, Y h:i A') }}
                                                                     </span>
                                                                 </h4>
 
@@ -1009,7 +1013,7 @@
                                                                 <h4 class="comment-author">
                                                                     <a href="#">{{ $mostUnhelpRating->customer_name }}</a>
                                                                     <span class="comment-date">
-                                                                       {{ date('M d, Y h:i A', strtotime($mostUnhelpRating->created_at)) }}
+                                                                       {{ \Carbon\Carbon::parse($mostUnhelpRating->created_at)->timezone('Asia/Kolkata')->format('M d, Y h:i A') }}
                                                                     </span>
                                                                 </h4>
 
@@ -1081,7 +1085,7 @@
                                                                 <h4 class="comment-author">
                                                                     <a href="#">{{ $HighRating->customer_name }}</a>
                                                                     <span class="comment-date">
-                                                                       {{ date('M d, Y h:i A', strtotime($HighRating->created_at)) }}
+                                                                       {{ \Carbon\Carbon::parse($HighRating->created_at)->timezone('Asia/Kolkata')->format('M d, Y h:i A') }}
                                                                     </span>
                                                                 </h4>
 
@@ -1153,7 +1157,7 @@
                                                                 <h4 class="comment-author">
                                                                     <a href="#">{{ $LowRating->customer_name }}</a>
                                                                     <span class="comment-date">
-                                                                       {{ date('M d, Y h:i A', strtotime($LowRating->created_at)) }}
+                                                                       {{ \Carbon\Carbon::parse($LowRating->created_at)->timezone('Asia/Kolkata')->format('M d, Y h:i A') }}
                                                                     </span>
                                                                 </h4>
 

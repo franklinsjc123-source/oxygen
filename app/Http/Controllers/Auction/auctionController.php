@@ -64,10 +64,27 @@ class auctionController extends Controller
             
             $auction   =  new auction();
 
+            $productId = $request->product_id;
+            if (str_contains($productId, '-')) {
+                $parts = explode('-', $productId);
+                if (count($parts) === 3) {
+                    $loginId = intval($parts[1]);
+                    $sequence = intval($parts[2]);
+                    $products = \DB::table('products')->where('login_id', $loginId)->orderBy('id', 'asc')->get();
+                    if ($products->count() >= $sequence) {
+                        $productId = $products[$sequence - 1]->id;
+                    }
+                }
+            } else {
+                $p = \DB::table('products')->where('id', $productId)->orWhere('product_id', $productId)->first();
+                if ($p) {
+                    $productId = $p->id;
+                }
+            }
 
             $auction->admin_id     =   session()->get('login_id');
             $auction->product_type =   $request->product_type;
-            $auction->product_id   =   $request->product_id  ;
+            $auction->product_id   =   $productId  ;
             $auction->start_price  =   $request->start_price ;
             $auction->slab         =   $request->slab        ;
             $auction->bid_price    =   $request->start_price + $request->slab   ;

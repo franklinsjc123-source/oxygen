@@ -24,19 +24,35 @@ class ImportUser implements ToModel, WithStartRow, WithMultipleSheets
     public function model(array $row)
     {
         $max_row = 30;
+        
+        $productId = $row[0];
+        if (str_contains($productId, '-')) {
+            $parts = explode('-', $productId);
+            if (count($parts) === 3) {
+                $loginId = intval($parts[1]);
+                $sequence = intval($parts[2]);
+                $products = \DB::table('products')->where('login_id', $loginId)->orderBy('id', 'asc')->get();
+                if ($products->count() >= $sequence) {
+                    $productId = $products[$sequence - 1]->id;
+                }
+            }
+        } else {
+            $p = \DB::table('products')->where('id', $productId)->orWhere('product_id', $productId)->first();
+            if ($p) {
+                $productId = $p->id;
+            }
+        }
        
-            return new auction([
-                'admin_id'    => session()->get('login_id'),
-                'product_type'=> '1',
-                'product_id'  => $row[0],
-                'start_price' => $row[1],
-                'slab'        => $row[2],
-                'bid_price'   => (int)$row[1] + (int)$row[2],
-                'start_date'  => $this->parseDate($row[3]),
-                'end_date'    => $this->parseDate($row[4]),          
-            ]);
-        
-        
+        return new auction([
+            'admin_id'    => session()->get('login_id'),
+            'product_type'=> '1',
+            'product_id'  => $productId,
+            'start_price' => $row[1],
+            'slab'        => $row[2],
+            'bid_price'   => (int)$row[1] + (int)$row[2],
+            'start_date'  => $this->parseDate($row[3]),
+            'end_date'    => $this->parseDate($row[4]),          
+        ]);
     }
 
     private function parseDate($value)

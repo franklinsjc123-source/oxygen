@@ -42,6 +42,11 @@
                     @endphp
                     
                     @foreach($productdetails as $product)
+                        @php
+                            $avg = \App\Models\Rating::where('products_id', $product->id)->avg('star_rating');
+                            $product->rating_percent = $avg ? ($avg / 5) * 100 : 0;
+                            $product->review_count = \App\Models\Rating::where('products_id', $product->id)->count();
+                        @endphp
                         <div class="product-wrap">
                             <div class="product text-center">
                                 <figure class="product-media">
