@@ -1480,7 +1480,7 @@
                     success: function(data) {
                         console.log(data);
                         if (data.msg == 'Success') {
-                            var redirectUrl = sessionStorage.getItem('post_login_redirect') || "{{ route('myAccount') }}";
+                            var redirectUrl = sessionStorage.getItem('post_login_redirect') || "{{ route('home') }}";
                             sessionStorage.removeItem('post_login_redirect');
                             sessionStorage.removeItem('prefill_login_mobile');
                             window.location.href = redirectUrl;

@@ -350,7 +350,7 @@
                                     <a href="{{ url('shop/' . ($vendor_details->slug ?? $vendor_details->id)) }}">
                                      <figure class="brand">
                                          <img src="<?php echo asset('assets/images/vendor/profile/' . $prouctsList['profile_image']) ?>" alt="Brand"
-                                             width="60" height="50" />
+                                             width="60" height="50" style="min-height: 50px; max-height: 60px; min-width: 60px; max-width: 90px; object-fit: contain;" />
                                      </figure>
                                       </a>
                                      <div class="product-meta">
