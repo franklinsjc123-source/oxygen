@@ -97,7 +97,7 @@
         Toastify({
             className: "alert-success",
             text: msg,
-            duration: 3000,
+            duration: 2000,
             close: true,
             gravity: "bottom",
             position: "right"
@@ -116,7 +116,7 @@
         Toastify({
             className: "alert-danger",
             text: msg,
-            duration: 3000,
+            duration: 2000,
             close: true,
             gravity: "bottom",
             position: "right"
