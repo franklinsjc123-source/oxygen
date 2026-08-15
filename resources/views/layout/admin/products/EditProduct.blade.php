@@ -291,7 +291,7 @@
                                      <!-- Product Description -->
                                      <div class="form-group mt-3">
                                          <label class="form-label fw-bold text-dark">Product Description <span class="text-danger">*</span></label>
-                                         <textarea id="description" class="form-control" required rows="5" name="description">{{ $product->description }}</textarea>
+                                         <textarea id="description" class="form-control ckeditor" required rows="5" name="description">{{ $product->description }}</textarea>
                                          <div class="invalid-feedback-custom">Please enter product description</div>
                                      </div>
                                  </div>

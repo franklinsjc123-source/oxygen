@@ -250,29 +250,10 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <h5 class="fw-bold">No.of Products</h5>
-                                                        <div id="clothing">
-                                                            <select class="js-select2 form-control" name="nproduct"
-                                                                id="nproduct" required>
-
-                                                                <option value="1" selected> 1</option>
-                                                                <option value="2">2</option>
-                                                                <option value="3">3</option>
-                                                                <option value="4">4</option>
-                                                                <option value="5">5</option>
-
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <h5 class="fw-bold">Add Product Informations</h5>
-                                                        <div id="clothing">
-                                                            <button type="submit" class="btn btn-primary"> Add Informations </button>
-                                                        </div>
+                                                <input type="hidden" name="nproduct" value="1">
+                                                <div class="col-md-3 d-flex align-items-end">
+                                                    <div class="form-group w-100">
+                                                        <button type="submit" class="btn btn-primary w-100 fw-bold py-2 mb-1"><i class="fa fa-plus"></i> ADD INFORMATIONS</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -495,27 +476,9 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <h5 class="fw-bold">No.of Products</h5>
-                                                        <div id="clothing">
-                                                            <select class="js-select2 form-control" name="nproduct1"
-                                                                id="nproduct_summary" disabled required>
-
-                                                                <option value="1" {{(@$nproduct=="1")?'Selected':'';}}> 1</option>
-                                                                <option value="2" {{(@$nproduct=="2")?'Selected':'';}}>2</option>
-                                                                <option value="3" {{(@$nproduct=="3")?'Selected':'';}}>3</option>
-                                                                <option value="4" {{(@$nproduct=="4")?'Selected':'';}}>4</option>
-                                                                <option value="5" {{(@$nproduct=="5")?'Selected':'';}}>5</option>
-
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                                 <input type="hidden" name="category_main" value="{{@$maincategoryid}}">
                                                 <input type="hidden" name="category" value="{{@$categoryid}}">
                                                 <input type="hidden" name="category_sub" value="{{@$subcategoryid}}">
-                                                <input type="hidden" name="nproduct" value="{{@$nproduct}}">
                                                 <input type="hidden" name="vendorid" value="{{@$vendorid}}">
                                                 <input type="hidden" name="is_color" value="{{@$is_color}}">
                                                 <div class="col-md-3 d-flex align-items-end">
@@ -624,153 +587,232 @@
                             </div>
                         </div>
                     </div>
-                    @for($i=1;$i<=$nproduct;$i++)
-                        <div class="col-md-12">
+                    <style>
+                        .variant-card .variant-fields-wrapper:first-of-type .remove-size-row-inline-btn {
+                            display: none !important;
+                        }
+                        .variant-card .variant-fields-wrapper:first-of-type .add-size-row-inline-btn {
+                            display: inline-block !important;
+                        }
+                        .variant-card .variant-fields-wrapper ~ .variant-fields-wrapper label {
+                            display: none !important;
+                        }
+                        .variant-card .variant-fields-wrapper ~ .variant-fields-wrapper .add-size-row-inline-btn {
+                            display: none !important;
+                        }
+                        .variant-card .variant-fields-wrapper ~ .variant-fields-wrapper .remove-size-row-inline-btn {
+                            display: inline-block !important;
+                        }
+                        .variant-card .variant-fields-wrapper ~ .variant-fields-wrapper {
+                            margin-top: 15px;
+                        }
+                        .variant-card {
+                            border: 1px solid #e3e6f0;
+                            border-radius: 0.35rem;
+                            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.05);
+                            background-color: #fff;
+                            margin-bottom: 1.5rem;
+                        }
+                        .variant-card-header {
+                            background-color: #f8f9fc;
+                            border-bottom: 1px solid #e3e6f0;
+                            padding: 0.75rem 1.25rem;
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                        }
+                        .img-preview-box {
+                            height: 80px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            background-color: #f8f9fc;
+                            border: 1px dashed #dddfeb;
+                            border-radius: 4px;
+                        }
+                        .img-thumb {
+                            max-height: 75px;
+                            border: 1px solid #ddd;
+                            border-radius: 4px;
+                            padding: 2px;
+                            cursor: pointer;
+                            background-color: #fff;
+                        }
+                        .btn-productimg {
+                            position: relative;
+                            overflow: hidden;
+                            display: inline-block;
+                        }
+                        .btn-productimg input[type=file] {
+                            position: absolute;
+                            top: 0;
+                            right: 0;
+                            min-width: 100%;
+                            min-height: 100%;
+                            font-size: 100px;
+                            text-align: right;
+                            filter: alpha(opacity=0);
+                            opacity: 0;
+                            outline: none;   
+                            cursor: inherit;
+                            display: block;
+                        }
+                    </style>
 
-                        <div class="card p-3">
-                            <div class="card-header">
-                                <label class="form-label fw-bold text-dark h5 mb-0">Product {{ $i }} Informations</label>
-                            </div>
-                            <div class="card-body ">
-
-
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group p-1">
-                                            <label class="form-label fw-bold text-dark">Variant Image <span class="text-danger">*</span></label>
-
-                                            <input type="file" id="imageUpload{{ $i }}" name="imageUpload{{ $i }}[]" multiple accept="image/*" onchange="previewImages({{ $i }})" required>
-                                            <div class="text-muted small mt-1">Upload Format: jpg, jpeg, png</div>
-                                            <div class="invalid-feedback-custom">Please upload variant image</div>
-
+                    <div class="form-group mt-3" style="background-color: #f8f9fc; padding: 1.5rem; border-radius: 5px;">
+                        <div class="row" id="p1">
+                            <div class="container-fluid w-100">
+                                <div id="product_details">
+                                    {{-- First variant card --}}
+                                    <div class="variant-card w" id="variant-card-0">
+                                        <div class="variant-card-header">
+                                            <h6 class="m-0 fw-bold text-primary">Variant #1</h6>
                                         </div>
-                                    </div>
+                                        <div class="card-body p-4">
+                                            <div class="variant-fields-wrapper">
+                                                <input type="hidden" name="product_details_id[]" value="" required>
+                                                <div class="row g-3">
+                                                    {{-- Color --}}
+                                                    @if(@$is_color != 'no')
+                                                    <div class="col-md-2 color-col-wrapper">
+                                                        <label class="form-label fw-bold text-secondary mb-1">Color <span class="text-danger">*</span></label>
+                                                        <select class="form-select text-secondary attrcolor" name="attrcolor[]" id="attrcolor" required>
+                                                            <option hidden>Color</option>
+                                                            @foreach($colors as $color)
+                                                                <option value="{{ $color->color_name }}" style="background-color: {{ $color->color_code }}">{{ $color->color_name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        <div class="invalid-feedback-custom">Please select color</div>
+                                                    </div>
+                                                    @else
+                                                    <input type="hidden" name="attrcolor[]" value="Multicolor">
+                                                    @endif
 
-                                    <div class="form-group col-md-3">
-                                        <label class="form-label fw-bold text-dark">SKU <span class="text-danger">*</span></label>
-                                        <input type="text" name="sku[{{ $i }}]" placeholder="SKU"
-                                            class="form-control" required>
-                                        <div class="invalid-feedback-custom">Please enter SKU</div>
-                                    </div>
+                                                    {{-- Size --}}
+                                                    <div class="col-md-2">
+                                                        <label class="form-label fw-bold text-secondary mb-1">Size <span class="text-danger">*</span></label>
+                                                        <select class="form-select text-secondary attrsize" name="attrsize[]" id="attrsize" required>
+                                                            <option hidden>Size</option>
+                                                            @foreach ($attribute as $attri)
+                                                                @php
+                                                                    $attrValues = json_decode($attri->attribute_values ?? '[]', true) ?: [];
+                                                                @endphp
+                                                                @foreach($attrValues as $val)
+                                                                    <option value="{{ $val }}">{{ $val }}</option>
+                                                                @endforeach
+                                                            @endforeach
+                                                        </select>
+                                                        <div class="invalid-feedback-custom">Please select size</div>
+                                                    </div>
 
-                                    <div class="form-group col-md-3">
-                                        <label class="form-label fw-bold text-dark">Return <span class="text-danger">*</span></label>
-                                        <select class="form-select form-select-lg text-secondary"
-                                            name="return_replace[{{ $i }}]" required>
+                                                    {{-- Retail Price --}}
+                                                    <div class="col-md-2">
+                                                        <label class="form-label fw-bold text-secondary mb-1">Retail Price <span class="text-danger">*</span></label>
+                                                        <input type="text" name="retail_price[]" placeholder="Retail Price" class="form-control" required>
+                                                        <div class="invalid-feedback-custom">Please enter retail price</div>
+                                                    </div>
 
-                                            <option selected value="" hidden>Select</option>
-                                            <option value="Return">
-                                                Return
-                                            </option>
+                                                    {{-- Selling Price --}}
+                                                    <div class="col-md-2">
+                                                        <label class="form-label fw-bold text-secondary mb-1">Selling Price <span class="text-danger">*</span></label>
+                                                        <input type="text" name="selling_price[]" placeholder="Selling Price" class="form-control" required>
+                                                        <div class="invalid-feedback-custom">Please enter selling price</div>
+                                                    </div>
 
-                                            <option value="Replacement">
-                                                Replacement
-                                            </option>
+                                                    {{-- Quantity --}}
+                                                    <div class="col-md-1">
+                                                        <label class="form-label fw-bold text-secondary mb-1" id="lowstack1">Qty <span class="text-danger">*</span></label>
+                                                        <input type="number" class="qty form-control" id="qty1" placeholder="Qty" name="quantity[]" required>
+                                                        <div class="invalid-feedback-custom">Please enter quantity</div>
+                                                    </div>
 
-                                        </select>
-                                            <div class="invalid-feedback-custom">Please select return/replacement option</div>
-                                    </div>
+                                                    {{-- Low Stock Limit --}}
+                                                    <div class="col-md-2">
+                                                        <label class="form-label fw-bold text-secondary mb-1">Low Stock Limit <span class="text-danger">*</span></label>
+                                                        <input type="number" name="low_stock_limit[]" id="low_stock_limit1" placeholder="Low Stock Limit" class="low_stock_limit form-control" required>
+                                                        <div class="invalid-feedback-custom">Please enter low stock limit</div>
+                                                    </div>
 
-                                    <div class="form-group col-md-2">
-                                        <label class="form-label fw-bold text-dark">Return Days <span class="text-danger">*</span></label>
-                                        <input type="text" name="r_days[{{ $i }}]" placeholder="Days"
-                                            class="form-control" required>
-                                            <div class="invalid-feedback-custom">Please enter return days</div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div id="previewContainer{{ $i }}" class="row"></div>
-                                    </div>
-
-                                </div>
-                                <div id="productinfo{{ $i }}">
-                                    <hr>
-                                    <div class="row">
-                                        @if(@$is_color != 'no')
-                                        <div class="form-group col-md-3">
-                                                <label class="form-label fw-bold text-dark">Color <span class="text-danger">*</span></label>
-                                                <input type="hidden" name="attributecolorname[{{ $i }}][]" value="Color">
-                                                <select class="form-select form-select-lg text-secondary attrcolor{{ $i }}"
-                                                    name="attributecolorval[{{ $i }}][]" id="attrcolor{{ $i }}" required>
-                                                    <option selected value='' hidden> --Select Color--</option>
-                                                    @foreach( $colors as $color)
-                                                    <option value='{{ $color->color_name }}' style="background-color: {{ $color->color_code }}"> {{ $color->color_name }} </option>
-                                                    @endforeach
-                                                </select>
-                                                <div class="invalid-feedback-custom">Please select color</div>
+                                                    {{-- Actions --}}
+                                                    <div class="col-md-1 d-flex flex-column justify-content-end">
+                                                        <label class="form-label fw-bold text-secondary mb-1">&nbsp;</label>
+                                                        <div class="d-flex gap-1 justify-content-end">
+                                                            <button type="button" class="btn btn-danger w-100 remove-size-row-inline-btn" title="Remove Size"><i class="fa fa-trash"></i></button>
+                                                            <button type="button" class="btn btn-primary w-100 add-size-row-inline-btn" title="Add Size"><i class="fa fa-plus"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        @else
-                                            <input type="hidden" name="attributecolorname[{{ $i }}][]" value="Color">
-                                            <input type="hidden" name="attributecolorval[{{ $i }}][]" value="Multicolor">
-                                        @endif
-                                        @php $j=0; @endphp
-                                        @foreach ($attribute as $attri)
-                                        @php
-                                        $attri_val = json_decode($attri->attribute_values, true) ?: [];
-                                       
 
-                                        @endphp
-                                        <div class="form-group col-md-3">
-                                            <label class="form-label fw-bold text-dark">{{ $attri->attribute_group_refname}} <span class="text-danger">*</span></label>
-                                            <input type="hidden" name="attributename[{{ $i }}][{{ $j }}][]" value="{{ $attri->attribute_group_refname}}">
-                                            <select class="form-select form-select-lg text-secondary attrsize"
-                                                name="attributeval[{{ $i }}][{{ $j }}][]" id="attrsize" required>
-                                                <option selected value='' hidden> --Select {{ $attri->attribute_group_refname}}--</option>
-                                                @foreach( $attri_val as $attval)
-                                                <option value='{{ $attval }}'> {{ $attval }}</option>
-                                                @endforeach
-                                            </select>
-                                            <div class="invalid-feedback-custom">Please select {{ $attri->attribute_group_refname }}</div>
-                                        </div>
-                                        @php $j++; @endphp
-                                        @endforeach
-                                        <input type="hidden" name="attributecount" value="{{ $j}}">
-                                            
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col-md-3">
-                                            <label class="form-label fw-bold text-dark">MRP <span class="text-danger">*</span></label>
-                                            <input type="number" name="retail_price[{{ $i }}][]"
-                                                placeholder="Retail Price" class="form-control" required>
-                                            <div class="invalid-feedback-custom">Please enter retail price</div>
-                                        </div>
-
-                                        <div class="form-group col-md-3">
-                                            <label class="form-label fw-bold text-dark">Selling Price <span class="text-danger">*</span></label>
-                                            <input type="number" name="selling_price[{{ $i }}][]"
-                                                placeholder="Selling Price" class="form-control" required>
-                                            <div class="invalid-feedback-custom">Please enter selling price</div>
-                                        </div>
-
-                                        <div class="form-group col-md-3">
-                                            <label class="form-label fw-bold text-dark">Quantity <span class="text-danger">*</span></label>
-                                            <input type="number" class="form-control"
-                                                placeholder="Qty" name="quantity[{{ $i }}][]" required>
-                                            <div class="invalid-feedback-custom">Please enter quantity</div>
-                                        </div>
-                                        <div class="form-group col-md-3">
-                                            <label class="form-label fw-bold text-dark">Low Stock Limit <span class="text-danger">*</span></label>
-                                            <input type="number" id="low_stock_limit" name="low_stock_limit[{{ $i }}][]"
-                                                placeholder="Low Stock Limit" class="form-control" required>
-                                            <div class="invalid-feedback-custom">Please enter low stock limit</div>
+                                            {{-- Variant Images --}}
+                                            <div class="row variant-images-wrapper mt-3 col-12 p-0 m-0">
+                                                <div class="col-12 mt-4">
+                                                    <label class="form-label fw-bold text-dark mb-0">Variant Images</label>
+                                                    <hr class="mt-1 mb-3 text-secondary opacity-25">
+                                                </div>
+                                                <div class="col-md-3 col-sm-6">
+                                                    <div class="border rounded p-2 text-center bg-light position-relative">
+                                                        <span class="d-block mb-1 small fw-bold text-secondary">Image 1 <span class="text-danger">*</span></span>
+                                                        <div class="img-preview-box mb-2">
+                                                            <img class="img-thumb" id="mainr0" src="" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;" />
+                                                        </div>
+                                                        <span class="btn btn-xs btn-outline-primary btn-productimg w-100">
+                                                            <i class="fa fa-cloud-upload"></i> Upload
+                                                            <input class="form-control add_product" type="file" onchange="previewmainImg(this)" id="p_mainimg0" name="mainimg[]" accept="image/*">
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 col-sm-6">
+                                                    <div class="border rounded p-2 text-center bg-light position-relative">
+                                                        <span class="d-block mb-1 small fw-bold text-secondary">Image 2</span>
+                                                        <div class="img-preview-box mb-2">
+                                                            <img class="img-thumb" id="sub1r0" src="" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;" />
+                                                        </div>
+                                                        <span class="btn btn-xs btn-outline-primary btn-productimg w-100">
+                                                            <i class="fa fa-cloud-upload"></i> Upload
+                                                            <input class="form-control add_product" type="file" onchange="previewsubImg1(this)" id="subimg10" name="subimg1[]" accept="image/*">
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 col-sm-6">
+                                                    <div class="border rounded p-2 text-center bg-light position-relative">
+                                                        <span class="d-block mb-1 small fw-bold text-secondary">Image 3</span>
+                                                        <div class="img-preview-box mb-2">
+                                                            <img class="img-thumb" id="sub2r0" src="" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;" />
+                                                        </div>
+                                                        <span class="btn btn-xs btn-outline-primary btn-productimg w-100">
+                                                            <i class="fa fa-cloud-upload"></i> Upload
+                                                            <input class="form-control add_product" type="file" onchange="previewsubImg2(this)" id="subimg20" name="subimg2[]" accept="image/*">
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 col-sm-6">
+                                                    <div class="border rounded p-2 text-center bg-light position-relative">
+                                                        <span class="d-block mb-1 small fw-bold text-secondary">Image 4</span>
+                                                        <div class="img-preview-box mb-2">
+                                                            <img class="img-thumb" id="sub3r0" src="" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;" />
+                                                        </div>
+                                                        <span class="btn btn-xs btn-outline-primary btn-productimg w-100">
+                                                            <i class="fa fa-cloud-upload"></i> Upload
+                                                            <input class="form-control add_product" type="file" onchange="previewsubImg3(this)" id="subimg30" name="subimg3[]" accept="image/*">
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div id="productmoreinfo{{ $i }}">
-                                </div>
-                                <div class="text-start mt-3">
-                                    <button type="button" id="add-more" class="add_field_button add-more btn btn-primary" onclick="addmoreinfo('{{ $i }}')">
-                                        + Add more
+
+                                <div class="input_fields_wrap"></div>
+
+                                <div class="d-flex justify-content-end">
+                                    <button type="button" id="add_m" name="addproduct[]" value="0" class='btn btn-xs btn-primary mb-3 mt-3'>
+                                        <i class="fa fa-plus"></i> ADD MORE VARIANT
                                     </button>
-
                                 </div>
-
-
-
                             </div>
                         </div>
-
-                </div>
-                @endfor
+                    </div>
 
                 <div class="row mt-3">
                     <!-- Shipping Information Section -->
@@ -1192,6 +1234,227 @@
         // Append the remove button and the cloned div to the target div
         productinfo.append(removeBtn);
         $('#productmoreinfo' + id).append(productinfo);
+    }
+
+    // Dynamic variant add/remove logic
+    $(document).ready(function() {
+        var max_fields = 10000000;
+        var wrapper = $(".input_fields_wrap");
+
+        $(document).on('click', '#add_m', function(e) {
+            e.preventDefault();
+            
+            var x = -1;
+            $('.variant-card.w').each(function() {
+                var idAttr = $(this).attr('id');
+                if (idAttr) {
+                    var num = parseInt(idAttr.replace('variant-card-', ''));
+                    if (!isNaN(num) && num > x) {
+                        x = num;
+                    }
+                }
+            });
+            x++;
+
+            if (x < max_fields) {
+                $(wrapper).append(
+                    '<div class="variant-card w" id="variant-card-'+x+'">' +
+                    '    <div class="variant-card-header">' +
+                    '        <h6 class="m-0 fw-bold text-primary">Variant #'+(x+1)+'</h6>' +
+                    '        <button class="remove_field btn btn-xs btn-danger m-0" value=""><i class="fa fa-trash"></i> Remove</button>' +
+                    '    </div>' +
+                    '    <div class="card-body p-4">' +
+                    '        <div class="variant-fields-wrapper">' +
+                    '            <input type="hidden" name="product_details_id[]" value="" required>' +
+                    '            <div class="row g-3">' +
+                    '            <div class="col-md-2 color-col-wrapper">' +
+                    '                <label class="form-label fw-bold text-secondary mb-1">Color <span class="text-danger">*</span></label>' +
+                    '                <select class="form-select text-secondary attrcolor" name="attrcolor[]" id="attrcolor'+x+'"><option hidden>Color</option></select>' +
+                    '                <div class="invalid-feedback-custom">Please select color</div>' +
+                    '            </div>' +
+                    '            <div class="col-md-2">' +
+                    '                <label class="form-label fw-bold text-secondary mb-1">Size <span class="text-danger">*</span></label>' +
+                    '                <select class="form-select text-secondary attrsize" name="attrsize[]" id="attrsize'+x+'"><option hidden>Size</option></select>' +
+                    '                <div class="invalid-feedback-custom">Please select size</div>' +
+                    '            </div>' +
+                    '            <div class="col-md-2">' +
+                    '                <label class="form-label fw-bold text-secondary mb-1">Retail Price <span class="text-danger">*</span></label>' +
+                    '                <input type="text" name="retail_price[]" placeholder="Retail Price" class="form-control" required>' +
+                    '                <div class="invalid-feedback-custom">Please enter retail price</div>' +
+                    '            </div>' +
+                    '            <div class="col-md-2">' +
+                    '                <label class="form-label fw-bold text-secondary mb-1">Selling Price <span class="text-danger">*</span></label>' +
+                    '                <input type="text" name="selling_price[]" placeholder="Selling Price" class="form-control" required>' +
+                    '                <div class="invalid-feedback-custom">Please enter selling price</div>' +
+                    '            </div>' +
+                    '            <div class="col-md-1">' +
+                    '                <label class="form-label fw-bold text-secondary mb-1" id="lowstack'+(x+1)+'">Qty <span class="text-danger">*</span></label>' +
+                    '                <input type="number" class="qty form-control" id="qty'+(x+1)+'" placeholder="Qty" name="quantity[]" required>' +
+                    '                <div class="invalid-feedback-custom">Please enter quantity</div>' +
+                    '            </div>' +
+                    '            <div class="col-md-2">' +
+                    '                <label class="form-label fw-bold text-secondary mb-1">Low Stock Limit <span class="text-danger">*</span></label>' +
+                    '                <input type="number" name="low_stock_limit[]" id="low_stock_limit'+(x+1)+'" placeholder="Low Stock Limit" class="low_stock_limit form-control" required>' +
+                    '                <div class="invalid-feedback-custom">Please enter low stock limit</div>' +
+                    '            </div>' +
+                    '            <div class="col-md-1 d-flex flex-column justify-content-end">' +
+                    '                <label class="form-label fw-bold text-secondary mb-1">&nbsp;</label>' +
+                    '                <div class="d-flex gap-1 justify-content-end">' +
+                    '                    <button type="button" class="btn btn-danger w-100 remove-size-row-inline-btn" title="Remove Size"><i class="fa fa-trash"></i></button>' +
+                    '                    <button type="button" class="btn btn-primary w-100 add-size-row-inline-btn" title="Add Size"><i class="fa fa-plus"></i></button>' +
+                    '                </div>' +
+                    '            </div>' +
+                    '            </div>' +
+                    '        </div>' +
+                    '        <div class="row variant-images-wrapper mt-3 col-12 p-0 m-0">' +
+                    '                <div class="col-12 mt-4">' +
+                    '                    <label class="form-label fw-bold text-dark mb-0">Variant Images</label>' +
+                    '                    <hr class="mt-1 mb-3 text-secondary opacity-25">' +
+                    '                </div>' +
+                    '            <div class="col-md-3 col-sm-6">' +
+                    '                <div class="border rounded p-2 text-center bg-light position-relative">' +
+                    '                    <span class="d-block mb-1 small fw-bold text-secondary">Image 1 <span class="text-danger">*</span></span>' +
+                    '                    <div class="img-preview-box mb-2">' +
+                    '                        <img class="img-thumb" id="mainr'+x+'" src="" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;" />' +
+                    '                    </div>' +
+                    '                    <span class="btn btn-xs btn-outline-primary btn-productimg w-100">' +
+                    '                        <i class="fa fa-cloud-upload"></i> Upload' +
+                    '                        <input class="form-control add_product" type="file" onchange="previewmainImg(this)" id="p_mainimg'+x+'" name="mainimg[]" accept="image/*">' +
+                    '                    </span>' +
+                    '                </div>' +
+                    '            </div>' +
+                    '            <div class="col-md-3 col-sm-6">' +
+                    '                <div class="border rounded p-2 text-center bg-light position-relative">' +
+                    '                    <span class="d-block mb-1 small fw-bold text-secondary">Image 2</span>' +
+                    '                    <div class="img-preview-box mb-2">' +
+                    '                        <img class="img-thumb" id="sub1r'+x+'" src="" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;" />' +
+                    '                    </div>' +
+                    '                    <span class="btn btn-xs btn-outline-primary btn-productimg w-100">' +
+                    '                        <i class="fa fa-cloud-upload"></i> Upload' +
+                    '                        <input class="form-control add_product" type="file" onchange="previewsubImg1(this)" id="subimg1'+x+'" name="subimg1[]" accept="image/*">' +
+                    '                    </span>' +
+                    '                </div>' +
+                    '            </div>' +
+                    '            <div class="col-md-3 col-sm-6">' +
+                    '                <div class="border rounded p-2 text-center bg-light position-relative">' +
+                    '                    <span class="d-block mb-1 small fw-bold text-secondary">Image 3</span>' +
+                    '                    <div class="img-preview-box mb-2">' +
+                    '                        <img class="img-thumb" id="sub2r'+x+'" src="" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;" />' +
+                    '                    </div>' +
+                    '                    <span class="btn btn-xs btn-outline-primary btn-productimg w-100">' +
+                    '                        <i class="fa fa-cloud-upload"></i> Upload' +
+                    '                        <input class="form-control add_product" type="file" onchange="previewsubImg2(this)" id="subimg2'+x+'" name="subimg2[]" accept="image/*">' +
+                    '                    </span>' +
+                    '                </div>' +
+                    '            </div>' +
+                    '            <div class="col-md-3 col-sm-6">' +
+                    '                <div class="border rounded p-2 text-center bg-light position-relative">' +
+                    '                    <span class="d-block mb-1 small fw-bold text-secondary">Image 4</span>' +
+                    '                    <div class="img-preview-box mb-2">' +
+                    '                        <img class="img-thumb" id="sub3r'+x+'" src="" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;" />' +
+                    '                    </div>' +
+                    '                    <span class="btn btn-xs btn-outline-primary btn-productimg w-100">' +
+                    '                        <i class="fa fa-cloud-upload"></i> Upload' +
+                    '                        <input class="form-control add_product" type="file" onchange="previewsubImg3(this)" id="subimg3'+x+'" name="subimg3[]" accept="image/*">' +
+                    '                    </span>' +
+                    '                </div>' +
+                    '            </div>' +
+                    '            </div>' +
+                    '        </div>' +
+                    '    </div>' +
+                    '</div>'
+                );
+
+                $('#attrsize').find('option').each(function() {
+                    $("#attrsize"+x).append("<option value='"+$(this).val()+"'>"+$(this).val()+"</option>");
+                });
+
+                $('#attrcolor').find('option').each(function() {
+                    var $option = $(this).clone().prop('selected', false);
+                    $("#attrcolor"+x).append($option);
+                });
+
+                if (window.syncVariantImages) {
+                    window.syncVariantImages();
+                }
+            }
+        });
+
+        $(wrapper).on("click", ".remove_field", function(e) {
+            e.preventDefault();
+            $(this).closest('.w').remove();
+            if (window.syncVariantImages) {
+                window.syncVariantImages();
+            }
+        });
+    });
+
+    // Image preview main img
+    function previewmainImg(a) {
+        let idee = a.id; 
+        let file = $('#'+idee).prop('files'); 
+        const myArray = idee.split("p_mainimg");
+        let x = myArray[1]; 
+        var img = document.getElementById('mainr'+x);
+        if (file && file[0]) {                        
+            img.onload = () => { URL.revokeObjectURL(img.src); }
+            img.src = URL.createObjectURL(file[0]);
+            img.style.display = 'block';
+        } else {
+            img.src = "";
+            img.style.display = 'none';
+        }
+    }
+
+    // Image preview sub img1
+    function previewsubImg1(a) {                    
+        let idee = a.id; 
+        let file = $('#'+idee).prop('files'); 
+        const myArray = idee.split("subimg1");
+        let x = myArray[1]; 
+        var img = document.getElementById('sub1r'+x);
+        if (file && file[0]) {                      
+            img.onload = () => { URL.revokeObjectURL(img.src); }                   
+            img.src = URL.createObjectURL(file[0]);
+            img.style.display = 'block';
+        } else {  
+            img.src = "";
+            img.style.display = 'none';
+        }                 
+    }
+
+    // Image preview sub img2
+    function previewsubImg2(a) {                    
+        let idee = a.id; 
+        let file = $('#'+idee).prop('files'); 
+        const myArray = idee.split("subimg2");
+        let x = myArray[1]; 
+        var img = document.getElementById('sub2r'+x);
+        if (file && file[0]) {                      
+            img.onload = () => { URL.revokeObjectURL(img.src); }                   
+            img.src = URL.createObjectURL(file[0]);
+            img.style.display = 'block';
+        } else {  
+            img.src = "";
+            img.style.display = 'none';
+        }
+    }
+
+    // Image preview sub img3
+    function previewsubImg3(a) {
+        let idee = a.id; 
+        let file = $('#'+idee).prop('files'); 
+        const myArray = idee.split("subimg3");
+        let x = myArray[1]; 
+        var img = document.getElementById('sub3r'+x);
+        if (file && file[0]) {
+            img.onload = () => { URL.revokeObjectURL(img.src); }
+            img.src = URL.createObjectURL(file[0]);
+            img.style.display = 'block';
+        } else {
+            img.src = "";
+            img.style.display = 'none';
+        }
     }
 </script>
 <!--<script src="//js.nicedit.com/nicEdit-latest.js" type="text/javascript"></script>
