@@ -98,15 +98,6 @@
                           @if(!isset($title) || $title !== 'Live Auction')
                           <a href="{{route('staffauction.create')}}" class="btn mb-4 btn-primary"><i class="fa fa-plus"></i> Add Offers </a> 
                           @endif
-                          @if ($errors->any())
-                          <div class="alert alert-danger">
-                              <ul>
-                                  @foreach ($errors->all() as $error)
-                                      <li>{{ $error }}</li>
-                                  @endforeach
-                              </ul>
-                          </div>
-                      @endif
                                     @if(!isset($title) || $title !== 'Live Auction')
                                     <div class="card-body">
                                         <form action="{{ route('staffimport') }}"
@@ -115,6 +106,9 @@
                                             @csrf
                                             <input type="file" name="file"
                                                    class="form-control">
+                                             @error('file')
+                                                 <div class="invalid-feedback-custom" style="display: block; color: #dc3545; font-size: 1.05rem; margin-top: 0.25rem;">Please upload file</div>
+                                             @enderror
                                             <br>
                                             <button class="btn btn-success">
                                                   Import Auction Data
