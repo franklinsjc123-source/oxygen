@@ -545,6 +545,7 @@ $(document).ready(function() {
             }
         });
     }
+    window.syncVariantImages = syncVariantImages;
 
     function syncHiddenImages($parentCard, $childCard) {
         let parentCardId = $parentCard.attr('id');
