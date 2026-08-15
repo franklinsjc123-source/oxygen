@@ -879,6 +879,23 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <style>
+                                                @media (max-width: 575px) {
+                                                    .day-time-card {
+                                                        flex-direction: column;
+                                                        align-items: flex-start !important;
+                                                        gap: 10px !important;
+                                                        padding: 12px !important;
+                                                    }
+                                                    .time-selectors-container {
+                                                        width: 100%;
+                                                        justify-content: flex-start !important;
+                                                    }
+                                                    .closed-badge {
+                                                        padding-left: 0 !important;
+                                                    }
+                                                }
+                                            </style>
                                             <div class="row">
                                                 @php
                                                     $days = [
@@ -900,7 +917,7 @@
                                                                 <label class="fw-bold mb-0" for="open_{{ $key }}" style="font-size: 14px; cursor: pointer; color: #4a5568;">{{ $day }}</label>
                                                             </div>
                                                             <!-- Time selectors (shown when open) -->
-                                                            <div class="time-selectors-container" id="time_container_{{ $key }}" style="display: flex; align-items: center; gap: 8px; flex-grow: 1;">
+                                                            <div class="time-selectors-container" id="time_container_{{ $key }}" style="display: flex; align-items: center; gap: 8px; flex-grow: 1; justify-content: flex-end;">
                                                                 <input type="time" class="form-control store-time-input start-time" id="start_{{ $key }}" data-day="{{ $key }}" style="max-width: 115px; font-size: 13px; padding: 5px 8px; border-radius: 6px;">
                                                                 <span class="text-muted" style="font-size: 12px;">to</span>
                                                                 <input type="time" class="form-control store-time-input end-time" id="end_{{ $key }}" data-day="{{ $key }}" style="max-width: 115px; font-size: 13px; padding: 5px 8px; border-radius: 6px;">
