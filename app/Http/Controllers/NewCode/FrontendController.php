@@ -3721,7 +3721,7 @@ class FrontendController extends Controller
 
         if (!empty($request->discount)) {
             $discountVal = (int) $request->discount;
-            $productsQuery->whereRaw('((pd.retail_price - pd.selling_price) / pd.retail_price) * 100 >= ?', [$discountVal]);
+            $productsQuery->whereRaw('ROUND(((pd.retail_price - pd.selling_price) / pd.retail_price) * 10, 0) * 10 >= ?', [$discountVal]);
         }
 
         switch ($orderby) {
