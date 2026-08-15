@@ -266,13 +266,8 @@
                                                  <div class="invalid-feedback-custom">Please enter SKU</div>
                                              </div>
                                          </div>
-                                     </div>
 
-                                     <!-- Variant Details Subview -->
-                                     @include('layout.admin.products.producteditDetails')
-
-                                     <!-- Product Image 1 -->
-                                     <div class="row g-3 mt-3">
+                                         <!-- Main Image (Moved here after SKU) -->
                                          <div class="col-md-3">
                                              <div class="form-group">
                                                  <label class="form-label fw-bold text-dark">Main Image <span class="text-danger">*</span></label>
@@ -282,11 +277,14 @@
                                              </div>
                                          </div>
                                          <div class="col-md-3">
-                                             <div class="img-preview-box p-1 border rounded bg-white d-flex align-items-center justify-content-center" style="height: 70px; width: 70px; overflow: hidden;">
+                                             <div class="img-preview-box p-1 border rounded bg-white d-flex align-items-center justify-content-center" style="height: 70px; width: 70px; overflow: hidden; margin-top: 10px;">
                                                  <img src="{{ !empty($product->product_image) ? url('assets/images/products/'.$product->product_image) : '' }}" id="productMainImgPreview" class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ !empty($product->product_image) ? '' : 'display: none;' }}">
                                              </div>
                                          </div>
                                      </div>
+
+                                     <!-- Variant Details Subview -->
+                                     @include('layout.admin.products.producteditDetails')
 
                                      <!-- Product Description -->
                                      <div class="form-group mt-3">
