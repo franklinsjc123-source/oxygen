@@ -710,8 +710,7 @@
                                                 <div class="col-xl-10 col-md-10">
 
 
-                                                    <textarea class="form-control" rows="3" id="description" name="description" type="text"
-                                                        name="description">{{ $vendorcreate->description }}</textarea>
+                                                     <textarea class="form-control" rows="5" id="description" name="description" type="text">{{ strip_tags(str_replace(['</li>', '<br>', '<br/>'], "\n", $vendorcreate->description)) }}</textarea>
                                                     {{-- @php
                                                         $pack1 = App\Models\vendor\packages::where('status', '=', '1')->get();
                                                         
@@ -1310,7 +1309,10 @@
                                 $('#validity').val(data.validity);
                                 $('#wallet').val(data.wallet);
                                 $('#commission').val(data.commission);
-                                $('#description').text($(data.description).text());
+                                 var tempDiv = document.createElement('div');
+                                 tempDiv.innerHTML = data.description.replace(/<\/li>|<br\s*\/?>/gi, '\n');
+                                 var plainDescription = tempDiv.textContent || tempDiv.innerText || "";
+                                 $('#description').val(plainDescription.trim());
 
                                 const expired_date = new Date();
                                 expired_date.setDate(expired_date.getDate() + Number(data.validity));
