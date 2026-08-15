@@ -893,20 +893,24 @@
                                                 @endphp
                                                 @foreach($days as $key => $day)
                                                     <div class="col-md-6 mb-3">
-                                                        <div class="p-3" style="background: #fdfdfd; border: 1px solid #eef2f5; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; align-items: center; justify-content: space-between; gap: 15px;">
-                                                            <div style="min-width: 100px;">
-                                                                <span class="fw-bold text-secondary" style="font-size: 14px; display: flex; align-items: center; gap: 6px;">
-                                                                    <i class="far fa-clock" style="color: #ff5e14;"></i> {{ $day }}<span style="color: red;">*</span>
-                                                                </span>
+                                                        <div class="p-3 day-time-card" style="background: #ffffff; border: 1px solid #eef2f5; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; align-items: center; justify-content: space-between; gap: 15px;">
+                                                            <!-- Checkbox and Day name -->
+                                                            <div style="display: flex; align-items: center; gap: 10px; min-width: 120px;">
+                                                                <input type="checkbox" class="form-check-input store-time-checkbox" id="open_{{ $key }}" data-day="{{ $key }}" style="width: 18px; height: 18px; cursor: pointer;">
+                                                                <label class="fw-bold mb-0" for="open_{{ $key }}" style="font-size: 14px; cursor: pointer; color: #4a5568;">{{ $day }}</label>
                                                             </div>
-                                                            <div style="flex-grow: 1;">
-                                                                <input class="form-control" type="text" name="store_time_{{ $key }}" 
-                                                                    value="{{ $vendorcreate->{'store_time_' . $key} ?? '' }}" 
-                                                                    required
-                                                                    placeholder="e.g. 9:00 AM - 9:00 PM or Closed" 
-                                                                    style="border-radius: 6px; border: 1px solid #ced4da; font-size: 13px; padding: 8px 12px; transition: border-color 0.15s ease-in-out;">
-                                                                <div class="invalid-feedback-custom" style="font-size: 11px; margin-top: 4px;">Please enter store timings for {{ $day }}</div>
+                                                            <!-- Time selectors (shown when open) -->
+                                                            <div class="time-selectors-container" id="time_container_{{ $key }}" style="display: flex; align-items: center; gap: 8px; flex-grow: 1;">
+                                                                <input type="time" class="form-control store-time-input start-time" id="start_{{ $key }}" data-day="{{ $key }}" style="max-width: 115px; font-size: 13px; padding: 5px 8px; border-radius: 6px;">
+                                                                <span class="text-muted" style="font-size: 12px;">to</span>
+                                                                <input type="time" class="form-control store-time-input end-time" id="end_{{ $key }}" data-day="{{ $key }}" style="max-width: 115px; font-size: 13px; padding: 5px 8px; border-radius: 6px;">
                                                             </div>
+                                                            <!-- Closed text (shown when closed) -->
+                                                            <div class="closed-badge" id="closed_badge_{{ $key }}" style="display: none; color: #94a3b8; font-size: 13px; font-weight: 500; flex-grow: 1; text-align: left; padding-left: 10px;">
+                                                                Unavailable / Closed
+                                                            </div>
+                                                            <!-- Hidden input that actually gets submitted -->
+                                                            <input type="hidden" name="store_time_{{ $key }}" id="hidden_time_{{ $key }}" value="{{ $vendorcreate->{'store_time_' . $key} ?? '' }}">
                                                         </div>
                                                     </div>
                                                 @endforeach
@@ -970,6 +974,90 @@
 </div>
 
 @push('scripts')
+    <script>
+        $(function() {
+            function formatTime12Hour(time24) {
+                if (!time24) return "";
+                let [hours, minutes] = time24.split(':');
+                hours = parseInt(hours);
+                let ampm = hours >= 12 ? 'pm' : 'am';
+                hours = hours % 12;
+                hours = hours ? hours : 12;
+                return `${hours}:${minutes} ${ampm}`;
+            }
+
+            function parseTime12HourTo24(time12) {
+                if (!time12 || time12.toLowerCase() === 'closed') return "";
+                let match = time12.match(/(\d+):(\d+)\s*(am|pm)/i);
+                if (!match) return "";
+                let hours = parseInt(match[1]);
+                let minutes = match[2];
+                let ampm = match[3].toLowerCase();
+                if (ampm === 'pm' && hours < 12) hours += 12;
+                if (ampm === 'am' && hours === 12) hours = 0;
+                return `${hours.toString().padStart(2, '0')}:${minutes}`;
+            }
+
+            function parseStoreTime(timeStr) {
+                if (!timeStr) {
+                    return { open: true, start: "09:00", end: "21:00" };
+                }
+                if (timeStr.toLowerCase().trim() === 'closed') {
+                    return { open: false, start: "09:00", end: "21:00" };
+                }
+                let parts = timeStr.split(/to|-/i);
+                if (parts.length < 2) {
+                    return { open: true, start: "09:00", end: "21:00" };
+                }
+                let start24 = parseTime12HourTo24(parts[0].trim());
+                let end24 = parseTime12HourTo24(parts[1].trim());
+                return {
+                    open: true,
+                    start: start24 || "09:00",
+                    end: end24 || "21:00"
+                };
+            }
+
+            function updateDayValue(day) {
+                let isOpen = $(`#open_${day}`).is(':checked');
+                if (isOpen) {
+                    let start = $(`#start_${day}`).val();
+                    let end = $(`#end_${day}`).val();
+                    let start12 = formatTime12Hour(start);
+                    let end12 = formatTime12Hour(end);
+                    $(`#hidden_time_${day}`).val(`${start12} to ${end12}`);
+                    $(`#time_container_${day}`).show();
+                    $(`#closed_badge_${day}`).hide();
+                } else {
+                    $(`#hidden_time_${day}`).val('Closed');
+                    $(`#time_container_${day}`).hide();
+                    $(`#closed_badge_${day}`).show();
+                }
+            }
+
+            let days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+            days.forEach(day => {
+                let initialVal = $(`#hidden_time_${day}`).val();
+                let parsed = parseStoreTime(initialVal);
+                
+                $(`#open_${day}`).prop('checked', parsed.open);
+                $(`#start_${day}`).val(parsed.start);
+                $(`#end_${day}`).val(parsed.end);
+                
+                updateDayValue(day);
+            });
+
+            $('.store-time-checkbox').on('change', function() {
+                let day = $(this).data('day');
+                updateDayValue(day);
+            });
+
+            $('.store-time-input').on('change', function() {
+                let day = $(this).data('day');
+                updateDayValue(day);
+            });
+        });
+    </script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
