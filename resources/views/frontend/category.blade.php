@@ -384,6 +384,38 @@
                                     </div> --}}
                                 </div>
                             </nav>
+
+                             <style>
+                                 .filter-tag {
+                                     display: inline-flex;
+                                     align-items: center;
+                                     gap: 8px;
+                                     background-color: #fff;
+                                     border: 1px solid #e0e0e0;
+                                     border-radius: 20px;
+                                     padding: 5px 15px;
+                                     font-size: 13px;
+                                     color: #333;
+                                     cursor: pointer;
+                                     transition: all 0.2s ease;
+                                     margin-bottom: 10px;
+                                 }
+                                 .filter-tag:hover {
+                                     border-color: #333;
+                                     background-color: #f9f9f9;
+                                 }
+                                 .filter-tag .remove-tag {
+                                     font-weight: bold;
+                                     color: #888;
+                                     font-size: 14px;
+                                     margin-left: 4px;
+                                 }
+                                 .filter-tag:hover .remove-tag {
+                                     color: #333;
+                                 }
+                             </style>
+                             <div id="active-filters" class="d-flex flex-wrap align-items-center mb-3" style="gap: 8px;"></div>
+
                                  <div class="product-wrapper row cols-md-5 cols-sm-2 cols-2"  id="productslist">
                                  @if(count($prouctsList) > 0)
                                      @foreach($prouctsList as $product)
@@ -520,7 +552,77 @@
             $('input[name="filter_offer[]"]').on('change', function() { getproducts(); });
         });
 
+        function updateActiveFilters() {
+            var $container = $('#active-filters');
+            $container.empty();
+
+            // 1. Colors
+            if ($('input[name="colors[]"]:checked').length > 0) {
+                var $tag = $('<div class="filter-tag">Color <span class="remove-tag">×</span></div>');
+                $tag.on('click', function() {
+                    $('input[name="colors[]"]').prop('checked', false);
+                    getproducts();
+                });
+                $container.append($tag);
+            }
+
+            // 2. Sizes
+            if ($('input[name="filter_size[]"]:checked').length > 0) {
+                var $tag = $('<div class="filter-tag">Size <span class="remove-tag">×</span></div>');
+                $tag.on('click', function() {
+                    $('input[name="filter_size[]"]').each(function() {
+                        $(this).prop('checked', false);
+                        var lbl = $(this).parent();
+                        lbl.css({
+                            background: '#fff',
+                            color: '#555',
+                            borderColor: '#ddd'
+                        });
+                    });
+                    getproducts();
+                });
+                $container.append($tag);
+            }
+
+            // 3. Price
+            var min = parseInt($('#minPrice').val()) || 0;
+            var max = parseInt($('#maxPrice').val()) || 5000;
+            if (min > 0 || max < 5000) {
+                var $tag = $('<div class="filter-tag">Price <span class="remove-tag">×</span></div>');
+                $tag.on('click', function() {
+                    $('#minPrice').val(0);
+                    $('#maxPrice').val(5000);
+                    if (typeof updateRange === 'function') {
+                        updateRange();
+                    }
+                    getproducts();
+                });
+                $container.append($tag);
+            }
+
+            // 4. Discount
+            if ($('input[name="filter_discount"]:checked').length > 0) {
+                var $tag = $('<div class="filter-tag">Discount <span class="remove-tag">×</span></div>');
+                $tag.on('click', function() {
+                    $('input[name="filter_discount"]').prop('checked', false);
+                    getproducts();
+                });
+                $container.append($tag);
+            }
+
+            // 5. Offers
+            if ($('input[name="filter_offer[]"]:checked').length > 0) {
+                var $tag = $('<div class="filter-tag">Offer <span class="remove-tag">×</span></div>');
+                $tag.on('click', function() {
+                    $('input[name="filter_offer[]"]').prop('checked', false);
+                    getproducts();
+                });
+                $container.append($tag);
+            }
+        }
+
         function getproducts() {
+            updateActiveFilters();
             let min_price = $('#minPrice').val();
             let max_price = $('#maxPrice').val();
             let orderby = $('#orderby').val();
