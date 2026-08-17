@@ -967,6 +967,22 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                             
                             $pincode_area = Session::get('pincode_area'); 
                             $pincode = Session::get('pincode');
+                            
+                            if (!$pincode_area && session('customer_id')) {
+                                $customer = \App\Models\Ecom_Customer_info::where('customer_id', session('customer_id'))->first();
+                                if ($customer && $customer->customer_pincode) {
+                                    $pincodeRecord = \App\Models\PinCode\PinCode::where('name', $customer->customer_pincode)->first();
+                                    if ($pincodeRecord) {
+                                        $pincode = $customer->customer_pincode;
+                                        $pincode_area = $pincodeRecord->area ?: $pincodeRecord->post_region;
+                                        Session::put('pincode', $pincode);
+                                        Session::put('pincode_area', $pincode_area);
+                                        if ($pincodeRecord->post_region) {
+                                            Session::put('post_region', $pincodeRecord->post_region);
+                                        }
+                                    }
+                                }
+                            }
                         
                             if($pincode_area) {
                             

@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use App\Models\auction\auction;
 use App\Models\auction\AuctionBid;
 use App\Models\Ecom_Customer_info;
+use App\Models\PinCode\PinCode;
 use App\Models\Products\Products;
 use App\Models\coupon\coupon;
 use App\Mail\AuctionWinnerMail;
@@ -104,6 +105,16 @@ class AuctionController extends Controller
                 }
                 if (!empty($customer->customer_state)) {
                     $locationParts[] = $customer->customer_state;
+                }
+                if (empty($customer->customer_city) && empty($customer->customer_state) && !empty($customer->customer_pincode)) {
+                    $pincodeRecord = PinCode::where('name', $customer->customer_pincode)->first();
+                    if ($pincodeRecord) {
+                        if (!empty($pincodeRecord->area)) {
+                            $locationParts[] = $pincodeRecord->area;
+                        } elseif (!empty($pincodeRecord->post_region)) {
+                            $locationParts[] = $pincodeRecord->post_region;
+                        }
+                    }
                 }
             }
             $bidList[] = [
@@ -332,6 +343,16 @@ class AuctionController extends Controller
             if (!empty($customer->customer_state)) {
                 $locationParts[] = $customer->customer_state;
             }
+            if (empty($customer->customer_city) && empty($customer->customer_state) && !empty($customer->customer_pincode)) {
+                $pincodeRecord = PinCode::where('name', $customer->customer_pincode)->first();
+                if ($pincodeRecord) {
+                    if (!empty($pincodeRecord->area)) {
+                        $locationParts[] = $pincodeRecord->area;
+                    } elseif (!empty($pincodeRecord->post_region)) {
+                        $locationParts[] = $pincodeRecord->post_region;
+                    }
+                }
+            }
         }
 
         return response()->json([
@@ -363,14 +384,21 @@ class AuctionController extends Controller
             $customer = Ecom_Customer_info::where('customer_id', $bid->customer_id)->first();
             $locationParts = [];
             if ($customer) {
-                if (!empty($customer->customer_address1)) {
-                    $locationParts[] = $customer->customer_address1;
-                }
                 if (!empty($customer->customer_city)) {
                     $locationParts[] = $customer->customer_city;
                 }
                 if (!empty($customer->customer_state)) {
                     $locationParts[] = $customer->customer_state;
+                }
+                if (empty($locationParts) && !empty($customer->customer_pincode)) {
+                    $pincodeRecord = PinCode::where('name', $customer->customer_pincode)->first();
+                    if ($pincodeRecord) {
+                        if (!empty($pincodeRecord->area)) {
+                            $locationParts[] = $pincodeRecord->area;
+                        } elseif (!empty($pincodeRecord->post_region)) {
+                            $locationParts[] = $pincodeRecord->post_region;
+                        }
+                    }
                 }
             }
             $bidList[] = [

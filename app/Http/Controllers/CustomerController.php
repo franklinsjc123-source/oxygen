@@ -8,6 +8,7 @@ use App\Models\Ecom_Product;
 use App\Models\Ecom_Customer_info;
 use App\Models\Ecom_Orders;
 use App\Models\Ecom_Order_product;
+use App\Models\PinCode\PinCode;
 use Image;
 use Auth;
 use Illuminate\Support\Facades\Session;
@@ -49,7 +50,12 @@ class CustomerController extends Controller
         $customer->save();
 
         $customer_id = "OXY-C" . str_pad($customer->id, 5, "0", STR_PAD_LEFT);
-        $customer->update(['customer_id' => $customer_id]);
+        
+        $sessionPincode = Session::get('pincode');
+        $customer->update([
+            'customer_id' => $customer_id,
+            'customer_pincode' => $sessionPincode ?: null
+        ]);
         
         Session::put('customer_id', $customer_id);
 
@@ -87,6 +93,19 @@ class CustomerController extends Controller
             ]
         );
         session()->flash('success', 'Account Details Updated Successfully.');
+        
+        $pincode = $request->customer_pincode;
+        if ($pincode) {
+            $pincodeRecord = PinCode::where('name', $pincode)->first();
+            if ($pincodeRecord) {
+                Session::put('pincode', $pincode);
+                Session::put('pincode_area', $pincodeRecord->area ?: $pincodeRecord->post_region);
+                if ($pincodeRecord->post_region) {
+                    Session::put('post_region', $pincodeRecord->post_region);
+                }
+            }
+        }
+        
         return redirect('myAccount');
         
     }
@@ -118,8 +137,24 @@ class CustomerController extends Controller
             return response()->json(['msg' => 'Failed'], 200);
         } else {
             //Session::flash('success', 'Login Successfully');
-            Session::put('customer_id', $userlogin[0]->customer_id);
-            Session::put('customer_name', $userlogin[0]->customer_firstname);
+            $customer = $userlogin[0];
+            Session::put('customer_id', $customer->customer_id);
+            Session::put('customer_name', $customer->customer_firstname);
+
+            // Sync pincode between session and database profile
+            $sessionPincode = Session::get('pincode');
+            if ($customer->customer_pincode) {
+                $pincodeRecord = PinCode::where('name', $customer->customer_pincode)->first();
+                if ($pincodeRecord) {
+                    Session::put('pincode', $customer->customer_pincode);
+                    Session::put('pincode_area', $pincodeRecord->area ?: $pincodeRecord->post_region);
+                    if ($pincodeRecord->post_region) {
+                        Session::put('post_region', $pincodeRecord->post_region);
+                    }
+                }
+            } elseif ($sessionPincode) {
+                $customer->update(['customer_pincode' => $sessionPincode]);
+            }
 
             return response()->json(['msg' => 'Success'], 200);
         }
