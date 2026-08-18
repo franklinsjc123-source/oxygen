@@ -123,9 +123,7 @@
         box-shadow: 0 4px 14px rgba(0,0,0,.06);
     }
     .account-back-wrap {
-        display: flex;
-        justify-content: flex-start;
-        margin-bottom: 16px;
+        display: none !important;
     }
     .account-back-btn {
         border-radius: 20px;
@@ -136,6 +134,12 @@
     @media (max-width: 767px) {
         .tab-vertical .tab-content {
             padding-left: 0 !important;
+        }
+        .tab-content .tab-pane center h3 {
+            display: none !important;
+        }
+        .account-orders-table {
+            min-width: 600px !important;
         }
         #wishlist {
             padding: 0 !important;
@@ -343,15 +347,16 @@
        <!-- End of Page Header -->
 
        <!-- Start of Breadcrumb -->
-       <nav class="breadcrumb-nav">
-           <div class="container">
-               <ul class="breadcrumb" id="account-breadcrumb">
-                   <li><a href="{{ url('home') }}">Home</a></li>
-                   <li>My account</li>
-               </ul>
-           </div>
-       </nav>
-       <!-- End of Breadcrumb -->
+        <nav class="breadcrumb-nav">
+            <div class="container d-flex align-items-center justify-content-between">
+                <ul class="breadcrumb" id="account-breadcrumb" style="margin-bottom: 0;">
+                    <li><a href="{{ url('home') }}">Home</a></li>
+                    <li>My account</li>
+                </ul>
+                <a href="#account-dashboard" data-bs-toggle="tab" id="global-back-btn" class="btn btn-outline btn-default back-to-dashboard" style="display: none; padding: 4px 10px; font-size: 11px; text-transform: uppercase; border-radius: 12px; height: auto; min-height: unset; line-height: 1;">Back</a>
+            </div>
+        </nav>
+        <!-- End of Breadcrumb -->
 
        <!-- Start of PageContent -->
        <div class="page-content pt-2">
@@ -453,127 +458,129 @@
                            </div>
                            <center><h3>Orders</h3></center>
 
-                           <table class="shop-table account-orders-table mb-6">
-                               <thead>
-                                   <tr>
-                                       <th class="order-id">Order</th>
-                                       <th class="order-date">Date</th>
-                                       <th class="order-status">Status</th>
-                                       <th class="order-total">Total</th>
-                                       <th class="order-actions">Actions</th>
-                                   </tr>
-                               </thead>
-                               <tbody>
-                                    @if($orderdata->count() > 0)
-                                        @foreach($orderdata as $order)
-                                            <tr class="order-summary-row" onclick="toggleOrderDetails('{{ $order->id }}')">
-                                                <td class="order-id">#{{ $order->order_id }}</td>
-                                                <td class="order-date">{{ \Carbon\Carbon::parse($order->order_date)->format('d M Y') }}</td>
-                                                <td class="order-status">{{ $order->order_status }}</td>
-                                                <td class="order-total"><span class="order-price"><span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($order->grand_total, 2) }}</span></td>
-                                                <td class="order-action">
-                                                    <a href="javascript:void(0)" class="btn btn-outline btn-default btn-block btn-sm btn-rounded">
-                                                        View Details
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            <tr id="order-details-{{ $order->id }}" class="order-details-row">
-                                                <td colspan="5">
-                                                    @foreach($order->invoice_details as $invoice)
-                                                        <div class="order-details-card">
-                                                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                                                <div>
-                                                                    <b>Invoice:</b> {{ $invoice->invoice_id }}<br>
-                                                                    <b>Status:</b> {{ $invoice->status }}<br>
-                                                                    <b>Qty:</b> {{ $invoice->line_qty ?? 1 }} |
-                                                                    <b>Tax:</b> <span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($invoice->tax_amount ?? 0, 2) }}
-                                                                </div>
-                                                                <div class="text-right"><b>Amount:</b> <span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($invoice->line_amount, 2) }}</div>
-                                                            </div>
-                                                            @if(isset($invoice->products) && count($invoice->products) > 0)
-                                                                @foreach($invoice->products as $product)
-                                                                    @php
-                                                                        $productImage = $product->product_image ?? '';
-                                                                        $productImageUrl = $productImage !== '' ? asset('assets/images/products/detail/' . $productImage) : asset('frontend/images/demos/demo1/products/1-1.jpg');
-                                                                    @endphp
-                                                                    <div class="order-product-item">
-                                                                        <img src="{{ $productImageUrl }}" alt="{{ $product->product_name }}" class="order-product-thumb">
-                                                                        <div>
-                                                                            <div><b>{{ $product->product_name }}</b></div>
-                                                                            @if(!empty($product->product_size) || !empty($product->product_color))
-                                                                                <div>Size: {{ $product->product_size ?: '-' }} | Color: {{ $product->product_color ?: '-' }}</div>
-                                                                            @endif
-                                                                            <div>Price: <span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($product->product_price, 2) }}</div>
-                                                                        </div>
-                                                                    </div>
-                                                                @endforeach
-                                                            @endif
-                                                            <div class="d-flex justify-content-end gap-2 mt-2">
-                                                                @if(!empty($invoice->can_cancel) && strtolower($order->order_status) !== 'delivered')
-                                                                    <form method="POST" action="{{ route('my-account.invoice.cancel', $invoice->invoice_id) }}" onsubmit="return confirm('Cancel this order item?');">
-                                                                        @csrf
-                                                                        <button type="submit" class="btn btn-danger btn-sm btn-rounded" style="background-color: #d22e2e !important; color: #fff !important; border: 1px solid #d22e2e !important;">Cancel</button>
-                                                                    </form>
-                                                                @endif
-                                                                @if(!empty($invoice->can_return))
-                                                                    @php
-                                                                        $allowReturn = false;
-                                                                        $allowReplacement = false;
-                                                                        if (isset($invoice->products) && count($invoice->products) > 0) {
-                                                                            foreach($invoice->products as $p) {
-                                                                                $rr = (int)($p->return_replace ?? 0);
-                                                                                if ($rr === 1 || $rr === 2) {
-                                                                                    $allowReturn = true;
-                                                                                }
-                                                                                if ($rr === 1 || $rr === 3) {
-                                                                                    $allowReplacement = true;
-                                                                                }
-                                                                            }
-                                                                        } else {
-                                                                            $allowReturn = true;
-                                                                        }
-                                                                    @endphp
-
-                                                                    @if($allowReturn)
-                                                                    <form id="return-form-{{ $invoice->invoice_id }}" method="POST" action="{{ route('my-account.invoice.return', $invoice->invoice_id) }}">
-                                                                        @csrf
-                                                                        <input type="hidden" name="request_type" value="Return">
-                                                                        <input type="hidden" name="reason" id="return-reason-{{ $invoice->invoice_id }}">
-                                                                        <button type="button" class="btn btn-outline btn-primary btn-sm btn-rounded mr-2" onclick="submitReturnRequest('{{ $invoice->invoice_id }}', 'Return')">Return</button>
-                                                                    </form>
-                                                                    @endif
-
-                                                                    @if($allowReplacement)
-                                                                    <form id="replace-form-{{ $invoice->invoice_id }}" method="POST" action="{{ route('my-account.invoice.return', $invoice->invoice_id) }}">
-                                                                        @csrf
-                                                                        <input type="hidden" name="request_type" value="Replacement">
-                                                                        <input type="hidden" name="reason" id="replace-reason-{{ $invoice->invoice_id }}">
-                                                                        <button type="button" class="btn btn-outline btn-warning btn-sm btn-rounded" onclick="submitReturnRequest('{{ $invoice->invoice_id }}', 'Replacement')">Replacement</button>
-                                                                    </form>
-                                                                    @endif
-                                                                @elseif(!empty($invoice->return_deadline))
-                                                                    <small class="text-muted align-self-center">Return till {{ $invoice->return_deadline }}</small>
-                                                                @endif
-                                                            </div>
-                                                        </div>
-                                                    @endforeach
-                                                    @if(strtolower($order->order_status) === 'delivered')
-                                                    <div class="text-right">
-                                                        <a href="{{ url('invoice-pdf/'.$order->id) }}" class="btn btn-dark btn-rounded btn-sm" target="_blank">
-                                                            Download Invoice
-                                                        </a>
-                                                    </div>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @else
+                           <div style="overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%;">
+                                <table class="shop-table account-orders-table mb-6">
+                                    <thead>
                                         <tr>
-                                            <td colspan="5" class="text-center">No orders found</td>
+                                            <th class="order-id">Order</th>
+                                            <th class="order-date">Date</th>
+                                            <th class="order-status">Status</th>
+                                            <th class="order-total">Total</th>
+                                            <th class="order-actions">Actions</th>
                                         </tr>
-                                    @endif
-                                </tbody>
-                           </table>
+                                    </thead>
+                                    <tbody>
+                                         @if($orderdata->count() > 0)
+                                             @foreach($orderdata as $order)
+                                                 <tr class="order-summary-row" onclick="toggleOrderDetails('{{ $order->id }}')">
+                                                     <td class="order-id">#{{ $order->order_id }}</td>
+                                                     <td class="order-date">{{ \Carbon\Carbon::parse($order->order_date)->format('d M Y') }}</td>
+                                                     <td class="order-status">{{ $order->order_status }}</td>
+                                                     <td class="order-total"><span class="order-price"><span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($order->grand_total, 2) }}</span></td>
+                                                     <td class="order-action">
+                                                         <a href="javascript:void(0)" class="btn btn-outline btn-default btn-block btn-sm btn-rounded">
+                                                             View Details
+                                                         </a>
+                                                     </td>
+                                                 </tr>
+                                                 <tr id="order-details-{{ $order->id }}" class="order-details-row">
+                                                     <td colspan="5">
+                                                         @foreach($order->invoice_details as $invoice)
+                                                             <div class="order-details-card">
+                                                                 <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                     <div>
+                                                                         <b>Invoice:</b> {{ $invoice->invoice_id }}<br>
+                                                                         <b>Status:</b> {{ $invoice->status }}<br>
+                                                                         <b>Qty:</b> {{ $invoice->line_qty ?? 1 }} |
+                                                                         <b>Tax:</b> <span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($invoice->tax_amount ?? 0, 2) }}
+                                                                     </div>
+                                                                     <div class="text-right"><b>Amount:</b> <span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($invoice->line_amount, 2) }}</div>
+                                                                 </div>
+                                                                 @if(isset($invoice->products) && count($invoice->products) > 0)
+                                                                     @foreach($invoice->products as $product)
+                                                                         @php
+                                                                             $productImage = $product->product_image ?? '';
+                                                                             $productImageUrl = $productImage !== '' ? asset('assets/images/products/detail/' . $productImage) : asset('frontend/images/demos/demo1/products/1-1.jpg');
+                                                                         @endphp
+                                                                         <div class="order-product-item">
+                                                                             <img src="{{ $productImageUrl }}" alt="{{ $product->product_name }}" class="order-product-thumb">
+                                                                             <div>
+                                                                                 <div><b>{{ $product->product_name }}</b></div>
+                                                                                 @if(!empty($product->product_size) || !empty($product->product_color))
+                                                                                     <div>Size: {{ $product->product_size ?: '-' }} | Color: {{ $product->product_color ?: '-' }}</div>
+                                                                                 @endif
+                                                                                 <div>Price: <span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($product->product_price, 2) }}</div>
+                                                                             </div>
+                                                                         </div>
+                                                                     @endforeach
+                                                                 @endif
+                                                                 <div class="d-flex justify-content-end gap-2 mt-2">
+                                                                     @if(!empty($invoice->can_cancel) && strtolower($order->order_status) !== 'delivered')
+                                                                         <form method="POST" action="{{ route('my-account.invoice.cancel', $invoice->invoice_id) }}" onsubmit="return confirm('Cancel this order item?');">
+                                                                             @csrf
+                                                                             <button type="submit" class="btn btn-danger btn-sm btn-rounded" style="background-color: #d22e2e !important; color: #fff !important; border: 1px solid #d22e2e !important;">Cancel</button>
+                                                                         </form>
+                                                                     @endif
+                                                                     @if(!empty($invoice->can_return))
+                                                                         @php
+                                                                             $allowReturn = false;
+                                                                             $allowReplacement = false;
+                                                                             if (isset($invoice->products) && count($invoice->products) > 0) {
+                                                                                 foreach($invoice->products as $p) {
+                                                                                     $rr = (int)($p->return_replace ?? 0);
+                                                                                     if ($rr === 1 || $rr === 2) {
+                                                                                         $allowReturn = true;
+                                                                                     }
+                                                                                     if ($rr === 1 || $rr === 3) {
+                                                                                         $allowReplacement = true;
+                                                                                     }
+                                                                                 }
+                                                                             } else {
+                                                                                 $allowReturn = true;
+                                                                             }
+                                                                         @endphp
+     
+                                                                         @if($allowReturn)
+                                                                         <form id="return-form-{{ $invoice->invoice_id }}" method="POST" action="{{ route('my-account.invoice.return', $invoice->invoice_id) }}">
+                                                                             @csrf
+                                                                             <input type="hidden" name="request_type" value="Return">
+                                                                             <input type="hidden" name="reason" id="return-reason-{{ $invoice->invoice_id }}">
+                                                                             <button type="button" class="btn btn-outline btn-primary btn-sm btn-rounded mr-2" onclick="submitReturnRequest('{{ $invoice->invoice_id }}', 'Return')">Return</button>
+                                                                         </form>
+                                                                         @endif
+     
+                                                                         @if($allowReplacement)
+                                                                         <form id="replace-form-{{ $invoice->invoice_id }}" method="POST" action="{{ route('my-account.invoice.return', $invoice->invoice_id) }}">
+                                                                             @csrf
+                                                                             <input type="hidden" name="request_type" value="Replacement">
+                                                                             <input type="hidden" name="reason" id="replace-reason-{{ $invoice->invoice_id }}">
+                                                                             <button type="button" class="btn btn-outline btn-warning btn-sm btn-rounded" onclick="submitReturnRequest('{{ $invoice->invoice_id }}', 'Replacement')">Replacement</button>
+                                                                         </form>
+                                                                         @endif
+                                                                     @elseif(!empty($invoice->return_deadline))
+                                                                         <small class="text-muted align-self-center">Return till {{ $invoice->return_deadline }}</small>
+                                                                     @endif
+                                                                 </div>
+                                                             </div>
+                                                         @endforeach
+                                                         @if(strtolower($order->order_status) === 'delivered')
+                                                         <div class="text-right">
+                                                             <a href="{{ url('invoice-pdf/'.$order->id) }}" class="btn btn-dark btn-rounded btn-sm" target="_blank">
+                                                                 Download Invoice
+                                                             </a>
+                                                         </div>
+                                                         @endif
+                                                     </td>
+                                                 </tr>
+                                             @endforeach
+                                         @else
+                                             <tr>
+                                                 <td colspan="5" class="text-center">No orders found</td>
+                                             </tr>
+                                         @endif
+                                     </tbody>
+                                </table>
+                            </div>
 
                            <a href="{{ url('shops') }}" class="btn btn-dark btn-rounded btn-icon-right">Go
                                Shop<i class="w-icon-long-arrow-right"></i></a>
@@ -586,35 +593,37 @@
                          
                             <center><h3>Wallet</h3></center>
 
-                            <h2>Wallet Balance : 200</h2>
+                            <h4 style="font-size: 1.6rem; font-weight: 700; color: #333; margin-bottom: 15px;">Wallet Balance : 200</h4>
 
-                               <table class="shop-table account-orders-table mb-6">
-                               <thead>
-                                   <tr>
-                                       <th class="order-id">Order</th>
-                                       <th class="order-date">Date</th>
-                                       <th class="order-status">Status</th>
-                                       <th class="order-total">Total</th>
-                                       <th class="order-actions">Actions</th>
-                                   </tr>
-                               </thead>
-                               <tbody>
-                                   <tr>
-                                       <td class="order-id">#2321</td>
-                                       <td class="order-date">August 20, 2021</td>
-                                       <td class="order-status">Processing</td>
-                                       <td class="order-total">
-                                           <span class="order-price">$121.00</span> for
-                                           <span class="order-quantity"> 1</span> item
-                                       </td>
-                                       <td class="order-action">
-                                           <a href="#"
-                                               class="btn btn-outline btn-default btn-block btn-sm btn-rounded">View</a>
-                                       </td>
-                                   </tr>
-                              
-                               </tbody>
-                           </table>
+                               <div style="overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%;">
+                                   <table class="shop-table account-orders-table mb-6">
+                                       <thead>
+                                           <tr>
+                                               <th class="order-id">Order</th>
+                                               <th class="order-date">Date</th>
+                                               <th class="order-status">Status</th>
+                                               <th class="order-total">Total</th>
+                                               <th class="order-actions">Actions</th>
+                                           </tr>
+                                       </thead>
+                                       <tbody>
+                                           <tr>
+                                               <td class="order-id">#2321</td>
+                                               <td class="order-date">August 20, 2021</td>
+                                               <td class="order-status">Processing</td>
+                                               <td class="order-total">
+                                                   <span class="order-price">$121.00</span> for
+                                                   <span class="order-quantity"> 1</span> item
+                                               </td>
+                                               <td class="order-action">
+                                                   <a href="#"
+                                                       class="btn btn-outline btn-default btn-block btn-sm btn-rounded">View</a>
+                                               </td>
+                                           </tr>
+                                      
+                                       </tbody>
+                                   </table>
+                               </div>
                           
                            
                        </div>
@@ -953,10 +962,14 @@
         // Reset breadcrumb first
         breadcrumb.innerHTML = '<li><a href="{{ url('home') }}">Home</a></li>';
 
+        var backBtn = document.getElementById('global-back-btn');
+
         if (!target || target === '#account-dashboard') {
             breadcrumb.innerHTML += '<li>My account</li>';
+            if (backBtn) backBtn.style.display = 'none';
         } else {
             breadcrumb.innerHTML += '<li><a href="{{ url('myAccount') }}">My account</a></li>';
+            if (backBtn) backBtn.style.display = 'inline-block';
             
             var tabName = '';
             switch(target) {
