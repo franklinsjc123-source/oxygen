@@ -371,10 +371,21 @@
         </nav>
         <!-- End of Breadcrumb -->
 
-       <!-- Start of PageContent -->
-       <div class="page-content pt-2">
-           <div class="container">
-               <div class="tab tab-vertical">
+        <!-- Start of PageContent -->
+        <div class="page-content pt-2">
+            <div class="container">
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-bottom: 20px; padding: 15px; border-radius: 4px; background-color: #d4edda; border-color: #c3e6cb; color: #155724; position: relative;">
+                        {{ session('success') }}
+                    </div>
+                @endif
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-bottom: 20px; padding: 15px; border-radius: 4px; background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; position: relative;">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                <div class="tab tab-vertical">
                    <div class="tab-content mb-6">
                        <div class="tab-pane active in" id="account-dashboard">
                            <div class="row account-dashboard-grid">
@@ -841,39 +852,42 @@
                                 <div class="form-group col-md-8  mt-2" >
                                     <label>Current password </label>
                                     <div style="position: relative;">
-                                        <input type="password" class="form-control" id="customer_opassword"  name="current_password" required value="" style="padding-right: 40px;">
+                                        <input type="password" class="form-control" id="customer_opassword"  name="current_password" data-required="true" value="" style="padding-right: 40px;">
                                         <i class="fa-solid fa-eye toggle-password-1"
                                            onclick="togglePasswordAccount('customer_opassword', this)"
                                            style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; z-index: 10;">
                                         </i>
                                     </div>
+                                    <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 400; color: #dc3545 !important;">Please enter current password</div>
                                 </div>
                                 <div class="form-group col-md-8   mt-2">
                                     <label class="">New password</label>
                                     <div style="position: relative;">
-                                        <input type="password" class="form-control "  id="customer_password" name="new_password" required style="padding-right: 40px;">
+                                        <input type="password" class="form-control "  id="customer_password" name="new_password" data-required="true" style="padding-right: 40px;">
                                         <i class="fa-solid fa-eye toggle-password-1"
                                            onclick="togglePasswordAccount('customer_password', this)"
                                            style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; z-index: 10;">
                                         </i>
                                     </div>
+                                    <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 400; color: #dc3545 !important;">Please enter new password</div>
                                 </div>
                                 <div class="form-group col-md-8  mt-2">
                                     <label>Confirm new password</label>
                                     <div style="position: relative;">
-                                        <input type="password"  class="form-control" id="customer_cpassword" name="confirm_password" required style="padding-right: 40px;">
+                                        <input type="password"  class="form-control" id="customer_cpassword" name="confirm_password" data-required="true" style="padding-right: 40px;">
                                         <i class="fa-solid fa-eye toggle-password-1"
                                            onclick="togglePasswordAccount('customer_cpassword', this)"
                                            style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; z-index: 10;">
                                         </i>
                                     </div>
+                                    <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 400; color: #dc3545 !important;">Please enter confirm new password</div>
                                 </div>
 
                             </fieldset>
                             <br>
                             <div class="login-on-checkout">
                                 <p class="form-row">
-                                    <button type="submit" name="btn btn-dark btn-rounded " class="btn">SAVE CHANGES</button>
+                                    <button type="submit" class="btn btn-dark btn-rounded">SAVE CHANGES</button>
                                 </p>
                             </div>
                             </form>
@@ -1085,7 +1099,7 @@
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                swal("Success!", "Default address updated", "success")
+                Swal.fire("Success!", "Default address updated", "success")
                     .then(() => location.reload());
             }
         });
@@ -1152,21 +1166,48 @@
         });
 
 
-       document.getElementById('changePasswordForm').addEventListener('submit', function (e) {
-    e.preventDefault(); // stop normal submit
+       var passwordForm = document.getElementById('changePasswordForm');
+       if (passwordForm) {
+           passwordForm.addEventListener('submit', function (e) {
+               e.preventDefault(); // stop normal submit
 
-    swal({
-        title: "Are you sure?",
-        text: "Do you want to change your password?",
-        icon: "warning",
-        buttons: ["No", "Yes, Change"],
-        dangerMode: true,
-    }).then(function (willChange) {
-        if (willChange) {
-            e.target.submit(); 
-        }
-    });
-});
+               var form = this;
+               var isValid = true;
+
+               // Hide all errors
+               form.querySelectorAll('.error-msg').forEach(function(el) {
+                   el.style.display = 'none';
+               });
+
+               // Check required fields
+               form.querySelectorAll('[data-required]').forEach(function(input) {
+                   if (!input.value || input.value.trim() === '') {
+                       isValid = false;
+                       // Locate the error span. It might be next to the relative wrapper parent.
+                       var errorSpan = input.closest('.form-group').querySelector('.error-msg');
+                       if (errorSpan) {
+                           errorSpan.style.display = 'block';
+                       }
+                   }
+               });
+
+               if (!isValid) {
+                   return false;
+               }
+
+               Swal.fire({
+                   title: "Are you sure?",
+                   text: "Do you want to change your password?",
+                   icon: "warning",
+                   buttons: ["No", "Yes, Change"],
+                   dangerMode: true,
+               }).then(function (willChange) {
+                   if (willChange) {
+                       passwordForm.submit(); 
+                   }
+               });
+           });
+       }
 
         var profileForm = document.getElementById('profile-details-form');
         if (profileForm) {
@@ -1203,7 +1244,7 @@
                 });
                 
                 if (isValid) {
-                    swal({
+                    Swal.fire({
                         title: "Are you sure?",
                         text: "Do you want to Change Billing Address?",
                         icon: "warning",
@@ -1268,7 +1309,7 @@
         })
         .then(res => res.json())
         .then(data => {
-            swal({
+            Swal.fire({
                 title: "Success!",
                 text: "Address deleted successfully",
                 icon: "success",
