@@ -125,13 +125,26 @@
     .account-back-wrap {
         display: none !important;
     }
-    .account-back-btn {
-        border-radius: 20px;
-        padding: 7px 14px;
+    #profile-details-form input.error,
+    #profile-details-form input:invalid,
+    #profile-details-form .form-control.error,
+    #profile-details-form .form-control:invalid {
+        border-color: #eee !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    #profile-details-form label.error,
+    #profile-details-form .error:not(.error-msg) {
+        display: none !important;
     }
 
     /* ─── MOBILE WISHLIST CARD LAYOUT (My Account) ─── */
     @media (max-width: 767px) {
+        #global-back-btn {
+            padding: 4px 10px !important;
+            font-size: 11px !important;
+            border-radius: 12px !important;
+        }
         .tab-vertical .tab-content {
             padding-left: 0 !important;
         }
@@ -353,7 +366,7 @@
                     <li><a href="{{ url('home') }}">Home</a></li>
                     <li>My account</li>
                 </ul>
-                <a href="#account-dashboard" data-bs-toggle="tab" id="global-back-btn" class="btn btn-outline btn-default back-to-dashboard" style="display: none; padding: 4px 10px; font-size: 11px; text-transform: uppercase; border-radius: 12px; height: auto; min-height: unset; line-height: 1;">Back</a>
+                <a href="#account-dashboard" data-bs-toggle="tab" id="global-back-btn" class="btn btn-outline btn-default back-to-dashboard" style="display: none; padding: 6px 16px; font-size: 13px; text-transform: uppercase; border-radius: 15px; height: auto; min-height: unset; line-height: 1.2; font-weight: 600;">Back</a>
             </div>
         </nav>
         <!-- End of Breadcrumb -->
@@ -758,55 +771,54 @@
                            
                           <center><h3>Profile Details</h3></center> 
 
-                                        <form action="{{url('/updateaddress')}}" name="frm-login" id="profile-details-form" method="post" autocomplete="Off" class="checkout-form" novalidate>
+                                        <form action="{{url('/updateaddress')}}" id="profile-details-form" method="post" autocomplete="Off" class="custom-profile-form" novalidate>
                                 {{ csrf_field() }}
                                 <div class="row">
                                     <div class="col-md-4 mb-3">
                                         <label>First Name <span style="color: red !important;">*</span></label>
-                                        <input type="text" class="form-control" name="customer_firstname" onkeyup="this.value = this.value.toUpperCase(); " required="" value="{{@$customer->customer_firstname}}" />
-                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 500; color: red !important;">Please enter first name</div>
+                                        <input type="text" class="form-control" name="customer_firstname" onkeyup="this.value = this.value.toUpperCase(); " data-required="true" value="{{@$customer->customer_firstname}}" />
+                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 400; color: #dc3545 !important;">Please enter first name</div>
                                     </div>
                                     <div class="col-md-4 mb-3">
-                                        <label>Last Name <span style="color: red !important;">*</span></label>
-                                        <input type="text" class="form-control" name="customer_lastname" onkeyup="this.value = this.value.toUpperCase(); " required="" value="{{@$customer->customer_lastname}}" />
-                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 500; color: red !important;">Please enter last name</div>
+                                        <label>Last Name</label>
+                                        <input type="text" class="form-control" name="customer_lastname" onkeyup="this.value = this.value.toUpperCase(); " value="{{@$customer->customer_lastname}}" />
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label>Phone <span style="color: red !important;">*</span></label>
-                                        <input type="text" class="form-control" name="customer_mobileno" id="order_mobile" required="" onblur="verify_mobile(this.value)" value="{{@$customer->customer_mobileno}}" />
-                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 500; color: red !important;">Please enter phone number</div>
+                                        <input type="text" class="form-control" name="customer_mobileno" id="order_mobile" data-required="true" onblur="verify_mobile(this.value)" value="{{@$customer->customer_mobileno}}" />
+                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 400; color: #dc3545 !important;">Please enter phone number</div>
                                     </div>
                                     
                                     <div class="col-md-4 mb-3">
                                         <label>Email Address <span style="color: red !important;">*</span></label>
-                                        <input type="email" class="form-control" name="customer_email" required="" value="{{@$customer->customer_email}}" />
-                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 500; color: red !important;">Please enter email address</div>
+                                        <input type="email" class="form-control" name="customer_email" data-required="true" value="{{@$customer->customer_email}}" />
+                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 400; color: #dc3545 !important;">Please enter email address</div>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label>Street / House No <span style="color: red !important;">*</span></label>
-                                        <input type="text" class="form-control" name="customer_address" required="" placeholder="House number and street name" value="{{@$customer->customer_address}}" />
-                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 500; color: red !important;">Please enter street / house number</div>
+                                        <input type="text" class="form-control" name="customer_address" data-required="true" placeholder="House number and street name" value="{{@$customer->customer_address}}" />
+                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 400; color: #dc3545 !important;">Please enter street / house number</div>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label>Area / Locality <span style="color: red !important;">*</span></label>
-                                        <input type="text" class="form-control" name="customer_address1" required="" placeholder="Area" value="{{@$customer->customer_address1}}" />
-                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 500; color: red !important;">Please enter area / locality</div>
+                                        <input type="text" class="form-control" name="customer_address1" data-required="true" placeholder="Area" value="{{@$customer->customer_address1}}" />
+                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 400; color: #dc3545 !important;">Please enter area / locality</div>
                                     </div>
  
                                     <div class="col-md-4 mb-3">
                                         <label>Town / City <span style="color: red !important;">*</span></label>
-                                        <input type="text" class="form-control" id="city" name="customer_city" required="" value="{{@$customer->customer_city}}" />
-                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 500; color: red !important;">Please enter town / city</div>
+                                        <input type="text" class="form-control" id="city" name="customer_city" data-required="true" value="{{@$customer->customer_city}}" />
+                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 400; color: #dc3545 !important;">Please enter town / city</div>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label>State <span style="color: red !important;">*</span></label>
-                                        <input type="text" class="form-control" id="state" name="customer_state" required="" value="{{@$customer->customer_state}}" />
-                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 500; color: red !important;">Please enter state</div>
+                                        <input type="text" class="form-control" id="state" name="customer_state" data-required="true" value="{{@$customer->customer_state}}" />
+                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 400; color: #dc3545 !important;">Please enter state</div>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label>ZIP / POSTAL CODE <span style="color: red !important;">*</span></label>
-                                        <input type="text" class="form-control" id="pincode" name="customer_pincode" required="" value="{{@$customer->customer_pincode}}" />
-                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 500; color: red !important;">Please enter zip / postal code</div>
+                                        <input type="text" class="form-control" id="pincode" name="customer_pincode" data-required="true" value="{{@$customer->customer_pincode}}" />
+                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 400; color: #dc3545 !important;">Please enter zip / postal code</div>
                                     </div>
                                 </div>
  
@@ -827,29 +839,34 @@
                             <fieldset style="padding:20px;">
                                 <legend>Password Change</legend>
                                 <div class="form-group col-md-8  mt-2" >
-
                                     <label>Current password </label>
-                                    <input type="password" class="form-control" id="customer_opassword"  name="current_password" required value="">
-                                      <i class="fa-solid fa-eye toggle-password-1"
-                                      onclick="togglePasswordAccount('customer_opassword', this)"
-                                            style="position:absolute; right:360px; margin-top:-30px; cursor:pointer;">
-                                    </i>
+                                    <div style="position: relative;">
+                                        <input type="password" class="form-control" id="customer_opassword"  name="current_password" required value="" style="padding-right: 40px;">
+                                        <i class="fa-solid fa-eye toggle-password-1"
+                                           onclick="togglePasswordAccount('customer_opassword', this)"
+                                           style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; z-index: 10;">
+                                        </i>
+                                    </div>
                                 </div>
                                 <div class="form-group col-md-8   mt-2">
                                     <label class="">New password</label>
-                                    <input type="password" class="form-control "  id="customer_password" name="new_password" required>
-                                    <i class="fa-solid fa-eye toggle-password-1"
-                                    onclick="togglePasswordAccount('customer_password', this)"
-                                            style="position:absolute; right:360px; margin-top:-30px; cursor:pointer;">
-                                    </i>
+                                    <div style="position: relative;">
+                                        <input type="password" class="form-control "  id="customer_password" name="new_password" required style="padding-right: 40px;">
+                                        <i class="fa-solid fa-eye toggle-password-1"
+                                           onclick="togglePasswordAccount('customer_password', this)"
+                                           style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; z-index: 10;">
+                                        </i>
+                                    </div>
                                 </div>
                                 <div class="form-group col-md-8  mt-2">
                                     <label>Confirm new password</label>
-                                    <input type="password"  class="form-control" id="customer_cpassword" name="confirm_password" required>
-                                    <i class="fa-solid fa-eye toggle-password-1"
-                                    onclick="togglePasswordAccount('customer_cpassword', this)"
-                                            style="position:absolute; right:360px; margin-top:-30px; cursor:pointer;">
-                                    </i>
+                                    <div style="position: relative;">
+                                        <input type="password"  class="form-control" id="customer_cpassword" name="confirm_password" required style="padding-right: 40px;">
+                                        <i class="fa-solid fa-eye toggle-password-1"
+                                           onclick="togglePasswordAccount('customer_cpassword', this)"
+                                           style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; z-index: 10;">
+                                        </i>
+                                    </div>
                                 </div>
 
                             </fieldset>
@@ -1106,6 +1123,16 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+        // Destroy any jQuery validation auto-attached to profile form
+        if (window.jQuery) {
+            var $profileForm = jQuery('#profile-details-form');
+            if ($profileForm.length && $profileForm.data('validator')) {
+                $profileForm.data('validator').destroy();
+                $profileForm.find('.error').removeClass('error');
+                $profileForm.find('label.error').remove();
+            }
+        }
+
         const hash = window.location.hash;
         if (hash) {
             showAccountTab(hash);
@@ -1155,7 +1182,7 @@
                 });
                 
                 // Check required fields
-                form.querySelectorAll('[required]').forEach(function(input) {
+                form.querySelectorAll('[data-required]').forEach(function(input) {
                     if (!input.value || input.value.trim() === '') {
                         isValid = false;
                         var errorSpan = input.nextElementSibling;
