@@ -867,11 +867,12 @@
                                    </div>
 
                                    <div class="form-checkbox d-flex align-items-center justify-content-between mb-4">
-                                       <div>
-                                           <input type="checkbox" class="custom-checkbox" id="remember" name="remember" required>
-                                           <label for="remember" class="font-size-md mb-0">I agree to the <a href="#" class="text-primary font-size-md">Privacy Policy</a></label>
-                                       </div>
-                                   </div>
+                                        <div>
+                                            <input type="checkbox" class="custom-checkbox" id="remember" name="remember" required>
+                                            <label for="remember" class="font-size-md mb-0">I agree to the <a href="#" class="text-primary font-size-md">Privacy Policy</a></label>
+                                            <div id="policy-error" class="text-danger" style="display:none; font-size: 8px; margin-top: 5px; font-weight: 500;">Please agree to the Privacy Policy to register.</div>
+                                        </div>
+                                    </div>
                                    <button type="button" id="cus_register" onclick="cusregister()"
                                        class="btn btn-primary">Create Account</button>
 
@@ -1795,6 +1796,7 @@
             clearFieldError('register_password');
             clearFieldError('register_cpassword');
             $('#register-error-alert').hide();
+            $('#policy-error').hide();
 
             var hasError = false;
 
@@ -1804,6 +1806,10 @@
             if (customer_password == '') { showFieldError('register_password', 'Please enter a password'); hasError = true; }
             if (customer_password != '' && customer_password.length < 8) { showFieldError('register_password', 'Password must be at least 8 characters'); hasError = true; }
             if (customer_password != '' && customer_password != customer_cpassword) { showFieldError('register_cpassword', 'Passwords do not match'); hasError = true; }
+             if (!$('#remember').is(':checked')) {
+                 $('#policy-error').show();
+                 hasError = true;
+             }
 
             if (!hasError) {
                 $('#reg-btn1').show();
@@ -1825,6 +1831,9 @@
                         if (data.msg == 'Success') {
                             $('#register-form').hide();
                             $('#register-success-panel').show();
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1000);
                         } else {
                             $('#register-error-alert').text('Mobile Number Already Registered').show();
                         }
@@ -1840,6 +1849,12 @@
                 });
             }
         }
+
+        $(document).on('change', '#remember', function() {
+            if ($(this).is(':checked')) {
+                $('#policy-error').hide();
+            }
+        });
 
         function showLoginTab() {
             // Restore register form state

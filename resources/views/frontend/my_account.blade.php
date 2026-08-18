@@ -89,13 +89,34 @@
     #account-orders .account-orders-table .order-status { width: 18%; }
     #account-orders .account-orders-table .order-total { width: 20%; }
     #account-orders .account-orders-table .order-actions { width: 20%; }
+    .account-dashboard-grid {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .account-dashboard-grid > div {
+        display: flex;
+        flex-direction: column;
+    }
+    .account-dashboard-grid .dashboard-option {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+        text-decoration: none;
+    }
     .account-dashboard-grid .icon-box {
         border: 1px solid #e8e8e8;
         border-radius: 6px;
         padding: 16px 10px;
         min-height: 90px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         transition: all .2s ease;
         background: #fff;
+        width: 100%;
     }
     .account-dashboard-grid .icon-box:hover {
         border-color: #cfd8dc;
@@ -113,6 +134,9 @@
 
     /* ─── MOBILE WISHLIST CARD LAYOUT (My Account) ─── */
     @media (max-width: 767px) {
+        .tab-vertical .tab-content {
+            padding-left: 0 !important;
+        }
         #wishlist {
             padding: 0 !important;
             margin: 0 !important;
@@ -336,7 +360,7 @@
                    <div class="tab-content mb-6">
                        <div class="tab-pane active in" id="account-dashboard">
                            <div class="row account-dashboard-grid">
-                               <div class="col-lg-3 col-md-6 col-sm-4 col-xs-6 mb-4">
+                               <div class="col-lg-3 col-md-6 col-sm-4 col-6 col-xs-6 mb-4">
                                    <a href="#account-orders" data-bs-toggle="tab" class="dashboard-option">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-orders">
@@ -348,7 +372,7 @@
                                        </div>
                                    </a>
                                </div>
-                               <div class="col-lg-3 col-md-6 col-sm-4 col-xs-6 mb-4">
+                               <div class="col-lg-3 col-md-6 col-sm-4 col-6 col-xs-6 mb-4">
                                    <a href="#account-downloads" data-bs-toggle="tab" class="dashboard-option">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-download">
@@ -360,7 +384,7 @@
                                        </div>
                                    </a>
                                </div>
-                               <div class="col-lg-3 col-md-6 col-sm-4 col-xs-6 mb-4">
+                               <div class="col-lg-3 col-md-6 col-sm-4 col-6 col-xs-6 mb-4">
                                    <a href="#account-addresses" data-bs-toggle="tab" class="dashboard-option">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-address">
@@ -372,7 +396,7 @@
                                        </div>
                                    </a>
                                </div>
-                               <div class="col-lg-3 col-md-6 col-sm-4 col-xs-6 mb-4">
+                               <div class="col-lg-3 col-md-6 col-sm-4 col-6 col-xs-6 mb-4">
                                    <a href="#profile-details" data-bs-toggle="tab" class="dashboard-option">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-account">
@@ -384,7 +408,7 @@
                                        </div>
                                    </a>
                                </div>
-                               <div class="col-lg-3 col-md-6 col-sm-4 col-xs-6 mb-4">
+                               <div class="col-lg-3 col-md-6 col-sm-4 col-6 col-xs-6 mb-4">
                                    <a href="#account-details" data-bs-toggle="tab" class="dashboard-option">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-account">
@@ -396,7 +420,7 @@
                                        </div>
                                    </a>
                                </div>
-                               <div class="col-lg-3 col-md-6 col-sm-4 col-xs-6 mb-4">
+                               <div class="col-lg-3 col-md-6 col-sm-4 col-6 col-xs-6 mb-4">
                                    <a href="#wishlist" data-bs-toggle="tab" class="dashboard-option">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-wishlist">
@@ -408,7 +432,7 @@
                                        </div>
                                    </a>
                                </div>
-                               <div class="col-lg-3 col-md-6 col-sm-4 col-xs-6 mb-4">
+                               <div class="col-lg-3 col-md-6 col-sm-4 col-6 col-xs-6 mb-4">
                                    <a href="{{ route('customer-logout') }}">
                                        <div class="icon-box text-center">
                                            <span class="icon-box-icon icon-logout">
