@@ -345,8 +345,8 @@
        <!-- Start of Breadcrumb -->
        <nav class="breadcrumb-nav">
            <div class="container">
-               <ul class="breadcrumb">
-                   <li><a href="demo1.html">Home</a></li>
+               <ul class="breadcrumb" id="account-breadcrumb">
+                   <li><a href="{{ url('home') }}">Home</a></li>
                    <li>My account</li>
                </ul>
            </div>
@@ -946,6 +946,33 @@
    @endsection
 
 <script>
+    function updateBreadcrumb(target) {
+        var breadcrumb = document.getElementById('account-breadcrumb');
+        if (!breadcrumb) return;
+
+        // Reset breadcrumb first
+        breadcrumb.innerHTML = '<li><a href="{{ url('home') }}">Home</a></li>';
+
+        if (!target || target === '#account-dashboard') {
+            breadcrumb.innerHTML += '<li>My account</li>';
+        } else {
+            breadcrumb.innerHTML += '<li><a href="{{ url('myAccount') }}">My account</a></li>';
+            
+            var tabName = '';
+            switch(target) {
+                case '#account-orders': tabName = 'Orders'; break;
+                case '#account-downloads': tabName = 'Wallet'; break;
+                case '#account-addresses': tabName = 'Addresses'; break;
+                case '#profile-details': tabName = 'Profile Details'; break;
+                case '#account-details': tabName = 'Account Settings'; break;
+                case '#wishlist': tabName = 'Wishlist'; break;
+            }
+            if (tabName) {
+                breadcrumb.innerHTML += '<li>' + tabName + '</li>';
+            }
+        }
+    }
+
     function showAccountTab(target) {
         if (!target || target.charAt(0) !== '#') return;
 
@@ -956,6 +983,7 @@
             var toggle = document.querySelector('[data-bs-toggle="tab"][href="' + target + '"]');
             if (toggle) {
                 bootstrap.Tab.getOrCreateInstance(toggle).show();
+                updateBreadcrumb(target);
                 return;
             }
         }
@@ -964,6 +992,7 @@
             el.classList.remove('active', 'show', 'in');
         });
         pane.classList.add('active', 'show', 'in');
+        updateBreadcrumb(target);
     }
 
     function submitReturnRequest(invoiceId, type) {
@@ -1058,6 +1087,8 @@
         const hash = window.location.hash;
         if (hash) {
             showAccountTab(hash);
+        } else {
+            updateBreadcrumb('#account-dashboard');
         }
 
         document.querySelectorAll('.dashboard-option, .back-to-dashboard, .link-to-tab').forEach(function (link) {
