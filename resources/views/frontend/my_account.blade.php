@@ -582,7 +582,7 @@
                                 </table>
                             </div>
 
-                           <a href="{{ url('shops') }}" class="btn btn-dark btn-rounded btn-icon-right">Go
+                           <a href="{{ url('shops') }}" class="btn btn-dark btn-rounded btn-icon-right mt-3">Go
                                Shop<i class="w-icon-long-arrow-right"></i></a>
                        </div>
 
@@ -758,53 +758,62 @@
                            
                           <center><h3>Profile Details</h3></center> 
 
-                           <form action="{{url('/updateaddress')}}" name="frm-login" method="post" autocomplete="Off" class="checkout-form" onsubmit="return confirm('Do you  want to Change Billing Address?');">
-                               {{ csrf_field() }}
-                               <div class="row">
-                                   <div class="col-md-4 mb-3">
-                                       <label>First Name *</label>
-                                       <input type="text" class="form-control" name="customer_firstname" onkeyup="this.value = this.value.toUpperCase(); " required="" value="{{@$customer->customer_firstname}}" />
-                                   </div>
-                                   <div class="col-md-4 mb-3">
-                                       <label>Last Name *</label>
-                                       <input type="text" class="form-control" name="customer_lastname" onkeyup="this.value = this.value.toUpperCase(); " required="" value="{{@$customer->customer_lastname}}" />
-                                   </div>
-                                   <div class="col-md-4 mb-3">
-                                       <label>Phone *</label>
-                                       <input type="text" class="form-control" name="customer_mobileno" id="order_mobile" required="" onblur="verify_mobile(this.value)" value="{{@$customer->customer_mobileno}}" />
-                                   </div>
-                                   
-                                   <div class="col-md-4 mb-3">
-                                       <label>Email Address *</label>
-                                       <input type="email" class="form-control" name="customer_email" required="" value="{{@$customer->customer_email}}" />
-                                   </div>
-                                   <div class="col-md-4 mb-3">
-                                       <label>Street / House No *</label>
-                                       <input type="text" class="form-control" name="customer_address" required="" placeholder="House number and street name" value="{{@$customer->customer_address}}" />
-                                   </div>
-                                   <div class="col-md-4 mb-3">
-                                       <label>Area / Locality *</label>
-                                       <input type="text" class="form-control" name="customer_address1" required="" placeholder="Area" value="{{@$customer->customer_address1}}" />
-                                   </div>
-
-                                   <div class="col-md-4 mb-3">
-                                       <label>Town / City *</label>
-                                       <input type="text" class="form-control" id="city" name="customer_city" required="" value="{{@$customer->customer_city}}" />
-                                   </div>
-                                   <div class="col-md-4 mb-3">
-                                       <label>State *</label>
-                                       <input type="text" class="form-control" id="state" name="customer_state" required="" value="{{@$customer->customer_state}}" />
-                                   </div>
-                                   <div class="col-md-4 mb-3">
-                                       <label>ZIP / POSTAL CODE *</label>
-                                       <input type="text" class="form-control" id="pincode" name="customer_pincode" required="" value="{{@$customer->customer_pincode}}" />
-                                   </div>
-                               </div>
-
-                               <div class="login-on-checkout mt-2">
-                                   <button type="submit" name="btn-sbmt" class="btn btn-dark btn-rounded">SAVE CHANGES</button>
-                               </div>
-                           </form>
+                                        <form action="{{url('/updateaddress')}}" name="frm-login" id="profile-details-form" method="post" autocomplete="Off" class="checkout-form" novalidate>
+                                {{ csrf_field() }}
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label>First Name <span style="color: red !important;">*</span></label>
+                                        <input type="text" class="form-control" name="customer_firstname" onkeyup="this.value = this.value.toUpperCase(); " required="" value="{{@$customer->customer_firstname}}" />
+                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 500; color: red !important;">Please enter first name</div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label>Last Name <span style="color: red !important;">*</span></label>
+                                        <input type="text" class="form-control" name="customer_lastname" onkeyup="this.value = this.value.toUpperCase(); " required="" value="{{@$customer->customer_lastname}}" />
+                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 500; color: red !important;">Please enter last name</div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label>Phone <span style="color: red !important;">*</span></label>
+                                        <input type="text" class="form-control" name="customer_mobileno" id="order_mobile" required="" onblur="verify_mobile(this.value)" value="{{@$customer->customer_mobileno}}" />
+                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 500; color: red !important;">Please enter phone number</div>
+                                    </div>
+                                    
+                                    <div class="col-md-4 mb-3">
+                                        <label>Email Address <span style="color: red !important;">*</span></label>
+                                        <input type="email" class="form-control" name="customer_email" required="" value="{{@$customer->customer_email}}" />
+                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 500; color: red !important;">Please enter email address</div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label>Street / House No <span style="color: red !important;">*</span></label>
+                                        <input type="text" class="form-control" name="customer_address" required="" placeholder="House number and street name" value="{{@$customer->customer_address}}" />
+                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 500; color: red !important;">Please enter street / house number</div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label>Area / Locality <span style="color: red !important;">*</span></label>
+                                        <input type="text" class="form-control" name="customer_address1" required="" placeholder="Area" value="{{@$customer->customer_address1}}" />
+                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 500; color: red !important;">Please enter area / locality</div>
+                                    </div>
+ 
+                                    <div class="col-md-4 mb-3">
+                                        <label>Town / City <span style="color: red !important;">*</span></label>
+                                        <input type="text" class="form-control" id="city" name="customer_city" required="" value="{{@$customer->customer_city}}" />
+                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 500; color: red !important;">Please enter town / city</div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label>State <span style="color: red !important;">*</span></label>
+                                        <input type="text" class="form-control" id="state" name="customer_state" required="" value="{{@$customer->customer_state}}" />
+                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 500; color: red !important;">Please enter state</div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label>ZIP / POSTAL CODE <span style="color: red !important;">*</span></label>
+                                        <input type="text" class="form-control" id="pincode" name="customer_pincode" required="" value="{{@$customer->customer_pincode}}" />
+                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 500; color: red !important;">Please enter zip / postal code</div>
+                                    </div>
+                                </div>
+ 
+                                <div class="login-on-checkout mt-2">
+                                    <button type="submit" name="btn-sbmt" class="btn btn-dark btn-rounded">SAVE CHANGES</button>
+                                </div>
+                            </form>
                        </div>
 
                                            <div class="tab-pane" id="account-details">                           
@@ -1131,6 +1140,56 @@
         }
     });
 });
+
+        var profileForm = document.getElementById('profile-details-form');
+        if (profileForm) {
+            profileForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                
+                var form = this;
+                var isValid = true;
+                
+                // Hide all errors
+                form.querySelectorAll('.error-msg').forEach(function(el) {
+                    el.style.display = 'none';
+                });
+                
+                // Check required fields
+                form.querySelectorAll('[required]').forEach(function(input) {
+                    if (!input.value || input.value.trim() === '') {
+                        isValid = false;
+                        var errorSpan = input.nextElementSibling;
+                        if (errorSpan && errorSpan.classList.contains('error-msg')) {
+                            errorSpan.style.display = 'block';
+                        }
+                    } else if (input.type === 'email') {
+                        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRegex.test(input.value.trim())) {
+                            isValid = false;
+                            var errorSpan = input.nextElementSibling;
+                            if (errorSpan && errorSpan.classList.contains('error-msg')) {
+                                errorSpan.innerText = 'Please enter a valid email address';
+                                errorSpan.style.display = 'block';
+                            }
+                        }
+                    }
+                });
+                
+                if (isValid) {
+                    swal({
+                        title: "Are you sure?",
+                        text: "Do you want to Change Billing Address?",
+                        icon: "warning",
+                        buttons: ["No", "Yes, Update"],
+                        dangerMode: true,
+                    }).then(function (willChange) {
+                        if (willChange) {
+                            form.submit();
+                        }
+                    });
+                }
+            });
+        }
 
 
 
