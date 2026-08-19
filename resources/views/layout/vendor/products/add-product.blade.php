@@ -1105,6 +1105,18 @@
             x++;
 
             if (x < max_fields) {
+                var colorFieldHtml = '';
+                if ("{{ @$is_color }}" !== 'no') {
+                    colorFieldHtml = 
+                    '            <div class="col-md-2 color-col-wrapper">' +
+                    '                <label class="form-label fw-bold text-secondary mb-1">Color <span class="text-danger">*</span></label>' +
+                    '                <select class="form-select text-secondary attrcolor" name="attrcolor[]" id="attrcolor'+x+'"><option hidden>Color</option></select>' +
+                    '                <div class="invalid-feedback-custom">Please select color</div>' +
+                    '            </div>';
+                } else {
+                    colorFieldHtml = '<input type="hidden" name="attrcolor[]" value="Multicolor">';
+                }
+
                 $(wrapper).append(
                     '<div class="variant-card w" id="variant-card-'+x+'">' +
                     '    <div class="variant-card-header">' +
@@ -1115,11 +1127,7 @@
                     '        <div class="variant-fields-wrapper">' +
                     '            <input type="hidden" name="product_details_id[]" value="" required>' +
                     '            <div class="row g-3">' +
-                    '            <div class="col-md-2 color-col-wrapper">' +
-                    '                <label class="form-label fw-bold text-secondary mb-1">Color <span class="text-danger">*</span></label>' +
-                    '                <select class="form-select text-secondary attrcolor" name="attrcolor[]" id="attrcolor'+x+'"><option hidden>Color</option></select>' +
-                    '                <div class="invalid-feedback-custom">Please select color</div>' +
-                    '            </div>' +
+                    colorFieldHtml +
                     '            <div class="col-md-2">' +
                     '                <label class="form-label fw-bold text-secondary mb-1">Size <span class="text-danger">*</span></label>' +
                     '                <select class="form-select text-secondary attrsize" name="attrsize[]" id="attrsize'+x+'"><option hidden>Size</option></select>' +
