@@ -49,7 +49,7 @@ class ProductsController extends Controller
     {
         $login_id = session()->get('login_id');
         // dd(  $login_id );
-        $vendorcreate = vendorcreate::select('sub_category_ids')->where('id',$login_id)->first();
+        $vendorcreate = vendorcreate::where('id',$login_id)->first();
         $subcategoryarray = array_values(array_filter(array_map('intval', array_map('trim', explode(',', (string) optional($vendorcreate)->sub_category_ids)))));
         //$CategorySub = CategorySub::whereIn('id', $subcategoryarray)->get();
         $CategorySub=DB::table('category_sub as t1')
@@ -82,13 +82,14 @@ class ProductsController extends Controller
                 "attribute" => $attribute,
                 "productcollection" => $productcollection,
                 "specification" => $specification,
-                "offers" => $offer
+                "offers" => $offer,
+                "vendorcreate" => $vendorcreate
             ]);
     }
     public function addinfo(Request $request)
     {
         $login_id = session()->get('login_id');
-        $vendorcreate = vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
+        $vendorcreate = vendorcreate::where('id', $login_id)->first();
         $subcategoryarray = array_values(array_filter(array_map('intval', array_map('trim', explode(',', (string) optional($vendorcreate)->sub_category_ids)))));
         $CategorySub = DB::table('category_sub as t1')
             ->leftJoin('category as t2', 't1.category_id', '=', 't2.id')
@@ -205,10 +206,11 @@ class ProductsController extends Controller
                     "categoryid" => $category_sub->category_id,
                     "subcategoryid" => $request->category_sub,
                     "selectedAttributeId" => $selectedAttributeId,
-                    "nproduct" => $request->nproduct,
+                    "nproduct" => $request->nproduct ?? 1,
                     "is_color" => $request->is_color,
                     "category_data" => $category_data,
-                    "category_sub_data" => $category_sub_data
+                    "category_sub_data" => $category_sub_data,
+                    "vendorcreate" => $vendorcreate
                 ]);
         }
 
@@ -221,13 +223,14 @@ class ProductsController extends Controller
                 "maincategoryid" => $category_sub->category_main_id,
                 "categoryid" => $category_sub->category_id,
                 "subcategoryid" => $request->category_sub,
-                "nproduct" => $request->nproduct,
+                "nproduct" => $request->nproduct ?? 1,
                 "is_color" => $request->is_color,
                 "attribute" => collect(),
                 "productcollection" => $productcollection,
                 "specification" => collect(),
                 "offers" => $offer,
                 "error" => "Attributes & Specifications Not Assign in this Sub Category.",
+                "vendorcreate" => $vendorcreate
             ]);
     }
 
@@ -288,17 +291,10 @@ public function store(Request $request, FlasherInterface $flasher)
 {
     $rules = [
         'product_name' => 'required|string|max:255',
-        'retail_price.*.*' => 'required|numeric|min:0.01',
-        'selling_price.*.*' => 'required|numeric|min:0',
+        'retail_price.*' => 'required|numeric|min:0.01',
+        'selling_price.*' => 'required|numeric|min:0',
         'mainImage' => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
     ];
-
-    $np = $request->nproduct;
-    if ($np > 0) {
-        for ($i = 1; $i <= $np; $i++) {
-            $rules['imageUpload' . $i . '.*'] = 'nullable|image|mimes:jpeg,png,jpg|max:4096';
-        }
-    }
 
     $request->validate($rules);
 
@@ -380,72 +376,90 @@ public function store(Request $request, FlasherInterface $flasher)
            STEP 4: PRODUCT DETAILS
         =================================== */
 
-        $np = $request->nproduct;
+        $selectedAttrId = $request->input('selected_attribute_id') ?: $request->input('selected_attribute_id1');
+        $attrGroupName = 'Size';
+        if ($selectedAttrId) {
+            $attrGroup = AttributeGroup::find($selectedAttrId);
+            if ($attrGroup) {
+                $attrGroupName = $attrGroup->attribute_group_refname ?? $attrGroup->attribute_group_name ?? 'Size';
+            }
+        }
 
-        for ($i = 1; $i <= $np; $i++) {
+        $np = count($request->retail_price ?? []);
 
-            $imagesArray = [];
-
-            if ($request->hasFile('imageUpload' . $i)) {
-
-                $images = $request->file('imageUpload' . $i);
-                $detailPath = public_path('assets/images/products/detail/');
-
-                if (!file_exists($detailPath)) {
-                    mkdir($detailPath, 0755, true);
-                }
-
-                foreach ($images as $index => $img) {
-
-                    $imageName = $productId . '_p' . $i . '_' . time() . '_' . $index . '.' . $img->getClientOriginalExtension();
-
-                    Image::make($img->getRealPath())
-                        ->fit(800, 900)
-                        ->save($detailPath . '/' . $imageName);
-
-                    $imagesArray[] = $imageName;
-                }
+        for ($key = 0; $key < $np; $key++) {
+            $arr = [];
+            $image_path = public_path("assets/images/products/detail/");
+            if (!file_exists($image_path)) {
+                mkdir($image_path, 0755, true);
             }
 
-            $retailPriceArray = $request->input('retail_price') ?: [];
-            $sellingPriceArray = $request->input('selling_price') ?: [];
-            $skuArray = $request->input('sku') ?: [];
-            $returnReplaceArray = $request->input('return_replace') ?: [];
-            $rDaysArray = $request->input('r_days') ?: [];
-            $qtyArray = $request->input('quantity') ?: [];
-            $lowStockArray = $request->input('low_stock_limit') ?: [];
-            $colorValArray = $request->input('attributecolorval') ?: [];
-            $attrValArray = $request->input('attributeval') ?: [];
-            $attrNameArray = $request->input('attributename') ?: [];
+            $products_details_file  = isset($request->mainimg[$key]) ? $request->mainimg[$key] : null;
+            $products_details_file1 = isset($request->subimg1[$key]) ? $request->subimg1[$key] : null;
+            $products_details_file2 = isset($request->subimg2[$key]) ? $request->subimg2[$key] : null;
+            $products_details_file3 = isset($request->subimg3[$key]) ? $request->subimg3[$key] : null;
 
-            $variantCount = count($retailPriceArray[$i] ?? []);
-
-            for ($k = 0; $k < $variantCount; $k++) {
-
-                $detail = new ProductsDetails();
-                $detail->products_id = $productId; // CONNECT HERE
-                $detail->common_product = $i;
-                $detail->product_detail_image = !empty($imagesArray) ? json_encode($imagesArray) : null;
-                $detail->sku = $skuArray[$i] ?? null;
-                $detail->return_replace = $returnReplaceArray[$i] ?? 'Return';
-                $detail->r_days = $rDaysArray[$i] ?? null;
-
-                $detail->attributevalue1 = $colorValArray[$i][$k] ?? null;
-                $detail->attributename1 = 'Color';
-
-                $detail->attributevalue2 = $attrValArray[$i][0][$k] ?? null;
-                $detail->attributename2 = $attrNameArray[$i][0][$k] ?? null;
-
-                $detail->attributevalue3 = $attrValArray[$i][1][$k] ?? null;
-                $detail->attributename3 = $attrNameArray[$i][1][$k] ?? null;
-
-                $detail->quantity = $qtyArray[$i][$k] ?? 0;
-                $detail->retail_price = $retailPriceArray[$i][$k] ?? 0;
-                $detail->selling_price = $sellingPriceArray[$i][$k] ?? 0;
-                $detail->low_stock_limit = $lowStockArray[$i][$k] ?? 0;
-
-                $detail->save();
+            if ($products_details_file) {
+                $newName = $productId . '_p' . $key . '_' . time() . '_0_' . $products_details_file->getClientOriginalName();
+                $img = Image::make($products_details_file->getRealPath());
+                $img->fit(800, 900)->save($image_path . '/' . $newName);
+                $arr[] = $newName;
+            } else {
+                $arr[] = "";
             }
+            
+            if ($products_details_file1) {
+                $newName1 = $productId . '_p' . $key . '_' . time() . '_1_' . $products_details_file1->getClientOriginalName();
+                $img = Image::make($products_details_file1->getRealPath());
+                $img->fit(800, 900)->save($image_path . '/' . $newName1);
+                $arr[] = $newName1;
+            } else {
+                $arr[] = "";
+            }
+
+            if ($products_details_file2) {
+                $newName2 = $productId . '_p' . $key . '_' . time() . '_2_' . $products_details_file2->getClientOriginalName();
+                $img = Image::make($products_details_file2->getRealPath());
+                $img->fit(800, 900)->save($image_path . '/' . $newName2);
+                $arr[] = $newName2;
+            } else {
+                $arr[] = "";
+            }
+
+            if ($products_details_file3) {
+                $newName3 = $productId . '_p' . $key . '_' . time() . '_3_' . $products_details_file3->getClientOriginalName();
+                $img = Image::make($products_details_file3->getRealPath());
+                $img->fit(800, 900)->save($image_path . '/' . $newName3);
+                $arr[] = $newName3;
+            } else {
+                $arr[] = "";
+            }
+
+            $detail = new ProductsDetails();       
+            $detail->products_id = $productId;
+            $detail->common_product = $key + 1;
+            $detail->product_detail_image = json_encode($arr) ?? "-";
+            $detail->sku = "SKU";
+            $detail->return_replace = "Return";
+            $detail->r_days = 0;
+            
+            $detail->color = isset($request->attrcolor[$key]) ? $request->attrcolor[$key] : NULL;
+            $detail->size = isset($request->attrsize[$key]) ? $request->attrsize[$key] : NULL;
+            
+            $detail->attributevalue1 = $request->attrcolor[$key] ?? '';
+            $detail->attributename1 = 'Color';
+            $detail->attributevalue2 = $request->attrsize[$key] ?? '';
+            $detail->attributename2 = $attrGroupName;
+            
+            $detail->quantity = $request->quantity[$key] ?? 0;
+            $detail->retail_price = $request->retail_price[$key] ?? 0;
+            $detail->selling_price = $request->selling_price[$key] ?? 0;
+            $detail->low_stock_limit = $request->low_stock_limit[$key] ?? 0;
+            $detail->threshold = "";
+            $detail->login_id = $login_id;
+            $detail->logintype = "Vendor";
+            $detail->created_by = $login_id;
+            $detail->save();
         }
 
         /* ===================================
