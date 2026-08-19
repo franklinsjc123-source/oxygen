@@ -629,6 +629,10 @@ $(document).ready(function() {
         // 1. Clone the entire row (inputs + dropdowns)
         let $newRow = $currentRow.clone(false);
 
+        // Copy selected color to the cloned row
+        let selectedColor = $currentRow.find('select[name="attrcolor[]"]').val();
+        $newRow.find('select[name="attrcolor[]"]').val(selectedColor);
+
         // 2. Reset Size to placeholder
         let $sizeSelect = $newRow.find('select[name="attrsize[]"]');
         if ($sizeSelect.find('option[value=""]').length === 0 && $sizeSelect.find('option:contains("Size")').length === 0) {
