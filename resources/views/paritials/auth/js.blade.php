@@ -636,9 +636,7 @@ $(document).ready(function() {
         }
         $sizeSelect.val('');
 
-        // 3. Clear input values (start with empty text boxes)
-        $newRow.find('input[name="retail_price[]"]').val('');
-        $newRow.find('input[name="selling_price[]"]').val('');
+        // 3. Clear input values (start with empty text boxes except price fields)
         $newRow.find('input[name="quantity[]"]').val('');
         $newRow.find('input[name="low_stock_limit[]"]').val('');
         $newRow.find('input[name="product_details_id[]"]').val('');
