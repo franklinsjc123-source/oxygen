@@ -1175,7 +1175,7 @@
                 '<div class="pull-' + this.options.searchAlign + ' search">',
                 sprintf('<input class="form-control' +
                     sprintf(' input-%s', this.options.iconSize) +
-                    '" type="text" placeholder="&#x1F50E; Search For ID, Name, Status ,or Something..">',
+                    '" type="text" placeholder="Search For ID, Name, Status ,or Something..">',
                     this.options.formatSearch()),
                 '</div>');
 
