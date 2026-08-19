@@ -379,6 +379,14 @@ div.fixed-table-scroll-outer {
     clear: both;
 }
 
+.card-body > button.btn-primary[data-bs-toggle="modal"] {
+    float: right !important;
+    margin-bottom: 15px !important;
+}
+.bootstrap-table {
+    clear: both !important;
+}
+
 @media (max-width: 767px) {
     .fixed-table-toolbar {
         justify-content: space-between !important;
