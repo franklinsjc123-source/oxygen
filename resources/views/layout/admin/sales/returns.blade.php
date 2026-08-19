@@ -88,8 +88,8 @@
                             @endif
 
                             <div class="table-responsive">
-                                <table class="table table-striped table-bordered align-middle">
-                                    <thead class="table-dark">
+                                <table class="table table-striped table-bordered align-middle fcolor">
+                                    <thead>
                                         <tr>
                                             <th>ID</th>
                                             <th>Date</th>

@@ -379,9 +379,14 @@ div.fixed-table-scroll-outer {
     clear: both;
 }
 
-.card-body > button.btn-primary[data-bs-toggle="modal"] {
+.card-body > button.btn-primary[data-bs-toggle="modal"],
+.card-body > a.btn-primary,
+.card-body h3 > a.btn-primary,
+.card-body > .tab-content > button.btn-primary[data-bs-toggle="modal"],
+.card-body > .tab-content > a.btn-primary {
     float: right !important;
     margin-bottom: 15px !important;
+    margin-left: 10px !important;
 }
 .bootstrap-table {
     clear: both !important;
@@ -390,6 +395,12 @@ div.fixed-table-scroll-outer {
 @media (max-width: 767px) {
     .fixed-table-toolbar {
         justify-content: space-between !important;
+        flex-wrap: wrap !important;
+    }
+    .fixed-table-toolbar .bs-bars {
+        flex: 0 0 100% !important;
+        width: 100% !important;
+        margin: 5px 0 !important;
     }
     .fixed-table-toolbar .search {
         margin: 3px 0 !important;

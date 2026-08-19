@@ -132,28 +132,11 @@
                                 <button class="btn border-danger text-danger deactive">De-Active</button>
                             </div>
 
-                            <div class="card-body">
-                                <form action="{{ route('importpincode') }}"
-                                      method="POST"
-                                      enctype="multipart/form-data">
-                                    @csrf
-                                     {{-- <div class="row">
-                                         <div class="col col-sm-6">
-                                    <input type="file" name="file"
-                                           class="">
-                                    </div> --}}
-                                    <div class="col col-sm-2">
-                                        </div>
-                                    <div class="col col-sm-4">
-                                    {{-- <button class="btn btn-success">
-                                          Import Pincode
-                                       </button> --}}
-                                       <a href="{{ route('product.export') }}" class="btn btn-success px-2 " data-toggle="tooltip" data-placement="top" title="Report" data-original-title="Report"><i
-                                        class="fa fa-list"></i> Download Report</a>   
-                                    </div>
-                                       
-                                    </div>
-                                </form>
+                            <div class="pt-3 px-3">
+                                <a href="{{ route('product.export') }}" class="btn btn-success px-2 float-right" style="float: right;" data-toggle="tooltip" data-placement="top" title="Report" data-original-title="Report">
+                                    <i class="fa fa-list"></i> Download Report
+                                </a>
+                                <div class="clearfix"></div>
                             </div>
                             
                             <div class="datatable-dashv1-list custom-datatable-overright">
