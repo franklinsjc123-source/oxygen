@@ -39,6 +39,14 @@
   .vendor-search-form {
     position: relative;
   }
+  .breadcrumb-nav {
+    border-bottom: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  .breadcrumb {
+    border-bottom: 0 !important;
+    padding: 10px 0 0 0 !important;
+  }
 
 
 </style>
@@ -48,7 +56,7 @@
             <!-- Start of Breadcrumb -->
             <nav class="breadcrumb-nav">
                 <div class="container">
-                    <ul class="breadcrumb mb-6">
+                    <ul class="breadcrumb" style="margin-bottom: 0;">
                         <li><a href="{{ route('home') }}">Home</a></li>
                         <li><a href="{{ route('shops') }}">Shops</a></li>
                        
