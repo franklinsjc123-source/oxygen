@@ -165,6 +165,17 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
         }
 
         @media (max-width: 767.98px) {
+            .header.header-border {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                z-index: 10000 !important;
+                width: 100% !important;
+            }
+            .page-wrapper {
+                padding-top: 145px !important;
+            }
             .header-middle .container {
                 display: flex;
                 align-items: center;
@@ -245,6 +256,25 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                 font-style: normal !important;
                 margin: 0 !important;
                 padding: 0 !important;
+            }
+            .title-link-wrapper {
+                display: flex !important;
+                flex-direction: row !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                width: 100% !important;
+                text-align: left !important;
+                flex-wrap: nowrap !important;
+            }
+            .title-link-wrapper h2.title {
+                text-align: left !important;
+                margin-right: auto !important;
+                margin-bottom: 0 !important;
+            }
+            .title-link-wrapper a {
+                margin-left: auto !important;
+                text-align: right !important;
+                white-space: nowrap !important;
             }
 
             .mobile-search-row {
@@ -915,6 +945,7 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
             .offer-icon-btn i {
                 font-size: 18px !important;
                 color: #183543 !important;
+                animation: gavelPulse 1.2s infinite ease-in-out !important;
             }
             /* Auction Pulse Icon Animation */
             .auction-pulse-btn {

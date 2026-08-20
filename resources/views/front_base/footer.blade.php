@@ -220,6 +220,14 @@
             display: flex !important;
             justify-content: space-around !important;
             align-items: center !important;
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 9999 !important;
+            transform: none !important;
+            visibility: visible !important;
+            opacity: 1 !important;
         }
         @media (min-width: 768px) {
             .sticky-footer.fix-bottom {
