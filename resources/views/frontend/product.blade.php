@@ -208,8 +208,14 @@
      <!-- Start of Breadcrumb -->
      <nav class="breadcrumb-nav container">
          <ul class="breadcrumb bb-no">
-             <li><a href="demo1.html">Home</a></li>
-             <li>Products</li>
+             <li><a href="{{ url('home') }}">Home</a></li>
+             @if($getProduct->CategoryMain)
+                 <li><a href="{{ url('main-category/' . $getProduct->CategoryMain->slug) }}">{{ $getProduct->CategoryMain->category_main_name }}</a></li>
+             @endif
+             @if($getProduct->CategorySub)
+                 <li><a href="{{ url('category/' . $getProduct->CategorySub->slug) }}">{{ $getProduct->CategorySub->category_name }}</a></li>
+             @endif
+             <li>{{ $getProduct->product_name }}</li>
          </ul>
          {{-- <ul class="product-nav list-style-none">
              <li class="product-nav-prev">
