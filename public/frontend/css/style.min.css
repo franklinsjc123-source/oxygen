@@ -15163,7 +15163,7 @@ body .product-popup {
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  padding: 1.4rem 0 1.3rem;
+  padding: 1.3rem 0 1.3rem;
 }
 .header-bottom .header-right > a i {
   vertical-align: middle;
@@ -16223,9 +16223,9 @@ body .product-popup {
 }
 .menu > li > a {
   position: relative;
-  padding: 1.8rem 0 1.7rem 0;
+  padding: 1.5rem 0 1.5rem 0;
   font-weight: 600;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   letter-spacing: -0.009em;
   line-height: 1.1;
   text-transform: capitalize;
