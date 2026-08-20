@@ -20,10 +20,10 @@
                     <img src="../assets/images/dashboard/logo/newlogo.png" class="img-fluid" alt="">
                     <div class="mt-md-4 mt-3">
                     <h4 class="mb-2">
-                     Oxygen Ecommerce, <br>Chennai ,
+                     Tryneww Ecommerce, <br>Chennai ,
 					 India - 620025
                     </h4>
-                    <h4 class="mb-0">support@oxygen.com</h4>
+                    <h4 class="mb-0">support@tryneww.com</h4>
                   </div>
                 </div>
                 <div class="col-md-6 text-md-end mt-md-0 mt-4">

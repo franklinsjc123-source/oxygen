@@ -1,6 +1,6 @@
 @extends('app_template')
 
-@section('title', 'Categories - Oxygen')
+@section('title', 'Categories - Tryneww')
 
 @section('content')
 <main class="main">

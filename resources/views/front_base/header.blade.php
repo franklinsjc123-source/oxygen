@@ -1025,7 +1025,7 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                 <!-- <div class="header-top">
                 <div class="container">
                     <div class="header-left">
-                        <p class="welcome-msg">Welcome to Oxygen ! </p>
+                        <p class="welcome-msg">Welcome to Tryneww ! </p>
                     </div>
                     <div class="header-right">
                        
