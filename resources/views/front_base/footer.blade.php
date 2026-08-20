@@ -215,7 +215,7 @@
             background-color: #ffffff !important;
             box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.08) !important;
             border-top: 1px solid rgba(0, 0, 0, 0.05) !important;
-            padding: 8px 0 !important;
+            padding: 4px 0 !important;
             height: auto !important;
             display: flex !important;
             justify-content: space-around !important;
