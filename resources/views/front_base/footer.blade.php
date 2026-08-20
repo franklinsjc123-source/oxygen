@@ -276,17 +276,17 @@
 
     <!-- Start of Sticky Footer -->
     <div class="sticky-footer sticky-content fix-bottom">
-       <a href="{{ url('home') }}" class="sticky-link active">
+       <a href="{{ url('home') }}" class="sticky-link {{ request()->is('/') || request()->is('home') ? 'active' : '' }}">
            <i class="w-icon-home"></i>
            <p>Home</p>
        </a>
-       <a href="{{ url('shops') }}" class="sticky-link">
+       <a href="{{ url('shops') }}" class="sticky-link {{ request()->is('shops') || request()->is('shops/*') ? 'active' : '' }}">
            <i class="w-icon-vendor-store"></i>
            <p>Shops</p>
        </a>
 
        <?php  if(session('customer_id')){ ?>
-       <a href="{{ route('myAccount') }}" class="sticky-link">
+       <a href="{{ route('myAccount') }}" class="sticky-link {{ request()->is('my-account') || request()->is('my-account/*') || request()->is('customer/*') ? 'active' : '' }}">
            <i class="w-icon-account"></i>
            <p>Account</p>
        </a>
@@ -298,18 +298,18 @@
        <?php } ?>
 
         <?php if(session('customer_id')){ ?>
-        <a href="{{ url('track-order') }}" class="sticky-link">
+        <a href="{{ url('track-order') }}" class="sticky-link {{ request()->is('track-order') || request()->is('track-order/*') ? 'active' : '' }}">
             <i class="w-icon-map-marker"></i>
             <p>Track</p>
         </a>
         <?php } else { ?>
-        <a onclick="showLoginPopup()" class="sticky-link" style="cursor: pointer;">
+        <a onclick="showLoginPopup()" class="sticky-link {{ request()->is('track-order') || request()->is('track-order/*') ? 'active' : '' }}" style="cursor: pointer;">
             <i class="w-icon-map-marker"></i>
             <p>Track</p>
         </a>
         <?php } ?>
 
-       <a href="{{ url('main-category/men') }}" class="sticky-link">
+       <a href="{{ url('main-category/men') }}" class="sticky-link {{ request()->is('main-category/*') || request()->is('category/*') ? 'active' : '' }}">
            <i class="w-icon-category"></i>
            <p>Products</p>
        </a>
