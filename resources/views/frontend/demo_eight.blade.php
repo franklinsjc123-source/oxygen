@@ -1,5 +1,5 @@
  @extends('app_template')
- @section('title','TryNexX')
+ @section('title','Tryneww')
  @section('content')
  <style>
     .product-price-home{

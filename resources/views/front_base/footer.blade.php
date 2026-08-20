@@ -446,7 +446,7 @@
        <div class="newsletter-content">
            <p class="mt-3 mobile-single-line"><b>Enjoy exclusive <span style="color:#0088dd">discount</span> on your
                    first order</b></p>
-           <h4 style="color:#0088dd" class="ls-20">Sign up to TryNexX</h4>
+           <h4 style="color:#0088dd" class="ls-20">Sign up to Tryneww</h4>
 
            <p class="mt-2 mobile-two-line">Enter your pin code to check delivery availability, nearby merchants and
                more offers!!!</p>

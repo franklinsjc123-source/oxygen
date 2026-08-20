@@ -11,7 +11,7 @@
     <meta name="author" content="pixelstrap">
     <link rel="icon" href="../assets/images/dashboard/logo/fav.png" type="image/x-icon">
     <link rel="shortcut icon" href="../assets/images/dashboard/logo/fav.png" type="image/x-icon">
-    <title>oxygen</title>
+    <title>Tryneww</title>
 
     <!-- Google font-->
     <link href="https://fonts.googleapis.com/css?family=Work+Sans:100,200,300,400,500,600,700,800,900" rel="stylesheet">
