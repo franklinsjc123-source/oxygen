@@ -165,17 +165,23 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
         }
 
         @media (max-width: 767.98px) {
-            .header.header-border {
+            .mobile-sticky-container {
+                width: 100%;
+                z-index: 10000;
+                background: #fff;
+                transition: all 0.3s ease;
+            }
+            body.mobile-header-sticky .mobile-sticky-container {
                 position: fixed !important;
                 top: 0 !important;
                 left: 0 !important;
                 right: 0 !important;
-                z-index: 10000 !important;
-                width: 100% !important;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             }
-            .page-wrapper {
-                padding-top: 145px !important;
+            body.mobile-header-sticky .page-wrapper {
+                padding-top: 102px !important;
             }
+
             .header-middle .container {
                 display: flex;
                 align-items: center;
@@ -999,6 +1005,15 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                     });
                 });
             });
+
+            // Scroll handler for mobile sticky header (search and menu only)
+            $(window).on('scroll', function() {
+                if ($(window).scrollTop() > 60) {
+                    $('body').addClass('mobile-header-sticky');
+                } else {
+                    $('body').removeClass('mobile-header-sticky');
+                }
+            });
         });
     </script>
 
@@ -1168,49 +1183,52 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                 </div>
                 <!-- End of Header Middle -->
 
-                <!-- New Mobile Search Row -->
-                <div class="mobile-search-row d-md-none">
-                    @if(Session::has('pincode'))
-                    <div class="mobile-location" onclick="showPicodePopup()" title="Change Location">
-                        <img src="<?= asset('frontend') ?>/images/location_icon.svg" alt="loc" style="width:16px; height:16px;">
-                        <marquee behavior="scroll" direction="left" scrollamount="2">
-                            <span>
-                                {{ Session::get('pincode_area') ?: 'Area' }} - {{ Session::get('pincode') }}
-                            </span>
-                        </marquee>
-                    </div>
-                    @endif
-
-                    <form method="get" action="{{ route('productsearchdetails') }}" class="mobile-search-form">
-                        <div class="search-input-group">
-                            <i class="w-icon-search"></i>
-                            <input type="text" name="keywords" id="search_mobile" value="{{ request('keywords') }}"
-                                autocomplete="off" placeholder="Search for products..." />
-                            <a href="javascript:void(0)" id="clear_mobile_search" class="clear-search-btn">
-                                <i class="w-icon-times-solid"></i>
-                            </a>
+                <!-- Sticky Wrapper for Mobile Search and Categories -->
+                <div class="mobile-sticky-container d-md-none">
+                    <!-- New Mobile Search Row -->
+                    <div class="mobile-search-row">
+                        @if(Session::has('pincode'))
+                        <div class="mobile-location" onclick="showPicodePopup()" title="Change Location">
+                            <img src="<?= asset('frontend') ?>/images/location_icon.svg" alt="loc" style="width:16px; height:16px;">
+                            <marquee behavior="scroll" direction="left" scrollamount="2">
+                                <span>
+                                    {{ Session::get('pincode_area') ?: 'Area' }} - {{ Session::get('pincode') }}
+                                </span>
+                            </marquee>
                         </div>
-                        <div class="search-suggest-box" id="search_suggest_mobile"></div>
-                    </form>
-                </div>
+                        @endif
 
-                <!-- Mobile Category Navigation Bar -->
-                <div class="mobile-categories-nav-wrapper d-md-none">
-                    <div class="mobile-categories-nav">
-                        @if(isset($menCategory) && $menCategory)
-                            <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-men">Men <i class="w-icon-angle-down"></i></a>
-                        @endif
-                        @if(isset($womenCategory) && $womenCategory)
-                            <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-women">Women <i class="w-icon-angle-down"></i></a>
-                        @endif
-                        @if(isset($kidsCategory) && $kidsCategory)
-                            <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-kids">Kids <i class="w-icon-angle-down"></i></a>
-                        @endif
-                        @if(isset($livingCategory) && $livingCategory)
-                            <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-living">Living <i class="w-icon-angle-down"></i></a>
-                        @endif
-                        <a href="{{ url('offers') }}" class="offer-icon-btn" title="Offers"><i class="w-icon-sale"></i></a>
-                        <a href="{{ url('auction') }}" class="auction-pulse-btn" title="Live Auction"><i class="fas fa-gavel"></i></a>
+                        <form method="get" action="{{ route('productsearchdetails') }}" class="mobile-search-form">
+                            <div class="search-input-group">
+                                <i class="w-icon-search"></i>
+                                <input type="text" name="keywords" id="search_mobile" value="{{ request('keywords') }}"
+                                    autocomplete="off" placeholder="Search for products..." />
+                                <a href="javascript:void(0)" id="clear_mobile_search" class="clear-search-btn">
+                                    <i class="w-icon-times-solid"></i>
+                                </a>
+                            </div>
+                            <div class="search-suggest-box" id="search_suggest_mobile"></div>
+                        </form>
+                    </div>
+
+                    <!-- Mobile Category Navigation Bar -->
+                    <div class="mobile-categories-nav-wrapper">
+                        <div class="mobile-categories-nav">
+                            @if(isset($menCategory) && $menCategory)
+                                <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-men">Men <i class="w-icon-angle-down"></i></a>
+                            @endif
+                            @if(isset($womenCategory) && $womenCategory)
+                                <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-women">Women <i class="w-icon-angle-down"></i></a>
+                            @endif
+                            @if(isset($kidsCategory) && $kidsCategory)
+                                <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-kids">Kids <i class="w-icon-angle-down"></i></a>
+                            @endif
+                            @if(isset($livingCategory) && $livingCategory)
+                                <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-living">Living <i class="w-icon-angle-down"></i></a>
+                            @endif
+                            <a href="{{ url('offers') }}" class="offer-icon-btn" title="Offers"><i class="w-icon-sale"></i></a>
+                            <a href="{{ url('auction') }}" class="auction-pulse-btn" title="Live Auction"><i class="fas fa-gavel"></i></a>
+                        </div>
                     </div>
                 </div>
 
@@ -1391,7 +1409,7 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                     });
                 </script>
 
-                <div class="header-bottom sticky-content fix-top sticky-header">
+                <div class="header-bottom">
                     <div class="container">
                         <div class="inner-wrap">
                             <div class="header-left">

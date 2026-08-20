@@ -233,7 +233,7 @@
             </div>
             <!-- End of Header Middle -->
 
-            <div class="header-bottom sticky-content fix-top sticky-header">
+            <div class="header-bottom">
                 <div class="container">
                     <div class="inner-wrap">
                         <div class="header-left">
