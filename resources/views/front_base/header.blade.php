@@ -203,6 +203,49 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
             .header-middle .container .header-right .wishlist-label {
                 display: none !important;
             }
+            .header-middle .container .header-right a.header-wishlist-btn,
+            .header-middle .container .header-right .cart-dropdown,
+            .header-middle .container .header-right .cart-dropdown .cart-toggle {
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                height: 32px !important;
+                margin-top: 0 !important;
+                margin-bottom: 0 !important;
+            }
+            .header-middle .container .header-right a.header-wishlist-btn {
+                margin-right: 15px !important;
+                color: #fff !important;
+            }
+            .header-middle .container .header-right a.header-wishlist-btn i,
+            .header-middle .container .header-right .cart-dropdown .cart-toggle i {
+                font-size: 22px !important;
+                color: #fff !important;
+                display: inline-block !important;
+                line-height: 1 !important;
+                position: relative !important;
+            }
+            .header-middle .container .header-right a.header-wishlist-btn i span.wishcount,
+            .header-middle .container .header-right .cart-dropdown .cart-toggle i span.cart-count {
+                position: absolute !important;
+                top: -8px !important;
+                right: -10px !important;
+                width: 16px !important;
+                height: 16px !important;
+                border-radius: 50% !important;
+                font-size: 10px !important;
+                font-weight: 500 !important;
+                line-height: 16px !important;
+                background: #ff5b5b !important;
+                color: #fff !important;
+                text-align: center !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                font-style: normal !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
 
             .mobile-search-row {
                 background: #e1f3ff;
@@ -860,6 +903,19 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                 padding: 0;
                 transition: color 0.2s;
             }
+            .offer-icon-btn {
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                color: #183543 !important;
+                padding: 0 5px !important;
+                border-bottom: none !important;
+                margin-left: auto !important;
+            }
+            .offer-icon-btn i {
+                font-size: 18px !important;
+                color: #183543 !important;
+            }
             /* Auction Pulse Icon Animation */
             .auction-pulse-btn {
                 display: inline-flex !important;
@@ -868,7 +924,7 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                 color: #183543 !important;
                 padding: 0 5px !important;
                 border-bottom: none !important;
-                margin-left: auto !important;
+                margin-left: 10px !important;
             }
             .auction-pulse-btn i {
                 font-size: 18px !important;
@@ -1039,7 +1095,7 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                                 <span class="wishlist-label d-lg-show mt-1">Wallet </span>
                             </a>
 
-                            <a class="wishlist label-down link d-xs-show" href="{{ route('myWishlist') }}">
+                            <a class="wishlist header-wishlist-btn label-down link d-xs-show" href="{{ route('myWishlist') }}">
                                 <i class="w-icon-heart" style="position: relative;">
                                     <span class="wishcount" style="position:absolute; top:-5px; right:-8px; width:1.9rem; height:1.9rem; border-radius:50%; font-style:normal; z-index:1; font-size:1.1rem; font-weight:400; line-height:1.9rem; background:#ff5b5b; color:#fff; text-align:center;">0</span>
                                 </i>
@@ -1122,6 +1178,7 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                         @if(isset($livingCategory) && $livingCategory)
                             <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-living">Living <i class="w-icon-angle-down"></i></a>
                         @endif
+                        <a href="{{ url('offers') }}" class="offer-icon-btn" title="Offers"><i class="w-icon-sale"></i></a>
                         <a href="{{ url('auction') }}" class="auction-pulse-btn" title="Live Auction"><i class="fas fa-gavel"></i></a>
                     </div>
                 </div>
