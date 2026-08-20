@@ -296,10 +296,17 @@
        </a>
        <?php } ?>
 
-       <a href="{{ url('offers') }}" class="sticky-link">
-           <i class="w-icon-sale"></i>
-           <p>Offers</p>
-       </a>
+        <?php if(session('customer_id')){ ?>
+        <a href="{{ url('track-order') }}" class="sticky-link">
+            <i class="w-icon-map-marker"></i>
+            <p>Track</p>
+        </a>
+        <?php } else { ?>
+        <a onclick="showLoginPopup()" class="sticky-link" style="cursor: pointer;">
+            <i class="w-icon-map-marker"></i>
+            <p>Track</p>
+        </a>
+        <?php } ?>
 
        <a href="{{ url('main-category/men') }}" class="sticky-link">
            <i class="w-icon-category"></i>
