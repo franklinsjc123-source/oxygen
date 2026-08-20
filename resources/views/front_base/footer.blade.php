@@ -284,6 +284,10 @@
            <i class="w-icon-vendor-store"></i>
            <p>Shops</p>
        </a>
+       <a href="{{ url('categories') }}" class="sticky-link {{ request()->is('categories') ? 'active' : '' }}">
+           <i class="w-icon-grid"></i>
+           <p>Categories</p>
+       </a>
 
        <?php  if(session('customer_id')){ ?>
        <a href="{{ route('myAccount') }}" class="sticky-link {{ request()->is('my-account') || request()->is('my-account/*') || request()->is('customer/*') ? 'active' : '' }}">
@@ -308,12 +312,7 @@
             <p>Track</p>
         </a>
         <?php } ?>
-
-       <a href="{{ url('main-category/men') }}" class="sticky-link {{ request()->is('main-category/*') || request()->is('category/*') ? 'active' : '' }}">
-           <i class="w-icon-category"></i>
-           <p>Products</p>
-       </a>
-   </div>
+    </div>
    <!-- End of Sticky Footer -->
 
    <!-- Start of Scroll Top -->

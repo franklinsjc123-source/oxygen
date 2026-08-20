@@ -129,6 +129,30 @@ Route::post('/rating/store',[FrontendController::class,'storeRating'])->name('ra
 Route::get('/main-category/{slug}', [FrontendController::class, 'mainCategoryShopBySlug'])->name('mainCategoryShop.slug');
 Route::get('/category/{category_slug}/{sub_category_slug?}', [FrontendController::class, 'categoryShopBySlug'])->name('categoryShop.slug');
 
+Route::get('/categories', function() {
+    $categorymain = \App\Models\Category\CategoryMain::with('submenu')->orderBy('category_main_sortorder', 'asc')->get();
+    
+    $order = ['men', 'women', 'kids', 'living'];
+    $categorymain = $categorymain->sortBy(function($item) use ($order) {
+        $slug = strtolower($item->slug);
+        $exactIndex = array_search($slug, $order);
+        if ($exactIndex !== false) {
+            return $exactIndex;
+        }
+        foreach ($order as $index => $term) {
+            if ($term === 'men' && str_contains($slug, 'women')) {
+                continue;
+            }
+            if (str_contains($slug, $term)) {
+                return $index;
+            }
+        }
+        return 99;
+    });
+
+    return view('website.front-end.categories', compact('categorymain'));
+})->name('allCategories');
+
 Route::get('/mainCategoryShop/{id}', function($id) {
     $cat = \DB::table('category_main')->where('id', $id)->first();
     if ($cat && $cat->slug) {
