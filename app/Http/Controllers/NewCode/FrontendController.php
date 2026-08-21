@@ -543,6 +543,28 @@ class FrontendController extends Controller
 
         $subid = array_filter(explode(',', (string) $vendorcreate->sub_category_ids));
         $Categorysub = count($subid) > 0 ? CategorySub::whereIn('id', $subid)->get() : collect();
+        $attachRatingsObj = function ($items) {
+            foreach ($items as $item) {
+                $avg = \App\Models\Rating::where('products_id', $item->id)->avg('star_rating');
+                $item->rating_percent = $avg ? ($avg / 5) * 100 : 0;
+                $item->review_count = \App\Models\Rating::where('products_id', $item->id)->count();
+            }
+        };
+
+        $attachRatingsArr = function (&$items) {
+            foreach ($items as &$item) {
+                $avg = \App\Models\Rating::where('products_id', $item['id'])->avg('star_rating');
+                $item['rating_percent'] = $avg ? ($avg / 5) * 100 : 0;
+                $item['review_count'] = \App\Models\Rating::where('products_id', $item['id'])->count();
+            }
+        };
+
+        $attachRatingsObj($products);
+        $attachRatingsObj($topCollection);
+        $attachRatingsObj($collectionProducts);
+        $attachRatingsObj($featuredProducts);
+        $attachRatingsArr($offerList);
+
         return view('frontend/vendor_doken_store')
             ->with([
                 "products" => $products,
@@ -1226,7 +1248,7 @@ class FrontendController extends Controller
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
 
                 DB::raw('AVG(ratings.star_rating) as avg_rating'),
-                DB::raw('COUNT(ratings.id) as review_count')
+                DB::raw('COUNT(DISTINCT ratings.id) as review_count')
             )
             ->where('products.vendor_id', $vendor_id)
             ->where('products.status', 1)
@@ -1276,7 +1298,7 @@ class FrontendController extends Controller
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
 
                 DB::raw('AVG(ratings.star_rating) as avg_rating'),
-                DB::raw('COUNT(ratings.id) as review_count')
+                DB::raw('COUNT(DISTINCT ratings.id) as review_count')
             )
             ->where('products.vendor_id', $vendor_id)
             ->where('products.status', 1)
@@ -1325,7 +1347,7 @@ class FrontendController extends Controller
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
                 DB::raw('AVG(ratings.star_rating) as avg_rating'),
-                DB::raw('COUNT(ratings.id) as review_count')
+                DB::raw('COUNT(DISTINCT ratings.id) as review_count')
             )
             ->where('products.vendor_id', $vendor_id)
             ->where('products.offers', $offer_id)
@@ -3704,7 +3726,8 @@ class FrontendController extends Controller
         }
 
         if (!empty($request->color)) {
-            $productsQuery->whereIn('pd.attributevalue1', $request->color);
+            $colorsPlaceholders = implode(',', array_fill(0, count($request->color), '?'));
+            $productsQuery->orderByRaw("CASE WHEN pd.attributevalue1 IN ($colorsPlaceholders) THEN 0 ELSE 1 END ASC", $request->color);
         }
 
         if (!empty($request->size)) {
@@ -3726,20 +3749,15 @@ class FrontendController extends Controller
 
         switch ($orderby) {
             case 'new-collections':
-                $productsQuery->where('p.collection', 'New Arrivals')
+                $productsQuery->orderByRaw("CASE WHEN p.collection = 'New Arrivals' THEN 0 ELSE 1 END ASC")
                               ->orderBy('p.created_at', 'desc');
                 break;
             case 'best-sellers':
-                $productsQuery->where('p.collection', 'Best Seller')
+                $productsQuery->orderByRaw("CASE WHEN p.collection = 'Best Seller' THEN 0 ELSE 1 END ASC")
                               ->orderBy('p.id', 'desc');
                 break;
             case 'top-rated':
-                $productsQuery->whereExists(function ($query) {
-                    $query->select(DB::raw(1))
-                          ->from('ratings')
-                          ->whereColumn('ratings.products_id', 'p.id');
-                })
-                ->orderBy(DB::raw('(SELECT COALESCE(AVG(star_rating), 0) FROM ratings WHERE ratings.products_id = p.id)'), 'desc');
+                $productsQuery->orderBy(DB::raw('(SELECT COALESCE(AVG(star_rating), 0) FROM ratings WHERE ratings.products_id = p.id)'), 'desc');
                 break;
             case 'price-low':
                 $productsQuery->orderBy('pd.selling_price', 'asc');
