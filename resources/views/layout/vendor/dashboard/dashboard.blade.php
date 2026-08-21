@@ -1676,7 +1676,6 @@
                 var renewalModal = bootstrap.Modal.getInstance(renewalModalEl);
                 if (renewalModal) renewalModal.hide();
 
-                // Open Razorpay Checkout
                 var amountInPaise = Math.round(price * 100);
                 var options = {
                     "key": "{{ config('services.razorpay.key') }}",
@@ -1684,6 +1683,7 @@
                     "currency": "INR",
                     "name": "{{ $vendorDetails->shop_name ?? 'Tryneww Store' }}",
                     "description": packageName + " - Subscription Renewal",
+                    "webview_intent": /iPhone|iPad|iPod|Android/i.test(navigator.userAgent),
                     "handler": function (response) {
                         // Payment successful — send to backend
                         Swal.fire({

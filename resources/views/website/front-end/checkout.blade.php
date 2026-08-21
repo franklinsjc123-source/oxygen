@@ -474,6 +474,7 @@
                         "name": "Tryneww Store",
                         "description": "Order Payment",
                         "image": "{{ asset('assets/images/logo.png') }}",
+                        "webview_intent": /iPhone|iPad|iPod|Android/i.test(navigator.userAgent),
                         "handler": function (response){
                             $('#razorpay_payment_id').val(response.razorpay_payment_id);
                             $('#razorpay_signature').val(response.razorpay_signature);
