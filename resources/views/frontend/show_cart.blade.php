@@ -66,7 +66,7 @@ if (isset($records) && count($records) > 0) {
         <span class="amount">Rs.{{ number_format($row['payable_amount'], 2) }}</span>
     </td>
     <td class="product-remove text-center align-middle">
-        <button type="button" class="btn btn-sm btn-rounded btn-action-remove" onclick="removeCart('<?= $row['id'] ?>')" style="min-width: 100px; font-size: 11px; padding: 8px 12px; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0 auto;">
+        <button type="button" class="btn btn-sm btn-rounded btn-action-remove" onclick="removeCart('<?= $row['id'] ?>', true)" style="min-width: 100px; font-size: 11px; padding: 8px 12px; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0 auto;">
             <i class="fas fa-trash-alt"></i> Remove
         </button>
     </td>

@@ -1682,7 +1682,7 @@
                     "key": "{{ config('services.razorpay.key') }}",
                     "amount": amountInPaise,
                     "currency": "INR",
-                    "name": "{{ $vendorDetails->shop_name ?? 'Oxygen Store' }}",
+                    "name": "{{ $vendorDetails->shop_name ?? 'Tryneww Store' }}",
                     "description": packageName + " - Subscription Renewal",
                     "handler": function (response) {
                         // Payment successful — send to backend

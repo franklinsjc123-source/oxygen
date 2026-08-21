@@ -471,7 +471,7 @@
                         "key": "{{ config('services.razorpay.key') }}",
                         "amount": totalAmount * 100,
                         "currency": "INR",
-                        "name": "Oxygen Store",
+                        "name": "Tryneww Store",
                         "description": "Order Payment",
                         "image": "{{ asset('assets/images/logo.png') }}",
                         "handler": function (response){

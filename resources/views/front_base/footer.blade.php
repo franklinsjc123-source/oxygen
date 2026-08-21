@@ -1332,30 +1332,59 @@
        // }
 
 
-       function removeCart(id) {
-           var url = '<?= route('removeCart') ?>/' + encodeURIComponent(id);
+        function removeCart(id, confirmRequired = false) {
+            var url = '<?= route('removeCart') ?>/' + encodeURIComponent(id);
 
+            var performDelete = function() {
+                $.get(url, function(data) {
+                    if (data.removed == 1) {
+                        window.showCenterMessage(data.message, "success");
+                        window.syncCartCount(data.count || 0);
+                        showSideCart();
+                        if (window.location.pathname.includes('/cart') || window.location.pathname.includes('/checkout')) {
+                            location.reload();
+                        }
+                    }
+                });
+            };
 
-           swal({
-                   title: "Are you sure?",
-                   text: "Once deleted, you will not be able to recover this remove cart!",
-                   icon: "warning",
-                   buttons: true,
-                   dangerMode: true,
-               })
-               .then((willDelete) => {
-                   if (willDelete) {
-                       $.get(url, function(data) {
-                           if (data.removed == 1) {
-                               window.showCenterMessage(data.message, "success");
-                               window.syncCartCount(data.count || 0);
-                               showSideCart();
-                           }
-                       });
-
-                   }
-               });
-       }
+            if (confirmRequired) {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "Once deleted, you will not be able to recover this cart item!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: '#0088dd',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            performDelete();
+                        }
+                    });
+                } else if (typeof swal === 'function') {
+                    swal({
+                        title: "Are you sure?",
+                        text: "Once deleted, you will not be able to recover this cart item!",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    }).then((willDelete) => {
+                        if (willDelete) {
+                            performDelete();
+                        }
+                    });
+                } else {
+                    if (confirm("Once deleted, you will not be able to recover this cart item!")) {
+                        performDelete();
+                    }
+                }
+            } else {
+                performDelete();
+            }
+        }
 
 
 

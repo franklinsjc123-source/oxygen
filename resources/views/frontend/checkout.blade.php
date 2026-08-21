@@ -1189,7 +1189,7 @@
                              "key": "{{ config('services.razorpay.key') }}",
                              "amount": totalAmount * 100,
                              "currency": "INR",
-                             "name": "Oxygen Store",
+                             "name": "Tryneww Store",
                              "description": "Order Payment",
                              "handler": function (response){
                                  document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
