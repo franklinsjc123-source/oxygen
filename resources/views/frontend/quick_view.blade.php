@@ -33,42 +33,95 @@
                                                @php
                                                    $offer_image = $prouctsList[$id]['offer_image'] ?? null;
                                                @endphp
-                                               @if($offer_image)
-                                                   <div class="product-label-group" style="position: absolute; top: 10px; left: 10px; z-index: 10; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 5px;">
-                                                       <img src="{{ asset('assets/images/offer_logo/'.$offer_image) }}" alt="Offer" style="width: 60px; height: 60px; object-fit: contain; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); border-radius: 5px;">
-                                                        @if(isset($offerDetails) && $offerDetails)
-                                                            @php
-                                                                $offerText = '';
-                                                                if ($offerDetails->type == "Buy X Get Y Free") {
-                                                                    $offerText = 'Buy ' . ($offerDetails->buy ?: '1') . ' Get ' . ($offerDetails->getoffer ?: '1') . ' Free';
-                                                                } elseif ($offerDetails->type == "Cashback") {
-                                                                    if (strtolower($offerDetails->cashbacktype) == 'percentage') {
-                                                                        $offerText = "Cashback {$offerDetails->cashbackvalue}% Off";
-                                                                    } else {
-                                                                        $offerText = "Cashback ₹{$offerDetails->cashbackvalue} Off";
-                                                                    }
-                                                                } elseif ($offerDetails->type == "Fixed Discount") {
-                                                                    if (strtolower($offerDetails->discount_type) == 'percentage') {
-                                                                        $offerText = "Flat {$offerDetails->value}% Off";
-                                                                    } else {
-                                                                        $offerText = "Flat ₹{$offerDetails->value} Off";
-                                                                    }
-                                                                } elseif (str_contains($offerDetails->type, '@')) {
-                                                                    $amt = $offerDetails->getamt ? "₹{$offerDetails->getamt}/-" : "{$offerDetails->value}%";
-                                                                    $offerText = "Buy {$offerDetails->buy} @ {$amt}";
-                                                                } else {
-                                                                    $offerText = $offerDetails->title ?: $offerDetails->type;
-                                                                }
-                                                            @endphp
-                                                            @if($offerText)
-                                                                <div style="background: #0088dd; color: #fff; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); white-space: nowrap;">
-                                                                    {{ $offerText }}
-                                                                </div>
-                                                            @endif
-                                                        @endif
-                                                   </div>
-                                               @endif
-                                           <?php } ?>
+                                                @php
+                                                     $offer_image = $prouctsList[$id]['offer_image'] ?? null;
+                                                     $offerName = '';
+                                                     $offerId = null;
+                                                     if (isset($prouctsList[$id])) {
+                                                         $pObj = $prouctsList[$id];
+                                                         if (is_array($pObj)) {
+                                                             $offerId = $pObj['offer_id'] ?? null;
+                                                         }
+                                                     }
+                                                     if (empty($offerId) && isset($offerDetails) && $offerDetails) {
+                                                         $offerId = $offerDetails->id;
+                                                     }
+                                                     
+                                                     if ($offerId) {
+                                                         $offerInfo = DB::table('master_offers')->where('id', $offerId)->first();
+                                                         if ($offerInfo) {
+                                                             if ($offerInfo->type == "Buy X Get Y Free") {
+                                                                 $offerName = 'Buy ' . ($offerInfo->buy ?: '1') . ' Get ' . ($offerInfo->getoffer ?: '1') . ' Free';
+                                                             } elseif ($offerInfo->type == "Cashback" || $offerInfo->type == "Cashback Offer") {
+                                                                 if (strtolower($offerInfo->cashbacktype) == 'percentage') {
+                                                                     $offerName = "Cash Back {$offerInfo->cashbackvalue}% Off";
+                                                                 } else {
+                                                                     $offerName = "Cashback ₹{$offerInfo->cashbackvalue} Off";
+                                                                 }
+                                                             } elseif ($offerInfo->type == "Fixed Discount") {
+                                                                 if (strtolower($offerInfo->discount_type) == 'percentage') {
+                                                                     $offerName = "Flat {$offerInfo->value}% Off";
+                                                                 } else {
+                                                                     $offerName = "Flat ₹{$offerInfo->value} Off";
+                                                                 }
+                                                             } elseif (str_contains($offerInfo->type, '@')) {
+                                                                 $buyQty = $offerInfo->buy ?: ($offerInfo->buyproduct ?: "1");
+                                                                 $amt = $offerInfo->getamt ? "₹{$offerInfo->getamt}/-" : "{$offerInfo->value}%";
+                                                                 $offerName = "Buy {$buyQty} @ {$amt}";
+                                                             } else {
+                                                                 $offerName = $offerInfo->title ?: $offerInfo->type;
+                                                             }
+                                                         }
+                                                     }
+                                                 @endphp
+                        @if(!empty($offerName))
+                @php
+                    $shape = 'ribbon';
+                    $bg = '#1a5fe5';
+                    $text = '#ffffff';
+                    $shadow = '0 2px 8px rgba(0,0,0,0.25)';
+                    
+                    $offerLower = strtolower($offerName);
+                    if (str_contains($offerLower, '@')) {
+                        $shape = 'ribbon';
+                        $bg = 'linear-gradient(135deg, #d41e7d, #a3105a)'; // Pink for Buy @
+                    } elseif (str_contains($offerLower, 'buy') || str_contains($offerLower, 'free')) {
+                        $shape = 'ribbon';
+                        $bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)'; // Purple for Buy X Get Y
+                    } elseif (str_contains($offerLower, 'cash')) {
+                        $shape = 'circle';
+                        $bg = 'linear-gradient(135deg, #2ebd59, #1fa04a)';
+                    } elseif (str_contains($offerLower, 'flat')) {
+                        $shape = 'shield';
+                        $bg = 'linear-gradient(135deg, #1a73e8, #1558b5)';
+                    } elseif (str_contains($offerLower, 'intro')) {
+                        $shape = 'ribbon';
+                        $bg = 'linear-gradient(135deg, #e97a31, #d46520)';
+                    } elseif (str_contains($offerLower, 'save')) {
+                        $shape = 'circle';
+                        $bg = 'linear-gradient(135deg, #ffd400, #f0c800)';
+                        $text = '#000000';
+                    } elseif (str_contains($offerLower, 'discount') || str_contains($offerLower, 'off')) {
+                        $shape = 'ribbon';
+                        $bg = 'linear-gradient(135deg, #e51a2f, #c41525)';
+                    } else {
+                        $bg = 'linear-gradient(135deg, #1a5fe5, #1450c0)';
+                    }
+                    
+                    $style = '';
+                    if ($shape == 'ribbon') {
+                        $style = "position:absolute; top:0; left:10px; width:58px; min-height:68px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
+                    } elseif ($shape == 'circle') {
+                        $style = "position:absolute; top:8px; left:8px; width:62px; height:62px; border-radius:50%; padding:4px; box-shadow:{$shadow};";
+                    } else { // shield
+                        $style = "position:absolute; top:0; left:10px; width:58px; min-height:66px; clip-path:polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%); padding:6px 3px 16px 3px;";
+                    }
+                @endphp
+                <div style="{{ $style }} background:{{ $bg }}; color:{{ $text }}; font-weight:900; font-size:11px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;">
+                    {{ $offerName }}
+                </div>
+            @endif
+                                                   <?php } ?>
                                        </figure>
                                    </div>
                           <?php }
@@ -120,7 +173,7 @@
                          @if(!empty($prouctsList[$id]['mobile_number1']))
                          <div class="product-categories mt-1">
                              Shop Contact:
-                             <span class="product-category"><a href="tel:<?= $prouctsList[$id]['mobile_number1'] ?>"><i class="fas fa-phone-alt"></i> <?= $prouctsList[$id]['mobile_number1'] ?></a></span>
+                             <span class="product-category"><a href="tel:<?= $prouctsList[$id]['mobile_number1'] ?>"><i class="w-icon-phone"></i> <?= $prouctsList[$id]['mobile_number1'] ?></a></span>
                          </div>
                          @endif
                          {{-- <div class="product-categories">

@@ -264,17 +264,17 @@
                                                 <li style="padding: 4px 0;">
                                                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #555;">
                                                         <input type="checkbox" name="filter_offer[]" value="{{ $offer->id }}" class="filter-checkbox" style="accent-color: #222; width: 15px; height: 15px;">
-                                                        @php
-                                                            $offerName = $offer->title;
+                                                                                                                @php
+                                                            $offerName = '';
                                                             if ($offer->type == 'Buy X Get Y Free') {
                                                                 $buy = $offer->buy ?: '1';
                                                                 $get = $offer->getoffer ?: '1';
                                                                 $offerName = "Buy {$buy} Get {$get} Free";
-                                                            } elseif ($offer->type == 'Cashback') {
+                                                            } elseif ($offer->type == 'Cashback' || $offer->type == 'Cashback Offer') {
                                                                 if (strtolower($offer->cashbacktype) == 'percentage') {
-                                                                    $offerName = "Cashback {$offer->cashbackvalue}% Off";
+                                                                    $offerName = "Cash Back {$offer->cashbackvalue}% Off";
                                                                 } else {
-                                                                    $offerName = "Cashback ₹{$offer->cashbackvalue} Off";
+                                                                    $offerName = "Cash Back ₹{$offer->cashbackvalue} Off";
                                                                 }
                                                             } elseif ($offer->type == 'Fixed Discount') {
                                                                 if (strtolower($offer->discount_type) == 'percentage') {
@@ -283,8 +283,11 @@
                                                                     $offerName = "Flat ₹{$offer->value} Off";
                                                                 }
                                                             } elseif (str_contains($offer->type, '@')) {
+                                                                $buyQty = $offer->buy ?: ($offer->buyproduct ?: "1");
                                                                 $amt = $offer->getamt ? "₹{$offer->getamt}/-" : "{$offer->value}%";
-                                                                $offerName = "Buy {$offer->buy} @ {$amt}";
+                                                                $offerName = "Buy {$buyQty} @ {$amt}";
+                                                            } else {
+                                                                $offerName = $offer->title ?: $offer->type;
                                                             }
                                                         @endphp
                                                         {{ $offerName }}
@@ -610,16 +613,10 @@
                                             <a href="${siteurl}/products/${product.slug || product.id}">
                                                 <img src="${siteurl}/assets/images/products/${product.product_image}" alt="${product.product_name}" />
                                             </a>
-                                            ${product.offer_image ? `
-                                               <div class="product-label-group" style="position: absolute; top: 10px; left: 10px; z-index: 10; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px;">
-                                                   <img src="${siteurl}/assets/images/offer_logo/${product.offer_image}" alt="Offer" style="width: 45px; height: 45px; object-fit: contain; border-radius: 5px; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));">
-                                                   ${product.offer_text ? `
-                                                       <div style="background: #0088dd; color: #fff; font-size: 8px; font-weight: 700; padding: 1px 4px; border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); white-space: nowrap; line-height: 1.1;">
-                                                           ${product.offer_text}
-                                                       </div>
-                                                   ` : ''}
-                                               </div>
-                                            ` : ''}
+${(product.offer_text || product.offer_title || product.offer_type) ? (() => {
+                                                   const meta = getRibbonStyles(product.offer_text || product.offer_title || product.offer_type);
+                                                   return `<div style="${meta.style} font-weight: 800; font-size: 7.5px; text-transform: uppercase; text-align: center; display: flex; align-items: center; justify-content: center; flex-direction: column; box-sizing: border-box; z-index: 10; line-height: 1; letter-spacing: 0.1px;">${meta.html}</div>`;
+                                               })() : ''}
                                             <div class="product-action-vertical">
                                                  <a href="${siteurl}/products/${product.slug || product.id}" class="btn-product-icon w-icon-cart"></a>
                                                  <a href="#" onclick="addwishlist('${product.id}', this)" class="btn-product-icon btn-wishlist ${wishlistedProductIds.includes(parseInt(product.id)) ? 'w-icon-heart-full' : 'w-icon-heart'}" ${wishlistedProductIds.includes(parseInt(product.id)) ? 'style="color: #ef4444 !important;"' : ''}><span></span></a>
@@ -683,4 +680,70 @@
             }, 300);
         });
     </script>
- @endsection
+ <script>
+function getRibbonStyles(offerName) {
+    const name = (offerName || '').toLowerCase();
+    let bg = 'linear-gradient(135deg, #1a5fe5, #1450c0)';
+    let text = '#ffffff';
+    let shape = 'ribbon';
+    
+    if (name.includes('@')) {
+        shape = 'ribbon';
+        bg = 'linear-gradient(135deg, #d41e7d, #a3105a)';
+    } else if (name.includes('buy') || name.includes('free')) {
+        shape = 'ribbon';
+        bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)';
+    } else if (name.includes('cash')) {
+        shape = 'circle';
+        bg = 'linear-gradient(135deg, #2ebd59, #1fa04a)';
+    } else if (name.includes('flat')) {
+        shape = 'shield';
+        bg = 'linear-gradient(135deg, #1a73e8, #1558b5)';
+    } else if (name.includes('intro')) {
+        shape = 'ribbon';
+        bg = 'linear-gradient(135deg, #e97a31, #d46520)';
+    } else if (name.includes('save')) {
+        shape = 'circle';
+        bg = 'linear-gradient(135deg, #ffd400, #f0c800)';
+        text = '#000000';
+    } else if (name.includes('discount') || name.includes('off')) {
+        shape = 'ribbon';
+        bg = 'linear-gradient(135deg, #e51a2f, #c41525)';
+    }
+    
+    let style = '';
+    if (shape === 'ribbon') {
+        style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
+    } else if (shape === 'circle') {
+        style = "position:absolute; top:8px; left:8px; width:56px; height:56px; border-radius:50%; padding:4px; box-shadow:0 2px 8px rgba(0,0,0,0.25);";
+    } else { // shield
+        style = "position:absolute; top:0; left:10px; width:52px; min-height:60px; clip-path:polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%); padding:6px 3px 16px 3px;";
+    }
+    
+    // Format offerName into short lines to prevent overflow
+    const words = name.split(' ');
+    let displayLines = [];
+    let currentLine = '';
+    for (let word of words) {
+        if ((currentLine + ' ' + word).trim().length > 8) {
+            if (currentLine) displayLines.push(currentLine.trim());
+            currentLine = word;
+        } else {
+            currentLine = (currentLine + ' ' + word).trim();
+        }
+    }
+    if (currentLine) displayLines.push(currentLine.trim());
+    if (displayLines.length > 3) {
+        displayLines = displayLines.slice(0, 3);
+    }
+    
+    const html = displayLines.map(line => `<div>${line}</div>`).join('');
+    const fullStyle = `${style} background:${bg}; color:${text};`;
+    
+    return {
+        style: fullStyle,
+        html: html
+    };
+}
+</script>
+@endsection

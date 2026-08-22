@@ -410,6 +410,7 @@ class FrontendController extends Controller
                 'o.offer_logo as offer_image',
                 'o.type as offer_type',
                 'o.discount_type',
+                'products.offers as offer_id',
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
                 DB::raw('SUM(products_details.quantity) as stock_qty'),
@@ -423,7 +424,7 @@ class FrontendController extends Controller
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
-                'o.offer_logo', 'o.type', 'o.discount_type'
+                'o.offer_logo', 'o.type', 'o.discount_type', 'products.offers'
             )
             ->get();
         $featuredProducts = DB::table('products')
@@ -439,6 +440,7 @@ class FrontendController extends Controller
                 'o.offer_logo as offer_image',
                 'o.type as offer_type',
                 'o.discount_type',
+                'products.offers as offer_id',
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
                 DB::raw('SUM(products_details.quantity) as stock_qty'),
@@ -453,7 +455,7 @@ class FrontendController extends Controller
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
-                'o.offer_logo', 'o.type', 'o.discount_type'
+                'o.offer_logo', 'o.type', 'o.discount_type', 'products.offers'
             )
             ->get();
 
@@ -470,6 +472,7 @@ class FrontendController extends Controller
                 'o.offer_logo as offer_image',
                 'o.type as offer_type',
                 'o.discount_type',
+                'products.offers as offer_id',
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
                 DB::raw('SUM(products_details.quantity) as stock_qty'),
@@ -484,7 +487,7 @@ class FrontendController extends Controller
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
-                'o.offer_logo', 'o.type', 'o.discount_type'
+                'o.offer_logo', 'o.type', 'o.discount_type', 'products.offers'
             )
             ->get();
 
@@ -507,6 +510,7 @@ class FrontendController extends Controller
                 'o.offer_logo as offer_image',
                 'o.type as offer_type',
                 'o.discount_type',
+                'products.offers as offer_id',
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
                 DB::raw('SUM(products_details.quantity) as stock_qty'),
@@ -520,7 +524,7 @@ class FrontendController extends Controller
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
-                'o.offer_logo', 'o.type', 'o.discount_type'
+                'o.offer_logo', 'o.type', 'o.discount_type', 'products.offers'
             )
             ->get();
 
@@ -875,7 +879,8 @@ class FrontendController extends Controller
             'pd.product_detail_image',
             'o.offer_logo',
             'o.type as offer_type',
-            'o.discount_type'
+            'o.discount_type',
+            'p.offers as offer_id'
         )->get();
         $resultArr = [];
         foreach ($productsData as $val) {
@@ -898,6 +903,7 @@ class FrontendController extends Controller
                     'vendor_slug' => $val->vendor_slug,
                     'profile_image' => $val->profile_image,
                     'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
+                    'offer_id' => $val->offer_id,
                 ];
             }
         }
@@ -944,7 +950,8 @@ class FrontendController extends Controller
             'pd.product_detail_image',
             'o.offer_logo',
             'o.type as offer_type',
-            'o.discount_type'
+            'o.discount_type',
+            'p.offers as offer_id'
         )->get();
         $resultArr = [];
         foreach ($productsData as $val) {
@@ -967,6 +974,7 @@ class FrontendController extends Controller
                     'vendor_slug' => $val->vendor_slug,
                     'profile_image' => $val->profile_image,
                     'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
+                    'offer_id' => $val->offer_id,
                 ];
             }
         }
@@ -1012,7 +1020,8 @@ class FrontendController extends Controller
             'pd.product_detail_image',
             'o.offer_logo',
             'o.type as offer_type',
-            'o.discount_type'
+            'o.discount_type',
+            'p.offers as offer_id'
         )->get();
         $resultArr = [];
         foreach ($productsData as $val) {
@@ -1035,6 +1044,7 @@ class FrontendController extends Controller
                     'vendor_slug' => $val->vendor_slug,
                     'profile_image' => $val->profile_image,
                     'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
+                    'offer_id' => $val->offer_id,
                 ];
             }
         }
@@ -1079,7 +1089,8 @@ class FrontendController extends Controller
             'pd.product_detail_image',
             'o.offer_logo',
             'o.type as offer_type',
-            'o.discount_type'
+            'o.discount_type',
+            'p.offers as offer_id'
         )->get();
         $resultArr = [];
         foreach ($productsData as $val) {
@@ -1102,6 +1113,7 @@ class FrontendController extends Controller
                     'vendor_slug' => $val->vendor_slug,
                     'profile_image' => $val->profile_image,
                     'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
+                    'offer_id' => $val->offer_id,
                 ];
             }
         }
@@ -1243,6 +1255,7 @@ class FrontendController extends Controller
                 'o.offer_logo as offer_image',
                 'o.type as offer_type',
                 'o.discount_type',
+                'products.offers as offer_id',
 
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
@@ -1258,7 +1271,7 @@ class FrontendController extends Controller
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
-                'o.offer_logo', 'o.type', 'o.discount_type'
+                'o.offer_logo', 'o.type', 'o.discount_type', 'products.offers'
             )
             ->limit('4')
             ->inRandomOrder()
@@ -1293,6 +1306,7 @@ class FrontendController extends Controller
                 'o.offer_logo as offer_image',
                 'o.type as offer_type',
                 'o.discount_type',
+                'products.offers as offer_id',
 
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
@@ -1308,7 +1322,7 @@ class FrontendController extends Controller
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
-                'o.offer_logo', 'o.type', 'o.discount_type'
+                'o.offer_logo', 'o.type', 'o.discount_type', 'products.offers'
             )
             ->limit('4')
             ->inRandomOrder()
@@ -1344,6 +1358,7 @@ class FrontendController extends Controller
                 'master_offers.offer_logo as offer_image',
                 'master_offers.type as offer_type',
                 'master_offers.discount_type as discount_type',
+                'products.offers as offer_id',
                 DB::raw('MIN(products_details.retail_price) as retail_price'),
                 DB::raw('MIN(products_details.selling_price) as selling_price'),
                 DB::raw('AVG(ratings.star_rating) as avg_rating'),
@@ -1358,7 +1373,7 @@ class FrontendController extends Controller
                 'products.product_name',
                 'products.product_image',
                 'category_sub.category_sub_name',
-                'master_offers.offer_logo', 'master_offers.type', 'master_offers.discount_type'
+                'master_offers.offer_logo', 'master_offers.type', 'master_offers.discount_type', 'products.offers'
             )
             ->inRandomOrder()
             ->limit('6')
@@ -1752,12 +1767,13 @@ class FrontendController extends Controller
             'pd.product_detail_image',
             'o.offer_logo',
             'o.type as offer_type',
-            'o.discount_type'
+            'o.discount_type',
+            'p.offers as offer_id'
         )->get();
         $resultArr = [];
         foreach ($productsData as $val) {
             $productId = $val->id;
-            if (!isset($resultArr[$productId])) {
+            if (!isset($resultArr[$productId]) || $val->selling_price < $resultArr[$productId]['selling_price']) {
                 $resultArr[$productId] = [
                     'id' => $val->id,
                     'slug' => $val->slug,
@@ -1773,6 +1789,7 @@ class FrontendController extends Controller
                     'vendor_slug' => $val->vendor_slug,
                     'profile_image' => $val->profile_image,
                     'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
+                    'offer_id' => $val->offer_id,
                 ];
             }
         }
@@ -1812,56 +1829,60 @@ class FrontendController extends Controller
             'p.vendor_id',
             'p.product_name',
             'p.product_image',
-            'pd.selling_price',
-            'pd.retail_price',
+            \DB::raw('MIN(pd.selling_price) as selling_price'),
+            \DB::raw('MIN(pd.retail_price) as retail_price'),
             'c.category_name',
             'cs.category_sub_name',
             'cm.category_main_name',
             'vp.shop_name',
             'vp.slug as vendor_slug',
             'vp.profile_image',
-            'pd.attributevalue2 as size',
-            'pd.attributevalue1 as color',
-            'pd.product_detail_image',
-            'pd.quantity as stock_qty',
-            'pd.quantity as stock_qty',
-            'pd.low_stock_limit as low_stock_limit',
+            \DB::raw('SUM(pd.quantity) as stock_qty'),
+            \DB::raw('MIN(pd.low_stock_limit) as low_stock_limit'),
             'o.offer_logo',
             'o.type as offer_type',
-            'o.discount_type'
+            'o.discount_type',
+            'p.offers as offer_id'
+        )->groupBy(
+            'p.id',
+            'p.slug',
+            'p.vendor_id',
+            'p.product_name',
+            'p.product_image',
+            'c.category_name',
+            'cs.category_sub_name',
+            'cm.category_main_name',
+            'vp.shop_name',
+            'vp.slug',
+            'vp.profile_image',
+            'o.offer_logo',
+            'o.type',
+            'o.discount_type',
+            'p.offers'
         )->get();
+
         $resultArr = [];
         foreach ($productsData as $val) {
             $productId = $val->id;
-            if (!isset($resultArr[$productId])) {
-                $resultArr[$productId] = [
-                    'id' => $val->id,
-                    'slug' => $val->slug,
-                    'vendor_id' => $val->vendor_id,
-                    'product_name' => $val->product_name,
-                    'product_image' => $val->product_image,
-                    'selling_price' => $val->selling_price,
-                    'retail_price' => $val->retail_price,
-                    'category_name' => $val->category_name,
-                    'category_sub_name' => $val->category_sub_name,
-                    'category_main_name' => $val->category_main_name,
-                    'shop_name' => $val->shop_name,
-                    'vendor_slug' => $val->vendor_slug,
-                    'profile_image' => $val->profile_image,
-                    'stock_qty' => (int) ($val->stock_qty ?? 0),
-                    'low_stock_limit' => isset($val->low_stock_limit) ? (int) $val->low_stock_limit : null,
-                    'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
-                ];
-            } else {
-                $resultArr[$productId]['stock_qty'] += (int) ($val->stock_qty ?? 0);
-                if (isset($val->low_stock_limit)) {
-                    $currentLimit = $resultArr[$productId]['low_stock_limit'];
-                    $nextLimit = (int) $val->low_stock_limit;
-                    if ($currentLimit === null || $nextLimit < $currentLimit) {
-                        $resultArr[$productId]['low_stock_limit'] = $nextLimit;
-                    }
-                }
-            }
+            $resultArr[$productId] = [
+                'id' => $val->id,
+                'slug' => $val->slug,
+                'vendor_id' => $val->vendor_id,
+                'product_name' => $val->product_name,
+                'product_image' => $val->product_image,
+                'selling_price' => $val->selling_price,
+                'retail_price' => $val->retail_price,
+                'category_name' => $val->category_name,
+                'category_sub_name' => $val->category_sub_name,
+                'category_main_name' => $val->category_main_name,
+                'shop_name' => $val->shop_name,
+                'vendor_slug' => $val->vendor_slug,
+                'profile_image' => $val->profile_image,
+                'stock_qty' => (int) ($val->stock_qty ?? 0),
+                'low_stock_limit' => isset($val->low_stock_limit) ? (int) $val->low_stock_limit : null,
+                'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
+                'offer_id' => $val->offer_id,
+            ];
         }
 
         return $resultArr;
@@ -1922,14 +1943,14 @@ class FrontendController extends Controller
         $resultArr = [];
         foreach ($productsData as $val) {
             $productId = $val->id;
-            if (!isset($resultArr[$productId])) {
+            if (!isset($resultArr[$productId]) || $val->selling_price < $resultArr[$productId]['selling_price']) {
                 $offerText = '';
                 if ($val->offer_type) {
                     if ($val->offer_type == "Buy X Get Y Free") {
                         $offerText = 'Buy ' . ($val->offer_buy ?: '1') . ' Get ' . ($val->offer_getoffer ?: '1') . ' Free';
-                    } elseif ($val->offer_type == "Cashback") {
+                    } elseif ($val->offer_type == "Cashback" || $val->offer_type == "Cashback Offer") {
                         if (strtolower($val->offer_cashbacktype) == 'percentage') {
-                            $offerText = "Cashback {$val->offer_cashbackvalue}% Off";
+                            $offerText = "Cash Back {$val->offer_cashbackvalue}% Off";
                         } else {
                             $offerText = "Cashback ₹{$val->offer_cashbackvalue} Off";
                         }
@@ -1941,7 +1962,7 @@ class FrontendController extends Controller
                         }
                     } elseif (str_contains($val->offer_type, '@')) {
                         $amt = $val->offer_getamt ? "₹{$val->offer_getamt}/-" : "{$val->offer_value}%";
-                        $offerText = "Buy {$val->offer_buy} @ {$amt}";
+                        $buyQty = $val->offer_buy ?: ($val->offer_buyproduct ?: "1"); $offerText = "Buy {$buyQty} @ {$amt}";
                     } else {
                         $offerText = $val->offer_title ?: $val->offer_type;
                     }
@@ -3726,8 +3747,7 @@ class FrontendController extends Controller
         }
 
         if (!empty($request->color)) {
-            $colorsPlaceholders = implode(',', array_fill(0, count($request->color), '?'));
-            $productsQuery->orderByRaw("CASE WHEN pd.attributevalue1 IN ($colorsPlaceholders) THEN 0 ELSE 1 END ASC", $request->color);
+            $productsQuery->whereIn('pd.attributevalue1', $request->color);
         }
 
         if (!empty($request->size)) {
@@ -3807,14 +3827,14 @@ class FrontendController extends Controller
             if ($val->retail_price > 0) {
                 $discount_percentage = round((($val->retail_price - $val->selling_price) / $val->retail_price) * 100);
             }
-            if (!isset($resultArr[$productId])) {
+            if (!isset($resultArr[$productId]) || $val->selling_price < $resultArr[$productId]['selling_price']) {
                 $offerText = '';
                 if ($val->offer_type) {
                     if ($val->offer_type == "Buy X Get Y Free") {
                         $offerText = 'Buy ' . ($val->offer_buy ?: '1') . ' Get ' . ($val->offer_getoffer ?: '1') . ' Free';
-                    } elseif ($val->offer_type == "Cashback") {
+                    } elseif ($val->offer_type == "Cashback" || $val->offer_type == "Cashback Offer") {
                         if (strtolower($val->offer_cashbacktype) == 'percentage') {
-                            $offerText = "Cashback {$val->offer_cashbackvalue}% Off";
+                            $offerText = "Cash Back {$val->offer_cashbackvalue}% Off";
                         } else {
                             $offerText = "Cashback ₹{$val->offer_cashbackvalue} Off";
                         }
@@ -3826,7 +3846,7 @@ class FrontendController extends Controller
                         }
                     } elseif (str_contains($val->offer_type, '@')) {
                         $amt = $val->offer_getamt ? "₹{$val->offer_getamt}/-" : "{$val->offer_value}%";
-                        $offerText = "Buy {$val->offer_buy} @ {$amt}";
+                        $buyQty = $val->offer_buy ?: ($val->offer_buyproduct ?: "1"); $offerText = "Buy {$buyQty} @ {$amt}";
                     } else {
                         $offerText = $val->offer_title ?: $val->offer_type;
                     }
@@ -3887,7 +3907,7 @@ class FrontendController extends Controller
     {
         $customer_id = Session::get('customer_id');
 
-        $wishlist = wishlist::select('ecom_wishlist.*', 'pr.product_name', 'pr.product_image', 'pr.slug', 'pd.product_detail_image', 'pd.retail_price', 'pd.selling_price')
+        $wishlist = wishlist::select('ecom_wishlist.*', 'pr.product_name', 'pr.product_image', 'pr.slug', 'pr.offers', 'pd.product_detail_image', 'pd.retail_price', 'pd.selling_price')
             ->leftJoin('products_details as pd', 'pd.id', '=', 'ecom_wishlist.ecom_product_id')
             ->leftJoin('products as pr', 'pd.products_id', '=', 'pr.product_id')
             ->where('ecom_wishlist.customer_id', '=', $customer_id)
