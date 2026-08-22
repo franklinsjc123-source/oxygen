@@ -36,7 +36,18 @@
         100% { transform: rotate(360deg); }
     }
 
-
+    @media (max-width: 767px) {
+        .home-slider .home,
+        .home-slider .slider-contain {
+            height: 260px !important;
+        }
+    }
+    @media (max-width: 480px) {
+        .home-slider .home,
+        .home-slider .slider-contain {
+            height: 260px !important;
+        }
+    }
 </style>
 
 <body style="background-color:#F0F0F0" class="theme-color-29">

@@ -64,6 +64,19 @@
     .filter-button:hover:after {
         transform: scaleX(0.5); /* Expand the underline on mouseover */
     }
+
+    @media (max-width: 767px) {
+        .home-slider .home,
+        .home-slider .slider-contain {
+            height: 260px !important;
+        }
+    }
+    @media (max-width: 480px) {
+        .home-slider .home,
+        .home-slider .slider-contain {
+            height: 260px !important;
+        }
+    }
 </style>
 
 

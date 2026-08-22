@@ -1193,6 +1193,93 @@ class FrontendController extends Controller
                 ->get();
         }
 
+        // Fetch active offers and group them for the homepage slider in a random order
+        $allOffers = \App\Models\Offer\Offer::where('status', 1)->inRandomOrder()->get();
+        $offerGroupMap = [];
+        $groupLabels = [];
+        $groupLogos = [];
+
+        foreach ($allOffers as $o) {
+            $groupKey = '';
+            $label = '';
+
+            switch ($o->type) {
+                case 'Cashback Offer':
+                    $groupKey = 'cashback_' . strtolower($o->cashbacktype) . '_' . $o->cashbackvalue;
+                    if ($o->cashbacktype == 'Percentage') {
+                        $label = 'Cashback ' . $o->cashbackvalue . '% Off';
+                    } else {
+                        $label = 'Cashback ₹' . $o->cashbackvalue . ' Off';
+                    }
+                    break;
+
+                case 'Buy X Get Y Free':
+                    $groupKey = 'buyxgety_' . $o->buy . '_' . $o->getoffer;
+                    $label = 'Buy ' . $o->buy . ' Get ' . $o->getoffer . ' Free';
+                    break;
+
+                case 'Buy X @ Y':
+                    $groupKey = 'buyxaty_' . $o->buyproduct . '_' . $o->getamt;
+                    $label = 'Buy ' . $o->buyproduct . ' @ ₹' . number_format($o->getamt) . '/-';
+                    break;
+
+                case 'Fixed Discount':
+                    if ($o->discount_type == 'Percentage') {
+                        $groupKey = 'fixed_percent_' . $o->value;
+                        $label = 'Flat ' . $o->value . '% Off';
+                    } else {
+                        $groupKey = 'fixed_amount_' . $o->value;
+                        $label = 'Flat ₹' . number_format($o->value) . ' Off';
+                    }
+                    break;
+
+                default:
+                    $groupKey = 'other_' . $o->id;
+                    $label = $o->title;
+                    break;
+            }
+
+            $offerGroupMap[$o->id] = $groupKey;
+            $groupLabels[$groupKey] = $label;
+            if (!isset($groupLogos[$groupKey]) && $o->offer_logo) {
+                $groupLogos[$groupKey] = $o->offer_logo;
+            }
+        }
+
+        $sliderOffers = [];
+        $seenGroups = [];
+        foreach ($allOffers as $o) {
+            $gk = $offerGroupMap[$o->id] ?? null;
+            if ($gk && !isset($seenGroups[$gk])) {
+                $seenGroups[$gk] = true;
+                
+                $resolvedLogo = $groupLogos[$gk] ?? $o->offer_logo;
+                if (empty($resolvedLogo)) {
+                    $resolvedLogo = ($o->type == 'Fixed Discount' && $o->discount_type == 'Percentage') 
+                        ? 'Fixed Discount Percentage.png' 
+                        : $o->type . '.jpeg';
+                }
+
+                $sliderOffers[] = (object)[
+                    'id'         => $o->id,
+                    'title'      => $groupLabels[$gk],
+                    'offer_logo' => $resolvedLogo,
+                    'db_logo'    => $o->offer_logo,
+                    'type'       => $o->type,
+                    'offer_type' => ($o->type == 'Fixed Discount' && $o->discount_type == 'Percentage') ? 'Fixed Discount Percentage' : $o->type,
+                    'group_key'  => $gk,
+                    'buy'        => $o->buy,
+                    'getoffer'   => $o->getoffer,
+                    'buyproduct' => $o->buyproduct,
+                    'getamt'     => $o->getamt,
+                    'value'      => $o->value,
+                    'discount_type' => $o->discount_type,
+                    'cashbackvalue' => $o->cashbackvalue,
+                    'cashbacktype'  => $o->cashbacktype,
+                ];
+            }
+        }
+
         return view('frontend/demo_eight', compact(
             'mainslider',
             'topRatedProducts',
@@ -1202,7 +1289,8 @@ class FrontendController extends Controller
             'kidsProducts',
             'vendorcreate',
             'locations',
-            'auctionProducts'
+            'auctionProducts',
+            'sliderOffers'
         ));
     }
 
