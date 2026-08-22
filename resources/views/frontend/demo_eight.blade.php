@@ -206,7 +206,87 @@
      </div>
      @endif
 
-     <div class="container pb-2">
+     <!-- Auction Products (Moved below offers) -->
+     @if(isset($auctionProducts) && count($auctionProducts) > 0)
+     <div class="container mt-4 mb-4">
+         <div class="title-link-wrapper mb-3">
+             <h2 class="title mb-0 pt-2 pb-2">Auction Products</h2>
+             <a href="{{ url('auction') }}" class="mb-0">More Products<i
+                     class="w-icon-long-arrow-right"></i></a>
+         </div>
+          <div class="swiper-container swiper-theme product-wrapper"
+              data-swiper-options="{
+                     'spaceBetween': 20,
+                     'slidesPerView': 2,
+                     'breakpoints': {
+                         '576': {
+                             'slidesPerView': 3
+                         },
+                         '768': {
+                             'slidesPerView': 4
+                         },
+                         '992': {
+                             'slidesPerView': 5
+                         },
+                         '1200': {
+                             'slidesPerView': 6
+                         }
+                     }
+                 }">
+              <div class="swiper-wrapper row cols-xl-6 cols-lg-5 cols-md-4 cols-sm-3 cols-2">
+                  @foreach($auctionProducts as $auction)
+                  <div class="swiper-slide product product-simple text-center">
+                      <figure class="product-media">
+                          <a href="{{ route('auction.detail', $auction->auction_id) }}">
+                              <img src="{{ asset('assets/images/products/' . $auction->product_image) }}" alt="Product" width="260"
+                                  height="291" />
+                          </a>
+                           <div class="product-action-vertical">
+                               <a href="#" onclick="addwishlist('{{ $auction->id }}', this)" class="btn-product-icon btn-wishlist {{ in_array($auction->id, $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($auction->id, $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"
+                                   title="Add to wishlist"></a>
+                           </div>
+                           <div class="product-countdown-container">
+                              @php
+                                 $endDateStr = str_replace('T', ' ', $auction->end_date);
+                                 $parsedDate = \Carbon\Carbon::parse($endDateStr);
+                                 $formattedForJs = $parsedDate->format('Y, n, j, G, i, s');
+                              @endphp
+                              <div class="product-countdown countdown-compact" data-until="{{ $formattedForJs }}"
+                                  data-format="DHMS" data-compact="false" data-labels-short="Days, Hours, Mins, Secs">
+                                  00:00:00:00</div>
+                          </div>
+                      </figure>
+                      <div class="product-details">
+                          <div class="sold-by">
+                              <b><a href="{{ url('/shop/' . ($auction->vendor_slug ?? $auction->vendor_id)) }}">{{ $auction->shop_name ?? 'Admin' }}</a></b>
+                          </div>
+                          <h4 class="product-name"><a href="{{ route('auction.detail', $auction->auction_id) }}">{{ ucwords($auction->product_name) }}</a></h4>
+
+                          <div class="ratings-container">
+                              <div class="ratings-full">
+                                  <span class="ratings" style="width: {{ $auction->rating_percent ?? 0 }}%"></span>
+                              </div>
+                              <a>({{ $auction->review_count ?? 0 }} Reviews)</a>
+                          </div>
+
+                          <div class="product-pa-wrapper" style="display: flex; align-items: center; justify-content: center; padding-top: 5px;">
+                              <div class="product-price-home" style="font-family: monospace; font-size: 1.6rem; font-weight: 700; color: #000;" title="Bid Amount">
+                                 <span style="color: #666; font-size: 1.4rem; font-weight: 600; margin-right: 5px; font-family: inherit;">Bid:</span>₹{{ $auction->selling_price > 0 ? $auction->selling_price : ($auction->retail_price ?? 0) }}
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <!-- End of Product Simple -->
+                  @endforeach
+
+              </div>
+              <div class="swiper-pagination"></div>
+          </div>
+          <!-- End of Swiper Container -->
+          @endif
+      </div>
+
+      <div class="container pb-2">
 
          <div class="swiper-container swiper-theme icon-box-wrapper appear-animate br-sm mt-6"
              data-swiper-options="{
@@ -656,7 +736,7 @@
                } ?>
         </div>
 
-         <div class="row cols-md-2 category-banner-2cols mb-5">
+         <div class="row cols-2 cols-md-2 category-banner-2cols mb-5">
              <div class="banner banner-fixed mb-4">
                  <figure class="br-sm">
                      <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/2-1.jpg" alt="Category Banner" width="680"
@@ -1163,86 +1243,6 @@
          </figure>
      </div>
      <!-- End of Banner Shoes -->
-     <div class="container">
-
-         @if(isset($auctionProducts) && count($auctionProducts) > 0)
-         <div class="title-link-wrapper mb-3">
-             <h2 class="title mb-0 pt-2 pb-2">Auction Products</h2>
-             <a href="{{ url('auction') }}" class="mb-0">More Products<i
-                     class="w-icon-long-arrow-right"></i></a>
-         </div>
-         <div class="swiper-container swiper-theme product-wrapper"
-             data-swiper-options="{
-                    'spaceBetween': 20,
-                    'slidesPerView': 2,
-                    'breakpoints': {
-                        '576': {
-                            'slidesPerView': 3
-                        },
-                        '768': {
-                            'slidesPerView': 4
-                        },
-                        '992': {
-                            'slidesPerView': 5
-                        },
-                        '1200': {
-                            'slidesPerView': 6
-                        }
-                    }
-                }">
-             <div class="swiper-wrapper row cols-xl-6 cols-lg-5 cols-md-4 cols-sm-3 cols-2">
-                 @foreach($auctionProducts as $auction)
-                 <div class="swiper-slide product product-simple text-center">
-                     <figure class="product-media">
-                         <a href="{{ route('auction.detail', $auction->auction_id) }}">
-                             <img src="{{ asset('assets/images/products/' . $auction->product_image) }}" alt="Product" width="260"
-                                 height="291" />
-                         </a>
-                          <div class="product-action-vertical">
-                              <a href="#" onclick="addwishlist('{{ $auction->id }}', this)" class="btn-product-icon btn-wishlist {{ in_array($auction->id, $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($auction->id, $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"
-                                  title="Add to wishlist"></a>
-                          </div>
-                          <div class="product-countdown-container">
-                             @php
-                                $endDateStr = str_replace('T', ' ', $auction->end_date);
-                                $parsedDate = \Carbon\Carbon::parse($endDateStr);
-                                $formattedForJs = $parsedDate->format('Y, n, j, G, i, s');
-                             @endphp
-                             <div class="product-countdown countdown-compact" data-until="{{ $formattedForJs }}"
-                                 data-format="DHMS" data-compact="false" data-labels-short="Days, Hours, Mins, Secs">
-                                 00:00:00:00</div>
-                         </div>
-                     </figure>
-                     <div class="product-details">
-                         <div class="sold-by">
-                             <b><a href="{{ url('/shop/' . ($auction->vendor_slug ?? $auction->vendor_id)) }}">{{ $auction->shop_name ?? 'Admin' }}</a></b>
-                         </div>
-                         <h4 class="product-name"><a href="{{ route('auction.detail', $auction->auction_id) }}">{{ ucwords($auction->product_name) }}</a></h4>
-
-                         <div class="ratings-container">
-                             <div class="ratings-full">
-                                 <span class="ratings" style="width: {{ $auction->rating_percent ?? 0 }}%"></span>
-                             </div>
-                             <a>({{ $auction->review_count ?? 0 }} Reviews)</a>
-                         </div>
-
-                         <div class="product-pa-wrapper" style="display: flex; align-items: center; justify-content: center; padding-top: 5px;">
-                             <div class="product-price-home" style="font-family: monospace; font-size: 1.6rem; font-weight: 700; color: #000;" title="Bid Amount">
-                                <span style="color: #666; font-size: 1.4rem; font-weight: 600; margin-right: 5px; font-family: inherit;">Bid:</span>₹{{ $auction->selling_price > 0 ? $auction->selling_price : ($auction->retail_price ?? 0) }}
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-                 <!-- End of Product Simple -->
-                 @endforeach
-
-             </div>
-             <div class="swiper-pagination"></div>
-         </div>
-         <!-- End of Swiper Container -->
-         @endif
-
-     </div>
 <style>
 .brands-wrapper .swiper-wrapper {
     align-items: flex-start !important;
