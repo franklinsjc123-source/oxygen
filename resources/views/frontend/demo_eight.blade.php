@@ -1,10 +1,13 @@
- @extends('app_template')
+@extends('app_template')
  @section('title','Tryneww')
  @section('content')
  <style>
     .product-price-home{
 
         font-family: monospace;
+    }
+    .title-link-wrapper a {
+        color: #0088dd !important;
     }
     @media (max-width: 767px) {
         .animation-slider,
@@ -35,7 +38,7 @@
             margin-bottom: 0px !important;
         }
         .auction-container {
-            margin-top: 0px !important;
+            margin-top: 15px !important;
             margin-bottom: 5px !important;
         }
         .auction-container .title-link-wrapper {
@@ -232,6 +235,241 @@
      </div>
      @endif
 
+       <!-- Premium Feature Bar -->
+       <div class="container pb-2">
+         <style>
+         /* Custom Feature Bar styles to match the premium design exactly */
+         .premium-feature-bar {
+             background: #ffffff;
+             border-radius: 20px;
+             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+             border: 1px solid rgba(0, 0, 0, 0.03);
+             padding: 1.5rem 2rem;
+             margin: 2rem 0;
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             flex-wrap: nowrap; /* Keep in a single row always */
+             overflow: hidden;
+         }
+
+         .premium-feature-item {
+             display: flex;
+             align-items: center;
+             flex: 1;
+             min-width: 0; /* Allow items to shrink to fit single row */
+             padding: 0 1rem;
+             position: relative;
+         }
+
+         /* Vertical divider lines between items */
+         .premium-feature-item:not(:last-child)::after {
+             content: '';
+             position: absolute;
+             right: 0;
+             top: 50%;
+             transform: translateY(-50%);
+             height: 30px;
+             width: 1px;
+             background-color: rgba(0, 0, 0, 0.08);
+         }
+
+         .premium-feature-icon {
+             width: 40px;
+             height: 40px;
+             border-radius: 50%;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             margin-right: 1rem;
+             flex-shrink: 0;
+         }
+
+         /* Specific background and icon colors matching the design */
+         .premium-feature-icon.shipping {
+             background-color: #fff0f3;
+             color: #ff3b30;
+         }
+
+         .premium-feature-icon.payment {
+             background-color: #eafaf1;
+             color: #34c759;
+         }
+
+         .premium-feature-icon.returns {
+             background-color: #e8f4fe;
+             color: #007aff;
+         }
+
+         .premium-feature-icon.support {
+             background-color: #fff9e6;
+             color: #ff9500;
+         }
+
+         .premium-feature-icon svg {
+             width: 18px;
+             height: 18px;
+         }
+
+         .premium-feature-content {
+             display: flex;
+             flex-direction: column;
+             min-width: 0;
+         }
+
+         .premium-feature-title {
+             font-size: 1.2rem;
+             font-weight: 700;
+             color: #222222;
+             margin: 0 0 0.1rem 0;
+             line-height: 1.2;
+             white-space: nowrap;
+             overflow: hidden;
+             text-overflow: ellipsis;
+         }
+
+         .premium-feature-desc {
+             font-size: 1rem;
+             color: #777777;
+             margin: 0;
+             line-height: 1.2;
+             white-space: nowrap;
+             overflow: hidden;
+             text-overflow: ellipsis;
+         }
+
+         /* Responsive adjustments */
+         @media (max-width: 991px) {
+             .premium-feature-bar {
+                 padding: 1rem 0.5rem;
+                 border-radius: 16px;
+                 margin: 1.5rem 0;
+             }
+             .premium-feature-item {
+                 padding: 0 0.5rem;
+             }
+             .premium-feature-icon {
+                 width: 32px;
+                 height: 32px;
+                 margin-right: 0.6rem;
+             }
+             .premium-feature-icon svg {
+                 width: 14px;
+                 height: 14px;
+             }
+             .premium-feature-title {
+                 font-size: 0.95rem;
+             }
+             .premium-feature-desc {
+                 font-size: 0.75rem;
+             }
+             .premium-feature-item:not(:last-child)::after {
+                 height: 20px;
+             }
+         }
+
+         @media (max-width: 576px) {
+             .premium-feature-bar {
+                 padding: 0.8rem 0.3rem;
+                 border-radius: 12px;
+             }
+             .premium-feature-item {
+                 padding: 0 0.3rem;
+             }
+             .premium-feature-icon {
+                 width: 26px;
+                 height: 26px;
+                 margin-right: 0.4rem;
+             }
+             .premium-feature-icon svg {
+                 width: 12px;
+                 height: 12px;
+             }
+             .premium-feature-title {
+                 font-size: 0.8rem;
+             }
+             .premium-feature-desc {
+                 font-size: 0.65rem;
+             }
+             .premium-feature-item:not(:last-child)::after {
+                 height: 16px;
+             }
+         }
+
+         @media (max-width: 380px) {
+             .premium-feature-title {
+                 font-size: 0.7rem;
+             }
+             .premium-feature-desc {
+                 font-size: 0.58rem;
+             }
+             .premium-feature-icon {
+                 width: 20px;
+                 height: 20px;
+                 margin-right: 0.3rem;
+             }
+             .premium-feature-icon svg {
+                 width: 10px;
+                 height: 10px;
+             }
+         }
+         </style>
+
+         <div class="premium-feature-bar">
+             <div class="premium-feature-item">
+                 <div class="premium-feature-icon shipping">
+                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                         <rect x="1" y="3" width="15" height="13"></rect>
+                         <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                         <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                         <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                     </svg>
+                 </div>
+                 <div class="premium-feature-content">
+                     <h4 class="premium-feature-title">Free Delivery</h4>
+                     <p class="premium-feature-desc">On orders above ₹499</p>
+                 </div>
+             </div>
+             <div class="premium-feature-item">
+                 <div class="premium-feature-icon payment">
+                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                         <path d="M9 11l2 2 4-4"></path>
+                     </svg>
+                 </div>
+                 <div class="premium-feature-content">
+                     <h4 class="premium-feature-title">Secure Payment</h4>
+                     <p class="premium-feature-desc">100% Protected</p>
+                 </div>
+             </div>
+             <div class="premium-feature-item">
+                 <div class="premium-feature-icon returns">
+                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                         <polyline points="23 4 23 10 17 10"></polyline>
+                         <polyline points="1 20 1 14 7 14"></polyline>
+                         <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                     </svg>
+                 </div>
+                 <div class="premium-feature-content">
+                     <h4 class="premium-feature-title">Easy Returns</h4>
+                     <p class="premium-feature-desc">7 Days Return</p>
+                 </div>
+             </div>
+             <div class="premium-feature-item">
+                 <div class="premium-feature-icon support">
+                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                         <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+                         <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+                     </svg>
+                 </div>
+                 <div class="premium-feature-content">
+                     <h4 class="premium-feature-title">24/7 Support</h4>
+                     <p class="premium-feature-desc">We're here to help</p>
+                 </div>
+             </div>
+         </div>
+       </div>
+
       <!-- Auction Products (Moved below offers) -->
       @if(isset($auctionProducts) && count($auctionProducts) > 0)
       <div class="container mt-4 mb-4 auction-container">
@@ -310,75 +548,93 @@
           </div>
           <!-- End of Swiper Container -->
           @endif
-      </div>
-
-      <div class="container pb-2">
-
-         <div class="swiper-container swiper-theme icon-box-wrapper appear-animate br-sm mt-6 info-icon-box-wrapper"
-             data-swiper-options="{
-                    'loop': true,
-                    'autoplay': {
-                        'delay': 4000,
-                        'disableOnInteraction': false
-                    },
-                    'slidesPerView': 1,
-                    'breakpoints': {
-                        '576': {
-                            'slidesPerView': 2
-                        },
-                        '768': {
-                            'slidesPerView': 3
-                        },
-                        '992': {
-                            'slidesPerView': 3
-                        },
-                        '1200': {
-                            'slidesPerView': 4
-                        }
-                    }
-                }">
-             <div class="swiper-wrapper row cols-md-4 cols-sm-3 cols-1">
-                 <div class="swiper-slide icon-box icon-box-side text-dark">
-                     <span class="icon-box-icon icon-shipping">
-                         <i class="w-icon-truck"></i>
-                     </span>
-                     <div class="icon-box-content">
-                         <h4 class="icon-box-title">Free Shipping & Returns</h4>
-                         <p class="text-default">For all orders over ₹499</p>
-                     </div>
-                 </div>
-                 <div class="swiper-slide icon-box icon-box-side text-dark">
-                     <span class="icon-box-icon icon-payment">
-                         <i class="w-icon-bag"></i>
-                     </span>
-                     <div class="icon-box-content">
-                         <h4 class="icon-box-title">Secure Payment</h4>
-                         <p class="text-default">We ensure secure payment</p>
-                     </div>
-                 </div>
-                 <div class="swiper-slide icon-box icon-box-side text-dark icon-box-money">
-                     <span class="icon-box-icon icon-money">
-                         <i class="w-icon-money"></i>
-                     </span>
-                     <div class="icon-box-content">
-                         <h4 class="icon-box-title">Money Back Guarantee</h4>
-                         <p class="text-default">Any return within 7 - 10 work days</p>
-                     </div>
-                 </div>
-                 <div class="swiper-slide icon-box icon-box-side text-dark icon-box-chat">
-                     <span class="icon-box-icon icon-chat">
-                         <i class="w-icon-chat"></i>
-                     </span>
-                     <div class="icon-box-content">
-                         <h4 class="icon-box-title">Customer Support</h4>
-                         <p class="text-default">Call or email us 24/7</p>
-                     </div>
-                 </div>
-             </div>
-         </div>
+          <!-- Shops Section (Moved after Auction Products) -->
+          <div class="container mt-3 mb-0" style="margin-bottom: 0px !important;">
+              <div class="title-link-wrapper mb-3">
+                  <h2 class="title mb-0 pt-2 pb-2">Shop by Seller</h2>
+                  <a href="{{ url('shops') }}" class="mb-0">View All<i class="w-icon-long-arrow-right"></i></a>
+              </div>
+              <div class="swiper-container swiper-theme brands-wrapper br-sm mb-1 appear-animate"
+                  data-swiper-options="{
+                         'autoplay': {
+                             'delay': 4000,
+                             'disableOnInteraction': false
+                         },
+                         'loop': true,
+                         'spaceBetween': 10,
+                         'slidesPerView': 4,
+                         'breakpoints': {
+                             '576': {
+                                 'slidesPerView': 4
+                             },
+                             '768': {
+                                 'slidesPerView': 4
+                             },
+                             '992': {
+                                 'slidesPerView': 6
+                             },
+                             '1200': {
+                                 'slidesPerView': 7
+                             }
+                         }
+                     }">
+                  <div class="swiper-wrapper row cols-xl-8 cols-lg-6 cols-md-4 cols-sm-4 cols-4">
+                      <?php if (isset($vendorcreate)) {
+                             foreach ($vendorcreate as $row) { ?>
+                               <div class="swiper-slide swiper-slide-vendor">
+                                  <figure class="vendor-figure">
+                                      <a href="<?= url('/shop/' . ($row['slug'] ?? $row['id'])) ?>" class="vendor-img-link">
+                                          <span class="vendor-img-wrap">
+                                              <img
+                                                  class="vendor-profile-img"
+                                                  src="{{ asset('assets/images/vendor/profile/' . $row->profile_image) }}"
+                                                  alt="{{ $row->shop_name }}"
+                                              />
+                                              <span class="vendor-name-overlay">{{ $row->shop_name }}</span>
+                                          </span>
+                                      </a>
+                                  </figure>
+                               </div>
+                      <?php }
+                         } ?>
+                  </div>
+              </div>
+          </div>
+          <!-- Category Banner 2Cols (Advertisements moved after Shop by Seller) -->
+          <div class="container mt-4 mb-4">
+              <div class="row cols-2 cols-md-2 category-banner-2cols mb-5">
+                  <div class="banner banner-fixed mb-4">
+                      <figure class="br-sm">
+                          <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/2-1.jpg" alt="Category Banner" width="680"
+                              height="220" style="background-color: #384744;" />
+                      </figure>
+                      <div class="banner-content y-50">
+                          <h5 class="banner-subtitle text-uppercase text-white font-weight-bold">Natural Process</h5>
+                          <h3 class="banner-title text-capitalize text-white">Cosmetic Makeup<br>Professional</h3>
+                          <a href="demo8-shop.html" class="btn btn-white btn-link btn-slide-right btn-icon-right">
+                              Shop Now<i class="w-icon-long-arrow-right"></i></a>
+                      </div>
+                  </div>
+                  <!-- End of Banner -->
+                  <div class="banner banner-fixed mb-4">
+                      <figure class="br-sm">
+                          <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/2-2.jpg" alt="Category Banner" width="680"
+                              height="220" style="background-color: #e7e7e7;" />
+                      </figure>
+                      <div class="banner-content y-50">
+                          <h5 class="banner-subtitle text-uppercase font-weight-bold">Trending Now</h5>
+                          <h3 class="banner-title text-capitalize">Women’s Lifestyle<br>Collection</h3>
+                          <a href="demo8-shop.html" class="btn btn-dark btn-link btn-slide-right btn-icon-right">
+                              Shop Now<i class="w-icon-long-arrow-right"></i></a>
+                      </div>
+                  </div>
+                  <!-- End of Banner -->
+              </div>
+          </div>
+          </div>
          <!-- End of Icon Box Wrapper -->
 
-         <div class="swiper-container swiper-theme category-banner-3cols pt-2"
+         <div class="swiper-container swiper-theme category-banner-3cols pt-0 mt-0" style="margin-top: 0px !important; padding-top: 0px !important;"
              data-swiper-options="{
                     'spaceBetween': 20,
                     'slidesPerView': 1,
@@ -762,35 +1018,6 @@
                } ?>
         </div>
 
-         <div class="row cols-2 cols-md-2 category-banner-2cols mb-5">
-             <div class="banner banner-fixed mb-4">
-                 <figure class="br-sm">
-                     <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/2-1.jpg" alt="Category Banner" width="680"
-                         height="220" style="background-color: #384744;" />
-                 </figure>
-                 <div class="banner-content y-50">
-                     <h5 class="banner-subtitle text-uppercase text-white font-weight-bold">Natural Process</h5>
-                     <h3 class="banner-title text-capitalize text-white">Cosmetic Makeup<br>Professional</h3>
-                     <a href="demo8-shop.html" class="btn btn-white btn-link btn-slide-right btn-icon-right">
-                         Shop Now<i class="w-icon-long-arrow-right"></i></a>
-                 </div>
-             </div>
-             <!-- End of Banner -->
-             <div class="banner banner-fixed mb-4">
-                 <figure class="br-sm">
-                     <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/2-2.jpg" alt="Category Banner" width="680"
-                         height="220" style="background-color: #e7e7e7;" />
-                 </figure>
-                 <div class="banner-content y-50">
-                     <h5 class="banner-subtitle text-uppercase font-weight-bold">Trending Now</h5>
-                     <h3 class="banner-title text-capitalize">Women’s Lifestyle<br>Collection</h3>
-                     <a href="demo8-shop.html" class="btn btn-dark btn-link btn-slide-right btn-icon-right">
-                         Shop Now<i class="w-icon-long-arrow-right"></i></a>
-                 </div>
-             </div>
-             <!-- End of Banner -->
-         </div>
-         <!-- End of Category Banner 2Cols -->
 
 
 
@@ -1291,26 +1518,34 @@
     text-decoration: none !important;
 }
 
+.brands-wrapper {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
 .vendor-img-wrap {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 120px !important;
-    height: 120px !important;
-    border-radius: 50% !important;
+    width: 140px !important;
+    height: 185px !important;
+    border-radius: 15px !important;
     overflow: hidden !important;
     border: 3px solid #ffffff;
     box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    background-color: #f5f6f9;
+    background-color: #ffffff;
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
     flex-shrink: 0 !important;
+    position: relative !important;
 }
 
 .vendor-profile-img {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
-    border-radius: 50% !important;
+    border-radius: inherit !important; /* Inherit border-radius from parent */
     display: block;
 }
 
@@ -1327,21 +1562,28 @@
     padding: 0 !important;
 }
 
-.vendor-name {
-    font-weight: 600;
-    font-size: 15px;
-    color: #333;
-    transition: color 0.3s ease;
-    margin-top: 6px;
-    letter-spacing: 0.3px;
-    padding: 0 5px;
-    min-height: 36px;
+.vendor-name-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 3rem 0.8rem 0.8rem 0.8rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 65%, rgba(0,0,0,0) 100%);
+    color: #ffffff !important;
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-align: left;
+    line-height: 1.2;
+    z-index: 2;
+    border-bottom-left-radius: inherit !important; /* Inherit border-radius from parent */
+    border-bottom-right-radius: inherit !important; /* Inherit border-radius from parent */
+    white-space: normal;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    word-break: break-word;
+    transition: color 0.3s ease;
 }
 
 /* Hover effects */
@@ -1356,13 +1598,13 @@
 }
 
 .swiper-slide-vendor:hover .vendor-img-wrap {
-    transform: translateY(-8px) scale(1.05); /* Lift up and scale slightly */
+    transform: translateY(-8px) scale(1.03); /* Lift up and scale slightly */
     box-shadow: 0 15px 30px rgba(0, 136, 221, 0.25);
     border-color: #0088dd; /* Ring highlight */
 }
 
-.swiper-slide-vendor:hover .vendor-name {
-    color: #0088dd; /* Highlight text */
+.swiper-slide-vendor:hover .vendor-name-overlay {
+    color: #0088dd !important; /* Highlight text */
 }
 
 /* --- MOBILE SPECIFIC MEDIA QUERIES --- */
@@ -1372,8 +1614,16 @@
         margin-top: 20px !important;
     }
     .vendor-img-wrap {
-        width: 100px !important;
-        height: 100px !important;
+        width: 110px !important;
+        height: 145px !important;
+        border-radius: 12px !important;
+    }
+    .vendor-profile-img {
+        border-radius: inherit !important;
+    }
+    .vendor-name-overlay {
+        font-size: 1rem;
+        padding: 2.2rem 0.6rem 0.6rem 0.6rem;
     }
 }
 
@@ -1386,15 +1636,18 @@
         font-size: 20px !important;
         margin-bottom: 12px !important;
     }
-    /* Strictly force the images to be round circles */
     .vendor-img-wrap {
-        width: 80px !important;
-        height: 80px !important;
+        width: 90px !important;
+        height: 120px !important;
+        border-radius: 12px !important;
         border-width: 2px !important;
     }
-    .vendor-name {
-        font-size: 12px !important;
-        min-height: 30px !important;
+    .vendor-profile-img {
+        border-radius: inherit !important;
+    }
+    .vendor-name-overlay {
+        font-size: 0.85rem;
+        padding: 1.8rem 0.4rem 0.4rem 0.4rem;
     }
 }
 
@@ -1407,82 +1660,24 @@
         font-size: 17px !important;
         margin-bottom: 8px !important;
     }
-    /* Very strict exact pixels to override any global resizing */
     .vendor-img-wrap {
-        width: 70px !important;
-        height: 70px !important;
+        width: 75px !important;
+        height: 100px !important;
+        border-radius: 10px !important;
         border-width: 2px !important;
     }
-    .vendor-name {
-        font-size: 10px !important;
-        margin-top: 4px;
-        line-height: 1.2;
-        min-height: 24px !important;
+    .vendor-profile-img {
+        border-radius: inherit !important;
+    }
+    .vendor-name-overlay {
+        font-size: 0.75rem;
+        padding: 1.5rem 0.3rem 0.3rem 0.3rem;
     }
 }
 </style>
 
      <div class="custom-shops-section">
          <div class="container">
-             <h2 class="title text-left mb-5 appear-animate"> Shops</h2>
-         <div class="swiper-container swiper-theme  brands-wrapper br-sm mb-9 appear-animate"
-             data-swiper-options="{
-                    'autoplay': {
-                        'delay': 4000,
-                        'disableOnInteraction': false
-                    },
-                    'loop': true,
-                    'spaceBetween': 20,
-                    'slidesPerView': 3,
-                    'breakpoints': {
-                        '576': {
-                            'slidesPerView': 3
-                        },
-                        '768': {
-                            'slidesPerView': 4
-                        },
-                        '992': {
-                            'slidesPerView': 6
-                        },
-                        '1200': {
-                            'slidesPerView': 7
-                        }
-                    }
-                }">
-             <div class="swiper-wrapper row cols-xl-8 cols-lg-6 cols-md-4 cols-sm-3 cols-3">
-
-                 <?php if (isset($vendorcreate)) {
-                        foreach ($vendorcreate as $row) { ?>
-                           
-                         <div class="swiper-slide swiper-slide-vendor">
-                            <figure class="vendor-figure">
-                                <a href="<?= url('/shop/' . ($row['slug'] ?? $row['id'])) ?>" class="vendor-img-link">
-                                    <span class="vendor-img-wrap">
-                                        <img
-                                            class="vendor-profile-img"
-                                            src="{{ asset('assets/images/vendor/profile/' . $row->profile_image) }}"
-                                            alt="Brand"
-                                        />
-                                    </span>
-                                </a>
-
-                              
-                            </figure>
-                              <center>
-                                    <figcaption class="vendor-name">
-                                        {{ $row->shop_name }}
-                                    </figcaption>
-                                </center>
-                        </div>
-
-
-                 <?php }
-                    } ?>
-
-             </div>
-         </div>
-
-
 
          <h2 class="title text-left mb-5 appear-animate"> Locations</h2>
          <div class="swiper-container swiper-theme  brands-wrapper br-sm mb-9 appear-animate mt-2"
@@ -1518,24 +1713,16 @@
                     $imgNo = ($key % 9) + 1;
                     @endphp
                      <div class="swiper-slide swiper-slide-vendor">
-                            <figure class="vendor-figure">
-                               
-                                    <span class="vendor-img-wrap">
-                                        <img
-                                            class="vendor-profile-img"
-                                            src="{{ asset('frontend/images/00' .$imgNo  . '.jpg') }}"
-                                            alt="Brand"
-                                        />
-                                    </span>
-                              
-
-                              
-                            </figure>
-                              <center>
-                                    <figcaption class="vendor-name">
-                                       {{ $row->area }}
-                                    </figcaption>
-                                </center>
+                             <figure class="vendor-figure">
+                                     <span class="vendor-img-wrap">
+                                         <img
+                                             class="vendor-profile-img"
+                                             src="{{ asset('frontend/images/00' .$imgNo  . '.jpg') }}"
+                                             alt="{{ $row->area }}"
+                                         />
+                                         <span class="vendor-name-overlay">{{ $row->area }}</span>
+                                     </span>
+                             </figure>
                         </div>
 
                     @endforeach
