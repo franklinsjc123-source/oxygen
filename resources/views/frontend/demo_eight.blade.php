@@ -186,7 +186,7 @@
                      }
                  }">
              <div class="swiper-wrapper">
-                 @foreach($sliderOffers as $offer)
+                 @foreach($sliderOffers as $key => $offer)
                      <div class="swiper-slide text-center">
                          <a href="{{ url('offers?id='.$offer->id) }}">
                              @if(!empty($offer->db_logo))
@@ -194,38 +194,34 @@
                                      <img class="offer-badge-img" src="{{ asset('assets/images/offer_logo/' . $offer->offer_logo) }}" alt="{{ $offer->title }}">
                                  </div>
                              @else
-                                 @php
-                                     $bgGradient = 'linear-gradient(135deg, #0984e3, #74b9ff)'; 
-                                     $badgeLines = [];
+                                  @php
+                                      $bgGradient = 'linear-gradient(135deg, #34d399 0%, #059669 100%)';
+                                      $badgeLines = [];
 
-                                     if ($offer->type == 'Buy X Get Y Free') {
-                                         $bgGradient = 'linear-gradient(135deg, #0984e3, #2980b9)'; 
-                                         $badgeLines = ['BUY ' . ($offer->buy ?? 1), 'GET ' . ($offer->getoffer ?? 1), 'FREE'];
-                                     } elseif ($offer->type == 'Buy X @ Y') {
-                                         $bgGradient = 'linear-gradient(135deg, #d35400, #f39c12)'; 
-                                         $badgeLines = ['BUY ' . ($offer->buyproduct ?? 1), '@ ₹' . ($offer->getamt ?? 0)];
-                                     } elseif ($offer->type == 'Cashback Offer') {
-                                         $bgGradient = 'linear-gradient(135deg, #27ae60, #2ecc71)'; 
-                                         $val = $offer->cashbackvalue ?? 0;
-                                         $unit = ($offer->cashbacktype == 'Percentage') ? '%' : '';
-                                         $prefix = ($offer->cashbacktype == 'Percentage') ? '' : '₹';
-                                         $badgeLines = ['CASH', 'BACK', $prefix . $val . $unit . ' OFF'];
-                                     } elseif ($offer->type == 'Fixed Discount') {
-                                         $bgGradient = 'linear-gradient(135deg, #8e44ad, #9b59b6)'; 
-                                         $val = $offer->value ?? 0;
-                                         $unit = ($offer->discount_type == 'Percentage') ? '%' : '';
-                                         $prefix = ($offer->discount_type == 'Percentage') ? '' : '₹';
-                                         $badgeLines = ['FLAT', $prefix . $val . $unit, 'OFF'];
-                                     } else {
-                                         $words = explode(' ', $offer->title);
-                                         $badgeLines = array_slice($words, 0, 3);
-                                     }
-                                 @endphp
-                                 <div class="offer-badge-css" style="background: {!! $bgGradient !!};">
-                                     @foreach($badgeLines as $line)
-                                         <span>{{ $line }}</span>
-                                     @endforeach
-                                 </div>
+                                      if ($offer->type == 'Buy X Get Y Free') {
+                                          $badgeLines = ['BUY ' . ($offer->buy ?? 1), 'GET ' . ($offer->getoffer ?? 1), 'FREE'];
+                                      } elseif ($offer->type == 'Buy X @ Y') {
+                                          $badgeLines = ['BUY ' . ($offer->buyproduct ?? 1), '@ ₹' . ($offer->getamt ?? 0)];
+                                      } elseif ($offer->type == 'Cashback Offer') {
+                                          $val = $offer->cashbackvalue ?? 0;
+                                          $unit = ($offer->cashbacktype == 'Percentage') ? '%' : '';
+                                          $prefix = ($offer->cashbacktype == 'Percentage') ? '' : '₹';
+                                          $badgeLines = ['CASH', 'BACK', $prefix . $val . $unit . ' OFF'];
+                                      } elseif ($offer->type == 'Fixed Discount') {
+                                          $val = $offer->value ?? 0;
+                                          $unit = ($offer->discount_type == 'Percentage') ? '%' : '';
+                                          $prefix = ($offer->discount_type == 'Percentage') ? '' : '₹';
+                                          $badgeLines = ['FLAT', $prefix . $val . $unit, 'OFF'];
+                                      } else {
+                                          $words = explode(' ', $offer->title);
+                                          $badgeLines = array_slice($words, 0, 3);
+                                      }
+                                  @endphp
+                                  <div class="offer-badge-css" style="background: {!! $bgGradient !!};">
+                                      @foreach($badgeLines as $line)
+                                          <span>{{ $line }}</span>
+                                      @endforeach
+                                  </div>
                              @endif
                          </a>
                      </div>
@@ -633,7 +629,7 @@
               </div>
               <div class="row grid banner-product-wrapper mb-6">
                   <?php if (isset($offerProducts)) {
-                         foreach ($offerProducts as $row) { ?>
+                         foreach ($offerProducts as $key => $row) { ?>
                           <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
                               <div class="product product-simple text-center">
                                   <figure class="product-media">
@@ -675,13 +671,9 @@
                                         @endphp
                                                                                       @if(!empty($offerName))
                       @php
-                          if ($shape == 'ribbon') {
-                              $style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
-                          } elseif ($shape == 'circle') {
-                              $style = "position:absolute; top:8px; left:8px; width:56px; height:56px; border-radius:50%; padding:4px; box-shadow:{$shadow};";
-                          } else { // shield
-                              $style = "position:absolute; top:0; left:10px; width:52px; min-height:60px; clip-path:polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%); padding:6px 3px 16px 3px;";
-                          }
+                          $bg = 'linear-gradient(135deg, #34d399 0%, #059669 100%)';
+                          $text = '#ffffff';
+                          $style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
                       @endphp
                       <div style="{{ $style }} background:{{ $bg }}; color:{{ $text }}; font-weight:900; font-size:10px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;">
                           {{ $offerName }}
@@ -832,7 +824,7 @@
 
          <div class="row grid banner-product-wrapper mb-1">
              <?php if (isset($topRatedProducts)) {
-                    foreach ($topRatedProducts as $row) { ?>
+                    foreach ($topRatedProducts as $key => $row) { ?>
                      <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
                          <div class="product product-simple text-center">
                              <figure class="product-media">
@@ -874,27 +866,15 @@
                                       }
                                   @endphp
                                                                                 @if(!empty($offerName))
-                @php
-                    $shape = 'ribbon';
-                    $bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)';
-                    $text = '#ffffff';
-                    $shadow = '0 2px 8px rgba(0,0,0,0.25)';
-                    
-                    $offerLower = strtolower($offerName);
-                    
-                    $style = '';
-                    if ($shape == 'ribbon') {
-                        $style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
-                    } elseif ($shape == 'circle') {
-                        $style = "position:absolute; top:8px; left:8px; width:56px; height:56px; border-radius:50%; padding:4px; box-shadow:{$shadow};";
-                    } else { // shield
-                        $style = "position:absolute; top:0; left:10px; width:52px; min-height:60px; clip-path:polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%); padding:6px 3px 16px 3px;";
-                    }
-                @endphp
-                <div style="{{ $style }} background:{{ $bg }}; color:{{ $text }}; font-weight:900; font-size:10px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;">
-                    {{ $offerName }}
-                </div>
-            @endif
+                      @php
+                          $bg = 'linear-gradient(135deg, #34d399 0%, #059669 100%)';
+                          $text = '#ffffff';
+                          $style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
+                      @endphp
+                      <div style="{{ $style }} background:{{ $bg }}; color:{{ $text }}; font-weight:900; font-size:10px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;">
+                          {{ $offerName }}
+                      </div>
+                  @endif
 
                                  <div class="product-action-vertical">
                                      <a href="#" onclick="addwishlist('{{  $row['id'] }}', this)" class="btn-product-icon btn-wishlist {{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"
@@ -1029,7 +1009,7 @@
          </div>
          <div class="row grid banner-product-wrapper mb-6">
              <?php if (isset($mensProducts)) {
-                    foreach ($mensProducts as $row) { ?>
+                    foreach ($mensProducts as $key => $row) { ?>
                      <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
                          <div class="product product-simple text-center">
                              <figure class="product-media">
@@ -1071,27 +1051,15 @@
                                       }
                                   @endphp
                                                                                 @if(!empty($offerName))
-                @php
-                    $shape = 'ribbon';
-                    $bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)';
-                    $text = '#ffffff';
-                    $shadow = '0 2px 8px rgba(0,0,0,0.25)';
-                    
-                    $offerLower = strtolower($offerName);
-                    
-                    $style = '';
-                    if ($shape == 'ribbon') {
-                        $style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
-                    } elseif ($shape == 'circle') {
-                        $style = "position:absolute; top:8px; left:8px; width:56px; height:56px; border-radius:50%; padding:4px; box-shadow:{$shadow};";
-                    } else { // shield
-                        $style = "position:absolute; top:0; left:10px; width:52px; min-height:60px; clip-path:polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%); padding:6px 3px 16px 3px;";
-                    }
-                @endphp
-                <div style="{{ $style }} background:{{ $bg }}; color:{{ $text }}; font-weight:900; font-size:10px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;">
-                    {{ $offerName }}
-                </div>
-            @endif
+                      @php
+                          $bg = 'linear-gradient(135deg, #34d399 0%, #059669 100%)';
+                          $text = '#ffffff';
+                          $style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
+                      @endphp
+                      <div style="{{ $style }} background:{{ $bg }}; color:{{ $text }}; font-weight:900; font-size:10px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;">
+                          {{ $offerName }}
+                      </div>
+                  @endif
 
                                  <div class="product-action-vertical">
                                      <a href="#" onclick="addwishlist('{{  $row['id'] }}', this)" class="btn-product-icon btn-wishlist {{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"
@@ -1153,7 +1121,7 @@
          </div>
          <div class="row grid banner-product-wrapper mb-6">
              <?php if (isset($womensProducts)) {
-                    foreach ($womensProducts as $row) { ?>
+                    foreach ($womensProducts as $key => $row) { ?>
                      <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
                          <div class="product product-simple text-center">
                              <figure class="product-media">
@@ -1195,27 +1163,15 @@
                                       }
                                   @endphp
                                                                                 @if(!empty($offerName))
-                @php
-                    $shape = 'ribbon';
-                    $bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)';
-                    $text = '#ffffff';
-                    $shadow = '0 2px 8px rgba(0,0,0,0.25)';
-                    
-                    $offerLower = strtolower($offerName);
-                    
-                    $style = '';
-                    if ($shape == 'ribbon') {
-                        $style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
-                    } elseif ($shape == 'circle') {
-                        $style = "position:absolute; top:8px; left:8px; width:56px; height:56px; border-radius:50%; padding:4px; box-shadow:{$shadow};";
-                    } else { // shield
-                        $style = "position:absolute; top:0; left:10px; width:52px; min-height:60px; clip-path:polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%); padding:6px 3px 16px 3px;";
-                    }
-                @endphp
-                <div style="{{ $style }} background:{{ $bg }}; color:{{ $text }}; font-weight:900; font-size:10px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;">
-                    {{ $offerName }}
-                </div>
-            @endif
+                      @php
+                          $bg = 'linear-gradient(135deg, #34d399 0%, #059669 100%)';
+                          $text = '#ffffff';
+                          $style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
+                      @endphp
+                      <div style="{{ $style }} background:{{ $bg }}; color:{{ $text }}; font-weight:900; font-size:10px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;">
+                          {{ $offerName }}
+                      </div>
+                  @endif
 
                                  <div class="product-action-vertical">
                                      <a href="#" onclick="addwishlist('{{  $row['id'] }}', this)" class="btn-product-icon btn-wishlist {{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"
@@ -1278,7 +1234,7 @@
          </div>
          <div class="row grid banner-product-wrapper mb-6">
              <?php if (isset($kidsProducts)) {
-                    foreach ($kidsProducts as $row) { ?>
+                    foreach ($kidsProducts as $key => $row) { ?>
                      <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
                          <div class="product product-simple text-center">
                              <figure class="product-media">
@@ -1320,27 +1276,15 @@
                                       }
                                   @endphp
                                                                                 @if(!empty($offerName))
-                @php
-                    $shape = 'ribbon';
-                    $bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)';
-                    $text = '#ffffff';
-                    $shadow = '0 2px 8px rgba(0,0,0,0.25)';
-                    
-                    $offerLower = strtolower($offerName);
-                    
-                    $style = '';
-                    if ($shape == 'ribbon') {
-                        $style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
-                    } elseif ($shape == 'circle') {
-                        $style = "position:absolute; top:8px; left:8px; width:56px; height:56px; border-radius:50%; padding:4px; box-shadow:{$shadow};";
-                    } else { // shield
-                        $style = "position:absolute; top:0; left:10px; width:52px; min-height:60px; clip-path:polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%); padding:6px 3px 16px 3px;";
-                    }
-                @endphp
-                <div style="{{ $style }} background:{{ $bg }}; color:{{ $text }}; font-weight:900; font-size:10px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;">
-                    {{ $offerName }}
-                </div>
-            @endif
+                      @php
+                          $bg = 'linear-gradient(135deg, #34d399 0%, #059669 100%)';
+                          $text = '#ffffff';
+                          $style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
+                      @endphp
+                      <div style="{{ $style }} background:{{ $bg }}; color:{{ $text }}; font-weight:900; font-size:10px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;">
+                          {{ $offerName }}
+                      </div>
+                  @endif
 
                                  <div class="product-action-vertical">
                                      <a href="#" onclick="addwishlist('{{  $row['id'] }}', this)" class="btn-product-icon btn-wishlist {{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"

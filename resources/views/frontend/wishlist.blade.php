@@ -284,52 +284,15 @@
                                                 <figure style="position: relative; margin: 0 auto; width: 80px; height: 80px; display: block;">
                                                     <img src="{{ asset('assets/images/products/' . $product->product_image) }}" alt="product" style="width:80px; height:80px; object-fit:cover;">
                                                     @if(!empty($offerName))
-                                                        @php
-                                                            $shape = 'ribbon';
-                                                            $bg = '#1a5fe5';
-                                                            $text = '#ffffff';
-                                                            $shadow = '0 2px 8px rgba(0,0,0,0.25)';
-                                                            
-                                                            $offerLower = strtolower($offerName);
-                                                            if (str_contains($offerLower, '@')) {
-                                                                $shape = 'ribbon';
-                                                                $bg = 'linear-gradient(135deg, #d41e7d, #a3105a)';
-                                                            } elseif (str_contains($offerLower, 'buy') || str_contains($offerLower, 'free')) {
-                                                                $shape = 'ribbon';
-                                                                $bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)';
-                                                            } elseif (str_contains($offerLower, 'cash')) {
-                                                                $shape = 'circle';
-                                                                $bg = 'linear-gradient(135deg, #2ebd59, #1fa04a)';
-                                                            } elseif (str_contains($offerLower, 'flat')) {
-                                                                $shape = 'shield';
-                                                                $bg = 'linear-gradient(135deg, #1a73e8, #1558b5)';
-                                                            } elseif (str_contains($offerLower, 'intro')) {
-                                                                $shape = 'ribbon';
-                                                                $bg = 'linear-gradient(135deg, #e97a31, #d46520)';
-                                                            } elseif (str_contains($offerLower, 'save')) {
-                                                                $shape = 'circle';
-                                                                $bg = 'linear-gradient(135deg, #ffd400, #f0c800)';
-                                                                $text = '#000000';
-                                                            } elseif (str_contains($offerLower, 'discount') || str_contains($offerLower, 'off')) {
-                                                                $shape = 'ribbon';
-                                                                $bg = 'linear-gradient(135deg, #e51a2f, #c41525)';
-                                                            } else {
-                                                                $bg = 'linear-gradient(135deg, #1a5fe5, #1450c0)';
-                                                            }
-                                                            
-                                                            $badgeStyle = '';
-                                                            if ($shape == 'ribbon') {
-                                                                $badgeStyle = "position:absolute; top:0; left:0; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
-                                                            } elseif ($shape == 'circle') {
-                                                                $badgeStyle = "position:absolute; top:4px; left:0; width:56px; height:56px; border-radius:50%; padding:4px; box-shadow:{$shadow};";
-                                                            } else { // shield
-                                                                $badgeStyle = "position:absolute; top:0; left:0; width:52px; min-height:60px; clip-path:polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%); padding:6px 3px 16px 3px;";
-                                                            }
-                                                        @endphp
-                                                        <div class="wishlist-offer-badge" style="{{ $badgeStyle }} background:{{ $bg }}; color:{{ $text }}; font-weight:900; font-size:10px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;">
-                                                            {{ $offerName }}
-                                                        </div>
-                                                    @endif
+                @php
+                          $bg = 'linear-gradient(135deg, #34d399 0%, #059669 100%)';
+                          $text = '#ffffff';
+                          $style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
+                      @endphp
+                <div style="{{ $style }} background:{{ $bg }}; color:{{ $text }}; font-weight:900; font-size:10px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;">
+                    {{ $offerName }}
+                </div>
+            @endif
                                                 </figure>
                                             </a>
                                         </div>
