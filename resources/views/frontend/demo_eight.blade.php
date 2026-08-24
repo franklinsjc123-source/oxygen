@@ -549,7 +549,7 @@
           <!-- End of Swiper Container -->
           @endif
           <!-- Shops Section (Moved after Auction Products) -->
-          <div class="container mt-3 mb-0" style="margin-bottom: 0px !important;">
+          <div class="container mt-3 mb-0" style="margin-bottom: 0px !important; padding: 0 !important;">
               <div class="title-link-wrapper mb-3">
                   <h2 class="title mb-0 pt-2 pb-2">Shop by Seller</h2>
                   <a href="{{ url('shops') }}" class="mb-0">View All<i class="w-icon-long-arrow-right"></i></a>
@@ -601,38 +601,173 @@
               </div>
           </div>
           <!-- Category Banner 2Cols (Advertisements moved after Shop by Seller) -->
-          <div class="container mt-4 mb-4">
-              <div class="row cols-2 cols-md-2 category-banner-2cols mb-5">
-                  <div class="banner banner-fixed mb-4">
+          @if(isset($oxygen_adv) && count($oxygen_adv) > 0)
+          <div class="container mt-4 mb-0" style="padding: 0 !important; margin-bottom: 0px !important;">
+              <div class="row cols-2 cols-md-2 category-banner-2cols mb-1">
+                  @foreach($oxygen_adv->take(2) as $key => $banner)
+                  <div class="banner banner-fixed mb-1">
                       <figure class="br-sm">
-                          <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/2-1.jpg" alt="Category Banner" width="680"
-                              height="220" style="background-color: #384744;" />
+                          <img src="{{ asset('assets/images/banners/advoxygen/' . $banner->image) }}" alt="{{ $banner->title }}" width="680"
+                              height="220" style="background-color: {{ $key == 0 ? '#384744' : '#e7e7e7' }}; object-fit: cover; height: 220px !important; width: 100% !important;" />
                       </figure>
                       <div class="banner-content y-50">
-                          <h5 class="banner-subtitle text-uppercase text-white font-weight-bold">Natural Process</h5>
-                          <h3 class="banner-title text-capitalize text-white">Cosmetic Makeup<br>Professional</h3>
-                          <a href="demo8-shop.html" class="btn btn-white btn-link btn-slide-right btn-icon-right">
+                          <h5 class="banner-subtitle text-uppercase {{ $key == 0 ? 'text-white' : '' }} font-weight-bold">{{ $banner->title }}</h5>
+                          <h3 class="banner-title text-capitalize {{ $key == 0 ? 'text-white' : '' }}">{!! nl2br(e($banner->sub_title)) !!}</h3>
+                          <a href="{{ $banner->link ?? '#' }}" class="btn {{ $key == 0 ? 'btn-white' : 'btn-dark' }} btn-link btn-slide-right btn-icon-right">
                               Shop Now<i class="w-icon-long-arrow-right"></i></a>
                       </div>
                   </div>
-                  <!-- End of Banner -->
-                  <div class="banner banner-fixed mb-4">
-                      <figure class="br-sm">
-                          <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/2-2.jpg" alt="Category Banner" width="680"
-                              height="220" style="background-color: #e7e7e7;" />
-                      </figure>
-                      <div class="banner-content y-50">
-                          <h5 class="banner-subtitle text-uppercase font-weight-bold">Trending Now</h5>
-                          <h3 class="banner-title text-capitalize">Women’s Lifestyle<br>Collection</h3>
-                          <a href="demo8-shop.html" class="btn btn-dark btn-link btn-slide-right btn-icon-right">
-                              Shop Now<i class="w-icon-long-arrow-right"></i></a>
-                      </div>
-                  </div>
-                  <!-- End of Banner -->
+                  @endforeach
               </div>
           </div>
+          @endif
           </div>
          <!-- End of Icon Box Wrapper -->
+
+          <!-- Offer Products Section (Moved after Advertisements) -->
+          <div class="container mt-4 mb-4">
+              <div class="title-link-wrapper mb-3">
+                  <h2 class="title mb-0 pt-2 pb-2">Offer Products</h2>
+                  <a href="{{ url('offers') }}" class="mb-0">More Products<i
+                          class="w-icon-long-arrow-right"></i></a>
+              </div>
+              <div class="row grid banner-product-wrapper mb-6">
+                  <?php if (isset($offerProducts)) {
+                         foreach ($offerProducts as $row) { ?>
+                          <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
+                              <div class="product product-simple text-center">
+                                  <figure class="product-media">
+                                      <a href="<?= url('/products/' . ($row['slug'] ?? $row['id'])) ?>">
+                                          <img src="<?php echo asset('assets') ?>/images/products/<?= $row['product_image'] ?>" alt="Product" width="260"
+                                              height="291" />
+                                      </a>
+                                      @php
+                                            $offerName = '';
+                                            $offerId = $row['offer_id'] ?? $row['offers'] ?? null;
+                                            if ($offerId) {
+                                                $offerDetails = DB::table('master_offers')->where('id', $offerId)->first();
+                                                if ($offerDetails) {
+                                                    if ($offerDetails->type == "Buy X Get Y Free") {
+                                                        $offerName = 'Buy ' . ($offerDetails->buy ?: '1') . ' Get ' . ($offerDetails->getoffer ?: '1') . ' Free';
+                                                    } elseif ($offerDetails->type == "Cashback" || $offerDetails->type == "Cashback Offer") {
+                                                        if (strtolower($offerDetails->cashbacktype) == 'percentage') {
+                                                            $offerName = "Cash Back {$offerDetails->cashbackvalue}% Off";
+                                                        } else {
+                                                            $offerName = "Cashback ₹{$offerDetails->cashbackvalue} Off";
+                                                        }
+                                                    } elseif ($offerDetails->type == "Fixed Discount") {
+                                                        if (strtolower($offerDetails->discount_type) == 'percentage') {
+                                                            $offerName = "Flat {$offerDetails->value}% Off";
+                                                        } else {
+                                                            $offerName = "Flat ₹{$offerDetails->value} Off";
+                                                        }
+                                                    } elseif (str_contains($offerDetails->type, '@')) {
+                                                        $amt = $offerDetails->getamt ? "₹{$offerDetails->getamt}/-" : "{$offerDetails->value}%";
+                                                        $buyQty = $offerDetails->buy ?: ($offerDetails->buyproduct ?: "1"); $offerName = "Buy {$buyQty} @ {$amt}";
+                                                    } else {
+                                                        $offerName = $offerDetails->title ?: $offerDetails->type;
+                                                    }
+                                                }
+                                            }
+                                            if (empty($offerName)) {
+                                                $offerName = $row['offer_text'] ?? $row['offer_type'] ?? null;
+                                            }
+                                        @endphp
+                                                                                      @if(!empty($offerName))
+                      @php
+                          $shape = 'ribbon';
+                          $bg = '#1a5fe5';
+                          $text = '#ffffff';
+                          $shadow = '0 2px 8px rgba(0,0,0,0.25)';
+                          
+                          $offerLower = strtolower($offerName);
+                          if (str_contains($offerLower, '@')) {
+                              $shape = 'ribbon';
+                              $bg = 'linear-gradient(135deg, #d41e7d, #a3105a)'; // Pink for Buy @
+                          } elseif (str_contains($offerLower, 'buy') || str_contains($offerLower, 'free')) {
+                              $shape = 'ribbon';
+                              $bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)'; // Purple for Buy X Get Y
+                          } elseif (str_contains($offerLower, 'cash')) {
+                              $shape = 'circle';
+                              $bg = 'linear-gradient(135deg, #2ebd59, #1fa04a)';
+                          } elseif (str_contains($offerLower, 'flat')) {
+                              $shape = 'shield';
+                              $bg = 'linear-gradient(135deg, #1a73e8, #1558b5)';
+                          } elseif (str_contains($offerLower, 'intro')) {
+                              $shape = 'ribbon';
+                              $bg = 'linear-gradient(135deg, #e97a31, #d46520)';
+                          } elseif (str_contains($offerLower, 'save')) {
+                              $shape = 'circle';
+                              $bg = 'linear-gradient(135deg, #ffd400, #f0c800)';
+                              $text = '#000000';
+                          } elseif (str_contains($offerLower, 'discount') || str_contains($offerLower, 'off')) {
+                              $shape = 'ribbon';
+                              $bg = 'linear-gradient(135deg, #e51a2f, #c41525)';
+                          } else {
+                              $bg = 'linear-gradient(135deg, #1a5fe5, #1450c0)';
+                          }
+                          
+                          $style = '';
+                          if ($shape == 'ribbon') {
+                              $style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
+                          } elseif ($shape == 'circle') {
+                              $style = "position:absolute; top:8px; left:8px; width:56px; height:56px; border-radius:50%; padding:4px; box-shadow:{$shadow};";
+                          } else { // shield
+                              $style = "position:absolute; top:0; left:10px; width:52px; min-height:60px; clip-path:polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%); padding:6px 3px 16px 3px;";
+                          }
+                      @endphp
+                      <div style="{{ $style }} background:{{ $bg }}; color:{{ $text }}; font-weight:900; font-size:10px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;">
+                          {{ $offerName }}
+                      </div>
+                  @endif
+                                      <div class="product-action-vertical">
+                                          <a href="#" onclick="addwishlist('{{  $row['id'] }}', this)" class="btn-product-icon btn-wishlist {{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"
+                                              title="Add to wishlist"></a>
+                                      </div>
+                                      <div class="product-action">
+                                          <a href="javascript:void(0)" onclick="showQuickView('<?= $row['id'] ?>')" data-id='<?= $row['id'] ?>' class="btn-product btnquickview" title="Quick View">Quick
+                                              View</a>
+                                      </div>
+                                  </figure>
+                                  <div class="product-details">
+                                      <div class="sold-by">
+                                          <b><a href="<?= url('/shop/' . ($row['vendor_slug'] ?? $row['vendor_id'])) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
+                                      </div>
+                                      <h4 class="product-name"><a href="<?= url('/products/' . ($row['slug'] ?? $row['id'])) ?>"><?= ucwords($row['product_name']) ?></a></h4>
+                                  </div>
+                                  <div class="ratings-container">
+                                      <div class="ratings-full">
+                                          <span class="ratings" style="width: {{ $row['rating_percent'] ?? 0 }}%"></span>
+                                      </div>
+                                      <a>({{ $row['review_count'] ?? 0 }} Reviews)</a>
+                                  </div>
+                                  <div class="product-pa-wrapper">
+                                      <div class="product-price-home">
+                                          ₹{{ $row['selling_price'] }}
+                                      </div>
+                                      <div class="product-price-discount">
+                                          ₹{{ $row['retail_price'] }}
+                                      </div>
+                                      <?php
+                                         $retailPrice = (float) ($row['retail_price'] ?? 0);
+                                         $sellingPrice = (float) ($row['selling_price'] ?? 0);
+                                         if ($retailPrice > 0) {
+                                             $discount_percentage = (($retailPrice - $sellingPrice) / $retailPrice) * 100;
+                                             $discount_rounded = round($discount_percentage / 10) * 10;
+                                         } else {
+                                             $discount_rounded = 0;
+                                         }
+                                         ?>
+                                      <div class="product-offer-percentage">
+                                          {{ $discount_rounded }}% Off
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                  <?php }
+                     } ?>
+              </div>
+          </div>
 
          <div class="swiper-container swiper-theme category-banner-3cols pt-0 mt-0" style="margin-top: 0px !important; padding-top: 0px !important;"
              data-swiper-options="{
@@ -728,7 +863,7 @@
                      class="w-icon-long-arrow-right"></i></a>
          </div>
 
-         <div class="row grid banner-product-wrapper mb-6">
+         <div class="row grid banner-product-wrapper mb-1">
              <?php if (isset($topRatedProducts)) {
                     foreach ($topRatedProducts as $row) { ?>
                      <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
@@ -870,156 +1005,80 @@
                 } ?>
          </div>
 
-        <div class="title-link-wrapper mb-3">
-            <h2 class="title mb-0 pt-2 pb-2">Offer Products</h2>
-            <a href="{{ url('offers') }}" class="mb-0">More Products<i
-                    class="w-icon-long-arrow-right"></i></a>
-        </div>
-
-        <div class="row grid banner-product-wrapper mb-6">
-            <?php if (isset($offerProducts)) {
-                   foreach ($offerProducts as $row) { ?>
-                    <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6">
-                        <div class="product product-simple text-center">
-                            <figure class="product-media">
-                                <a href="<?= url('/products/' . ($row['slug'] ?? $row['id'])) ?>">
-                                    <img src="<?php echo asset('assets') ?>/images/products/<?= $row['product_image'] ?>" alt="Product" width="260"
-                                        height="291" />
-                                </a>
-
-                                @php
-                                      $offerName = '';
-                                      $offerId = $row['offer_id'] ?? $row['offers'] ?? null;
-                                      if ($offerId) {
-                                          $offerDetails = DB::table('master_offers')->where('id', $offerId)->first();
-                                          if ($offerDetails) {
-                                              if ($offerDetails->type == "Buy X Get Y Free") {
-                                                  $offerName = 'Buy ' . ($offerDetails->buy ?: '1') . ' Get ' . ($offerDetails->getoffer ?: '1') . ' Free';
-                                              } elseif ($offerDetails->type == "Cashback" || $offerDetails->type == "Cashback Offer") {
-                                                  if (strtolower($offerDetails->cashbacktype) == 'percentage') {
-                                                      $offerName = "Cash Back {$offerDetails->cashbackvalue}% Off";
-                                                  } else {
-                                                      $offerName = "Cashback ₹{$offerDetails->cashbackvalue} Off";
-                                                  }
-                                              } elseif ($offerDetails->type == "Fixed Discount") {
-                                                  if (strtolower($offerDetails->discount_type) == 'percentage') {
-                                                      $offerName = "Flat {$offerDetails->value}% Off";
-                                                  } else {
-                                                      $offerName = "Flat ₹{$offerDetails->value} Off";
-                                                  }
-                                              } elseif (str_contains($offerDetails->type, '@')) {
-                                                  $amt = $offerDetails->getamt ? "₹{$offerDetails->getamt}/-" : "{$offerDetails->value}%";
-                                                  $buyQty = $offerDetails->buy ?: ($offerDetails->buyproduct ?: "1"); $offerName = "Buy {$buyQty} @ {$amt}";
-                                              } else {
-                                                  $offerName = $offerDetails->title ?: $offerDetails->type;
-                                              }
-                                          }
-                                      }
-                                      if (empty($offerName)) {
-                                          $offerName = $row['offer_text'] ?? $row['offer_type'] ?? null;
-                                      }
-                                  @endphp
-                                                                                @if(!empty($offerName))
-                @php
-                    $shape = 'ribbon';
-                    $bg = '#1a5fe5';
-                    $text = '#ffffff';
-                    $shadow = '0 2px 8px rgba(0,0,0,0.25)';
-                    
-                    $offerLower = strtolower($offerName);
-                    if (str_contains($offerLower, '@')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #d41e7d, #a3105a)'; // Pink for Buy @
-                    } elseif (str_contains($offerLower, 'buy') || str_contains($offerLower, 'free')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)'; // Purple for Buy X Get Y
-                    } elseif (str_contains($offerLower, 'cash')) {
-                        $shape = 'circle';
-                        $bg = 'linear-gradient(135deg, #2ebd59, #1fa04a)';
-                    } elseif (str_contains($offerLower, 'flat')) {
-                        $shape = 'shield';
-                        $bg = 'linear-gradient(135deg, #1a73e8, #1558b5)';
-                    } elseif (str_contains($offerLower, 'intro')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #e97a31, #d46520)';
-                    } elseif (str_contains($offerLower, 'save')) {
-                        $shape = 'circle';
-                        $bg = 'linear-gradient(135deg, #ffd400, #f0c800)';
-                        $text = '#000000';
-                    } elseif (str_contains($offerLower, 'discount') || str_contains($offerLower, 'off')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #e51a2f, #c41525)';
-                    } else {
-                        $bg = 'linear-gradient(135deg, #1a5fe5, #1450c0)';
-                    }
-                    
-                    $style = '';
-                    if ($shape == 'ribbon') {
-                        $style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
-                    } elseif ($shape == 'circle') {
-                        $style = "position:absolute; top:8px; left:8px; width:56px; height:56px; border-radius:50%; padding:4px; box-shadow:{$shadow};";
-                    } else { // shield
-                        $style = "position:absolute; top:0; left:10px; width:52px; min-height:60px; clip-path:polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%); padding:6px 3px 16px 3px;";
-                    }
-                @endphp
-                <div style="{{ $style }} background:{{ $bg }}; color:{{ $text }}; font-weight:900; font-size:10px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;">
-                    {{ $offerName }}
-                </div>
-            @endif
-
-                                <div class="product-action-vertical">
-                                    <a href="#" onclick="addwishlist('{{  $row['id'] }}', this)" class="btn-product-icon btn-wishlist {{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($row['id'], $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"
-                                        title="Add to wishlist"></a>
-                                </div>
-                                <div class="product-action">
-                                    <a href="javascript:void(0)" onclick="showQuickView('<?= $row['id'] ?>')" data-id='<?= $row['id'] ?>' class="btn-product btnquickview" title="Quick View">Quick
-                                        View</a>
-                                </div>
-                            </figure>
-                            <div class="product-details">
-                                <div class="sold-by">
-                                    <b><a href="<?= url('/shop/' . ($row['vendor_slug'] ?? $row['vendor_id'])) ?>"><?= $row['shop_name'] ?? 'N/A' ?></a></b>
-                                </div>
-                                <h4 class="product-name"><a href="<?= url('/products/' . ($row['slug'] ?? $row['id'])) ?>"><?= ucwords($row['product_name']) ?></a></h4>
-
-                            </div>
-                            <div class="ratings-container">
-                                <div class="ratings-full">
-                                    <span class="ratings" style="width: {{ $row['rating_percent'] ?? 0 }}%"></span>
-                                </div>
-                                <a>({{ $row['review_count'] ?? 0 }} Reviews)</a>
-                            </div>
-                            <div class="product-pa-wrapper">
-                                <div class="product-price-home">
-                                    ₹{{ $row['selling_price'] }}
-                                </div>
-                                <div class="product-price-discount">
-                                    ₹{{ $row['retail_price'] }}
-                                </div>
-                                <?php
-                                   $retailPrice = (float) ($row['retail_price'] ?? 0);
-                                   $sellingPrice = (float) ($row['selling_price'] ?? 0);
-                                   if ($retailPrice > 0) {
-                                       $discount_percentage = (($retailPrice - $sellingPrice) / $retailPrice) * 100;
-                                       $discount_rounded = round($discount_percentage / 10) * 10;
-                                   } else {
-                                       $discount_rounded = 0;
-                                   }
-                                   ?>
-
-                                <div class="product-offer-percentage">
-                                    {{ $discount_rounded }}% Off
-                                </div>
-                            </div>
-
+          <!-- Shop by Location Section (Moved above Mens Products) -->
+          <h2 class="title text-left mb-1 appear-animate mt-4" style="margin-bottom: 5px !important;"> Shop by Location</h2>
+          <div class="swiper-container swiper-theme brands-wrapper br-sm mb-2 appear-animate mt-2"
+              data-swiper-options="{
+                 'autoplay': {
+                     'delay': 4000,
+                     'disableOnInteraction': false
+                 },
+                 'loop': true,
+                 'spaceBetween': 10,
+                 'slidesPerView': 4,
+                 'breakpoints': {
+                     '576': {
+                         'slidesPerView': 4
+                     },
+                     '768': {
+                         'slidesPerView': 4
+                     },
+                     '992': {
+                         'slidesPerView': 5
+                     },
+                     '1200': {
+                         'slidesPerView': 7
+                     }
+                 }
+             }">
+              <div class="swiper-wrapper row cols-xl-8 cols-lg-6 cols-md-4 cols-sm-4 cols-4">
+                  @isset($locations)
+                     @foreach($locations as $key=>$row)
+                     @php
+                     $imgNo = ($key % 9) + 1;
+                     @endphp
+                      <div class="swiper-slide swiper-slide-vendor">
+                              <figure class="vendor-figure">
+                                      <span class="vendor-img-wrap">
+                                          <img
+                                              class="vendor-profile-img"
+                                              src="{{ asset('frontend/images/00' .$imgNo  . '.jpg') }}"
+                                              alt="{{ $row->area }}"
+                                          />
+                                          <span class="vendor-name-overlay">{{ $row->area }}</span>
+                                      </span>
+                              </figure>
                         </div>
-                    </div>
-            <?php }
-               } ?>
-        </div>
+                     @endforeach
+                  @endisset
+              </div>
+          </div>
 
-
-
+          <!-- Banner Shoes (Moved after Shop by Location) -->
+          <div class="banner banner-shoes br-sm mb-2" style="background-image: url(<?php echo asset('frontend') ?>/images/demos/demo8/banner/3.jpg);
+                         background-color: #36332C;">
+              <div class="banner-content d-block d-lg-flex align-items-center">
+                  <div class="content-left mr-auto mb-6 mb-lg-0 align-items-center">
+                      <div class="banner-price-info text-secondary text-uppercase font-weight-bolder ls-25">
+                          40<sup class="font-weight-bold">%</sup><sub class="font-weight-bold ls-10">Off</sub>
+                      </div>
+                      <hr class="banner-divider">
+                      <h3 class="banner-title font-weight-normal text-white mb-0 ls-25">
+                          Summer Season's Sale<br><strong>For Men's Sneakers</strong>
+                      </h3>
+                  </div>
+                  <a href="demo8-shop.html"
+                      class="content-right btn btn-white btn-outline btn-rounded btn-icon-right">
+                      Discover Now<i class="w-icon-long-arrow-right"></i>
+                  </a>
+              </div>
+              <figure class="image-shoes skrollable">
+                  <img src="<?php echo asset('frontend') ?>/images/demos/demo8/banner/shoes.png" alt="Shoes"
+                      data-bottom-top="transform: translateY(2vh);"
+                      data-top-bottom="transform: translateY(-2vh);">
+              </figure>
+          </div>
+          <!-- End of Banner Shoes -->
 
          <div class="title-link-wrapper mb-3">
              <h2 class="title mb-0 pt-2 pb-2">Mens Products</h2>
@@ -1472,30 +1531,7 @@
 
 
 
-     <div class="banner banner-shoes br-sm mb-9" style="background-image: url(<?php echo asset('frontend') ?>/images/demos/demo8/banner/3.jpg);
-                    background-color: #36332C;">
-         <div class="banner-content d-block d-lg-flex align-items-center">
-             <div class="content-left mr-auto mb-6 mb-lg-0 align-items-center">
-                 <div class="banner-price-info text-secondary text-uppercase font-weight-bolder ls-25">
-                     40<sup class="font-weight-bold">%</sup><sub class="font-weight-bold ls-10">Off</sub>
-                 </div>
-                 <hr class="banner-divider">
-                 <h3 class="banner-title font-weight-normal text-white mb-0 ls-25">
-                     Summer Season's Sale<br><strong>For Men's Sneakers</strong>
-                 </h3>
-             </div>
-             <a href="demo8-shop.html"
-                 class="content-right btn btn-white btn-outline btn-rounded btn-icon-right">
-                 Discover Now<i class="w-icon-long-arrow-right"></i>
-             </a>
-         </div>
-         <figure class="image-shoes skrollable">
-             <img src="<?php echo asset('frontend') ?>/images/demos/demo8/banner/shoes.png" alt="Shoes"
-                 data-bottom-top="transform: translateY(2vh);"
-                 data-top-bottom="transform: translateY(-2vh);">
-         </figure>
-     </div>
-     <!-- End of Banner Shoes -->
+
 <style>
 .brands-wrapper .swiper-wrapper {
     align-items: flex-start !important;
@@ -1533,9 +1569,9 @@
     height: 185px !important;
     border-radius: 15px !important;
     overflow: hidden !important;
-    border: 3px solid #ffffff;
+    border: none !important;
     box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    background-color: #ffffff;
+    background-color: transparent !important;
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
     flex-shrink: 0 !important;
     position: relative !important;
@@ -1640,7 +1676,7 @@
         width: 90px !important;
         height: 120px !important;
         border-radius: 12px !important;
-        border-width: 2px !important;
+        border: none !important;
     }
     .vendor-profile-img {
         border-radius: inherit !important;
@@ -1664,7 +1700,7 @@
         width: 75px !important;
         height: 100px !important;
         border-radius: 10px !important;
-        border-width: 2px !important;
+        border: none !important;
     }
     .vendor-profile-img {
         border-radius: inherit !important;
@@ -1676,61 +1712,7 @@
 }
 </style>
 
-     <div class="custom-shops-section">
-         <div class="container">
 
-         <h2 class="title text-left mb-5 appear-animate"> Locations</h2>
-         <div class="swiper-container swiper-theme  brands-wrapper br-sm mb-9 appear-animate mt-2"
-             data-swiper-options="{
-                'autoplay': {
-                    'delay': 4000,
-                    'disableOnInteraction': false
-                },
-                'loop': true,
-                'spaceBetween': 20,
-                'slidesPerView': 3,
-                'breakpoints': {
-                    '576': {
-                        'slidesPerView': 3
-                    },
-                    '768': {
-                        'slidesPerView': 4
-                    },
-                    '992': {
-                        'slidesPerView': 5
-                    },
-                    '1200': {
-                        'slidesPerView': 7
-                    }
-                }
-            }">
-             <div class="swiper-wrapper row cols-xl-8 cols-lg-6 cols-md-4 cols-sm-3 cols-3">
-
-                 @isset($locations)
-                    @foreach($locations as $key=>$row)
-
-                    @php
-                    $imgNo = ($key % 9) + 1;
-                    @endphp
-                     <div class="swiper-slide swiper-slide-vendor">
-                             <figure class="vendor-figure">
-                                     <span class="vendor-img-wrap">
-                                         <img
-                                             class="vendor-profile-img"
-                                             src="{{ asset('frontend/images/00' .$imgNo  . '.jpg') }}"
-                                             alt="{{ $row->area }}"
-                                         />
-                                         <span class="vendor-name-overlay">{{ $row->area }}</span>
-                                     </span>
-                             </figure>
-                        </div>
-
-                    @endforeach
-                 @endisset
-
-             </div>
-         </div>
-     </div>
  </main>
 
  @endsection

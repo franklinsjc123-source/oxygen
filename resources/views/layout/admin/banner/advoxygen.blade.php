@@ -59,7 +59,7 @@
 							 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus"></i> Add Banner</button>                                   
                                 <div class="btn-popup pull-right">								
                                     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" data-backdrop="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                        <div class="modal-dialog modal-dialog-centered" style="max-width: 550px;" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title f-w-600" id="exampleModalLabel">Oxygen Adv</h5>
@@ -72,14 +72,11 @@
                                                         <div class="form">
                                                             <div class="form-group">
                                                                 <label for="validationCustom01" class="mb-1"> Title :</label>
-                                                                
-                                                                <textarea class="form-control h-150px" rows="6" name="title" id="title"></textarea>
+                                                                <input class="form-control" type="text" name="title" id="title">
                                                             </div>
 															 <div class="form-group">
                                                                 <label for="validationCustom01" class="mb-1">Sub Title :</label>
-                                                                
-                                                                <textarea class="form-control h-150px" rows="6" name="sub_title" id="sub_title"></textarea>
-                                                                
+                                                                <input class="form-control" type="text" name="sub_title" id="sub_title">
                                                             </div>
                                                             <div class="form-group">
                                                                 <label for="validationCustom02" class="mb-1"> Image :</label>
@@ -138,7 +135,7 @@
 
                                 <div class="btn-popup pull-right">								
                                     <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" data-backdrop="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                        <div class="modal-dialog modal-dialog-centered" style="max-width: 550px;" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title f-w-600" id="exampleModalLabel">Edit Banner</h5>
@@ -152,12 +149,11 @@
                                                             <input class="form-control" id="editid" name="editid" type="hidden" >
                                                             <div class="form-group">
                                                                 <label for="validationCustom01" class="mb-1"> Title :</label>
-                                                                
-                                                                <textarea class="form-control h-150px" rows="6" name="edittitle" id="edittitle"></textarea>
+                                                                <input class="form-control" type="text" name="edittitle" id="edittitle">
                                                             </div>
 															 <div class="form-group">
                                                                 <label for="validationCustom01" class="mb-1">Sub Title :</label>
-                                                                <textarea class="form-control h-150px" rows="6" name="editsub_title" id="editsub_title"></textarea>
+                                                                <input class="form-control" type="text" name="editsub_title" id="editsub_title">
                                                             </div>
                                                             <div class="form-group">
                                                                 <label for="validationCustom02" class="mb-1"> Image :</label>

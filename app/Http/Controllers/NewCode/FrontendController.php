@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use App\Models\PinCode\PinCode;
 use App\Models\wishlist;
+use App\Models\Banners\oxygen_adv;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use NumberFormatter;
@@ -1280,6 +1281,8 @@ class FrontendController extends Controller
             }
         }
 
+        $oxygen_adv = oxygen_adv::where('status', 1)->orderBy('sort', 'asc')->get();
+
         return view('frontend/demo_eight', compact(
             'mainslider',
             'topRatedProducts',
@@ -1290,7 +1293,8 @@ class FrontendController extends Controller
             'vendorcreate',
             'locations',
             'auctionProducts',
-            'sliderOffers'
+            'sliderOffers',
+            'oxygen_adv'
         ));
     }
 
