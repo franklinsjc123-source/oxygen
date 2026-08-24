@@ -551,8 +551,8 @@
           <!-- Shops Section (Moved after Auction Products) -->
           <div class="container mt-3 mb-0" style="margin-bottom: 0px !important; padding: 0 !important;">
               <div class="title-link-wrapper mb-3">
-                  <h2 class="title mb-0 pt-2 pb-2">Shop by Seller</h2>
-                  <a href="{{ url('shops') }}" class="mb-0">View All<i class="w-icon-long-arrow-right"></i></a>
+                  <h2 class="title mb-0 pt-2 pb-2" style="font-weight: 700; font-family: 'Poppins', sans-serif;">Shop by Seller</h2>
+                  <a href="{{ url('shops') }}" class="mb-0" style="color: #ff4b72; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; font-size: 1.3rem;">View All <i class="w-icon-angle-right" style="color: #ff4b72; font-weight: 800; font-size: 1.1rem; line-height: 1;"></i></a>
               </div>
               <div class="swiper-container swiper-theme brands-wrapper br-sm mb-1 appear-animate"
                   data-swiper-options="{
@@ -675,39 +675,6 @@
                                         @endphp
                                                                                       @if(!empty($offerName))
                       @php
-                          $shape = 'ribbon';
-                          $bg = '#1a5fe5';
-                          $text = '#ffffff';
-                          $shadow = '0 2px 8px rgba(0,0,0,0.25)';
-                          
-                          $offerLower = strtolower($offerName);
-                          if (str_contains($offerLower, '@')) {
-                              $shape = 'ribbon';
-                              $bg = 'linear-gradient(135deg, #d41e7d, #a3105a)'; // Pink for Buy @
-                          } elseif (str_contains($offerLower, 'buy') || str_contains($offerLower, 'free')) {
-                              $shape = 'ribbon';
-                              $bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)'; // Purple for Buy X Get Y
-                          } elseif (str_contains($offerLower, 'cash')) {
-                              $shape = 'circle';
-                              $bg = 'linear-gradient(135deg, #2ebd59, #1fa04a)';
-                          } elseif (str_contains($offerLower, 'flat')) {
-                              $shape = 'shield';
-                              $bg = 'linear-gradient(135deg, #1a73e8, #1558b5)';
-                          } elseif (str_contains($offerLower, 'intro')) {
-                              $shape = 'ribbon';
-                              $bg = 'linear-gradient(135deg, #e97a31, #d46520)';
-                          } elseif (str_contains($offerLower, 'save')) {
-                              $shape = 'circle';
-                              $bg = 'linear-gradient(135deg, #ffd400, #f0c800)';
-                              $text = '#000000';
-                          } elseif (str_contains($offerLower, 'discount') || str_contains($offerLower, 'off')) {
-                              $shape = 'ribbon';
-                              $bg = 'linear-gradient(135deg, #e51a2f, #c41525)';
-                          } else {
-                              $bg = 'linear-gradient(135deg, #1a5fe5, #1450c0)';
-                          }
-                          
-                          $style = '';
                           if ($shape == 'ribbon') {
                               $style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
                           } elseif ($shape == 'circle') {
@@ -909,36 +876,11 @@
                                                                                 @if(!empty($offerName))
                 @php
                     $shape = 'ribbon';
-                    $bg = '#1a5fe5';
+                    $bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)';
                     $text = '#ffffff';
                     $shadow = '0 2px 8px rgba(0,0,0,0.25)';
                     
                     $offerLower = strtolower($offerName);
-                    if (str_contains($offerLower, '@')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #d41e7d, #a3105a)'; // Pink for Buy @
-                    } elseif (str_contains($offerLower, 'buy') || str_contains($offerLower, 'free')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)'; // Purple for Buy X Get Y
-                    } elseif (str_contains($offerLower, 'cash')) {
-                        $shape = 'circle';
-                        $bg = 'linear-gradient(135deg, #2ebd59, #1fa04a)';
-                    } elseif (str_contains($offerLower, 'flat')) {
-                        $shape = 'shield';
-                        $bg = 'linear-gradient(135deg, #1a73e8, #1558b5)';
-                    } elseif (str_contains($offerLower, 'intro')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #e97a31, #d46520)';
-                    } elseif (str_contains($offerLower, 'save')) {
-                        $shape = 'circle';
-                        $bg = 'linear-gradient(135deg, #ffd400, #f0c800)';
-                        $text = '#000000';
-                    } elseif (str_contains($offerLower, 'discount') || str_contains($offerLower, 'off')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #e51a2f, #c41525)';
-                    } else {
-                        $bg = 'linear-gradient(135deg, #1a5fe5, #1450c0)';
-                    }
                     
                     $style = '';
                     if ($shape == 'ribbon') {
@@ -1006,7 +948,7 @@
          </div>
 
           <!-- Shop by Location Section (Moved above Mens Products) -->
-          <h2 class="title text-left mb-1 appear-animate mt-4" style="margin-bottom: 5px !important;"> Shop by Location</h2>
+          <h2 class="title text-left mb-1 appear-animate mt-4" style="margin-bottom: 5px !important; font-weight: 700; font-family: 'Poppins', sans-serif;">Shop by Location</h2>
           <div class="swiper-container swiper-theme brands-wrapper br-sm mb-2 appear-animate mt-2"
               data-swiper-options="{
                  'autoplay': {
@@ -1131,36 +1073,11 @@
                                                                                 @if(!empty($offerName))
                 @php
                     $shape = 'ribbon';
-                    $bg = '#1a5fe5';
+                    $bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)';
                     $text = '#ffffff';
                     $shadow = '0 2px 8px rgba(0,0,0,0.25)';
                     
                     $offerLower = strtolower($offerName);
-                    if (str_contains($offerLower, '@')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #d41e7d, #a3105a)'; // Pink for Buy @
-                    } elseif (str_contains($offerLower, 'buy') || str_contains($offerLower, 'free')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)'; // Purple for Buy X Get Y
-                    } elseif (str_contains($offerLower, 'cash')) {
-                        $shape = 'circle';
-                        $bg = 'linear-gradient(135deg, #2ebd59, #1fa04a)';
-                    } elseif (str_contains($offerLower, 'flat')) {
-                        $shape = 'shield';
-                        $bg = 'linear-gradient(135deg, #1a73e8, #1558b5)';
-                    } elseif (str_contains($offerLower, 'intro')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #e97a31, #d46520)';
-                    } elseif (str_contains($offerLower, 'save')) {
-                        $shape = 'circle';
-                        $bg = 'linear-gradient(135deg, #ffd400, #f0c800)';
-                        $text = '#000000';
-                    } elseif (str_contains($offerLower, 'discount') || str_contains($offerLower, 'off')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #e51a2f, #c41525)';
-                    } else {
-                        $bg = 'linear-gradient(135deg, #1a5fe5, #1450c0)';
-                    }
                     
                     $style = '';
                     if ($shape == 'ribbon') {
@@ -1280,36 +1197,11 @@
                                                                                 @if(!empty($offerName))
                 @php
                     $shape = 'ribbon';
-                    $bg = '#1a5fe5';
+                    $bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)';
                     $text = '#ffffff';
                     $shadow = '0 2px 8px rgba(0,0,0,0.25)';
                     
                     $offerLower = strtolower($offerName);
-                    if (str_contains($offerLower, '@')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #d41e7d, #a3105a)'; // Pink for Buy @
-                    } elseif (str_contains($offerLower, 'buy') || str_contains($offerLower, 'free')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)'; // Purple for Buy X Get Y
-                    } elseif (str_contains($offerLower, 'cash')) {
-                        $shape = 'circle';
-                        $bg = 'linear-gradient(135deg, #2ebd59, #1fa04a)';
-                    } elseif (str_contains($offerLower, 'flat')) {
-                        $shape = 'shield';
-                        $bg = 'linear-gradient(135deg, #1a73e8, #1558b5)';
-                    } elseif (str_contains($offerLower, 'intro')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #e97a31, #d46520)';
-                    } elseif (str_contains($offerLower, 'save')) {
-                        $shape = 'circle';
-                        $bg = 'linear-gradient(135deg, #ffd400, #f0c800)';
-                        $text = '#000000';
-                    } elseif (str_contains($offerLower, 'discount') || str_contains($offerLower, 'off')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #e51a2f, #c41525)';
-                    } else {
-                        $bg = 'linear-gradient(135deg, #1a5fe5, #1450c0)';
-                    }
                     
                     $style = '';
                     if ($shape == 'ribbon') {
@@ -1430,36 +1322,11 @@
                                                                                 @if(!empty($offerName))
                 @php
                     $shape = 'ribbon';
-                    $bg = '#1a5fe5';
+                    $bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)';
                     $text = '#ffffff';
                     $shadow = '0 2px 8px rgba(0,0,0,0.25)';
                     
                     $offerLower = strtolower($offerName);
-                    if (str_contains($offerLower, '@')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #d41e7d, #a3105a)'; // Pink for Buy @
-                    } elseif (str_contains($offerLower, 'buy') || str_contains($offerLower, 'free')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)'; // Purple for Buy X Get Y
-                    } elseif (str_contains($offerLower, 'cash')) {
-                        $shape = 'circle';
-                        $bg = 'linear-gradient(135deg, #2ebd59, #1fa04a)';
-                    } elseif (str_contains($offerLower, 'flat')) {
-                        $shape = 'shield';
-                        $bg = 'linear-gradient(135deg, #1a73e8, #1558b5)';
-                    } elseif (str_contains($offerLower, 'intro')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #e97a31, #d46520)';
-                    } elseif (str_contains($offerLower, 'save')) {
-                        $shape = 'circle';
-                        $bg = 'linear-gradient(135deg, #ffd400, #f0c800)';
-                        $text = '#000000';
-                    } elseif (str_contains($offerLower, 'discount') || str_contains($offerLower, 'off')) {
-                        $shape = 'ribbon';
-                        $bg = 'linear-gradient(135deg, #e51a2f, #c41525)';
-                    } else {
-                        $bg = 'linear-gradient(135deg, #1a5fe5, #1450c0)';
-                    }
                     
                     $style = '';
                     if ($shape == 'ribbon') {
