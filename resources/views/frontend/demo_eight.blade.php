@@ -24,6 +24,32 @@
             margin-top: 0 !important;
             line-height: 1.2 !important;
         }
+        .main > div.pb-2 {
+            padding-bottom: 0 !important;
+        }
+        .main > div.pb-2 > div.mt-4 {
+            margin-top: 0 !important;
+        }
+        .offer-badges-container {
+            margin-top: 5px !important;
+            margin-bottom: 0px !important;
+        }
+        .auction-container {
+            margin-top: 0px !important;
+            margin-bottom: 5px !important;
+        }
+        .auction-container .title-link-wrapper {
+            margin-bottom: 5px !important;
+        }
+        .auction-container .title {
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+        }
+        .info-icon-box-wrapper {
+            margin-top: 15px !important;
+        }
     }
  </style>
  <!-- Start of Main -->
@@ -71,7 +97,7 @@
 
      <!-- Offer Badges Section -->
      @if(isset($sliderOffers) && count($sliderOffers) > 0)
-     <div class="container mt-4 mb-2">
+     <div class="container mt-4 mb-2 offer-badges-container">
          <style>
              .offer-badge-img-wrapper {
                  width: 65px;
@@ -206,9 +232,9 @@
      </div>
      @endif
 
-     <!-- Auction Products (Moved below offers) -->
-     @if(isset($auctionProducts) && count($auctionProducts) > 0)
-     <div class="container mt-4 mb-4">
+      <!-- Auction Products (Moved below offers) -->
+      @if(isset($auctionProducts) && count($auctionProducts) > 0)
+      <div class="container mt-4 mb-4 auction-container">
          <div class="title-link-wrapper mb-3">
              <h2 class="title mb-0 pt-2 pb-2">Auction Products</h2>
              <a href="{{ url('auction') }}" class="mb-0">More Products<i
@@ -288,7 +314,7 @@
 
       <div class="container pb-2">
 
-         <div class="swiper-container swiper-theme icon-box-wrapper appear-animate br-sm mt-6"
+         <div class="swiper-container swiper-theme icon-box-wrapper appear-animate br-sm mt-6 info-icon-box-wrapper"
              data-swiper-options="{
                     'loop': true,
                     'autoplay': {
