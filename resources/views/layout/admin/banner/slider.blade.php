@@ -152,7 +152,7 @@
 
         <div class="btn-popup pull-right">								
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" data-backdrop="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 550px;">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title f-w-600" id="exampleModalLabel">Main Slider</h5>
@@ -165,45 +165,19 @@
                                 <div class="form">
                                     <div class="form-group">
                                         <label for="validationCustom01" class="mb-1"> Title :</label>
-                                        
-                                         <textarea class="form-control h-150px" rows="6" name="title" id="title"></textarea>
+                                        <input class="form-control" type="text" name="title" id="title" required="">
                                     </div>
-                                     v<di class="form-group">
+                                     <div class="form-group">
                                         <label for="validationCustom01" class="mb-1">Sub Title :</label>
-                                        
-                                        <textarea class="form-control h-150px" rows="6" name="sub_title" id="sub_title"></textarea>
-                                    </di>
+                                        <input class="form-control" type="text" name="sub_title" id="sub_title" required="">
+                                    </div>
                                     <div class="form-group">
-                                        <label for="validationCustom02" class="mb-1"> Image :</label>
+                                        <label for="validationCustom02" class="mb-1"> Image (1300x510) :</label>
                                         <input class="form-control" require="" name="mainImage" id="mainImage" type="file" accept="image/*">
                                     </div>
                                      <div class="form-group">
                                         <label for="validationCustom01" class="mb-1">Link :</label>
                                         <input class="form-control" id="link" name="link" type="text" required="true">
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="p-3 mb-2 badge-primary text-white">.badge-primary</div>
-                                            <div class="p-3 mb-2 badge-secondary text-white">.badge-secondary</div>
-                                            <div class="p-3 mb-2 badge-success text-white">.badge-success</div>
-                                            {{-- <div class="p-3 mb-2 badge-danger text-white">.badge-danger</div> --}}
-                                            <div class="p-3 mb-2 badge-warning text-dark">.badge-warning</div>
-                                            <div class="p-3 mb-2 badge-info text-white">.badge-info</div>
-                                            {{-- <div class="p-3 mb-2 badge-light text-dark">.badge-light</div> --}}
-                                            <div class="p-3 mb-2 badge-dark text-white">.badge-dark</div>
-                                            <div class="p-3 mb-2 badge-white text-dark">.badge-white</div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="p-3 mb-2 badge-primary text-dark">.badge-primary</div>
-                                            <div class="p-3 mb-2 badge-secondary text-dark">.badge-secondary</div>
-                                            <div class="p-3 mb-2 badge-success text-dark">.badge-success</div>
-                                            {{-- <div class="p-3 mb-2 badge-danger text-dark">.badge-danger</div> --}}
-                                            <div class="p-3 mb-2 badge-warning text-dark">.badge-warning</div>
-                                            <div class="p-3 mb-2 badge-info text-dark">.badge-info</div>
-                                            {{-- <div class="p-3 mb-2 badge-light text-dark">.badge-light</div> --}}
-                                            <div class="p-3 mb-2 badge-dark text-danger">.badge-dark</div>
-                                            <div class="p-3 mb-2 badge-white text-dark">.badge-white</div>
-                                        </div>
                                     </div>
                                     
                                      <div class="form-group">
@@ -256,7 +230,7 @@
 
         <div class="btn-popup pull-right">								
             <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" data-backdrop="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 550px;">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title f-w-600" id="exampleModalLabel">Edit Banner</h5>
@@ -270,16 +244,14 @@
                                     <input class="form-control" id="editid" name="editid" type="hidden" >
                                     <div class="form-group">
                                         <label for="validationCustom01" class="mb-1"> Title :</label>
-                                        
-                                        <textarea class="form-control h-150px" rows="6" name="edittitle" id="edittitle"></textarea>
+                                        <input class="form-control" type="text" name="edittitle" id="edittitle" required="">
                                     </div>
                                      <div class="form-group">
                                         <label for="validationCustom01" class="mb-1">Sub Title :</label>
-                                        
-                                        <textarea class="form-control h-150px" rows="6" name="editsub_title" id="editsub_title"></textarea>
+                                        <input class="form-control" type="text" name="editsub_title" id="editsub_title" required="">
                                     </div>
                                     <div class="form-group">
-                                        <label for="validationCustom02" class="mb-1"> Image :</label>
+                                        <label for="validationCustom02" class="mb-1"> Image (1300x510) :</label>
                                         <input class="form-control"  name="editmainImage" id="editmainImage" type="file" accept="image/*">
                                         <input class="form-control"  name="editoldImage" id="editoldImage" type="hidden" accept="image/*">
                                     </div>

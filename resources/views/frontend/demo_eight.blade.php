@@ -53,6 +53,9 @@
         .info-icon-box-wrapper {
             margin-top: 15px !important;
         }
+        .category-banner-2cols img {
+            min-height: 220px !important;
+        }
     }
  </style>
  <!-- Start of Main -->
@@ -100,7 +103,7 @@
 
      <!-- Offer Badges Section -->
      @if(isset($sliderOffers) && count($sliderOffers) > 0)
-     <div class="container mt-4 mb-2 offer-badges-container">
+      <div class="container mt-2 mb-2 offer-badges-container" style="margin-top: 15px !important;">
          <style>
              .offer-badge-img-wrapper {
                  width: 65px;
@@ -621,7 +624,7 @@
          <!-- End of Icon Box Wrapper -->
 
           <!-- Offer Products Section (Moved after Advertisements) -->
-          <div class="container mt-4 mb-4">
+          <div class="container mt-6 mb-4" style="margin-top: 45px !important;">
               <div class="title-link-wrapper mb-3">
                   <h2 class="title mb-0 pt-2 pb-2">Offer Products</h2>
                   <a href="{{ url('offers') }}" class="mb-0">More Products<i

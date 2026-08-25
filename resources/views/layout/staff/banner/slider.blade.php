@@ -60,7 +60,7 @@
 							 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus"></i> Add Slider</button>                                   
                                 <div class="btn-popup pull-right">								
                                     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" data-backdrop="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 550px;">
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title f-w-600" id="exampleModalLabel">Main Slider</h5>
@@ -75,12 +75,12 @@
                                                                 <label for="validationCustom01" class="mb-1"> Title :</label>
                                                                 <input class="form-control" id="title" name="title" type="text" required="true">
                                                             </div>
-															 v<di class="form-group">
+															 <div class="form-group">
                                                                 <label for="validationCustom01" class="mb-1">Sub Title :</label>
                                                                 <input class="form-control" id="sub_title" name="sub_title" type="text" required="true">
-                                                            </di>
+                                                            </div>
                                                             <div class="form-group">
-                                                                <label for="validationCustom02" class="mb-1"> Image :</label>
+                                                                <label for="validationCustom02" class="mb-1"> Image (1300x510) :</label>
                                                                 <input class="form-control" require="" name="mainImage" id="mainImage" type="file" accept="image/*">
                                                             </div>
                                                              <div class="form-group">
@@ -133,7 +133,7 @@
 
                                 <div class="btn-popup pull-right">								
                                     <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" data-backdrop="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 550px;">
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title f-w-600" id="exampleModalLabel">Edit Banner</h5>
@@ -154,7 +154,7 @@
                                                                 <input class="form-control" id="editsub_title" name="editsub_title" type="text" required="true">
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="validationCustom02" class="mb-1"> Image :</label>
+                                                                <label for="validationCustom02" class="mb-1"> Image (1300x510) :</label>
                                                                 <input class="form-control"  name="editmainImage" id="editmainImage" type="file" accept="image/*">
                                                                 <input class="form-control"  name="editoldImage" id="editoldImage" type="hidden" accept="image/*">
                                                             </div>
