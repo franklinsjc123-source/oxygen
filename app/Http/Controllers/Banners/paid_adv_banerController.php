@@ -78,6 +78,10 @@ class paid_adv_banerController extends Controller
         //     'end_date'=> 'required|date|after_or_equal:' . $date
         // ]);
         
+        $request->validate([
+            'mainImage' => 'required|image|dimensions:width=450,height=300',
+        ]);
+
         $main_image_path = "assets/images/banners/adv-baner";   
 
         try {
@@ -189,6 +193,10 @@ class paid_adv_banerController extends Controller
         //     //'start_date'=> 'required|after_or_equal:' . $date,
         //     //'end_date'=> 'required|after_or_equal:' . $date
         // ]);
+
+        $request->validate([
+            'editmainImage' => 'nullable|image|dimensions:width=450,height=300',
+        ]);
 
         $main_image_path = "assets/images/banners/adv-baner";
 

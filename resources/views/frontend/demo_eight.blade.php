@@ -54,7 +54,7 @@
             margin-top: 15px !important;
         }
         .category-banner-2cols img {
-            min-height: 220px !important;
+            min-height: 180px !important;
         }
     }
  </style>
@@ -198,7 +198,15 @@
                                  </div>
                              @else
                                   @php
-                                      $bgGradient = 'linear-gradient(135deg, #34d399 0%, #059669 100%)';
+                                      $gradients = [
+                                          'linear-gradient(135deg, #60a5fa 0%, #2563eb 100%)',
+                                          'linear-gradient(135deg, #34d399 0%, #059669 100%)',
+                                          'linear-gradient(135deg, #fb7185 0%, #e11d48 100%)',
+                                          'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)',
+                                          'linear-gradient(135deg, #818cf8 0%, #4f46e5 100%)',
+                                          'linear-gradient(135deg, #f472b6 0%, #db2777 100%)'
+                                      ];
+                                      $bgGradient = $gradients[$key % 6];
                                       $badgeLines = [];
 
                                       if ($offer->type == 'Buy X Get Y Free') {
@@ -607,7 +615,7 @@
                   <div class="banner banner-fixed mb-1">
                       <figure class="br-sm">
                           <img src="{{ asset('assets/images/banners/advoxygen/' . $banner->image) }}" alt="{{ $banner->title }}" width="680"
-                              height="220" style="background-color: {{ $key == 0 ? '#384744' : '#e7e7e7' }}; object-fit: cover; height: 220px !important; width: 100% !important;" />
+                              height="220" style="background-color: {{ $key == 0 ? '#384744' : '#e7e7e7' }}; object-fit: cover; height: 180px !important; width: 100% !important;" />
                       </figure>
                       <div class="banner-content y-50">
                           <h5 class="banner-subtitle text-uppercase {{ $key == 0 ? 'text-white' : '' }} font-weight-bold">{{ $banner->title }}</h5>

@@ -77,6 +77,10 @@ class oxygen_advController extends Controller
         //     'end_date'=> 'required|date|after_or_equal:' . $date
         // ]);
         
+        $request->validate([
+            'mainImage' => 'required|image|dimensions:width=200,height=180',
+        ]);
+
         $main_image_path = "assets/images/banners/advoxygen";   
 
         try {
@@ -188,6 +192,10 @@ class oxygen_advController extends Controller
         //     //'start_date'=> 'required|after_or_equal:' . $date,
         //     //'end_date'=> 'required|after_or_equal:' . $date
         // ]);
+
+        $request->validate([
+            'editmainImage' => 'nullable|image|dimensions:width=200,height=180',
+        ]);
 
         $main_image_path = "assets/images/banners/advoxygen";
 
