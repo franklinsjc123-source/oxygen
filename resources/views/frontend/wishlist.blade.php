@@ -251,10 +251,14 @@
                                 <tr>
                                     <td style="text-align: center; vertical-align: middle;" class="product-thumbnail">
                                         @php
+                                            static $masterOffersMap = null;
+                                            if ($masterOffersMap === null) {
+                                                $masterOffersMap = DB::table('master_offers')->get()->keyBy('id');
+                                            }
                                             $offerName = '';
                                             $offerId = $product->offers ?? null;
                                             if ($offerId) {
-                                                $offerDetails = DB::table('master_offers')->where('id', $offerId)->first();
+                                                $offerDetails = $masterOffersMap[$offerId] ?? null;
                                                 if ($offerDetails) {
                                                     if ($offerDetails->type == "Buy X Get Y Free") {
                                                         $offerName = 'Buy ' . ($offerDetails->buy ?: '1') . ' Get ' . ($offerDetails->getoffer ?: '1') . ' Free';
@@ -285,7 +289,7 @@
                                                     <img src="{{ asset('assets/images/products/' . $product->product_image) }}" alt="product" style="width:80px; height:80px; object-fit:cover;">
                                                     @if(!empty($offerName))
                 @php
-                          $bg = 'linear-gradient(135deg, #34d399 0%, #059669 100%)';
+                          $bg = 'linear-gradient(135deg, #ff7b7b 0%, #ff5b5b 100%)';
                           $text = '#ffffff';
                           $style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
                       @endphp

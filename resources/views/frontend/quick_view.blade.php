@@ -75,8 +75,8 @@
                                                      }
                                                  @endphp
                         @if(!empty($offerName))
-                @php
-                          $bg = 'linear-gradient(135deg, #34d399 0%, #059669 100%)';
+                 @php
+                           $bg = 'linear-gradient(135deg, #ff7b7b 0%, #ff5b5b 100%)';
                           $text = '#ffffff';
                           $style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
                       @endphp

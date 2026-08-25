@@ -747,42 +747,11 @@ ${(product.offer_text || product.offer_title || product.offer_type) ? (() => {
  <script>
 function getRibbonStyles(offerName) {
     const name = (offerName || '').toLowerCase();
-    let bg = 'linear-gradient(135deg, #1a5fe5, #1450c0)';
+    let bg = 'linear-gradient(135deg, #ff7b7b 0%, #ff5b5b 100%)';
     let text = '#ffffff';
     let shape = 'ribbon';
     
-    if (name.includes('@')) {
-        shape = 'ribbon';
-        bg = 'linear-gradient(135deg, #d41e7d, #a3105a)';
-    } else if (name.includes('buy') || name.includes('free')) {
-        shape = 'ribbon';
-        bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)';
-    } else if (name.includes('cash')) {
-        shape = 'circle';
-        bg = 'linear-gradient(135deg, #2ebd59, #1fa04a)';
-    } else if (name.includes('flat')) {
-        shape = 'shield';
-        bg = 'linear-gradient(135deg, #1a73e8, #1558b5)';
-    } else if (name.includes('intro')) {
-        shape = 'ribbon';
-        bg = 'linear-gradient(135deg, #e97a31, #d46520)';
-    } else if (name.includes('save')) {
-        shape = 'circle';
-        bg = 'linear-gradient(135deg, #ffd400, #f0c800)';
-        text = '#000000';
-    } else if (name.includes('discount') || name.includes('off')) {
-        shape = 'ribbon';
-        bg = 'linear-gradient(135deg, #e51a2f, #c41525)';
-    }
-    
-    let style = '';
-    if (shape === 'ribbon') {
-        style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
-    } else if (shape === 'circle') {
-        style = "position:absolute; top:8px; left:8px; width:56px; height:56px; border-radius:50%; padding:4px; box-shadow:0 2px 8px rgba(0,0,0,0.25);";
-    } else { // shield
-        style = "position:absolute; top:0; left:10px; width:52px; min-height:60px; clip-path:polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%); padding:6px 3px 16px 3px;";
-    }
+    let style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
     
     // Format offerName into short lines to prevent overflow
     const words = name.split(' ');

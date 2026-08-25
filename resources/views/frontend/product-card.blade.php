@@ -23,10 +23,14 @@
                 }
             @endphp
             @php
+                static $masterOffersMap = null;
+                if ($masterOffersMap === null) {
+                    $masterOffersMap = DB::table('master_offers')->get()->keyBy('id');
+                }
                 $offerName = '';
                 $offerId = $product->offer_id ?? $product->offers ?? null;
                 if ($offerId) {
-                    $offerDetails = DB::table('master_offers')->where('id', $offerId)->first();
+                    $offerDetails = $masterOffersMap[$offerId] ?? null;
                     if ($offerDetails) {
                         if ($offerDetails->type == "Buy X Get Y Free") {
                             $offerName = 'Buy ' . ($offerDetails->buy ?: '1') . ' Get ' . ($offerDetails->getoffer ?: '1') . ' Free';
@@ -54,12 +58,12 @@
                     $offerName = $product->offer_text ?? $product->offer_type ?? null;
                 }
             @endphp
-                        @if(!empty($offerName))
+            @if(!empty($offerName))
                 @php
-                          $bg = 'linear-gradient(135deg, #34d399 0%, #059669 100%)';
-                          $text = '#ffffff';
-                          $style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
-                      @endphp
+                    $bg = 'linear-gradient(135deg, #ff7b7b 0%, #ff5b5b 100%)';
+                    $text = '#ffffff';
+                    $style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
+                @endphp
                 <div style="{{ $style }} background:{{ $bg }}; color:{{ $text }}; font-weight:900; font-size:10px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;">
                     {{ $offerName }}
                 </div>
