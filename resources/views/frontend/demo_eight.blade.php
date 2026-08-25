@@ -9,6 +9,11 @@
 
         font-family: monospace;
     }
+    .product-media img {
+        object-fit: cover !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
     .title-link-wrapper a {
         color: #0088dd !important;
     }
@@ -612,7 +617,7 @@
           </div>
           <!-- Category Banner 2Cols (Advertisements moved after Shop by Seller) -->
           @if(isset($oxygen_adv) && count($oxygen_adv) > 0)
-          <div class="container mt-4 mb-0" style="padding: 0 !important; margin-bottom: 0px !important;">
+          <div class="container mt-1 mb-0" style="padding: 0 !important; margin-bottom: 0px !important; margin-top: 5px !important;">
               <div class="row cols-2 cols-md-2 category-banner-2cols mb-1">
                   @foreach($oxygen_adv->take(2) as $key => $banner)
                   <div class="banner banner-fixed mb-1">

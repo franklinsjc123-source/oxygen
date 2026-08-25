@@ -36,6 +36,11 @@
 
                     <!-- Active Category Highlight Styles -->
                     <style>
+                        .product-media img {
+                            object-fit: cover !important;
+                            width: 100% !important;
+                            height: 100% !important;
+                        }
                         /* ── Selected / Active Sub-Category ── */
                         .category-ellipse.sc-active .category-media {
                             position: relative;
