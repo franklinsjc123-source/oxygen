@@ -634,7 +634,7 @@
           <!-- Offer Products Section (Moved after Advertisements) -->
           <div class="container mt-6 mb-4" style="margin-top: 45px !important;">
               <div class="title-link-wrapper mb-3">
-                  <h2 class="title mb-0 pt-2 pb-2">Offer Products</h2>
+                  <h2 class="title mb-0 pt-2 pb-2" style="font-weight: 700; font-family: 'Poppins', sans-serif;">Offer Products</h2>
                   <a href="{{ url('offers') }}" class="mb-0">More Products<i
                           class="w-icon-long-arrow-right"></i></a>
               </div>
