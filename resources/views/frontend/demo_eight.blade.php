@@ -559,7 +559,7 @@
           <div class="container mt-3 mb-0" style="margin-bottom: 0px !important; padding: 0 !important;">
               <div class="title-link-wrapper mb-3">
                   <h2 class="title mb-0 pt-2 pb-2" style="font-weight: 700; font-family: 'Poppins', sans-serif;">Shop by Seller</h2>
-                  <a href="{{ url('shops') }}" class="mb-0" style="color: #ff4b72; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; font-size: 1.3rem;">View All <i class="w-icon-angle-right" style="color: #ff4b72; font-weight: 800; font-size: 1.1rem; line-height: 1;"></i></a>
+                  <a href="{{ url('shops') }}" class="mb-0" style="color: #ff4b72; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; font-size: 1.3rem;">View All <i class="w-icon-long-arrow-right" style="color: #ff4b72; font-weight: 800; font-size: 1.1rem; line-height: 1;"></i></a>
               </div>
               <div class="swiper-container swiper-theme brands-wrapper br-sm mb-1 appear-animate"
                   data-swiper-options="{
