@@ -94,10 +94,9 @@ class main_slidvController extends Controller
             
             $img = Image::make($file->getRealPath());
             
-            $img->resize(100, 100, function ($constraint) {
-                
+            $img->resize(1920, null, function ($constraint) {
                 $constraint->aspectRatio();
-                
+                $constraint->upSize();
             })->save($main_image_path.'/'.$image);
            
             
@@ -207,10 +206,9 @@ class main_slidvController extends Controller
             
             $img = Image::make($file->getRealPath());
             
-            $img->resize(100, 100, function ($constraint) {
-                
+            $img->resize(1920, null, function ($constraint) {
                 $constraint->aspectRatio();
-                
+                $constraint->upSize();
             })->save($main_image_path.'/'.$image);
             $adbanner->image =  $image;
 

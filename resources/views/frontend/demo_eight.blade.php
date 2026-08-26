@@ -22,12 +22,20 @@
         .animation-slider .swiper-wrapper,
         .animation-slider .intro-slide,
         .animation-slider .intro-slide1 {
-            min-height: 260px !important;
-            height: 260px !important;
+            min-height: unset !important;
+            height: auto !important;
+            aspect-ratio: 1300 / 510 !important;
+        }
+        .intro-slide {
+            background-size: contain !important;
+            background-repeat: no-repeat !important;
+            background-position: center !important;
         }
         .animation-slider .banner-content {
-            top: 45% !important;
-            transform: translateY(-50%) !important;
+            top: auto !important;
+            bottom: 10% !important;
+            right: 5% !important;
+            transform: none !important;
         }
         .animation-slider .banner-content .btn {
             font-size: 10px !important;
@@ -35,6 +43,7 @@
             margin-top: 0 !important;
             line-height: 1.2 !important;
         }
+    }
         .main > div.pb-2 {
             padding-bottom: 0 !important;
         }
