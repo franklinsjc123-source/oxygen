@@ -18,7 +18,7 @@
         color: #0088dd !important;
     }
     .banner-shoes {
-        aspect-ratio: 1380 / 200 !important;
+        aspect-ratio: 1300 / 200 !important;
         background-size: contain !important;
         background-position: center !important;
         background-repeat: no-repeat !important;
@@ -27,8 +27,8 @@
     }
     @media (max-width: 767px) {
         .banner-shoes {
-            aspect-ratio: 1380 / 200 !important;
-            background-size: contain !important;
+            aspect-ratio: 1300 / 450 !important;
+            background-size: 100% 100% !important;
             min-height: unset !important;
             height: auto !important;
             padding: 10px 20px !important;
@@ -54,7 +54,7 @@
         .animation-slider .intro-slide,
         .animation-slider .intro-slide1 {
             min-height: unset !important;
-            aspect-ratio: 1920 / 753 !important;
+            aspect-ratio: 1920 / 880 !important;
         }
         .animation-slider {
             margin-left: 0 !important;
@@ -77,6 +77,9 @@
             padding: 8px 16px !important;
             margin-top: 0 !important;
             line-height: 1.2 !important;
+        }
+        h2.title {
+            font-size: 1.2rem !important;
         }
     }
         .main > div.pb-2 {

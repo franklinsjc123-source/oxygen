@@ -79,7 +79,7 @@ class paid_adv_banerController extends Controller
         // ]);
         
         $request->validate([
-            'mainImage' => 'required|image|dimensions:width=1380,height=200',
+            'mainImage' => 'required|image|dimensions:width=1300,height=200',
         ]);
 
         $main_image_path = "assets/images/banners/adv-baner";   
@@ -194,7 +194,7 @@ class paid_adv_banerController extends Controller
         // ]);
 
         $request->validate([
-            'editmainImage' => 'nullable|image|dimensions:width=1380,height=200',
+            'editmainImage' => 'nullable|image|dimensions:width=1300,height=200',
         ]);
 
         $main_image_path = "assets/images/banners/adv-baner";

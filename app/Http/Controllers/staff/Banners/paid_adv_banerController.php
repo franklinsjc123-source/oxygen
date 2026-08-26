@@ -75,7 +75,7 @@ class paid_adv_banerController extends Controller
         $request->validate([
             'start_date'=> 'required|after_or_equal:' . $date,
             'end_date'=> 'required|after_or_equal:' . $date,
-            'mainImage' => 'required|image|dimensions:width=1380,height=200',
+            'mainImage' => 'required|image|dimensions:width=1300,height=200',
         ]);
         
         $main_image_path = "assets/images/banners/adv-baner";   
@@ -185,7 +185,7 @@ class paid_adv_banerController extends Controller
         $date    = "$dat$t$time";
 
         $request->validate([
-            'editmainImage' => 'nullable|image|dimensions:width=1380,height=200',
+            'editmainImage' => 'nullable|image|dimensions:width=1300,height=200',
         ]);
 
         $main_image_path = "assets/images/banners/adv-baner";
