@@ -23,8 +23,12 @@
         .animation-slider .intro-slide,
         .animation-slider .intro-slide1 {
             min-height: unset !important;
-            height: auto !important;
-            aspect-ratio: 1300 / 510 !important;
+            aspect-ratio: 1920 / 753 !important;
+        }
+        .animation-slider {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            width: 100% !important;
         }
         .intro-slide {
             background-size: contain !important;

@@ -172,7 +172,7 @@
                                         <input class="form-control" type="text" name="sub_title" id="sub_title" required="">
                                     </div>
                                     <div class="form-group">
-                                        <label for="validationCustom02" class="mb-1"> Image (1300x510) :</label>
+                                        <label for="validationCustom02" class="mb-1"> Image (1920x753) :</label>
                                         <input class="form-control" require="" name="mainImage" id="mainImage" type="file" accept="image/*">
                                     </div>
                                      <div class="form-group">
@@ -251,7 +251,7 @@
                                         <input class="form-control" type="text" name="editsub_title" id="editsub_title" required="">
                                     </div>
                                     <div class="form-group">
-                                        <label for="validationCustom02" class="mb-1"> Image (1300x510) :</label>
+                                        <label for="validationCustom02" class="mb-1"> Image (1920x753) :</label>
                                         <input class="form-control"  name="editmainImage" id="editmainImage" type="file" accept="image/*">
                                         <input class="form-control"  name="editoldImage" id="editoldImage" type="hidden" accept="image/*">
                                     </div>
