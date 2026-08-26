@@ -74,7 +74,8 @@ class paid_adv_banerController extends Controller
 
         $request->validate([
             'start_date'=> 'required|after_or_equal:' . $date,
-            'end_date'=> 'required|after_or_equal:' . $date
+            'end_date'=> 'required|after_or_equal:' . $date,
+            'mainImage' => 'required|image|dimensions:width=1380,height=200',
         ]);
         
         $main_image_path = "assets/images/banners/adv-baner";   
@@ -91,10 +92,9 @@ class paid_adv_banerController extends Controller
             
             $img = Image::make($file->getRealPath());
             
-            $img->resize(100, 100, function ($constraint) {
-                
+            $img->resize(1920, null, function ($constraint) {
                 $constraint->aspectRatio();
-                
+                $constraint->upSize();
             })->save($main_image_path.'/'.$image);
            
             
@@ -185,8 +185,7 @@ class paid_adv_banerController extends Controller
         $date    = "$dat$t$time";
 
         $request->validate([
-            //'start_date'=> 'required|after_or_equal:' . $date,
-            //'end_date'=> 'required|after_or_equal:' . $date
+            'editmainImage' => 'nullable|image|dimensions:width=1380,height=200',
         ]);
 
         $main_image_path = "assets/images/banners/adv-baner";
@@ -205,10 +204,9 @@ class paid_adv_banerController extends Controller
             
             $img = Image::make($file->getRealPath());
             
-            $img->resize(100, 100, function ($constraint) {
-                
+            $img->resize(1920, null, function ($constraint) {
                 $constraint->aspectRatio();
-                
+                $constraint->upSize();
             })->save($main_image_path.'/'.$image);
             $adbanner->image =  $image;
 

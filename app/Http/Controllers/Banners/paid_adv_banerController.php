@@ -79,7 +79,7 @@ class paid_adv_banerController extends Controller
         // ]);
         
         $request->validate([
-            'mainImage' => 'required|image|dimensions:width=450,height=300',
+            'mainImage' => 'required|image|dimensions:width=1380,height=200',
         ]);
 
         $main_image_path = "assets/images/banners/adv-baner";   
@@ -96,10 +96,9 @@ class paid_adv_banerController extends Controller
             
             $img = Image::make($file->getRealPath());
             
-            $img->resize(1200, 1024, function ($constraint) {
-                
+            $img->resize(1920, null, function ($constraint) {
                 $constraint->aspectRatio();
-                
+                $constraint->upSize();
             })->save($main_image_path.'/'.$image);
            
             
@@ -195,7 +194,7 @@ class paid_adv_banerController extends Controller
         // ]);
 
         $request->validate([
-            'editmainImage' => 'nullable|image|dimensions:width=450,height=300',
+            'editmainImage' => 'nullable|image|dimensions:width=1380,height=200',
         ]);
 
         $main_image_path = "assets/images/banners/adv-baner";
@@ -214,10 +213,9 @@ class paid_adv_banerController extends Controller
             
             $img = Image::make($file->getRealPath());
             
-            $img->resize(1200, 1024, function ($constraint) {
-                
+            $img->resize(1920, null, function ($constraint) {
                 $constraint->aspectRatio();
-                
+                $constraint->upSize();
             })->save($main_image_path.'/'.$image);
             $adbanner->image =  $image;
 

@@ -17,6 +17,37 @@
     .title-link-wrapper a {
         color: #0088dd !important;
     }
+    .banner-shoes {
+        aspect-ratio: 1380 / 200 !important;
+        background-size: contain !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        min-height: unset !important;
+        height: auto !important;
+    }
+    @media (max-width: 767px) {
+        .banner-shoes {
+            aspect-ratio: 1380 / 200 !important;
+            background-size: contain !important;
+            min-height: unset !important;
+            height: auto !important;
+            padding: 10px 20px !important;
+        }
+        .banner-shoes .banner-content {
+            padding: 0 !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+        }
+        .banner-shoes .banner-title {
+            font-size: 1rem !important;
+            line-height: 1.2 !important;
+            margin-bottom: 5px !important;
+        }
+        .banner-shoes .btn {
+            font-size: 0.7rem !important;
+            padding: 4px 8px !important;
+        }
+    }
     @media (max-width: 767px) {
         .animation-slider,
         .animation-slider .swiper-wrapper,
@@ -1043,29 +1074,46 @@
           </div>
 
           <!-- Banner Shoes (Moved after Shop by Location) -->
-          <div class="banner banner-shoes br-sm mb-2" style="background-image: url(<?php echo asset('frontend') ?>/images/demos/demo8/banner/3.jpg);
-                         background-color: #36332C;">
-              <div class="banner-content d-block d-lg-flex align-items-center">
-                  <div class="content-left mr-auto mb-6 mb-lg-0 align-items-center">
-                      <div class="banner-price-info text-secondary text-uppercase font-weight-bolder ls-25">
-                          40<sup class="font-weight-bold">%</sup><sub class="font-weight-bold ls-10">Off</sub>
+          @if(isset($paidAddSlip))
+              <div class="banner banner-shoes br-sm mb-2" style="background-image: url({{ asset('assets/images/banners/adv-baner/' . $paidAddSlip->image) }});
+                             background-color: #36332C;">
+                  <div class="banner-content d-block d-lg-flex align-items-center">
+                      <div class="content-left mr-auto mb-6 mb-lg-0 align-items-center">
+                          <h3 class="banner-title font-weight-normal text-white mb-0 ls-25">
+                              {!! $paidAddSlip->title !!}<br><strong>{!! $paidAddSlip->sub_title !!}</strong>
+                          </h3>
                       </div>
-                      <hr class="banner-divider">
-                      <h3 class="banner-title font-weight-normal text-white mb-0 ls-25">
-                          Summer Season's Sale<br><strong>For Men's Sneakers</strong>
-                      </h3>
+                      <a href="{{ $paidAddSlip->link }}"
+                          class="content-right btn btn-white btn-outline btn-rounded btn-icon-right">
+                          Discover Now<i class="w-icon-long-arrow-right"></i>
+                      </a>
                   </div>
-                  <a href="demo8-shop.html"
-                      class="content-right btn btn-white btn-outline btn-rounded btn-icon-right">
-                      Discover Now<i class="w-icon-long-arrow-right"></i>
-                  </a>
               </div>
-              <figure class="image-shoes skrollable">
-                  <img src="<?php echo asset('frontend') ?>/images/demos/demo8/banner/shoes.png" alt="Shoes"
-                      data-bottom-top="transform: translateY(2vh);"
-                      data-top-bottom="transform: translateY(-2vh);">
-              </figure>
-          </div>
+          @else
+              <div class="banner banner-shoes br-sm mb-2" style="background-image: url(<?php echo asset('frontend') ?>/images/demos/demo8/banner/3.jpg);
+                             background-color: #36332C;">
+                  <div class="banner-content d-block d-lg-flex align-items-center">
+                      <div class="content-left mr-auto mb-6 mb-lg-0 align-items-center">
+                          <div class="banner-price-info text-secondary text-uppercase font-weight-bolder ls-25">
+                              40<sup class="font-weight-bold">%</sup><sub class="font-weight-bold ls-10">Off</sub>
+                          </div>
+                          <hr class="banner-divider">
+                          <h3 class="banner-title font-weight-normal text-white mb-0 ls-25">
+                              Summer Season's Sale<br><strong>For Men's Sneakers</strong>
+                          </h3>
+                      </div>
+                      <a href="demo8-shop.html"
+                          class="content-right btn btn-white btn-outline btn-rounded btn-icon-right">
+                          Discover Now<i class="w-icon-long-arrow-right"></i>
+                      </a>
+                  </div>
+                  <figure class="image-shoes skrollable">
+                      <img src="<?php echo asset('frontend') ?>/images/demos/demo8/banner/shoes.png" alt="Shoes"
+                          data-bottom-top="transform: translateY(2vh);"
+                          data-top-bottom="transform: translateY(-2vh);">
+                  </figure>
+              </div>
+          @endif
           <!-- End of Banner Shoes -->
 
          <div class="title-link-wrapper mb-3">
