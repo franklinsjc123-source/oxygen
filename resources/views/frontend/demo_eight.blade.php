@@ -761,58 +761,92 @@
                     }
                 }">
              <div class="swiper-wrapper row cols-lg-3 cols-sm-2 cols-1">
-                 <div class="swiper-slide banner banner-fixed category-banner br-sm">
-                     <figure>
-                         <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/1-1.jpg" alt="Category Banner" width="447"
-                             height="230" style="background-color: #cfd1cf;" />
-                     </figure>
-                     <div class="banner-content y-50">
-                         <h3 class="banner-title text-capitalize ls-25 mb-0">For Men's</h3>
-                         <div class="banner-price-info text-uppercase text-default ls-25 font-weight-bold">Starting
-                             at <span class="text-secondary">₹29.00</span></div>
-                         <hr class="banner-divider bg-dark">
-                         <a href="demo8-shop.html"
-                             class="btn btn-dark btn-link btn-outline btn-icon-right btn-slide-right">
-                             Shop Now<i class="w-icon-long-arrow-right"></i>
-                         </a>
-                     </div>
-                 </div>
-                 <!-- End of Category Banner -->
-                 <div class="swiper-slide banner banner-fixed category-banner br-sm">
-                     <figure>
-                         <img style="cursor:pointer" src="<?php echo asset('frontend') ?>/images/demos/demo8/category/1-2.jpg" alt="Category Banner" width="447"
-                             height="230" style="background-color: #0088dd" />
-                     </figure>
-                     <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2">
-                         <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">Get 30% Off
-                             Your Entire Order!</h5>
-                         <h3 class="banner-title text-white text-uppercase ls-25">Black Friday Sale</h3>
-                         <p>Use code <strong class="text-uppercase text-white">Blkfri40</strong> at checkout.</p>
-                         <a href="demo8-shop.html"
-                             class="btn btn-primary btn-outline btn-rounded btn-icon-right text-white btn-slide-right">
-                             Shop Now<i class="w-icon-long-arrow-right"></i>
-                         </a>
-                     </div>
-                 </div>
-                 <!-- End of Category Banner -->
-                 <div class="swiper-slide banner banner-fixed category-banner br-sm">
-                     <figure>
-                         <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/1-3.jpg" alt="Category Banner" width="447"
-                             height="230" style="background-color: #e0dddd;" />
-                     </figure>
-                     <div class="banner-content y-50">
-                         <h3 class="banner-title text-capitalize ls-25 mb-0">For Women's</h3>
-                         <div class="banner-price-info text-uppercase text-default ls-25 font-weight-bold">From Only
-                             <span class="text-secondary">₹29.00</span>
+                 @php
+                     $dbCategoryBanners = \App\Models\Banners\CategoryBanner::where('status', 1)->orderBy('sort', 'asc')->get();
+                 @endphp
+                 @if($dbCategoryBanners->isNotEmpty())
+                     @foreach($dbCategoryBanners as $index => $item)
+                         <div class="swiper-slide banner banner-fixed category-banner br-sm">
+                             <figure>
+                                 <img src="{{ asset('assets/images/banners/category-banner/' . $item->image) }}" alt="Category Banner" width="447"
+                                     height="230" />
+                             </figure>
+                             @if($index == 1)
+                                 <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2">
+                                     <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">{{ $item->sub_title }}</h5>
+                                     <h3 class="banner-title text-white text-uppercase ls-25">{{ $item->title }}</h3>
+                                     <a href="{{ $item->link }}"
+                                         class="btn btn-primary btn-outline btn-rounded btn-icon-right text-white btn-slide-right">
+                                         Shop Now<i class="w-icon-long-arrow-right"></i>
+                                     </a>
+                                 </div>
+                             @else
+                                 <div class="banner-content y-50">
+                                     <h3 class="banner-title text-capitalize ls-25 mb-0">{{ $item->title }}</h3>
+                                     <div class="banner-price-info text-uppercase text-default ls-25 font-weight-bold">{!! $item->sub_title !!}</div>
+                                     <hr class="banner-divider bg-dark">
+                                     <a href="{{ $item->link }}"
+                                         class="btn btn-dark btn-link btn-outline btn-icon-right btn-slide-right">
+                                         Shop Now<i class="w-icon-long-arrow-right"></i>
+                                     </a>
+                                 </div>
+                             @endif
                          </div>
-                         <hr class="banner-divider bg-dark">
-                         <a href="demo8-shop.html"
-                             class="btn btn-dark btn-link btn-outline btn-icon-right btn-slide-right">
-                             Shop Now<i class="w-icon-long-arrow-right"></i>
-                         </a>
+                     @endforeach
+                 @else
+                     <div class="swiper-slide banner banner-fixed category-banner br-sm">
+                         <figure>
+                             <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/1-1.jpg" alt="Category Banner" width="447"
+                                 height="230" style="background-color: #cfd1cf;" />
+                         </figure>
+                         <div class="banner-content y-50">
+                             <h3 class="banner-title text-capitalize ls-25 mb-0">For Men's</h3>
+                             <div class="banner-price-info text-uppercase text-default ls-25 font-weight-bold">Starting
+                                 at <span class="text-secondary">₹29.00</span></div>
+                             <hr class="banner-divider bg-dark">
+                             <a href="demo8-shop.html"
+                                 class="btn btn-dark btn-link btn-outline btn-icon-right btn-slide-right">
+                                 Shop Now<i class="w-icon-long-arrow-right"></i>
+                             </a>
+                         </div>
                      </div>
-                 </div>
-                 <!-- End of Category Banner -->
+                     <!-- End of Category Banner -->
+                     <div class="swiper-slide banner banner-fixed category-banner br-sm">
+                         <figure>
+                             <img style="cursor:pointer" src="<?php echo asset('frontend') ?>/images/demos/demo8/category/1-2.jpg" alt="Category Banner" width="447"
+                                 height="230" style="background-color: #0088dd" />
+                         </figure>
+                         <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2">
+                             <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">Get 30% Off
+                                 Your Entire Order!</h5>
+                             <h3 class="banner-title text-white text-uppercase ls-25">Black Friday Sale</h3>
+                             <p>Use code <strong class="text-uppercase text-white">Blkfri40</strong> at checkout.</p>
+                             <a href="demo8-shop.html"
+                                 class="btn btn-primary btn-outline btn-rounded btn-icon-right text-white btn-slide-right">
+                                 Shop Now<i class="w-icon-long-arrow-right"></i>
+                             </a>
+                         </div>
+                     </div>
+                     <!-- End of Category Banner -->
+                     <div class="swiper-slide banner banner-fixed category-banner br-sm">
+                         <figure>
+                             <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/1-3.jpg" alt="Category Banner" width="447"
+                                 height="230" style="background-color: #e0dddd;" />
+                         </figure>
+                         <div class="banner-content y-50">
+                             <h3 class="banner-title text-capitalize ls-25 mb-0">For Women's</h3>
+                             <div class="banner-price-info text-uppercase text-default ls-25 font-weight-bold">From Only
+                                 <span class="text-secondary">₹29.00</span>
+                             </div>
+                             <hr class="banner-divider bg-dark">
+                             <a href="demo8-shop.html"
+                                 class="btn btn-dark btn-link btn-outline btn-icon-right btn-slide-right">
+                                 Shop Now<i class="w-icon-long-arrow-right"></i>
+                             </a>
+                         </div>
+                     </div>
+                     <!-- End of Category Banner -->
+                 @endif
              </div>
              <div class="swiper-pagination"></div>
          </div>

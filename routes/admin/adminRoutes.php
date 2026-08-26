@@ -8,6 +8,7 @@ use App\Http\Controllers\BannerController;
 use App\Http\Controllers\Banners\main_slidvController;
 use App\Http\Controllers\Banners\oxygen_advController;
 use App\Http\Controllers\Banners\paid_adv_banerController;
+use App\Http\Controllers\Banners\CategoryBannerController;
 
 
 use App\Http\Controllers\Auction\auctionController;
@@ -268,6 +269,10 @@ Route::get('editadvoxygen/{id}', [oxygen_advController::class, 'edit'])->name('e
 Route::post('slider/changestatus', [main_slidvController::class, 'changestatus'])->name('slider.changestatus');
 Route::resource('slider', main_slidvController::class, ['names' => 'main_slider']);
 Route::get('editmain_slider/{id}', [main_slidvController::class, 'edit'])->name('editmain_slider');
+
+Route::post('category-banners/changestatus', [CategoryBannerController::class, 'changestatus'])->name('category-banners.changestatus');
+Route::resource('category-banners', CategoryBannerController::class, ['names' => 'category-banners']);
+Route::get('editcategory-banners/{id}', [CategoryBannerController::class, 'edit'])->name('editcategory-banners');
 
 
 //auction

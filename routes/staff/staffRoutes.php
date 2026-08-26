@@ -14,6 +14,7 @@ use App\Http\Controllers\staff\Auction\auctionController;
 use App\Http\Controllers\staff\Banners\main_slidvController;
 use App\Http\Controllers\staff\Banners\oxygen_advController;
 use App\Http\Controllers\staff\Banners\paid_adv_banerController;
+use App\Http\Controllers\staff\Banners\CategoryBannerController;
 
 use App\Http\Controllers\staff\StaffController;
 use App\Http\Controllers\staff\VendorController;
@@ -173,6 +174,10 @@ Route::get('editadvoxygen/{id}', [oxygen_advController::class, 'edit'])->name('s
 
 Route::resource('slider', main_slidvController::class, ['names' => 'staffmain_slider']);
 Route::get('editmain_slider/{id}', [main_slidvController::class, 'edit'])->name('staffeditmain_slider');
+
+Route::post('category-banners/changestatus', [CategoryBannerController::class, 'changestatus'])->name('staffcategory-banners.changestatus');
+Route::resource('category-banners', CategoryBannerController::class, ['names' => 'staffcategory-banners']);
+Route::get('editcategory-banners/{id}', [CategoryBannerController::class, 'edit'])->name('staffeditcategory-banners');
 
 /*Auction*/
 
