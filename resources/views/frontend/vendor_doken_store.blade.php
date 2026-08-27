@@ -13,6 +13,45 @@
             /* margin-top: 12px; */
     }
 
+    /* Mobile view button styles for store product tabs */
+    @media (max-width: 576px) {
+        #productTabs.nav-tabs {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 8px !important;
+            border: none !important;
+            margin-bottom: 20px !important;
+            padding: 0 !important;
+        }
+        #productTabs .nav-item {
+            flex: 1 1 calc(50% - 8px) !important;
+            min-width: 120px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            list-style: none !important;
+        }
+        #productTabs .nav-link {
+            display: block !important;
+            text-align: center !important;
+            padding: 10px 8px !important;
+            border-radius: 8px !important;
+            border: 1px solid #e2e8f0 !important;
+            background-color: #f8fafc !important;
+            color: #475569 !important;
+            font-size: 11px !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            transition: all 0.2s ease !important;
+            width: 100% !important;
+        }
+        #productTabs .nav-link.active {
+            background-color: #0088dd !important;
+            color: #ffffff !important;
+            border-color: #0088dd !important;
+            box-shadow: 0 4px 12px rgba(0, 136, 221, 0.2) !important;
+        }
+    }
+
 </style>
    
         <main class="main">
