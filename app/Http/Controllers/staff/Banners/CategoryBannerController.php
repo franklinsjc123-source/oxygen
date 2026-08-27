@@ -49,7 +49,7 @@ class CategoryBannerController extends Controller
     public function store(Request $request, FlasherInterface $flasher)
     {
         $request->validate([
-            'mainImage' => 'required|image',
+            'mainImage' => 'required|image|dimensions:width=447,height=230',
         ]);
 
         try {
@@ -59,7 +59,7 @@ class CategoryBannerController extends Controller
             $image = time().'.'.$file->getClientOriginalExtension();
             
             $img = Image::make($file->getRealPath());
-            $img->resize(1200, 1024, function ($constraint) {
+            $img->resize(447, 230, function ($constraint) {
                 $constraint->aspectRatio();
             })->save($this->main_image_path.'/'.$image);
 
@@ -118,11 +118,15 @@ class CategoryBannerController extends Controller
             $banner = CategoryBanner::find($id);
 
             if ($request->file('editmainImage')) {
+                $request->validate([
+                    'editmainImage' => 'nullable|image|dimensions:width=447,height=230',
+                ]);
+
                 $file = $request->file('editmainImage');
                 $image = time().'.'.$file->getClientOriginalExtension();
                 
                 $img = Image::make($file->getRealPath());
-                $img->resize(1200, 1024, function ($constraint) {
+                $img->resize(447, 230, function ($constraint) {
                     $constraint->aspectRatio();
                 })->save($this->main_image_path.'/'.$image);
                 

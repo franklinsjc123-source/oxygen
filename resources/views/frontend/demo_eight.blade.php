@@ -5,6 +5,23 @@
      $masterOffersMap = \Illuminate\Support\Facades\DB::table('master_offers')->get()->keyBy('id');
  @endphp
  <style>
+    .animation-slider {
+        padding-bottom: 40px !important;
+    }
+    .animation-slider .swiper-pagination {
+        bottom: 10px !important;
+    }
+    .animation-slider .swiper-wrapper,
+    .animation-slider .intro-slide,
+    .animation-slider .intro-slide1 {
+        min-height: unset !important;
+        aspect-ratio: 1920 / 880 !important;
+    }
+    .intro-slide {
+        background-size: 100% 100% !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+    }
     .product-price-home{
 
         font-family: monospace;
@@ -49,22 +66,10 @@
         }
     }
     @media (max-width: 767px) {
-        .animation-slider,
-        .animation-slider .swiper-wrapper,
-        .animation-slider .intro-slide,
-        .animation-slider .intro-slide1 {
-            min-height: unset !important;
-            aspect-ratio: 1920 / 880 !important;
-        }
         .animation-slider {
             margin-left: 0 !important;
             margin-right: 0 !important;
             width: 100% !important;
-        }
-        .intro-slide {
-            background-size: contain !important;
-            background-repeat: no-repeat !important;
-            background-position: center !important;
         }
         .animation-slider .banner-content {
             top: auto !important;

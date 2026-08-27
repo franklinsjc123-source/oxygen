@@ -72,7 +72,7 @@
                                                                 <input class="form-control" type="text" name="sub_title" id="sub_title" required="">
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="mainImage" class="mb-1"> Image :</label>
+                                                                <label for="mainImage" class="mb-1"> Image (447x230) :</label>
                                                                 <input class="form-control" required="" name="mainImage" id="mainImage" type="file" accept="image/*">
                                                             </div>
                                                              <div class="form-group">
@@ -134,7 +134,7 @@
                                                                 <input class="form-control" type="text" name="editsub_title" id="editsub_title" required="">
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="editmainImage" class="mb-1"> Image :</label>
+                                                                <label for="editmainImage" class="mb-1"> Image (447x230) :</label>
                                                                 <input class="form-control"  name="editmainImage" id="editmainImage" type="file" accept="image/*">
                                                                 <input class="form-control"  name="editoldImage" id="editoldImage" type="hidden">
                                                             </div>
