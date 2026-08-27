@@ -11,28 +11,98 @@
         .comments li { padding: 10px 0 !important; margin: 0 !important; }
         .comment-body { padding: 0 !important; margin: 0 !important; }
         .comment-content { padding: 0 !important; margin: 0 !important; }
-        /* Mobile horizontal scroll for product detail tabs */
+        /* Mobile view button styles for product detail tabs */
         @media (max-width: 767px) {
             .product-tabs .nav-tabs {
                 display: flex !important;
-                flex-wrap: nowrap !important;
-                overflow-x: auto !important;
-                white-space: nowrap !important;
-                -webkit-overflow-scrolling: touch !important;
-                border-bottom: 1px solid #eee !important;
-                padding-bottom: 2px !important;
-            }
-            .product-tabs .nav-tabs::-webkit-scrollbar {
-                display: none !important;
+                flex-wrap: wrap !important;
+                gap: 8px !important;
+                border: none !important;
+                margin-bottom: 20px !important;
+                padding: 0 !important;
             }
             .product-tabs .nav-tabs .nav-item {
-                flex: 0 0 auto !important;
-                margin-right: 15px !important;
-                margin-bottom: 0 !important;
+                flex: 1 1 calc(50% - 8px) !important;
+                min-width: 120px !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                list-style: none !important;
             }
             .product-tabs .nav-tabs .nav-link {
-                padding: 8px 10px !important;
+                display: block !important;
+                text-align: center !important;
+                padding: 10px 8px !important;
+                border-radius: 8px !important;
+                border: 1px solid #e2e8f0 !important;
+                background-color: #f8fafc !important;
+                color: #475569 !important;
+                font-size: 11px !important;
+                font-weight: 700 !important;
+                text-transform: uppercase !important;
+                transition: all 0.2s ease !important;
+                width: 100% !important;
+                border-bottom-width: 1px !important;
+            }
+            .product-tabs .nav-tabs .nav-link::after {
+                display: none !important;
+            }
+            .product-tabs .nav-tabs .nav-link.active {
+                background-color: #0088dd !important;
+                color: #ffffff !important;
+                border-color: #0088dd !important;
+                box-shadow: 0 4px 12px rgba(0, 136, 221, 0.2) !important;
+                border-bottom: 1px solid #0088dd !important;
+            }
+
+            /* Single-line quantity + add to cart button on mobile (50% each) */
+            .product-sticky-content .product-form {
+                padding: 0 !important;
+                margin: 0 !important;
+                border: none !important;
+                background: none !important;
+                display: block !important;
+            }
+            .product-sticky-content .row {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                flex-wrap: nowrap !important;
+                gap: 8px !important;
+                margin: 0 !important;
+            }
+            .product-qty-form {
+                flex: 0 0 calc(50% - 4px) !important;
+                max-width: calc(50% - 4px) !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .product-qty-form .input-group {
+                width: 100% !important;
+            }
+            .product-qty-form .form-control.qty-input {
+                font-size: 14px !important;
+                padding: 0 !important;
+                text-align: center !important;
+            }
+            .product-sticky-content .col-md-3:not(.product-qty-form) {
+                flex: 0 0 calc(50% - 4px) !important;
+                max-width: calc(50% - 4px) !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .product-sticky-content .btn-primary {
+                width: 100% !important;
+                height: 43px !important;
+                margin: 0 !important;
+                padding: 0 !important;
                 font-size: 13px !important;
+                font-weight: 700 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                gap: 6px !important;
+                border-radius: 6px !important;
+                white-space: nowrap !important;
             }
         }
 
