@@ -163,7 +163,7 @@
 
      <!-- Offer Badges Section -->
      @if(isset($sliderOffers) && count($sliderOffers) > 0)
-      <div class="container mt-2 mb-2 offer-badges-container" style="margin-top: 15px !important;">
+      <div class="container mt-2 mb-2 offer-badges-container">
          <style>
              .offer-badge-img-wrapper {
                  width: 65px;
@@ -302,240 +302,216 @@
      </div>
      @endif
 
-       <!-- Premium Feature Bar -->
+       <!-- Premium Feature Bar (Swiper Slider - one at a time on mobile) -->
        <div class="container pb-2">
-         <style>
-         /* Custom Feature Bar styles to match the premium design exactly */
-         .premium-feature-bar {
-             background: #ffffff;
-             border-radius: 20px;
-             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
-             border: 1px solid rgba(0, 0, 0, 0.03);
-             padding: 1.5rem 2rem;
-             margin: 2rem 0;
-             display: flex;
-             justify-content: space-between;
-             align-items: center;
-             flex-wrap: nowrap; /* Keep in a single row always */
-             overflow: hidden;
-         }
+          <style>
+          /* Premium Feature Bar Slider Styles */
+          .premium-feature-slider {
+              background: #ffffff;
+              border-radius: 20px;
+              box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+              border: 1px solid rgba(0, 0, 0, 0.03);
+              padding: 1rem 1.5rem;
+              margin: 2rem 0;
+              overflow: hidden;
+          }
+          .premium-feature-slider .swiper-slide {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 0.5rem 0;
+          }
 
-         .premium-feature-item {
-             display: flex;
-             align-items: center;
-             flex: 1;
-             min-width: 0; /* Allow items to shrink to fit single row */
-             padding: 0 1rem;
-             position: relative;
-         }
+          .premium-feature-icon {
+              width: 40px;
+              height: 40px;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-right: 1rem;
+              flex-shrink: 0;
+          }
 
-         /* Vertical divider lines between items */
-         .premium-feature-item:not(:last-child)::after {
-             content: '';
-             position: absolute;
-             right: 0;
-             top: 50%;
-             transform: translateY(-50%);
-             height: 30px;
-             width: 1px;
-             background-color: rgba(0, 0, 0, 0.08);
-         }
+          /* Specific background and icon colors */
+          .premium-feature-icon.shipping {
+              background-color: #fff0f3;
+              color: #ff3b30;
+          }
+          .premium-feature-icon.payment {
+              background-color: #eafaf1;
+              color: #34c759;
+          }
+          .premium-feature-icon.returns {
+              background-color: #e8f4fe;
+              color: #007aff;
+          }
+          .premium-feature-icon.support {
+              background-color: #fff9e6;
+              color: #ff9500;
+          }
 
-         .premium-feature-icon {
-             width: 40px;
-             height: 40px;
-             border-radius: 50%;
-             display: flex;
-             align-items: center;
-             justify-content: center;
-             margin-right: 1rem;
-             flex-shrink: 0;
-         }
+          .premium-feature-icon svg {
+              width: 18px;
+              height: 18px;
+          }
 
-         /* Specific background and icon colors matching the design */
-         .premium-feature-icon.shipping {
-             background-color: #fff0f3;
-             color: #ff3b30;
-         }
+          .premium-feature-content {
+              display: flex;
+              flex-direction: column;
+              min-width: 0;
+          }
 
-         .premium-feature-icon.payment {
-             background-color: #eafaf1;
-             color: #34c759;
-         }
+          .premium-feature-title {
+              font-size: 1.2rem;
+              font-weight: 700;
+              color: #222222;
+              margin: 0 0 0.1rem 0;
+              line-height: 1.2;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+          }
 
-         .premium-feature-icon.returns {
-             background-color: #e8f4fe;
-             color: #007aff;
-         }
+          .premium-feature-desc {
+              font-size: 1rem;
+              color: #777777;
+              margin: 0;
+              line-height: 1.2;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+          }
 
-         .premium-feature-icon.support {
-             background-color: #fff9e6;
-             color: #ff9500;
-         }
+          /* Responsive adjustments */
+          @media (max-width: 991px) {
+              .premium-feature-slider {
+                  padding: 1rem 1.2rem;
+                  border-radius: 16px;
+                  margin: 1.2rem 0;
+              }
+              .premium-feature-icon {
+                  width: 44px;
+                  height: 44px;
+                  margin-right: 0.8rem;
+              }
+              .premium-feature-icon svg {
+                  width: 20px;
+                  height: 20px;
+              }
+              .premium-feature-title {
+                  font-size: 1.15rem;
+              }
+              .premium-feature-desc {
+                  font-size: 0.95rem;
+              }
+          }
 
-         .premium-feature-icon svg {
-             width: 18px;
-             height: 18px;
-         }
+          @media (max-width: 576px) {
+              .premium-feature-slider {
+                  padding: 0.8rem 1rem;
+                  border-radius: 12px;
+                  margin: 1rem 0;
+              }
+              .premium-feature-icon {
+                  width: 42px;
+                  height: 42px;
+                  margin-right: 0.8rem;
+              }
+              .premium-feature-icon svg {
+                  width: 19px;
+                  height: 19px;
+              }
+              .premium-feature-title {
+                  font-size: 1.2rem;
+                  font-weight: 700;
+              }
+              .premium-feature-desc {
+                  font-size: 0.95rem;
+              }
+          }
+          </style>
 
-         .premium-feature-content {
-             display: flex;
-             flex-direction: column;
-             min-width: 0;
-         }
-
-         .premium-feature-title {
-             font-size: 1.2rem;
-             font-weight: 700;
-             color: #222222;
-             margin: 0 0 0.1rem 0;
-             line-height: 1.2;
-             white-space: nowrap;
-             overflow: hidden;
-             text-overflow: ellipsis;
-         }
-
-         .premium-feature-desc {
-             font-size: 1rem;
-             color: #777777;
-             margin: 0;
-             line-height: 1.2;
-             white-space: nowrap;
-             overflow: hidden;
-             text-overflow: ellipsis;
-         }
-
-         /* Responsive adjustments */
-         @media (max-width: 991px) {
-             .premium-feature-bar {
-                 padding: 1rem 0.5rem;
-                 border-radius: 16px;
-                 margin: 1.5rem 0;
-             }
-             .premium-feature-item {
-                 padding: 0 0.5rem;
-             }
-             .premium-feature-icon {
-                 width: 32px;
-                 height: 32px;
-                 margin-right: 0.6rem;
-             }
-             .premium-feature-icon svg {
-                 width: 14px;
-                 height: 14px;
-             }
-             .premium-feature-title {
-                 font-size: 0.95rem;
-             }
-             .premium-feature-desc {
-                 font-size: 0.75rem;
-             }
-             .premium-feature-item:not(:last-child)::after {
-                 height: 20px;
-             }
-         }
-
-         @media (max-width: 576px) {
-             .premium-feature-bar {
-                 padding: 0.8rem 0.3rem;
-                 border-radius: 12px;
-             }
-             .premium-feature-item {
-                 padding: 0 0.3rem;
-             }
-             .premium-feature-icon {
-                 width: 26px;
-                 height: 26px;
-                 margin-right: 0.4rem;
-             }
-             .premium-feature-icon svg {
-                 width: 12px;
-                 height: 12px;
-             }
-             .premium-feature-title {
-                 font-size: 0.8rem;
-             }
-             .premium-feature-desc {
-                 font-size: 0.65rem;
-             }
-             .premium-feature-item:not(:last-child)::after {
-                 height: 16px;
-             }
-         }
-
-         @media (max-width: 380px) {
-             .premium-feature-title {
-                 font-size: 0.7rem;
-             }
-             .premium-feature-desc {
-                 font-size: 0.58rem;
-             }
-             .premium-feature-icon {
-                 width: 20px;
-                 height: 20px;
-                 margin-right: 0.3rem;
-             }
-             .premium-feature-icon svg {
-                 width: 10px;
-                 height: 10px;
-             }
-         }
-         </style>
-
-         <div class="premium-feature-bar">
-             <div class="premium-feature-item">
-                 <div class="premium-feature-icon shipping">
-                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                         <rect x="1" y="3" width="15" height="13"></rect>
-                         <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-                         <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                         <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                     </svg>
-                 </div>
-                 <div class="premium-feature-content">
-                     <h4 class="premium-feature-title">Free Delivery</h4>
-                     <p class="premium-feature-desc">On orders above ₹499</p>
-                 </div>
-             </div>
-             <div class="premium-feature-item">
-                 <div class="premium-feature-icon payment">
-                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                         <path d="M9 11l2 2 4-4"></path>
-                     </svg>
-                 </div>
-                 <div class="premium-feature-content">
-                     <h4 class="premium-feature-title">Secure Payment</h4>
-                     <p class="premium-feature-desc">100% Protected</p>
-                 </div>
-             </div>
-             <div class="premium-feature-item">
-                 <div class="premium-feature-icon returns">
-                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                         <polyline points="23 4 23 10 17 10"></polyline>
-                         <polyline points="1 20 1 14 7 14"></polyline>
-                         <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-                     </svg>
-                 </div>
-                 <div class="premium-feature-content">
-                     <h4 class="premium-feature-title">Easy Returns</h4>
-                     <p class="premium-feature-desc">7 Days Return</p>
-                 </div>
-             </div>
-             <div class="premium-feature-item">
-                 <div class="premium-feature-icon support">
-                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                         <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
-                         <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
-                     </svg>
-                 </div>
-                 <div class="premium-feature-content">
-                     <h4 class="premium-feature-title">24/7 Support</h4>
-                     <p class="premium-feature-desc">We're here to help</p>
-                 </div>
-             </div>
-         </div>
-       </div>
+          <div class="premium-feature-slider">
+              <div class="swiper-container swiper-theme" data-swiper-options="{
+                  'autoplay': {
+                      'delay': 2500,
+                      'disableOnInteraction': false
+                  },
+                  'loop': true,
+                  'slidesPerView': 1,
+                  'spaceBetween': 20,
+                  'breakpoints': {
+                      '768': {
+                          'slidesPerView': 2,
+                          'spaceBetween': 20
+                      },
+                      '992': {
+                          'slidesPerView': 4,
+                          'spaceBetween': 10
+                      }
+                  }
+              }">
+                  <div class="swiper-wrapper">
+                      <!-- Slide 1: Free Delivery -->
+                      <div class="swiper-slide">
+                          <div class="premium-feature-icon shipping">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                  <rect x="1" y="3" width="15" height="13"></rect>
+                                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                  <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                  <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                              </svg>
+                          </div>
+                          <div class="premium-feature-content">
+                              <h4 class="premium-feature-title">Free Delivery</h4>
+                              <p class="premium-feature-desc">On orders above ₹499</p>
+                          </div>
+                      </div>
+                      <!-- Slide 2: Secure Payment -->
+                      <div class="swiper-slide">
+                          <div class="premium-feature-icon payment">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                  <path d="M9 11l2 2 4-4"></path>
+                              </svg>
+                          </div>
+                          <div class="premium-feature-content">
+                              <h4 class="premium-feature-title">Secure Payment</h4>
+                              <p class="premium-feature-desc">100% Protected</p>
+                          </div>
+                      </div>
+                      <!-- Slide 3: Easy Returns -->
+                      <div class="swiper-slide">
+                          <div class="premium-feature-icon returns">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                  <polyline points="23 4 23 10 17 10"></polyline>
+                                  <polyline points="1 20 1 14 7 14"></polyline>
+                                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                              </svg>
+                          </div>
+                          <div class="premium-feature-content">
+                              <h4 class="premium-feature-title">Easy Returns</h4>
+                              <p class="premium-feature-desc">7 Days Return</p>
+                          </div>
+                      </div>
+                      <!-- Slide 4: 24/7 Support -->
+                      <div class="swiper-slide">
+                          <div class="premium-feature-icon support">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                  <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+                                  <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+                              </svg>
+                          </div>
+                          <div class="premium-feature-content">
+                              <h4 class="premium-feature-title">24/7 Support</h4>
+                              <p class="premium-feature-desc">We're here to help</p>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
 
       <!-- Auction Products (Moved below offers) -->
       @if(isset($auctionProducts) && count($auctionProducts) > 0)
