@@ -94,8 +94,8 @@
             margin-top: 0 !important;
         }
         .offer-badges-container {
-            margin-top: 5px !important;
-            margin-bottom: 0px !important;
+            margin-top: 25px !important;
+            margin-bottom: 20px !important;
         }
         .auction-container {
             margin-top: 15px !important;
@@ -163,7 +163,7 @@
 
      <!-- Offer Badges Section -->
      @if(isset($sliderOffers) && count($sliderOffers) > 0)
-      <div class="container mt-2 mb-2 offer-badges-container">
+      <div class="container mt-5 mb-4 py-3 offer-badges-container">
          <style>
              .offer-badge-img-wrapper {
                  width: 65px;
