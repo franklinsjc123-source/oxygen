@@ -66,7 +66,7 @@ class main_slidvController extends Controller
     public function store(Request $request, FlasherInterface $flasher)
     {
         $request->validate([
-            'mainImage' => 'required|image|dimensions:width=1920,height=880',
+            'mainImage' => 'required|image|dimensions:width=1192,height=552',
         ]);
         // date_default_timezone_set('GMT');
         // $dt = new DateTime('Asia/Kolkata');
@@ -179,7 +179,7 @@ class main_slidvController extends Controller
     public function update(Request $request, $id, FlasherInterface $flasher)
     {
         $request->validate([
-            'editmainImage' => 'nullable|image|dimensions:width=1920,height=880',
+            'editmainImage' => 'nullable|image|dimensions:width=1192,height=552',
         ]);
         // date_default_timezone_set('GMT');
         // $dt = new DateTime('Asia/Kolkata');
