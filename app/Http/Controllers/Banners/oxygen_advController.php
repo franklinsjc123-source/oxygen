@@ -78,7 +78,7 @@ class oxygen_advController extends Controller
         // ]);
         
         $request->validate([
-            'mainImage' => 'required|image|dimensions:width=200,height=180',
+            'mainImage' => 'required|image|dimensions:width=612,height=180',
         ]);
 
         $main_image_path = "assets/images/banners/advoxygen";   
@@ -95,7 +95,7 @@ class oxygen_advController extends Controller
             
             $img = Image::make($file->getRealPath());
             
-            $img->resize(100, 100, function ($constraint) {
+            $img->resize(612, 180, function ($constraint) {
                 
                 $constraint->aspectRatio();
                 
@@ -194,7 +194,7 @@ class oxygen_advController extends Controller
         // ]);
 
         $request->validate([
-            'editmainImage' => 'nullable|image|dimensions:width=200,height=180',
+            'editmainImage' => 'nullable|image|dimensions:width=612,height=180',
         ]);
 
         $main_image_path = "assets/images/banners/advoxygen";
@@ -213,7 +213,7 @@ class oxygen_advController extends Controller
             
             $img = Image::make($file->getRealPath());
             
-            $img->resize(100, 100, function ($constraint) {
+            $img->resize(612, 180, function ($constraint) {
                 
                 $constraint->aspectRatio();
                 

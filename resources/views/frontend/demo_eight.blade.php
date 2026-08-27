@@ -302,217 +302,6 @@
      </div>
      @endif
 
-       <!-- Premium Feature Bar (Swiper Slider - one at a time on mobile) -->
-       <div class="container pb-2">
-          <style>
-          /* Premium Feature Bar Slider Styles */
-          .premium-feature-slider {
-              background: #ffffff;
-              border-radius: 20px;
-              box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
-              border: 1px solid rgba(0, 0, 0, 0.03);
-              padding: 1rem 1.5rem;
-              margin: 2rem 0;
-              overflow: hidden;
-          }
-          .premium-feature-slider .swiper-slide {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              padding: 0.5rem 0;
-          }
-
-          .premium-feature-icon {
-              width: 40px;
-              height: 40px;
-              border-radius: 50%;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin-right: 1rem;
-              flex-shrink: 0;
-          }
-
-          /* Specific background and icon colors */
-          .premium-feature-icon.shipping {
-              background-color: #fff0f3;
-              color: #ff3b30;
-          }
-          .premium-feature-icon.payment {
-              background-color: #eafaf1;
-              color: #34c759;
-          }
-          .premium-feature-icon.returns {
-              background-color: #e8f4fe;
-              color: #007aff;
-          }
-          .premium-feature-icon.support {
-              background-color: #fff9e6;
-              color: #ff9500;
-          }
-
-          .premium-feature-icon svg {
-              width: 18px;
-              height: 18px;
-          }
-
-          .premium-feature-content {
-              display: flex;
-              flex-direction: column;
-              min-width: 0;
-          }
-
-          .premium-feature-title {
-              font-size: 1.2rem;
-              font-weight: 700;
-              color: #222222;
-              margin: 0 0 0.1rem 0;
-              line-height: 1.2;
-              white-space: nowrap;
-              overflow: hidden;
-              text-overflow: ellipsis;
-          }
-
-          .premium-feature-desc {
-              font-size: 1rem;
-              color: #777777;
-              margin: 0;
-              line-height: 1.2;
-              white-space: nowrap;
-              overflow: hidden;
-              text-overflow: ellipsis;
-          }
-
-          /* Responsive adjustments */
-          @media (max-width: 991px) {
-              .premium-feature-slider {
-                  padding: 1rem 1.2rem;
-                  border-radius: 16px;
-                  margin: 1.2rem 0;
-              }
-              .premium-feature-icon {
-                  width: 44px;
-                  height: 44px;
-                  margin-right: 0.8rem;
-              }
-              .premium-feature-icon svg {
-                  width: 20px;
-                  height: 20px;
-              }
-              .premium-feature-title {
-                  font-size: 1.15rem;
-              }
-              .premium-feature-desc {
-                  font-size: 0.95rem;
-              }
-          }
-
-          @media (max-width: 576px) {
-              .premium-feature-slider {
-                  padding: 0.8rem 1rem;
-                  border-radius: 12px;
-                  margin: 1rem 0;
-              }
-              .premium-feature-icon {
-                  width: 42px;
-                  height: 42px;
-                  margin-right: 0.8rem;
-              }
-              .premium-feature-icon svg {
-                  width: 19px;
-                  height: 19px;
-              }
-              .premium-feature-title {
-                  font-size: 1.2rem;
-                  font-weight: 700;
-              }
-              .premium-feature-desc {
-                  font-size: 0.95rem;
-              }
-          }
-          </style>
-
-          <div class="premium-feature-slider">
-              <div class="swiper-container swiper-theme" data-swiper-options="{
-                  'autoplay': {
-                      'delay': 2500,
-                      'disableOnInteraction': false
-                  },
-                  'loop': true,
-                  'slidesPerView': 1,
-                  'spaceBetween': 20,
-                  'breakpoints': {
-                      '768': {
-                          'slidesPerView': 2,
-                          'spaceBetween': 20
-                      },
-                      '992': {
-                          'slidesPerView': 4,
-                          'spaceBetween': 10
-                      }
-                  }
-              }">
-                  <div class="swiper-wrapper">
-                      <!-- Slide 1: Free Delivery -->
-                      <div class="swiper-slide">
-                          <div class="premium-feature-icon shipping">
-                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                  <rect x="1" y="3" width="15" height="13"></rect>
-                                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-                                  <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                                  <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                              </svg>
-                          </div>
-                          <div class="premium-feature-content">
-                              <h4 class="premium-feature-title">Free Delivery</h4>
-                              <p class="premium-feature-desc">On orders above ₹499</p>
-                          </div>
-                      </div>
-                      <!-- Slide 2: Secure Payment -->
-                      <div class="swiper-slide">
-                          <div class="premium-feature-icon payment">
-                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                                  <path d="M9 11l2 2 4-4"></path>
-                              </svg>
-                          </div>
-                          <div class="premium-feature-content">
-                              <h4 class="premium-feature-title">Secure Payment</h4>
-                              <p class="premium-feature-desc">100% Protected</p>
-                          </div>
-                      </div>
-                      <!-- Slide 3: Easy Returns -->
-                      <div class="swiper-slide">
-                          <div class="premium-feature-icon returns">
-                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                  <polyline points="23 4 23 10 17 10"></polyline>
-                                  <polyline points="1 20 1 14 7 14"></polyline>
-                                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-                              </svg>
-                          </div>
-                          <div class="premium-feature-content">
-                              <h4 class="premium-feature-title">Easy Returns</h4>
-                              <p class="premium-feature-desc">7 Days Return</p>
-                          </div>
-                      </div>
-                      <!-- Slide 4: 24/7 Support -->
-                      <div class="swiper-slide">
-                          <div class="premium-feature-icon support">
-                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                  <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
-                                  <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
-                              </svg>
-                          </div>
-                          <div class="premium-feature-content">
-                              <h4 class="premium-feature-title">24/7 Support</h4>
-                              <p class="premium-feature-desc">We're here to help</p>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-        </div>
-
       <!-- Auction Products (Moved below offers) -->
       @if(isset($auctionProducts) && count($auctionProducts) > 0)
       <div class="container mt-4 mb-4 auction-container">
@@ -591,6 +380,228 @@
           </div>
           <!-- End of Swiper Container -->
           @endif
+
+          <!-- Premium Feature Bar (Swiper Slider - one at a time on mobile) -->
+          <div class="container pb-2">
+             <style>
+              /* Premium Feature Bar Slider Styles */
+              .premium-feature-slider {
+                  background: linear-gradient(135deg, #f8fafc 0%, #edf2fa 100%);
+                  border-radius: 16px;
+                  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+                  border: 1px solid rgba(0, 0, 0, 0.04);
+                  padding: 1.2rem 1.5rem;
+                  margin: 2rem 0;
+                  overflow: hidden;
+                  position: relative;
+              }
+              .premium-feature-slider::before {
+                  content: '';
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  right: 0;
+                  height: 4px;
+                  background: linear-gradient(90deg, #ff3b30 0%, #34c759 33%, #007aff 66%, #ff9500 100%);
+              }
+              .premium-feature-slider .swiper-slide {
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  padding: 0.5rem 0;
+              }
+
+             .premium-feature-icon {
+                 width: 40px;
+                 height: 40px;
+                 border-radius: 50%;
+                 display: flex;
+                 align-items: center;
+                 justify-content: center;
+                 margin-right: 1rem;
+                 flex-shrink: 0;
+             }
+
+             /* Specific background and icon colors */
+             .premium-feature-icon.shipping {
+                 background-color: #fff0f3;
+                 color: #ff3b30;
+             }
+             .premium-feature-icon.payment {
+                 background-color: #eafaf1;
+                 color: #34c759;
+             }
+             .premium-feature-icon.returns {
+                 background-color: #e8f4fe;
+                 color: #007aff;
+             }
+             .premium-feature-icon.support {
+                 background-color: #fff9e6;
+                 color: #ff9500;
+             }
+
+             .premium-feature-icon svg {
+                 width: 18px;
+                 height: 18px;
+             }
+
+             .premium-feature-content {
+                 display: flex;
+                 flex-direction: column;
+                 min-width: 0;
+             }
+
+             .premium-feature-title {
+                 font-size: 1.2rem;
+                 font-weight: 700;
+                 color: #222222;
+                 margin: 0 0 0.1rem 0;
+                 line-height: 1.2;
+                 white-space: nowrap;
+                 overflow: hidden;
+                 text-overflow: ellipsis;
+             }
+
+             .premium-feature-desc {
+                 font-size: 1rem;
+                 color: #777777;
+                 margin: 0;
+                 line-height: 1.2;
+                 white-space: nowrap;
+                 overflow: hidden;
+                 text-overflow: ellipsis;
+             }
+
+             /* Responsive adjustments */
+             @media (max-width: 991px) {
+                 .premium-feature-slider {
+                     padding: 1rem 1.2rem;
+                     border-radius: 16px;
+                     margin: 1.2rem 0;
+                 }
+                 .premium-feature-icon {
+                     width: 44px;
+                     height: 44px;
+                     margin-right: 0.8rem;
+                 }
+                 .premium-feature-icon svg {
+                     width: 20px;
+                     height: 20px;
+                 }
+                 .premium-feature-title {
+                     font-size: 1.15rem;
+                 }
+                 .premium-feature-desc {
+                     font-size: 0.95rem;
+                 }
+             }
+
+             @media (max-width: 576px) {
+                 .premium-feature-slider {
+                     padding: 0.8rem 1rem;
+                     border-radius: 12px;
+                     margin: 1rem 0;
+                 }
+                 .premium-feature-icon {
+                     width: 42px;
+                     height: 42px;
+                     margin-right: 0.8rem;
+                 }
+                 .premium-feature-icon svg {
+                     width: 19px;
+                     height: 19px;
+                 }
+                 .premium-feature-title {
+                     font-size: 1.2rem;
+                     font-weight: 700;
+                 }
+                 .premium-feature-desc {
+                     font-size: 0.95rem;
+                 }
+             }
+             </style>
+
+             <div class="premium-feature-slider">
+                 <div class="swiper-container swiper-theme" data-swiper-options="{
+                     'autoplay': {
+                         'delay': 2500,
+                         'disableOnInteraction': false
+                     },
+                     'loop': true,
+                     'slidesPerView': 1,
+                     'spaceBetween': 20,
+                     'breakpoints': {
+                         '768': {
+                             'slidesPerView': 2,
+                             'spaceBetween': 20
+                         },
+                         '992': {
+                             'slidesPerView': 4,
+                             'spaceBetween': 10
+                         }
+                     }
+                 }">
+                     <div class="swiper-wrapper">
+                         <!-- Slide 1: Free Delivery -->
+                         <div class="swiper-slide">
+                             <div class="premium-feature-icon shipping">
+                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                     <rect x="1" y="3" width="15" height="13"></rect>
+                                     <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                     <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                     <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                                 </svg>
+                             </div>
+                             <div class="premium-feature-content">
+                                 <h4 class="premium-feature-title">Free Delivery</h4>
+                                 <p class="premium-feature-desc">On orders above ₹499</p>
+                             </div>
+                         </div>
+                         <!-- Slide 2: Secure Payment -->
+                         <div class="swiper-slide">
+                             <div class="premium-feature-icon payment">
+                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                     <path d="M9 11l2 2 4-4"></path>
+                                 </svg>
+                             </div>
+                             <div class="premium-feature-content">
+                                 <h4 class="premium-feature-title">Secure Payment</h4>
+                                 <p class="premium-feature-desc">100% Protected</p>
+                             </div>
+                         </div>
+                         <!-- Slide 3: Easy Returns -->
+                         <div class="swiper-slide">
+                             <div class="premium-feature-icon returns">
+                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                     <polyline points="23 4 23 10 17 10"></polyline>
+                                     <polyline points="1 20 1 14 7 14"></polyline>
+                                     <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                                 </svg>
+                             </div>
+                             <div class="premium-feature-content">
+                                 <h4 class="premium-feature-title">Easy Returns</h4>
+                                 <p class="premium-feature-desc">7 Days Return</p>
+                             </div>
+                         </div>
+                         <!-- Slide 4: 24/7 Support -->
+                         <div class="swiper-slide">
+                             <div class="premium-feature-icon support">
+                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                     <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+                                     <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+                                 </svg>
+                             </div>
+                             <div class="premium-feature-content">
+                                 <h4 class="premium-feature-title">24/7 Support</h4>
+                                 <p class="premium-feature-desc">We're here to help</p>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+          </div>
+
           <!-- Shops Section (Moved after Auction Products) -->
           <div class="container mt-3 mb-0" style="margin-bottom: 0px !important; padding: 0 !important;">
               <div class="title-link-wrapper mb-3">
@@ -799,26 +810,14 @@
                                  <img src="{{ asset('assets/images/banners/category-banner/' . $item->image) }}" alt="Category Banner" width="447"
                                      height="230" />
                              </figure>
-                             @if($index == 1)
-                                 <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2">
-                                     <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">{{ $item->sub_title }}</h5>
-                                     <h3 class="banner-title text-white text-uppercase ls-25">{{ $item->title }}</h3>
-                                     <a href="{{ $item->link }}"
-                                         class="btn btn-primary btn-outline btn-rounded btn-icon-right text-white btn-slide-right">
-                                         Shop Now<i class="w-icon-long-arrow-right"></i>
-                                     </a>
-                                 </div>
-                             @else
-                                 <div class="banner-content y-50">
-                                     <h3 class="banner-title text-capitalize ls-25 mb-0">{{ $item->title }}</h3>
-                                     <div class="banner-price-info text-uppercase text-default ls-25 font-weight-bold">{!! $item->sub_title !!}</div>
-                                     <hr class="banner-divider bg-dark">
-                                     <a href="{{ $item->link }}"
-                                         class="btn btn-dark btn-link btn-outline btn-icon-right btn-slide-right">
-                                         Shop Now<i class="w-icon-long-arrow-right"></i>
-                                     </a>
-                                 </div>
-                             @endif
+                             <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2">
+                                  <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">{!! $item->sub_title !!}</h5>
+                                  <h3 class="banner-title text-white text-uppercase ls-25 mb-2">{{ $item->title }}</h3>
+                                  <a href="{{ $item->link }}"
+                                      class="btn btn-primary btn-outline btn-rounded btn-icon-right text-white btn-slide-right">
+                                      Shop Now<i class="w-icon-long-arrow-right"></i>
+                                  </a>
+                              </div>
                          </div>
                      @endforeach
                  @else
@@ -827,13 +826,11 @@
                              <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/1-1.jpg" alt="Category Banner" width="447"
                                  height="230" style="background-color: #cfd1cf;" />
                          </figure>
-                         <div class="banner-content y-50">
-                             <h3 class="banner-title text-capitalize ls-25 mb-0">For Men's</h3>
-                             <div class="banner-price-info text-uppercase text-default ls-25 font-weight-bold">Starting
-                                 at <span class="text-secondary">₹29.00</span></div>
-                             <hr class="banner-divider bg-dark">
+                         <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2">
+                             <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">Starting at <span class="text-secondary">₹29.00</span></h5>
+                             <h3 class="banner-title text-white text-uppercase ls-25 mb-2">For Men's</h3>
                              <a href="demo8-shop.html"
-                                 class="btn btn-dark btn-link btn-outline btn-icon-right btn-slide-right">
+                                 class="btn btn-primary btn-outline btn-rounded btn-icon-right text-white btn-slide-right">
                                  Shop Now<i class="w-icon-long-arrow-right"></i>
                              </a>
                          </div>
@@ -845,10 +842,8 @@
                                  height="230" style="background-color: #0088dd" />
                          </figure>
                          <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2">
-                             <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">Get 30% Off
-                                 Your Entire Order!</h5>
-                             <h3 class="banner-title text-white text-uppercase ls-25">Black Friday Sale</h3>
-                             <p>Use code <strong class="text-uppercase text-white">Blkfri40</strong> at checkout.</p>
+                             <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">Get 30% Off Your Entire Order!</h5>
+                             <h3 class="banner-title text-white text-uppercase ls-25 mb-2">Black Friday Sale</h3>
                              <a href="demo8-shop.html"
                                  class="btn btn-primary btn-outline btn-rounded btn-icon-right text-white btn-slide-right">
                                  Shop Now<i class="w-icon-long-arrow-right"></i>
@@ -861,14 +856,11 @@
                              <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/1-3.jpg" alt="Category Banner" width="447"
                                  height="230" style="background-color: #e0dddd;" />
                          </figure>
-                         <div class="banner-content y-50">
-                             <h3 class="banner-title text-capitalize ls-25 mb-0">For Women's</h3>
-                             <div class="banner-price-info text-uppercase text-default ls-25 font-weight-bold">From Only
-                                 <span class="text-secondary">₹29.00</span>
-                             </div>
-                             <hr class="banner-divider bg-dark">
+                         <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2">
+                             <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">From Only <span class="text-secondary">₹29.00</span></h5>
+                             <h3 class="banner-title text-white text-uppercase ls-25 mb-2">For Women's</h3>
                              <a href="demo8-shop.html"
-                                 class="btn btn-dark btn-link btn-outline btn-icon-right btn-slide-right">
+                                 class="btn btn-primary btn-outline btn-rounded btn-icon-right text-white btn-slide-right">
                                  Shop Now<i class="w-icon-long-arrow-right"></i>
                              </a>
                          </div>
@@ -1471,27 +1463,29 @@
 }
 
 .vendor-img-wrap {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+    display: block !important;
     width: 140px !important;
     height: 185px !important;
     border-radius: 15px !important;
     overflow: hidden !important;
     border: none !important;
     box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    background-color: transparent !important;
+    background-color: #ffffff !important;
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
     flex-shrink: 0 !important;
     position: relative !important;
 }
 
 .vendor-profile-img {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
+    object-position: center !important;
     border-radius: inherit !important; /* Inherit border-radius from parent */
-    display: block;
+    display: block !important;
 }
 
 /* Background Section */

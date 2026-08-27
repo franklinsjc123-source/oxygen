@@ -45,6 +45,17 @@ use Illuminate\Support\Facades\Route;
             @if(in_array($mainmenu->id, $staffMainMenus))
             @php
                 $sub_menus = App\Models\Submenus::where('main_menu', '=', $mainmenu->id)->get();
+                if ($mainmenu->title == 'Banners') {
+                    $order = [
+                        'main slider' => 1,
+                        'category banners' => 2,
+                        'adv banner' => 3,
+                        'oxygen adv' => 4
+                    ];
+                    $sub_menus = $sub_menus->sortBy(function($submenu) use ($order) {
+                        return $order[strtolower($submenu->title)] ?? 99;
+                    });
+                }
             @endphp
             <li><a class="sidebar-header" href="#"><i data-feather="{{$mainmenu->font_icon}}"></i> <span>{{$mainmenu->title}}</span><i class="fa fa-angle-right pull-right" style="float: right;"></i></a>
                 <ul class="sidebar-submenu">
