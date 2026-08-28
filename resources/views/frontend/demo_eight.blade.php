@@ -115,7 +115,27 @@
             margin-top: 15px !important;
         }
         .category-banner-2cols img {
-            min-height: 180px !important;
+            min-height: auto !important;
+            height: auto !important;
+            object-fit: cover !important;
+            width: 100% !important;
+            aspect-ratio: 5 / 2 !important;
+        }
+        .category-banner-2cols .banner-content {
+            padding: 5px 10px !important;
+        }
+        .category-banner-2cols .banner-subtitle {
+            font-size: 8px !important;
+            margin-bottom: 2px !important;
+        }
+        .category-banner-2cols .banner-title {
+            font-size: 12px !important;
+            margin-bottom: 5px !important;
+            line-height: 1.2 !important;
+        }
+        .category-banner-2cols .btn {
+            font-size: 8px !important;
+            padding: 3px 8px !important;
         }
     }
  </style>
@@ -657,13 +677,13 @@
           </div>
           <!-- Category Banner 2Cols (Advertisements moved after Shop by Seller) -->
           @if(isset($oxygen_adv) && count($oxygen_adv) > 0)
-          <div class="container mt-1 mb-0" style="padding: 0 !important; margin-bottom: 0px !important; margin-top: 5px !important;">
-              <div class="row cols-2 cols-md-2 category-banner-2cols mb-1">
+          <div class="container mt-1 mb-0" style="margin-bottom: 0px !important; margin-top: 5px !important;">
+              <div class="row cols-1 cols-md-2 category-banner-2cols mb-1">
                   @foreach($oxygen_adv->take(2) as $key => $banner)
                   <div class="banner banner-fixed mb-1">
                       <figure class="br-sm">
                           <img src="{{ asset('assets/images/banners/advoxygen/' . $banner->image) }}" alt="{{ $banner->title }}" width="680"
-                              height="220" style="background-color: {{ $key == 0 ? '#384744' : '#e7e7e7' }}; object-fit: cover; height: 180px !important; width: 100% !important;" />
+                              height="220" style="background-color: {{ $key == 0 ? '#384744' : '#e7e7e7' }}; object-fit: cover; height: auto !important; width: 100% !important;" />
                       </figure>
                       <div class="banner-content y-50">
                           <h5 class="banner-subtitle text-uppercase {{ $key == 0 ? 'text-white' : '' }} font-weight-bold">{{ $banner->title }}</h5>
