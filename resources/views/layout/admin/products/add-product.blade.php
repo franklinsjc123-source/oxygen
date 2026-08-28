@@ -733,9 +733,9 @@
                                                     </div>
 
                                                     {{-- Actions --}}
-                                                    <div class="col-md-1 d-flex flex-column justify-content-end">
+                                                    <div class="col-md-1">
                                                         <label class="form-label fw-bold text-secondary mb-1">&nbsp;</label>
-                                                        <div class="d-flex gap-1 justify-content-end">
+                                                        <div class="d-flex gap-1 justify-content-end w-100">
                                                             <button type="button" class="btn btn-danger w-100 remove-size-row-inline-btn" title="Remove Size"><i class="fa fa-trash"></i></button>
                                                             <button type="button" class="btn btn-primary w-100 add-size-row-inline-btn" title="Add Size"><i class="fa fa-plus"></i></button>
                                                         </div>
@@ -1308,9 +1308,9 @@
                     '                <input type="number" name="low_stock_limit[]" id="low_stock_limit'+(x+1)+'" placeholder="Low Stock Limit" class="low_stock_limit form-control" required>' +
                     '                <div class="invalid-feedback-custom">Please enter low stock limit</div>' +
                     '            </div>' +
-                    '            <div class="col-md-1 d-flex flex-column justify-content-end">' +
+                    '            <div class="col-md-1">' +
                     '                <label class="form-label fw-bold text-secondary mb-1">&nbsp;</label>' +
-                    '                <div class="d-flex gap-1 justify-content-end">' +
+                    '                <div class="d-flex gap-1 justify-content-end w-100">' +
                     '                    <button type="button" class="btn btn-danger w-100 remove-size-row-inline-btn" title="Remove Size"><i class="fa fa-trash"></i></button>' +
                     '                    <button type="button" class="btn btn-primary w-100 add-size-row-inline-btn" title="Add Size"><i class="fa fa-plus"></i></button>' +
                     '                </div>' +
