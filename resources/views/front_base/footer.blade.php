@@ -9,54 +9,54 @@
 
        @media (max-width: 767px) {
 
-            /* Allow columns to wrap and create a 2-column grid on mobile */
             .footer-top .row {
                 display: flex;
-                flex-wrap: wrap;
+                flex-wrap: nowrap;
+                overflow: hidden;
+                /* NO SCROLL */
             }
 
             .footer-top .col-lg-3 {
-                flex: 0 0 50%;
-                max-width: 50%;
-                padding: 0 10px;
-                margin-bottom: 20px;
+                flex: 0 0 25% !important;
+                max-width: 25% !important;
+                padding: 0 5px !important;
             }
 
             /* Reduce title size */
             .main-footer .widget-title {
-                font-size: 13px;
-                margin-bottom: 8px;
+                font-size: 11px;
+                margin-bottom: 6px;
             }
 
             /* Reduce link size */
             .main-footer .widget-body li a {
-                font-size: 12px;
+                font-size: 10px;
+                /* line-height: 1.4; */
             }
 
             /* Reduce spacing */
             .widget-body li {
-                margin-bottom: 4px;
+                margin-bottom: 1px;
             }
 
             /* About section text */
             .widget-about-desc,
             .widget-about-title,
             .widget-about-call {
-                font-size: 12px;
+                font-size: 10px;
                 line-height: 1.4;
             }
 
-            /* Show description on mobile */
+            /* Hide long text if needed */
             .widget-about-desc {
-                display: block;
-                font-size: 11px;
+                display: none;
             }
 
-            /* Social icons */
+            /* Smaller social icons */
             .social-icons a {
-                width: 28px;
-                height: 28px;
-                font-size: 12px;
+                width: 25px;
+                height: 25px;
+                font-size: 10px;
                 margin-right: 4px;
             }
 
@@ -68,7 +68,7 @@
             }
 
             .footer-bottom p {
-                font-size: 11px;
+                font-size: 10px;
             }
 
             .footer .widget-about .widget-about-call {
@@ -80,9 +80,11 @@
                 margin-bottom: 0.8rem;
             }
 
+            
+
             .footer-top .widget-body li {
-                line-height: 1.3;
-                margin-bottom: 0.4rem;
+                line-height: 1.2;
+                margin-bottom: 0.5rem;
             }
 
             .footer-top .widget {
