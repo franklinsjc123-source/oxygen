@@ -70,6 +70,7 @@
             margin-left: 0 !important;
             margin-right: 0 !important;
             width: 100% !important;
+            padding-bottom: 15px !important;
         }
         .animation-slider .banner-content {
             top: auto !important;
@@ -94,8 +95,8 @@
             margin-top: 0 !important;
         }
         .offer-badges-container {
-            margin-top: 25px !important;
-            margin-bottom: 20px !important;
+            margin-top: 5px !important;
+            margin-bottom: 5px !important;
         }
         .auction-container {
             margin-top: 15px !important;
