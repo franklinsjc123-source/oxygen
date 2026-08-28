@@ -105,9 +105,6 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
             margin-left: auto;
             margin-right: auto;
         }
-        body {
-            background-color: #f5f5f5;
-        }
     </style>
 
     <style>
