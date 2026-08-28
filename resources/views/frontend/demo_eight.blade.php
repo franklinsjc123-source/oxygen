@@ -115,27 +115,11 @@
             margin-top: 15px !important;
         }
         .category-banner-2cols img {
-            min-height: auto !important;
+            min-height: unset !important;
             height: auto !important;
-            object-fit: cover !important;
             width: 100% !important;
-            aspect-ratio: 5 / 2 !important;
-        }
-        .category-banner-2cols .banner-content {
-            padding: 5px 10px !important;
-        }
-        .category-banner-2cols .banner-subtitle {
-            font-size: 8px !important;
-            margin-bottom: 2px !important;
-        }
-        .category-banner-2cols .banner-title {
-            font-size: 12px !important;
-            margin-bottom: 5px !important;
-            line-height: 1.2 !important;
-        }
-        .category-banner-2cols .btn {
-            font-size: 8px !important;
-            padding: 3px 8px !important;
+            object-fit: fill !important;
+            aspect-ratio: 330 / 160 !important;
         }
     }
  </style>
@@ -682,8 +666,8 @@
                   @foreach($oxygen_adv->take(2) as $key => $banner)
                   <div class="banner banner-fixed mb-1">
                       <figure class="br-sm">
-                          <img src="{{ asset('assets/images/banners/advoxygen/' . $banner->image) }}" alt="{{ $banner->title }}" width="680"
-                              height="220" style="background-color: {{ $key == 0 ? '#384744' : '#e7e7e7' }}; object-fit: cover; height: auto !important; width: 100% !important;" />
+                          <img src="{{ asset('assets/images/banners/advoxygen/' . $banner->image) }}" alt="{{ $banner->title }}" width="330"
+                               height="160" style="background-color: {{ $key == 0 ? '#384744' : '#e7e7e7' }}; object-fit: cover; width: 100% !important; height: auto !important;" />
                       </figure>
                       <div class="banner-content y-50">
                           <h5 class="banner-subtitle text-uppercase {{ $key == 0 ? 'text-white' : '' }} font-weight-bold">{{ $banner->title }}</h5>
