@@ -123,7 +123,7 @@
 
  <main class="main">
 
-     <div class=" pb-2">
+     <div class="container pb-2">
          <div class=" mt-4">
              <div class="swiper-container swiper-theme pg-inner animation-slider row cols-1 gutter-no" data-swiper-options="{
                             'autoplay': {
