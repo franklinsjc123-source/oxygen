@@ -9,88 +9,94 @@
 
        @media (max-width: 767px) {
 
-           .footer-top .row {
-               display: flex;
-               flex-wrap: nowrap;
-               overflow: hidden;
-               /* NO SCROLL */
-           }
+            /* Allow columns to wrap and create a 2-column grid on mobile */
+            .footer-top .row {
+                display: flex;
+                flex-wrap: wrap;
+            }
 
-           .footer-top .col-lg-3 {
-               flex: 0 0 25%;
-               max-width: 25%;
-               padding: 0 5px;
-           }
+            .footer-top .col-lg-3 {
+                flex: 0 0 50%;
+                max-width: 50%;
+                padding: 0 10px;
+                margin-bottom: 20px;
+            }
 
-           /* Reduce title size */
-           .main-footer .widget-title {
-               font-size: 11px;
-               margin-bottom: 6px;
-           }
+            /* Reduce title size */
+            .main-footer .widget-title {
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
 
-           /* Reduce link size */
-           .main-footer .widget-body li a {
-               font-size: 10px;
-               /* line-height: 1.4; */
-           }
+            /* Reduce link size */
+            .main-footer .widget-body li a {
+                font-size: 12px;
+            }
 
-           /* Reduce spacing */
-           .widget-body li {
-               margin-bottom: 1px;
-           }
+            /* Reduce spacing */
+            .widget-body li {
+                margin-bottom: 4px;
+            }
 
-           /* About section text */
-           .widget-about-desc,
-           .widget-about-title,
-           .widget-about-call {
-               font-size: 10px;
-               line-height: 1.4;
-           }
+            /* About section text */
+            .widget-about-desc,
+            .widget-about-title,
+            .widget-about-call {
+                font-size: 12px;
+                line-height: 1.4;
+            }
 
-           /* Hide long text if needed */
-           .widget-about-desc {
-               display: none;
-           }
+            /* Show description on mobile */
+            .widget-about-desc {
+                display: block;
+                font-size: 11px;
+            }
 
-           /* Smaller social icons */
-           .social-icons a {
-               width: 25px;
-               height: 25px;
-               font-size: 10px;
-               margin-right: 4px;
-           }
+            /* Social icons */
+            .social-icons a {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
+                margin-right: 4px;
+            }
 
-           /* Footer bottom */
-           .footer-bottom {
-               flex-direction: column;
-               text-align: center;
-               gap: 6px;
-           }
+            /* Footer bottom */
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+                gap: 6px;
+            }
 
-           .footer-bottom p {
-               font-size: 10px;
-           }
+            .footer-bottom p {
+                font-size: 11px;
+            }
 
-           .footer .widget-about .widget-about-call {
-               display: block;
-               color: white;
-               font-size: 0.9rem;
-               font-weight: 600;
-               line-height: 1;
-               margin-bottom: 0.8rem;
-           }
+            .footer .widget-about .widget-about-call {
+                display: block;
+                color: white;
+                font-size: 0.9rem;
+                font-weight: 600;
+                line-height: 1;
+                margin-bottom: 0.8rem;
+            }
 
-           
+            .footer-top .widget-body li {
+                line-height: 1.3;
+                margin-bottom: 0.4rem;
+            }
 
-           .footer-top .widget-body li {
-               line-height: 1.2;
-               margin-bottom: 0.5rem;
-           }
+            .footer-top .widget {
+                margin-bottom: 0rem;
+            }
+        }
 
-           .footer-top .widget {
-               margin-bottom: 0rem;
-           }
-       }
+        @media (max-width: 400px) {
+            /* Very small phones: single column */
+            .footer-top .col-lg-3 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
    </style>
    <footer class="footer main-footer appear-animate">
 

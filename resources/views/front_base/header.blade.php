@@ -99,6 +99,18 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
     ?>
 
     <style>
+        /* Constrain entire page so header/footer match content width on zoom out */
+        .page-wrapper {
+            max-width: 1280px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        body {
+            background-color: #f5f5f5;
+        }
+    </style>
+
+    <style>
         .search-suggest-box {
             position: absolute;
             top: calc(100% + 4px);

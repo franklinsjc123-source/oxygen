@@ -784,7 +784,7 @@
                   <?php }
                      } ?>
               </div>
-          </div>
+          
 
          <div class="swiper-container swiper-theme category-banner-3cols pt-0 mt-0" style="margin-top: 0px !important; padding-top: 0px !important;"
              data-swiper-options="{
