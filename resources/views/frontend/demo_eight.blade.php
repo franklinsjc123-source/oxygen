@@ -79,8 +79,8 @@
             transform: none !important;
         }
         .animation-slider .banner-content .btn {
-            font-size: 10px !important;
-            padding: 8px 16px !important;
+            font-size: 8px !important;
+            padding: 4px 8px !important;
             margin-top: 0 !important;
             line-height: 1.2 !important;
         }
