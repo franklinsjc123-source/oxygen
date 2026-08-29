@@ -310,8 +310,87 @@
      </div>
      @endif
 
+      <!-- Auction Products (Moved below offers) -->
+      @if(isset($auctionProducts) && count($auctionProducts) > 0)
+      <div class="container mt-4 mb-4 auction-container">
+         <div class="title-link-wrapper mb-3">
+             <h2 class="title mb-0 pt-2 pb-2">Auction Products</h2>
+             <a href="{{ url('auction') }}" class="mb-0">More Products<i
+                     class="w-icon-long-arrow-right"></i></a>
+         </div>
+          <div class="swiper-container swiper-theme product-wrapper"
+              data-swiper-options="{
+                     'spaceBetween': 20,
+                     'slidesPerView': 2,
+                     'breakpoints': {
+                         '576': {
+                             'slidesPerView': 3
+                         },
+                         '768': {
+                             'slidesPerView': 4
+                         },
+                         '992': {
+                             'slidesPerView': 5
+                         },
+                         '1200': {
+                             'slidesPerView': 6
+                         }
+                     }
+                 }">
+              <div class="swiper-wrapper row cols-xl-6 cols-lg-5 cols-md-4 cols-sm-3 cols-2">
+                  @foreach($auctionProducts as $auction)
+                  <div class="swiper-slide product product-simple text-center">
+                      <figure class="product-media">
+                          <a href="{{ route('auction.detail', $auction->auction_id) }}">
+                              <img src="{{ asset('assets/images/products/' . $auction->product_image) }}" alt="Product" width="260"
+                                  height="291" />
+                          </a>
+                           <div class="product-action-vertical">
+                               <a href="#" onclick="addwishlist('{{ $auction->id }}', this)" class="btn-product-icon btn-wishlist {{ in_array($auction->id, $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($auction->id, $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"
+                                   title="Add to wishlist"></a>
+                           </div>
+                           <div class="product-countdown-container">
+                              @php
+                                 $endDateStr = str_replace('T', ' ', $auction->end_date);
+                                 $parsedDate = \Carbon\Carbon::parse($endDateStr);
+                                 $formattedForJs = $parsedDate->format('Y, n, j, G, i, s');
+                              @endphp
+                              <div class="product-countdown countdown-compact" data-until="{{ $formattedForJs }}"
+                                  data-format="DHMS" data-compact="false" data-labels-short="Days, Hours, Mins, Secs">
+                                  00:00:00:00</div>
+                          </div>
+                      </figure>
+                      <div class="product-details">
+                          <div class="sold-by">
+                              <b><a href="{{ url('/shop/' . ($auction->vendor_slug ?? $auction->vendor_id)) }}">{{ $auction->shop_name ?? 'Admin' }}</a></b>
+                          </div>
+                          <h4 class="product-name"><a href="{{ route('auction.detail', $auction->auction_id) }}">{{ ucwords($auction->product_name) }}</a></h4>
+
+                          <div class="ratings-container">
+                              <div class="ratings-full">
+                                  <span class="ratings" style="width: {{ $auction->rating_percent ?? 0 }}%"></span>
+                              </div>
+                              <a>({{ $auction->review_count ?? 0 }} Reviews)</a>
+                          </div>
+
+                          <div class="product-pa-wrapper" style="display: flex; align-items: center; justify-content: center; padding-top: 5px;">
+                              <div class="product-price-home" style="font-family: monospace; font-size: 1.6rem; font-weight: 700; color: #000;" title="Bid Amount">
+                                 <span style="color: #666; font-size: 1.4rem; font-weight: 600; margin-right: 5px; font-family: inherit;">Bid:</span>₹{{ $auction->selling_price > 0 ? $auction->selling_price : ($auction->retail_price ?? 0) }}
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <!-- End of Product Simple -->
+                  @endforeach
+
+              </div>
+              <div class="swiper-pagination"></div>
+          </div>
+          <!-- End of Swiper Container -->
+          @endif
+
           <!-- Premium Feature Bar (Swiper Slider - one at a time on mobile) -->
-          <div class="container mb-2">
+          <div class="container pb-2">
              <style>
               /* Premium Feature Bar Slider Styles */
               .premium-feature-slider {
@@ -338,19 +417,16 @@
                   align-items: center;
                   justify-content: center;
                   padding: 0.5rem 0;
-                  background: transparent !important;
-                  border: none !important;
-                  box-shadow: none !important;
               }
 
              .premium-feature-icon {
-                 width: 54px;
-                 height: 54px;
+                 width: 40px;
+                 height: 40px;
                  border-radius: 50%;
                  display: flex;
                  align-items: center;
                  justify-content: center;
-                 margin-right: 1.2rem;
+                 margin-right: 1rem;
                  flex-shrink: 0;
              }
 
@@ -373,8 +449,8 @@
              }
 
              .premium-feature-icon svg {
-                 width: 26px;
-                 height: 26px;
+                 width: 18px;
+                 height: 18px;
              }
 
              .premium-feature-content {
@@ -384,7 +460,7 @@
              }
 
              .premium-feature-title {
-                 font-size: 1.5rem;
+                 font-size: 1.3rem;
                  font-weight: 700;
                  color: #222222;
                  margin: 0 0 0.1rem 0;
@@ -395,7 +471,7 @@
              }
 
              .premium-feature-desc {
-                 font-size: 1.15rem;
+                 font-size: 1rem;
                  color: #777777;
                  margin: 0;
                  line-height: 1.2;
@@ -407,48 +483,48 @@
              /* Responsive adjustments */
              @media (max-width: 991px) {
                  .premium-feature-slider {
-                     padding: 1.2rem 1.4rem;
+                     padding: 1rem 1.2rem;
                      border-radius: 16px;
                      margin: 1.2rem 0;
                  }
                  .premium-feature-icon {
-                     width: 52px;
-                     height: 52px;
-                     margin-right: 1rem;
+                     width: 44px;
+                     height: 44px;
+                     margin-right: 0.8rem;
                  }
                  .premium-feature-icon svg {
-                     width: 25px;
-                     height: 25px;
+                     width: 20px;
+                     height: 20px;
                  }
                  .premium-feature-title {
-                     font-size: 1.45rem;
+                     font-size: 1.15rem;
                  }
                  .premium-feature-desc {
-                     font-size: 1.1rem;
+                     font-size: 0.95rem;
                  }
              }
 
              @media (max-width: 576px) {
                  .premium-feature-slider {
-                     padding: 1.4rem 1.2rem !important;
+                     padding: 0.8rem 1rem;
                      border-radius: 12px;
                      margin: 1rem 0;
                  }
                  .premium-feature-icon {
-                     width: 50px;
-                     height: 50px;
-                     margin-right: 1rem;
+                     width: 42px;
+                     height: 42px;
+                     margin-right: 0.8rem;
                  }
                  .premium-feature-icon svg {
-                     width: 24px;
-                     height: 24px;
+                     width: 19px;
+                     height: 19px;
                  }
                  .premium-feature-title {
-                     font-size: 1.4rem;
+                     font-size: 1.2rem;
                      font-weight: 700;
                  }
                  .premium-feature-desc {
-                     font-size: 1.1rem;
+                     font-size: 0.95rem;
                  }
              }
              </style>
@@ -533,6 +609,82 @@
                  </div>
              </div>
           </div>
+
+          <!-- Shops Section (Moved after Auction Products) -->
+          <div class="container mt-3 mb-0" style="margin-bottom: 0px !important; padding: 0 !important;">
+              <div class="title-link-wrapper mb-3">
+                  <h2 class="title mb-0 pt-2 pb-2" style="font-weight: 700; font-family: 'Poppins', sans-serif;">Shop by Seller</h2>
+                  <a href="{{ url('shops') }}" class="mb-0" style="font-weight: 600; display: inline-flex; align-items: center; gap: 4px; font-size: 1.3rem;">View All <i class="w-icon-long-arrow-right" style="font-weight: 800; font-size: 1.1rem; line-height: 1;"></i></a>
+              </div>
+              <div class="swiper-container swiper-theme brands-wrapper br-sm mb-1 appear-animate"
+                  data-swiper-options="{
+                         'autoplay': {
+                             'delay': 4000,
+                             'disableOnInteraction': false
+                         },
+                         'loop': true,
+                         'spaceBetween': 10,
+                         'slidesPerView': 4,
+                         'breakpoints': {
+                             '576': {
+                                 'slidesPerView': 4
+                             },
+                             '768': {
+                                 'slidesPerView': 4
+                             },
+                             '992': {
+                                 'slidesPerView': 6
+                             },
+                             '1200': {
+                                 'slidesPerView': 7
+                             }
+                         }
+                     }">
+                  <div class="swiper-wrapper row cols-xl-8 cols-lg-6 cols-md-4 cols-sm-4 cols-4">
+                      <?php if (isset($vendorcreate)) {
+                             foreach ($vendorcreate as $row) { ?>
+                               <div class="swiper-slide swiper-slide-vendor">
+                                  <figure class="vendor-figure">
+                                      <a href="<?= url('/shop/' . ($row['slug'] ?? $row['id'])) ?>" class="vendor-img-link">
+                                          <span class="vendor-img-wrap">
+                                              <img
+                                                  class="vendor-profile-img"
+                                                  src="{{ asset('assets/images/vendor/profile/' . $row->profile_image) }}"
+                                                  alt="{{ $row->shop_name }}"
+                                              />
+                                              <span class="vendor-name-overlay">{{ $row->shop_name }}</span>
+                                          </span>
+                                      </a>
+                                  </figure>
+                               </div>
+                      <?php }
+                         } ?>
+                  </div>
+              </div>
+          </div>
+          <!-- Category Banner 2Cols (Advertisements moved after Shop by Seller) -->
+          @if(isset($oxygen_adv) && count($oxygen_adv) > 0)
+          <div class="container mt-1 mb-0" style="margin-bottom: 0px !important; margin-top: 5px !important;">
+              <div class="row cols-1 cols-md-2 category-banner-2cols mb-1">
+                  @foreach($oxygen_adv->take(2) as $key => $banner)
+                  <div class="banner banner-fixed mb-1">
+                      <figure class="br-sm">
+                          <img src="{{ asset('assets/images/banners/advoxygen/' . $banner->image) }}" alt="{{ $banner->title }}" width="330"
+                               height="160" style="background-color: {{ $key == 0 ? '#384744' : '#e7e7e7' }}; object-fit: cover; width: 100% !important; height: auto !important;" />
+                      </figure>
+                      <div class="banner-content y-50">
+                          <h5 class="banner-subtitle text-uppercase {{ $key == 0 ? 'text-white' : '' }} font-weight-bold">{{ $banner->title }}</h5>
+                          <h3 class="banner-title text-capitalize {{ $key == 0 ? 'text-white' : '' }}">{!! nl2br(e($banner->sub_title)) !!}</h3>
+                          <a href="{{ $banner->link ?? '#' }}" class="btn {{ $key == 0 ? 'btn-white' : 'btn-dark' }} btn-link btn-slide-right btn-icon-right">
+                              Shop Now<i class="w-icon-long-arrow-right"></i></a>
+                      </div>
+                  </div>
+                  @endforeach
+              </div>
+          </div>
+          @endif
+          </div>
+         <!-- End of Icon Box Wrapper -->
 
           <!-- Offer Products Section (Moved after Advertisements) -->
           <div class="container mt-2 mb-4" style="margin-top: 15px !important;">
@@ -733,8 +885,15 @@
 
 
      </div>
-     <!-- End of Offer Products Container -->
+     <!-- End of Container -->
 
+
+     <!-- End of Grey Section -->
+
+
+
+
+     <!-- End of Banner Product Wrapper -->
 
      <div class="container">
 
@@ -848,31 +1007,99 @@
              <?php }
                 } ?>
          </div>
-     </div>
 
-     <!-- Category Banner 2Cols (Advertisements moved before Mens Products) -->
-     @if(isset($oxygen_adv) && count($oxygen_adv) > 0)
-     <div class="container mt-1 mb-0" style="margin-bottom: 0px !important; margin-top: 5px !important;">
-         <div class="row cols-1 cols-md-2 category-banner-2cols mb-1">
-             @foreach($oxygen_adv->take(2) as $key => $banner)
-             <div class="banner banner-fixed mb-1">
-                 <figure class="br-sm">
-                     <img src="{{ asset('assets/images/banners/advoxygen/' . $banner->image) }}" alt="{{ $banner->title }}" width="330"
-                          height="160" style="background-color: {{ $key == 0 ? '#384744' : '#e7e7e7' }}; object-fit: cover; width: 100% !important; height: auto !important;" />
-                 </figure>
-                 <div class="banner-content y-50">
-                     <h5 class="banner-subtitle text-uppercase {{ $key == 0 ? 'text-white' : '' }} font-weight-bold">{{ $banner->title }}</h5>
-                     <h3 class="banner-title text-capitalize {{ $key == 0 ? 'text-white' : '' }}">{!! nl2br(e($banner->sub_title)) !!}</h3>
-                     <a href="{{ $banner->link ?? '#' }}" class="btn {{ $key == 0 ? 'btn-white' : 'btn-dark' }} btn-link btn-slide-right btn-icon-right">
-                         Shop Now<i class="w-icon-long-arrow-right"></i></a>
-                 </div>
-             </div>
-             @endforeach
-         </div>
-     </div>
-     @endif
+          <!-- Shop by Location Section (Moved above Mens Products) -->
+          <h2 class="title text-left mb-1 appear-animate mt-4" style="margin-bottom: 5px !important; font-weight: 700; font-family: 'Poppins', sans-serif;">Shop by Location</h2>
+          <div class="swiper-container swiper-theme brands-wrapper br-sm mb-2 appear-animate mt-2"
+              data-swiper-options="{
+                 'autoplay': {
+                     'delay': 4000,
+                     'disableOnInteraction': false
+                 },
+                 'loop': true,
+                 'spaceBetween': 10,
+                 'slidesPerView': 4,
+                 'breakpoints': {
+                     '576': {
+                         'slidesPerView': 4
+                     },
+                     '768': {
+                         'slidesPerView': 4
+                     },
+                     '992': {
+                         'slidesPerView': 5
+                     },
+                     '1200': {
+                         'slidesPerView': 7
+                     }
+                 }
+             }">
+              <div class="swiper-wrapper row cols-xl-8 cols-lg-6 cols-md-4 cols-sm-4 cols-4">
+                  @isset($locations)
+                     @foreach($locations as $key=>$row)
+                     @php
+                     $imgNo = ($key % 9) + 1;
+                     @endphp
+                      <div class="swiper-slide swiper-slide-vendor">
+                              <figure class="vendor-figure">
+                                      <span class="vendor-img-wrap">
+                                          <img
+                                              class="vendor-profile-img"
+                                              src="{{ asset('frontend/images/00' .$imgNo  . '.jpg') }}"
+                                              alt="{{ $row->area }}"
+                                          />
+                                          <span class="vendor-name-overlay">{{ $row->area }}</span>
+                                      </span>
+                              </figure>
+                        </div>
+                     @endforeach
+                  @endisset
+              </div>
+          </div>
 
-     <div class="container">
+          <!-- Banner Shoes (Moved after Shop by Location) -->
+          @if(isset($paidAddSlip))
+              <div class="banner banner-shoes br-sm mb-2" style="background-image: url({{ asset('assets/images/banners/adv-baner/' . $paidAddSlip->image) }});
+                             background-color: #36332C;">
+                  <div class="banner-content d-block d-lg-flex align-items-center">
+                      <div class="content-left mr-auto mb-6 mb-lg-0 align-items-center">
+                          <h3 class="banner-title font-weight-normal text-white mb-0 ls-25">
+                              {!! $paidAddSlip->title !!}<br><strong>{!! $paidAddSlip->sub_title !!}</strong>
+                          </h3>
+                      </div>
+                      <a href="{{ $paidAddSlip->link }}"
+                          class="content-right btn btn-white btn-outline btn-rounded btn-icon-right">
+                          Discover Now<i class="w-icon-long-arrow-right"></i>
+                      </a>
+                  </div>
+              </div>
+          @else
+              <div class="banner banner-shoes br-sm mb-2" style="background-image: url(<?php echo asset('frontend') ?>/images/demos/demo8/banner/3.jpg);
+                             background-color: #36332C;">
+                  <div class="banner-content d-block d-lg-flex align-items-center">
+                      <div class="content-left mr-auto mb-6 mb-lg-0 align-items-center">
+                          <div class="banner-price-info text-secondary text-uppercase font-weight-bolder ls-25">
+                              40<sup class="font-weight-bold">%</sup><sub class="font-weight-bold ls-10">Off</sub>
+                          </div>
+                          <hr class="banner-divider">
+                          <h3 class="banner-title font-weight-normal text-white mb-0 ls-25">
+                              Summer Season's Sale<br><strong>For Men's Sneakers</strong>
+                          </h3>
+                      </div>
+                      <a href="demo8-shop.html"
+                          class="content-right btn btn-white btn-outline btn-rounded btn-icon-right">
+                          Discover Now<i class="w-icon-long-arrow-right"></i>
+                      </a>
+                  </div>
+                  <figure class="image-shoes skrollable">
+                      <img src="<?php echo asset('frontend') ?>/images/demos/demo8/banner/shoes.png" alt="Shoes"
+                          data-bottom-top="transform: translateY(2vh);"
+                          data-top-bottom="transform: translateY(-2vh);">
+                  </figure>
+              </div>
+          @endif
+          <!-- End of Banner Shoes -->
+
          <div class="title-link-wrapper mb-3">
              <h2 class="title mb-0 pt-2 pb-2">Mens Products</h2>
              <a href="{{ url('main-category/men') }}" class="mb-0">More Products<i
@@ -983,9 +1210,7 @@
                 } ?>
          </div>
 
-     </div>
 
-     <div class="container">
 
          <div class="title-link-wrapper mb-3">
              <h2 class="title mb-0 pt-2 pb-2">Womens Products</h2>
@@ -1096,6 +1321,8 @@
              <?php }
                 } ?>
          </div>
+
+
 
 
          <div class="title-link-wrapper mb-3">
@@ -1209,234 +1436,10 @@
          </div>
      </div>
 
-     <div class="container">
-          <!-- Banner Shoes (Moved after Kids Products) -->
-          @if(isset($paidAddSlip))
-              <div class="banner banner-shoes br-sm mb-2" style="background-image: url({{ asset('assets/images/banners/adv-baner/' . $paidAddSlip->image) }});
-                             background-color: #36332C;">
-                  <div class="banner-content d-block d-lg-flex align-items-center">
-                      <div class="content-left mr-auto mb-6 mb-lg-0 align-items-center">
-                          <h3 class="banner-title font-weight-normal text-white mb-0 ls-25">
-                              {!! $paidAddSlip->title !!}<br><strong>{!! $paidAddSlip->sub_title !!}</strong>
-                          </h3>
-                      </div>
-                      <a href="{{ $paidAddSlip->link }}"
-                          class="content-right btn btn-white btn-outline btn-rounded btn-icon-right">
-                          Discover Now<i class="w-icon-long-arrow-right"></i>
-                      </a>
-                  </div>
-              </div>
-          @else
-              <div class="banner banner-shoes br-sm mb-2" style="background-image: url(<?php echo asset('frontend') ?>/images/demos/demo8/banner/3.jpg);
-                             background-color: #36332C;">
-                  <div class="banner-content d-block d-lg-flex align-items-center">
-                      <div class="content-left mr-auto mb-6 mb-lg-0 align-items-center">
-                          <div class="banner-price-info text-secondary text-uppercase font-weight-bolder ls-25">
-                              40<sup class="font-weight-bold">%</sup><sub class="font-weight-bold ls-10">Off</sub>
-                          </div>
-                          <hr class="banner-divider">
-                          <h3 class="banner-title font-weight-normal text-white mb-0 ls-25">
-                              Summer Season's Sale<br><strong>For Men's Sneakers</strong>
-                          </h3>
-                      </div>
-                      <a href="demo8-shop.html"
-                          class="content-right btn btn-white btn-outline btn-rounded btn-icon-right">
-                          Discover Now<i class="w-icon-long-arrow-right"></i>
-                      </a>
-                  </div>
-                  <figure class="image-shoes skrollable">
-                      <img src="<?php echo asset('frontend') ?>/images/demos/demo8/banner/shoes.png" alt="Shoes"
-                          data-bottom-top="transform: translateY(2vh);"
-                          data-top-bottom="transform: translateY(-2vh);">
-                  </figure>
-              </div>
-          @endif
-          <!-- End of Banner Shoes -->
-     </div>
 
-          <!-- Shops Section (Moved after Auction Products) -->
-          <div class="container mt-3 mb-0" style="margin-bottom: 0px !important; padding: 0 !important;">
-              <div class="title-link-wrapper mb-3" style="padding-left: 15px; padding-right: 15px;">
-                  <h2 class="title mb-0 pt-2 pb-2" style="font-weight: 700; font-family: 'Poppins', sans-serif;">Shop by Seller</h2>
-                  <a href="{{ url('shops') }}" class="mb-0" style="font-weight: 600; display: inline-flex; align-items: center; gap: 4px; font-size: 1.3rem;">View All <i class="w-icon-long-arrow-right" style="font-weight: 800; font-size: 1.1rem; line-height: 1;"></i></a>
-              </div>
-              <div class="swiper-container swiper-theme brands-wrapper br-sm mb-1 appear-animate"
-                  data-swiper-options="{
-                         'autoplay': {
-                             'delay': 4000,
-                             'disableOnInteraction': false
-                         },
-                         'loop': true,
-                         'spaceBetween': 10,
-                         'slidesPerView': 4,
-                         'breakpoints': {
-                             '576': {
-                                 'slidesPerView': 4
-                             },
-                             '768': {
-                                 'slidesPerView': 4
-                             },
-                             '992': {
-                                 'slidesPerView': 6
-                             },
-                             '1200': {
-                                 'slidesPerView': 7
-                             }
-                         }
-                     }">
-                  <div class="swiper-wrapper row cols-xl-8 cols-lg-6 cols-md-4 cols-sm-4 cols-4">
-                      <?php if (isset($vendorcreate)) {
-                             foreach ($vendorcreate as $row) { ?>
-                               <div class="swiper-slide swiper-slide-vendor">
-                                  <figure class="vendor-figure">
-                                      <a href="<?= url('/shop/' . ($row['slug'] ?? $row['id'])) ?>" class="vendor-img-link">
-                                          <span class="vendor-img-wrap">
-                                              <img
-                                                  class="vendor-profile-img"
-                                                  src="{{ asset('assets/images/vendor/profile/' . $row->profile_image) }}"
-                                                  alt="{{ $row->shop_name }}"
-                                              />
-                                              <span class="vendor-name-overlay">{{ $row->shop_name }}</span>
-                                          </span>
-                                      </a>
-                                  </figure>
-                               </div>
-                      <?php }
-                         } ?>
-                  </div>
-              </div>
-          </div>
 
-     <div class="container">
-          <!-- Shop by Location Section (Moved above Mens Products) -->
-          <h2 class="title text-left mb-1 appear-animate mt-4" style="margin-bottom: 5px !important; font-weight: 700; font-family: 'Poppins', sans-serif;">Shop by Location</h2>
-          <div class="swiper-container swiper-theme brands-wrapper br-sm mb-2 appear-animate mt-2"
-              data-swiper-options="{
-                 'autoplay': {
-                     'delay': 4000,
-                     'disableOnInteraction': false
-                 },
-                 'loop': true,
-                 'spaceBetween': 10,
-                 'slidesPerView': 4,
-                 'breakpoints': {
-                     '576': {
-                         'slidesPerView': 4
-                     },
-                     '768': {
-                         'slidesPerView': 4
-                     },
-                     '992': {
-                         'slidesPerView': 5
-                     },
-                     '1200': {
-                         'slidesPerView': 7
-                     }
-                 }
-             }">
-              <div class="swiper-wrapper row cols-xl-8 cols-lg-6 cols-md-4 cols-sm-4 cols-4">
-                  @isset($locations)
-                     @foreach($locations as $key=>$row)
-                     @php
-                     $imgNo = ($key % 9) + 1;
-                     @endphp
-                      <div class="swiper-slide swiper-slide-vendor">
-                              <figure class="vendor-figure">
-                                      <span class="vendor-img-wrap">
-                                          <img
-                                              class="vendor-profile-img"
-                                              src="{{ asset('frontend/images/00' .$imgNo  . '.jpg') }}"
-                                              alt="{{ $row->area }}"
-                                          />
-                                          <span class="vendor-name-overlay">{{ $row->area }}</span>
-                                      </span>
-                              </figure>
-                        </div>
-                     @endforeach
-                  @endisset
-              </div>
-          </div>
-     </div>
 
-      <!-- Auction Products (Moved below offers) -->
-      @if(isset($auctionProducts) && count($auctionProducts) > 0)
-      <div class="container mt-4 mb-4 auction-container">
-         <div class="title-link-wrapper mb-3">
-             <h2 class="title mb-0 pt-2 pb-2">Auction Products</h2>
-             <a href="{{ url('auction') }}" class="mb-0">More Products<i
-                     class="w-icon-long-arrow-right"></i></a>
-         </div>
-          <div class="swiper-container swiper-theme product-wrapper"
-              data-swiper-options="{
-                     'spaceBetween': 20,
-                     'slidesPerView': 2,
-                     'breakpoints': {
-                         '576': {
-                             'slidesPerView': 3
-                         },
-                         '768': {
-                             'slidesPerView': 4
-                         },
-                         '992': {
-                             'slidesPerView': 5
-                         },
-                         '1200': {
-                             'slidesPerView': 6
-                         }
-                     }
-                 }">
-              <div class="swiper-wrapper row cols-xl-6 cols-lg-5 cols-md-4 cols-sm-3 cols-2">
-                  @foreach($auctionProducts as $auction)
-                  <div class="swiper-slide product product-simple text-center">
-                      <figure class="product-media">
-                          <a href="{{ route('auction.detail', $auction->auction_id) }}">
-                              <img src="{{ asset('assets/images/products/' . $auction->product_image) }}" alt="Product" width="260"
-                                  height="291" />
-                          </a>
-                           <div class="product-action-vertical">
-                               <a href="#" onclick="addwishlist('{{ $auction->id }}', this)" class="btn-product-icon btn-wishlist {{ in_array($auction->id, $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($auction->id, $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"
-                                   title="Add to wishlist"></a>
-                           </div>
-                           <div class="product-countdown-container">
-                              @php
-                                 $endDateStr = str_replace('T', ' ', $auction->end_date);
-                                 $parsedDate = \Carbon\Carbon::parse($endDateStr);
-                                 $formattedForJs = $parsedDate->format('Y, n, j, G, i, s');
-                              @endphp
-                              <div class="product-countdown countdown-compact" data-until="{{ $formattedForJs }}"
-                                  data-format="DHMS" data-compact="false" data-labels-short="Days, Hours, Mins, Secs">
-                                  00:00:00:00</div>
-                          </div>
-                      </figure>
-                      <div class="product-details">
-                          <div class="sold-by">
-                              <b><a href="{{ url('/shop/' . ($auction->vendor_slug ?? $auction->vendor_id)) }}">{{ $auction->shop_name ?? 'Admin' }}</a></b>
-                          </div>
-                          <h4 class="product-name"><a href="{{ route('auction.detail', $auction->auction_id) }}">{{ ucwords($auction->product_name) }}</a></h4>
 
-                          <div class="ratings-container">
-                              <div class="ratings-full">
-                                  <span class="ratings" style="width: {{ $auction->rating_percent ?? 0 }}%"></span>
-                              </div>
-                              <a>({{ $auction->review_count ?? 0 }} Reviews)</a>
-                          </div>
-
-                          <div class="product-pa-wrapper" style="display: flex; align-items: center; justify-content: center; padding-top: 5px;">
-                              <div class="product-price-home" style="font-family: monospace; font-size: 1.6rem; font-weight: 700; color: #000;" title="Bid Amount">
-                                 <span style="color: #666; font-size: 1.4rem; font-weight: 600; margin-right: 5px; font-family: inherit;">Bid:</span>₹{{ $auction->selling_price > 0 ? $auction->selling_price : ($auction->retail_price ?? 0) }}
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  <!-- End of Product Simple -->
-                  @endforeach
-
-              </div>
-              <div class="swiper-pagination"></div>
-          </div>
-          <!-- End of Swiper Container -->
-      </div>
-          @endif
 
 <style>
 .brands-wrapper .swiper-wrapper {
@@ -1465,7 +1468,6 @@
     background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    padding: 0 !important;
 }
 
 .vendor-img-wrap {
