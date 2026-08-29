@@ -7,6 +7,9 @@
  <style>
     .animation-slider {
         padding-bottom: 40px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100% !important;
     }
     .animation-slider .swiper-pagination {
         bottom: 10px !important;
@@ -128,9 +131,9 @@
 
  <main class="main">
 
-     <div class="container pb-2">
-         <div class=" mt-4">
-             <div class="swiper-container swiper-theme pg-inner animation-slider row cols-1 gutter-no" data-swiper-options="{
+     <div class="container-fluid p-0 pb-2" style="padding-left: 0 !important; padding-right: 0 !important; max-width: 100% !important;">
+          <div class="mt-4" style="margin-left: 0 !important; margin-right: 0 !important; padding-left: 0 !important; padding-right: 0 !important;">
+              <div class="swiper-container swiper-theme pg-inner animation-slider row cols-1 gutter-no" data-swiper-options="{
                             'autoplay': {
                                 'delay':3000,
                                 'disableOnInteraction': false
