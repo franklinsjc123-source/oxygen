@@ -473,9 +473,9 @@ class ProductsController extends Controller
                 $products_details->products_id = $next_product_id;
                 $products_details->common_product = $key + 1;
                 $products_details->product_detail_image = json_encode($arr) ?? "-";
-                $products_details->sku = "SKU";
-                $products_details->return_replace = "Return";
-                $products_details->r_days = 0;
+                $products_details->sku = is_array($request->sku) ? ($request->sku[$key] ?? 'SKU') : ($request->sku ?? 'SKU');
+                $products_details->return_replace = is_array($request->return_replace) ? ($request->return_replace[$key] ?? 'Return') : ($request->return_replace ?? 'Return');
+                $products_details->r_days = is_array($request->r_days) ? ($request->r_days[$key] ?? 0) : ($request->r_days ?? 0);
                 
                 $products_details->color = isset($request->attrcolor[$key]) ? $request->attrcolor[$key] : NULL;
                 $products_details->size = isset($request->attrsize[$key]) ? $request->attrsize[$key] : NULL;
@@ -751,7 +751,8 @@ class ProductsController extends Controller
                 $attrGroupName = $attrGroup->attribute_group_refname ?? $attrGroup->attribute_group_name ?? 'Size';
             }
         }
-        $np = count($request->product_details_id);
+        $product_details_id = $request->product_details_id ?: [];
+        $np = count($product_details_id);
        
         if($np > 0){
 
@@ -760,7 +761,7 @@ class ProductsController extends Controller
 
 
                
-               $details_id =$request->product_details_id[$key];
+               $details_id =$product_details_id[$key];
                 // $products_details = new ProductsDetails();
             //if($details_id>0)
             // {
@@ -832,7 +833,7 @@ class ProductsController extends Controller
                             
                             $filename =  $products_details_filename2;
 
-                            // $products_details_file2->move('assets/images/products/detail', $products_details_file2);       
+                             // $products_details_file2->move('assets/images/products/detail', $products_details_filename2);       
                           }else{
 
                             $products_details_filename2 = $request->old_subimg2[$key];
@@ -872,7 +873,7 @@ class ProductsController extends Controller
                    $newproducts_details_filename2 = '';
                    $newproducts_details_filename3 = '';
                    
-                    $products_details_file  = $request->mainimg[$key];
+                    $products_details_file  = isset($request->mainimg[$key]) ? $request->mainimg[$key] : null;
                     $products_details_file1 = isset($request->subimg1[$key]) ? $request->subimg1[$key]: NULL;
                     $products_details_file2 = isset($request->subimg2[$key]) ? $request->subimg2[$key]: NULL;
                     $products_details_file3 = isset($request->subimg3[$key]) ? $request->subimg3[$key]: NULL;
@@ -889,7 +890,7 @@ class ProductsController extends Controller
                       
                     if ($products_details_file2 != null) {
                         $newproducts_details_filename2 = $products_details_file2->getClientOriginalName().'.'.$pr_id;
-                        $products_details_file2->move('assets/images/products/detail', $products_details_file2);       
+                        $products_details_file2->move('assets/images/products/detail', $newproducts_details_filename2);       
                       }
 
                     if ($products_details_file3 != null) {

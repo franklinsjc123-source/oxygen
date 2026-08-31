@@ -592,14 +592,6 @@
                                                     <div class="card-body p-4">
                                                         <div class="row g-3">
                                                             <div class="col-md-3">
-                                                                <label class="form-label fw-bold text-dark">Upload Main Image <span class="text-danger">*</span></label>
-                                                                <input class="form-control" type="file" id="mainImg" accept="image/*"
-                                                                    name="mainImage" required/>
-                                                                <div class="text-muted small mt-1">Upload Format: jpg, jpeg, png</div>
-                                                                <div class="invalid-feedback-custom">Please upload main image</div>
-
-                                                            </div>
-                                                            <div class="col-md-3">
                                                                 <label class="form-label fw-bold text-dark">Tax <span class="text-danger">*</span></label>
                                                                 <select class="custom-select form-control text-secondary"
                                                                     id="gs" onchange="r()" name="tax_id" required>
@@ -628,6 +620,34 @@
                                                                 <input class="form-control" id="validationCustom01"
                                                                     type="text" name="hsncode" required>
                                                                 <div class="invalid-feedback-custom">Please enter HSN code</div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <label class="form-label fw-bold text-dark">Return / Replacement <span class="text-danger">*</span></label>
+                                                                <select class="custom-select form-control dropdown text-secondary" name="return_replace" required>
+                                                                    <option value="" selected hidden>--Select Return/Replacement--</option>
+                                                                    <option value="Return">Return</option>
+                                                                    <option value="Replacement">Replacement</option>
+                                                                </select>
+                                                                <div class="invalid-feedback-custom">Please select return/replacement option</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row g-3 mt-2">
+                                                            <div class="col-md-3">
+                                                                <label class="form-label fw-bold text-dark">Return Days <span class="text-danger">*</span></label>
+                                                                <input type="text" name="r_days" placeholder="Days" class="form-control" required>
+                                                                <div class="invalid-feedback-custom">Please enter return days</div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <label class="form-label fw-bold text-dark">SKU <span class="text-danger">*</span></label>
+                                                                <input type="text" name="sku" placeholder="SKU" class="form-control" required>
+                                                                <div class="invalid-feedback-custom">Please enter SKU</div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <label class="form-label fw-bold text-dark">Upload Main Image <span class="text-danger">*</span></label>
+                                                                <input class="form-control" type="file" id="mainImg" accept="image/*"
+                                                                    name="mainImage" required/>
+                                                                <div class="text-muted small mt-1">Upload Format: jpg, jpeg, png</div>
+                                                                <div class="invalid-feedback-custom">Please upload main image</div>
                                                             </div>
                                                         </div>
                                                         <div class="row" id="ming_preview">

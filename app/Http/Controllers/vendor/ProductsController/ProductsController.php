@@ -439,9 +439,9 @@ public function store(Request $request, FlasherInterface $flasher)
             $detail->products_id = $productId;
             $detail->common_product = $key + 1;
             $detail->product_detail_image = json_encode($arr) ?? "-";
-            $detail->sku = "SKU";
-            $detail->return_replace = "Return";
-            $detail->r_days = 0;
+            $detail->sku = is_array($request->sku) ? ($request->sku[$key] ?? 'SKU') : ($request->sku ?? 'SKU');
+            $detail->return_replace = is_array($request->return_replace) ? ($request->return_replace[$key] ?? 'Return') : ($request->return_replace ?? 'Return');
+            $detail->r_days = is_array($request->r_days) ? ($request->r_days[$key] ?? 0) : ($request->r_days ?? 0);
             
             $detail->color = isset($request->attrcolor[$key]) ? $request->attrcolor[$key] : NULL;
             $detail->size = isset($request->attrsize[$key]) ? $request->attrsize[$key] : NULL;
@@ -456,9 +456,6 @@ public function store(Request $request, FlasherInterface $flasher)
             $detail->selling_price = $request->selling_price[$key] ?? 0;
             $detail->low_stock_limit = $request->low_stock_limit[$key] ?? 0;
             $detail->threshold = "";
-            $detail->login_id = $login_id;
-            $detail->logintype = "Vendor";
-            $detail->created_by = $login_id;
             $detail->save();
         }
 
@@ -474,8 +471,8 @@ public function store(Request $request, FlasherInterface $flasher)
                 $spec->products_id = $productId;
                 $spec->category_sub_id = $request->category_sub;
                 $spec->spec_id = $value;
-                $spec->specify_attribute = $request->specify_attribute[$value] ?? null;
-                $spec->specify_value = $request->specify_value[$value] ?? null;
+                $spec->specify_attribute = $request->specify_attribute[$value] ?? '';
+                $spec->specify_value = $request->specify_value[$value] ?? '';
                 $spec->save();
             }
         }
@@ -1162,7 +1159,9 @@ public function store(Request $request, FlasherInterface $flasher)
         $vendor_id = session()->get('login_id');
         $products_list = Products::where('login_id', $vendor_id)->where('flag',1)->get();
          $categorySub = CategorySub::where('status',1)->get();
-         $products_details = ProductsDetails::where('login_id', $vendor_id)->where('status',1)->get();
+          $products_details = ProductsDetails::whereHas('product', function($query) use ($vendor_id) {
+              $query->where('login_id', $vendor_id);
+          })->where('status',1)->get();
         // $offer = offer::get();
         $offer = offer::where('status',1)->get();
 
