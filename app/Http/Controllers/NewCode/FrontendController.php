@@ -1126,11 +1126,11 @@ class FrontendController extends Controller
     {
         $mainslider = mainslider::where('status', 1)->get();
 
-        $topRatedProducts = array_slice($this->getSpecificProduct(''), 0, 12);
-        $offerProducts = $this->getOfferProductsHome();
-        $mensProducts = $this->getMensProduct();
-        $womensProducts = $this->getWomensProduct();
-        $kidsProducts = $this->getKidsProduct();
+        $topRatedProducts = array_slice($this->getSpecificProduct(''), 0, 6);
+        $offerProducts = array_slice($this->getOfferProductsHome(), 0, 6);
+        $mensProducts = array_slice($this->getMensProduct(), 0, 6);
+        $womensProducts = array_slice($this->getWomensProduct(), 0, 6);
+        $kidsProducts = array_slice($this->getKidsProduct(), 0, 6);
 
         // Function to attach ratings
         $attachRatings = function (&$products) {
@@ -1171,6 +1171,8 @@ class FrontendController extends Controller
             ->whereRaw("REPLACE(auctions.end_date, 'T', ' ') >= ?", [now('Asia/Kolkata')->format('Y-m-d H:i:s')])
             ->groupBy('auctions.id', 'products.id', 'products.slug', 'products.product_name', 'products.product_image', 'products.vendor_id', 'vendor_details.shop_name',
                 'vendor_details.slug', 'auctions.bid_price', 'auctions.start_price', 'auctions.end_date')
+            ->inRandomOrder()
+            ->limit(6)
             ->get();
 
         foreach ($auctionProducts as $auction) {
