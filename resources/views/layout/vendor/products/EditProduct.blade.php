@@ -103,42 +103,43 @@
                                                 ->values();
                                         @endphp
 
-                                        <!-- Main Category / Category -->
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label class="form-label fw-bold text-dark">Main Category / Category</label>
-                                                <select class="js-select2 form-control" id="main_category_category_vendor" disabled required>
-                                                    <option value="">Select Category</option>
-                                                    @foreach ($categoryPairs as $pair)
-                                                        <option value="{{ $pair->category_id }}"
-                                                            data-main-category-id="{{ $pair->category_main_id }}"
-                                                            {{ $pair->category_id == $product->category ? 'selected' : '' }}>
-                                                            {{ $pair->category_main_name }} -> {{ $pair->category_name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                <input type="hidden" name="category" value="{{ $product->category }}">
-                                                <input type="hidden" name="category_main" id="category_main_hidden_vendor" value="{{ $product->category_main }}">
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Sub Category -->
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label class="form-label fw-bold text-dark">Sub Category</label>
-                                                <select class="js-select2 form-control" id="sub_category_initial_vendor" disabled required>
-                                                    <option value="">Select Sub Category</option>
-                                                    @foreach ($categorysub as $sub)
-                                                        @if ($sub->category_id == $product->category)
-                                                            <option value="{{ $sub->id }}" {{ $sub->id == $product->category_sub ? 'selected' : '' }}>
-                                                                {{ $sub->category_sub_name }}
-                                                            </option>
-                                                        @endif
-                                                    @endforeach
-                                                </select>
-                                                <input type="hidden" name="category_sub" value="{{ $product->category_sub }}">
-                                            </div>
-                                        </div>
+                                         <!-- Primary / Main Category -->
+                                         <div class="col-md-3">
+                                             <div class="form-group">
+                                                 <label class="form-label fw-bold text-dark">Primary / Main Category</label>
+                                                 <select class="js-select2 form-control text-secondary" id="main_category" disabled required>
+                                                     @foreach ($category_main_data as $category_main)
+                                                         <option id="{{ $category_main->id }}"
+                                                             value="{{ $category_main->id }}" {{ ($category_main->id==$product->category_main)?'selected':'';}}>
+                                                             {{ $category_main->category_main_name }}
+                                                         </option>
+                                                     @endforeach  
+                                                 </select>
+                                                 <input type="hidden" name="category_main" value="{{ $product->category_main }}">
+                                             </div>
+                                         </div>
+                                         
+                                         <!-- Category -->
+                                         <div class="col-md-3">
+                                             <div class="form-group">
+                                                 <label class="form-label fw-bold text-dark">Category</label>
+                                                 <select class="js-select2 form-control text-secondary" id="category" disabled required>
+                                                     <option value="{{ $product->category }}" selected> {{ optional($cates->first())->category_name }}</option>
+                                                 </select>
+                                                 <input type="hidden" name="category" value="{{ $product->category }}">
+                                             </div>
+                                         </div>
+                                         
+                                         <!-- Sub Category -->
+                                         <div class="col-md-3">
+                                             <div class="form-group">
+                                                 <label class="form-label fw-bold text-dark">Sub Category</label>
+                                                 <select class="js-select2 form-control text-secondary" id="sub_category" disabled required>
+                                                     <option value="{{ $product->category_sub }}" selected> {{ optional($cates->first())->category_sub_name }}</option>
+                                                 </select>
+                                                 <input type="hidden" name="category_sub" value="{{ $product->category_sub }}">
+                                             </div>
+                                         </div>
 
                                         @php
                                             $selectedAttributeId = null;
@@ -266,46 +267,44 @@
                                         </div>
                                     </div>
 
+                                    <!-- Main Image -->
+                                    <div class="row g-3 mt-2">
+                                         <div class="col-md-3">
+                                             <div class="form-group mb-0">
+                                                 <label class="form-label fw-bold text-dark">Main Image <span class="text-danger">*</span></label>
+                                                 <input class="form-control" type="file" id="productMainImgInput" name="mainImage" accept="image/*">
+                                                 <div class="text-muted small mt-1">Upload Format: jpg, jpeg, png</div>
+                                                 <input type="hidden" name="oldmainImage" value="{{ $product->product_image }}">
+                                             </div>
+                                         </div>
+                                         <div class="col-md-3">
+                                             @if(!empty($product->product_image))
+                                                 <div class="mt-0">
+                                                     <label class="form-label fw-bold text-secondary small">Stored Image</label>
+                                                     <div class="img-preview-box p-1 border rounded bg-white d-flex align-items-center justify-content-center" style="height: 70px; width: 70px; overflow: hidden;">
+                                                         <img src="{{ url('assets/images/products/'.$product->product_image) }}" id="productMainImgPreview" class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                                                     </div>
+                                                 </div>
+                                             @else
+                                                 <div class="mt-0" style="display: none;" id="productMainImgPreviewWrap">
+                                                     <label class="form-label fw-bold text-secondary small">Stored Image</label>
+                                                     <div class="img-preview-box p-1 border rounded bg-white d-flex align-items-center justify-content-center" style="height: 70px; width: 70px; overflow: hidden;">
+                                                         <img src="" id="productMainImgPreview" class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;">
+                                                     </div>
+                                                 </div>
+                                             @endif
+                                         </div>
+                                    </div>
+
                                     <!-- Include Variants Details Subview -->
                                     @include('layout.vendor.products.producteditDetails')
 
-                                                                         <!-- Product Image 1 -->
-                                     <div class="row g-3 mt-3">
-                                         <div class="col-md-6">
-                                             <div class="d-flex align-items-start gap-4">
-                                                 <div class="form-group flex-grow-1 mb-0">
-                                                     <label class="form-label fw-bold text-dark">Main Image <span class="text-danger">*</span></label>
-                                                     <input class="form-control" type="file" id="productMainImgInput" name="mainImage" accept="image/*">
-                                                     <div class="text-muted small mt-1">Upload Format: jpg, jpeg, png</div>
-                                                     <input type="hidden" name="oldmainImage" value="{{ $product->product_image }}">
-                                                 </div>
-                                                 @if(!empty($product->product_image))
-                                                     <div class="mt-0">
-                                                         <label class="form-label fw-bold text-secondary small">Stored Image</label>
-                                                         <div class="img-preview-box p-1 border rounded bg-white d-flex align-items-center justify-content-center" style="height: 70px; width: 70px; overflow: hidden;">
-                                                             <img src="{{ url('assets/images/products/'.$product->product_image) }}" id="productMainImgPreview" class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: contain;">
-                                                         </div>
-                                                     </div>
-                                                 @else
-                                                     <div class="mt-0" style="display: none;" id="productMainImgPreviewWrap">
-                                                         <label class="form-label fw-bold text-secondary small">Stored Image</label>
-                                                         <div class="img-preview-box p-1 border rounded bg-white d-flex align-items-center justify-content-center" style="height: 70px; width: 70px; overflow: hidden;">
-                                                             <img src="" id="productMainImgPreview" class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;">
-                                                         </div>
-                                                     </div>
-                                                 @endif
-                                             </div>
-                                         </div>
-
-                                         <!-- Product Description -->
-                                         <div class="col-12">
-                                             <div class="form-group">
-                                                 <label class="form-label fw-bold text-dark">Product Description <span class="text-danger">*</span></label>
-                                                 <textarea id="description" class="form-control" required rows="5" name="description">{{ $product->description }}</textarea>
-                                                 <div class="invalid-feedback-custom">Please enter product description</div>
-                                             </div>
-                                         </div>
-                                     </div>
+                                    <!-- Product Description -->
+                                    <div class="form-group mt-3">
+                                        <label class="form-label fw-bold text-dark">Product Description <span class="text-danger">*</span></label>
+                                        <textarea id="description" class="form-control ckeditor" required rows="5" name="description">{{ $product->description }}</textarea>
+                                        <div class="invalid-feedback-custom">Please enter product description</div>
+                                    </div>
                                  </div>
                              </div>
 

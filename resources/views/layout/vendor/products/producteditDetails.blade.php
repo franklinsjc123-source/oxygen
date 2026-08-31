@@ -190,79 +190,77 @@
                                 </div>
                                 </div>
 
-                                </div>
-                            </div>
+                                <!-- Variant Images Section -->
+                                <div class="row variant-images-wrapper mt-3 col-12 p-0 m-0">
+                                    <div class="col-12 mt-4">
+                                        <label class="form-label fw-bold text-dark mb-0">Variant Images</label>
+                                        <hr class="mt-1 mb-3 text-secondary opacity-25">
+                                    </div>
 
-                            <!-- Variant Images Section -->
-                            <div class="row variant-images-wrapper mt-3 col-12 p-0 m-0">
-                                <div class="col-12 mt-4">
-                                    <label class="form-label fw-bold text-dark mb-0">Variant Images</label>
-                                    <hr class="mt-1 mb-3 text-secondary opacity-25">
-                                </div>
-
-                                <!-- Main Image -->
-                                <div class="col-md-3 col-sm-6">
-                                    <div class="border rounded p-2 text-center bg-light position-relative">
-                                        <span class="d-block mb-1 small fw-bold text-dark">Image 1 <span class="text-danger">*</span></span>
-                                        <div class="img-preview-box mb-2">
-                                            <img class="img-thumb" id="mainr{{ $key }}" src="{{ isset($p_imgs[0]) && !empty($p_imgs[0]) ? url('assets/images/products/detail/'.$p_imgs[0]) : '' }}" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ isset($p_imgs[0]) && !empty($p_imgs[0]) ? '' : 'display:none;' }}" />
+                                    <!-- Main Image -->
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="border rounded p-2 text-center bg-light position-relative">
+                                            <span class="d-block mb-1 small fw-bold text-dark">Image 1 <span class="text-danger">*</span></span>
+                                            <div class="img-preview-box mb-2">
+                                                <img class="img-thumb" id="mainr{{ $key }}" src="{{ isset($p_imgs[0]) && !empty($p_imgs[0]) ? url('assets/images/products/detail/'.$p_imgs[0]) : '' }}" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ isset($p_imgs[0]) && !empty($p_imgs[0]) ? '' : 'display:none;' }}" />
+                                            </div>
+                                            <span class="btn btn-xs btn-outline-primary btn-productimg w-100">
+                                                <i class="fa fa-cloud-upload"></i> Upload
+                                                <input class="form-control add_product" type="file" onchange="previewmainImg(this)" id="p_mainimg{{ $key }}" name="mainimg[]" accept="image/*">
+                                            </span>
+                                            <input type="hidden" name="old_mainimg[]" value="{{ $p_imgs[0] ?? '' }}">
                                         </div>
-                                        <span class="btn btn-xs btn-outline-primary btn-productimg w-100">
-                                            <i class="fa fa-cloud-upload"></i> Upload
-                                            <input class="form-control add_product" type="file" onchange="previewmainImg(this)" id="p_mainimg{{ $key }}" name="mainimg[]" accept="image/*">
-                                        </span>
-                                        <input type="hidden" name="old_mainimg[]" value="{{ $p_imgs[0] ?? '' }}">
                                     </div>
-                                </div>
-                                
-                                <!-- Image 2 -->
-                                <div class="col-md-3 col-sm-6">
-                                    <div class="border rounded p-2 text-center bg-light position-relative">
-                                        <span class="d-block mb-1 small fw-bold text-dark">Image 2</span>
-                                        <div class="img-preview-box mb-2">
-                                            <img class="img-thumb" id="sub1r{{ $key }}" src="{{ isset($p_imgs[1]) && !empty($p_imgs[1]) ? url('assets/images/products/detail/'.$p_imgs[1]) : '' }}" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ isset($p_imgs[1]) && !empty($p_imgs[1]) ? '' : 'display:none;' }}" />
+                                    
+                                    <!-- Image 2 -->
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="border rounded p-2 text-center bg-light position-relative">
+                                            <span class="d-block mb-1 small fw-bold text-dark">Image 2</span>
+                                            <div class="img-preview-box mb-2">
+                                                <img class="img-thumb" id="sub1r{{ $key }}" src="{{ isset($p_imgs[1]) && !empty($p_imgs[1]) ? url('assets/images/products/detail/'.$p_imgs[1]) : '' }}" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ isset($p_imgs[1]) && !empty($p_imgs[1]) ? '' : 'display:none;' }}" />
+                                            </div>
+                                            <span class="btn btn-xs btn-outline-primary btn-productimg w-100">
+                                                <i class="fa fa-cloud-upload"></i> Upload
+                                                <input class="form-control add_product" type="file" onchange="previewsubImg1(this)" id="subimg1{{ $key }}" name="subimg1[]" accept="image/*">
+                                            </span>
+                                            <input type="hidden" name="old_subimg1[]" value="{{ $p_imgs[1] ?? '' }}">
                                         </div>
-                                        <span class="btn btn-xs btn-outline-primary btn-productimg w-100">
-                                            <i class="fa fa-cloud-upload"></i> Upload
-                                            <input class="form-control add_product" type="file" onchange="previewsubImg1(this)" id="subimg1{{ $key }}" name="subimg1[]" accept="image/*">
-                                        </span>
-                                        <input type="hidden" name="old_subimg1[]" value="{{ $p_imgs[1] ?? '' }}">
                                     </div>
-                                </div>
-                                
-                                <!-- Image 3 -->
-                                <div class="col-md-3 col-sm-6">
-                                    <div class="border rounded p-2 text-center bg-light position-relative">
-                                        <span class="d-block mb-1 small fw-bold text-dark">Image 3</span>
-                                        <div class="img-preview-box mb-2">
-                                            <img class="img-thumb" id="sub2r{{ $key }}" src="{{ isset($p_imgs[2]) && !empty($p_imgs[2]) ? url('assets/images/products/detail/'.$p_imgs[2]) : '' }}" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ isset($p_imgs[2]) && !empty($p_imgs[2]) ? '' : 'display:none;' }}" />
+                                    
+                                    <!-- Image 3 -->
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="border rounded p-2 text-center bg-light position-relative">
+                                            <span class="d-block mb-1 small fw-bold text-dark">Image 3</span>
+                                            <div class="img-preview-box mb-2">
+                                                <img class="img-thumb" id="sub2r{{ $key }}" src="{{ isset($p_imgs[2]) && !empty($p_imgs[2]) ? url('assets/images/products/detail/'.$p_imgs[2]) : '' }}" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ isset($p_imgs[2]) && !empty($p_imgs[2]) ? '' : 'display:none;' }}" />
+                                            </div>
+                                            <span class="btn btn-xs btn-outline-primary btn-productimg w-100">
+                                                <i class="fa fa-cloud-upload"></i> Upload
+                                                <input class="form-control add_product" type="file" onchange="previewsubImg2(this)" id="subimg2{{ $key }}" name="subimg2[]" accept="image/*">
+                                            </span>
+                                            <input type="hidden" name="old_subimg2[]" value="{{ $p_imgs[2] ?? '' }}">
                                         </div>
-                                        <span class="btn btn-xs btn-outline-primary btn-productimg w-100">
-                                            <i class="fa fa-cloud-upload"></i> Upload
-                                            <input class="form-control add_product" type="file" onchange="previewsubImg2(this)" id="subimg2{{ $key }}" name="subimg2[]" accept="image/*">
-                                        </span>
-                                        <input type="hidden" name="old_subimg2[]" value="{{ $p_imgs[2] ?? '' }}">
                                     </div>
-                                </div>
-                                
-                                <!-- Image 4 -->
-                                <div class="col-md-3 col-sm-6">
-                                    <div class="border rounded p-2 text-center bg-light position-relative">
-                                        <span class="d-block mb-1 small fw-bold text-dark">Image 4</span>
-                                        <div class="img-preview-box mb-2">
-                                            <img class="img-thumb" id="sub3r{{ $key }}" src="{{ isset($p_imgs[3]) && !empty($p_imgs[3]) ? url('assets/images/products/detail/'.$p_imgs[3]) : '' }}" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ isset($p_imgs[3]) && !empty($p_imgs[3]) ? '' : 'display:none;' }}" />
+                                    
+                                    <!-- Image 4 -->
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="border rounded p-2 text-center bg-light position-relative">
+                                            <span class="d-block mb-1 small fw-bold text-dark">Image 4</span>
+                                            <div class="img-preview-box mb-2">
+                                                <img class="img-thumb" id="sub3r{{ $key }}" src="{{ isset($p_imgs[3]) && !empty($p_imgs[3]) ? url('assets/images/products/detail/'.$p_imgs[3]) : '' }}" style="max-height: 100%; max-width: 100%; object-fit: contain; {{ isset($p_imgs[3]) && !empty($p_imgs[3]) ? '' : 'display:none;' }}" />
+                                            </div>
+                                            <span class="btn btn-xs btn-outline-primary btn-productimg w-100">
+                                                <i class="fa fa-cloud-upload"></i> Upload
+                                                <input class="form-control add_product" type="file" onchange="previewsubImg3(this)" id="subimg3{{ $key }}" name="subimg3[]" accept="image/*">
+                                            </span>
+                                            <input type="hidden" name="old_subimg3[]" value="{{ $p_imgs[3] ?? '' }}">
                                         </div>
-                                        <span class="btn btn-xs btn-outline-primary btn-productimg w-100">
-                                            <i class="fa fa-cloud-upload"></i> Upload
-                                            <input class="form-control add_product" type="file" onchange="previewsubImg3(this)" id="subimg3{{ $key }}" name="subimg3[]" accept="image/*">
-                                        </span>
-                                        <input type="hidden" name="old_subimg3[]" value="{{ $p_imgs[3] ?? '' }}">
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    @endforeach
+                @endforeach
             </div>
             
             <div class="input_fields_wrap"></div>

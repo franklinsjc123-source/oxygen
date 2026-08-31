@@ -601,7 +601,7 @@
                                                     <div class="digital-add needs-validation">
                                                         <div class="form-group mb-0">
                                                             <div class="description-sm">
-                                                                <textarea id="description" class="form-control" required cols="10" rows="4" name="description"></textarea>
+                                                                <textarea id="description" class="form-control ckeditor" required cols="10" rows="4" name="description"></textarea>
                                                                 <div class="invalid-feedback-custom">Please enter product description</div>
                                                             </div>
                                                         </div>
