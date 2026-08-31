@@ -35,7 +35,20 @@
         height: 100% !important;
     }
     .title-link-wrapper a {
-        color: #0088dd !important;
+        color: #ff5e5e !important;
+    }
+    a:hover,
+    a:focus,
+    .product-name a:hover,
+    .product-title a:hover,
+    .product-cat a:hover,
+    .sold-by a:hover,
+    .rating-reviews:hover,
+    .title-link-wrapper a:hover,
+    .title-link-wrapper a:hover i,
+    .btn-link:hover,
+    .more-products:hover {
+        color: #ff5e5e !important;
     }
     .banner-shoes {
         aspect-ratio: 1300 / 200 !important;
@@ -1535,12 +1548,12 @@
 
 .swiper-slide-vendor:hover .vendor-img-wrap {
     transform: translateY(-8px) scale(1.03); /* Lift up and scale slightly */
-    box-shadow: 0 15px 30px rgba(0, 136, 221, 0.25);
-    border-color: #0088dd; /* Ring highlight */
+    box-shadow: 0 15px 30px rgba(255, 94, 94, 0.25);
+    border-color: #ff5e5e; /* Ring highlight */
 }
 
 .swiper-slide-vendor:hover .vendor-name-overlay {
-    color: #0088dd !important; /* Highlight text */
+    color: #ff5e5e !important; /* Highlight text */
 }
 
 /* --- MOBILE SPECIFIC MEDIA QUERIES --- */

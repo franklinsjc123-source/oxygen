@@ -637,7 +637,7 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
             left: 0;
             width: 0;
             height: 2px;
-            background: #0088dd;
+            background: #ff5e5e;
             transition: width 0.3s ease;
         }
         .category-menu > li > .megamenu > li:hover > a::after {
@@ -661,8 +661,8 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
         }
         
         .category-menu > li > .megamenu > li ul li a:hover {
-            color: #0088dd !important;
-            background-color: #f1f6fa !important;
+            color: #ff5e5e !important;
+            background-color: #fff1f2 !important;
             padding-left: 16px !important;
         }
 
@@ -786,7 +786,7 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
             letter-spacing: 0.8px !important;
             padding: 0 0 6px 0 !important;
             margin: 0 0 8px 0 !important;
-            border-bottom: 2px solid #0088dd !important;
+            border-bottom: 2px solid #ff5e5e !important;
             display: block !important;
             position: relative !important;
             white-space: nowrap !important;
@@ -795,7 +795,7 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
         }
 
         .main-nav .menu .megamenu > li > a:hover {
-            color: #0088dd !important;
+            color: #ff5e5e !important;
         }
 
         /* Inner list */
@@ -832,8 +832,8 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
         }
 
         .main-nav .menu .megamenu > li ul li a:hover {
-            color: #0088dd !important;
-            background-color: #f1f6fa !important;
+            color: #ff5e5e !important;
+            background-color: #fff1f2 !important;
             padding-left: 12px !important;
         }
 
@@ -849,6 +849,29 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
             position: static !important;
         }
 
+        /* Main Menu Header Item Hover & Active Overrides */
+        .main-nav .menu > li > a:hover,
+        .main-nav .menu > li:hover > a,
+        .main-nav .menu > li.active > a,
+        .main-nav .menu > li.show > a,
+        .header-bottom .menu > li > a:hover,
+        .header-bottom .menu > li:hover > a,
+        .header-bottom .menu > li.active > a,
+        .header-bottom .menu > li.show > a,
+        .menu li:hover > a,
+        .menu li.active > a,
+        .menu li a:hover {
+            color: #ff5e5e !important;
+        }
+
+        .main-nav .menu > li > a::after,
+        .main-nav .menu > li:hover > a::after,
+        .main-nav .menu > li.active > a::after,
+        .header-bottom .menu > li > a::after,
+        .header-bottom .menu > li:hover > a::after,
+        .header-bottom .menu > li.active > a::after {
+            background-color: #ff5e5e !important;
+        }
 
             /* Mobile Category Nav Bar styles */
             .mobile-categories-nav-wrapper {
@@ -880,8 +903,8 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                 transition: all 0.3s ease;
             }
             .mobile-cat-nav-item.active {
-                color: #0088dd;
-                border-bottom-color: #0088dd;
+                color: #ff5e5e !important;
+                border-bottom-color: #ff5e5e !important;
             }
             .mobile-cat-nav-item i {
                 font-size: 10px;
@@ -899,7 +922,7 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
             .mobile-cat-dropdown-panel {
                 background: #ffffff;
                 box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-                border-bottom: 2px solid #0088dd;
+                border-bottom: 2px solid #ff5e5e;
                 max-height: 380px;
                 overflow-y: auto;
                 padding: 6px 10px;
@@ -919,7 +942,7 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
             .mobile-cat-title {
                 font-size: 12px;
                 font-weight: 700;
-                color: #0088dd;
+                color: #ff5e5e;
                 text-transform: uppercase;
                 margin-bottom: 2px;
                 border-bottom: 1px solid #f0f0f0;

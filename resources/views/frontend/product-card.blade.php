@@ -79,7 +79,7 @@
          <div class="product-details">
              @if((isset($product->vendor_id) || isset($product->shop_name)) && !request()->routeIs('shop-details') && !request()->routeIs('shop.show'))
                 <div class="sold-by" style="margin-bottom: 2px;">
-                    <a href="{{ url('/shop/' . ($product->vendor_slug ?? $product->vendor_id ?? '#')) }}" style="color: #0088dd; font-weight: 700; font-size: 1.3rem;">
+                    <a href="{{ url('/shop/' . ($product->vendor_slug ?? $product->vendor_id ?? '#')) }}" style="color: #ff5e5e; font-weight: 700; font-size: 1.3rem;">
                         {{ $product->shop_name ?? 'N/A' }}
                     </a>
                 </div>
@@ -94,7 +94,7 @@
                  <div class="ratings-full">
                      <span class="ratings" style="width: {{ $product->rating_percent ?? 0 }}%"></span>
                  </div>
-                 <a class="rating-reviews" style="font-size: 1.1rem; color: #0088dd;">({{ $product->review_count ?? 0 }} Reviews)</a>
+                 <a class="rating-reviews" style="font-size: 1.1rem; color: #ff5e5e;">({{ $product->review_count ?? 0 }} Reviews)</a>
              </div>
  
              <div class="product-pa-wrapper" style="display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; flex-wrap: nowrap;">
