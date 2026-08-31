@@ -694,7 +694,7 @@ ${(product.offer_text || product.offer_title || product.offer_type) ? (() => {
                                         </figure>
                                         <div class="product-details">
                                             <div class="sold-by" style="margin-bottom: 2px;">
-                                                <a href="${siteurl}/shop/${product.vendor_slug || product.vendor_id}" style="color: #ff5e5e; font-weight: 700; font-size: 1.3rem;">
+                                                <a href="${siteurl}/shop/${product.vendor_slug || product.vendor_id}" style="color: #0088dd; font-weight: 700; font-size: 1.3rem;">
                                                     ${product.shop_name || ''}
                                                 </a>
                                             </div>
@@ -707,7 +707,7 @@ ${(product.offer_text || product.offer_title || product.offer_type) ? (() => {
                                                 <div class="ratings-full">
                                                     <span class="ratings" style="width: 0%;"></span>
                                                 </div>
-                                                <a class="rating-reviews" style="font-size: 1.1rem; color: #ff5e5e;">(0 Reviews)</a>
+                                                <a class="rating-reviews" style="font-size: 1.1rem; color: #0088dd;">(0 Reviews)</a>
                                             </div>
                                             <div class="product-pa-wrapper" style="display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; flex-wrap: nowrap;">
                                                 <div class="product-price-home" style="font-family: monospace; font-size: 1.5rem; font-weight: 700; color: #000;"><span style="font-family: Arial, sans-serif;">₹</span>${product.selling_price}</div>
