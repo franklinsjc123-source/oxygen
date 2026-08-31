@@ -169,169 +169,19 @@
          </div>
      </div>
 
-     <!-- Offer Badges Section -->
-     @if(isset($sliderOffers) && count($sliderOffers) > 0)
-      <div class="container mt-5 mb-4 py-3 offer-badges-container">
-         <style>
-             .offer-badge-img-wrapper {
-                 width: 65px;
-                 height: 65px;
-                 border-radius: 50%;
-                 overflow: hidden;
-                 margin: 0 auto 6px;
-                 box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-                 background-color: #fff;
-                 display: flex;
-                 align-items: center;
-                 justify-content: center;
-                 border: 1px solid #e2e8f0;
-                 transition: transform 0.2s ease, box-shadow 0.2s ease;
-             }
-             .offer-badge-img-wrapper:hover {
-                 transform: scale(1.08);
-                 box-shadow: 0 5px 12px rgba(0,0,0,0.15);
-             }
-             .offer-badge-img {
-                 width: 100%;
-                 height: 100%;
-                 object-fit: contain;
-                 padding: 2px;
-             }
-             .offer-badge-css {
-                 width: 65px;
-                 height: 65px;
-                 border-radius: 50%;
-                 display: flex;
-                 flex-direction: column;
-                 align-items: center;
-                 justify-content: center;
-                 color: #fff;
-                 font-weight: 700;
-                 box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-                 border: 1.5px solid #fff;
-                 padding: 4px;
-                 margin: 0 auto 6px;
-                 transition: transform 0.2s ease, box-shadow 0.2s ease;
-                 box-sizing: border-box;
-             }
-             .offer-badge-css:hover {
-                 transform: scale(1.08);
-                 box-shadow: 0 5px 12px rgba(0,0,0,0.2);
-             }
-             .offer-badge-css span {
-                 font-size: 9.5px;
-                 font-weight: 800;
-                 line-height: 1.15;
-                 text-transform: uppercase;
-                 text-align: center;
-                 width: 100%;
-                 overflow: hidden;
-                 text-overflow: ellipsis;
-                 white-space: nowrap;
-             }
-         </style>
-         
-         <div class="swiper-container swiper-theme"
-              data-swiper-options="{
-                     'slidesPerView': 4,
-                     'slidesPerGroup': 4,
-                     'spaceBetween': 10,
-                     'loop': true,
-                     'autoplay': {
-                         'delay': 2000,
-                         'disableOnInteraction': false
-                     },
-                     'breakpoints': {
-                         '576': {
-                             'slidesPerView': 4,
-                             'slidesPerGroup': 4
-                         },
-                         '768': {
-                             'slidesPerView': 6,
-                             'slidesPerGroup': 6
-                         },
-                         '992': {
-                             'slidesPerView': 8,
-                             'slidesPerGroup': 8
-                         }
-                     }
-                 }">
-             <div class="swiper-wrapper">
-                 @foreach($sliderOffers as $key => $offer)
-                     <div class="swiper-slide text-center">
-                         <a href="{{ url('offers?id='.$offer->id) }}">
-                             @if(!empty($offer->db_logo))
-                                 <div class="offer-badge-img-wrapper">
-                                     <img class="offer-badge-img" src="{{ asset('assets/images/offer_logo/' . $offer->offer_logo) }}" alt="{{ $offer->title }}">
-                                 </div>
-                             @else
-                                  @php
-                                      $gradients = [
-                                          'linear-gradient(135deg, #60a5fa 0%, #2563eb 100%)',
-                                          'linear-gradient(135deg, #34d399 0%, #059669 100%)',
-                                          'linear-gradient(135deg, #fb7185 0%, #e11d48 100%)',
-                                          'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)',
-                                          'linear-gradient(135deg, #818cf8 0%, #4f46e5 100%)',
-                                          'linear-gradient(135deg, #f472b6 0%, #db2777 100%)'
-                                      ];
-                                      $bgGradient = $gradients[$key % 6];
-                                      $badgeLines = [];
-
-                                      if ($offer->type == 'Buy X Get Y Free') {
-                                          $badgeLines = ['BUY ' . ($offer->buy ?? 1), 'GET ' . ($offer->getoffer ?? 1), 'FREE'];
-                                      } elseif ($offer->type == 'Buy X @ Y') {
-                                          $badgeLines = ['BUY ' . ($offer->buyproduct ?? 1), '@ ₹' . ($offer->getamt ?? 0)];
-                                      } elseif ($offer->type == 'Cashback Offer') {
-                                          $val = $offer->cashbackvalue ?? 0;
-                                          $unit = ($offer->cashbacktype == 'Percentage') ? '%' : '';
-                                          $prefix = ($offer->cashbacktype == 'Percentage') ? '' : '₹';
-                                          $badgeLines = ['CASH', 'BACK', $prefix . $val . $unit . ' OFF'];
-                                      } elseif ($offer->type == 'Fixed Discount') {
-                                          $val = $offer->value ?? 0;
-                                          $unit = ($offer->discount_type == 'Percentage') ? '%' : '';
-                                          $prefix = ($offer->discount_type == 'Percentage') ? '' : '₹';
-                                          $badgeLines = ['FLAT', $prefix . $val . $unit, 'OFF'];
-                                      } else {
-                                          $words = explode(' ', $offer->title);
-                                          $badgeLines = array_slice($words, 0, 3);
-                                      }
-                                  @endphp
-                                  <div class="offer-badge-css" style="background: {!! $bgGradient !!};">
-                                      @foreach($badgeLines as $line)
-                                          <span>{{ $line }}</span>
-                                      @endforeach
-                                  </div>
-                             @endif
-                         </a>
-                     </div>
-                 @endforeach
-             </div>
-         </div>
-     </div>
-     @endif
-
           <!-- Premium Feature Bar (Swiper Slider - one at a time on mobile) -->
           <div class="container mb-2">
              <style>
               /* Premium Feature Bar Slider Styles */
               .premium-feature-slider {
-                  background: linear-gradient(135deg, #f8fafc 0%, #edf2fa 100%);
+                  background: #ffffff;
                   border-radius: 16px;
-                  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
-                  border: 1px solid rgba(0, 0, 0, 0.04);
+                  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+                  border: 1px solid #e2e8f0;
                   padding: 1.2rem 1.5rem;
-                  margin: 2rem 0;
+                  margin: 1.5rem 0 1rem 0;
                   overflow: hidden;
                   position: relative;
-              }
-              .premium-feature-slider::before {
-                  content: '';
-                  position: absolute;
-                  top: 0;
-                  left: 0;
-                  right: 0;
-                  height: 4px;
-                  background: linear-gradient(90deg, #ff3b30 0%, #34c759 33%, #007aff 66%, #ff9500 100%);
               }
               .premium-feature-slider .swiper-slide {
                   display: flex;
@@ -533,6 +383,147 @@
                  </div>
              </div>
           </div>
+
+     <!-- Offer Badges Section -->
+     @if(isset($sliderOffers) && count($sliderOffers) > 0)
+      <div class="container mt-2 mb-4 py-2 offer-badges-container">
+         <style>
+             .offer-badge-img-wrapper {
+                 width: 65px;
+                 height: 65px;
+                 border-radius: 50%;
+                 overflow: hidden;
+                 margin: 0 auto 6px;
+                 box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+                 background-color: #fff;
+                 display: flex;
+                 align-items: center;
+                 justify-content: center;
+                 border: 1px solid #e2e8f0;
+                 transition: transform 0.2s ease, box-shadow 0.2s ease;
+             }
+             .offer-badge-img-wrapper:hover {
+                 transform: scale(1.08);
+                 box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+             }
+             .offer-badge-img {
+                 width: 100%;
+                 height: 100%;
+                 object-fit: contain;
+                 padding: 2px;
+             }
+             .offer-badge-css {
+                 width: 65px;
+                 height: 65px;
+                 border-radius: 50%;
+                 display: flex;
+                 flex-direction: column;
+                 align-items: center;
+                 justify-content: center;
+                 color: #fff;
+                 font-weight: 700;
+                 box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+                 border: 1.5px solid #fff;
+                 padding: 4px;
+                 margin: 0 auto 6px;
+                 transition: transform 0.2s ease, box-shadow 0.2s ease;
+                 box-sizing: border-box;
+             }
+             .offer-badge-css:hover {
+                 transform: scale(1.08);
+                 box-shadow: 0 5px 12px rgba(0,0,0,0.2);
+             }
+             .offer-badge-css span {
+                 font-size: 9.5px;
+                 font-weight: 800;
+                 line-height: 1.15;
+                 text-transform: uppercase;
+                 text-align: center;
+                 width: 100%;
+                 overflow: hidden;
+                 text-overflow: ellipsis;
+                 white-space: nowrap;
+             }
+         </style>
+         
+         <div class="swiper-container swiper-theme"
+              data-swiper-options="{
+                     'slidesPerView': 4,
+                     'slidesPerGroup': 4,
+                     'spaceBetween': 10,
+                     'loop': true,
+                     'autoplay': {
+                         'delay': 2000,
+                         'disableOnInteraction': false
+                     },
+                     'breakpoints': {
+                         '576': {
+                             'slidesPerView': 4,
+                             'slidesPerGroup': 4
+                         },
+                         '768': {
+                             'slidesPerView': 6,
+                             'slidesPerGroup': 6
+                         },
+                         '992': {
+                             'slidesPerView': 8,
+                             'slidesPerGroup': 8
+                         }
+                     }
+                 }">
+             <div class="swiper-wrapper">
+                 @foreach($sliderOffers as $key => $offer)
+                     <div class="swiper-slide text-center">
+                         <a href="{{ url('offers?id='.$offer->id) }}">
+                             @if(!empty($offer->db_logo))
+                                 <div class="offer-badge-img-wrapper">
+                                     <img class="offer-badge-img" src="{{ asset('assets/images/offer_logo/' . $offer->offer_logo) }}" alt="{{ $offer->title }}">
+                                 </div>
+                             @else
+                                  @php
+                                      $gradients = [
+                                          'linear-gradient(135deg, #60a5fa 0%, #2563eb 100%)',
+                                          'linear-gradient(135deg, #34d399 0%, #059669 100%)',
+                                          'linear-gradient(135deg, #fb7185 0%, #e11d48 100%)',
+                                          'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)',
+                                          'linear-gradient(135deg, #818cf8 0%, #4f46e5 100%)',
+                                          'linear-gradient(135deg, #f472b6 0%, #db2777 100%)'
+                                      ];
+                                      $bgGradient = $gradients[$key % 6];
+                                      $badgeLines = [];
+
+                                      if ($offer->type == 'Buy X Get Y Free') {
+                                          $badgeLines = ['BUY ' . ($offer->buy ?? 1), 'GET ' . ($offer->getoffer ?? 1), 'FREE'];
+                                      } elseif ($offer->type == 'Buy X @ Y') {
+                                          $badgeLines = ['BUY ' . ($offer->buyproduct ?? 1), '@ ₹' . ($offer->getamt ?? 0)];
+                                      } elseif ($offer->type == 'Cashback Offer') {
+                                          $val = $offer->cashbackvalue ?? 0;
+                                          $unit = ($offer->cashbacktype == 'Percentage') ? '%' : '';
+                                          $prefix = ($offer->cashbacktype == 'Percentage') ? '' : '₹';
+                                          $badgeLines = ['CASH', 'BACK', $prefix . $val . $unit . ' OFF'];
+                                      } elseif ($offer->type == 'Fixed Discount') {
+                                          $val = $offer->value ?? 0;
+                                          $unit = ($offer->discount_type == 'Percentage') ? '%' : '';
+                                          $prefix = ($offer->discount_type == 'Percentage') ? '' : '₹';
+                                          $badgeLines = ['FLAT', $prefix . $val . $unit, 'OFF'];
+                                      } else {
+                                          $words = explode(' ', $offer->title);
+                                          $badgeLines = array_slice($words, 0, 3);
+                                      }
+                                  @endphp
+                                  <div class="offer-badge-css" style="background: {!! $bgGradient !!};">
+                                      @foreach($badgeLines as $line)
+                                          <span>{{ $line }}</span>
+                                      @endforeach
+                                  </div>
+                             @endif
+                         </a>
+                     </div>
+                 @endforeach
+             </div>
+         </div>
+     </div>
+     @endif
 
           <!-- Offer Products Section (Moved after Advertisements) -->
           <div class="container mt-2 mb-4" style="margin-top: 15px !important;">
