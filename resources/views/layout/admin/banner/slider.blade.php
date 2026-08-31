@@ -160,29 +160,29 @@
                         </div>
                      
                         <div class="modal-body">												
-                            <form class="" action="{{route('main_slider.store')}}" method="post" onsubmit="return confirm('Are you sure, you want to Save it?')" enctype="multipart/form-data" >
+                            <form class="" action="{{route('main_slider.store')}}" method="post" enctype="multipart/form-data" >
                                 @csrf
                                 <div class="form">
                                     <div class="form-group">
                                         <label for="validationCustom01" class="mb-1"> Title :</label>
-                                        <input class="form-control" type="text" name="title" id="title" required="">
+                                        <input class="form-control" type="text" name="title" id="title">
                                     </div>
                                      <div class="form-group">
                                         <label for="validationCustom01" class="mb-1">Sub Title :</label>
-                                        <input class="form-control" type="text" name="sub_title" id="sub_title" required="">
+                                        <input class="form-control" type="text" name="sub_title" id="sub_title">
                                     </div>
                                     <div class="form-group">
                                         <label for="validationCustom02" class="mb-1"> Image (1192x552) :</label>
-                                        <input class="form-control" require="" name="mainImage" id="mainImage" type="file" accept="image/*">
+                                        <input class="form-control" required name="mainImage" id="mainImage" type="file" accept="image/*">
                                     </div>
                                      <div class="form-group">
                                         <label for="validationCustom01" class="mb-1">Link :</label>
-                                        <input class="form-control" id="link" name="link" type="text" required="true">
+                                        <input class="form-control" id="link" name="link" type="text">
                                     </div>
                                     
                                      <div class="form-group">
                                         <label for="validationCustom01" class="mb-1">Sort :</label>
-                                        <input class="form-control" id="sort" name="sort" type="number" required="true">
+                                        <input class="form-control" id="sort" name="sort" type="number">
                                     </div>
                                     <div class="col-md-12">                                        
                                     <div class="" id="dates">
@@ -190,7 +190,7 @@
                                         
                                         <div class="form-group mt-2">
                                             <label for="validationCustom01" class="mb-1 fw-bold">Status</label>
-                                            <select name="status" class="custom-select w-100 form-control" required="">
+                                            <select name="status" class="custom-select w-100 form-control">
                                                 <option value="1">Active</option>
                                                 <option value="0">Deactive</option>
             
@@ -237,18 +237,18 @@
                             <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                         </div>
                         <div class="modal-body">												
-                            <form class="" action="{{route('main_slider.update', 0)}}" method="post" onsubmit="return confirm('Are you sure, you want to Update it?')" enctype="multipart/form-data" >
+                            <form class="" action="{{route('main_slider.update', 0)}}" method="post" enctype="multipart/form-data" >
                                 @csrf
                                 @method('PUT')
                                 <div class="form">
                                     <input class="form-control" id="editid" name="editid" type="hidden" >
                                     <div class="form-group">
                                         <label for="validationCustom01" class="mb-1"> Title :</label>
-                                        <input class="form-control" type="text" name="edittitle" id="edittitle" required="">
+                                        <input class="form-control" type="text" name="edittitle" id="edittitle">
                                     </div>
                                      <div class="form-group">
                                         <label for="validationCustom01" class="mb-1">Sub Title :</label>
-                                        <input class="form-control" type="text" name="editsub_title" id="editsub_title" required="">
+                                        <input class="form-control" type="text" name="editsub_title" id="editsub_title">
                                     </div>
                                     <div class="form-group">
                                         <label for="validationCustom02" class="mb-1"> Image (1192x552) :</label>
@@ -257,18 +257,18 @@
                                     </div>
                                      <div class="form-group">
                                         <label for="validationCustom01" class="mb-1">Link :</label>
-                                        <input class="form-control" id="editlink" name="editlink" type="text" required="true">
+                                        <input class="form-control" id="editlink" name="editlink" type="text">
                                     </div>
                                      <div class="form-group">
                                         <label for="validationCustom01" class="mb-1">Sort :</label>
-                                        <input class="form-control" id="editsort" name="editsort" type="number" required="true">
+                                        <input class="form-control" id="editsort" name="editsort" type="number">
                                     </div>                                                            
                                     <div class="col-md-12">
                                     <div class="" id="dates">
                                     <div class="form-group row">
                                         <div class="form-group mt-2">
                                             <label for="validationCustom01" class="mb-1 fw-bold">Status</label>
-                                            <select name="editstatus" class="custom-select w-100 form-control" required="">
+                                            <select name="editstatus" class="custom-select w-100 form-control">
                                                 <option value="1">Active</option>
                                                 <option value="0">Deactive</option>
             
