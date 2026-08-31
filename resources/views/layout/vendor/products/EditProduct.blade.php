@@ -280,14 +280,14 @@
                                          <div class="col-md-3">
                                              @if(!empty($product->product_image))
                                                  <div class="mt-0">
-                                                     <label class="form-label fw-bold text-secondary small">Stored Image</label>
+                                                     <label class="form-label d-block mb-1">&nbsp;</label>
                                                      <div class="img-preview-box p-1 border rounded bg-white d-flex align-items-center justify-content-center" style="height: 70px; width: 70px; overflow: hidden;">
                                                          <img src="{{ url('assets/images/products/'.$product->product_image) }}" id="productMainImgPreview" class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: contain;">
                                                      </div>
                                                  </div>
                                              @else
                                                  <div class="mt-0" style="display: none;" id="productMainImgPreviewWrap">
-                                                     <label class="form-label fw-bold text-secondary small">Stored Image</label>
+                                                     <label class="form-label d-block mb-1">&nbsp;</label>
                                                      <div class="img-preview-box p-1 border rounded bg-white d-flex align-items-center justify-content-center" style="height: 70px; width: 70px; overflow: hidden;">
                                                          <img src="" id="productMainImgPreview" class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: contain; display: none;">
                                                      </div>
