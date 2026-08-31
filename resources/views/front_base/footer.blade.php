@@ -1232,7 +1232,7 @@
            $.get(url, function(html) {
                Wolmart.popup({
                        items: {
-                           src: html
+                           src: $(html)
                        },
                        callbacks: {
                            open: function() {},

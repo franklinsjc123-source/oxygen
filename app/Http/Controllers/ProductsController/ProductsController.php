@@ -490,9 +490,7 @@ class ProductsController extends Controller
                 $products_details->selling_price = $request->selling_price[$key];
                 $products_details->low_stock_limit = $request->low_stock_limit[$key];
                 $products_details->threshold = "";
-                $products_details->login_id = $login_id;
-                $products_details->logintype = "Admin";
-                $products_details->created_by = $login_id;
+                
                 $products_details->save();
             }
            
@@ -508,8 +506,8 @@ class ProductsController extends Controller
                         $products_spec->products_id = $next_product_id;
                         $products_spec->category_sub_id = $request->category_sub;
                         $products_spec->spec_id = $value;
-                        $products_spec->specify_attribute = $request->specify_attribute[$value];
-                        $products_spec->specify_value = $request->specify_value[$value];
+                        $products_spec->specify_attribute = $request->specify_attribute[$value] ?? '';
+                        $products_spec->specify_value = $request->specify_value[$value] ?? '';
                        // dd($products_spec);
                         $products_spec->save();
                     }	
@@ -922,9 +920,6 @@ class ProductsController extends Controller
                 $products_details->r_days = is_array($request->r_days) ? ($request->r_days[$key] ?? 0) : ($request->r_days ?? 0);
                 $products_details->low_stock_limit = $request->low_stock_limit[$key];
                 //$products_details->threshold = $request->threshold[$key];
-                $products_details->login_id =$login_id;
-                $products_details->logintype = "Admin";
-                $products_details->created_by =$login_id;
                 $products_details->save();
             // }
             }            
@@ -1062,22 +1057,8 @@ class ProductsController extends Controller
 
             Products::where("id", $id)->delete();
 
-        // $productsdetails = new ProductsDetails();
-        $productsdetails = ProductsDetails::where('products_id',$id)->get();
-        $productsdetails_id = $productsdetails[0]['products_id'];
-    //    print_r($productsdetails_id);exit();
-        
-        if($productsdetails_id){
-            ProductsDetails::where("products_id", $productsdetails_id)->delete();
-        }
-
-        $productsspecs = ProductSpecs::where('products_id',$id)->get();
-        // print_r($productsspecs);
-        $productsspecs_id = $productsspecs[0]['products_id'];
-       // print_r($productsspecs_id);exit();
-        if($productsspecs_id){
-            ProductSpecs::where("products_id", $id)->delete();
-        }
+         ProductsDetails::where("products_id", $id)->delete();
+         ProductSpecs::where("products_id", $id)->delete();
             $flasher->addsuccess('Product Removed!');
             return redirect()->route('products.crud.listing');
         } catch(Throwable $th) {
