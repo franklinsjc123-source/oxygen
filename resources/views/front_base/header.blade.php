@@ -1767,13 +1767,13 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                                     </ul>
                                 </nav>
                             </div>
-                            <div class="header-right">
-                                <a href="{{ url('offers') }}"><i class="w-icon-sale"></i>Offers</a>
-                                <a href="{{ url('auction') }}" style="margin-left: 20px; display: inline-flex; align-items: center;"><i class="fas fa-gavel" style="margin-right: 6px; font-size: 18px;"></i>Auction</a>
+                            <div class="header-right" style="display: flex !important; align-items: center !important; margin-left: auto !important; margin-top: 0 !important; margin-bottom: 0 !important; margin-right: 0 !important; padding: 0 !important; gap: 0 !important;">
+                                <a href="{{ url('offers') }}" style="display: inline-flex !important; align-items: center !important; gap: 6px !important; margin: 0 !important;"><i class="w-icon-sale" style="font-size: 18px !important;"></i>Offers</a>
+                                <a href="{{ url('auction') }}" style="display: inline-flex !important; align-items: center !important; gap: 6px !important; margin: 0 0 0 22px !important;"><i class="fas fa-gavel" style="font-size: 17px !important;"></i>Bid & Win</a>
                                 @if(session('customer_id'))
-                                    <a href="{{ url('track-order') }}" class="d-xl-show" style="margin-left: 20px;"><i class="w-icon-map-marker mr-1"></i>Track Order</a>
+                                    <a href="{{ url('track-order') }}" style="display: inline-flex !important; align-items: center !important; gap: 6px !important; margin: 0 0 0 22px !important;"><i class="w-icon-map-marker" style="font-size: 18px !important;"></i>Track Order</a>
                                 @else
-                                    <a href="javascript:void(0)" onclick="showLoginPopup()" class="d-xl-show" style="margin-left: 20px;"><i class="w-icon-map-marker mr-1"></i>Track Order</a>
+                                    <a href="javascript:void(0)" onclick="showLoginPopup()" style="display: inline-flex !important; align-items: center !important; gap: 6px !important; margin: 0 0 0 22px !important;"><i class="w-icon-map-marker" style="font-size: 18px !important;"></i>Track Order</a>
                                 @endif
                             </div>
                         </div>

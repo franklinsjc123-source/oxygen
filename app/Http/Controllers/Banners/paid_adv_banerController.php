@@ -110,13 +110,13 @@ class paid_adv_banerController extends Controller
         //     $adbanner->image ="-";
         // }
 
-            $adbanner->admin_id    =     session()->get('login_id');
-            $adbanner->title       =     strip_tags($request->title);
-            $adbanner->sub_title   =     strip_tags($request->sub_title);
-            $adbanner->image       =     $image    ;
-            $adbanner->link        =     $request->link      ;
-            $adbanner->sort        =     $request->sort      ;
-            $adbanner->status      =     $request->status    ;
+            $adbanner->admin_id    =     session()->get('login_id') ?? 1;
+            $adbanner->title       =     strip_tags($request->title ?? '');
+            $adbanner->sub_title   =     strip_tags($request->sub_title ?? '');
+            $adbanner->image       =     $image;
+            $adbanner->link        =     $request->link ?? '';
+            $adbanner->sort        =     $request->sort ?? 1;
+            $adbanner->status      =     $request->status ?? 1;
 
 
             $adbanner->save();
@@ -230,13 +230,12 @@ class paid_adv_banerController extends Controller
             $adbanner->image = $request->editoldImage;
         }
 
-            $adbanner->admin_id    =     session()->get('login_id');
-            $adbanner->title       =     $request->edittitle     ;
-            $adbanner->sub_title   =     $request->editsub_title ;
-            //$adbanner->image       =     $image    ;
-            $adbanner->link        =     $request->editlink      ;
-            $adbanner->sort        =     $request->editsort      ;
-             $adbanner->status      =     $request->editstatus;
+            $adbanner->admin_id    =     session()->get('login_id') ?? 1;
+            $adbanner->title       =     $request->edittitle ?? '';
+            $adbanner->sub_title   =     $request->editsub_title ?? '';
+            $adbanner->link        =     $request->editlink ?? '';
+            $adbanner->sort        =     $request->editsort ?? 1;
+            $adbanner->status      =     $request->editstatus ?? 1;
 
 
             $adbanner->save();

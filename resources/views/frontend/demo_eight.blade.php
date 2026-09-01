@@ -254,13 +254,34 @@
                  text-overflow: ellipsis;
                  white-space: nowrap;
              }
+             @media (max-width: 767px) {
+                  .offer-badge-img-wrapper,
+                  .offer-badge-css {
+                      width: 56px;
+                      height: 56px;
+                      margin-bottom: 4px;
+                  }
+                  .offer-badge-css {
+                      padding: 3px;
+                  }
+                  .offer-badge-css span {
+                      font-size: 8.5px;
+                      line-height: 1.1;
+                  }
+                  .offer-badges-container {
+                      margin-top: 1rem !important;
+                      margin-bottom: 1rem !important;
+                      padding-top: 0.5rem !important;
+                      padding-bottom: 0.5rem !important;
+                  }
+             }
          </style>
          
          <div class="swiper-container swiper-theme"
               data-swiper-options="{
-                     'slidesPerView': 4,
-                     'slidesPerGroup': 4,
-                     'spaceBetween': 10,
+                     'slidesPerView': 5,
+                     'slidesPerGroup': 5,
+                     'spaceBetween': 6,
                      'loop': true,
                      'autoplay': {
                          'delay': 2000,
@@ -339,7 +360,7 @@
       @if(isset($auctionProducts) && count($auctionProducts) > 0)
       <div class="container mt-4 mb-4 auction-container">
          <div class="title-link-wrapper mb-3">
-             <h2 class="title mb-0 pt-2 pb-2">Auction Products</h2>
+             <h2 class="title mb-0 pt-2 pb-2">BID & WIN</h2>
              <a href="{{ url('auction') }}" class="mb-0">More Products<i
                      class="w-icon-long-arrow-right"></i></a>
          </div>
@@ -418,7 +439,7 @@
           <!-- Offer Products Section (Moved after Advertisements) -->
           <div class="container mt-2 mb-4" style="margin-top: 15px !important;">
               <div class="title-link-wrapper mb-3">
-                  <h2 class="title mb-0 pt-2 pb-2" style="font-weight: 700; font-family: 'Poppins', sans-serif;">Offer Products</h2>
+                  <h2 class="title mb-0 pt-2 pb-2" style="font-weight: 700; font-family: 'Poppins', sans-serif;">DEALS YOU’LL LOVE</h2>
                   <a href="{{ url('offers') }}" class="mb-0">More Products<i
                           class="w-icon-long-arrow-right"></i></a>
               </div>
@@ -618,9 +639,9 @@
 
 
      <!-- Shops Section (Moved after Auction Products) -->
-          <div class="container mt-3 mb-0" style="margin-bottom: 0px !important; padding: 0 !important;">
-              <div class="title-link-wrapper mb-3" style="padding-left: 15px; padding-right: 15px;">
-                  <h2 class="title mb-0 pt-2 pb-2" style="font-weight: 700; font-family: 'Poppins', sans-serif;">Shop by Seller</h2>
+          <div class="container mt-3 mb-0" style="margin-bottom: 0px !important; padding-left: 15px !important; padding-right: 15px !important;">
+              <div class="title-link-wrapper mb-3">
+                  <h2 class="title mb-0 pt-2 pb-2" style="font-weight: 700; font-family: 'Poppins', sans-serif;">DISCOVER LOCAL SELLERS</h2>
                   <a href="{{ url('shops') }}" class="mb-0" style="font-weight: 600; display: inline-flex; align-items: center; gap: 4px; font-size: 1.3rem;">View All <i class="w-icon-long-arrow-right" style="font-weight: 800; font-size: 1.1rem; line-height: 1;"></i></a>
               </div>
               <div class="swiper-container swiper-theme brands-wrapper br-sm mb-1 appear-animate"
@@ -630,7 +651,7 @@
                              'disableOnInteraction': false
                          },
                          'loop': true,
-                         'spaceBetween': 10,
+                         'spaceBetween': 8,
                          'slidesPerView': 4,
                          'breakpoints': {
                              '576': {
@@ -672,10 +693,10 @@
 
      
 
-<div class="container">
+<div class="container mt-3">
 
          <div class="title-link-wrapper mb-3">
-             <h2 class="title mb-0 pt-2 pb-2">Top Rated Products</h2>
+             <h2 class="title mb-0 pt-2 pb-2">TRENDING & LOVED</h2>
              <a href="{{ url('shops') }}" class="mb-0">More Products<i
                      class="w-icon-long-arrow-right"></i></a>
          </div>
@@ -1071,7 +1092,7 @@
      </div>
 <div class="container">
          <div class="title-link-wrapper mb-3">
-             <h2 class="title mb-0 pt-2 pb-2">Mens Products</h2>
+             <h2 class="title mb-0 pt-2 pb-2">STYLES FOR HIM</h2>
              <a href="{{ url('main-category/men') }}" class="mb-0">More Products<i
                      class="w-icon-long-arrow-right"></i></a>
          </div>
@@ -1185,7 +1206,7 @@
      <div class="container">
 
          <div class="title-link-wrapper mb-3">
-             <h2 class="title mb-0 pt-2 pb-2">Womens Products</h2>
+             <h2 class="title mb-0 pt-2 pb-2">STYLES FOR HER</h2>
              <a href="{{ url('main-category/women') }}" class="mb-0">More Products<i
                      class="w-icon-long-arrow-right"></i></a>
          </div>
@@ -1296,7 +1317,7 @@
 
 
          <div class="title-link-wrapper mb-3">
-             <h2 class="title mb-0 pt-2 pb-2">kids Products</h2>
+             <h2 class="title mb-0 pt-2 pb-2">LITTLE ONES, BIG STYLE</h2>
              <a href="{{ url('main-category/kids') }}" class="mb-0">More Products<i
                      class="w-icon-long-arrow-right"></i></a>
          </div>
@@ -1410,7 +1431,7 @@
 
           <div class="container">
           <!-- Shop by Location Section (Moved above Mens Products) -->
-          <h2 class="title text-left mb-1 appear-animate mt-4" style="margin-bottom: 5px !important; font-weight: 700; font-family: 'Poppins', sans-serif;">Shop by Location</h2>
+          <h2 class="title text-left mb-1 appear-animate mt-4" style="margin-bottom: 5px !important; font-weight: 700; font-family: 'Poppins', sans-serif;">SHOP NEAR YOU</h2>
           <div class="swiper-container swiper-theme brands-wrapper br-sm mb-2 appear-animate mt-2"
               data-swiper-options="{
                  'autoplay': {
@@ -1418,7 +1439,7 @@
                      'disableOnInteraction': false
                  },
                  'loop': true,
-                 'spaceBetween': 10,
+                 'spaceBetween': 4,
                  'slidesPerView': 4,
                  'breakpoints': {
                      '576': {
@@ -1602,9 +1623,22 @@
         font-size: 20px !important;
         margin-bottom: 12px !important;
     }
+    .brands-wrapper .swiper-wrapper {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    .brands-wrapper .swiper-slide {
+        padding-left: 4px !important;
+        padding-right: 4px !important;
+    }
+    .vendor-figure,
+    .vendor-img-link {
+        width: 100% !important;
+    }
     .vendor-img-wrap {
-        width: 90px !important;
-        height: 120px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 115px !important;
         border-radius: 12px !important;
         border: none !important;
     }
@@ -1627,8 +1661,9 @@
         margin-bottom: 8px !important;
     }
     .vendor-img-wrap {
-        width: 75px !important;
-        height: 100px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 105px !important;
         border-radius: 10px !important;
         border: none !important;
     }

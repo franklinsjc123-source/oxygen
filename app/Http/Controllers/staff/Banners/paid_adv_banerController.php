@@ -106,14 +106,14 @@ class paid_adv_banerController extends Controller
         //     $adbanner->image ="-";
         // }
 
-            $adbanner->admin_id    =     Session::get('login_id');
-            $adbanner->title       =     $request->title     ;
-            $adbanner->sub_title   =     $request->sub_title ;
-            $adbanner->image       =     $image    ;
-            $adbanner->link        =     $request->link      ;
-            $adbanner->sort        =     $request->sort      ;
-            $adbanner->start_date  =     $request->start_date;
-            $adbanner->end_date    =     $request->end_date  ;
+            $adbanner->admin_id    =     Session::get('login_id') ?? 1;
+            $adbanner->title       =     $request->title ?? '';
+            $adbanner->sub_title   =     $request->sub_title ?? '';
+            $adbanner->image       =     $image;
+            $adbanner->link        =     $request->link ?? '';
+            $adbanner->sort        =     $request->sort ?? 1;
+            $adbanner->start_date  =     $request->start_date ?? '';
+            $adbanner->end_date    =     $request->end_date ?? '';
 
                
             $adbanner->save();
