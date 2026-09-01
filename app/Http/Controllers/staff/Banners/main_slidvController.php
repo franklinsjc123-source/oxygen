@@ -77,7 +77,7 @@ class main_slidvController extends Controller
         $request->validate([
             'start_date'=> 'required|after_or_equal:' . $date,
             'end_date'=> 'required|after_or_equal:' . $date,
-            'mainImage' => 'required|image|dimensions:width=1192,height=552',
+            'mainImage' => 'required|image',
         ]);
         
         $main_image_path = "assets/images/banners/mainslider";   
@@ -187,7 +187,7 @@ class main_slidvController extends Controller
         $date    = "$dat$t$time";
 
         $request->validate([
-            'editmainImage' => 'nullable|image|dimensions:width=1192,height=552',
+            'editmainImage' => 'nullable|image',
         ]);
 
         $main_image_path = "assets/images/banners/mainslider";

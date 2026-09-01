@@ -78,7 +78,7 @@ class oxygen_advController extends Controller
         // ]);
         
         $request->validate([
-            'mainImage' => 'required|image|dimensions:width=612,height=180',
+            'mainImage' => 'required|image',
         ]);
 
         $main_image_path = "assets/images/banners/advoxygen";   
@@ -194,7 +194,7 @@ class oxygen_advController extends Controller
         // ]);
 
         $request->validate([
-            'editmainImage' => 'nullable|image|dimensions:width=612,height=180',
+            'editmainImage' => 'nullable|image',
         ]);
 
         $main_image_path = "assets/images/banners/advoxygen";

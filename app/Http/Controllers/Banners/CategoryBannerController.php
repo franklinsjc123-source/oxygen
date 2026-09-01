@@ -49,7 +49,7 @@ class CategoryBannerController extends Controller
     public function store(Request $request, FlasherInterface $flasher)
     {
         $request->validate([
-            'mainImage' => 'required|image|dimensions:width=447,height=230',
+            'mainImage' => 'required|image',
         ]);
 
         try {
@@ -119,7 +119,7 @@ class CategoryBannerController extends Controller
 
             if ($request->file('editmainImage')) {
                 $request->validate([
-                    'editmainImage' => 'nullable|image|dimensions:width=447,height=230',
+                    'editmainImage' => 'nullable|image',
                 ]);
 
                 $file = $request->file('editmainImage');
