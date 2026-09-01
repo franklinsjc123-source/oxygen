@@ -1148,11 +1148,14 @@ class FrontendController extends Controller
         $attachRatings($offerProducts);
 
         $vendorcreate = vendorcreate::where('vendor_details.status', 1)
-            ->leftJoin('products', 'products.vendor_id', '=', 'vendor_details.id')
-            ->leftJoin('ratings', 'ratings.products_id', '=', 'products.id')
-            ->select('vendor_details.*', DB::raw('COALESCE(AVG(ratings.star_rating), 0) as avg_rating'))
-            ->groupBy('vendor_details.id')
-            ->orderByRaw('COALESCE(AVG(ratings.star_rating), 0) DESC')
+            ->select('vendor_details.*')
+            ->selectSub(function ($query) {
+                $query->from('products')
+                    ->join('ratings', 'ratings.products_id', '=', 'products.id')
+                    ->whereColumn('products.vendor_id', 'vendor_details.id')
+                    ->selectRaw('COALESCE(AVG(ratings.star_rating), 0)');
+            }, 'avg_rating')
+            ->orderByDesc('avg_rating')
             ->get();
 
         $auctionProducts = DB::table('auctions')
