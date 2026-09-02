@@ -176,7 +176,7 @@
                                             <div class="row">
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Vendor</h5>
+                                                        <label class="form-label fw-bold text-dark" >Vendor</label>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="vendorlist"
                                                                 id="vendorlist"  required>
@@ -402,7 +402,7 @@
                                             <div class="row">
                                             <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Vendor</h5>
+                                                        <label class="form-label fw-bold text-dark">Vendor</label>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="vendorlist"
                                                                 id="vendorlist" disabled required>
