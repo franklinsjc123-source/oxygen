@@ -103,6 +103,22 @@
                                     
                                      <!-- Category Selection -->
                                      <div class="row g-3">
+                                         <!-- Vendor -->
+                                         <div class="col-md-3">
+                                             <div class="form-group">
+                                                 <label class="form-label fw-bold text-dark">Vendor</label>
+                                                 <select class="js-select2 form-control text-secondary" id="vendorlist" disabled required>
+                                                     <option value="">Select Vendor</option>
+                                                     @foreach ($vendorlist ?? [] as $vendor)
+                                                         <option id="{{ $vendor->id }}" value="{{ $vendor->id }}" {{ ($vendor->id == $product->vendor_id || $vendor->id == $product->login_id) ? 'selected' : '' }}>
+                                                             {{ $vendor->shop_name }}
+                                                         </option>
+                                                     @endforeach
+                                                 </select>
+                                                 <input type="hidden" name="vendorid" value="{{ $product->vendor_id ?? $product->login_id }}">
+                                             </div>
+                                         </div>
+
                                          <!-- Primary / Main Category -->
                                          <div class="col-md-3">
                                              <div class="form-group">
@@ -194,7 +210,7 @@
                                          </div>
 
                                          <!-- Product Name -->
-                                         <div class="col-md-3">
+                                         <div class="col-md-6">
                                              <div class="form-group">
                                                  <label class="form-label fw-bold text-dark">Product Name <span class="text-danger">*</span></label>
                                                  <input class="form-control" id="validationCustom01" type="text" name="product_name" required value="{{ $product->product_name }}">

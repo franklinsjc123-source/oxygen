@@ -191,29 +191,32 @@
                                             <tr>
                                                 <td><input type="checkbox" class="checkbox" data-id="{{ $products->id }}"></td>
                                                  <?php
-                                               $login_id = str_pad($products->login_id, 4, '0', STR_PAD_LEFT);
-                                               $vendor_seq = \DB::table('products')->where('login_id', $products->login_id)->where('id', '<=', $products->id)->count();
+                                               $targetVendorId = !empty($products->vendor_id) ? $products->vendor_id : $products->login_id;
+                                               $vendorDetail = \DB::table('vendor_details')
+                                                    ->leftJoin('zonals', 'vendor_details.zone', '=', 'zonals.id')
+                                                    ->select('vendor_details.user_id', 'vendor_details.id as vendor_detail_id', 'zonals.name as zone_name')
+                                                    ->where('vendor_details.user_id', $targetVendorId)
+                                                    ->orWhere('vendor_details.id', $targetVendorId)
+                                                    ->first();
+
+                                               $zone = $vendorDetail->zone_name ?? '';
+                                               $vendor_login_id = str_pad(($vendorDetail->user_id ?? $targetVendorId), 4, '0', STR_PAD_LEFT);
+                                               $vendor_seq = \DB::table('products')
+                                                    ->where(function($q) use ($targetVendorId) {
+                                                        $q->where('vendor_id', $targetVendorId)->orWhere('login_id', $targetVendorId);
+                                                    })
+                                                    ->where('id', '<=', $products->id)
+                                                    ->count();
                                                $pro_id = str_pad($vendor_seq, 5, '0', STR_PAD_LEFT);
+
                                                $stockSummary = App\Models\Products\ProductsDetails::where('products_id', $products->product_id)
                                                     ->selectRaw('COALESCE(SUM(quantity),0) as total_qty, COALESCE(MAX(low_stock_limit),0) as low_limit')
                                                     ->first();
                                                $totalQty = (int) ($stockSummary->total_qty ?? 0);
                                                $lowLimit = (int) ($stockSummary->low_limit ?? 0);
                                                $isLowStock = $lowLimit > 0 && $totalQty <= $lowLimit;
-                                                $produ = \DB::table('vendor_details')
-                                                     ->leftJoin('zonals', 'vendor_details.zone', '=', 'zonals.id')
-                                                     ->select('vendor_details.*', 'zonals.name as zone_name')
-                                                     ->where('vendor_details.user_id', $products->login_id)
-                                                     ->get();
-
-                                                 if(count($produ) > 0 && !empty($produ[0]->zone_name))
-                                                     {
-                                                          $zone = $produ[0]->zone_name;
-                                                     }else{
-                                                          $zone = '';
-                                                     }
                                                  ?>
-                                                 <td>{{ (!empty($zone) ? $zone : '') . '-'.$login_id . '-'.$pro_id }}</td>
+                                                 <td>{{ (!empty($zone) ? $zone : 'Z01') . '-' . $vendor_login_id . '-' . $pro_id }}</td>
                                                
                                                 <td>
                                                     <div class="d-flex">

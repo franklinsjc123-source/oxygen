@@ -101,106 +101,122 @@
                             <div class="card shadow-sm border-0 mb-4">
                                 <div class="card-body p-4">
                                     
-                                     <!-- Category Selection -->
-                                     <div class="row g-3">
-                                         <!-- Primary / Main Category -->
-                                         <div class="col-md-3">
-                                             <div class="form-group">
-                                                 <label class="form-label fw-bold text-dark">Primary / Main Category</label>
-                                                 <select class="js-select2 form-control text-secondary" id="main_category" disabled required>
-                                                     @foreach ($category_main_data as $category_main)
-                                                         <option id="{{ $category_main->id }}"
-                                                             value="{{ $category_main->id }}" {{ ($category_main->id==$product->category_main)?'selected':'';}}>
-                                                             {{ $category_main->category_main_name }}
-                                                         </option>
-                                                     @endforeach  
-                                                 </select>
-                                                 <input type="hidden" name="category_main" value="{{ $product->category_main }}">
-                                             </div>
-                                         </div>
-                                         
-                                         <!-- Category -->
-                                         <div class="col-md-3">
-                                             <div class="form-group">
-                                                 <label class="form-label fw-bold text-dark">Category</label>
-                                                 <select class="js-select2 form-control text-secondary" id="category" disabled required>
-                                                     <option value="{{ $product->category }}" selected> {{ optional($cates->first())->category_name }}</option>
-                                                 </select>
-                                                 <input type="hidden" name="category" value="{{ $product->category }}">
-                                             </div>
-                                         </div>
-                                         
-                                         <!-- Sub Category -->
-                                         <div class="col-md-3">
-                                             <div class="form-group">
-                                                 <label class="form-label fw-bold text-dark">Sub Category</label>
-                                                 <select class="js-select2 form-control text-secondary" id="sub_category" disabled required>
-                                                     <option value="{{ $product->category_sub }}" selected> {{ optional($cates->first())->category_sub_name }}</option>
-                                                 </select>
-                                                 <input type="hidden" name="category_sub" value="{{ $product->category_sub }}">
-                                             </div>
-                                         </div>
+                                      <!-- Category Selection -->
+                                      <div class="row g-3">
+                                          <!-- Vendor -->
+                                          <div class="col-md-3">
+                                              <div class="form-group">
+                                                  <label class="form-label fw-bold text-dark">Vendor</label>
+                                                  <select class="js-select2 form-control text-secondary" id="vendorlist" disabled required>
+                                                      <option value="">Select Vendor</option>
+                                                      @foreach ($vendorlist ?? [] as $vendor)
+                                                          <option id="{{ $vendor->id }}" value="{{ $vendor->id }}" {{ ($vendor->id == $product->vendor_id || $vendor->id == $product->login_id) ? 'selected' : '' }}>
+                                                              {{ $vendor->shop_name }}
+                                                          </option>
+                                                      @endforeach
+                                                  </select>
+                                                  <input type="hidden" name="vendorid" value="{{ $product->vendor_id ?? $product->login_id }}">
+                                              </div>
+                                          </div>
 
-                                     <!-- Attribute Configuration -->
-                                     @php
-                                         $selectedAttributeId = null;
-                                         $firstDetail = isset($productdetailss) && count($productdetailss) > 0 ? $productdetailss->first() : null;
-                                         $attributesList = isset($attribute) ? $attribute : collect();
-                                         if ($firstDetail && count($attributesList) > 0) {
-                                             $attrName2 = strtolower($firstDetail->attributename2 ?? '');
-                                             $attrName3 = strtolower($firstDetail->attributename3 ?? '');
-                                             foreach ($attributesList as $attr) {
-                                                 $groupName = strtolower($attr->attribute_group_name ?? '');
-                                                 $refName = strtolower($attr->attribute_group_refname ?? '');
-                                                 if ($groupName === $attrName2 || $groupName === $attrName3 || $refName === $attrName2 || $refName === $attrName3) {
-                                                     $selectedAttributeId = $attr->id;
-                                                     break;
-                                                 }
-                                             }
-                                         }
-                                         $is_color = 'no';
-                                         if ($firstDetail && strtolower($firstDetail->attributename1 ?? '') === 'color' && !empty($firstDetail->attributevalue1)) {
-                                             $is_color = 'yes';
-                                         }
-                                         $nproduct = isset($productdetailss) && count($productdetailss) > 0 ? $productdetailss->max('common_product') : 1;
-                                     @endphp
+                                          <!-- Primary / Main Category -->
+                                          <div class="col-md-3">
+                                              <div class="form-group">
+                                                  <label class="form-label fw-bold text-dark">Primary / Main Category</label>
+                                                  <select class="js-select2 form-control text-secondary" id="main_category" disabled required>
+                                                      @foreach ($category_main_data as $category_main)
+                                                          <option id="{{ $category_main->id }}"
+                                                              value="{{ $category_main->id }}" {{ ($category_main->id==$product->category_main)?'selected':'';}}>
+                                                              {{ $category_main->category_main_name }}
+                                                          </option>
+                                                      @endforeach  
+                                                  </select>
+                                                  <input type="hidden" name="category_main" value="{{ $product->category_main }}">
+                                              </div>
+                                          </div>
+                                          
+                                          <!-- Category -->
+                                          <div class="col-md-3">
+                                              <div class="form-group">
+                                                  <label class="form-label fw-bold text-dark">Category</label>
+                                                  <select class="js-select2 form-control text-secondary" id="category" disabled required>
+                                                      <option value="{{ $product->category }}" selected> {{ optional($cates->first())->category_name }}</option>
+                                                  </select>
+                                                  <input type="hidden" name="category" value="{{ $product->category }}">
+                                              </div>
+                                          </div>
+                                          
+                                          <!-- Sub Category -->
+                                          <div class="col-md-3">
+                                              <div class="form-group">
+                                                  <label class="form-label fw-bold text-dark">Sub Category</label>
+                                                  <select class="js-select2 form-control text-secondary" id="sub_category" disabled required>
+                                                      <option value="{{ $product->category_sub }}" selected> {{ optional($cates->first())->category_sub_name }}</option>
+                                                  </select>
+                                                  <input type="hidden" name="category_sub" value="{{ $product->category_sub }}">
+                                              </div>
+                                          </div>
 
-                                         <!-- Attribute -->
-                                         <div class="col-md-3">
-                                             <div class="form-group">
-                                                 <label class="form-label fw-bold text-dark">Attribute</label>
-                                                 <select class="form-select text-secondary" id="selected_attribute_summary" disabled required>
-                                                     <option value="">Select Attribute</option>
-                                                     @foreach ($attributesList as $attr)
-                                                         <option value="{{ $attr->id }}" {{ $selectedAttributeId == $attr->id ? 'selected' : '' }}>
-                                                             {{ $attr->attribute_group_refname }}
-                                                         </option>
-                                                     @endforeach
-                                                 </select>
-                                                 <input type="hidden" name="selected_attribute_id1" value="{{ $selectedAttributeId }}">
-                                             </div>
-                                         </div>
+                                      <!-- Attribute Configuration -->
+                                      @php
+                                          $selectedAttributeId = null;
+                                          $firstDetail = isset($productdetailss) && count($productdetailss) > 0 ? $productdetailss->first() : null;
+                                          $attributesList = isset($attribute) ? $attribute : collect();
+                                          if ($firstDetail && count($attributesList) > 0) {
+                                              $attrName2 = strtolower($firstDetail->attributename2 ?? '');
+                                              $attrName3 = strtolower($firstDetail->attributename3 ?? '');
+                                              foreach ($attributesList as $attr) {
+                                                  $groupName = strtolower($attr->attribute_group_name ?? '');
+                                                  $refName = strtolower($attr->attribute_group_refname ?? '');
+                                                  if ($groupName === $attrName2 || $groupName === $attrName3 || $refName === $attrName2 || $refName === $attrName3) {
+                                                      $selectedAttributeId = $attr->id;
+                                                      break;
+                                                  }
+                                              }
+                                          }
+                                          $is_color = 'no';
+                                          if ($firstDetail && strtolower($firstDetail->attributename1 ?? '') === 'color' && !empty($firstDetail->attributevalue1)) {
+                                              $is_color = 'yes';
+                                          }
+                                          $nproduct = isset($productdetailss) && count($productdetailss) > 0 ? $productdetailss->max('common_product') : 1;
+                                      @endphp
 
-                                         <!-- Is Color Available? -->
-                                         <div class="col-md-3">
-                                             <div class="form-group">
-                                                 <label class="form-label fw-bold text-dark">Is Color Available?</label>
-                                                 <select class="form-select text-secondary" id="is_color_summary" disabled required>
-                                                     <option value="yes" {{ $is_color == 'yes' ? 'selected' : '' }}>Yes</option>
-                                                     <option value="no" {{ $is_color == 'no' ? 'selected' : '' }}>No</option>
-                                                 </select>
-                                                 <input type="hidden" name="is_color_summary" value="{{ $is_color }}">
-                                             </div>
-                                         </div>
+                                          <!-- Attribute -->
+                                          <div class="col-md-3">
+                                              <div class="form-group">
+                                                  <label class="form-label fw-bold text-dark">Attribute</label>
+                                                  <select class="form-select text-secondary" id="selected_attribute_summary" disabled required>
+                                                      <option value="">Select Attribute</option>
+                                                      @foreach ($attributesList as $attr)
+                                                          <option value="{{ $attr->id }}" {{ $selectedAttributeId == $attr->id ? 'selected' : '' }}>
+                                                              {{ $attr->attribute_group_refname }}
+                                                          </option>
+                                                      @endforeach
+                                                  </select>
+                                                  <input type="hidden" name="selected_attribute_id1" value="{{ $selectedAttributeId }}">
+                                              </div>
+                                          </div>
 
-                                         <!-- Product Name -->
-                                         <div class="col-md-3">
-                                             <div class="form-group">
-                                                 <label class="form-label fw-bold text-dark">Product Name <span class="text-danger">*</span></label>
-                                                 <input class="form-control" id="validationCustom01" type="text" name="product_name" required value="{{ $product->product_name }}">
-                                                 <div class="invalid-feedback-custom">Please enter product name</div>
-                                             </div>
-                                         </div>
+                                          <!-- Is Color Available? -->
+                                          <div class="col-md-3">
+                                              <div class="form-group">
+                                                  <label class="form-label fw-bold text-dark">Is Color Available?</label>
+                                                  <select class="form-select text-secondary" id="is_color_summary" disabled required>
+                                                      <option value="yes" {{ $is_color == 'yes' ? 'selected' : '' }}>Yes</option>
+                                                      <option value="no" {{ $is_color == 'no' ? 'selected' : '' }}>No</option>
+                                                  </select>
+                                                  <input type="hidden" name="is_color_summary" value="{{ $is_color }}">
+                                              </div>
+                                          </div>
+
+                                          <!-- Product Name -->
+                                          <div class="col-md-6">
+                                              <div class="form-group">
+                                                  <label class="form-label fw-bold text-dark">Product Name <span class="text-danger">*</span></label>
+                                                  <input class="form-control" id="validationCustom01" type="text" name="product_name" required value="{{ $product->product_name }}">
+                                                  <div class="invalid-feedback-custom">Please enter product name</div>
+                                              </div>
+                                          </div>
                                          
                                          <!-- Tax -->
                                          <div class="col-md-3">

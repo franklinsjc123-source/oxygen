@@ -651,6 +651,7 @@ class ProductsController extends Controller
     //           		->get(['pincode.id','routes.name as routename', 'zonals.name as zonalname','pincode.name', 'pincode.area','pincode.post_region']);
 
         $colors = ProductColor::all();
+        $vendorlist = vendorcreate::all();
         return view('layout.admin.products.EditProduct')
             ->with([
                 "product" =>$products,
@@ -666,7 +667,8 @@ class ProductsController extends Controller
                 "cates" =>$cate,
                 "productsAttri"=> $productsAttri,
                 "productcollection" => $productcollection,
-                "colors" => $colors
+                "colors" => $colors,
+                "vendorlist" => $vendorlist
             ]);
     
         } catch(\Throwable $th) {
@@ -716,6 +718,11 @@ class ProductsController extends Controller
                 $filename = $request->oldmainImage;
             }
         $Products->login_id = $login_id ;
+        if ($request->filled('vendorid')) {
+            $Products->vendor_id = $request->input('vendorid');
+        } elseif ($request->filled('vendorlist')) {
+            $Products->vendor_id = $request->input('vendorlist');
+        }
         $Products->category = $request->input('category');
         $Products->category_main = $request->input('category_main');
        

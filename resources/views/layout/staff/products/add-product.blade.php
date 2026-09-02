@@ -473,7 +473,7 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold"> Primary / Main Category</h5>
+                                                        <label class="form-label fw-bold text-dark">Primary / Main Category</label>
                                                         <div class="form-group">
                                                             <select class="js-select2 form-control" id="main_category"
                                                                 name="category_main1" disabled required>
@@ -492,7 +492,7 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Category</h5>
+                                                        <label class="form-label fw-bold text-dark">Category</label>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="category1"
                                                                 id="category" disabled required>
@@ -508,7 +508,7 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Sub Category</h5>
+                                                        <label class="form-label fw-bold text-dark">Sub Category</label>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="category_sub1"
                                                                 id="sub_category" disabled required>
@@ -524,7 +524,7 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Attribute</h5>
+                                                        <label class="form-label fw-bold text-dark">Attribute</label>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="selected_attribute_id1"
                                                                 id="selected_attribute_summary" disabled required>
@@ -539,7 +539,7 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Color Available?</h5>
+                                                        <label class="form-label fw-bold text-dark">Color Available?</label>
                                                         <div id="clothing">
                                                             <select class="form-control" name="is_color_summary" id="is_color_summary" disabled required>
                                                                 <option value="yes" {{(@$is_color=="yes")?'Selected':'';}}>Yes</option>
@@ -577,14 +577,16 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <label class="form-label fw-bold text-dark">Product Status <span class="text-danger">*</span></label>
-                                                        <select class="custom-select form-control text-secondary"
-                                                            id="status" name="status" required>
-                                                            <option value="" hidden>--Select Status--</option>
-                                                            <option value="1" selected>Active</option>
-                                                            <option value="0">De-Active</option>
-                                                        </select>
-                                                        <div class="invalid-feedback-custom">Please select product status</div>
+                                                        <div class="form-group mt-2">
+                                                            <label class="form-label fw-bold text-dark">Product Status <span class="text-danger">*</span></label>
+                                                            <select class="custom-select form-control text-secondary"
+                                                                id="status" name="status" required>
+                                                                <option value="" hidden>--Select Status--</option>
+                                                                <option value="1" selected>Active</option>
+                                                                <option value="0">De-Active</option>
+                                                            </select>
+                                                            <div class="invalid-feedback-custom">Please select product status</div>
+                                                        </div>
                                                     </div>
                                                 </div>
 

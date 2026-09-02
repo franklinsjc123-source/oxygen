@@ -228,9 +228,9 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-3">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Attribute</h5>
+                                                        <label class="form-label fw-bold text-dark">Attribute</label>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="selected_attribute_id"
                                                                 id="attribute_group_initial_vendor" disabled required>
@@ -239,9 +239,9 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Is Color Available?</h5>
+                                                        <label class="form-label fw-bold text-dark">Is Color Available?</label>
                                                         <div id="clothing">
                                                             <select class="form-control" name="is_color" id="is_color" required>
                                                                 <option value="yes" selected>Yes</option>
@@ -251,7 +251,7 @@
                                                     </div>
                                                 </div>
                                                 <input type="hidden" name="nproduct" value="1">
-                                                <div class="col-md-3 d-flex align-items-end">
+                                                <div class="col-md-4 d-flex align-items-end">
                                                     <div class="form-group w-100">
                                                         <button type="submit" class="btn btn-primary w-100 fw-bold py-2 mb-1"><i class="fa fa-plus"></i> ADD INFORMATIONS</button>
                                                     </div>
@@ -381,9 +381,9 @@
                                     <div class="card-body">
                                         <div class="col-md-12">
                                             <div class="row">
-                                            <div class="col-md-3">
+                                                <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Vendor</h5>
+                                                        <label class="form-label fw-bold text-dark">Vendor</label>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="vendorlist"
                                                                 id="vendorlist" disabled required>
@@ -401,7 +401,7 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold"> Primary / Main Category</h5>
+                                                        <label class="form-label fw-bold text-dark">Primary / Main Category</label>
                                                         <div class="form-group">
                                                             <select class="js-select2 form-control" id="main_category"
                                                                 name="category_main1" disabled required>
@@ -420,7 +420,7 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Category</h5>
+                                                        <label class="form-label fw-bold text-dark">Category</label>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="category1"
                                                                 id="category" disabled required>
@@ -436,7 +436,7 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Sub Category</h5>
+                                                        <label class="form-label fw-bold text-dark">Sub Category</label>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="category_sub1"
                                                                 id="sub_category" disabled required>
@@ -450,9 +450,9 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Attribute</h5>
+                                                        <label class="form-label fw-bold text-dark">Attribute</label>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="selected_attribute_id1"
                                                                 id="selected_attribute_summary" disabled required>
@@ -465,9 +465,9 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Color Available?</h5>
+                                                        <label class="form-label fw-bold text-dark">Color Available?</label>
                                                         <div id="clothing">
                                                             <select class="form-control" name="is_color_summary" id="is_color_summary" disabled required>
                                                                 <option value="yes" {{(@$is_color=="yes")?'Selected':'';}}>Yes</option>
@@ -481,7 +481,7 @@
                                                 <input type="hidden" name="category_sub" value="{{@$subcategoryid}}">
                                                 <input type="hidden" name="vendorid" value="{{@$vendorid}}">
                                                 <input type="hidden" name="is_color" value="{{@$is_color}}">
-                                                <div class="col-md-3 d-flex align-items-end">
+                                                <div class="col-md-4 d-flex align-items-end">
                                                     <div class="form-group w-100">
                                                         <a href="{{ url('admin/products_crud') }}" class="btn btn-warning w-100 fw-bold py-2 mb-1"> CLEAR </a>
                                                     </div>
@@ -504,14 +504,16 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <label class="form-label   fw-bold text-dark">Product Status <span class="text-danger">*</span></label>
-                                                        <select class="custom-select mt-2 form-control text-secondary"
-                                                            id="status" name="status" required>
-                                                            <option value="" hidden>--Select Status--</option>
-                                                            <option value="1" selected>Active</option>
-                                                            <option value="0">De-Active</option>
-                                                        </select>
-                                                        <div class="invalid-feedback-custom">Please select product status</div>
+                                                        <div class="form-group mt-2">
+                                                            <label class="form-label fw-bold text-dark">Product Status <span class="text-danger">*</span></label>
+                                                            <select class="custom-select form-control text-secondary"
+                                                                id="status" name="status" required>
+                                                                <option value="" hidden>--Select Status--</option>
+                                                                <option value="1" selected>Active</option>
+                                                                <option value="0">De-Active</option>
+                                                            </select>
+                                                            <div class="invalid-feedback-custom">Please select product status</div>
+                                                        </div>
                                                     </div>
                                                 </div>
 
