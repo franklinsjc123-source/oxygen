@@ -1434,14 +1434,17 @@
 <script type="text/javascript">
     bkLib.onDomLoaded(nicEditors.allTextAreas);
 </script>-->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-   	<script src="https://cdn.ckeditor.com/4.25.1-lts/standard/ckeditor.js"></script>
-
 <script type="text/javascript">
 
     $(document).ready(function() {
 
-       $('.ckeditor').ckeditor();
+        if (typeof CKEDITOR !== 'undefined' && $('#description').length && !CKEDITOR.instances.description) {
+            CKEDITOR.replace('description', {
+                height: 300,
+                allowedContent: true,
+                removePlugins: 'elementspath'
+            });
+        }
 
         $('#btn-generate-desc').click(function() {
             var descParts = [];
@@ -1557,15 +1560,6 @@
 
     });
 
-</script>
-<script>
-	CKEDITOR.replace( 'description' );
-	CKEDITOR.replace( 'editdescription' );
-	timer = setInterval(updateDiv,100);
-    function updateDiv(){
-        var editorText = CKEDITOR.instances.editdescription.getData();
-        $('#trackingDiv').html(editorText);
-    }
 </script>
 	
 @endsection
