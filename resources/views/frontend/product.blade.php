@@ -1554,9 +1554,9 @@
                 @php
                           $bg = 'linear-gradient(135deg, #ff7b7b 0%, #ff5b5b 100%)';
                           $text = '#ffffff';
-                          $style = "position:absolute; top:0; left:5px; width:40px; min-height:48px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:4px 2px 10px 2px; border-radius:0 0 3px 3px;";
+                          $style = "position:absolute; top:0; left:3px; width:28px; min-height:34px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:2px 1px 6px 1px; border-radius:0 0 2px 2px;";
                       @endphp
-                <div style="{{ $style }} background:{{ $bg }}; color:{{ $text }}; font-weight:900; font-size:7.5px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;">
+                <div style="{{ $style }} background:{{ $bg }}; color:{{ $text }}; font-weight:900; font-size:6px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.1; letter-spacing:0.2px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;">
                     {{ $offerName }}
                 </div>
             @endif
@@ -1634,9 +1634,9 @@
                 @php
                           $bg = 'linear-gradient(135deg, #ff7b7b 0%, #ff5b5b 100%)';
                           $text = '#ffffff';
-                          $style = "position:absolute; top:0; left:5px; width:40px; min-height:48px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:4px 2px 10px 2px; border-radius:0 0 3px 3px;";
+                          $style = "position:absolute; top:0; left:3px; width:28px; min-height:34px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:2px 1px 6px 1px; border-radius:0 0 2px 2px;";
                       @endphp
-                <div style="{{ $style }} background:{{ $bg }}; color:{{ $text }}; font-weight:900; font-size:7.5px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;">
+                <div style="{{ $style }} background:{{ $bg }}; color:{{ $text }}; font-weight:900; font-size:6px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.1; letter-spacing:0.2px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;">
                     {{ $offerName }}
                 </div>
             @endif

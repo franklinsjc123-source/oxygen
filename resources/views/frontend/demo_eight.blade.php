@@ -70,7 +70,13 @@
     .product-action .btn-product:active,
     .btnquickview:hover,
     .btnquickview:focus,
-    .btnquickview:active {
+    .btnquickview:active,
+    .product-popup .btn-primary,
+    .product-popup .btn-primary:hover,
+    .product-popup .btn-primary:focus,
+    .product-popup .btn-primary:active,
+    .product-popup .btn-primary *,
+    .product-popup .btn-primary:hover * {
         color: #ffffff !important;
     }
     .banner-shoes {

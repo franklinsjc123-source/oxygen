@@ -4,6 +4,20 @@
          object-fit: cover !important;
          width: 100% !important;
      }
+     .product-popup .btn-primary,
+     .product-popup .btn-primary:hover,
+     .product-popup .btn-primary:focus,
+     .product-popup .btn-primary:active,
+     .product-popup .btn-primary i,
+     .product-popup .btn-primary span,
+     .product-form .btn-primary,
+     .product-form .btn-primary:hover,
+     .product-form .btn-primary:focus,
+     .product-form .btn-primary:active,
+     .product-form .btn-primary i,
+     .product-form .btn-primary span {
+         color: #ffffff !important;
+     }
  </style>
  <div class="product product-single product-popup">
      <div class="row gutter-lg">
@@ -194,12 +208,12 @@
                      <span></span>
                  </div>
 
-                 <div class="product-form">
-                     <a href="<?= url('/products/' . ($prouctsList[$id]['slug'] ?? $prouctsList[$id]['id'])) ?>" class="btn btn-primary ">
-                         <i class="w-icon-cart"></i>
-                         <span>Add to Cart</span>
-                     </a>
-                 </div>
+                  <div class="product-form">
+                      <a href="<?= url('/products/' . ($prouctsList[$id]['slug'] ?? $prouctsList[$id]['id'])) ?>" class="btn btn-primary" style="color: #ffffff !important;">
+                          <i class="w-icon-cart" style="color: #ffffff !important;"></i>
+                          <span style="color: #ffffff !important;">Add to Cart</span>
+                      </a>
+                  </div>
 
                   <div class="social-links-wrapper">
                       <div class="social-links">
