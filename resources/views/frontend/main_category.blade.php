@@ -713,11 +713,11 @@ function getRibbonStyles(offerName) {
     
     let style = '';
     if (shape === 'ribbon') {
-        style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
+        style = "position:absolute; top:0; left:6px; width:42px; min-height:52px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:4px 2px 10px 2px; border-radius:0 0 4px 4px;";
     } else if (shape === 'circle') {
-        style = "position:absolute; top:8px; left:8px; width:56px; height:56px; border-radius:50%; padding:4px; box-shadow:0 2px 8px rgba(0,0,0,0.25);";
+        style = "position:absolute; top:6px; left:6px; width:44px; height:44px; border-radius:50%; padding:3px; box-shadow:0 2px 8px rgba(0,0,0,0.25);";
     } else { // shield
-        style = "position:absolute; top:0; left:10px; width:52px; min-height:60px; clip-path:polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%); padding:6px 3px 16px 3px;";
+        style = "position:absolute; top:0; left:6px; width:42px; min-height:50px; clip-path:polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%); padding:4px 2px 12px 2px;";
     }
     
     // Format offerName into short lines to prevent overflow

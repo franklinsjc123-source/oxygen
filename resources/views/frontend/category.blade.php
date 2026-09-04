@@ -756,7 +756,7 @@ function getRibbonStyles(offerName) {
     let text = '#ffffff';
     let shape = 'ribbon';
     
-    let style = "position:absolute; top:0; left:10px; width:52px; min-height:62px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:6px 3px 14px 3px; border-radius:0 0 4px 4px;";
+    let style = "position:absolute; top:0; left:6px; width:42px; min-height:52px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:4px 2px 10px 2px; border-radius:0 0 4px 4px;";
     
     // Format offerName into short lines to prevent overflow
     const words = name.split(' ');
