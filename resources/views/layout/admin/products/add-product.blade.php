@@ -194,7 +194,7 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Main Category / Category</h5>
+                                                        <label class="form-label fw-bold text-dark">Main Category / Category</label>
                                                         <div class="form-group">
                                                             <select class="js-select2 form-control" id="main_category_category"
                                                                 name="category" required>
@@ -214,7 +214,7 @@
                                                 
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <h5 class="fw-bold">Sub Category</h5>
+                                                        <label class="form-label fw-bold text-dark">Sub Category</label>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="category_sub"
                                                                 id="sub_category_initial_vendor" disabled required>
