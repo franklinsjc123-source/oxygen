@@ -1033,18 +1033,17 @@
 <div class="container">
           <!-- Banner Shoes (Moved after Kids Products) -->
           @if(isset($paidAddSlip))
-              <div class="banner banner-shoes br-sm mb-2" style="background-image: url({{ asset('assets/images/banners/adv-baner/' . $paidAddSlip->image) }});
-                             background-color: #36332C;">
-                  <div class="banner-content d-block d-lg-flex align-items-center">
+              @php
+                  $paidLink = !empty($paidAddSlip->link) ? (filter_var($paidAddSlip->link, FILTER_VALIDATE_URL) ? $paidAddSlip->link : url($paidAddSlip->link)) : '#';
+              @endphp
+              <div class="banner banner-shoes br-sm mb-2" style="background-image: url({{ asset('assets/images/banners/adv-baner/' . $paidAddSlip->image) }}); background-color: #36332C; cursor: pointer; position: relative;" onclick="if('{{ $paidLink }}' !== '#') window.location.href='{{ $paidLink }}';">
+                  <a href="{{ $paidLink }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block;" aria-label="Paid Advertisement Banner"></a>
+                  <div class="banner-content d-block d-lg-flex align-items-center" style="position: relative; z-index: 2; pointer-events: none;">
                       <div class="content-left mr-auto mb-6 mb-lg-0 align-items-center">
                           <h3 class="banner-title font-weight-normal text-white mb-0 ls-25">
                               {!! $paidAddSlip->title !!}<br><strong>{!! $paidAddSlip->sub_title !!}</strong>
                           </h3>
                       </div>
-                      <a href="{{ $paidAddSlip->link }}"
-                          class="content-right btn btn-white btn-outline btn-rounded btn-icon-right">
-                          Discover Now<i class="w-icon-long-arrow-right"></i>
-                      </a>
                   </div>
               </div>
           @else
@@ -1060,10 +1059,6 @@
                               Summer Season's Sale<br><strong>For Men's Sneakers</strong>
                           </h3>
                       </div>
-                      <a href="demo8-shop.html"
-                          class="content-right btn btn-white btn-outline btn-rounded btn-icon-right">
-                          Discover Now<i class="w-icon-long-arrow-right"></i>
-                      </a>
                   </div>
                   <figure class="image-shoes skrollable">
                       <img src="<?php echo asset('frontend') ?>/images/demos/demo8/banner/shoes.png" alt="Shoes"
