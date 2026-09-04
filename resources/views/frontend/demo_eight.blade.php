@@ -62,6 +62,17 @@
     .more-products:hover {
         color: #ff5e5e !important;
     }
+    .btnquickview,
+    .btn-product.btnquickview,
+    .product-action .btn-product,
+    .product-action .btn-product:hover,
+    .product-action .btn-product:focus,
+    .product-action .btn-product:active,
+    .btnquickview:hover,
+    .btnquickview:focus,
+    .btnquickview:active {
+        color: #ffffff !important;
+    }
     .banner-shoes {
         aspect-ratio: 1300 / 200 !important;
         background-size: contain !important;
@@ -1534,7 +1545,7 @@
     left: 0;
     width: 100%;
     padding: 3rem 0.8rem 0.8rem 0.8rem;
-    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 65%, rgba(0,0,0,0) 100%);
+    background: linear-gradient(to top, rgba(0, 136, 221, 0.95) 0%, rgba(0, 136, 221, 0.55) 65%, rgba(0, 136, 221, 0) 100%);
     color: #ffffff !important;
     font-weight: 700;
     font-size: 1.2rem;
@@ -1549,7 +1560,7 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 /* Hover effects */
@@ -1564,13 +1575,13 @@
 }
 
 .swiper-slide-vendor:hover .vendor-img-wrap {
-    transform: translateY(-8px) scale(1.03); /* Lift up and scale slightly */
-    box-shadow: 0 15px 30px rgba(255, 94, 94, 0.25);
-    border-color: #ff5e5e; /* Ring highlight */
+    transform: translateY(-6px) scale(1.02); /* Lift up and scale slightly */
+    box-shadow: 0 10px 25px rgba(0, 136, 221, 0.3);
+    border-color: #0088dd; /* Ring highlight */
 }
 
 .swiper-slide-vendor:hover .vendor-name-overlay {
-    color: #ff5e5e !important; /* Highlight text */
+    color: #ffffff !important; /* Highlight text */
 }
 
 /* --- MOBILE SPECIFIC MEDIA QUERIES --- */
