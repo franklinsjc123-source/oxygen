@@ -557,20 +557,20 @@
                  @endphp
                  @if($dbCategoryBanners->isNotEmpty())
                      @foreach($dbCategoryBanners as $index => $item)
-                         <div class="swiper-slide banner banner-fixed category-banner br-sm">
-                             <figure>
-                                 <img src="{{ asset('assets/images/banners/category-banner/' . $item->image) }}" alt="Category Banner" width="447"
-                                     height="230" />
-                             </figure>
-                             <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2">
-                                  <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">{!! $item->sub_title !!}</h5>
-                                  <h3 class="banner-title text-white text-uppercase ls-25 mb-2">{{ $item->title }}</h3>
-                                  <a href="{{ $item->link }}"
-                                      class="btn btn-primary btn-outline btn-rounded btn-icon-right text-white btn-slide-right">
-                                      Shop Now<i class="w-icon-long-arrow-right"></i>
-                                  </a>
-                              </div>
-                         </div>
+                         @php
+                              $cUrl = !empty($item->link) ? (filter_var($item->link, FILTER_VALIDATE_URL) ? $item->link : url($item->link)) : 'javascript:void(0)';
+                          @endphp
+                          <div class="swiper-slide banner banner-fixed category-banner br-sm" style="cursor: pointer; position: relative;" onclick="if('{{ $cUrl }}' !== 'javascript:void(0)') window.location.href='{{ $cUrl }}';">
+                              <a href="{{ $cUrl }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block;" aria-label="{{ $item->title }}"></a>
+                              <figure>
+                                  <img src="{{ asset('assets/images/banners/category-banner/' . $item->image) }}" alt="Category Banner" width="447"
+                                      height="230" />
+                              </figure>
+                              <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2" style="z-index: 2; pointer-events: none;">
+                                   <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">{!! $item->sub_title !!}</h5>
+                                   <h3 class="banner-title text-white text-uppercase ls-25 mb-0">{{ $item->title }}</h3>
+                               </div>
+                          </div>
                      @endforeach
                  @else
                      <div class="swiper-slide banner banner-fixed category-banner br-sm">
@@ -581,10 +581,6 @@
                          <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2">
                              <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">Starting at <span class="text-secondary">₹29.00</span></h5>
                              <h3 class="banner-title text-white text-uppercase ls-25 mb-2">For Men's</h3>
-                             <a href="demo8-shop.html"
-                                 class="btn btn-primary btn-outline btn-rounded btn-icon-right text-white btn-slide-right">
-                                 Shop Now<i class="w-icon-long-arrow-right"></i>
-                             </a>
                          </div>
                      </div>
                      <!-- End of Category Banner -->
@@ -596,10 +592,6 @@
                          <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2">
                              <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">Get 30% Off Your Entire Order!</h5>
                              <h3 class="banner-title text-white text-uppercase ls-25 mb-2">Black Friday Sale</h3>
-                             <a href="demo8-shop.html"
-                                 class="btn btn-primary btn-outline btn-rounded btn-icon-right text-white btn-slide-right">
-                                 Shop Now<i class="w-icon-long-arrow-right"></i>
-                             </a>
                          </div>
                      </div>
                      <!-- End of Category Banner -->
@@ -611,10 +603,6 @@
                          <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2">
                              <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">From Only <span class="text-secondary">₹29.00</span></h5>
                              <h3 class="banner-title text-white text-uppercase ls-25 mb-2">For Women's</h3>
-                             <a href="demo8-shop.html"
-                                 class="btn btn-primary btn-outline btn-rounded btn-icon-right text-white btn-slide-right">
-                                 Shop Now<i class="w-icon-long-arrow-right"></i>
-                             </a>
                          </div>
                      </div>
                      <!-- End of Category Banner -->
@@ -806,16 +794,18 @@
      <div class="container mt-1 mb-0" style="margin-bottom: 0px !important; margin-top: 5px !important;">
          <div class="row cols-1 cols-md-2 category-banner-2cols mb-1">
              @foreach($oxygen_adv->take(2) as $key => $banner)
-             <div class="banner banner-fixed mb-1">
+             @php
+                 $advLink = !empty($banner->link) ? (filter_var($banner->link, FILTER_VALIDATE_URL) ? $banner->link : url($banner->link)) : '#';
+             @endphp
+             <div class="banner banner-fixed mb-1" style="cursor: pointer; position: relative;" onclick="if('{{ $advLink }}' !== '#') window.location.href='{{ $advLink }}';">
+                 <a href="{{ $advLink }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block;" aria-label="{{ $banner->title }}"></a>
                  <figure class="br-sm">
                      <img src="{{ asset('assets/images/banners/advoxygen/' . $banner->image) }}" alt="{{ $banner->title }}" width="330"
                           height="160" style="background-color: {{ $key == 0 ? '#384744' : '#e7e7e7' }}; object-fit: cover; width: 100% !important; height: auto !important;" />
                  </figure>
-                 <div class="banner-content y-50">
+                 <div class="banner-content y-50" style="z-index: 2; pointer-events: none;">
                      <h5 class="banner-subtitle text-uppercase {{ $key == 0 ? 'text-white' : '' }} font-weight-bold">{{ $banner->title }}</h5>
                      <h3 class="banner-title text-capitalize {{ $key == 0 ? 'text-white' : '' }}">{!! nl2br(e($banner->sub_title)) !!}</h3>
-                     <a href="{{ $banner->link ?? '#' }}" class="btn {{ $key == 0 ? 'btn-white' : 'btn-dark' }} btn-link btn-slide-right btn-icon-right">
-                         Shop Now<i class="w-icon-long-arrow-right"></i></a>
                  </div>
              </div>
              @endforeach
