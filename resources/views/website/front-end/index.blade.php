@@ -91,28 +91,17 @@
     <section class="p-0">
         <div class="slider-animate home-slider">
 		 @foreach ($mainslider as $mslides )
-		 
+		    @php
+                $slideUrl = !empty($mslides->link) ? (filter_var($mslides->link, FILTER_VALIDATE_URL) ? $mslides->link : url($mslides->link)) : url('shops');
+            @endphp
             <div>
-                <div class="home height-apply p-bottom">
-                    <img src="{{ asset('assets/images/banners/mainslider') . '/' . $mslides->image }}" alt="" class="bg-img  lazyload" width="200" height="200">
-                    <div class="container-fuild">
-                        <div class="row">
-                            <div class="col">
-                                <div class="slider-contain height-apply">
-                                    <div>
-                                        <h4>{{$mslides->title }}</h4>
-                                        <h1>{{$mslides->sub_title }}</h1>
-										<a href="{{$mslides->link }}"
-                                            class="btn btn-solid btn-gradient animated">shop
-                                            now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="home height-apply p-bottom" style="cursor: pointer;" onclick="window.location.href='{{ $slideUrl }}';">
+                    <a href="{{ $slideUrl }}" style="display: block; width: 100%; height: 100%;">
+                        <img src="{{ asset('assets/images/banners/mainslider') . '/' . $mslides->image }}" alt="" class="bg-img lazyload" width="200" height="200">
+                    </a>
                 </div>
             </div>
-			@endforeach
+		 @endforeach
         </div>
     </section>
     <!-- Home slider end -->

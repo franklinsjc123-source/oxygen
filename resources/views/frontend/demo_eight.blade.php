@@ -166,22 +166,17 @@
                         }">
                  <div class="swiper-wrapper">
                      <?php if (isset($mainslider)) {
-                            foreach ($mainslider as $val) { ?>
+                            foreach ($mainslider as $val) { 
+                                $slideUrl = !empty($val->link) ? (filter_var($val->link, FILTER_VALIDATE_URL) ? $val->link : url($val->link)) : url('shops');
+                            ?>
                              <div class="swiper-slide banner banner-fixed intro-slide intro-slide1 br-sm"
-                                 style="background-image: url(<?php echo asset('assets/images/banners/mainslider/' . $val->image) ?>); background-color: #E8EAEF;">
+                                 style="background-image: url(<?php echo asset('assets/images/banners/mainslider/' . $val->image) ?>); background-color: #E8EAEF; cursor: pointer;"
+                                 onclick="window.location.href='<?php echo $slideUrl; ?>';">
+                                 <a href="<?php echo $slideUrl; ?>" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: block;" aria-label="Slider Banner Link"></a>
                                  <div class="banner-content y-50 text-right">
                                      <div class="slide-animate" data-animation-options="{
                                             'name': 'fadeInUpShorter', 'duration': '1s'
                                         }">
-                                         {{-- <h5 class="banner-subtitle text-uppercase font-weight-bold mb-2"><?php echo $val->title ?></h5> --}}
-                                         <h3 class="banner-title text-capitalize ls-25">
-                                             {{-- <span class="text-primary"><?php echo $val->sub_title ?></span><br> --}}
-                                             {{-- Fashion Lifestyle<br>Collection --}}
-                                         </h3>
-                                         <a href="{{ url('shops')}}"
-                                             class="btn btn-dark btn-outline btn-rounded btn-icon-right">
-                                             Shop Now<i class="w-icon-long-arrow-right"></i>
-                                         </a>
                                      </div>
                                  </div>
                              </div>
