@@ -142,9 +142,9 @@
 }
 
 .offers-mobile-layout .offers-sidebar {
-    width: 95px;
-    min-width: 95px;
-    max-width: 95px;
+    width: 80px;
+    min-width: 80px;
+    max-width: 80px;
     border-right: 1.5px solid #e2e8f0;
     padding-right: 6px;
     position: sticky;
@@ -164,7 +164,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
+    gap: 8px;
 }
 
 .offers-mobile-layout .category-ellipse-item {
@@ -180,8 +180,8 @@
 }
 
 .offers-mobile-layout .category-media {
-    width: 55px;
-    height: 55px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     position: relative;
     margin: 0 auto;
@@ -241,8 +241,9 @@
 
 .offers-mobile-layout .category-name {
     font-size: 10px;
-    line-height: 1.2;
-    margin-top: 4px;
+    line-height: 1.15;
+    margin-top: 2px;
+    margin-bottom: 0;
     color: #333333;
     font-weight: 600;
     text-align: center;
@@ -260,18 +261,22 @@
     min-width: 0;
 }
 
+.offers-mobile-layout .offer-group-block {
+    margin-bottom: 14px;
+}
+
 .offers-mobile-layout .offer-group-title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     color: #222222;
     text-align: center;
-    margin: 2px 0 12px 0;
+    margin: 0 0 6px 0;
 }
 
 .offers-mobile-layout .offer-cards-stack {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 8px;
 }
 
 .offers-mobile-layout .store-card-item {
