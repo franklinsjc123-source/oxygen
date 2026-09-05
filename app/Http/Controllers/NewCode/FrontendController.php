@@ -1205,8 +1205,28 @@ class FrontendController extends Controller
                 ->get();
         }
 
-        // Fetch active offers and group them for the homepage slider in a random order
-        $allOffers = \App\Models\Offer\Offer::where('status', 1)->inRandomOrder()->get();
+        // Get offer IDs that are actually associated with active products & vendors OR created by active vendors
+        $activeOffersFromProducts = DB::table('products as p')
+            ->join('master_offers as o', 'o.id', '=', 'p.offers')
+            ->join('vendor_details as vd', 'vd.id', '=', 'p.vendor_id')
+            ->where('o.status', 1)
+            ->where('p.status', 1)
+            ->where('vd.status', 1)
+            ->pluck('o.id');
+
+        $activeOffersFromCreators = DB::table('vendor_details as vd')
+            ->join('master_offers as o', 'o.created_by_id', '=', 'vd.user_id')
+            ->where('o.status', 1)
+            ->where('vd.status', 1)
+            ->pluck('o.id');
+
+        $activeOfferIds = $activeOffersFromProducts->merge($activeOffersFromCreators)->unique()->values()->toArray();
+
+        // Fetch active offers that have active vendors and group them for the homepage slider in a random order
+        $allOffers = \App\Models\Offer\Offer::where('status', 1)
+            ->whereIn('id', $activeOfferIds)
+            ->inRandomOrder()
+            ->get();
         $offerGroupMap = [];
         $groupLabels = [];
         $groupLogos = [];
@@ -2268,8 +2288,27 @@ class FrontendController extends Controller
             $offer_name = '';
         }
 
-        // Get all offers with their details
-        $allOffers = Offer::where('status', 1)->get();
+        // Get offer IDs that are actually associated with active products & vendors OR created by active vendors
+        $activeOffersFromProducts = DB::table('products as p')
+            ->join('master_offers as o', 'o.id', '=', 'p.offers')
+            ->join('vendor_details as vd', 'vd.id', '=', 'p.vendor_id')
+            ->where('o.status', 1)
+            ->where('p.status', 1)
+            ->where('vd.status', 1)
+            ->pluck('o.id');
+
+        $activeOffersFromCreators = DB::table('vendor_details as vd')
+            ->join('master_offers as o', 'o.created_by_id', '=', 'vd.user_id')
+            ->where('o.status', 1)
+            ->where('vd.status', 1)
+            ->pluck('o.id');
+
+        $activeOfferIds = $activeOffersFromProducts->merge($activeOffersFromCreators)->unique()->values()->toArray();
+
+        // Get only active master_offers that have active vendors/products attached
+        $allOffers = Offer::where('status', 1)
+            ->whereIn('id', $activeOfferIds)
+            ->get();
 
         // Build a group key for each offer based on type + value
         $offerGroupMap = []; // offer_id => group_key
@@ -2361,8 +2400,36 @@ class FrontendController extends Controller
             $filterOfferIds = array_keys(array_filter($offerGroupMap, fn($gk) => $gk === $selectedGroupKey));
         }
 
-        // Query vendors who created these offers
-        $query = DB::table('vendor_details as vd')
+        // Query vendors who have active products with these offers OR created these offers
+        $query1 = DB::table('products as p')
+            ->join('master_offers as o', 'o.id', '=', 'p.offers')
+            ->join('vendor_details as vd', 'vd.id', '=', 'p.vendor_id')
+            ->select(
+                'vd.id',
+                'vd.shop_name',
+                'vd.owner_name',
+                'vd.mobile_number1',
+                'vd.address',
+                'vd.city',
+                'vd.profile_image',
+                'vd.state',
+                'vd.pincode',
+                'o.id as oid',
+                'o.type as offer_type',
+                'o.discount_type',
+                'o.value as offer_value',
+                'o.cashbacktype',
+                'o.cashbackvalue',
+                'o.buy',
+                'o.getoffer',
+                'o.buyproduct',
+                'o.getamt'
+            )
+            ->where('o.status', 1)
+            ->where('p.status', 1)
+            ->where('vd.status', 1);
+
+        $query2 = DB::table('vendor_details as vd')
             ->join('master_offers as o', 'o.created_by_id', '=', 'vd.user_id')
             ->select(
                 'vd.id',
@@ -2389,15 +2456,11 @@ class FrontendController extends Controller
             ->where('vd.status', 1);
 
         if (!empty($filterOfferIds)) {
-            $query->whereIn('o.id', $filterOfferIds);
+            $query1->whereIn('o.id', $filterOfferIds);
+            $query2->whereIn('o.id', $filterOfferIds);
         }
 
-        $results = $query->groupBy(
-            'vd.id', 'vd.shop_name', 'vd.owner_name', 'vd.mobile_number1',
-            'vd.address', 'vd.city', 'vd.profile_image', 'vd.state', 'vd.pincode',
-            'o.id', 'o.type', 'o.discount_type', 'o.value',
-            'o.cashbacktype', 'o.cashbackvalue', 'o.buy', 'o.getoffer', 'o.buyproduct', 'o.getamt'
-        )->get();
+        $results = $query1->union($query2)->get();
 
         // Group the results by group key
         $groupedOffers = [];
@@ -2498,7 +2561,12 @@ class FrontendController extends Controller
             ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
             ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers')
             ->where('p.vendor_id', $vendor_id)
-            ->whereIn('p.offers', $offerIds)
+            ->where(function($q) use ($offerIds) {
+                $q->whereIn('p.offers', $offerIds);
+                foreach ($offerIds as $id) {
+                    $q->orWhereRaw("FIND_IN_SET(?, p.offers)", [$id]);
+                }
+            })
             ->where('p.status', 1)
             ->select(
                 'p.id',
