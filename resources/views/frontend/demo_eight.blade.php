@@ -1047,45 +1047,7 @@
 
           
 
-<div class="container">
-          <!-- Banner Shoes (Moved after Kids Products) -->
-          @if(isset($paidAddSlip))
-              @php
-                  $paidLink = !empty($paidAddSlip->link) ? (filter_var($paidAddSlip->link, FILTER_VALIDATE_URL) ? $paidAddSlip->link : url($paidAddSlip->link)) : '#';
-              @endphp
-              <div class="banner banner-shoes br-sm mb-2" style="background-image: url({{ asset('assets/images/banners/adv-baner/' . $paidAddSlip->image) }}); background-color: #36332C; cursor: pointer; position: relative;" onclick="if('{{ $paidLink }}' !== '#') window.location.href='{{ $paidLink }}';">
-                  <a href="{{ $paidLink }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block;" aria-label="Paid Advertisement Banner"></a>
-                  <div class="banner-content d-block d-lg-flex align-items-center" style="position: relative; z-index: 2; pointer-events: none;">
-                      <div class="content-left mr-auto mb-6 mb-lg-0 align-items-center">
-                          <h3 class="banner-title font-weight-normal text-white mb-0 ls-25">
-                              {!! $paidAddSlip->title !!}<br><strong>{!! $paidAddSlip->sub_title !!}</strong>
-                          </h3>
-                      </div>
-                  </div>
-              </div>
-          @else
-              <div class="banner banner-shoes br-sm mb-2" style="background-image: url(<?php echo asset('frontend') ?>/images/demos/demo8/banner/3.jpg);
-                             background-color: #36332C;">
-                  <div class="banner-content d-block d-lg-flex align-items-center">
-                      <div class="content-left mr-auto mb-6 mb-lg-0 align-items-center">
-                          <div class="banner-price-info text-secondary text-uppercase font-weight-bolder ls-25">
-                              40<sup class="font-weight-bold">%</sup><sub class="font-weight-bold ls-10">Off</sub>
-                          </div>
-                          <hr class="banner-divider">
-                          <h3 class="banner-title font-weight-normal text-white mb-0 ls-25">
-                              Summer Season's Sale<br><strong>For Men's Sneakers</strong>
-                          </h3>
-                      </div>
-                  </div>
-                  <figure class="image-shoes skrollable">
-                      <img src="<?php echo asset('frontend') ?>/images/demos/demo8/banner/shoes.png" alt="Shoes"
-                          data-bottom-top="transform: translateY(2vh);"
-                          data-top-bottom="transform: translateY(-2vh);">
-                  </figure>
-              </div>
-          @endif
-          <!-- End of Banner Shoes -->
-     </div>
+
 <div class="container">
          <div class="title-link-wrapper mb-3">
              <h2 class="title mb-0 pt-2 pb-2">STYLES FOR HIM</h2>
@@ -1423,9 +1385,46 @@
          </div>
      </div>
 
-     
+     <!-- Advertisement Banner (After LITTLE ONES, BIG STYLE) -->
+     <div class="container mt-4 mb-3">
+          @if(isset($paidAddSlip))
+              @php
+                  $paidLink = !empty($paidAddSlip->link) ? (filter_var($paidAddSlip->link, FILTER_VALIDATE_URL) ? $paidAddSlip->link : url($paidAddSlip->link)) : '#';
+              @endphp
+              <div class="banner banner-shoes br-sm mb-2" style="background-image: url({{ asset('assets/images/banners/adv-baner/' . $paidAddSlip->image) }}); background-color: #36332C; cursor: pointer; position: relative;" onclick="if('{{ $paidLink }}' !== '#') window.location.href='{{ $paidLink }}';">
+                  <a href="{{ $paidLink }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block;" aria-label="Paid Advertisement Banner"></a>
+                  <div class="banner-content d-block d-lg-flex align-items-center" style="position: relative; z-index: 2; pointer-events: none;">
+                      <div class="content-left mr-auto mb-6 mb-lg-0 align-items-center">
+                          <h3 class="banner-title font-weight-normal text-white mb-0 ls-25">
+                              {!! $paidAddSlip->title !!}<br><strong>{!! $paidAddSlip->sub_title !!}</strong>
+                          </h3>
+                      </div>
+                  </div>
+              </div>
+          @else
+              <div class="banner banner-shoes br-sm mb-2" style="background-image: url(<?php echo asset('frontend') ?>/images/demos/demo8/banner/3.jpg);
+                             background-color: #36332C;">
+                  <div class="banner-content d-block d-lg-flex align-items-center">
+                      <div class="content-left mr-auto mb-6 mb-lg-0 align-items-center">
+                          <div class="banner-price-info text-secondary text-uppercase font-weight-bolder ls-25">
+                              40<sup class="font-weight-bold">%</sup><sub class="font-weight-bold ls-10">Off</sub>
+                          </div>
+                          <hr class="banner-divider">
+                          <h3 class="banner-title font-weight-normal text-white mb-0 ls-25">
+                              Summer Season's Sale<br><strong>For Men's Sneakers</strong>
+                          </h3>
+                      </div>
+                  </div>
+                  <figure class="image-shoes skrollable">
+                      <img src="<?php echo asset('frontend') ?>/images/demos/demo8/banner/shoes.png" alt="Shoes"
+                          data-bottom-top="transform: translateY(2vh);"
+                          data-top-bottom="transform: translateY(-2vh);">
+                  </figure>
+              </div>
+          @endif
+     </div>
 
-          <div class="container">
+     <div class="container">
           <!-- Shop by Location Section (Moved above Mens Products) -->
           <h2 class="title text-left mb-1 appear-animate mt-4" style="margin-bottom: 5px !important; font-weight: 700; font-family: 'Poppins', sans-serif;">SHOP NEAR YOU</h2>
           <div class="swiper-container swiper-theme brands-wrapper br-sm mb-2 appear-animate mt-2"
