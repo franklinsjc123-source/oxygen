@@ -204,7 +204,7 @@
         font-size: 10px;
     }
     .offer-cards-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
         gap: 12px;
     }
 }
@@ -471,10 +471,6 @@
                                                     <img src="{{ asset('assets/images/vendor/profile/' . $vendor->profile_image) }}" 
                                                          alt="{{ $vendor->shop_name }}"
                                                          onerror="this.src='{{ asset('assets/images/vendor/profile/1683363518.jpg') }}';" />
-                                                </a>
-                                                
-                                                <a href="{{ url('/vendor-offer-products/'.$vendor->id.'?ids='.($groupOfferIds[$groupKey] ?? '')) }}" class="store-action-btn" title="View Store Offers">
-                                                    <i class="w-icon-map-marker"></i>
                                                 </a>
                                             </div>
                                         </div>
