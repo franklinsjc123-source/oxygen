@@ -552,21 +552,26 @@ class VendorcreateController extends Controller
         try {
             $vendor_image = vendorcreate::find($id);
 
-             $profile_image = $this->PROFILE_IMAGE_PATH . "/" . $vendor_image->profile_image;
-             $gst = $this->GST_IMAGE_PATH . "/" . $vendor_image->gst;
-             $other_documents = $this->OTHER_IMAGE_PATH . "/" . $vendor_image->other_documents;
-    
-            if (file_exists($profile_image)) unlink($profile_image);
-            if (file_exists($gst)) unlink($gst);
-            if (file_exists($other_documents)) unlink($other_documents);
-         
+            if ($vendor_image) {
+                if (!empty($vendor_image->profile_image)) {
+                    $profile_image = $this->PROFILE_IMAGE_PATH . "/" . $vendor_image->profile_image;
+                    if (is_file($profile_image)) @unlink($profile_image);
+                }
+                if (!empty($vendor_image->gst)) {
+                    $gst = $this->GST_IMAGE_PATH . "/" . $vendor_image->gst;
+                    if (is_file($gst)) @unlink($gst);
+                }
+                if (!empty($vendor_image->other_documents)) {
+                    $other_documents = $this->OTHER_IMAGE_PATH . "/" . $vendor_image->other_documents;
+                    if (is_file($other_documents)) @unlink($other_documents);
+                }
 
-            vendorcreate::where("id", $id)->delete();
-            // dd($profile_image);
-            $flasher->addsuccess('Product Removed!');
+                vendorcreate::where("id", $id)->delete();
+                $flasher->addsuccess('Vendor Removed!');
+            }
             return redirect()->route('staffvendor-list');
         }
-        catch(Throwable $th) {
+        catch(\Throwable $th) {
             $flasher->addError('Something Error!');
             return redirect()->route('staffvendor-list');
         }
