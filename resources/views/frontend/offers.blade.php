@@ -251,6 +251,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     min-height: 160px;
     position: relative;
+    cursor: pointer;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -268,6 +269,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    cursor: pointer;
 }
 
 .store-card-title {
@@ -437,7 +439,7 @@
 
                                 <div class="offer-cards-grid">
                                     @foreach($vendors as $vendor)
-                                        <div class="store-card-item">
+                                        <div class="store-card-item" onclick="window.location.href='{{ url('/vendor-offer-products/'.$vendor->id.'?ids='.($groupOfferIds[$groupKey] ?? '')) }}';">
                                             <div class="store-card-left">
                                                 <h4 class="store-card-title">
                                                     <a href="{{ url('/vendor-offer-products/'.$vendor->id.'?ids='.($groupOfferIds[$groupKey] ?? '')) }}">
