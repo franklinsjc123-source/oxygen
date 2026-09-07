@@ -446,52 +446,400 @@
                </div>
                <div id="pincodeResponse" class="mt-3"></div>
            </form>
-
        </div>
    </div> --}}
 
-   <div class="newsletter-popup mfp-hide">
-       <div class="newsletter-content">
-           <p class="mt-3 mobile-single-line"><b>Enjoy exclusive <span style="color:#0088dd">discount</span> on your
-                   first order</b></p>
-           <h4 style="color:#0088dd" class="ls-20">Sign up to Tryneww</h4>
+        <div class="newsletter-popup mfp-hide">
+        <div class="pincode-modal-container">
+            <!-- Close Button with SVG Cross -->
+            <button type="button" class="pincode-modal-close mfp-close" title="Close (Esc)" aria-label="Close">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2582e7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
 
-           <p class="mt-2 mobile-two-line">Enter your pin code to check delivery availability, nearby merchants and
-               more offers!!!</p>
-           <form id="pincodeForm" class="">
-               <div class="row justify-content-center">
+            <!-- Brand Logo -->
+            <div class="pincode-modal-logo text-center">
+                <img src="{{ asset('frontend/images/header-logo.png') }}" alt="TryNew" class="pincode-logo-img">
+            </div>
 
-                   <div class="col-12 col-md-10 px-3 px-md-0">
-                       <input type="text" class="form-control mobile-narrow"
-                           style="border-radius: 20px; border: 1px solid black;"
-                           oninput="this.value = this.value.replace(/[^0-9]/g, '');" id="pincode" name="pincode"
-                           placeholder="Delivery Pincode" value="{{ session('pincode') }}" required
-                           pattern="^\d{6}$" maxlength="6">
-                   </div>
+            <!-- Location Badge Icon -->
+            <div class="pincode-location-badge text-center">
+                <div class="pincode-location-icon-wrap">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="#2582e7" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                </div>
+            </div>
 
-                   <div class="col-12 col-md-10 px-3 px-md-0 mt-3">
-                       <button type="submit" class="btn btn-primary w-100 mobile-narrow"
-                           style="border-radius: 20px; ">
-                           Check Availability
-                       </button>
-                   </div>
+            <!-- Title & Subtitle -->
+            <h3 class="pincode-modal-title">Where should we deliver?</h3>
+            <p class="pincode-modal-subtitle">Enter your pincode to check delivery availability</p>
 
-               </div>
+            <!-- Form with Pill Input -->
+            <form id="pincodeForm" class="pincode-form" novalidate data-no-validate="true">
+                <div class="pincode-input-pill">
+                    <div class="pincode-input-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="#2582e7" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                    </div>
+                    <input type="text" class="pincode-input-field"
+                        oninput="this.value = this.value.replace(/[^0-9]/g, ''); $('#pincodeResponse').html('');" id="pincode" name="pincode"
+                        placeholder="Enter 6 digit pincode" value="{{ session('pincode') }}" maxlength="6" data-no-validate="true">
+                    <button type="submit" class="pincode-submit-btn">Check</button>
+                </div>
+                <!-- Response / Error Message Container (BELOW the input pill container) -->
+                <div id="pincodeResponse" class="pincode-response-msg text-center"></div>
+            </form>
 
+            <!-- Subtext (App & Deals with Shield and Heart icons) -->
+            <div class="pincode-app-subtext">
+                <svg class="pincode-shield-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2582e7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="M9 12l2 2 4-4"/>
+                </svg>
+                <span>Download mobile app &amp; unlock more deals</span>
+                <svg class="pincode-heart-icon" width="15" height="15" viewBox="0 0 24 24" fill="#2582e7">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </div>
 
-               <div id="pincodeResponse" class="mt-3"></div>
+            <!-- Feature Badges Grid -->
+            <div class="pincode-features-row">
+                <!-- Feature 1 -->
+                <div class="pincode-feature-col">
+                    <div class="pincode-feature-icon-box">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2582e7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="1" y="3" width="15" height="13"></rect>
+                            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                        </svg>
+                    </div>
+                    <div class="pincode-feature-title">Free Delivery</div>
+                    <div class="pincode-feature-desc">Quick &amp; reliable</div>
+                </div>
 
+                <!-- Feature 2 -->
+                <div class="pincode-feature-col">
+                    <div class="pincode-feature-icon-box">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2582e7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10a2 2 0 002 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/>
+                        </svg>
+                    </div>
+                    <div class="pincode-feature-title">Trendy Styles</div>
+                    <div class="pincode-feature-desc">For every you</div>
+                </div>
 
-               <div class="mobile-app-message">
-                   <p class="mt-2"> <b>Download mobile app <span class="mobile-br">& unlock more deals</span></b>
-                   </p>
+                <!-- Feature 3 -->
+                <div class="pincode-feature-col">
+                    <div class="pincode-feature-icon-box">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2582e7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                    </div>
+                    <div class="pincode-feature-title">Easy Returns</div>
+                    <div class="pincode-feature-desc">Hassle free</div>
+                </div>
+            </div>
 
-                   <img class="play-store-image shop-details-ps-image" src="{{ asset('frontend/images/google_play.png') }}">
+            <!-- Google Play Store Badge -->
+            <div class="pincode-playstore-wrap text-center">
+                <a href="javascript:void(0);">
+                    <img src="{{ asset('frontend/images/google_play.png') }}" alt="GET IT ON Google Play" class="pincode-playstore-img">
+                </a>
+            </div>
+        </div>
+    </div>
 
-               </div>
-           </form>
-       </div>
-   </div>
+    <style>
+        .mfp-newsletter.mfp-bg {
+            background: rgba(10, 25, 47, 0.65) !important;
+            backdrop-filter: blur(4px);
+        }
+
+        .mfp-newsletter .mfp-content {
+            max-width: 440px !important;
+            width: 92% !important;
+            border-radius: 28px !important;
+            box-shadow: none !important;
+            background: transparent !important;
+            margin: 0 auto !important;
+            text-align: center !important;
+        }
+
+        .newsletter-popup {
+            background-image: url("{{ asset('frontend/images/pincode_bg.png') }}?v=3") !important;
+            background-size: 100% 100% !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-color: #dbeeff !important;
+            border-radius: 28px !important;
+            padding: 0 !important;
+            max-width: 440px !important;
+            width: 100% !important;
+            margin: 0 auto !important;
+            box-shadow: 0 20px 50px rgba(0, 50, 120, 0.25) !important;
+            overflow: hidden !important;
+            position: relative !important;
+            text-align: center !important;
+        }
+
+        .pincode-modal-container {
+            padding: 28px 24px 24px !important;
+            position: relative !important;
+            background: transparent !important;
+            border-radius: 28px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        .newsletter-popup .pincode-modal-close.mfp-close {
+            position: absolute !important;
+            top: 14px !important;
+            right: 14px !important;
+            width: 32px !important;
+            height: 32px !important;
+            line-height: 1 !important;
+            border-radius: 50% !important;
+            background: #ffffff !important;
+            border: 1.5px solid #bfdbfe !important;
+            color: #2582e7 !important;
+            opacity: 1 !important;
+            text-align: center !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            cursor: pointer !important;
+            box-shadow: 0 2px 8px rgba(37, 130, 231, 0.15) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            z-index: 10 !important;
+            text-indent: 0 !important;
+        }
+
+        .newsletter-popup .pincode-modal-close.mfp-close:hover {
+            background: #2582e7 !important;
+            border-color: #2582e7 !important;
+            transform: scale(1.06) !important;
+        }
+
+        .newsletter-popup .pincode-modal-close.mfp-close:hover svg {
+            stroke: #ffffff !important;
+        }
+
+        .pincode-modal-logo {
+            margin-bottom: 6px !important;
+        }
+
+        .pincode-logo-img {
+            height: 44px !important;
+            width: auto !important;
+            object-fit: contain !important;
+            display: inline-block !important;
+        }
+
+        .pincode-location-badge {
+            margin: 8px 0 12px !important;
+        }
+
+        .pincode-location-icon-wrap {
+            width: 52px !important;
+            height: 52px !important;
+            background: #ffffff !important;
+            border-radius: 18px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-shadow: 0 6px 18px rgba(37, 130, 231, 0.15) !important;
+            border: 1.5px solid #dbeafe !important;
+        }
+
+        .pincode-modal-title {
+            font-size: 22px !important;
+            font-weight: 800 !important;
+            color: #0b3056 !important;
+            margin: 0 0 4px 0 !important;
+            text-align: center !important;
+            font-family: inherit !important;
+            letter-spacing: -0.3px !important;
+        }
+
+        .pincode-modal-subtitle {
+            font-size: 13px !important;
+            color: #475569 !important;
+            text-align: center !important;
+            margin: 0 0 16px 0 !important;
+            font-weight: 500 !important;
+        }
+
+        .pincode-input-pill {
+            background: #ffffff !important;
+            border-radius: 35px !important;
+            padding: 4px 4px 4px 16px !important;
+            display: flex !important;
+            align-items: center !important;
+            border: 1.5px solid #bfdbfe !important;
+            box-shadow: 0 4px 16px rgba(37, 130, 231, 0.12) !important;
+            transition: all 0.2s ease !important;
+            width: 100% !important;
+        }
+
+        .pincode-input-pill:focus-within {
+            border-color: #2582e7 !important;
+            box-shadow: 0 4px 20px rgba(37, 130, 231, 0.22) !important;
+        }
+
+        .pincode-input-icon {
+            display: flex !important;
+            align-items: center !important;
+            margin-right: 10px !important;
+            flex-shrink: 0 !important;
+        }
+
+        .pincode-input-field,
+        .pincode-input-field.fv-invalid,
+        .pincode-input-field:invalid,
+        .pincode-input-field:focus {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+            flex: 1 !important;
+            font-size: 14px !important;
+            color: #1e293b !important;
+            font-weight: 500 !important;
+            padding: 10px 0 !important;
+            height: auto !important;
+            min-width: 0 !important;
+        }
+
+        .pincode-input-pill .fv-error,
+        .pincode-input-pill label.error,
+        .pincode-input-pill span.error,
+        .pincode-input-pill .error {
+            display: none !important;
+        }
+
+        .pincode-input-field::placeholder {
+            color: #94a3b8 !important;
+            font-weight: 400 !important;
+        }
+
+        .pincode-submit-btn {
+            background: #2582e7 !important;
+            color: #ffffff !important;
+            border: none !important;
+            border-radius: 25px !important;
+            padding: 10px 26px !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+            white-space: nowrap !important;
+            box-shadow: 0 4px 12px rgba(37, 130, 231, 0.25) !important;
+            flex-shrink: 0 !important;
+        }
+
+        .pincode-submit-btn:hover {
+            background: #1d6ed6 !important;
+            box-shadow: 0 6px 16px rgba(37, 130, 231, 0.35) !important;
+        }
+
+        .pincode-app-subtext {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 6px !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            color: #1e3a8a !important;
+            margin: 18px 0 !important;
+            text-align: center !important;
+        }
+
+        .pincode-features-row {
+            display: flex !important;
+            align-items: flex-start !important;
+            justify-content: space-between !important;
+            margin: 20px 0 6px !important;
+            padding-top: 2px !important;
+            width: 100% !important;
+        }
+
+        .pincode-feature-col {
+            flex: 1 !important;
+            text-align: center !important;
+            padding: 0 2px !important;
+            position: relative !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            min-width: 0 !important;
+        }
+
+        .pincode-feature-col:not(:last-child)::after {
+            content: '' !important;
+            position: absolute !important;
+            right: 0 !important;
+            top: 5px !important;
+            height: 55px !important;
+            width: 1px !important;
+            background: #bfdbfe !important;
+        }
+
+        .pincode-feature-icon-box {
+            width: 48px !important;
+            height: 48px !important;
+            border-radius: 50% !important;
+            background: #dbeafe !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin-bottom: 8px !important;
+            box-shadow: 0 2px 8px rgba(37, 130, 231, 0.12) !important;
+        }
+
+        .pincode-feature-title {
+            font-size: 11.5px !important;
+            font-weight: 700 !important;
+            color: #1e293b !important;
+            line-height: 1.2 !important;
+            margin-bottom: 2px !important;
+            white-space: nowrap !important;
+        }
+
+        .pincode-feature-desc {
+            font-size: 10.5px !important;
+            color: #64748b !important;
+            line-height: 1.2 !important;
+            white-space: nowrap !important;
+        }
+
+        .pincode-playstore-wrap {
+            margin-top: 14px !important;
+            width: 100% !important;
+        }
+
+        .pincode-playstore-img {
+            height: 42px !important;
+            width: auto !important;
+            object-fit: contain !important;
+            transition: transform 0.2s ease !important;
+        }
+
+        .pincode-playstore-img:hover {
+            transform: translateY(-1px) !important;
+        }
+    </style>
 
    <style>
        .mfp-content {
@@ -1185,8 +1533,13 @@
 
        $('#pincodeForm').on('submit', function(e) {
            e.preventDefault();
+           var pincode = ($('#pincode').val() || '').trim();
+           if (!pincode || pincode.length !== 6 || !/^\d{6}$/.test(pincode)) {
+               $('#pincodeResponse').html('<p style="color: #e11d48; font-weight: 600; margin-top: 6px; font-size: 13px;">Please enter a valid 6-digit pincode</p>');
+               return false;
+           }
+           $('#pincodeResponse').html('<p style="color: #2582e7; font-weight: 600; margin-top: 6px; font-size: 13px;">Checking availability...</p>');
            var siteurl = "{{ url('/') }}";
-           var pincode = $('#pincode').val();
            $.ajax({
                url: "{{ route('checkPincode') }}",
                type: 'POST',
@@ -1196,9 +1549,7 @@
                },
                 success: function(response) {
                     if (response.status === 'success') {
-                        $('#pincodeResponse').html('<p style="color: #0088dd;">' + response
-                            .message + '</p>');
-                        // Permanently remove the click handler since pincode is now set
+                        $('#pincodeResponse').html('<p style="color: #16a34a; font-weight: 600; margin-top: 6px; font-size: 13px;">' + response.message + '</p>');
                         if (window._pincodeClickHandler) {
                             document.removeEventListener('click', window._pincodeClickHandler, true);
                             window._pincodeClickHandler = null;
@@ -1211,13 +1562,12 @@
                             location.reload();
                         }
                     } else {
-                        $('#pincodeResponse').html('<p style="color: red;">' + response
-                            .message + '</p>');
+                        $('#pincodeResponse').html('<p style="color: #e11d48; font-weight: 600; margin-top: 6px; font-size: 13px;">' + response.message + '</p>');
                     }
                 },
                error: function(xhr, status, error) {
                    $('#pincodeResponse').html(
-                       '<p style="color: red;">An error occurred. Please try again.</p>'
+                       '<p style="color: #e11d48; font-weight: 600; margin-top: 6px; font-size: 13px;">An error occurred. Please try again.</p>'
                    );
                }
            });
