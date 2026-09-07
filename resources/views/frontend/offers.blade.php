@@ -247,6 +247,11 @@
         display: block;
         border-bottom: none;
     }
+    .store-card-item {
+        min-height: 160px;
+        max-height: 200px;
+        height: 180px;
+    }
 }
 
 /* ── STORE CARD ITEM ── */
@@ -256,7 +261,9 @@
     overflow: hidden;
     background: #25262a;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-    min-height: 160px;
+    min-height: 180px;
+    max-height: 220px;
+    height: 200px;
     position: relative;
     cursor: pointer;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -276,6 +283,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    overflow: hidden;
     cursor: pointer;
 }
 
