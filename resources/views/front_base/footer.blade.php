@@ -558,8 +558,10 @@
 
     <style>
         .mfp-newsletter.mfp-bg {
-            background: rgba(10, 25, 47, 0.65) !important;
-            backdrop-filter: blur(4px);
+            background: rgba(15, 23, 42, 0.45) !important;
+            backdrop-filter: blur(6px) !important;
+            -webkit-backdrop-filter: blur(6px) !important;
+            opacity: 1 !important;
         }
 
         .mfp-newsletter .mfp-content {
@@ -573,7 +575,7 @@
         }
 
         .newsletter-popup {
-            background-image: url("{{ asset('frontend/images/pincode_bg.png') }}?v=3") !important;
+            background-image: url("{{ asset('frontend/images/pincode_bg.png') }}?v=4") !important;
             background-size: 100% 100% !important;
             background-position: center !important;
             background-repeat: no-repeat !important;

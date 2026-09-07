@@ -46,9 +46,9 @@
                             position: relative;
                             border-radius: 50%;
                             padding: 4px;
-                            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-                            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.45),
-                                        0 0 30px rgba(118, 75, 162, 0.2);
+                            background: #ff5e5e !important;
+                            box-shadow: 0 4px 20px rgba(255, 94, 94, 0.45),
+                                        0 0 30px rgba(255, 94, 94, 0.2) !important;
                             transition: all 0.35s cubic-bezier(.25,.8,.25,1);
                         }
                         .category-ellipse.sc-active .category-media img {
@@ -60,7 +60,7 @@
                             transition: transform 0.35s cubic-bezier(.25,.8,.25,1);
                         }
                         .category-ellipse.sc-active .category-name a {
-                            color: #764ba2 !important;
+                            color: #ff5e5e !important;
                             font-weight: 700 !important;
                             letter-spacing: 0.2px;
                         }
