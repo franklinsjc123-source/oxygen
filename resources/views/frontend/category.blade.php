@@ -684,7 +684,7 @@
                                             </a>
 ${(product.offer_text || product.offer_title || product.offer_type) ? (() => {
                                                    const meta = getRibbonStyles(product.offer_text || product.offer_title || product.offer_type);
-                                                   return `<div style="${meta.style} font-weight: 800; font-size: 7.5px; text-transform: uppercase; text-align: center; display: flex; align-items: center; justify-content: center; flex-direction: column; box-sizing: border-box; z-index: 10; line-height: 1; letter-spacing: 0.1px;">${meta.html}</div>`;
+                                                   return `<div style="${meta.style}">${meta.html}</div>`;
                                                })() : ''}
                                              <div class="product-action-vertical">
                                                  <a href="${siteurl}/products/${product.slug || product.id}" class="btn-product-icon w-icon-cart"></a>
@@ -751,36 +751,14 @@ ${(product.offer_text || product.offer_title || product.offer_type) ? (() => {
     </script>
  <script>
 function getRibbonStyles(offerName) {
-    const name = (offerName || '').toLowerCase();
-    let bg = 'linear-gradient(135deg, #ff7b7b 0%, #ff5b5b 100%)';
-    let text = '#ffffff';
-    let shape = 'ribbon';
-    
-    let style = "position:absolute; top:0; left:6px; width:42px; min-height:52px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:4px 2px 10px 2px; border-radius:0 0 4px 4px;";
-    
-    // Format offerName into short lines to prevent overflow
-    const words = name.split(' ');
-    let displayLines = [];
-    let currentLine = '';
-    for (let word of words) {
-        if ((currentLine + ' ' + word).trim().length > 8) {
-            if (currentLine) displayLines.push(currentLine.trim());
-            currentLine = word;
-        } else {
-            currentLine = (currentLine + ' ' + word).trim();
-        }
-    }
-    if (currentLine) displayLines.push(currentLine.trim());
-    if (displayLines.length > 3) {
-        displayLines = displayLines.slice(0, 3);
-    }
-    
-    const html = displayLines.map(line => `<div>${line}</div>`).join('');
-    const fullStyle = `${style} background:${bg}; color:${text};`;
+    const bg = 'linear-gradient(135deg, #ff7b7b 0%, #ff5b5b 100%)';
+    const text = '#ffffff';
+    const style = "position:absolute; top:0; left:6px; width:42px; min-height:52px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:4px 2px 10px 2px; border-radius:0 0 4px 4px;";
+    const fullStyle = `${style} background:${bg}; color:${text}; font-weight:900; font-size:8.5px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;`;
     
     return {
         style: fullStyle,
-        html: html
+        html: offerName || ''
     };
 }
 </script>

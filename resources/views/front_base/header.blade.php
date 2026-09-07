@@ -763,10 +763,11 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
 
         /* Megamenu columns */
         .main-nav .menu .megamenu > li {
-            flex: 0 0 190px !important;
-            max-width: 190px !important;
+            flex: 1 1 0px !important;
+            min-width: 130px !important;
+            max-width: 200px !important;
             border-right: 1px solid #f1f5f9 !important;
-            padding: 4px 14px !important;
+            padding: 4px 10px !important;
             margin: 0 !important;
             list-style: none !important;
             display: flex !important;

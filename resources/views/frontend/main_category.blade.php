@@ -615,7 +615,7 @@
                                             </a>
 ${(product.offer_text || product.offer_title || product.offer_type) ? (() => {
                                                    const meta = getRibbonStyles(product.offer_text || product.offer_title || product.offer_type);
-                                                   return `<div style="${meta.style} font-weight: 800; font-size: 7.5px; text-transform: uppercase; text-align: center; display: flex; align-items: center; justify-content: center; flex-direction: column; box-sizing: border-box; z-index: 10; line-height: 1; letter-spacing: 0.1px;">${meta.html}</div>`;
+                                                   return `<div style="${meta.style}">${meta.html}</div>`;
                                                })() : ''}
                                             <div class="product-action-vertical">
                                                  <a href="${siteurl}/products/${product.slug || product.id}" class="btn-product-icon w-icon-cart"></a>
@@ -682,67 +682,14 @@ ${(product.offer_text || product.offer_title || product.offer_type) ? (() => {
     </script>
  <script>
 function getRibbonStyles(offerName) {
-    const name = (offerName || '').toLowerCase();
-    let bg = 'linear-gradient(135deg, #1a5fe5, #1450c0)';
-    let text = '#ffffff';
-    let shape = 'ribbon';
-    
-    if (name.includes('@')) {
-        shape = 'ribbon';
-        bg = 'linear-gradient(135deg, #d41e7d, #a3105a)';
-    } else if (name.includes('buy') || name.includes('free')) {
-        shape = 'ribbon';
-        bg = 'linear-gradient(135deg, #7a1ae5, #5b10b8)';
-    } else if (name.includes('cash')) {
-        shape = 'circle';
-        bg = 'linear-gradient(135deg, #2ebd59, #1fa04a)';
-    } else if (name.includes('flat')) {
-        shape = 'shield';
-        bg = 'linear-gradient(135deg, #1a73e8, #1558b5)';
-    } else if (name.includes('intro')) {
-        shape = 'ribbon';
-        bg = 'linear-gradient(135deg, #e97a31, #d46520)';
-    } else if (name.includes('save')) {
-        shape = 'circle';
-        bg = 'linear-gradient(135deg, #ffd400, #f0c800)';
-        text = '#000000';
-    } else if (name.includes('discount') || name.includes('off')) {
-        shape = 'ribbon';
-        bg = 'linear-gradient(135deg, #e51a2f, #c41525)';
-    }
-    
-    let style = '';
-    if (shape === 'ribbon') {
-        style = "position:absolute; top:0; left:6px; width:42px; min-height:52px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:4px 2px 10px 2px; border-radius:0 0 4px 4px;";
-    } else if (shape === 'circle') {
-        style = "position:absolute; top:6px; left:6px; width:44px; height:44px; border-radius:50%; padding:3px; box-shadow:0 2px 8px rgba(0,0,0,0.25);";
-    } else { // shield
-        style = "position:absolute; top:0; left:6px; width:42px; min-height:50px; clip-path:polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%); padding:4px 2px 12px 2px;";
-    }
-    
-    // Format offerName into short lines to prevent overflow
-    const words = name.split(' ');
-    let displayLines = [];
-    let currentLine = '';
-    for (let word of words) {
-        if ((currentLine + ' ' + word).trim().length > 8) {
-            if (currentLine) displayLines.push(currentLine.trim());
-            currentLine = word;
-        } else {
-            currentLine = (currentLine + ' ' + word).trim();
-        }
-    }
-    if (currentLine) displayLines.push(currentLine.trim());
-    if (displayLines.length > 3) {
-        displayLines = displayLines.slice(0, 3);
-    }
-    
-    const html = displayLines.map(line => `<div>${line}</div>`).join('');
-    const fullStyle = `${style} background:${bg}; color:${text};`;
+    const bg = 'linear-gradient(135deg, #ff7b7b 0%, #ff5b5b 100%)';
+    const text = '#ffffff';
+    const style = "position:absolute; top:0; left:6px; width:42px; min-height:52px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:4px 2px 10px 2px; border-radius:0 0 4px 4px;";
+    const fullStyle = `${style} background:${bg}; color:${text}; font-weight:900; font-size:8.5px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;`;
     
     return {
         style: fullStyle,
-        html: html
+        html: offerName || ''
     };
 }
 </script>
