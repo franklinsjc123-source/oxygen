@@ -334,4 +334,9 @@ Route::get('/View_AuctionProducts', [HomeController::class,'auctionlist']);
 Route::get('/delete_wishlist/{id}', [wishlistcontroller::class,'destroy']);
 
 
+Route::get('/privacy-policy', function () {
+    return view('frontend.privacy-policy');
+});
+
 Route::get('Informations/{id}', [HomeController::class, 'pageinfo']);
+
