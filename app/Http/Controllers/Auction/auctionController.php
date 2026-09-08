@@ -64,23 +64,7 @@ class auctionController extends Controller
             
             $auction   =  new auction();
 
-            $productId = $request->product_id;
-            if (str_contains($productId, '-')) {
-                $parts = explode('-', $productId);
-                if (count($parts) === 3) {
-                    $loginId = intval($parts[1]);
-                    $sequence = intval($parts[2]);
-                    $products = \DB::table('products')->where('login_id', $loginId)->orderBy('id', 'asc')->get();
-                    if ($products->count() >= $sequence) {
-                        $productId = $products[$sequence - 1]->id;
-                    }
-                }
-            } else {
-                $p = \DB::table('products')->where('id', $productId)->orWhere('product_id', $productId)->first();
-                if ($p) {
-                    $productId = $p->id;
-                }
-            }
+            $productId = $this->resolveProductId($request->product_id);
 
             $auction->admin_id     =   session()->get('login_id');
             $auction->product_type =   $request->product_type;
@@ -123,10 +107,15 @@ class auctionController extends Controller
     public function edit($id)
     {
         $auction = auction::find($id);
+        $productCode = null;
+        if ($auction && $auction->product) {
+            $productCode = $this->getProductCode($auction->product);
+        }
 
         return view('layout.admin.auction.auction-edit')
         ->with([
-          "auction"   => $auction
+          "auction"     => $auction,
+          "productCode" => $productCode
         ]);
     }
 
@@ -155,11 +144,11 @@ class auctionController extends Controller
 
          try{
             $auction   =  auction::find($id);
-
+            $productId = $this->resolveProductId($request->product_id);
 
             $auction->admin_id     =   session()->get('login_id');
             $auction->product_type =   $request->product_type;
-            $auction->product_id   =   $request->product_id  ;
+            $auction->product_id   =   $productId  ;
             $auction->start_price  =   $request->start_price ;
             $auction->slab         =   $request->slab        ;
             $auction->bid_price    =   $request->start_price + $request->slab   ;
@@ -176,6 +165,63 @@ class auctionController extends Controller
             $flasher->addError('Something Error!!');
             return redirect()->route('auction/list');
         }
+    }
+
+    private function resolveProductId($input)
+    {
+        $input = trim((string) $input);
+        if (!$input) {
+            return null;
+        }
+
+        if (is_numeric($input)) {
+            $p = \DB::table('products')->where('id', $input)->first();
+            if ($p) {
+                return $p->id;
+            }
+        }
+
+        if (str_contains($input, '-')) {
+            $parts = explode('-', $input);
+            $seqStr = array_pop($parts);
+            $vIdStr = array_pop($parts);
+            if ($seqStr !== null && $vIdStr !== null) {
+                $vId = intval($vIdStr);
+                $seq = intval($seqStr);
+                $vendorDetail = \DB::table('vendor_details')->where('user_id', $vId)->orWhere('id', $vId)->first();
+                $targetVIds = $vendorDetail ? [$vendorDetail->user_id, $vendorDetail->id] : [$vId, (string) $vId];
+                $prods = \DB::table('products')->where(function($q) use ($targetVIds) {
+                    $q->whereIn('vendor_id', $targetVIds)->orWhereIn('login_id', $targetVIds);
+                })->orderBy('id', 'asc')->get();
+
+                if ($prods->count() >= $seq && $seq > 0) {
+                    return $prods[$seq - 1]->id;
+                }
+            }
+        }
+
+        $p = \DB::table('products')->where('id', $input)->orWhere('product_id', $input)->first();
+        return $p ? $p->id : $input;
+    }
+
+    private function getProductCode($product)
+    {
+        if (!$product) return '';
+        $targetVendorId = !empty($product->vendor_id) ? $product->vendor_id : $product->login_id;
+        $vendorDetail = \DB::table('vendor_details')
+            ->select('vendor_details.user_id')
+            ->where('vendor_details.user_id', $targetVendorId)
+            ->orWhere('vendor_details.id', $targetVendorId)
+            ->first();
+        $vendor_login_id = str_pad(($vendorDetail->user_id ?? $targetVendorId), 4, '0', STR_PAD_LEFT);
+        $vendor_seq = \DB::table('products')
+            ->where(function($q) use ($targetVendorId) {
+                $q->where('vendor_id', $targetVendorId)->orWhere('login_id', $targetVendorId);
+            })
+            ->where('id', '<=', $product->id)
+            ->count();
+        $pro_id = str_pad($vendor_seq, 5, '0', STR_PAD_LEFT);
+        return "Z01-" . $vendor_login_id . "-" . $pro_id;
     }
 
     /**

@@ -72,7 +72,7 @@
 											<div class="form-group row ">
 												<label for="validationCustom1" class="col-xl-4 col-md-4">Product ID</label>
 												<div class="col-xl-8 col-md-8">
-													<input class="form-control" id="validationCustom1" name="product_id" value="{{$auction->product_id}}" type="text" required="" >
+													<input class="form-control" id="validationCustom1" name="product_id" value="{{ $productCode ?? $auction->product_id }}" type="text" required="" >
 												</div>
 											</div>
 										</div>
