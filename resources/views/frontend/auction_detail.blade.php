@@ -315,6 +315,56 @@
                             </div>
                         @endif
 
+                        @if((isset($availableColors) && count($availableColors) > 0) || (isset($availableSizes) && count($availableSizes) > 0))
+                        <div class="tm-product-variations" style="margin-bottom: 24px; background: #fff; border: 1px solid #f1f5f9; border-radius: 16px; padding: 20px 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+                            @if(isset($availableColors) && count($availableColors) > 0)
+                            <div class="tm-variation-group" style="{{ (isset($availableSizes) && count($availableSizes) > 0) ? 'margin-bottom: 18px;' : '' }}">
+                                <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                    Color: <span id="selected-color-name" style="color: #2563eb; text-transform: none;">{{ $availableColors[0] }}</span>
+                                </label>
+                                <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+                                    @foreach($availableColors as $index => $color)
+                                        @php
+                                            $cssColor = strtolower(trim($color));
+                                            $bgStyle = $cssColor;
+                                            if($cssColor == 'multicolor' || $cssColor == 'multi') {
+                                                $bgStyle = 'linear-gradient(135deg, #f43f5e 0%, #3b82f6 50%, #10b981 100%)';
+                                            }
+                                        @endphp
+                                        <button type="button" 
+                                            class="tm-color-btn {{ $index == 0 ? 'active' : '' }}" 
+                                            data-color="{{ $color }}"
+                                            onclick="selectColor(this, '{{ addslashes($color) }}')"
+                                            style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border: 2px solid {{ $index == 0 ? '#2563eb' : '#e2e8f0' }}; border-radius: 25px; background: {{ $index == 0 ? '#eff6ff' : '#fff' }}; cursor: pointer; font-size: 13px; font-weight: 600; color: #1e293b; transition: all 0.2s ease;">
+                                            <span style="width: 14px; height: 14px; border-radius: 50%; background: {{ $bgStyle }}; border: 1px solid rgba(0,0,0,0.15); display: inline-block;"></span>
+                                            {{ $color }}
+                                        </button>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endif
+
+                            @if(isset($availableSizes) && count($availableSizes) > 0)
+                            <div class="tm-variation-group" style="margin-bottom: 0;">
+                                <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                    Size: <span id="selected-size-name" style="color: #2563eb; text-transform: none;">{{ $availableSizes[0] }}</span>
+                                </label>
+                                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                    @foreach($availableSizes as $index => $size)
+                                        <button type="button" 
+                                            class="tm-size-btn {{ $index == 0 ? 'active' : '' }}" 
+                                            data-size="{{ $size }}"
+                                            onclick="selectSize(this, '{{ addslashes($size) }}')"
+                                            style="min-width: 44px; height: 40px; padding: 0 14px; border: 2px solid {{ $index == 0 ? '#2563eb' : '#e2e8f0' }}; border-radius: 10px; background: {{ $index == 0 ? '#eff6ff' : '#fff' }}; color: {{ $index == 0 ? '#2563eb' : '#1e293b' }}; cursor: pointer; font-size: 14px; font-weight: 700; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center;">
+                                            {{ $size }}
+                                        </button>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endif
+                        </div>
+                        @endif
+
                         <div class="tm-bid-box">
                             <div class="tm-bid-box-inner">
                                 <div class="tm-current-bid-label">Current Highest Bid</div>
@@ -1227,6 +1277,34 @@
         setTimeout(function() { modal.style.display = 'none'; }, 300);
     }
     
+    function selectColor(btn, colorName) {
+        document.querySelectorAll('.tm-color-btn').forEach(function(b) {
+            b.style.borderColor = '#e2e8f0';
+            b.style.background = '#fff';
+            b.classList.remove('active');
+        });
+        btn.style.borderColor = '#2563eb';
+        btn.style.background = '#eff6ff';
+        btn.classList.add('active');
+        var lbl = document.getElementById('selected-color-name');
+        if (lbl) lbl.innerText = colorName;
+    }
+
+    function selectSize(btn, sizeName) {
+        document.querySelectorAll('.tm-size-btn').forEach(function(b) {
+            b.style.borderColor = '#e2e8f0';
+            b.style.background = '#fff';
+            b.style.color = '#1e293b';
+            b.classList.remove('active');
+        });
+        btn.style.borderColor = '#2563eb';
+        btn.style.background = '#eff6ff';
+        btn.style.color = '#2563eb';
+        btn.classList.add('active');
+        var lbl = document.getElementById('selected-size-name');
+        if (lbl) lbl.innerText = sizeName;
+    }
+
     // Close modal when clicking outside of modal content
     window.addEventListener('click', function(event) {
         var modal = document.getElementById('bid-history-modal');

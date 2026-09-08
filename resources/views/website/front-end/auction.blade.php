@@ -93,7 +93,11 @@
                          
                                      <div class="product-pa-wrapper" style="display: flex; align-items: center; justify-content: center; padding-top: 5px;">
                                          <div class="product-price-home" style="font-family: monospace; font-size: 1.6rem; font-weight: 700; color: #000;" title="Bid Amount">
-                                            <span style="color: #666; font-size: 1.4rem; font-weight: 600; margin-right: 5px; font-family: inherit;">Bid:</span>₹{{ $auct->bid_price ?? $auct->start_price ?? 0 }}
+                                            @php
+                                                $highestBid = $auct->highestBid ? $auct->highestBid->bid_amount : null;
+                                                $currentPrice = ($highestBid && $highestBid > 0) ? $highestBid : ($auct->bid_price ?? $auct->start_price ?? 0);
+                                            @endphp
+                                            <span style="color: #666; font-size: 1.4rem; font-weight: 600; margin-right: 5px; font-family: inherit;">Bid:</span>₹{{ $currentPrice }}
                                          </div>
                                      </div>
                                  </div>

@@ -1185,6 +1185,10 @@ class FrontendController extends Controller
             ->get();
 
         foreach ($auctionProducts as $auction) {
+            $maxBid = DB::table('auction_bids')->where('auction_id', $auction->auction_id)->max('bid_amount');
+            if ($maxBid && $maxBid > 0) {
+                $auction->selling_price = $maxBid;
+            }
             $avg = \App\Models\Rating::where('products_id', $auction->id)->avg('star_rating');
             $auction->rating_percent = $avg ? ($avg / 5) * 100 : 0;
             $auction->review_count = \App\Models\Rating::where('products_id', $auction->id)->count();

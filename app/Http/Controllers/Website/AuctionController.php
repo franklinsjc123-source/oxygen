@@ -196,6 +196,39 @@ class AuctionController extends Controller
                             ->first();
         }
 
+        // Fetch product colors and sizes from products_details
+        $productDetailsList = DB::table('products_details')
+            ->where('products_id', $product->id)
+            ->get();
+
+        $availableColors = [];
+        $availableSizes = [];
+
+        foreach ($productDetailsList as $d) {
+            // Check Color
+            $c = !empty($d->color) ? $d->color : null;
+            if (!$c && !empty($d->attributename1) && strcasecmp(trim($d->attributename1), 'Color') === 0) {
+                $c = $d->attributevalue1;
+            }
+            if (!$c && !empty($d->attributevalue1)) {
+                $c = $d->attributevalue1;
+            }
+            if ($c && !in_array(trim($c), $availableColors)) {
+                $availableColors[] = trim($c);
+            }
+
+            // Check Size
+            $s = !empty($d->size) ? $d->size : null;
+            if (!$s && !empty($d->attributename2) && stripos($d->attributename2, 'Size') !== false) {
+                $s = $d->attributevalue2;
+            }
+            if (!$s && !empty($d->attributevalue2)) {
+                $s = $d->attributevalue2;
+            }
+            if ($s && strtoupper(trim($s)) !== 'NA' && !in_array(trim($s), $availableSizes)) {
+                $availableSizes[] = trim($s);
+            }
+        }
         $percent = $avg > 0 ? ($avg / 5) * 100 : 0;
 
         return view('frontend.auction_detail', compact(
@@ -214,6 +247,8 @@ class AuctionController extends Controller
             'isLoggedIn',
             'customerId',
             'winnerInfo',
+            'availableColors',
+            'availableSizes',
             'ProductSpecs', 'reviewCount', 'avg', 'ratings', 'percent',
             'canRate', 'myRating', 'mostHelpfulPositive', 'mostHelpfulNegative', 'highestRatingList', 'lowestRatingList'
         ));
