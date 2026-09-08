@@ -1,134 +1,668 @@
- @extends('app_template')
- @section('title', 'OXYGEN')
- @section('content')
-     {{-- @include('website.front-end.newhead') --}}
-     {{-- @include('website.partials.js.frontendjs') --}}
-     {{-- @include('paritials.js.userwebsite.cart_js') --}}
-     {{-- @include('paritials.website.header') --}}
+@extends('app_template')
+@section('title', 'OXYGEN Search')
+@section('content')
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        #loading-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+        }
 
-     <style>
-         #loading-container {
-             display: none;
-             position: fixed;
-             top: 0;
-             left: 0;
-             width: 100%;
-             height: 100%;
-             background-color: rgba(255, 255, 255, 0.8);
-             z-index: 9999;
-         }
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
 
-         .loader {
-             border: 8px solid #f3f3f3;
-             border-top: 8px solid #3498db;
-             border-radius: 50%;
-             width: 50px;
-             height: 50px;
-             animation: spin 2s linear infinite;
-             position: absolute;
-             top: 50%;
-             left: 50%;
-             transform: translate(-50%, -50%);
-         }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
 
-         @keyframes spin {
-             0% {
-                 transform: rotate(0deg);
-             }
+        .product-price-home {
+            font-family: monospace;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #333;
+        }
 
-             100% {
-                 transform: rotate(360deg);
-             }
-         }
+        .product-price-discount {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 1.3rem;
+            margin-left: 5px;
+        }
 
-         .product-price-home {
-             font-family: monospace;
-             font-size: 1.6rem;
-             font-weight: 600;
-             color: #333;
-         }
+        .product-offer-percentage {
+            color: #2ecc71;
+            font-weight: 600;
+            font-size: 1.3rem;
+            margin-left: 5px;
+        }
 
-         .product-price-discount {
-             text-decoration: line-through;
-             color: #999;
-             font-size: 1.3rem;
-             margin-left: 5px;
-         }
+        .product-pa-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+            margin-top: 5px;
+        }
 
-         .product-offer-percentage {
-             color: #2ecc71;
-             font-weight: 600;
-             font-size: 1.3rem;
-             margin-left: 5px;
-         }
+        .product-media img {
+            object-fit: cover !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
 
-         .product-pa-wrapper {
-             display: flex;
-             align-items: center;
-             justify-content: center;
-             flex-wrap: nowrap;
-             white-space: nowrap;
-             margin-top: 5px;
-         }
-     </style>
+        @media (max-width: 767px) {
+            .toolbox {
+                flex-wrap: wrap !important;
+                justify-content: space-between !important;
+            }
+            .toolbox-left {
+                order: 1 !important;
+            }
+            .toolbox-right {
+                order: 2 !important;
+            }
+            #active-filters {
+                width: 100% !important;
+                flex: none !important;
+                margin: 8px 0 0 0 !important;
+                order: 3 !important;
+            }
+        }
 
-     <body class="theme-color-29">
-         <main class="main" style="background-color: #fff;">
-         <div class="page-content mb-10">
+        .filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            padding: 4px 14px;
+            font-size: 13px;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .filter-tag:hover {
+            border-color: #333;
+            background-color: #f9f9f9;
+        }
+        .filter-tag .remove-tag {
+            font-weight: bold;
+            color: #888;
+            font-size: 14px;
+            margin-left: 4px;
+        }
+        .filter-tag:hover .remove-tag {
+            color: #333;
+        }
+    </style>
 
-             <div id="loading-container">
-                 <div class="loader"></div>
-             </div>
+    <body class="theme-color-29">
+        <main class="main" style="background-color: #fff;">
+            <!-- Start of Breadcrumb -->
+            <nav class="breadcrumb-nav">
+                <div class="container">
+                    <ul class="breadcrumb bb-no">
+                        <li><a href="{{ url('home') }}">Home</a></li>
+                        <li><a href="{{ url('productsearchdetails') }}">Search</a></li>
+                        @if (!empty($keyword))
+                            <li>{{ $keyword }}</li>
+                        @endif
+                    </ul>
+                </div>
+            </nav>
+            <!-- End of Breadcrumb -->
 
-             <div class="container">
-                 <div class="title-link-wrapper mt-6 mb-3">
-                     <h2 class="title">Search Results for "{{ $keyword }}"</h2>
-                     <a href="{{ url('shops') }}" class="mb-0">More Products<i class="w-icon-long-arrow-right"></i></a>
-                 </div>
+            <input type="hidden" id="search_keyword" value="{{ $keyword ?? '' }}">
 
-                 <div class="row banner-product-wrapper mb-6">
-                     @if (($products ?? collect())->count() === 0)
-                         <div class="col-12 pt-4 pb-4">
-                             <h5>No products found.</h5>
-                         </div>
-                     @endif
+            <div class="page-content mb-10">
+                <div id="loading-container">
+                    <div class="loader"></div>
+                </div>
 
-                     @foreach ($products as $product)
-                         <div class="grid-item col-xl-6col col-lg-2 col-sm-4 col-6 mb-4">
-                             @include('frontend/product-card', ['product' => $product])
-                         </div>
-                     @endforeach
-                 </div>
-             </div>
-         </div>
-         </main>
+                <div class="container mt-4">
+                    <!-- Start of Shop Content -->
+                    <div class="shop-content row gutter-lg mb-10">
+                        <!-- Start of Sidebar -->
+                        <aside class="sidebar shop-sidebar sticky-sidebar-wrapper sidebar-fixed">
+                            <div class="sidebar-overlay"></div>
+                            <a class="sidebar-close" href="#"><i class="close-icon"></i></a>
 
-         <script>
-             document.addEventListener("DOMContentLoaded", function() {
-                 function showLoader() {
-                     document.getElementById("loading-container").style.display = "block";
-                 }
+                            <div class="sidebar-content scrollable">
+                                <div class="sticky-sidebar">
 
-                 function hideLoader() {
-                     document.getElementById("loading-container").style.display = "none";
-                 }
+                                    <div style="padding: 15px 0; border-bottom: 2px solid #222;">
+                                        <h4 style="font-size: 16px; font-weight: 700; letter-spacing: 1px; margin: 0; color: #222;">FILTER:</h4>
+                                    </div>
 
-                 window.addEventListener("beforeunload", showLoader);
-                 window.addEventListener("load", hideLoader);
-             });
+                                    {{-- Color Filter --}}
+                                    <div class="filter-section" style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                                        <div class="filter-header" onclick="toggleFilter(this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                                            <h5 style="font-size: 15px; font-weight: 600; margin: 0; color: #333;">Color</h5>
+                                            <i class="fas fa-chevron-up" style="font-size: 12px; color: #999; transition: transform 0.3s;"></i>
+                                        </div>
+                                        <div class="filter-body" style="max-height: 500px; overflow: hidden; transition: max-height 0.35s ease;">
+                                            <ul style="list-style: none; padding: 10px 0 0 0; margin: 0;">
+                                                @foreach ($colours ?? [] as $colorItem)
+                                                    <li style="padding: 5px 0;">
+                                                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; color: #555;">
+                                                            <input type="checkbox" name="colors[]" value="{{ $colorItem->color }}" class="filter-checkbox" style="accent-color: #222; width: 15px; height: 15px;">
+                                                            @php
+                                                                $colorMap = [
+                                                                    'light slate blue' => '#8470FF',
+                                                                    'multi' => 'conic-gradient(red, yellow, green, blue, purple)',
+                                                                    'navy blue' => 'navy',
+                                                                    'peach' => '#FFDAB9',
+                                                                    'mustard' => '#FFDB58',
+                                                                    'teal' => '#008080'
+                                                                ];
+                                                                $colorName = strtolower(trim($colorItem->color));
+                                                                $bgColor = $colorMap[$colorName] ?? strtolower(str_replace(' ', '', $colorItem->color));
+                                                            @endphp
+                                                            <span style="display: inline-block; width: 16px; height: 16px; border-radius: 50%; background: {{ $bgColor }}; border: 1px solid #ccc; flex-shrink: 0;"></span>
+                                                            {{ $colorItem->color }} ({{ $colorItem->count }})
+                                                        </label>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </div>
 
-             $(document).ready(function() {
-                 var pincode = ('{{ session()->get('pincode') }}' || '').trim();
-                 if (!/^\d{6}$/.test(pincode) && typeof window.showPicodePopup === 'function') {
-                     setTimeout(function() {
-                         window.showPicodePopup();
-                     }, 400);
-                 }
-             });
-         </script>
+                                    {{-- Size Filter --}}
+                                    <div class="filter-section" style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                                        <div class="filter-header" onclick="toggleFilter(this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                                            <h5 style="font-size: 15px; font-weight: 600; margin: 0; color: #333;">Size</h5>
+                                            <i class="fas fa-chevron-down" style="font-size: 12px; color: #999; transition: transform 0.3s;"></i>
+                                        </div>
+                                        <div class="filter-body" style="max-height: 0; overflow: hidden; transition: max-height 0.35s ease;">
+                                            <div style="padding: 10px 0 0 0; display: flex; flex-wrap: wrap; gap: 8px;">
+                                                @foreach ($sizes ?? [] as $size)
+                                                    <label style="display: inline-flex; align-items: center; justify-content: center; min-width: 42px; height: 36px; padding: 0 10px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500; color: #555; transition: all 0.2s;">
+                                                        <input type="checkbox" name="filter_size[]" value="{{ $size }}" class="filter-checkbox" style="display: none;">
+                                                        {{ $size }}
+                                                    </label>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
 
-         {{-- @include('website.front-end.newfooter') --}}
-     </body>
- @endsection
+                                    {{-- Price Filter --}}
+                                    <div class="filter-section" style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                                        <div class="filter-header" onclick="toggleFilter(this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                                            <h5 style="font-size: 15px; font-weight: 600; margin: 0; color: #333;">Price</h5>
+                                            <i class="fas fa-chevron-up" style="font-size: 12px; color: #999; transition: transform 0.3s;"></i>
+                                        </div>
+                                        <div class="filter-body" style="max-height: 500px; overflow: hidden; transition: max-height 0.35s ease;">
+                                            <div class="range-container" style="padding: 15px 5px 10px 5px;">
+                                                <div class="price-display" style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; color: #444; font-weight: 600;">
+                                                    <span id="minText"><span style="font-family: Arial, sans-serif;">₹</span>0</span>
+                                                    <span id="maxText"><span style="font-family: Arial, sans-serif;">₹</span>5000+</span>
+                                                </div>
+                                                <div class="double-range" style="position: relative; width: 100%; height: 6px; background: #e5e5e5; border-radius: 4px;">
+                                                    <div class="slider-track" style="position: absolute; height: 100%; background: #222; border-radius: 4px; z-index: 1;"></div>
+                                                    <input class="price-filter" type="range" id="minPrice" min="0" max="5000" step="10" value="0" style="position: absolute; width: 100%; top: 0; height: 6px; z-index: 2; -webkit-appearance: none; appearance: none; background: transparent; pointer-events: none; outline: none; margin: 0;">
+                                                    <input class="price-filter" type="range" id="maxPrice" min="0" max="5000" step="10" value="5000" style="position: absolute; width: 100%; top: 0; height: 6px; z-index: 2; -webkit-appearance: none; appearance: none; background: transparent; pointer-events: none; outline: none; margin: 0;">
+                                                </div>
+                                                <style>
+                                                    .price-filter::-webkit-slider-thumb {
+                                                        -webkit-appearance: none;
+                                                        appearance: none;
+                                                        width: 18px;
+                                                        height: 18px;
+                                                        border-radius: 50%;
+                                                        background: #222;
+                                                        cursor: pointer;
+                                                        pointer-events: auto;
+                                                        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                                                        transition: transform 0.1s;
+                                                        margin-top: -6px;
+                                                    }
+                                                    .price-filter::-webkit-slider-thumb:hover {
+                                                        transform: scale(1.15);
+                                                    }
+                                                    .price-filter::-moz-range-thumb {
+                                                        width: 18px;
+                                                        height: 18px;
+                                                        border-radius: 50%;
+                                                        background: #222;
+                                                        cursor: pointer;
+                                                        pointer-events: auto;
+                                                        border: none;
+                                                        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                                                        transition: transform 0.1s;
+                                                    }
+                                                    .price-filter::-moz-range-thumb:hover {
+                                                        transform: scale(1.15);
+                                                    }
+                                                </style>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- Discount Filter --}}
+                                    <div class="filter-section" style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                                        <div class="filter-header" onclick="toggleFilter(this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                                            <h5 style="font-size: 15px; font-weight: 600; margin: 0; color: #333;">Discount</h5>
+                                            <i class="fas fa-chevron-down" style="font-size: 12px; color: #999; transition: transform 0.3s;"></i>
+                                        </div>
+                                        <div class="filter-body" style="max-height: 0; overflow: hidden; transition: max-height 0.35s ease;">
+                                            <ul style="list-style: none; padding: 10px 0 0 0; margin: 0;">
+                                                @foreach ([10, 20, 30, 40, 50, 60, 70] as $disc)
+                                                    <li style="padding: 4px 0;">
+                                                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #555;">
+                                                            <input type="radio" name="filter_discount" value="{{ $disc }}" class="filter-radio" style="accent-color: #222; width: 15px; height: 15px;">
+                                                            {{ $disc }}% and above
+                                                        </label>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    {{-- Offer Filter --}}
+                                    <div class="filter-section" style="padding: 15px 0;">
+                                        <div class="filter-header" onclick="toggleFilter(this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                                            <h5 style="font-size: 15px; font-weight: 600; margin: 0; color: #333;">Offer</h5>
+                                            <i class="fas fa-chevron-down" style="font-size: 12px; color: #999; transition: transform 0.3s;"></i>
+                                        </div>
+                                        <div class="filter-body" style="max-height: 0; overflow: hidden; transition: max-height 0.35s ease;">
+                                            <ul style="list-style: none; padding: 10px 0 0 0; margin: 0;">
+                                                @foreach ($offerTypes ?? [] as $offer)
+                                                    <li style="padding: 4px 0;">
+                                                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #555;">
+                                                            <input type="checkbox" name="filter_offer[]" value="{{ $offer->id }}" class="filter-checkbox" style="accent-color: #222; width: 15px; height: 15px;">
+                                                            @php
+                                                                $offerName = '';
+                                                                if ($offer->type == 'Buy X Get Y Free') {
+                                                                    $buy = $offer->buy ?: '1';
+                                                                    $get = $offer->getoffer ?: '1';
+                                                                    $offerName = "Buy {$buy} Get {$get} Free";
+                                                                } elseif ($offer->type == 'Cashback' || $offer->type == 'Cashback Offer') {
+                                                                    if (strtolower($offer->cashbacktype) == 'percentage') {
+                                                                        $offerName = "Cash Back {$offer->cashbackvalue}% Off";
+                                                                    } else {
+                                                                        $offerName = "Cash Back ₹{$offer->cashbackvalue} Off";
+                                                                    }
+                                                                } elseif ($offer->type == 'Fixed Discount') {
+                                                                    if (strtolower($offer->discount_type) == 'percentage') {
+                                                                        $offerName = "Flat {$offer->value}% Off";
+                                                                    } else {
+                                                                        $offerName = "Flat ₹{$offer->value} Off";
+                                                                    }
+                                                                } elseif (str_contains($offer->type, '@')) {
+                                                                    $buyQty = $offer->buy ?: ($offer->buyproduct ?: '1');
+                                                                    $amt = $offer->getamt ? "₹{$offer->getamt}/-" : "{$offer->value}%";
+                                                                    $offerName = "Buy {$buyQty} @ {$amt}";
+                                                                } else {
+                                                                    $offerName = $offer->title ?: $offer->type;
+                                                                }
+                                                            @endphp
+                                                            {{ $offerName }}
+                                                        </label>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    {{-- Clear All Filters --}}
+                                    <div style="padding: 15px 0; text-align: center;">
+                                        <button onclick="clearAllFilters()" style="background: #222; color: #fff; border: none; padding: 8px 25px; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer; letter-spacing: 0.5px; transition: background 0.2s;">Clear All Filters</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </aside>
+                        <!-- End of Sidebar -->
+
+                        <!-- Start of Main Content -->
+                        <div class="main-content">
+                            <nav class="toolbox sticky-toolbox sticky-content fix-top" style="flex-wrap: wrap; gap: 8px;">
+                                <div class="toolbox-left" style="order: 1;">
+                                    <a href="#" class="btn btn-primary btn-outline btn-rounded left-sidebar-toggle btn-icon-left d-block d-lg-none">
+                                        <i class="w-icon-category"></i><span>Filters</span>
+                                    </a>
+                                </div>
+                                <div id="active-filters" class="d-flex flex-wrap align-items-center" style="gap: 8px; flex: 1; margin: 0 10px; order: 2;"></div>
+                                <div class="toolbox-right" style="order: 3;">
+                                    <div class="toolbox-item toolbox-sort select-box text-dark">
+                                        <label>Sort By :</label>
+                                        <select name="orderby" id="orderby" class="form-control">
+                                            <option value="default" selected="selected">Default sorting</option>
+                                            <option value="new-collections">New Collections</option>
+                                            <option value="best-sellers">Best Sellers</option>
+                                            <option value="top-rated">Top Rated</option>
+                                            <option value="price-low">Price Low to High</option>
+                                            <option value="price-high">Price High to Low</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </nav>
+
+                            <div class="product-wrapper row cols-xl-4 cols-lg-3 cols-md-3 cols-sm-2 cols-2" id="productslist">
+                                @if (count($products ?? []) > 0)
+                                    @foreach ($products as $product)
+                                        @include('frontend/product-card', ['product' => $product, 'showStockCount' => true])
+                                    @endforeach
+                                @else
+                                    <div style="text-align: center; width: 100%; padding: 50px 15px;">
+                                        <i class="fas fa-search" style="font-size: 40px; color: #ddd; margin-bottom: 15px;"></i>
+                                        <h4 style="color: #666; font-size: 1.6rem; margin-bottom: 5px; font-weight: 600;">No Products Found</h4>
+                                        <p style="color: #999; font-size: 1.3rem;">Try adjusting your filters to find what you're looking for.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                        <!-- End of Main Content -->
+                    </div>
+                    <!-- End of Shop Content -->
+                </div>
+            </div>
+        </main>
+
+        <script>
+            const wishlistedProductIds = @json($wishlistedProductIds ?? []);
+
+            function toggleFilter(header) {
+                var body = header.nextElementSibling;
+                var icon = header.querySelector('i');
+                if (body.style.maxHeight === '0px' || body.style.maxHeight === '') {
+                    body.style.maxHeight = '500px';
+                    icon.className = 'fas fa-chevron-up';
+                } else {
+                    body.style.maxHeight = '0px';
+                    icon.className = 'fas fa-chevron-down';
+                }
+            }
+
+            document.querySelectorAll('input[name="filter_size[]"]').forEach(function(cb) {
+                cb.addEventListener('change', function() {
+                    var lbl = this.parentElement;
+                    if (this.checked) {
+                        lbl.style.background = '#222';
+                        lbl.style.color = '#fff';
+                        lbl.style.borderColor = '#222';
+                    } else {
+                        lbl.style.background = '#fff';
+                        lbl.style.color = '#555';
+                        lbl.style.borderColor = '#ddd';
+                    }
+                });
+            });
+
+            function clearAllFilters() {
+                document.querySelectorAll('.filter-checkbox, .filter-radio, input[name="colors[]"]').forEach(function(el) {
+                    el.checked = false;
+                });
+                document.querySelectorAll('input[name="filter_size[]"]').forEach(function(cb) {
+                    var lbl = cb.parentElement;
+                    lbl.style.background = '#fff';
+                    lbl.style.color = '#555';
+                    lbl.style.borderColor = '#ddd';
+                });
+                document.getElementById('minPrice').value = 0;
+                document.getElementById('maxPrice').value = 5000;
+                document.getElementById('orderby').value = 'default';
+                updateRange();
+                getproducts();
+            }
+
+            const minSlider = document.getElementById("minPrice");
+            const maxSlider = document.getElementById("maxPrice");
+            const minText = document.getElementById("minText");
+            const maxText = document.getElementById("maxText");
+            const sliderTrack = document.querySelector(".slider-track");
+
+            function updateRange() {
+                var min = parseInt(minSlider.value);
+                var max = parseInt(maxSlider.value);
+
+                if (min > max - 100) minSlider.value = max - 100;
+                if (max < min + 100) maxSlider.value = min + 100;
+
+                minText.innerHTML = '<span style="font-family: Arial, sans-serif;">₹</span>' + minSlider.value;
+                if (max >= 5000) {
+                    maxText.innerHTML = '<span style="font-family: Arial, sans-serif;">₹</span>' + maxSlider.value + '+';
+                } else {
+                    maxText.innerHTML = '<span style="font-family: Arial, sans-serif;">₹</span>' + maxSlider.value;
+                }
+
+                var minPercent = (minSlider.value / minSlider.max) * 100;
+                var maxPercent = (maxSlider.value / maxSlider.max) * 100;
+
+                sliderTrack.style.left = minPercent + "%";
+                sliderTrack.style.width = (maxPercent - minPercent) + "%";
+            }
+
+            minSlider.addEventListener("input", updateRange);
+            maxSlider.addEventListener("input", updateRange);
+            updateRange();
+
+            $(document).ready(function() {
+                $('input[name="colors[]"]').on('change', function() { getproducts(); });
+                $('#orderby').change(function() { getproducts(); });
+                $('.price-filter').change(function() { getproducts(); });
+                $('input[name="filter_size[]"]').on('change', function() { getproducts(); });
+                $('input[name="filter_discount"]').on('change', function() { getproducts(); });
+                $('input[name="filter_offer[]"]').on('change', function() { getproducts(); });
+            });
+
+            function updateActiveFilters() {
+                var $container = $('#active-filters');
+                $container.empty();
+
+                if ($('input[name="colors[]"]:checked').length > 0) {
+                    var $tag = $('<div class="filter-tag">Color <span class="remove-tag">×</span></div>');
+                    $tag.on('click', function() {
+                        $('input[name="colors[]"]').prop('checked', false);
+                        getproducts();
+                    });
+                    $container.append($tag);
+                }
+
+                if ($('input[name="filter_size[]"]:checked').length > 0) {
+                    var $tag = $('<div class="filter-tag">Size <span class="remove-tag">×</span></div>');
+                    $tag.on('click', function() {
+                        $('input[name="filter_size[]"]').each(function() {
+                            $(this).prop('checked', false);
+                            var lbl = $(this).parent();
+                            lbl.css({
+                                background: '#fff',
+                                color: '#555',
+                                borderColor: '#ddd'
+                            });
+                        });
+                        getproducts();
+                    });
+                    $container.append($tag);
+                }
+
+                var min = parseInt($('#minPrice').val()) || 0;
+                var max = parseInt($('#maxPrice').val()) || 5000;
+                if (min > 0 || max < 5000) {
+                    var $tag = $('<div class="filter-tag">Price <span class="remove-tag">×</span></div>');
+                    $tag.on('click', function() {
+                        $('#minPrice').val(0);
+                        $('#maxPrice').val(5000);
+                        updateRange();
+                        getproducts();
+                    });
+                    $container.append($tag);
+                }
+
+                if ($('input[name="filter_discount"]:checked').length > 0) {
+                    var $tag = $('<div class="filter-tag">Discount <span class="remove-tag">×</span></div>');
+                    $tag.on('click', function() {
+                        $('input[name="filter_discount"]').prop('checked', false);
+                        getproducts();
+                    });
+                    $container.append($tag);
+                }
+
+                if ($('input[name="filter_offer[]"]:checked').length > 0) {
+                    var $tag = $('<div class="filter-tag">Offer <span class="remove-tag">×</span></div>');
+                    $tag.on('click', function() {
+                        $('input[name="filter_offer[]"]').prop('checked', false);
+                        getproducts();
+                    });
+                    $container.append($tag);
+                }
+            }
+
+            function getproducts() {
+                updateActiveFilters();
+                let min_price = $('#minPrice').val();
+                let max_price = $('#maxPrice').val();
+                let orderby = $('#orderby').val();
+                let keyword = $('#search_keyword').val();
+
+                var checkedColors = [];
+                $('input[name="colors[]"]:checked').each(function() { checkedColors.push($(this).val()); });
+
+                var checkedSizes = [];
+                $('input[name="filter_size[]"]:checked').each(function() { checkedSizes.push($(this).val()); });
+
+                var checkedOffers = [];
+                $('input[name="filter_offer[]"]:checked').each(function() { checkedOffers.push($(this).val()); });
+
+                var discount = $('input[name="filter_discount"]:checked').val() || '';
+
+                var siteurl = "{{ url('/') }}";
+                $.ajax({
+                    url: "{{ route('get-filter-product') }}",
+                    method: 'GET',
+                    data: {
+                        keyword: keyword,
+                        minprice: min_price,
+                        maxprice: max_price,
+                        orderby: orderby,
+                        color: checkedColors,
+                        size: checkedSizes,
+                        offer_id: checkedOffers,
+                        discount: discount
+                    },
+                    success: function(data) {
+                        $('#productslist').empty();
+                        if (data.products && data.products.length > 0) {
+                            $.each(data.products, function(index, product) {
+                                let discount_percentage = ((product.retail_price - product.selling_price) / product.retail_price) * 100;
+                                let discount_rounded = Math.round(discount_percentage / 10) * 10;
+                                let offerTagHtml = '';
+                                if (product.offer_text || product.offer_title || product.offer_type) {
+                                    let meta = getRibbonStyles(product.offer_text || product.offer_title || product.offer_type);
+                                    offerTagHtml = `<div style="${meta.style}">${meta.html}</div>`;
+                                }
+                                let productHtml = `
+                                    <div class="product-wrap">
+                                        <div class="product text-center">
+                                            <figure class="product-media">
+                                                <a href="${siteurl}/products/${product.slug || product.id}">
+                                                    <img src="${siteurl}/assets/images/products/${product.product_image}" alt="${product.product_name}" />
+                                                </a>
+                                                ${offerTagHtml}
+                                                 <div class="product-action-vertical">
+                                                     <a href="${siteurl}/products/${product.slug || product.id}" class="btn-product-icon w-icon-cart"></a>
+                                                     <a href="#" onclick="addwishlist('${product.id}', this)" class="btn-product-icon btn-wishlist ${wishlistedProductIds.includes(parseInt(product.id)) ? 'w-icon-heart-full' : 'w-icon-heart'}" ${wishlistedProductIds.includes(parseInt(product.id)) ? 'style="color: #ef4444 !important;"' : ''}><span></span></a>
+                                                     <a href="javascript:void(0)" onclick="showQuickView('${product.id}')" data-id="${product.id}" class="btn-product-icon btn-quickview w-icon-search"></a>
+                                                 </div>
+                                            </figure>
+                                            <div class="product-details">
+                                                <div class="sold-by" style="margin-bottom: 2px;">
+                                                    <a href="${siteurl}/shop/${product.vendor_slug || product.vendor_id}" style="color: #0088dd; font-weight: 700; font-size: 1.3rem;">
+                                                        ${product.shop_name || ''}
+                                                    </a>
+                                                </div>
+                                                <h4 class="product-name" style="margin-bottom: 5px; font-weight: 500; font-size: 1.4rem;">
+                                                    <a href="${siteurl}/products/${product.slug || product.id}" style="color: #333; text-decoration: none;">
+                                                        ${product.product_name}
+                                                    </a>
+                                                </h4>
+                                                <div class="ratings-container" style="margin-bottom: 5px;">
+                                                    <div class="ratings-full">
+                                                        <span class="ratings" style="width: 0%;"></span>
+                                                    </div>
+                                                    <a class="rating-reviews" style="font-size: 1.1rem; color: #0088dd;">(0 Reviews)</a>
+                                                </div>
+                                                <div class="product-pa-wrapper" style="display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; flex-wrap: nowrap;">
+                                                    <div class="product-price-home" style="font-family: monospace; font-size: 1.5rem; font-weight: 700; color: #000;"><span style="font-family: Arial, sans-serif;">₹</span>${product.selling_price}</div>
+                                                    <div class="product-price-discount" style="text-decoration: line-through; color: #888; font-size: 1.1rem; font-weight: 600;"><span style="font-family: Arial, sans-serif;">₹</span>${product.retail_price}</div>
+                                                    <div class="product-offer-percentage" style="color: #27ae60; font-weight: 700; font-size: 1.1rem;">${discount_rounded}% Off</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>`;
+                                $('#productslist').append(productHtml);
+                            });
+                        } else {
+                            $('#productslist').append(`
+                                <div style="text-align: center; width: 100%; padding: 50px 15px;">
+                                    <i class="fas fa-search" style="font-size: 40px; color: #ddd; margin-bottom: 15px;"></i>
+                                    <h4 style="color: #666; font-size: 1.6rem; margin-bottom: 5px; font-weight: 600;">No Products Found</h4>
+                                    <p style="color: #999; font-size: 1.3rem;">Try adjusting your filters to find what you're looking for.</p>
+                                </div>
+                            `);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
+
+            document.addEventListener("DOMContentLoaded", function() {
+                function showLoader() {
+                    document.getElementById("loading-container").style.display = "block";
+                }
+                function hideLoader() {
+                    document.getElementById("loading-container").style.display = "none";
+                }
+                window.addEventListener("beforeunload", showLoader);
+                window.addEventListener("load", hideLoader);
+            });
+
+            function getRibbonStyles(offerName) {
+                const bg = 'linear-gradient(135deg, #ff7b7b 0%, #ff5b5b 100%)';
+                const text = '#ffffff';
+                const style = "position:absolute; top:0; left:6px; width:42px; min-height:52px; clip-path:polygon(0% 0%, 100% 0%, 100% 100%, 50% 86%, 0% 100%); padding:4px 2px 10px 2px; border-radius:0 0 4px 4px;";
+                const fullStyle = `${style} background:${bg}; color:${text}; font-weight:900; font-size:8.5px; text-transform:uppercase; text-align:center; display:flex; align-items:center; justify-content:center; flex-direction:column; box-sizing:border-box; z-index:10; line-height:1.15; letter-spacing:0.3px; word-break:break-word; font-family:'Inter','Segoe UI',sans-serif;`;
+
+                return {
+                    style: fullStyle,
+                    html: offerName || ''
+                };
+            }
+
+            $(document).ready(function() {
+                var pincode = ('{{ session()->get('pincode') }}' || '').trim();
+                if (!/^\d{6}$/.test(pincode) && typeof window.showPicodePopup === 'function') {
+                    setTimeout(function() {
+                        window.showPicodePopup();
+                    }, 400);
+                }
+            });
+        </script>
+    </body>
+@endsection

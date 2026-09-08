@@ -1047,6 +1047,7 @@ class HomeController extends Controller
             ->select(
                 'products.id',
                 'products.product_id',
+                'products.slug',
                 'products.product_name',
                 'products.product_image',
                 'products.created_by',
@@ -1054,11 +1055,16 @@ class HomeController extends Controller
                 'products.category',
                 'products.category_sub',
                 'products.vendor_id',
+                'products.offers',
+                'products.offers as offer_id',
                 'v.shop_name',
                 'cm.category_main_name as main_category_name',
                 'c.category_name as category_name',
                 'cs.category_sub_name as sub_category_name',
                 'o.offer_logo as offer_image',
+                'o.type as offer_type',
+                'o.discount_type as discount_type',
+                'o.title as offer_title',
                 DB::raw('MIN(pd.retail_price) as retail_price'),
                 DB::raw('MIN(pd.selling_price) as selling_price')
             )
@@ -1066,6 +1072,7 @@ class HomeController extends Controller
             ->groupBy(
                 'products.id',
                 'products.product_id',
+                'products.slug',
                 'products.product_name',
                 'products.product_image',
                 'products.created_by',
@@ -1073,11 +1080,15 @@ class HomeController extends Controller
                 'products.category',
                 'products.category_sub',
                 'products.vendor_id',
+                'products.offers',
                 'v.shop_name',
                 'cm.category_main_name',
                 'c.category_name',
                 'cs.category_sub_name',
-                'o.offer_logo'
+                'o.offer_logo',
+                'o.type',
+                'o.discount_type',
+                'o.title'
             )
             ->where('products.status', 1)
             ->where(function ($query) use ($keyword, $matchedColorNames) {
@@ -1125,15 +1136,55 @@ class HomeController extends Controller
             ->limit(120)
             ->get();
 
-        foreach ($product as $p) {
-            $avg = Rating::where('products_id', $p->id)->avg('star_rating');
-            $p->rating_percent = $avg ? ($avg / 5) * 100 : 0;
-            $p->review_count = Rating::where('products_id', $p->id)->count();
+        $productIds = $product->pluck('id')->toArray();
+
+        $colours = DB::table('products_details')
+            ->leftJoin('products', 'products.id', '=', 'products_details.products_id')
+            ->select('products_details.attributevalue1 as color', DB::raw('COUNT(DISTINCT products.id) as count'))
+            ->whereIn('products.id', !empty($productIds) ? $productIds : [0])
+            ->where('products.status', 1)
+            ->whereNotNull('products_details.attributevalue1')
+            ->where('products_details.attributevalue1', '!=', '')
+            ->groupBy('products_details.attributevalue1')
+            ->orderBy('count', 'desc')
+            ->get();
+
+        $sizes = DB::table('products_details')
+            ->leftJoin('products', 'products.id', '=', 'products_details.products_id')
+            ->whereIn('products.id', !empty($productIds) ? $productIds : [0])
+            ->where('products.status', 1)
+            ->whereNotNull('products_details.attributevalue2')
+            ->where('products_details.attributevalue2', '!=', '')
+            ->select(DB::raw('DISTINCT(products_details.attributevalue2) as size'))
+            ->pluck('size')
+            ->toArray();
+
+        $offerTypes = DB::table('products')
+            ->join('master_offers', 'master_offers.id', '=', 'products.offers')
+            ->whereIn('products.id', !empty($productIds) ? $productIds : [0])
+            ->where('products.status', 1)
+            ->where('master_offers.status', 1)
+            ->whereNotNull('products.offers')
+            ->where('products.offers', '!=', '')
+            ->select('master_offers.*')
+            ->distinct()
+            ->get();
+
+        $wishlistedProductIds = [];
+        if (auth()->check()) {
+            $wishlistedProductIds = DB::table('wishlist')
+                ->where('user_id', auth()->id())
+                ->pluck('product_id')
+                ->toArray();
         }
 
         return view('website.front-end.search_product_new')->with([
             "products" => $product,
-            "keyword" => $keyword
+            "keyword" => $keyword,
+            "colours" => $colours,
+            "sizes" => $sizes,
+            "offerTypes" => $offerTypes,
+            "wishlistedProductIds" => $wishlistedProductIds
         ]);
     }
 

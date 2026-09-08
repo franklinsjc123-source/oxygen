@@ -3886,6 +3886,8 @@ class FrontendController extends Controller
         $maxprice = $request->maxprice;
         $orderby = $request->orderby;
 
+        $keyword = trim((string) ($request->keyword ?? $request->keywords ?? ''));
+
         $productsQuery = Products::from('products as p')
             ->leftJoin('category as c', 'c.id', '=', 'p.category')
             ->leftJoin('category_sub as cs', 'cs.id', '=', 'p.category_sub')
@@ -3894,6 +3896,66 @@ class FrontendController extends Controller
             ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
             ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers')
             ->where('p.status', 1);
+
+        if (!empty($keyword)) {
+            $matchedColorNames = DB::table('products_details')
+                ->whereNotNull('attributevalue1')
+                ->where('attributevalue1', '!=', '')
+                ->pluck('attributevalue1')
+                ->unique()
+                ->filter(function ($cName) use ($keyword) {
+                    return stripos($cName, $keyword) !== false || stripos($keyword, $cName) !== false;
+                })
+                ->map(function ($cName) { return strtolower($cName); })
+                ->values()
+                ->toArray();
+
+            $tokens = array_filter(explode(' ', strtolower($keyword)), function ($t) {
+                return strlen($t) >= 2;
+            });
+
+            $productsQuery->where(function ($query) use ($keyword, $matchedColorNames) {
+                $query->where('p.product_name', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('cm.category_main_name', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('c.category_name', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('cs.category_sub_name', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('pd.attributevalue1', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('pd.attributevalue2', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('pd.attributevalue3', 'LIKE', '%' . $keyword . '%')
+                    ->orWhereExists(function ($brandQuery) use ($keyword) {
+                        $brandQuery->select(DB::raw(1))
+                            ->from('products_specs as ps')
+                            ->whereColumn('ps.products_id', 'p.id')
+                            ->whereRaw('LOWER(ps.specify_attribute) = ?', ['brand'])
+                            ->where('ps.specify_value', 'LIKE', '%' . $keyword . '%');
+                    });
+
+                if (!empty($matchedColorNames)) {
+                    $query->orWhereIn(DB::raw('LOWER(pd.attributevalue1)'), $matchedColorNames);
+                }
+            });
+
+            if (!empty($tokens)) {
+                foreach ($tokens as $token) {
+                    $productsQuery->where(function ($tokenQuery) use ($token) {
+                        $tokenQuery->where('p.product_name', 'LIKE', '%' . $token . '%')
+                            ->orWhere('cm.category_main_name', 'LIKE', '%' . $token . '%')
+                            ->orWhere('c.category_name', 'LIKE', '%' . $token . '%')
+                            ->orWhere('cs.category_sub_name', 'LIKE', '%' . $token . '%')
+                            ->orWhere('pd.attributevalue1', 'LIKE', '%' . $token . '%')
+                            ->orWhere('pd.attributevalue2', 'LIKE', '%' . $token . '%')
+                            ->orWhere('pd.attributevalue3', 'LIKE', '%' . $token . '%')
+                            ->orWhereExists(function ($brandTokenQuery) use ($token) {
+                                $brandTokenQuery->select(DB::raw(1))
+                                    ->from('products_specs as ps')
+                                    ->whereColumn('ps.products_id', 'p.id')
+                                    ->whereRaw('LOWER(ps.specify_attribute) = ?', ['brand'])
+                                    ->where('ps.specify_value', 'LIKE', '%' . $token . '%');
+                            });
+                    });
+                }
+            }
+        }
 
         if (!empty($main_category_id)) {
             $productsQuery->where('p.category_main', $main_category_id);
