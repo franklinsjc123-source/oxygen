@@ -1023,20 +1023,55 @@ class HomeController extends Controller
             $tokens = [strtolower($keyword)];
         }
 
-        $matchedColorNames = ProductColor::query()
-            ->where(function ($query) use ($tokens, $keyword) {
-                $query->where('color_name', 'LIKE', '%' . $keyword . '%');
-                foreach ($tokens as $token) {
-                    $query->orWhere('color_name', 'LIKE', '%' . $token . '%');
-                }
-            })
-            ->pluck('color_name')
-            ->map(function ($value) {
-                return strtolower((string) $value);
-            })
+        // Get all known color values from the database
+        $allColors = DB::table('products_details')
+            ->whereNotNull('attributevalue1')
+            ->where('attributevalue1', '!=', '')
+            ->pluck('attributevalue1')
+            ->unique()
+            ->map(function ($c) { return strtolower(trim((string) $c)); })
             ->unique()
             ->values()
             ->toArray();
+
+        // Separate tokens into color tokens and non-color (search) tokens
+        $colorTokens = [];
+        $searchTokens = [];
+        foreach ($tokens as $token) {
+            $isColor = false;
+            foreach ($allColors as $colorName) {
+                // Token matches a known color (e.g., "blue" matches "Blue", "light" matches "Light Blue")
+                if (stripos($colorName, $token) !== false || stripos($token, $colorName) !== false) {
+                    $isColor = true;
+                    break;
+                }
+            }
+            if ($isColor) {
+                $colorTokens[] = $token;
+            } else {
+                $searchTokens[] = $token;
+            }
+        }
+
+        // If ALL tokens are color tokens (e.g., user just typed "blue"), also use them as search tokens
+        if (empty($searchTokens) && !empty($colorTokens)) {
+            $searchTokens = $colorTokens;
+            $colorTokens = [];
+        }
+
+        // Find exact matched color names for color tokens
+        $matchedColorNames = [];
+        if (!empty($colorTokens)) {
+            foreach ($allColors as $colorName) {
+                foreach ($colorTokens as $ct) {
+                    if (stripos($colorName, $ct) !== false) {
+                        $matchedColorNames[] = $colorName;
+                        break;
+                    }
+                }
+            }
+            $matchedColorNames = array_unique($matchedColorNames);
+        }
 
         $product = DB::table('products')
             ->leftJoin('category_main as cm', 'products.category_main', '=', 'cm.id')
@@ -1091,34 +1126,18 @@ class HomeController extends Controller
                 'o.title'
             )
             ->where('products.status', 1)
-            ->where(function ($query) use ($keyword, $matchedColorNames) {
-                $query->where('products.product_name', 'LIKE', '%' . $keyword . '%')
-                    ->orWhere('cm.category_main_name', 'LIKE', '%' . $keyword . '%')
-                    ->orWhere('c.category_name', 'LIKE', '%' . $keyword . '%')
-                    ->orWhere('cs.category_sub_name', 'LIKE', '%' . $keyword . '%')
-                    ->orWhere('pd.attributevalue1', 'LIKE', '%' . $keyword . '%')
-                    ->orWhere('pd.attributevalue2', 'LIKE', '%' . $keyword . '%')
-                    ->orWhere('pd.attributevalue3', 'LIKE', '%' . $keyword . '%')
-                    ->orWhereExists(function ($brandQuery) use ($keyword) {
-                        $brandQuery->select(DB::raw(1))
-                            ->from('products_specs as ps')
-                            ->whereColumn('ps.products_id', 'products.id')
-                            ->whereRaw('LOWER(ps.specify_attribute) = ?', ['brand'])
-                            ->where('ps.specify_value', 'LIKE', '%' . $keyword . '%');
-                    });
-
-                if (!empty($matchedColorNames)) {
-                    $query->orWhereIn(DB::raw('LOWER(pd.attributevalue1)'), $matchedColorNames);
-                }
+            // Apply color filter as a strict AND condition
+            ->when(!empty($matchedColorNames), function ($query) use ($matchedColorNames) {
+                $query->whereIn(DB::raw('LOWER(pd.attributevalue1)'), $matchedColorNames);
             })
-            ->when(!empty($tokens), function ($query) use ($tokens) {
-                foreach ($tokens as $token) {
+            // Apply non-color search tokens to match product name/category/brand
+            ->where(function ($query) use ($searchTokens) {
+                foreach ($searchTokens as $token) {
                     $query->where(function ($tokenQuery) use ($token) {
                         $tokenQuery->where('products.product_name', 'LIKE', '%' . $token . '%')
                             ->orWhere('cm.category_main_name', 'LIKE', '%' . $token . '%')
                             ->orWhere('c.category_name', 'LIKE', '%' . $token . '%')
                             ->orWhere('cs.category_sub_name', 'LIKE', '%' . $token . '%')
-                            ->orWhere('pd.attributevalue1', 'LIKE', '%' . $token . '%')
                             ->orWhere('pd.attributevalue2', 'LIKE', '%' . $token . '%')
                             ->orWhere('pd.attributevalue3', 'LIKE', '%' . $token . '%')
                             ->orWhereExists(function ($brandTokenQuery) use ($token) {
@@ -1131,7 +1150,7 @@ class HomeController extends Controller
                     });
                 }
             })
-            ->orderByRaw("CASE WHEN LOWER(products.product_name) LIKE ? THEN 0 ELSE 1 END", ['%' . strtolower($keyword) . '%'])
+            ->orderByRaw("CASE WHEN LOWER(products.product_name) LIKE ? THEN 0 WHEN LOWER(MIN(pd.attributevalue1)) LIKE ? THEN 1 ELSE 2 END", ['%' . strtolower($keyword) . '%', '%' . strtolower($keyword) . '%'])
             ->orderBy('products.created_at', 'desc')
             ->limit(120)
             ->get();
@@ -1196,75 +1215,194 @@ class HomeController extends Controller
         }
 
         $suggestions = collect();
+        $termLower = strtolower($term);
 
+        // Get all known colors from products_details
+        $allColors = DB::table('products_details')
+            ->whereNotNull('attributevalue1')
+            ->where('attributevalue1', '!=', '')
+            ->pluck('attributevalue1')
+            ->unique()
+            ->map(function ($c) { return strtolower(trim((string) $c)); })
+            ->unique()
+            ->values()
+            ->toArray();
+
+        // Tokenize and separate color tokens from search tokens
+        $rawTokens = preg_split('/\s+/', $termLower, -1, PREG_SPLIT_NO_EMPTY);
+        $stopWords = ['for', 'with', 'and', 'the', 'a', 'an', 'of', 'to', 'in', 'on'];
+        $tokens = array_values(array_filter($rawTokens, function ($t) use ($stopWords) {
+            return !in_array($t, $stopWords, true) && strlen($t) > 1;
+        }));
+        if (empty($tokens)) $tokens = [$termLower];
+
+        $colorTokens = [];
+        $searchTokens = [];
+        foreach ($tokens as $token) {
+            $isColor = false;
+            foreach ($allColors as $colorName) {
+                if (stripos($colorName, $token) !== false || stripos($token, $colorName) !== false) {
+                    $isColor = true;
+                    break;
+                }
+            }
+            if ($isColor) $colorTokens[] = $token;
+            else $searchTokens[] = $token;
+        }
+
+        $hasColorIntent = !empty($colorTokens) && !empty($searchTokens);
+
+        // 1. Smart combined suggestions (Flipkart-style) — combine search term with related sub-categories
+        $smartProducts = DB::table('products')
+            ->leftJoin('products_details as pd', 'products.id', '=', 'pd.products_id')
+            ->leftJoin('category_main as cm', 'products.category_main', '=', 'cm.id')
+            ->leftJoin('category as c', 'products.category', '=', 'c.id')
+            ->leftJoin('category_sub as cs', 'products.category_sub', '=', 'cs.id')
+            ->where('products.status', 1)
+            ->where(function ($query) use ($tokens) {
+                foreach ($tokens as $token) {
+                    $query->where(function ($q) use ($token) {
+                        $q->where('products.product_name', 'LIKE', '%' . $token . '%')
+                          ->orWhere('cm.category_main_name', 'LIKE', '%' . $token . '%')
+                          ->orWhere('c.category_name', 'LIKE', '%' . $token . '%')
+                          ->orWhere('cs.category_sub_name', 'LIKE', '%' . $token . '%')
+                          ->orWhere('pd.attributevalue1', 'LIKE', '%' . $token . '%')
+                          ->orWhere('pd.attributevalue2', 'LIKE', '%' . $token . '%');
+                    });
+                }
+            })
+            ->select(
+                'products.id',
+                'products.product_name',
+                'products.product_image',
+                'pd.attributevalue1 as color',
+                'cs.category_sub_name',
+                'c.category_name',
+                'cm.category_main_name'
+            )
+            ->orderBy('products.created_at', 'desc')
+            ->limit(50)
+            ->get();
+
+        // Build smart grouped suggestions by sub-category
+        $categoryGroups = [];
+        $seenProducts = [];
+        foreach ($smartProducts as $p) {
+            $subCat = $p->category_sub_name ?: ($p->category_name ?: $p->category_main_name);
+            if (!$subCat) continue;
+            $subCatKey = strtolower($subCat);
+            if (!isset($categoryGroups[$subCatKey])) {
+                $categoryGroups[$subCatKey] = [
+                    'name' => $subCat,
+                    'image' => $p->product_image,
+                    'count' => 0,
+                ];
+            }
+            $categoryGroups[$subCatKey]['count']++;
+        }
+
+        // Sort by count descending
+        uasort($categoryGroups, function ($a, $b) { return $b['count'] - $a['count']; });
+
+        // Generate Flipkart-style suggestions: "blue shirt" → "blue shirt" in Casual Shirts
+        $addedSuggestionValues = [];
+        $smartCount = 0;
+        foreach ($categoryGroups as $catKey => $catInfo) {
+            if ($smartCount >= 3) break;
+
+            // Build combined suggestion text
+            $suggestionText = $term;
+
+            // Don't duplicate the category name if it's already part of the search
+            if (stripos($term, $catInfo['name']) !== false) continue;
+
+            $imgPath = !empty($catInfo['image']) ? asset('assets/images/products/' . $catInfo['image']) : null;
+
+            $suggestions->push([
+                'value' => $suggestionText,
+                'type' => 'smart',
+                'category' => $catInfo['name'],
+                'image' => $imgPath,
+                'url' => url('/productsearchdetails?keywords=' . urlencode($suggestionText)),
+            ]);
+            $addedSuggestionValues[] = strtolower($suggestionText);
+            $smartCount++;
+        }
+
+        // 2. If user typed a color + keyword, generate color-specific smart suggestions
+        if ($hasColorIntent) {
+            $colorStr = implode(' ', $colorTokens);
+            $searchStr = implode(' ', $searchTokens);
+
+            // e.g., "blue shirt plain", "blue shirt branded"
+            $relatedAttrs = DB::table('products')
+                ->leftJoin('products_details as pd', 'products.id', '=', 'pd.products_id')
+                ->leftJoin('products_specs as ps', 'ps.products_id', '=', 'products.id')
+                ->where('products.status', 1)
+                ->where(function ($q) use ($searchTokens) {
+                    foreach ($searchTokens as $st) {
+                        $q->where(function ($sq) use ($st) {
+                            $sq->where('products.product_name', 'LIKE', '%' . $st . '%')
+                               ->orWhereExists(function ($sub) use ($st) {
+                                   $sub->select(DB::raw(1))
+                                       ->from('category_sub as cs2')
+                                       ->whereColumn('cs2.id', 'products.category_sub')
+                                       ->where('cs2.category_sub_name', 'LIKE', '%' . $st . '%');
+                               });
+                        });
+                    }
+                })
+                ->whereRaw('LOWER(pd.attributevalue1) LIKE ?', ['%' . $colorStr . '%'])
+                ->whereRaw('LOWER(ps.specify_attribute) = ?', ['brand'])
+                ->select('ps.specify_value as brand_name', 'products.product_image')
+                ->distinct()
+                ->limit(3)
+                ->get();
+
+            foreach ($relatedAttrs as $attr) {
+                $brandSuggestion = $term . ' ' . strtolower($attr->brand_name);
+                $bsLower = strtolower($brandSuggestion);
+                if (in_array($bsLower, $addedSuggestionValues)) continue;
+
+                $suggestions->push([
+                    'value' => $brandSuggestion,
+                    'type' => 'smart',
+                    'category' => null,
+                    'image' => !empty($attr->product_image) ? asset('assets/images/products/' . $attr->product_image) : null,
+                    'url' => url('/productsearchdetails?keywords=' . urlencode($brandSuggestion)),
+                ]);
+                $addedSuggestionValues[] = $bsLower;
+            }
+        }
+
+        // 3. Direct product name matches (with category context)
         $productSuggestions = DB::table('products')
-            ->where('status', 1)
-            ->where('product_name', 'LIKE', '%' . $term . '%')
-            ->select('id', 'product_name as value', 'product_image')
-            ->orderBy('created_at', 'desc')
-            ->limit(6)
+            ->leftJoin('category_sub as cs', 'products.category_sub', '=', 'cs.id')
+            ->leftJoin('category as c', 'products.category', '=', 'c.id')
+            ->leftJoin('category_main as cm', 'products.category_main', '=', 'cm.id')
+            ->where('products.status', 1)
+            ->where('products.product_name', 'LIKE', '%' . $term . '%')
+            ->select('products.id', 'products.product_name as value', 'products.product_image', 'cs.category_sub_name', 'c.category_name', 'cm.category_main_name')
+            ->orderBy('products.created_at', 'desc')
+            ->limit(5)
             ->get();
 
         foreach ($productSuggestions as $row) {
+            $rowLower = strtolower($row->value);
+            if (in_array($rowLower, $addedSuggestionValues)) continue;
+
+            $cat = $row->category_sub_name ?: ($row->category_name ?: $row->category_main_name);
             $suggestions->push([
                 'value' => $row->value,
                 'type' => 'product',
+                'category' => $cat,
                 'image' => !empty($row->product_image) ? asset('assets/images/products/' . $row->product_image) : null,
                 'url' => url('/productsearchdetails?keywords=' . urlencode($row->value)),
             ]);
+            $addedSuggestionValues[] = $rowLower;
         }
 
-        $brandSuggestions = DB::table('products_specs')
-            ->leftJoin('products as p', 'p.id', '=', 'products_specs.products_id')
-            ->whereRaw('LOWER(specify_attribute) = ?', ['brand'])
-            ->where('specify_value', 'LIKE', '%' . $term . '%')
-            ->where('p.status', 1)
-            ->select('specify_value as value', 'p.product_image')
-            ->distinct()
-            ->limit(4)
-            ->get();
-
-        foreach ($brandSuggestions as $row) {
-            $suggestions->push([
-                'value' => $row->value,
-                'type' => 'brand',
-                'image' => !empty($row->product_image) ? asset('assets/images/products/' . $row->product_image) : null,
-                'url' => url('/productsearchdetails?keywords=' . urlencode($row->value)),
-            ]);
-        }
-
-        $mainCategorySuggestions = DB::table('category_main')
-            ->where('status', 1)
-            ->where('category_main_name', 'LIKE', '%' . $term . '%')
-            ->select('category_main_name as value', 'category_main_image')
-            ->limit(3)
-            ->get();
-
-        foreach ($mainCategorySuggestions as $row) {
-            $suggestions->push([
-                'value' => $row->value,
-                'type' => 'category',
-                'image' => !empty($row->category_main_image) ? asset('assets/images/categoryMain/' . $row->category_main_image) : null,
-                'url' => url('/productsearchdetails?keywords=' . urlencode($row->value)),
-            ]);
-        }
-
-        $categorySuggestions = DB::table('category')
-            ->where('status', 1)
-            ->where('category_name', 'LIKE', '%' . $term . '%')
-            ->select('category_name as value', 'category_image')
-            ->limit(3)
-            ->get();
-
-        foreach ($categorySuggestions as $row) {
-            $suggestions->push([
-                'value' => $row->value,
-                'type' => 'category',
-                'image' => !empty($row->category_image) ? asset('assets/images/category/' . $row->category_image) : null,
-                'url' => url('/productsearchdetails?keywords=' . urlencode($row->value)),
-            ]);
-        }
-
+        // 4. Sub-category suggestions
         $subCategorySuggestions = DB::table('category_sub')
             ->where('status', 1)
             ->where('category_sub_name', 'LIKE', '%' . $term . '%')
@@ -1273,36 +1411,119 @@ class HomeController extends Controller
             ->get();
 
         foreach ($subCategorySuggestions as $row) {
+            $rowLower = strtolower($row->value);
+            if (in_array($rowLower, $addedSuggestionValues)) continue;
+
             $suggestions->push([
                 'value' => $row->value,
-                'type' => 'subcategory',
+                'type' => 'category',
+                'category' => null,
                 'image' => !empty($row->category_sub_image) ? asset('assets/images/categorySub/' . $row->category_sub_image) : null,
                 'url' => url('/productsearchdetails?keywords=' . urlencode($row->value)),
             ]);
+            $addedSuggestionValues[] = $rowLower;
         }
 
-        $colorSuggestions = ProductColor::query()
+        // 5. Category suggestions
+        $categorySuggestions = DB::table('category')
             ->where('status', 1)
-            ->where('color_name', 'LIKE', '%' . $term . '%')
-            ->select('color_name as value')
+            ->where('category_name', 'LIKE', '%' . $term . '%')
+            ->select('category_name as value', 'category_image')
+            ->limit(2)
+            ->get();
+
+        foreach ($categorySuggestions as $row) {
+            $rowLower = strtolower($row->value);
+            if (in_array($rowLower, $addedSuggestionValues)) continue;
+
+            $suggestions->push([
+                'value' => $row->value,
+                'type' => 'category',
+                'category' => null,
+                'image' => !empty($row->category_image) ? asset('assets/images/category/' . $row->category_image) : null,
+                'url' => url('/productsearchdetails?keywords=' . urlencode($row->value)),
+            ]);
+            $addedSuggestionValues[] = $rowLower;
+        }
+
+        // 6. Brand suggestions
+        $brandSuggestions = DB::table('products_specs')
+            ->leftJoin('products as p', 'p.id', '=', 'products_specs.products_id')
+            ->whereRaw('LOWER(specify_attribute) = ?', ['brand'])
+            ->where('specify_value', 'LIKE', '%' . $term . '%')
+            ->where('p.status', 1)
+            ->select('specify_value as value', 'p.product_image')
             ->distinct()
             ->limit(3)
             ->get();
 
-        foreach ($colorSuggestions as $row) {
+        foreach ($brandSuggestions as $row) {
+            $rowLower = strtolower($row->value);
+            if (in_array($rowLower, $addedSuggestionValues)) continue;
+
             $suggestions->push([
                 'value' => $row->value,
-                'type' => 'color',
-                'image' => null,
+                'type' => 'brand',
+                'category' => null,
+                'image' => !empty($row->product_image) ? asset('assets/images/products/' . $row->product_image) : null,
                 'url' => url('/productsearchdetails?keywords=' . urlencode($row->value)),
             ]);
+            $addedSuggestionValues[] = $rowLower;
+        }
+
+        // 7. Color-based suggestions (e.g., "navy blue shirt")
+        if (!empty($colorTokens)) {
+            // Suggest other colors for the same product type
+            $otherColors = DB::table('products_details')
+                ->leftJoin('products', 'products.id', '=', 'products_details.products_id')
+                ->leftJoin('category_sub as cs', 'products.category_sub', '=', 'cs.id')
+                ->where('products.status', 1)
+                ->whereNotNull('products_details.attributevalue1')
+                ->where('products_details.attributevalue1', '!=', '')
+                ->where(function ($q) use ($searchTokens) {
+                    foreach ($searchTokens as $st) {
+                        $q->where(function ($sq) use ($st) {
+                            $sq->where('products.product_name', 'LIKE', '%' . $st . '%')
+                               ->orWhere('cs.category_sub_name', 'LIKE', '%' . $st . '%');
+                        });
+                    }
+                })
+                ->select('products_details.attributevalue1 as color', 'products.product_image')
+                ->distinct()
+                ->limit(10)
+                ->get();
+
+            foreach ($otherColors as $oc) {
+                $otherColorLower = strtolower(trim($oc->color));
+                // Skip the same color
+                $isSameColor = false;
+                foreach ($colorTokens as $ct) {
+                    if (stripos($otherColorLower, $ct) !== false) {
+                        $isSameColor = true;
+                        break;
+                    }
+                }
+                if ($isSameColor) continue;
+
+                $colorSuggestion = strtolower($oc->color) . ' ' . implode(' ', $searchTokens);
+                $csLower = strtolower($colorSuggestion);
+                if (in_array($csLower, $addedSuggestionValues)) continue;
+
+                $suggestions->push([
+                    'value' => $colorSuggestion,
+                    'type' => 'color',
+                    'category' => null,
+                    'image' => !empty($oc->product_image) ? asset('assets/images/products/' . $oc->product_image) : null,
+                    'url' => url('/productsearchdetails?keywords=' . urlencode($colorSuggestion)),
+                ]);
+                $addedSuggestionValues[] = $csLower;
+
+                if (count($addedSuggestionValues) >= 10) break;
+            }
         }
 
         $suggestions = $suggestions
-            ->unique(function ($item) {
-                return strtolower((string) ($item['type'] ?? '')) . '|' . strtolower((string) ($item['value'] ?? ''));
-            })
-            ->take(12)
+            ->take(10)
             ->values();
 
         return response()->json([

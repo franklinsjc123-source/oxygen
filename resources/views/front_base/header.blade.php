@@ -110,67 +110,113 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
     <style>
         .search-suggest-box {
             position: absolute;
-            top: calc(100% + 4px);
+            top: calc(100% + 2px);
             left: 0;
             right: 0;
             background: #fff;
-            border: 1px solid #d9d9d9;
-            border-radius: 6px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
             z-index: 1100;
-            max-height: 280px;
+            max-height: 420px;
             overflow-y: auto;
             display: none;
+            padding: 6px 0;
         }
 
         .search-suggest-item {
-            padding: 8px 10px;
-            font-size: 13px;
-            color: #333;
+            padding: 9px 14px;
+            font-size: 14px;
+            color: #212121;
             cursor: pointer;
-            line-height: 1.35;
+            line-height: 1.4;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 6px;
+            justify-content: flex-start;
+            gap: 10px;
+            transition: background 0.15s ease;
         }
 
         .search-suggest-left {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             min-width: 0;
+            flex: 1;
         }
 
         .search-suggest-thumb {
-            width: 34px !important;
-            height: 34px !important;
-            border-radius: 4px;
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 6px;
             object-fit: cover !important;
-            background: #f4f4f4;
+            background: #f5f5f6;
             flex-shrink: 0;
             display: block !important;
-            max-width: 34px !important;
-            min-width: 34px !important;
+            max-width: 40px !important;
+            min-width: 40px !important;
+            border: 1px solid #f0f0f0;
+        }
+
+        .search-suggest-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            background: #f5f5f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #878787;
+            font-size: 16px;
+        }
+
+        .search-suggest-info {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            gap: 1px;
         }
 
         .search-suggest-text {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 220px;
+            max-width: 320px;
+            font-weight: 500;
+            font-size: 14px;
+            color: #212121;
+        }
+
+        .search-suggest-category {
+            font-size: 12px;
+            color: #2874f0;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 260px;
         }
 
         .search-suggest-item:hover,
         .search-suggest-item.active {
-            background: #f3f8ff;
+            background: #f5f5f6;
         }
 
         .search-suggest-type {
             font-size: 11px;
-            color: #888;
+            color: #878787;
             text-transform: capitalize;
             white-space: nowrap;
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+
+        .search-suggest-arrow {
+            color: #c2c2c2;
+            font-size: 13px;
+            margin-left: auto;
+            flex-shrink: 0;
         }
 
         @media (max-width: 767.98px) {
@@ -1842,12 +1888,33 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                             box.innerHTML = items.map(function(item, idx) {
                                 var safeValue = escapeHtml(item.value);
                                 var safeType = escapeHtml(item.type || 'search');
-                                var imgSrc = item.image ? item.image : defaultSuggestImage;
-                                var imageHtml = '<img class="search-suggest-thumb" style="width:34px;height:34px;display:block;object-fit:cover;border-radius:4px;flex:0 0 34px;" src="' + escapeHtml(imgSrc) + '" alt="' + safeValue + '" onerror="this.src=\'' + escapeHtml(defaultSuggestImage) + '\'">';
+                                var safeCategory = item.category ? escapeHtml(item.category) : '';
+                                var imgSrc = item.image ? item.image : '';
+
+                                // Use product image if available, otherwise show search icon
+                                var mediaHtml = '';
+                                if (imgSrc) {
+                                    mediaHtml = '<img class="search-suggest-thumb" src="' + escapeHtml(imgSrc) + '" alt="' + safeValue + '" onerror="this.parentNode.innerHTML=\'<span class=search-suggest-icon><i class=w-icon-search></i></span>\'">';
+                                } else {
+                                    mediaHtml = '<span class="search-suggest-icon"><i class="w-icon-search"></i></span>';
+                                }
+
+                                // Category context line (Flipkart-style "in Casual Shirts")
+                                var categoryHtml = '';
+                                if (safeCategory) {
+                                    categoryHtml = '<span class="search-suggest-category">in ' + safeCategory + '</span>';
+                                }
+
                                 return '<div class="search-suggest-item" data-index="' + idx + '">' +
-                                    '<span class="search-suggest-left">' + imageHtml + '<span class="search-suggest-text">' + safeValue + '</span></span>' +
-                                    '<span class="search-suggest-type">' + safeType + '</span>' +
-                                    '</div>';
+                                    '<span class="search-suggest-left">' +
+                                        mediaHtml +
+                                        '<span class="search-suggest-info">' +
+                                            '<span class="search-suggest-text">' + safeValue + '</span>' +
+                                            categoryHtml +
+                                        '</span>' +
+                                    '</span>' +
+                                    '<span class="search-suggest-arrow"><i class="w-icon-long-arrow-right"></i></span>' +
+                                '</div>';
                             }).join('');
                             box.style.display = 'block';
                         }

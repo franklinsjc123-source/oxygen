@@ -3898,51 +3898,77 @@ class FrontendController extends Controller
             ->where('p.status', 1);
 
         if (!empty($keyword)) {
-            $matchedColorNames = DB::table('products_details')
+            $rawTokens = preg_split('/\s+/', strtolower($keyword), -1, PREG_SPLIT_NO_EMPTY);
+            $stopWords = ['for', 'with', 'and', 'the', 'a', 'an', 'of', 'to', 'in', 'on'];
+            $tokens = array_values(array_filter($rawTokens, function ($token) use ($stopWords) {
+                return !in_array($token, $stopWords, true) && strlen($token) > 1;
+            }));
+            if (empty($tokens)) {
+                $tokens = [strtolower($keyword)];
+            }
+
+            // Get all known color values from the database
+            $allColors = DB::table('products_details')
                 ->whereNotNull('attributevalue1')
                 ->where('attributevalue1', '!=', '')
                 ->pluck('attributevalue1')
                 ->unique()
-                ->filter(function ($cName) use ($keyword) {
-                    return stripos($cName, $keyword) !== false || stripos($keyword, $cName) !== false;
-                })
-                ->map(function ($cName) { return strtolower($cName); })
+                ->map(function ($c) { return strtolower(trim((string) $c)); })
+                ->unique()
                 ->values()
                 ->toArray();
 
-            $tokens = array_filter(explode(' ', strtolower($keyword)), function ($t) {
-                return strlen($t) >= 2;
-            });
-
-            $productsQuery->where(function ($query) use ($keyword, $matchedColorNames) {
-                $query->where('p.product_name', 'LIKE', '%' . $keyword . '%')
-                    ->orWhere('cm.category_main_name', 'LIKE', '%' . $keyword . '%')
-                    ->orWhere('c.category_name', 'LIKE', '%' . $keyword . '%')
-                    ->orWhere('cs.category_sub_name', 'LIKE', '%' . $keyword . '%')
-                    ->orWhere('pd.attributevalue1', 'LIKE', '%' . $keyword . '%')
-                    ->orWhere('pd.attributevalue2', 'LIKE', '%' . $keyword . '%')
-                    ->orWhere('pd.attributevalue3', 'LIKE', '%' . $keyword . '%')
-                    ->orWhereExists(function ($brandQuery) use ($keyword) {
-                        $brandQuery->select(DB::raw(1))
-                            ->from('products_specs as ps')
-                            ->whereColumn('ps.products_id', 'p.id')
-                            ->whereRaw('LOWER(ps.specify_attribute) = ?', ['brand'])
-                            ->where('ps.specify_value', 'LIKE', '%' . $keyword . '%');
-                    });
-
-                if (!empty($matchedColorNames)) {
-                    $query->orWhereIn(DB::raw('LOWER(pd.attributevalue1)'), $matchedColorNames);
+            // Separate tokens into color tokens and non-color (search) tokens
+            $colorTokens = [];
+            $searchTokens = [];
+            foreach ($tokens as $token) {
+                $isColor = false;
+                foreach ($allColors as $colorName) {
+                    if (stripos($colorName, $token) !== false || stripos($token, $colorName) !== false) {
+                        $isColor = true;
+                        break;
+                    }
                 }
-            });
+                if ($isColor) {
+                    $colorTokens[] = $token;
+                } else {
+                    $searchTokens[] = $token;
+                }
+            }
 
-            if (!empty($tokens)) {
-                foreach ($tokens as $token) {
-                    $productsQuery->where(function ($tokenQuery) use ($token) {
+            // If ALL tokens are color tokens (e.g., user just typed "blue"), also use them as search tokens
+            if (empty($searchTokens) && !empty($colorTokens)) {
+                $searchTokens = $colorTokens;
+                $colorTokens = [];
+            }
+
+            // Find exact matched color names for color tokens
+            $matchedColorNames = [];
+            if (!empty($colorTokens)) {
+                foreach ($allColors as $colorName) {
+                    foreach ($colorTokens as $ct) {
+                        if (stripos($colorName, $ct) !== false) {
+                            $matchedColorNames[] = $colorName;
+                            break;
+                        }
+                    }
+                }
+                $matchedColorNames = array_unique($matchedColorNames);
+            }
+
+            // Apply color filter as a strict AND condition
+            if (!empty($matchedColorNames)) {
+                $productsQuery->whereIn(DB::raw('LOWER(pd.attributevalue1)'), $matchedColorNames);
+            }
+
+            // Apply non-color search tokens to match product name/category/brand
+            $productsQuery->where(function ($query) use ($searchTokens) {
+                foreach ($searchTokens as $token) {
+                    $query->where(function ($tokenQuery) use ($token) {
                         $tokenQuery->where('p.product_name', 'LIKE', '%' . $token . '%')
                             ->orWhere('cm.category_main_name', 'LIKE', '%' . $token . '%')
                             ->orWhere('c.category_name', 'LIKE', '%' . $token . '%')
                             ->orWhere('cs.category_sub_name', 'LIKE', '%' . $token . '%')
-                            ->orWhere('pd.attributevalue1', 'LIKE', '%' . $token . '%')
                             ->orWhere('pd.attributevalue2', 'LIKE', '%' . $token . '%')
                             ->orWhere('pd.attributevalue3', 'LIKE', '%' . $token . '%')
                             ->orWhereExists(function ($brandTokenQuery) use ($token) {
@@ -3954,7 +3980,7 @@ class FrontendController extends Controller
                             });
                     });
                 }
-            }
+            });
         }
 
         if (!empty($main_category_id)) {
