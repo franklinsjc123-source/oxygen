@@ -98,7 +98,7 @@ class VendorcreateController extends Controller
         $staff = \App\Models\Staffcreates::where('employee_id', $login_id)->first();
         $staff_id = $staff ? $staff->id : null;
 
-        $vendorlist = vendorcreate::where(function($q) use ($username, $staff_id) {
+        $vendorlist = vendorcreate::where('id', '!=', 22)->where(function($q) use ($username, $staff_id) {
             $q->where('created_by', $username);
             if ($staff_id) {
                 $q->orWhere('staff_id', $staff_id);

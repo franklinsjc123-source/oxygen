@@ -96,7 +96,7 @@ class VendorcreateController extends Controller
     public function create() {}
     public function list()
     {
-        $vendorlist = vendorcreate::All();
+        $vendorlist = vendorcreate::where('id', '!=', 22)->get();
         $zoneMap = Zonal::pluck('name', 'id');
         // dd($vendorlist);
         //    return view('layout.admin.vendor.list')->with("vendorlist");

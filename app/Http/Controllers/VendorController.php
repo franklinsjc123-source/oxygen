@@ -13,8 +13,8 @@ class VendorController extends Controller
     public function list()
     {
 
-        $vendorlist = vendorcreate::All();
+        $vendorlist = vendorcreate::where('id', '!=', 22)->get();
        // dd($vendorlist);
-        return view('layout.admin.vendor.vendor-list')->with('vendorlist');
+        return view('layout.admin.vendor.vendor-list')->with('vendorlist', $vendorlist);
     }
 }
