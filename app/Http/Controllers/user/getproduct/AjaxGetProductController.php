@@ -227,7 +227,21 @@ class AjaxGetProductController extends Controller
 		if (!session()->has('customer_id')) {
 			return redirect()->to('home')->with('error', 'Please login to track your order.');
 		}
-		return view('website.front-end.track_order_search');
+
+		$customerId = session('customer_id');
+
+		// Get all non-delivered orders for this customer, newest first
+		$orders = Ecom_Orders::where('customer_id', $customerId)
+			->whereNotIn('order_status', ['Delivered'])
+			->orderBy('created_at', 'desc')
+			->get();
+
+		// Load order products for each order
+		foreach ($orders as $order) {
+			$order->products = Ecom_Order_product::where('order_id', $order->order_id)->get();
+		}
+
+		return view('website.front-end.track_order_search', compact('orders'));
 	}
 
 	public function track_order_search(Request $request)
@@ -255,7 +269,7 @@ class AjaxGetProductController extends Controller
 		}
 
 		// Ensure the order belongs to the logged-in user
-		$customerId = session('customerId') ?? session('userId');
+		$customerId = session('customer_id') ?? session('customerId') ?? session('userId');
 		if ($order_info->customer_id != $customerId) {
 			return redirect()->route('track_order_page')
 				->with('error', 'You are not authorized to track this order.')
@@ -279,7 +293,7 @@ class AjaxGetProductController extends Controller
 		}
 
 		// Ensure the order belongs to the logged-in user
-		$customerId = session('customerId') ?? session('userId');
+		$customerId = session('customer_id') ?? session('customerId') ?? session('userId');
 		if ($order_info->customer_id != $customerId) {
 			return redirect()->route('track_order_page')
 				->with('error', 'You are not authorized to track this order.');
