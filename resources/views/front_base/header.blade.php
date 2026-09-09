@@ -1814,13 +1814,13 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                                     </ul>
                                 </nav>
                             </div>
-                            <div class="header-right" style="display: flex !important; align-items: center !important; margin-left: auto !important; margin-top: 0 !important; margin-bottom: 0 !important; margin-right: 0 !important; padding: 0 !important; gap: 0 !important;">
+                            <div class="header-right" style="display: flex !important; align-items: center !important; margin-left: auto !important; margin-top: 0 !important; margin-bottom: 0 !important; margin-right: 0 !important; padding: 0 !important; gap: 22px !important;">
                                 <a href="{{ url('offers') }}" style="display: inline-flex !important; align-items: center !important; gap: 6px !important; margin: 0 !important;"><i class="w-icon-sale" style="font-size: 18px !important;"></i>Offers</a>
-                                <a href="{{ url('auction') }}" style="display: inline-flex !important; align-items: center !important; gap: 6px !important; margin: 0 0 0 22px !important;"><i class="fas fa-gavel" style="font-size: 17px !important;"></i>Bid & Win</a>
+                                <a href="{{ url('auction') }}" style="display: inline-flex !important; align-items: center !important; gap: 6px !important; margin: 0 !important;"><i class="fas fa-gavel" style="font-size: 17px !important;"></i>Bid & Win</a>
                                 @if(session('customer_id'))
-                                    <a href="{{ url('track-order') }}" style="display: inline-flex !important; align-items: center !important; gap: 6px !important; margin: 0 0 0 22px !important;"><i class="w-icon-map-marker" style="font-size: 18px !important;"></i>Track Order</a>
+                                    <a href="{{ url('track-order') }}" style="display: inline-flex !important; align-items: center !important; gap: 6px !important; margin: 0 !important;"><i class="w-icon-map-marker" style="font-size: 18px !important;"></i>Track Order</a>
                                 @else
-                                    <a href="javascript:void(0)" onclick="showLoginPopup()" style="display: inline-flex !important; align-items: center !important; gap: 6px !important; margin: 0 0 0 22px !important;"><i class="w-icon-map-marker" style="font-size: 18px !important;"></i>Track Order</a>
+                                    <a href="javascript:void(0)" onclick="showLoginPopup()" style="display: inline-flex !important; align-items: center !important; gap: 6px !important; margin: 0 !important;"><i class="w-icon-map-marker" style="font-size: 18px !important;"></i>Track Order</a>
                                 @endif
                             </div>
                         </div>
