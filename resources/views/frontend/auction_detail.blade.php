@@ -38,6 +38,76 @@
         .auction-page-wrapper { color: #1e293b; }
 
         .tm-title { font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom: 25px; line-height: 1.25; letter-spacing: -0.5px; }
+
+        /* Winner Claim Instructions Styling */
+        .tm-claim-guide-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px 28px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            border: 1px solid #e2e8f0;
+        }
+
+        .tm-claim-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 991px) {
+            .tm-claim-grid {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+
+        .tm-claim-step-item {
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .tm-claim-step-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .tm-claim-step-item.step-email {
+            background: linear-gradient(180deg, #ffffff 0%, #f0f7ff 100%);
+            border: 1px solid #dbeafe;
+        }
+
+        .tm-claim-step-item.step-time {
+            background: linear-gradient(180deg, #ffffff 0%, #fff5f5 100%);
+            border: 1px solid #ffe4e4;
+        }
+
+        .tm-claim-step-item.step-redeem {
+            background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+            border: 1px solid #dcfce7;
+        }
+
+        .tm-step-badge {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        .tm-sidebar-claim-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+            border: 1px solid #dbeafe;
+            border-radius: 18px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(37,99,235,0.04);
+        }
         
          .tm-timer-blocks { display: flex; gap: 6px; margin-bottom: 24px; }
          .timer-block { background: #4b4b4b; color: #fff; padding: 12px 10px; text-align: center; flex: 1; border-radius: 6px; display: flex; flex-direction: column; justify-content: center; }
@@ -264,7 +334,7 @@
                 <div class="row">
                     <!-- Left: Image Gallery & Details -->
                     <div class="col-lg-8 col-md-7 mb-4 pr-lg-4">
-                        <div class="tm-gallery">
+                        <div class="tm-gallery" style="margin-bottom: 24px;">
                             @if(count($productImages) > 0)
                                 <img src="{{ asset('assets/images/products/detail/' . $productImages[0]) }}" class="tm-main-image" id="main-product-image" alt="{{ $product->product_name }}">
                                 <div class="tm-thumbnails">
@@ -275,6 +345,73 @@
                             @else
                                 <img src="{{ asset('assets/images/products/' . $product->product_image) }}" class="tm-main-image" id="main-product-image" alt="{{ $product->product_name }}">
                             @endif
+                        </div>
+
+                        <!-- How to Get Product After Winning (Featured 3-Step Card Grid) -->
+                        <div class="tm-claim-guide-card">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid #f1f5f9; flex-wrap: wrap; gap: 10px;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div style="width: 42px; height: 42px; border-radius: 14px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 4px 14px rgba(37,99,235,0.3);">
+                                        <i class="fas fa-trophy"></i>
+                                    </div>
+                                    <div>
+                                        <h4 style="margin: 0; font-size: 18px; font-weight: 800; color: #0f172a; letter-spacing: -0.4px;">How to Get Product After Winning</h4>
+                                        <span style="font-size: 13px; color: #64748b; font-weight: 500;">Instructions for auction winners</span>
+                                    </div>
+                                </div>
+                                <span style="background: #eff6ff; color: #2563eb; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px; border: 1px solid #bfdbfe; display: inline-flex; align-items: center; gap: 6px;">
+                                    <i class="fas fa-shield-alt"></i> Winner Protection
+                                </span>
+                            </div>
+
+                            <div class="tm-claim-grid">
+                                <!-- Step 1 -->
+                                <div class="tm-claim-step-item step-email">
+                                    <div>
+                                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                                            <span class="tm-step-badge" style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe;">1</span>
+                                            <i class="fas fa-envelope-open-text" style="font-size: 22px; color: #2563eb;"></i>
+                                        </div>
+                                        <h5 style="font-size: 15px; font-weight: 700; color: #0f172a; margin: 0 0 8px 0;">Winning Code via Email</h5>
+                                        <p style="font-size: 13px; color: #475569; margin: 0; line-height: 1.55; font-weight: 400;">
+                                            Once the auction is over, an auction winning code is sent directly to the winner's registered email address.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Step 2 -->
+                                <div class="tm-claim-step-item step-time">
+                                    <div>
+                                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                                            <span class="tm-step-badge" style="background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5;">2</span>
+                                            <i class="fas fa-clock" style="font-size: 22px; color: #dc2626;"></i>
+                                        </div>
+                                        <h5 style="font-size: 15px; font-weight: 700; color: #991b1b; margin: 0 0 8px 0;">Valid Until Next Day 11 PM</h5>
+                                        <p style="font-size: 13px; color: #7f1d1d; margin: 0; line-height: 1.55; font-weight: 400;">
+                                            Winning code validation is active <strong>only until 11:00 PM on the next day</strong> after the auction ends.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Step 3 -->
+                                <div class="tm-claim-step-item step-redeem">
+                                    <div>
+                                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                                            <span class="tm-step-badge" style="background: #d1fae5; color: #059669; border: 1px solid #6ee7b7;">3</span>
+                                            <i class="fas fa-shopping-bag" style="font-size: 22px; color: #059669;"></i>
+                                        </div>
+                                        <h5 style="font-size: 15px; font-weight: 700; color: #065f46; margin: 0 0 8px 0;">Redeem Code at Checkout</h5>
+                                        <p style="font-size: 13px; color: #047857; margin: 0; line-height: 1.55; font-weight: 400;">
+                                            The winner must use and apply the winning code at checkout before 11:00 PM next day to claim the product.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 18px; background: #fff7ed; border: 1px solid #ffedd5; border-left: 4px solid #f97316; border-radius: 12px; padding: 12px 16px; font-size: 13px; color: #c2410c; display: flex; align-items: center; gap: 10px; font-weight: 600;">
+                                <i class="fas fa-exclamation-circle" style="font-size: 16px; color: #f97316; flex-shrink: 0;"></i>
+                                <span><strong>Note:</strong> Always check your email right after auction ends and redeem your code before 11:00 PM next day!</span>
+                            </div>
                         </div>
                     </div>
 
@@ -449,7 +586,6 @@
                             </div>
                         </div>
 
-
                         @if($winnerInfo)
                             <div class="tm-seller-box" style="margin-top: 20px; border-color: #fcd34d; background: #fffbeb; box-shadow: 0 4px 20px rgba(245,158,11,0.1);">
                                 <div class="tm-seller-info" style="width: 100%; text-align: center;">
@@ -462,6 +598,31 @@
                                 </div>
                             </div>
                         @endif
+
+                        <!-- Compact Sidebar Winner Rules Card -->
+                        <div class="tm-sidebar-claim-box">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #dbeafe;">
+                                <div style="font-size: 14px; font-weight: 800; color: #1e3a8a; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-gift" style="color: #2563eb;"></i> Winner Claim Process
+                                </div>
+                                <span style="font-size: 11px; font-weight: 700; background: #dbeafe; color: #1e40af; padding: 3px 10px; border-radius: 12px;">3 Steps</span>
+                            </div>
+                            
+                            <div style="font-size: 13px; color: #334155; line-height: 1.6; font-weight: 500; display: flex; flex-direction: column; gap: 10px;">
+                                <div style="display: flex; align-items: flex-start; gap: 10px;">
+                                    <i class="fas fa-check-circle" style="color: #2563eb; margin-top: 3px; font-size: 13px; flex-shrink: 0;"></i>
+                                    <span>Winning code is sent via email once auction ends.</span>
+                                </div>
+                                <div style="display: flex; align-items: flex-start; gap: 10px;">
+                                    <i class="fas fa-clock" style="color: #dc2626; margin-top: 3px; font-size: 13px; flex-shrink: 0;"></i>
+                                    <span>Code validation is valid <strong>only until next day 11:00 PM</strong>.</span>
+                                </div>
+                                <div style="display: flex; align-items: flex-start; gap: 10px;">
+                                    <i class="fas fa-tag" style="color: #059669; margin-top: 3px; font-size: 13px; flex-shrink: 0;"></i>
+                                    <span>Use and redeem code at checkout before expiry time.</span>
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
@@ -477,7 +638,6 @@
                              <li class="nav-item">
                                  <a href="#product-tab-specification" class="nav-link">Specification</a>
                              </li>
-                             
                              <li class="nav-item">
                                  <a href="#product-tab-reviews" class="nav-link">Customer Reviews ({{ $reviewCount }})</a>
                              </li>
@@ -512,7 +672,7 @@
                                       </div>
                                   @endif
                               </div>
-                             <div class="tab-pane" id="product-tab-reviews">
+                              <div class="tab-pane" id="product-tab-reviews">
                                   @php
                                       $totalRatingsCount = count($ratings);
                                       $recommendedRatingsCount = $ratings->where('star_rating', '>=', 4)->count();
