@@ -258,6 +258,7 @@ Route::get('auction/{id}/detail', [AuctionWebController::class, 'show'])->name('
 Route::post('auction/bid', [AuctionWebController::class, 'placeBid'])->name('auction.bid');
 Route::get('auction/{id}/bids', [AuctionWebController::class, 'getBids'])->name('auction.bids');
 Route::post('auction/{id}/settle', [AuctionWebController::class, 'settleAjax'])->name('auction.settle');
+Route::post('auction/{id}/resend-email', [AuctionWebController::class, 'resendWinnerEmailAjax'])->name('auction.resend-email');
 
 /*Vendor all product*/
 

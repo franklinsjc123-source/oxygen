@@ -1195,9 +1195,7 @@
                                     </div>
                                     <div style="font-size: 15px; color: #475569; font-weight: 600;" id="popup-winner-bid-container">
                                         Winning Bid: <span style="color: #2563eb; font-weight: 800;" id="popup-winner-amount">₹{{ number_format($winnerInfo['amount'] ?? $currentBid, 2) }}</span>
-                                    </div>
-
-                                    @if(isset($winnerInfo['is_current_user']) && $winnerInfo['is_current_user'] && !empty($winnerInfo['coupon_code']))
+                                                              @if(isset($winnerInfo['is_current_user']) && $winnerInfo['is_current_user'] && !empty($winnerInfo['coupon_code']))
                                         <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid #fef3c7;">
                                             <div style="font-size: 13px; font-weight: 700; color: #059669; margin-bottom: 6px;">
                                                 🥳 Congratulations! You Won This Auction!
@@ -1208,10 +1206,18 @@
                                             <div style="font-size: 13px; color: #475569; margin-top: 8px;">
                                                 <i class="fas fa-paper-plane" style="color: #2563eb; margin-right: 4px;"></i> An email with your winning code has been sent to your registered address!
                                             </div>
+                                            <button type="button" onclick="resendWinnerEmail(this)" style="margin-top: 10px; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s ease;">
+                                                <i class="fas fa-redo-alt"></i> Resend Email Code
+                                            </button>
                                         </div>
                                     @else
                                         <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #fef3c7; font-size: 13px; color: #64748b;">
                                             <i class="fas fa-envelope-open-text" style="color: #2563eb; margin-right: 4px;"></i> An email with the winning code has been sent to the winner.
+                                            <div style="margin-top: 8px;">
+                                                <button type="button" onclick="resendWinnerEmail(this)" style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer;">
+                                                    <i class="fas fa-redo-alt"></i> Resend Email Code
+                                                </button>
+                                            </div>
                                         </div>
                                     @endif
                                 </div>
@@ -1222,10 +1228,6 @@
                             </div>
                         </div>
                      </div>
-
-
-
-                 
 
 </div>                    </div>
                 </div>
@@ -1265,6 +1267,48 @@
         if (modal) {
             modal.style.display = 'flex';
             setTimeout(function() { modal.classList.add('show'); }, 10);
+        }
+    }
+
+    function resendWinnerEmail(btn) {
+        if (!btn) return;
+        var originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+        fetch("{{ route('auction.resend-email', $auction->id) }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json',
+            }
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            btn.disabled = false;
+            if (data.success) {
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Email Sent!';
+                btn.style.background = '#059669';
+                btn.style.color = '#ffffff';
+                btn.style.borderColor = '#059669';
+                setTimeout(function() {
+                    btn.innerHTML = originalHtml;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                    btn.style.borderColor = '';
+                }, 4000);
+            } else {
+                alert(data.message || 'Failed to send email.');
+                btn.innerHTML = originalHtml;
+            }
+        })
+        .catch(function() {
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+            alert('Error sending email. Please try again.');
+        });
+    } 10);
         }
     }
 

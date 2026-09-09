@@ -48,7 +48,7 @@
                                         <p style="margin: 0; color: #fff; font-size: 32px; font-weight: 800; letter-spacing: 3px; font-family: 'Courier New', monospace;">
                                             {{ $couponCode }}
                                         </p>
-                                        <p style="margin: 10px 0 0; color: rgba(255,255,255,0.85); font-size: 12px;">Valid for 30 days from today</p>
+                                        <p style="margin: 10px 0 0; color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 600;">⏰ Valid until 11:00 PM tomorrow</p>
                                     </td>
                                 </tr>
                             </table>
