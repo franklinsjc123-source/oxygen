@@ -1305,11 +1305,16 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                             @if(isset($livingCategory) && $livingCategory)
                                 <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-living">Living <i class="w-icon-angle-down"></i></a>
                             @endif
-                            <a href="{{ url('auction') }}" class="auction-pulse-btn" title="Live Auction"><i class="fas fa-gavel"></i></a>
+                            @php
+                                $hasLiveAuction = \App\Models\auction\auction::where('status', 1)->whereRaw("REPLACE(end_date, 'T', ' ') >= ?", [now('Asia/Kolkata')->format('Y-m-d H:i:s')])->exists();
+                            @endphp
+                            @if($hasLiveAuction)
+                                <a href="{{ url('auction') }}" class="auction-pulse-btn" title="Live Auction"><i class="fas fa-gavel"></i></a>
+                            @endif
                             @if(session('customer_id'))
-                                <a href="{{ url('track-order') }}" class="offer-icon-btn" title="Track Order"><i class="w-icon-map-marker"></i></a>
+                                <a href="{{ url('track-order') }}" class="offer-icon-btn" title="Track Order" style="{{ !$hasLiveAuction ? 'margin-left: auto !important;' : '' }}"><i class="w-icon-map-marker"></i></a>
                             @else
-                                <a href="javascript:void(0)" onclick="showLoginPopup()" class="offer-icon-btn" title="Track Order"><i class="w-icon-map-marker"></i></a>
+                                <a href="javascript:void(0)" onclick="showLoginPopup()" class="offer-icon-btn" title="Track Order" style="{{ !$hasLiveAuction ? 'margin-left: auto !important;' : '' }}"><i class="w-icon-map-marker"></i></a>
                             @endif
                         </div>
                     </div>
@@ -1819,7 +1824,9 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                                 </nav>
                             </div>
                             <div class="header-right" style="display: flex !important; align-items: center !important; margin-left: auto !important; margin-top: 0 !important; margin-bottom: 0 !important; margin-right: 0 !important; padding: 0 !important; gap: 22px !important;">
-                                <a href="{{ url('auction') }}" style="display: inline-flex !important; align-items: center !important; gap: 6px !important; margin: 0 !important;"><i class="fas fa-gavel" style="font-size: 17px !important;"></i>Bid & Win</a>
+                                @if($hasLiveAuction)
+                                    <a href="{{ url('auction') }}" style="display: inline-flex !important; align-items: center !important; gap: 6px !important; margin: 0 !important;"><i class="fas fa-gavel" style="font-size: 17px !important;"></i>Bid &amp; Win</a>
+                                @endif
                                 @if(session('customer_id'))
                                     <a href="{{ url('track-order') }}" style="display: inline-flex !important; align-items: center !important; gap: 6px !important; margin: 0 !important;"><i class="w-icon-map-marker" style="font-size: 18px !important;"></i>Track Order</a>
                                 @else
