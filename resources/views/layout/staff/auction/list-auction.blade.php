@@ -170,27 +170,48 @@
                 		<td>{{ $item->end_date ? date('d-m-Y h:i A', strtotime($item->end_date)) : '' }}</td>
                         <td>
                             <?php
-                                $sd = $item->start_date;
-                                $ed= $item->end_date;                                    
+                                $now = \Carbon\Carbon::now('Asia/Kolkata');
+                                $sd = $item->start_date ? \Carbon\Carbon::parse($item->start_date, 'Asia/Kolkata') : null;
+                                $ed = $item->end_date ? \Carbon\Carbon::parse($item->end_date, 'Asia/Kolkata') : null;
+                                
+                                $isClosed = $ed && $now->greaterThan($ed);
+                                $isUpcoming = $sd && $now->lessThan($sd);
                             ?>
-                        <label class="switch">                         
-                        @if($ed >= $date && $sd <= $date)                                                            
-                            <input type="checkbox"
-                                onclick="return confirm('you want to Change it?  Please Click Edit Button')"
-                                checked id="togBtn">                                                            
-                            @else
-                                <input type="checkbox"
-                                onclick="return confirm('you want to Change it?  Please Click Edit Button')" 
-                                 id="togBtn">                                                            
-                            @endif
-                        <div class="slider round">
-                            <!--ADDED HTML -->
-                            <span class="off">Inactive</span>
-                            <span class="on">Active</span>
-                            <!--END-->
-                        </div>                        
-                        </label>                    
-                        </div>                    
+                            <div class="d-flex flex-column align-items-start" style="gap: 6px;">
+                                @if($item->status == 0)
+                                    <span class="badge" style="background-color: #6c757d; color: #fff; font-size: 0.75rem; padding: 5px 10px; border-radius: 20px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                                        <i class="fa fa-pause-circle"></i> Inactive
+                                    </span>
+                                @elseif($isClosed)
+                                    <span class="badge" style="background-color: #ef4444; color: #fff; font-size: 0.75rem; padding: 5px 10px; border-radius: 20px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                                        <i class="fa fa-times-circle"></i> Closed
+                                    </span>
+                                @elseif($isUpcoming)
+                                    <span class="badge" style="background-color: #f59e0b; color: #fff; font-size: 0.75rem; padding: 5px 10px; border-radius: 20px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                                        <i class="fa fa-clock-o"></i> Upcoming
+                                    </span>
+                                @else
+                                    <span class="badge" style="background-color: #10b981; color: #fff; font-size: 0.75rem; padding: 5px 10px; border-radius: 20px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                                        <span style="width: 7px; height: 7px; background: #fff; border-radius: 50%; display: inline-block;"></span> Live
+                                    </span>
+                                @endif
+
+                                <label class="switch" style="margin-bottom: 0;" title="Toggle Active / Inactive">                         
+                                    @if($item->status == 1)                                                            
+                                        <input type="checkbox"
+                                            onclick="return confirm('you want to Change it?  Please Click Edit Button')"
+                                            checked id="togBtn_{{ $item->id }}">                                                            
+                                    @else
+                                        <input type="checkbox"
+                                            onclick="return confirm('you want to Change it?  Please Click Edit Button')" 
+                                            id="togBtn_{{ $item->id }}">                                                            
+                                    @endif
+                                    <div class="slider round">
+                                        <span class="off">Off</span>
+                                        <span class="on">On</span>
+                                    </div>                        
+                                </label>                    
+                            </div>                    
                         </td>
                         @endif
 
