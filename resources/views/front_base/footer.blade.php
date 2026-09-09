@@ -292,15 +292,19 @@
            <i class="w-icon-vendor-store"></i>
            <p>Shops</p>
        </a>
+       <a href="{{ url('offers') }}" class="sticky-link {{ request()->is('offers') || request()->is('offers/*') ? 'active' : '' }}">
+           <i class="w-icon-sale"></i>
+           <p>Offer</p>
+       </a>
        <a href="{{ url('categories') }}" class="sticky-link {{ request()->is('categories') ? 'active' : '' }}">
            <i class="w-icon-grid"></i>
-           <p>Categories</p>
+           <p>Category</p>
        </a>
 
        <?php  if(session('customer_id')){ ?>
        <a href="{{ route('myAccount') }}" class="sticky-link {{ request()->is('my-account') || request()->is('my-account/*') || request()->is('customer/*') ? 'active' : '' }}">
            <i class="w-icon-account"></i>
-           <p>Account</p>
+           <p>My Account</p>
        </a>
        <?php  }else{ ?>
        <a onclick="showLoginPopup()" class="sticky-link">
@@ -308,18 +312,6 @@
            <p>Login</p>
        </a>
        <?php } ?>
-
-        <?php if(session('customer_id')){ ?>
-        <a href="{{ url('track-order') }}" class="sticky-link {{ request()->is('track-order') || request()->is('track-order/*') ? 'active' : '' }}">
-            <i class="w-icon-map-marker"></i>
-            <p>Track</p>
-        </a>
-        <?php } else { ?>
-        <a onclick="showLoginPopup()" class="sticky-link {{ request()->is('track-order') || request()->is('track-order/*') ? 'active' : '' }}" style="cursor: pointer;">
-            <i class="w-icon-map-marker"></i>
-            <p>Track</p>
-        </a>
-        <?php } ?>
     </div>
    <!-- End of Sticky Footer -->
 
