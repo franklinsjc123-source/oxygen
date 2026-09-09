@@ -187,12 +187,12 @@
     .timeline::before {
         content: '';
         position: absolute;
-        left: 9px;
+        left: 10px;
         top: 6px;
         bottom: 6px;
-        width: 3px;
+        width: 2px;
         background: #e0e0e0;
-        border-radius: 3px;
+        border-radius: 2px;
     }
 
     .timeline-step {
@@ -205,13 +205,13 @@
 
     .timeline-dot {
         position: absolute;
-        left: -25px;
+        left: -29px;
         top: 2px;
-        width: 21px;
-        height: 21px;
+        width: 20px;
+        height: 20px;
         border-radius: 50%;
         background: #e0e0e0;
-        border: 3px solid #fff;
+        border: 2px solid #fff;
         box-shadow: 0 0 0 2px #e0e0e0;
         z-index: 2;
         display: flex;
