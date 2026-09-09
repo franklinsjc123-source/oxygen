@@ -1171,62 +1171,7 @@
                                      </div>
                         </div>
 
-                        <!-- Auction Completed & Winner Announcement Popup Modal -->
-                        <div id="auction-winner-modal" class="tm-modal {{ ($isExpired || $auction->is_settled) && $winnerInfo ? 'show' : '' }}" style="{{ ($isExpired || $auction->is_settled) && $winnerInfo ? 'display: flex;' : 'display: none;' }}">
-                            <div class="tm-modal-content" style="max-width: 500px; text-align: center; padding: 32px 28px; border-radius: 24px; border: 2px solid #fcd34d; background: linear-gradient(180deg, #ffffff 0%, #fffbeb 100%); box-shadow: 0 20px 50px rgba(0,0,0,0.15);">
-                                
-                                <div style="width: 70px; height: 70px; margin: 0 auto 16px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 8px 20px rgba(245, 158, 11, 0.35);">
-                                    <i class="fas fa-trophy"></i>
-                                </div>
 
-                                <h3 style="font-size: 22px; font-weight: 800; color: #78350f; margin-bottom: 6px;">
-                                    🏆 Auction Completed!
-                                </h3>
-                                <p style="font-size: 14px; color: #92400e; margin-bottom: 20px; font-weight: 500;">
-                                    The auction for <strong>{{ $product->product_name }}</strong> has ended.
-                                </p>
-
-                                <div style="background: #ffffff; border: 2px dashed #f59e0b; border-radius: 18px; padding: 18px; margin-bottom: 20px;">
-                                    <div style="font-size: 12px; font-weight: 800; color: #b45309; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">
-                                        Auction Winner
-                                    </div>
-                                    <div style="font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 4px;" id="popup-winner-name">
-                                        {{ $winnerInfo['name'] ?? 'N/A' }}
-                                    </div>
-                                    <div style="font-size: 15px; color: #475569; font-weight: 600;" id="popup-winner-bid-container">
-                                        Winning Bid: <span style="color: #2563eb; font-weight: 800;" id="popup-winner-amount">₹{{ number_format($winnerInfo['amount'] ?? $currentBid, 2) }}</span>
-                                                              @if(isset($winnerInfo['is_current_user']) && $winnerInfo['is_current_user'] && !empty($winnerInfo['coupon_code']))
-                                        <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid #fef3c7;">
-                                            <div style="font-size: 13px; font-weight: 700; color: #059669; margin-bottom: 6px;">
-                                                🥳 Congratulations! You Won This Auction!
-                                            </div>
-                                            <div style="font-family: monospace; font-size: 22px; font-weight: 800; color: #d97706; background: #fffbeb; padding: 10px; border-radius: 12px; border: 1px solid #fde68a; letter-spacing: 2px;">
-                                                {{ $winnerInfo['coupon_code'] }}
-                                            </div>
-                                            <div style="font-size: 13px; color: #475569; margin-top: 8px;">
-                                                <i class="fas fa-paper-plane" style="color: #2563eb; margin-right: 4px;"></i> An email with your winning code has been sent to your registered address!
-                                            </div>
-                                            <button type="button" onclick="resendWinnerEmail(this)" style="margin-top: 10px; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s ease;">
-                                                <i class="fas fa-redo-alt"></i> Resend Email Code
-                                            </button>
-                                        </div>
-                                    @else
-                                        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #fef3c7; font-size: 13px; color: #64748b;">
-                                            <i class="fas fa-envelope-open-text" style="color: #2563eb; margin-right: 4px;"></i> An email with the winning code has been sent to the winner.
-                                            <div style="margin-top: 8px;">
-                                                <button type="button" onclick="resendWinnerEmail(this)" style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer;">
-                                                    <i class="fas fa-redo-alt"></i> Resend Email Code
-                                                </button>
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
-
-                                <button type="button" onclick="closeWinnerModal()" style="width: 100%; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; border: none; padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer;">
-                                    Close Announcement
-                                </button>
-                            </div>
-                        </div>
                      </div>
 
 </div>                    </div>
