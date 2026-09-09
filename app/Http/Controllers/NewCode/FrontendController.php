@@ -3902,7 +3902,7 @@ class FrontendController extends Controller
             ->where('p.status', 1);
 
         if (!empty($keyword)) {
-            $rawTokens = preg_split('/\s+/', strtolower($keyword), -1, PREG_SPLIT_NO_EMPTY);
+                                                                                                                                                                                                                                                                                                                            $rawTokens = preg_split('/\s+/', strtolower($keyword), -1, PREG_SPLIT_NO_EMPTY);
             $stopWords = ['for', 'with', 'and', 'the', 'a', 'an', 'of', 'to', 'in', 'on'];
             $tokens = array_values(array_filter($rawTokens, function ($token) use ($stopWords) {
                 return !in_array($token, $stopWords, true) && strlen($token) > 1;
@@ -4317,4 +4317,95 @@ class FrontendController extends Controller
             'unhelpful' => $rating->unhelpful_votes_count
         ]);
     }
+
+    /**
+     * Display Play Store Account Deletion Request Page
+     */
+    public function showAccountDeletionPage()
+    {
+        return view('frontend.account-deletion');
+    }
+
+    /**
+     * Process Account Deletion Request by Mobile Number
+     */
+    public function processAccountDeletion(Request $request)
+    {
+        $request->validate([
+            'customer_mobileno' => 'required|string'
+        ]);
+
+        $rawMobile = trim($request->customer_mobileno);
+        // Clean mobile number (keep only digits)
+        $mobile = preg_replace('/[^0-9]/', '', $rawMobile);
+        if (strlen($mobile) > 10) {
+            $mobile = substr($mobile, -10);
+        }
+
+        if (empty($mobile) || strlen($mobile) < 10) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Please enter a valid 10-digit mobile number.'
+                ], 422);
+            }
+            return redirect()->back()->with('error', 'Please enter a valid 10-digit mobile number.');
+        }
+
+        // Search in ecom_customer_info table
+        $customers = Ecom_Customer_info::where('customer_mobileno', $mobile)
+            ->orWhere('customer_mobileno', 'LIKE', '%' . $mobile)
+            ->get();
+
+        if ($customers->isEmpty()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No registered account found with mobile number (' . $mobile . '). Please verify your registered number.'
+                ], 404);
+            }
+            return redirect()->back()->with('error', 'No registered account found with mobile number (' . $mobile . ').');
+        }
+
+        $deletedCount = 0;
+        foreach ($customers as $customer) {
+            $customerId = $customer->customer_id ?: $customer->id;
+
+            // Delete customer shipping info
+            if ($customer->customer_id) {
+                Ecom_Customer_Shipping::where('customer_id', $customer->customer_id)->delete();
+                wishlist::where('customer_id', $customer->customer_id)->delete();
+            }
+
+            // Clear session if active
+            if (Session::get('customer_id') == $customer->customer_id || Session::get('customer_id') == $customer->id) {
+                Session::forget('customer_id');
+                Session::forget('customer_name');
+                Session::forget('customer_email');
+                Session::forget('customer_mobileno');
+            }
+
+            // Also remove matching user record in users table if exists
+            if (!empty($customer->customer_email)) {
+                DB::table('users')->where('email', $customer->customer_email)->delete();
+            }
+            DB::table('users')->where('username', $mobile)->delete();
+
+            // Delete main customer record
+            $customer->delete();
+            $deletedCount++;
+        }
+
+        $successMsg = 'Account associated with mobile number (' . $mobile . ') and all associated personal data have been permanently deleted successfully.';
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => $successMsg
+            ]);
+        }
+
+        return redirect()->back()->with('success', $successMsg);
+    }
 }
+

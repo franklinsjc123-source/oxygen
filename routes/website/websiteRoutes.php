@@ -340,3 +340,10 @@ Route::get('/privacy-policy', function () {
 
 Route::get('Informations/{id}', [HomeController::class, 'pageinfo']);
 
+// Play Store Account Deletion Routes
+Route::get('/account-deletion', [FrontendController::class, 'showAccountDeletionPage'])->name('account.deletion');
+Route::post('/account-deletion', [FrontendController::class, 'processAccountDeletion'])->name('account.deletion.process');
+Route::get('/delete-account', function() { return redirect()->route('account.deletion'); });
+Route::get('/account/delete', function() { return redirect()->route('account.deletion'); });
+
+
