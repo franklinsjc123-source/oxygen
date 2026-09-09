@@ -257,6 +257,7 @@ Route::get('auction', [AjaxGetProductController::class, 'auction'])->name('aucti
 Route::get('auction/{id}/detail', [AuctionWebController::class, 'show'])->name('auction.detail');
 Route::post('auction/bid', [AuctionWebController::class, 'placeBid'])->name('auction.bid');
 Route::get('auction/{id}/bids', [AuctionWebController::class, 'getBids'])->name('auction.bids');
+Route::post('auction/{id}/settle', [AuctionWebController::class, 'settleAjax'])->name('auction.settle');
 
 /*Vendor all product*/
 

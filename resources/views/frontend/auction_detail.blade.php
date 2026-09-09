@@ -1169,9 +1169,58 @@
 
 
                                      </div>
-                                 </div>
-                             </div>
-                         </div>
+                        </div>
+
+                        <!-- Auction Completed & Winner Announcement Popup Modal -->
+                        <div id="auction-winner-modal" class="tm-modal {{ ($isExpired || $auction->is_settled) && $winnerInfo ? 'show' : '' }}" style="{{ ($isExpired || $auction->is_settled) && $winnerInfo ? 'display: flex;' : 'display: none;' }}">
+                            <div class="tm-modal-content" style="max-width: 500px; text-align: center; padding: 32px 28px; border-radius: 24px; border: 2px solid #fcd34d; background: linear-gradient(180deg, #ffffff 0%, #fffbeb 100%); box-shadow: 0 20px 50px rgba(0,0,0,0.15);">
+                                
+                                <div style="width: 70px; height: 70px; margin: 0 auto 16px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 8px 20px rgba(245, 158, 11, 0.35);">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+
+                                <h3 style="font-size: 22px; font-weight: 800; color: #78350f; margin-bottom: 6px;">
+                                    🏆 Auction Completed!
+                                </h3>
+                                <p style="font-size: 14px; color: #92400e; margin-bottom: 20px; font-weight: 500;">
+                                    The auction for <strong>{{ $product->product_name }}</strong> has ended.
+                                </p>
+
+                                <div style="background: #ffffff; border: 2px dashed #f59e0b; border-radius: 18px; padding: 18px; margin-bottom: 20px;">
+                                    <div style="font-size: 12px; font-weight: 800; color: #b45309; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">
+                                        Auction Winner
+                                    </div>
+                                    <div style="font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 4px;" id="popup-winner-name">
+                                        {{ $winnerInfo['name'] ?? 'N/A' }}
+                                    </div>
+                                    <div style="font-size: 15px; color: #475569; font-weight: 600;" id="popup-winner-bid-container">
+                                        Winning Bid: <span style="color: #2563eb; font-weight: 800;" id="popup-winner-amount">₹{{ number_format($winnerInfo['amount'] ?? $currentBid, 2) }}</span>
+                                    </div>
+
+                                    @if(isset($winnerInfo['is_current_user']) && $winnerInfo['is_current_user'] && !empty($winnerInfo['coupon_code']))
+                                        <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid #fef3c7;">
+                                            <div style="font-size: 13px; font-weight: 700; color: #059669; margin-bottom: 6px;">
+                                                🥳 Congratulations! You Won This Auction!
+                                            </div>
+                                            <div style="font-family: monospace; font-size: 22px; font-weight: 800; color: #d97706; background: #fffbeb; padding: 10px; border-radius: 12px; border: 1px solid #fde68a; letter-spacing: 2px;">
+                                                {{ $winnerInfo['coupon_code'] }}
+                                            </div>
+                                            <div style="font-size: 13px; color: #475569; margin-top: 8px;">
+                                                <i class="fas fa-paper-plane" style="color: #2563eb; margin-right: 4px;"></i> An email with your winning code has been sent to your registered address!
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #fef3c7; font-size: 13px; color: #64748b;">
+                                            <i class="fas fa-envelope-open-text" style="color: #2563eb; margin-right: 4px;"></i> An email with the winning code has been sent to the winner.
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <button type="button" onclick="closeWinnerModal()" style="width: 100%; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; border: none; padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer;">
+                                    Close Announcement
+                                </button>
+                            </div>
+                        </div>
                      </div>
 
 
@@ -1202,6 +1251,23 @@
         thumb.classList.add('active');
     }
 
+    // ===================== WINNER ANNOUNCEMENT MODAL =====================
+    function closeWinnerModal() {
+        var modal = document.getElementById('auction-winner-modal');
+        if (modal) {
+            modal.classList.remove('show');
+            setTimeout(function() { modal.style.display = 'none'; }, 300);
+        }
+    }
+
+    function showWinnerModal() {
+        var modal = document.getElementById('auction-winner-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            setTimeout(function() { modal.classList.add('show'); }, 10);
+        }
+    }
+
     // ===================== COUNTDOWN TIMER =====================
     var auctionHasNotStarted = {{ $hasNotStarted ? 'true' : 'false' }};
     var auctionEndDate = new Date("{{ $endDate->format('Y-m-d\TH:i:s') }}").getTime();
@@ -1224,9 +1290,34 @@
         } else {
             diff = auctionEndDate - now;
             if (diff <= 0) {
-                document.getElementById('countdown-display').innerHTML = '<div class="timer-block" style="background: #dc2626;"><span style="font-size: 16px; margin-bottom: 0;">Auction Closed</span></div>';
+                var displayEl = document.getElementById('countdown-display');
+                if (displayEl) {
+                    displayEl.innerHTML = '<div class="timer-block" style="background: #dc2626;"><span style="font-size: 16px; margin-bottom: 0;">Auction Closed</span></div>';
+                }
                 auctionExpired = true;
-                setTimeout(function() { location.reload(); }, 2000);
+                
+                // Trigger auto settlement and popup winner modal
+                fetch("{{ route('auction.settle', $auction->id) }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                    }
+                })
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    if (data.winner_info) {
+                        var nameEl = document.getElementById('popup-winner-name');
+                        var amtEl = document.getElementById('popup-winner-amount');
+                        if (nameEl) nameEl.textContent = data.winner_info.name;
+                        if (amtEl) amtEl.textContent = '₹' + parseFloat(data.winner_info.amount).toLocaleString('en-IN', {minimumFractionDigits: 2});
+                    }
+                    showWinnerModal();
+                })
+                .catch(function() {
+                    location.reload();
+                });
                 return;
             }
         }
@@ -1236,10 +1327,14 @@
         var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         var seconds = Math.floor((diff % (1000 * 60)) / 1000);
         
-        document.getElementById('timer-days').textContent = days.toString().padStart(2, '0');
-        document.getElementById('timer-hours').textContent = hours.toString().padStart(2, '0');
-        document.getElementById('timer-mins').textContent = minutes.toString().padStart(2, '0');
-        document.getElementById('timer-secs').textContent = seconds.toString().padStart(2, '0');
+        var dEl = document.getElementById('timer-days');
+        var hEl = document.getElementById('timer-hours');
+        var mEl = document.getElementById('timer-mins');
+        var sEl = document.getElementById('timer-secs');
+        if (dEl) dEl.textContent = days.toString().padStart(2, '0');
+        if (hEl) hEl.textContent = hours.toString().padStart(2, '0');
+        if (mEl) mEl.textContent = minutes.toString().padStart(2, '0');
+        if (sEl) sEl.textContent = seconds.toString().padStart(2, '0');
     }
 
     if (!auctionExpired) {

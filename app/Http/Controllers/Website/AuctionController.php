@@ -86,6 +86,12 @@ class AuctionController extends Controller
         $isExpired = $now->greaterThanOrEqualTo($endDate);
         $hasNotStarted = $now->lessThan($startDate);
 
+        // Auto-settle auction if expired and not settled yet
+        if ($isExpired && !$auction->is_settled) {
+            $this->settleAuction($auction);
+            $auction = auction::where('id', $id)->first();
+        }
+
         // Get latest bids with customer names
         $bids = AuctionBid::where('auction_id', $id)
             ->orderByDesc('bid_amount')
@@ -146,10 +152,11 @@ class AuctionController extends Controller
         if ($auction->is_settled && $auction->winner_customer_id) {
             $winner = Ecom_Customer_info::where('customer_id', $auction->winner_customer_id)->first();
             $winnerInfo = [
-                'name' => $winner ? ($winner->customer_firstname . ' ' . ($winner->customer_lastname ?? '')) : 'Unknown',
-                'amount' => $highestBid,
+                'name' => $winner ? trim(($winner->customer_firstname ?? '') . ' ' . ($winner->customer_lastname ?? '')) : 'Unknown',
+                'amount' => $highestBid ?? $auction->start_price,
                 'coupon_code' => $auction->winner_coupon_code,
                 'is_current_user' => ($customerId == $auction->winner_customer_id),
+                'email' => $winner ? $winner->customer_email : '',
             ];
         }
 
@@ -455,5 +462,131 @@ class AuctionController extends Controller
             'total_bids' => AuctionBid::where('auction_id', $id)->count(),
             'is_settled' => $auction ? $auction->is_settled : 0,
         ]);
+    }
+
+    /**
+     * Settle auction via AJAX when countdown reaches 0 live.
+     */
+    public function settleAjax($id)
+    {
+        $auction = auction::where('id', $id)->first();
+        if (!$auction) {
+            return response()->json(['success' => false, 'message' => 'Auction not found']);
+        }
+
+        $timezone = 'Asia/Kolkata';
+        $endDateStr = str_replace('T', ' ', $auction->end_date);
+        try {
+            $endDate = \Carbon\Carbon::parse($endDateStr, $timezone);
+        } catch (\Exception $e) {
+            $endDate = \Carbon\Carbon::now($timezone);
+        }
+
+        $now = \Carbon\Carbon::now($timezone);
+        if ($now->greaterThanOrEqualTo($endDate) && !$auction->is_settled) {
+            $this->settleAuction($auction);
+            $auction = auction::where('id', $id)->first();
+        }
+
+        $winnerInfo = null;
+        $highestBid = AuctionBid::where('auction_id', $id)->max('bid_amount') ?? ($auction ? $auction->start_price : 0);
+        $customerId = Session::get('customer_id');
+
+        if ($auction && $auction->is_settled && $auction->winner_customer_id) {
+            $winner = Ecom_Customer_info::where('customer_id', $auction->winner_customer_id)->first();
+            $winnerName = $winner ? trim(($winner->customer_firstname ?? '') . ' ' . ($winner->customer_lastname ?? '')) : 'Unknown';
+            $winnerInfo = [
+                'name' => $winnerName,
+                'amount' => $highestBid,
+                'coupon_code' => $auction->winner_coupon_code,
+                'is_current_user' => ($customerId == $auction->winner_customer_id),
+                'email' => $winner ? $winner->customer_email : '',
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'is_settled' => $auction ? (bool)$auction->is_settled : false,
+            'winner_info' => $winnerInfo,
+        ]);
+    }
+
+    /**
+     * Helper to settle an auction, generate coupon code, and send winner email.
+     */
+    private function settleAuction($auction)
+    {
+        if (!$auction || $auction->is_settled) {
+            return;
+        }
+
+        $highestBid = AuctionBid::where('auction_id', $auction->id)
+            ->orderByDesc('bid_amount')
+            ->first();
+
+        if (!$highestBid) {
+            $auction->is_settled = 1;
+            $auction->save();
+            return;
+        }
+
+        $winner = Ecom_Customer_info::where('customer_id', $highestBid->customer_id)->first();
+        if (!$winner) {
+            $auction->is_settled = 1;
+            $auction->winner_customer_id = $highestBid->customer_id;
+            $auction->save();
+            return;
+        }
+
+        // Generate unique coupon code
+        $couponCode = 'AUCTWIN-' . strtoupper(Str::random(6));
+        while (coupon::where('coupon_code', $couponCode)->exists()) {
+            $couponCode = 'AUCTWIN-' . strtoupper(Str::random(6));
+        }
+
+        $product = Products::where('id', $auction->product_id)->first();
+        $productName = $product ? $product->product_name : 'Auction Product';
+
+        // Create coupon in coupans table
+        coupon::create([
+            'admin_id' => $auction->admin_id ?? 'system',
+            'product_id' => $auction->product_id,
+            'title' => 'Auction Winner - ' . $productName,
+            'coupon_code' => $couponCode,
+            'discount_type' => 'percentage',
+            'discount_amount' => null,
+            'discount_percentage' => '100',
+            'minimum_requirment_type' => 'none',
+            'minimum_requirment_amount' => null,
+            'minimum_requirment_quantity' => null,
+            'start_date' => Carbon::now()->format('Y-m-d'),
+            'end_date' => Carbon::now()->addDays(2)->format('Y-m-d'),
+            'created_by' => 'system',
+            'status' => '1',
+            'flag' => '1',
+        ]);
+
+        $auction->winner_customer_id = $highestBid->customer_id;
+        $auction->winner_coupon_code = $couponCode;
+        $auction->is_settled = 1;
+        $auction->save();
+
+        // Send email to winner
+        $winnerName = trim(($winner->customer_firstname ?? '') . ' ' . ($winner->customer_lastname ?? ''));
+        $winnerEmail = $winner->customer_email;
+
+        if (!empty($winnerEmail)) {
+            try {
+                Mail::to($winnerEmail)->send(new AuctionWinnerMail(
+                    $winnerName,
+                    $productName,
+                    $highestBid->bid_amount,
+                    $couponCode,
+                    $product ? $product->product_image : null
+                ));
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error("Auction winner email send error: " . $e->getMessage());
+            }
+        }
     }
 }
