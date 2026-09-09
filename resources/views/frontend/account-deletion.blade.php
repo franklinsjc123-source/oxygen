@@ -1,236 +1,270 @@
-@extends('app_template')
-@section('title', 'Account Deletion Request - Play Store Compliance')
-@section('content')
-<style>
-    /* Google Play Store Account Deletion Page Styling */
-    .deletion-hero-header {
-        background: linear-gradient(135deg, #6366f1 0%, #7c3aed 50%, #4f46e5 100%);
-        padding: 50px 20px 80px;
-        text-align: center;
-        color: #ffffff;
-        position: relative;
-    }
-    .deletion-hero-header h1 {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: #ffffff;
-        margin: 0;
-        letter-spacing: -0.02em;
-    }
-    
-    .deletion-main-container {
-        max-width: 580px;
-        margin: -50px auto 60px;
-        padding: 0 15px;
-        position: relative;
-        z-index: 10;
-    }
-    
-    .deletion-card {
-        background: #ffffff;
-        border-radius: 16px;
-        box-shadow: 0 20px 30px rgba(15, 23, 42, 0.08), 0 4px 10px rgba(15, 23, 42, 0.03);
-        padding: 36px 32px;
-        border: 1px solid rgba(226, 232, 240, 0.8);
-    }
-    
-    .deletion-title-wrapper {
-        display: flex;
-        align-items: center;
-        margin-bottom: 12px;
-    }
-    .deletion-title-accent {
-        width: 4px;
-        height: 24px;
-        background-color: #6366f1;
-        border-radius: 2px;
-        margin-right: 12px;
-        display: inline-block;
-        flex-shrink: 0;
-    }
-    .deletion-card-title {
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: #0f172a;
-        margin: 0;
-    }
-    
-    .deletion-card-description {
-        font-size: 0.925rem;
-        color: #475569;
-        line-height: 1.5;
-        margin-bottom: 24px;
-    }
-    
-    .deletion-form-box {
-        background: #fef2f2;
-        border: 1px solid #fee2e2;
-        border-radius: 14px;
-        padding: 24px;
-        margin-bottom: 28px;
-    }
-    
-    .deletion-form-group {
-        margin-bottom: 0;
-    }
-    
-    .deletion-label {
-        display: block;
-        font-weight: 600;
-        color: #1e293b;
-        font-size: 0.875rem;
-        margin-bottom: 8px;
-    }
-    
-    .deletion-input {
-        width: 100%;
-        padding: 13px 16px;
-        font-size: 1rem;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        background: #ffffff;
-        color: #0f172a;
-        transition: border-color 0.2s, box-shadow 0.2s;
-        box-sizing: border-box;
-    }
-    .deletion-input:focus {
-        border-color: #ef4444;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
-    }
-    
-    .btn-permanently-delete {
-        width: 100%;
-        background: #ef4444;
-        color: #ffffff;
-        font-weight: 700;
-        font-size: 0.975rem;
-        border: none;
-        border-radius: 8px;
-        padding: 14px 20px;
-        margin-top: 16px;
-        cursor: pointer;
-        transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
-        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .btn-permanently-delete:hover {
-        background: #dc2626;
-        box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
-    }
-    .btn-permanently-delete:active {
-        transform: scale(0.99);
-    }
-    .btn-permanently-delete:disabled {
-        background: #9ca3af;
-        cursor: not-allowed;
-        box-shadow: none;
-    }
-    
-    .deletion-important-box {
-        border: 1.5px dashed #cbd5e1;
-        background: #f8fafc;
-        border-radius: 14px;
-        padding: 22px 24px;
-    }
-    
-    .important-heading {
-        font-size: 1.05rem;
-        font-weight: 700;
-        color: #0f172a;
-        margin-top: 0;
-        margin-bottom: 16px;
-    }
-    
-    .important-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-    
-    .important-item {
-        display: flex;
-        align-items: flex-start;
-        gap: 12px;
-        font-size: 0.885rem;
-        color: #475569;
-        line-height: 1.55;
-        margin-bottom: 14px;
-    }
-    .important-item:last-child {
-        margin-bottom: 0;
-    }
-    
-    .checkmark-icon {
-        color: #10b981;
-        font-weight: 800;
-        font-size: 1.1rem;
-        flex-shrink: 0;
-        margin-top: 1px;
-    }
-    
-    .alert-status-box {
-        padding: 14px 18px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        font-size: 0.925rem;
-        line-height: 1.5;
-        display: none;
-    }
-    .alert-status-box.alert-success {
-        background-color: #ecfdf5;
-        color: #065f46;
-        border: 1px solid #a7f3d0;
-        display: block;
-    }
-    .alert-status-box.alert-danger {
-        background-color: #fef2f2;
-        color: #991b1b;
-        border: 1px solid #fecaca;
-        display: block;
-    }
-    
-    /* Spinner */
-    .spinner-border-sm {
-        width: 1rem;
-        height: 1rem;
-        border-width: 0.15em;
-        border: 2px solid #ffffff;
-        border-right-color: transparent;
-        border-radius: 50%;
-        animation: spinner-border .75s linear infinite;
-        display: inline-block;
-        margin-right: 8px;
-    }
-    @keyframes spinner-border {
-        to { transform: rotate(360deg); }
-    }
-    
-    @media (max-width: 576px) {
-        .deletion-card {
-            padding: 24px 18px;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Account Deletion Request - Play Store Compliance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
-        .deletion-form-box {
-            padding: 18px 14px;
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
+
+        /* Top Purple Header Banner */
+        .deletion-hero-header {
+            background: linear-gradient(135deg, #6366f1 0%, #7c3aed 50%, #4f46e5 100%);
+            padding: 45px 20px 85px;
+            text-align: center;
+            color: #ffffff;
+        }
+
         .deletion-hero-header h1 {
-            font-size: 1.75rem;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.02em;
         }
-    }
-</style>
 
-<main class="deletion-page-wrapper">
-    <!-- Purple Header Banner -->
-    <div class="deletion-hero-header">
-        <div class="container">
-            <h1>Account Deletion Request</h1>
-        </div>
-    </div>
+        /* Main Center Card */
+        .deletion-main-container {
+            max-width: 560px;
+            width: 100%;
+            margin: -55px auto 50px;
+            padding: 0 16px;
+        }
 
-    <!-- Main Content Card -->
-    <div class="deletion-main-container">
+        .deletion-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 30px -10px rgba(15, 23, 42, 0.1), 0 8px 12px -6px rgba(15, 23, 42, 0.04);
+            padding: 36px 32px;
+            border: 1px solid rgba(226, 232, 240, 0.9);
+        }
+
+        /* Card Header & Title */
+        .deletion-title-wrapper {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .deletion-title-accent {
+            width: 4px;
+            height: 24px;
+            background-color: #6366f1;
+            border-radius: 2px;
+            margin-right: 12px;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .deletion-card-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .deletion-card-description {
+            font-size: 0.925rem;
+            color: #475569;
+            line-height: 1.55;
+            margin-bottom: 24px;
+        }
+
+        /* Pink Form Container Box */
+        .deletion-form-box {
+            background: #fef2f2;
+            border: 1px solid #fee2e2;
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 28px;
+        }
+
+        .deletion-label {
+            display: block;
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.875rem;
+            margin-bottom: 8px;
+        }
+
+        .deletion-input {
+            width: 100%;
+            padding: 13px 16px;
+            font-size: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #0f172a;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .deletion-input:focus {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+        }
+
+        /* Red Submit Button */
+        .btn-permanently-delete {
+            width: 100%;
+            background: #ef4444;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.975rem;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 20px;
+            margin-top: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-permanently-delete:hover {
+            background: #dc2626;
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
+        }
+
+        .btn-permanently-delete:active {
+            transform: scale(0.99);
+        }
+
+        .btn-permanently-delete:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Dashed Info Box */
+        .deletion-important-box {
+            border: 1.5px dashed #cbd5e1;
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 22px 24px;
+        }
+
+        .important-heading {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 16px;
+        }
+
+        .important-list {
+            list-style: none;
+        }
+
+        .important-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 0.885rem;
+            color: #475569;
+            line-height: 1.55;
+            margin-bottom: 14px;
+        }
+
+        .important-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .checkmark-icon {
+            color: #10b981;
+            font-weight: 800;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* Alert Status Boxes */
+        .alert-status-box {
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.925rem;
+            line-height: 1.5;
+            display: none;
+        }
+
+        .alert-status-box.alert-success {
+            background-color: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+            display: block;
+        }
+
+        .alert-status-box.alert-danger {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            display: block;
+        }
+
+        /* Loading Spinner */
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #ffffff;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spinner-border .75s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        @keyframes spinner-border {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Minimal clean footer */
+        .simple-footer {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.825rem;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 576px) {
+            .deletion-card {
+                padding: 24px 18px;
+            }
+            .deletion-form-box {
+                padding: 18px 14px;
+            }
+            .deletion-hero-header h1 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Banner -->
+    <header class="deletion-hero-header">
+        <h1>Account Deletion Request</h1>
+    </header>
+
+    <!-- Main Container -->
+    <main class="deletion-main-container">
         <div class="deletion-card">
 
             <!-- Server Flash Messages -->
@@ -246,10 +280,10 @@
                 </div>
             @endif
 
-            <!-- Dynamic AJAX Response Box -->
+            <!-- Dynamic Response Alert -->
             <div id="deletionResponseAlert" class="alert-status-box"></div>
 
-            <!-- Header Section -->
+            <!-- Card Header -->
             <div class="deletion-title-wrapper">
                 <span class="deletion-title-accent"></span>
                 <h2 class="deletion-card-title">Delete your account</h2>
@@ -258,7 +292,7 @@
                 Please enter your registered mobile number below to delete your account and all associated data.
             </p>
 
-            <!-- Deletion Form Box -->
+            <!-- Form Box -->
             <div class="deletion-form-box">
                 <form id="accountDeletionForm" action="{{ route('account.deletion.process') }}" method="POST">
                     @csrf
@@ -306,8 +340,11 @@
             </div>
 
         </div>
-    </div>
-</main>
+    </main>
+
+    <footer class="simple-footer">
+        <p>&copy; {{ date('Y') }} All Rights Reserved. Account Deletion Service.</p>
+    </footer>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -317,7 +354,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnText = document.getElementById('btnDeleteText');
     const responseAlert = document.getElementById('deletionResponseAlert');
 
-    // Filter input to allow numbers only
+    // Only allow numbers
     input.addEventListener('input', function(e) {
         this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
     });
@@ -332,12 +369,10 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Confirm deletion intent
         if (!confirm('Are you sure you want to permanently delete your account registered with ' + mobile + '? This action cannot be undone.')) {
             return;
         }
 
-        // Set loading state
         submitBtn.disabled = true;
         btnText.innerHTML = '<span class="spinner-border-sm"></span> Processing Deletion...';
         responseAlert.style.display = 'none';
@@ -379,4 +414,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-@endsection
+</body>
+</html>
