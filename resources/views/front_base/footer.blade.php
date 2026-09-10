@@ -510,15 +510,17 @@
                             <circle cx="18.5" cy="18.5" r="2.5"></circle>
                         </svg>
                     </div>
-                    <div class="pincode-feature-title">Free Delivery</div>
+                    <div class="pincode-feature-title">Fast Delivery</div>
                     <div class="pincode-feature-desc">Quick &amp; reliable</div>
                 </div>
 
                 <!-- Feature 2 -->
                 <div class="pincode-feature-col">
                     <div class="pincode-feature-icon-box">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2582e7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10a2 2 0 002 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2582e7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2a2 2 0 0 0-2 2c0 .6.3 1.1.7 1.5L5 9.5v1.5h14V9.5L13.3 5.5c.4-.4.7-.9.7-1.5a2 2 0 0 0-2-2z"/>
+                            <path d="M7 11l-1.5 10h13L17 11"/>
+                            <path d="M9.5 15c1.5 1 3.5 1 5 0"/>
                         </svg>
                     </div>
                     <div class="pincode-feature-title">Trendy Styles</div>
@@ -528,10 +530,12 @@
                 <!-- Feature 3 -->
                 <div class="pincode-feature-col">
                     <div class="pincode-feature-icon-box">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2582e7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2582e7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 8l8-4 8 4v8l-8 4-8-4V8z"/>
+                            <path d="M4 8l8 4 8-4"/>
+                            <path d="M12 12v8"/>
+                            <path d="M9.5 15l-2.5-2.5 2.5-2.5"/>
+                            <path d="M7 12.5h4.5a2.5 2.5 0 0 1 2.5 2.5v.5"/>
                         </svg>
                     </div>
                     <div class="pincode-feature-title">Easy Returns</div>
@@ -567,7 +571,7 @@
         }
 
         .newsletter-popup {
-            background-image: url("{{ asset('frontend/images/pincode_bg.png') }}?v=4") !important;
+            background-image: url("{{ asset('frontend/images/pincode_bg.png') }}?v=5") !important;
             background-size: 100% 100% !important;
             background-position: center !important;
             background-repeat: no-repeat !important;
@@ -639,6 +643,57 @@
             width: auto !important;
             object-fit: contain !important;
             display: inline-block !important;
+            filter: brightness(0) saturate(100%) invert(39%) sepia(88%) saturate(1637%) hue-rotate(196deg) brightness(96%) contrast(92%) drop-shadow(0px 2px 4px rgba(37, 130, 231, 0.2)) !important;
+        }
+
+        /* Mobile View Sizing and Responsiveness */
+        @media (max-width: 767px) {
+            .mfp-newsletter .mfp-content {
+                width: 94% !important;
+                max-width: 420px !important;
+                margin: 0 auto !important;
+            }
+
+            .newsletter-popup {
+                border-radius: 24px !important;
+            }
+
+            .pincode-modal-container {
+                padding: 24px 18px 20px !important;
+            }
+
+            .pincode-modal-title {
+                font-size: 19.5px !important;
+            }
+
+            .pincode-modal-subtitle {
+                font-size: 12px !important;
+                margin-bottom: 14px !important;
+            }
+
+            .pincode-app-subtext {
+                font-size: 11px !important;
+                gap: 4px !important;
+                margin: 14px 0 !important;
+            }
+
+            .pincode-feature-title {
+                font-size: 11px !important;
+            }
+
+            .pincode-feature-desc {
+                font-size: 10px !important;
+            }
+
+            .pincode-feature-icon-box {
+                width: 44px !important;
+                height: 44px !important;
+                margin-bottom: 6px !important;
+            }
+
+            .pincode-playstore-img {
+                height: 38px !important;
+            }
         }
 
         .pincode-location-badge {
@@ -835,10 +890,10 @@
         }
     </style>
 
-   <style>
-       .mfp-content {
-           width: 60% !important;
-       }
+    <style>
+        .mfp-content:not(.mfp-newsletter .mfp-content) {
+            width: 60% !important;
+        }
 
        .center-toast {
            position: fixed;
