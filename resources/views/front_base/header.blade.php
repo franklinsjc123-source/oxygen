@@ -1035,101 +1035,153 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
 
             /* Mobile Category Nav Bar styles */
             .mobile-categories-nav-wrapper {
-                background: #f8fcff;
-                border-bottom: 1px solid #ddecf8;
-                padding: 4px 0;
+                background: #ffffff;
+                border-bottom: 1px solid #e2e8f0;
+                padding: 6px 0;
                 overflow-x: auto;
                 white-space: nowrap;
                 -webkit-overflow-scrolling: touch;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
             }
             .mobile-categories-nav-wrapper::-webkit-scrollbar {
                 display: none;
             }
             .mobile-categories-nav {
                 display: flex;
-                padding: 0 15px;
-                gap: 12px;
+                align-items: center;
+                padding: 0 14px;
+                gap: 8px;
             }
             .mobile-cat-nav-item {
                 font-size: 13px !important;
                 font-weight: 700 !important;
-                color: #333333;
-                text-decoration: none;
-                display: inline-flex;
-                align-items: center;
-                gap: 4px;
-                padding-bottom: 1px;
-                border-bottom: 2px solid transparent;
-                transition: all 0.3s ease;
+                color: #475569 !important;
+                text-decoration: none !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                gap: 5px !important;
+                padding: 5px 12px !important;
+                border-radius: 20px !important;
+                border: 1px solid transparent !important;
+                transition: all 0.25s ease !important;
+                background: transparent !important;
             }
             .mobile-cat-nav-item.active {
                 color: #ff5e5e !important;
-                border-bottom-color: #ff5e5e !important;
+                background: #fff1f2 !important;
+                border-color: #fecdd3 !important;
             }
             .mobile-cat-nav-item i {
-                font-size: 10px;
-                transition: transform 0.3s;
+                font-size: 10px !important;
+                transition: transform 0.3s ease !important;
             }
             .mobile-cat-nav-item.active i {
-                transform: rotate(180deg);
+                transform: rotate(180deg) !important;
             }
 
             /* Mobile Category Dropdowns styles */
             .mobile-categories-dropdowns {
                 position: relative;
-                z-index: 1000;
+                z-index: 9999;
             }
             .mobile-cat-dropdown-panel {
-                background: #ffffff;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-                border-bottom: 2px solid #ff5e5e;
-                max-height: 380px;
-                overflow-y: auto;
-                padding: 6px 10px;
+                background: #ffffff !important;
+                box-shadow: 0 16px 40px rgba(15, 23, 42, 0.18), 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+                border: 1.5px solid #e2e8f0 !important;
+                border-radius: 16px !important;
+                max-height: 65vh !important;
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                padding: 16px 14px !important;
                 display: none;
-                animation: slideDown 0.3s ease;
+                animation: mobilePanelSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+                width: calc(100vw - 20px) !important;
+                max-width: 480px !important;
+                margin: 6px auto 0 !important;
+                position: absolute !important;
+                left: 10px !important;
+                right: 10px !important;
             }
-            @keyframes slideDown {
-                from { opacity: 0; transform: translateY(-10px); }
+            @keyframes mobilePanelSlide {
+                from { opacity: 0; transform: translateY(-8px); }
                 to { opacity: 1; transform: translateY(0); }
             }
+
+            /* Custom smooth scrollbar for mobile dropdown panel */
+            .mobile-cat-dropdown-panel::-webkit-scrollbar {
+                width: 5px;
+            }
+            .mobile-cat-dropdown-panel::-webkit-scrollbar-track {
+                background: #f1f5f9;
+                border-radius: 10px;
+            }
+            .mobile-cat-dropdown-panel::-webkit-scrollbar-thumb {
+                background: #cbd5e1;
+                border-radius: 10px;
+            }
+
             .mobile-cat-group {
-                margin-bottom: 6px;
+                margin-bottom: 14px !important;
             }
             .mobile-cat-group:last-child {
-                margin-bottom: 0;
+                margin-bottom: 0 !important;
             }
             .mobile-cat-title {
-                font-size: 12px;
-                font-weight: 700;
-                color: #ff5e5e;
-                text-transform: uppercase;
-                margin-bottom: 2px;
-                border-bottom: 1px solid #f0f0f0;
-                padding-bottom: 1px;
+                font-size: 12.5px !important;
+                font-weight: 800 !important;
+                color: #e11d48 !important;
+                text-transform: uppercase !important;
+                letter-spacing: 0.6px !important;
+                margin-bottom: 8px !important;
+                background: #fff1f2 !important;
+                border-left: 3.5px solid #ff5e5e !important;
+                border-radius: 6px !important;
+                padding: 5px 10px !important;
+                display: inline-block !important;
+                border-bottom: none !important;
             }
             .mobile-cat-title a {
-                color: inherit;
-                text-decoration: none;
+                color: inherit !important;
+                text-decoration: none !important;
             }
             .mobile-cat-list {
-                list-style: none;
-                padding: 0;
-                margin: 0;
-                display: flex;
-                flex-wrap: wrap;
-                gap: 4px;
+                list-style: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px 10px !important;
             }
             .mobile-cat-list li {
-                width: calc(50% - 5px);
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
             }
             .mobile-cat-list li a {
-                font-size: 11px;
-                color: #666666;
-                text-decoration: none;
-                display: block;
-                padding: 0;
-                transition: color 0.2s;
+                font-size: 12.5px !important;
+                font-weight: 500 !important;
+                color: #334155 !important;
+                text-decoration: none !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 8px 10px !important;
+                background: #f8fafc !important;
+                border: 1px solid #f1f5f9 !important;
+                border-radius: 10px !important;
+                transition: all 0.2s ease !important;
+                text-align: center !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+            .mobile-cat-list li a:hover,
+            .mobile-cat-list li a:active {
+                color: #e11d48 !important;
+                background: #fff1f2 !important;
+                border-color: #fecdd3 !important;
+                font-weight: 600 !important;
+                transform: translateY(-1px) !important;
             }
             .offer-icon-btn {
                 display: inline-flex !important;
