@@ -571,7 +571,7 @@
         }
 
         .newsletter-popup {
-            background-image: url("{{ asset('frontend/images/pincode_bg.png') }}?v=5") !important;
+            background-image: url("{{ asset('frontend/images/pincode_bg.png') }}?v=6") !important;
             background-size: 100% 100% !important;
             background-position: center !important;
             background-repeat: no-repeat !important;
