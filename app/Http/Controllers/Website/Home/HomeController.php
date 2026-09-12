@@ -1053,12 +1053,6 @@ class HomeController extends Controller
             }
         }
 
-        // If ALL tokens are color tokens (e.g., user just typed "blue"), also use them as search tokens
-        if (empty($searchTokens) && !empty($colorTokens)) {
-            $searchTokens = $colorTokens;
-            $colorTokens = [];
-        }
-
         // Find exact matched color names for color tokens
         $matchedColorNames = [];
         if (!empty($colorTokens)) {
@@ -1130,25 +1124,28 @@ class HomeController extends Controller
             ->when(!empty($matchedColorNames), function ($query) use ($matchedColorNames) {
                 $query->whereIn(DB::raw('LOWER(pd.attributevalue1)'), $matchedColorNames);
             })
-            // Apply non-color search tokens to match product name/category/brand
-            ->where(function ($query) use ($searchTokens) {
-                foreach ($searchTokens as $token) {
-                    $query->where(function ($tokenQuery) use ($token) {
-                        $tokenQuery->where('products.product_name', 'LIKE', '%' . $token . '%')
-                            ->orWhere('cm.category_main_name', 'LIKE', '%' . $token . '%')
-                            ->orWhere('c.category_name', 'LIKE', '%' . $token . '%')
-                            ->orWhere('cs.category_sub_name', 'LIKE', '%' . $token . '%')
-                            ->orWhere('pd.attributevalue2', 'LIKE', '%' . $token . '%')
-                            ->orWhere('pd.attributevalue3', 'LIKE', '%' . $token . '%')
-                            ->orWhereExists(function ($brandTokenQuery) use ($token) {
-                                $brandTokenQuery->select(DB::raw(1))
-                                    ->from('products_specs as ps')
-                                    ->whereColumn('ps.products_id', 'products.id')
-                                    ->whereRaw('LOWER(ps.specify_attribute) = ?', ['brand'])
-                                    ->where('ps.specify_value', 'LIKE', '%' . $token . '%');
-                            });
-                    });
-                }
+            // Apply non-color search tokens to match product name/category/brand/color
+            ->when(!empty($searchTokens), function ($query) use ($searchTokens) {
+                $query->where(function ($q) use ($searchTokens) {
+                    foreach ($searchTokens as $token) {
+                        $q->where(function ($tokenQuery) use ($token) {
+                            $tokenQuery->where('products.product_name', 'LIKE', '%' . $token . '%')
+                                ->orWhere('cm.category_main_name', 'LIKE', '%' . $token . '%')
+                                ->orWhere('c.category_name', 'LIKE', '%' . $token . '%')
+                                ->orWhere('cs.category_sub_name', 'LIKE', '%' . $token . '%')
+                                ->orWhere('pd.attributevalue1', 'LIKE', '%' . $token . '%')
+                                ->orWhere('pd.attributevalue2', 'LIKE', '%' . $token . '%')
+                                ->orWhere('pd.attributevalue3', 'LIKE', '%' . $token . '%')
+                                ->orWhereExists(function ($brandTokenQuery) use ($token) {
+                                    $brandTokenQuery->select(DB::raw(1))
+                                        ->from('products_specs as ps')
+                                        ->whereColumn('ps.products_id', 'products.id')
+                                        ->whereRaw('LOWER(ps.specify_attribute) = ?', ['brand'])
+                                        ->where('ps.specify_value', 'LIKE', '%' . $token . '%');
+                                });
+                        });
+                    }
+                });
             })
             ->orderByRaw("CASE WHEN LOWER(products.product_name) LIKE ? THEN 0 WHEN LOWER(MIN(pd.attributevalue1)) LIKE ? THEN 1 ELSE 2 END", ['%' . strtolower($keyword) . '%', '%' . strtolower($keyword) . '%'])
             ->orderBy('products.created_at', 'desc')
