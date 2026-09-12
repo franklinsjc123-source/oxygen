@@ -99,7 +99,7 @@
                                             @endphp
                                         <tr>
                                             <td style="white-space: nowrap;">
-                                                <b>{{ str_pad($vendor_list->id, 4, '0', STR_PAD_LEFT) }}</b><br>
+                                                <b>{{ str_pad($vendor_list->vendor_id ?? $vendor_list->id, 4, '0', STR_PAD_LEFT) }}</b><br>
                                                 <span class="text-secondary">{{ $zoneLabel }}</span><br>
                                                 <span class="text-secondary">{{ $vendor_list->route }}</span>
                                             </td>

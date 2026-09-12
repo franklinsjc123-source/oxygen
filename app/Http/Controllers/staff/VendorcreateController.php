@@ -202,6 +202,8 @@ class VendorcreateController extends Controller
             $vendor->city = $request->city;
             $vendor->pincode = $request->pincode;
             $vendor->zone = $request->zone;
+            $maxZoneVendorId = vendorcreate::where('zone', $request->zone)->max('vendor_id') ?? 0;
+            $vendor->vendor_id = $maxZoneVendorId + 1;
             $vendor->route = $request->route;
             $vendor->location_map = $request->location_map;
             $vendor->aadhar_no = $request->aadhar_no;
@@ -469,7 +471,12 @@ class VendorcreateController extends Controller
             $vendor->state = $request->state;
             $vendor->city = $request->city;
             $vendor->pincode = $request->pincode;
+            $oldZone = $vendor->zone;
             $vendor->zone = $request->zone;
+            if ($oldZone != $request->zone || empty($vendor->vendor_id)) {
+                $maxZoneVendorId = vendorcreate::where('zone', $request->zone)->where('id', '!=', $id)->max('vendor_id') ?? 0;
+                $vendor->vendor_id = $maxZoneVendorId + 1;
+            }
             $vendor->route = $request->route;
             $vendor->location_map = $request->location_map;
             $vendor->latitude = $request->latitude;
