@@ -362,7 +362,7 @@
                                 </div>
                             </nav>
 
-                            <div class="product-wrapper row cols-xl-4 cols-lg-3 cols-md-3 cols-sm-2 cols-2" id="productslist">
+                            <div class="product-wrapper row cols-md-5 cols-sm-2 cols-2" id="productslist">
                                 @if (count($products ?? []) > 0)
                                     @foreach ($products as $product)
                                         @include('frontend/product-card', ['product' => $product, 'showStockCount' => true])
@@ -634,13 +634,17 @@
 
             document.addEventListener("DOMContentLoaded", function() {
                 function showLoader() {
-                    document.getElementById("loading-container").style.display = "block";
+                    var el = document.getElementById("loading-container");
+                    if (el) el.style.display = "block";
                 }
                 function hideLoader() {
-                    document.getElementById("loading-container").style.display = "none";
+                    var el = document.getElementById("loading-container");
+                    if (el) el.style.display = "none";
                 }
+                hideLoader();
                 window.addEventListener("beforeunload", showLoader);
                 window.addEventListener("load", hideLoader);
+                window.addEventListener("pageshow", hideLoader);
             });
 
             function getRibbonStyles(offerName) {

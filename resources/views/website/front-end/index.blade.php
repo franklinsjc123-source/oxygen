@@ -927,19 +927,20 @@
                document.addEventListener("DOMContentLoaded", function () {
                 // Function to show the loading container
                 function showLoader() {
-                    document.getElementById("loading-container").style.display = "block";
+                    var el = document.getElementById("loading-container");
+                    if (el) el.style.display = "block";
                 }
             
                 // Function to hide the loading container
                 function hideLoader() {
-                    document.getElementById("loading-container").style.display = "none";
+                    var el = document.getElementById("loading-container");
+                    if (el) el.style.display = "none";
                 }
-            
-                // Event listener to show loader when the page starts loading
+
+                hideLoader();
                 window.addEventListener("beforeunload", showLoader);
-            
-                // Event listener to hide loader when the page finishes loading
                 window.addEventListener("load", hideLoader);
+                window.addEventListener("pageshow", hideLoader);
             });
 
 
