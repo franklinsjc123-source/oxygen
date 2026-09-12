@@ -410,11 +410,12 @@
                                                                 </div>-->
 
                                                                 <div class="form-group">
-                                                                    <input type="hidden" id=pincodee_id name=pincodee_id>
+                                                                    <input type="hidden" id="pincodee_id" name="pincodee_id">
 
                                                                     <label for="validationCustom02"
                                                                         class="mb-1">Pincode</label>
                                                                     <input class="form-control" id="editpincode" name="editpincode" required=""  type="text">
+                                                                    <small id="editpincode_err" class="text-danger fw-bold d-block mt-1"></small>
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <label for="validationCustom01" class="mb-1">Area</label>
@@ -611,74 +612,95 @@ $(document).ready(function() {
     {{-- update --}}
     <script>
      $(document).on('click','#update_pincode', function(e){
-       //alert('test');
+         e.preventDefault();
+         var updateid = $('#pincodee_id').val();
+         var route_id = $('#editroute_id').val();
+         var zonal_id = $('#editzone_id').val();
+         var name = $('#editpincode').val();
+         var area = $('#editarea').val();
+         var post_region = $('#editpost_regin').val();
+         var status = $('#editstatus').val();
 
-         e.preventDefault(e);
-    var updateid = $('#pincodee_id').val();
-    // alert(updatepin_id);
+         var url = "{{route('pincode1.update', ":updateid")}}";
+         url = url.replace(":updateid", updateid);
+         $.ajax({
+             url: url,
+             type: "PUT",
+             data: {
+                 _token: `{{csrf_token()}}`,
+                 route_id: route_id,
+                 zonal_id: zonal_id,
+                 name: name,
+                 area: area,
+                 post_region: post_region,
+                 status: status
+             },
+             dataType: 'json',
+             success: function (response) {
+                 if (response.status == 200) {
+                     $('#exampleModal1').modal('hide');
+                     location.reload();
+                 } else {
+                     Swal.fire('Error!', response.message || 'Pincode already exists!', 'error');
+                 }
+             },
+             error: function (xhr) {
+                 var msg = 'Something went wrong.';
+                 if (xhr.responseJSON && xhr.responseJSON.message) {
+                     msg = xhr.responseJSON.message;
+                 }
+                 Swal.fire('Error!', msg, 'error');
+             }
+         });
+     });
 
+     // Real-time pincode duplicate check
+     $('#pincode').on('input blur', function() {
+         var val = $(this).val().trim();
+         if (!val) {
+             $('#pincode_err').text('');
+             $('#add_pincode_btn').prop('disabled', false);
+             return;
+         }
+         $.ajax({
+             type: 'POST',
+             url: "{{ route('pincode1.checkduplicate') }}",
+             data: { pincode: val, _token: '{{ csrf_token() }}' },
+             success: function(res) {
+                 if (res.exists) {
+                     $('#pincode_err').text(res.message);
+                     $('#add_pincode_btn').prop('disabled', true);
+                 } else {
+                     $('#pincode_err').text('');
+                     $('#add_pincode_btn').prop('disabled', false);
+                 }
+             }
+         });
+     });
 
-    var route_id = $('#editroute_id').val();
-    var zonal_id = $('#editzone_id').val();
-    var name = $('#editpincode').val();
-    var  area = $('#editarea').val();
-    var post_region = $('#editpost_regin').val();
-    var  status = $('#editstatus').val();
-    
-
-    // alert(route_id);
-    // alert(zone_id);
-    // alert(name);
-    // alert(area);
-    // alert(post_region);
-    // alert(status);
-    var url ="{{route('pincode1.update', ":updateid")}}";
-    url = url.replace(":updateid", updateid);
-    $.ajax({
-        //   data: $('').serialize(),
-            //  url: "{{ url('admin/pincode1/update') }}/"+updatepin_id,
-            
-
-
-            url:url,
-          
-          type: "PUT",
-          data: {_token : `{{csrf_token()}}`,
-           route_id:route_id,zonal_id:zonal_id,name:name,area:area,post_region:post_region,status:status},
-         dataType: 'html',
-          success: function (response) {
-               //console.log(response);
-
-               $('#exampleModal1').modal('hide');
-               location.reload();
-            //    $('#table').text(response.html);
-            // // alert('test');
-            //     if(response.status == 404)
-            //     {
-            //     // alert('test');
-            //     $('successmessage').html('');
-            //     $('successmessage').addClass('alert alert-danger');
-            //     $('successmessage').text(response.message);
-            //     }
-            //     else{
-            //         $('#editroute_id').val(response.pincodee.route_id);
-            //         $('#editzone_id').val(response.pincodee.zonal_id);
-            //         $('#editpincode').val(response.pincodee.name);
-            //         $('#editarea').val(response.pincodee.area);
-            //         $('#editpost_regin').val(response.pincodee.post_region);
-            //         $('#editstatus').val(response.pincodee.status);
-            //         $('#pincodee_id').val(pin_id);
-
-            //     }
-     
-                
-         
-            }
-        
-      });
-    
-
-    });
+     $('#editpincode').on('input blur', function() {
+         var val = $(this).val().trim();
+         var id = $('#pincodee_id').val();
+         if (!val) {
+             $('#editpincode_err').text('');
+             $('#update_pincode').prop('disabled', false);
+             return;
+         }
+         $.ajax({
+             type: 'POST',
+             url: "{{ route('pincode1.checkduplicate') }}",
+             data: { pincode: val, id: id, _token: '{{ csrf_token() }}' },
+             success: function(res) {
+                 if (res.exists) {
+                     $('#editpincode_err').text(res.message);
+                     $('#update_pincode').prop('disabled', true);
+                 } else {
+                     $('#editpincode_err').text('');
+                     $('#update_pincode').prop('disabled', false);
+                 }
+             }
+         });
+     });
         </script>
     <script>
         function getAjaxValue(url, method, callback) {

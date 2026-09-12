@@ -119,6 +119,7 @@ Route::post('product_colors/status', [ProductColorController::class, 'statusUpda
 //Route::resource('pincode', PinCodeController::class, ['names' => 'pincode']);
 // Route::resource('pincode', PinCodeController::class, ['names' => 'pincode']);
 Route::post('pincode1/changestatus', [PinCodeController1::class, 'changestatus'])->name('pincode1.changestatus');
+Route::post('pincode1/checkduplicate', [PinCodeController1::class, 'checkduplicate'])->name('pincode1.checkduplicate');
 Route::resource('pincode1', PinCodeController1::class, ['names' => 'pincode1']);
 
 // Route::match(['put', 'patch'], '/pincode1/update/{id}','PinCodeController1@update');

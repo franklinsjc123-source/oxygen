@@ -26,22 +26,25 @@ class Importpincode implements ToModel, WithStartRow, WithMultipleSheets
 		if (!isset($row[0], $row[1], $row[2], $row[3], $row[4])) {
 			return null; // Skip rows with missing data
 		}
+		$pincodeName = trim((string) $row[1]);
+		if (empty($pincodeName)) {
+			return null;
+		}
 		$zonal = Zonal::where('name', $row[0])->first();
-		// Update existing record or create a new one
+		$zonalId = $zonal ? $zonal->id : 1;
+
+		// Update existing record or create a new one based on unique 'name'
 		PinCode::updateOrCreate(
 			[
-				// Define the unique key(s) to check for existing records
-				'zonal_id' => $zonal->id,
-				//'route_id' => $row[1],
-				'name'     => $row[1], // Example: use 'name' as a unique identifier
+				'name' => $pincodeName,
 			],
 			[
-				// Fields to update or insert
+				'zonal_id'    => $zonalId,
 				'area'        => $row[2],
 				'post_region' => $row[3],
-				'status'      => $row[4],
-				'flag'        => 1, // Add default value for flag
-				'createdBy'   => 1, // Add default value for createdBy
+				'status'      => $row[4] ?? 1,
+				'flag'        => 1,
+				'createdBy'   => 1,
 			]
 		);
 

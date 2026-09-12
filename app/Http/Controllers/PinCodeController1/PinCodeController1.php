@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\PincodeController1;
+namespace App\Http\Controllers\PinCodeController1;
 
 use App\Http\Controllers\Controller;
 use App\Imports\Importpincode;
@@ -61,37 +61,31 @@ class PincodeController1 extends Controller
      */
     public function store(Request $request, FlasherInterface $flasher)
     {
+        try {
+            $pincodeValue = trim((string) $request->pincode);
+            $areaValue = trim((string) $request->area);
 
-
-        try{
-            $pincode = new PinCode();
-            //print_r($pincode);
-        // echo $pincode->zonal_id =$request->zone_id;
-        // echo $pincode->route_id =$request->route_id;
-        // echo $pincode->name = $request->pincode;
-        // echo $pincode->area =$request->area;
-        // echo $pincode->post_region = $request->post_regin;
-        // echo $pincode->status = $request->status;
-        // echo $pincode->createdBy = 1;
-
-        $pincode->zonal_id =$request->zonal_id;
-       // $pincode->route_id =$request->route_id;
-        $pincode->name = $request->pincode;
-        $pincode->area =$request->area;
-        $pincode->post_region = $request->post_regin;
-        $pincode->status = $request->status ?? 1;
-
-        $pincode->createdBy = 1;
-        // print_r($pincode);exit();
-        $pincode->save();
-            
-             $flasher->addSuccess('Data has been saved successfully!');
-             return redirect()->route('pincode1.index');
-        }
-            catch (\Throwable $th) {
-                $flasher->addError('Something Error!!' . $th);
-               return redirect()->route('pincode1.index');
+            $exists = PinCode::where('name', $pincodeValue)->exists();
+            if ($exists) {
+                $flasher->addError('Pincode "' . $pincodeValue . '" already exists!');
+                return redirect()->route('pincode1.index');
             }
+
+            $pincode = new PinCode();
+            $pincode->zonal_id = $request->zonal_id;
+            $pincode->name = $pincodeValue;
+            $pincode->area = $areaValue;
+            $pincode->post_region = $request->post_regin;
+            $pincode->status = $request->status ?? 1;
+            $pincode->createdBy = 1;
+            $pincode->save();
+
+            $flasher->addSuccess('Data has been saved successfully!');
+            return redirect()->route('pincode1.index');
+        } catch (\Throwable $th) {
+            $flasher->addError('Something Error!! ' . $th->getMessage());
+            return redirect()->route('pincode1.index');
+        }
     }
 
     /**
@@ -113,55 +107,21 @@ class PincodeController1 extends Controller
      */
     public function edit($id)
     {
-        //   return $id;
-        //  $zonal = Zonal::find($id);
-
-        //  $result = Zonal::join('pincode', 'pincode.zonal_id', '=', 'zonals.id')
-        //  ->select('students.*')
-        //  ->get();
-        // print_r($result);
-
-
-
-
-       // $editroute=Route::where('status', 1)->get();
-        $editZonal=Zonal::where('status', 1)->get();
-        // print_r($editZonal);
+        $editZonal = Zonal::where('status', 1)->get();
         $pincodee = PinCode::find($id);
 
-        if($pincodee)
-        {
+        if ($pincodee) {
             return response()->json([
-
-                'status'=>200,
-                'pincodee'=>$pincodee,
-                //'editroute'=>$editroute,
-                'editzonal'=>$editZonal
+                'status' => 200,
+                'pincodee' => $pincodee,
+                'editzonal' => $editZonal
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Pincode not found',
             ]);
         }
-        else
-        {
-            return response()->json([
-
-                'status'=>404,
-                'message'=>'Pincode not found',
-            ]);
-        }
-
-
-         //print_r($Pin);
-        // $pincode = PinCode::all();
-        // $route=Route::all();
-        // // print_r($pin);
-        // return view('layout.admin.master.pincode')->with(
-        //     [
-        //         "pincodee"=> $Pin,
-        //         "pincode"=>$pincode,
-        //         "data" =>$route
-        //     ]);
-
-    //    $ed = PinCode::where("id", $id);
-    //    print_r($ed);
     }
 
     /**
@@ -171,37 +131,32 @@ class PincodeController1 extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    // public function update(Request $request, $id)
     public function update(Request $request, $id)
     {
-        //print_r($id);
-        // echo'test';
-        //return $id;
+        try {
+            $pincode1 = PinCode::find($id);
+            if (!$pincode1) {
+                return response()->json(['status' => 404, 'message' => 'Pincode not found'], 404);
+            }
 
-       //$pincode1 = PinCode::where("id", $id)->get();
-         $pincode1 = PinCode::find($id);
-         $input = $request->all();
-        //    print_r($input);exit();
-         $pincode1->update($input);
-       //print_r($pincode1);
-       return route('pincode1.index');
+            $pincodeValue = trim((string) ($request->name ?? $request->pincode ?? $pincode1->name));
 
-        //  return view('layout.admin.master.pincode')->with("Pincode Updated!");
-            // ->with(
-            //     [
-            //         "pincode1" => $pincode1,
-            //         "data" => $route1
-            //     ]
-            // );
+            $exists = PinCode::where('name', $pincodeValue)->where('id', '!=', $id)->exists();
+            if ($exists) {
+                return response()->json(['status' => 400, 'message' => 'Pincode "' . $pincodeValue . '" already exists!'], 400);
+            }
 
+            $pincode1->name = $pincodeValue;
+            if ($request->has('zonal_id')) $pincode1->zonal_id = $request->zonal_id;
+            if ($request->has('area')) $pincode1->area = $request->area;
+            if ($request->has('post_region')) $pincode1->post_region = $request->post_region;
+            if ($request->has('status')) $pincode1->status = $request->status;
+            $pincode1->save();
 
-    // $data = PinCode::where("id",$id)
-    //                 -->join('routes', 'routes.id', '=', 'pincode.routeid')
-    //           		->join('zonals', 'zonals.id', '=', 'pincode.zonal_id')
-                    
-    //           		->get();
-    //                 print_r($data);
-
+            return response()->json(['status' => 200, 'message' => 'Pincode Updated!']);
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 500, 'message' => 'Something Error!! ' . $th->getMessage()], 500);
+        }
     }
 
     /**
@@ -254,5 +209,27 @@ class PincodeController1 extends Controller
         $pincode->save();
 
         return response()->json(['success' => 'Status changed successfully.']);
+    }
+
+    public function checkduplicate(Request $request)
+    {
+        $pincode = trim((string) $request->pincode);
+        $id = $request->id;
+
+        if (empty($pincode)) {
+            return response()->json(['exists' => false]);
+        }
+
+        $query = PinCode::where('name', $pincode);
+        if ($id) {
+            $query->where('id', '!=', $id);
+        }
+
+        $exists = $query->exists();
+
+        return response()->json([
+            'exists' => $exists,
+            'message' => $exists ? 'Pincode "' . $pincode . '" already exists!' : ''
+        ]);
     }
 }
