@@ -4139,7 +4139,29 @@ class FrontendController extends Controller
             }
         }
 
-        return response()->json(['products' => array_values($resultArr)]);
+        $resultList = array_values($resultArr);
+
+        if ($orderby === 'price-low') {
+            usort($resultList, function ($a, $b) {
+                $priceA = (float) ($a['selling_price'] ?? 0);
+                $priceB = (float) ($b['selling_price'] ?? 0);
+                if ($priceA <= 0 && $priceB <= 0) return 0;
+                if ($priceA <= 0) return 1;
+                if ($priceB <= 0) return -1;
+                return $priceA <=> $priceB;
+            });
+        } elseif ($orderby === 'price-high') {
+            usort($resultList, function ($a, $b) {
+                $priceA = (float) ($a['selling_price'] ?? 0);
+                $priceB = (float) ($b['selling_price'] ?? 0);
+                if ($priceA <= 0 && $priceB <= 0) return 0;
+                if ($priceA <= 0) return 1;
+                if ($priceB <= 0) return -1;
+                return $priceB <=> $priceA;
+            });
+        }
+
+        return response()->json(['products' => $resultList]);
     }
 
 
