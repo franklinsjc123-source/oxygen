@@ -575,11 +575,11 @@
                                       <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 14px; color: #444;">
                                           <li style="display: flex; align-items: center; gap: 12px; font-weight: 500;">
                                               <i class="w-icon-truck" style="font-size: 20px; color: #555;"></i>
-                                              <span>Get it by <strong style="color: #222;">{{ date('D, M j', strtotime('+3 days')) }}</strong></span>
+                                              <span>Get it by on or before <strong style="color: #222;">{{ date('D, M j', strtotime('+3 days')) }}</strong></span>
                                           </li>
                                           <li style="display: flex; align-items: center; gap: 12px; font-weight: 500;">
                                               <i class="w-icon-money" style="font-size: 20px; color: #555;"></i>
-                                              <span>Cash on Delivery</span>
+                                              <span>Cash on Delivery Available</span>
                                           </li>
                                           <li style="display: flex; align-items: center; gap: 12px; font-weight: 500;">
                                               <i class="w-icon-bag" style="font-size: 20px; color: #555;"></i>
