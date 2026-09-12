@@ -55,13 +55,23 @@ class HomeController extends Controller
 
         $newArrivals = Products::with(['vendor', 'productdetails', 'offer'])
             ->where('flag', 1)->where('status', 1)
+            ->whereHas('vendorDetails', function ($query) {
+                $query->where('status', 1);
+            })
             ->latest('created_at')->take(10)->get();
         // dd( $newArrivals);
 
 
         $topCategories = CategoryMain::select('category_main.id', 'category_main.category_main_name', 'category_main.category_main_image', DB::raw('COUNT(products.id) as product_count'))
-            ->leftJoin('products', 'category_main.id', '=', 'products.category_main')
+            ->leftJoin('products', function ($join) {
+                $join->on('category_main.id', '=', 'products.category_main')
+                    ->where('products.status', 1);
+            })
+            ->leftJoin('vendor_details as v', 'products.vendor_id', '=', 'v.id')
             ->where('category_main.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('products.id')->orWhere('v.status', 1);
+            })
             ->groupBy('category_main.id', 'category_main.category_main_name', 'category_main.category_main_image') // Include the columns needed for grouping
             ->orderByDesc('product_count')
             ->limit(7)
@@ -79,6 +89,9 @@ class HomeController extends Controller
         $menproducts = Products::with(['CategoryMain', 'vendor', 'productdetails', 'offer'])
             ->where('products.flag', 1)
             ->where('products.status', 1)
+            ->whereHas('vendorDetails', function ($query) {
+                $query->where('status', 1);
+            })
             ->whereHas('categoryMain', function ($query) {
                 $query->where('category_main_name', 'LIKE', 'men');
             })
@@ -87,6 +100,9 @@ class HomeController extends Controller
         $womenproducts = Products::with(['CategoryMain', 'vendor', 'productdetails', 'offer'])
             ->where('products.flag', 1)
             ->where('products.status', 1)
+            ->whereHas('vendorDetails', function ($query) {
+                $query->where('status', 1);
+            })
             ->whereHas('categoryMain', function ($query) {
                 $query->where('category_main_name', 'LIKE', 'women');
             })
@@ -96,6 +112,9 @@ class HomeController extends Controller
             ->join('category_main', 'products.category_main', '=', 'category_main.id')
             ->where('products.flag', 1)
             ->where('products.status', 1)
+            ->whereHas('vendorDetails', function ($query) {
+                $query->where('status', 1);
+            })
             ->whereHas('categoryMain', function ($query) {
                 $query->where('category_main_name', 'LIKE', 'kid');
             })
@@ -1120,6 +1139,7 @@ class HomeController extends Controller
                 'o.title'
             )
             ->where('products.status', 1)
+            ->where('v.status', 1)
             // Apply color filter as a strict AND condition
             ->when(!empty($matchedColorNames), function ($query) use ($matchedColorNames) {
                 $query->whereIn(DB::raw('LOWER(pd.attributevalue1)'), $matchedColorNames);
@@ -1156,9 +1176,11 @@ class HomeController extends Controller
 
         $colours = DB::table('products_details')
             ->leftJoin('products', 'products.id', '=', 'products_details.products_id')
+            ->leftJoin('vendor_details as v', 'products.vendor_id', '=', 'v.id')
             ->select('products_details.attributevalue1 as color', DB::raw('COUNT(DISTINCT products.id) as count'))
             ->whereIn('products.id', !empty($productIds) ? $productIds : [0])
             ->where('products.status', 1)
+            ->where('v.status', 1)
             ->whereNotNull('products_details.attributevalue1')
             ->where('products_details.attributevalue1', '!=', '')
             ->groupBy('products_details.attributevalue1')
@@ -1167,8 +1189,10 @@ class HomeController extends Controller
 
         $sizes = DB::table('products_details')
             ->leftJoin('products', 'products.id', '=', 'products_details.products_id')
+            ->leftJoin('vendor_details as v', 'products.vendor_id', '=', 'v.id')
             ->whereIn('products.id', !empty($productIds) ? $productIds : [0])
             ->where('products.status', 1)
+            ->where('v.status', 1)
             ->whereNotNull('products_details.attributevalue2')
             ->where('products_details.attributevalue2', '!=', '')
             ->select(DB::raw('DISTINCT(products_details.attributevalue2) as size'))
@@ -1177,8 +1201,10 @@ class HomeController extends Controller
 
         $offerTypes = DB::table('products')
             ->join('master_offers', 'master_offers.id', '=', 'products.offers')
+            ->leftJoin('vendor_details as v', 'products.vendor_id', '=', 'v.id')
             ->whereIn('products.id', !empty($productIds) ? $productIds : [0])
             ->where('products.status', 1)
+            ->where('v.status', 1)
             ->where('master_offers.status', 1)
             ->whereNotNull('products.offers')
             ->where('products.offers', '!=', '')
@@ -1255,7 +1281,9 @@ class HomeController extends Controller
             ->leftJoin('category_main as cm', 'products.category_main', '=', 'cm.id')
             ->leftJoin('category as c', 'products.category', '=', 'c.id')
             ->leftJoin('category_sub as cs', 'products.category_sub', '=', 'cs.id')
+            ->leftJoin('vendor_details as v', 'products.vendor_id', '=', 'v.id')
             ->where('products.status', 1)
+            ->where('v.status', 1)
             ->where(function ($query) use ($tokens) {
                 foreach ($tokens as $token) {
                     $query->where(function ($q) use ($token) {
@@ -1335,7 +1363,9 @@ class HomeController extends Controller
             $relatedAttrs = DB::table('products')
                 ->leftJoin('products_details as pd', 'products.id', '=', 'pd.products_id')
                 ->leftJoin('products_specs as ps', 'ps.products_id', '=', 'products.id')
+                ->leftJoin('vendor_details as v', 'products.vendor_id', '=', 'v.id')
                 ->where('products.status', 1)
+                ->where('v.status', 1)
                 ->where(function ($q) use ($searchTokens) {
                     foreach ($searchTokens as $st) {
                         $q->where(function ($sq) use ($st) {
@@ -1377,7 +1407,9 @@ class HomeController extends Controller
             ->leftJoin('category_sub as cs', 'products.category_sub', '=', 'cs.id')
             ->leftJoin('category as c', 'products.category', '=', 'c.id')
             ->leftJoin('category_main as cm', 'products.category_main', '=', 'cm.id')
+            ->leftJoin('vendor_details as v', 'products.vendor_id', '=', 'v.id')
             ->where('products.status', 1)
+            ->where('v.status', 1)
             ->where('products.product_name', 'LIKE', '%' . $term . '%')
             ->select('products.id', 'products.product_name as value', 'products.product_image', 'cs.category_sub_name', 'c.category_name', 'cm.category_main_name')
             ->orderBy('products.created_at', 'desc')
@@ -1446,9 +1478,11 @@ class HomeController extends Controller
         // 6. Brand suggestions
         $brandSuggestions = DB::table('products_specs')
             ->leftJoin('products as p', 'p.id', '=', 'products_specs.products_id')
+            ->leftJoin('vendor_details as v', 'p.vendor_id', '=', 'v.id')
             ->whereRaw('LOWER(specify_attribute) = ?', ['brand'])
             ->where('specify_value', 'LIKE', '%' . $term . '%')
             ->where('p.status', 1)
+            ->where('v.status', 1)
             ->select('specify_value as value', 'p.product_image')
             ->distinct()
             ->limit(3)
@@ -1474,7 +1508,9 @@ class HomeController extends Controller
             $otherColors = DB::table('products_details')
                 ->leftJoin('products', 'products.id', '=', 'products_details.products_id')
                 ->leftJoin('category_sub as cs', 'products.category_sub', '=', 'cs.id')
+                ->leftJoin('vendor_details as v', 'products.vendor_id', '=', 'v.id')
                 ->where('products.status', 1)
+                ->where('v.status', 1)
                 ->whereNotNull('products_details.attributevalue1')
                 ->where('products_details.attributevalue1', '!=', '')
                 ->where(function ($q) use ($searchTokens) {
@@ -1552,6 +1588,7 @@ class HomeController extends Controller
         $products = DB::table('products')
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
             ->leftJoin('category_main', 'products.category_main', '=', 'category_main.id')
+            ->leftJoin('vendor_details as v', 'products.vendor_id', '=', 'v.id')
             ->select(
                 DB::raw('MIN(products_details.id) as id'),  // Get the minimum (first) products_details.id
                 'products_details.products_id',
@@ -1570,6 +1607,7 @@ class HomeController extends Controller
         }
 
         $products->where('products.status', 1)
+            ->where('v.status', 1)
             ->groupBy(
                 'products_details.products_id', // Group by the product to avoid duplicate product rows
                 'category_main.category_main_name',
@@ -1614,6 +1652,7 @@ class HomeController extends Controller
         $products = DB::table('products')
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
             ->leftJoin('category', 'products.category', '=', 'category.id')
+            ->leftJoin('vendor_details as v', 'products.vendor_id', '=', 'v.id')
             ->select(
                 DB::raw('MIN(products_details.id) as id'),  // Get the minimum (first) products_details.id
                 'products_details.products_id',
@@ -1632,6 +1671,7 @@ class HomeController extends Controller
         }
 
         $products->where('products.status', 1)
+            ->where('v.status', 1)
             ->groupBy(
                 'products_details.products_id', // Group by the product to avoid duplicate product rows
                 'category.category_name',
@@ -1679,6 +1719,7 @@ class HomeController extends Controller
             ->leftJoin('products', 'products.id', '=', 'products_details.products_id')
             ->leftJoin('category', 'products.category', '=', 'category.id')
             ->leftJoin('products_specs', 'products.id', '=', 'products_specs.products_id')
+            ->leftJoin('vendor_details as v', 'products.vendor_id', '=', 'v.id')
             ->select(
                 DB::raw('MIN(products_details.id) as id'),  // Get the minimum (first) products_details.id
                 'products_details.products_id',
@@ -1718,6 +1759,7 @@ class HomeController extends Controller
 
         // Only fetch products that are active
         $products->where('products.status', 1)
+            ->where('v.status', 1)
             ->groupBy('products_details.products_id', 'category.category_name', 'products.product_name', 'products.product_image');
 
         // Add dynamic orderBy based on the 'orderby' parameter
@@ -1755,6 +1797,7 @@ class HomeController extends Controller
             ->leftJoin('products', 'products.id', '=', 'products_details.products_id')
             ->leftJoin('category', 'products.category', '=', 'category.id')
             ->leftJoin('products_specs', 'products.id', '=', 'products_specs.products_id')
+            ->leftJoin('vendor_details as v', 'products.vendor_id', '=', 'v.id')
             ->select(
                 DB::raw('MIN(products_details.id) as id'),  // Get the minimum (first) products_details.id
                 'products_details.products_id',
@@ -1795,6 +1838,7 @@ class HomeController extends Controller
 
         // Only fetch products that are active
         $products->where('products.status', 1)
+            ->where('v.status', 1)
             ->groupBy('products_details.products_id', 'category.category_name', 'products.product_name', 'products.product_image');
 
         // Add dynamic orderBy based on the 'orderby' parameter

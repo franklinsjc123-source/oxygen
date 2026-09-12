@@ -145,9 +145,12 @@ class FrontendController extends Controller
             return;
         }
 
-        $activeIds = Products::whereIn('id', $productIds)
-            ->where('status', 1)
-            ->pluck('id')
+        $activeIds = Products::from('products as p')
+            ->join('vendor_details as v', 'v.id', '=', 'p.vendor_id')
+            ->whereIn('p.id', $productIds)
+            ->where('p.status', 1)
+            ->where('v.status', 1)
+            ->pluck('p.id')
             ->map(fn($id) => (int) $id)
             ->all();
 
@@ -1371,6 +1374,7 @@ class FrontendController extends Controller
             ->leftJoin('products_details', 'products.product_id', '=', 'products_details.products_id')
             ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
             ->leftJoin('master_offers as o', 'o.id', '=', 'products.offers')
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'products.vendor_id')
             ->leftJoin('ratings', function ($join) {
                 $join->on('ratings.products_id', '=', 'products.id')
                     ->where('ratings.status', 1);
@@ -1394,6 +1398,7 @@ class FrontendController extends Controller
             )
             ->where('products.vendor_id', $vendor_id)
             ->where('products.status', 1)
+            ->where('vp.status', 1)
             ->groupBy(
                 'products.id',
                 'products.slug',
@@ -1422,6 +1427,7 @@ class FrontendController extends Controller
             ->leftJoin('products_details', 'products.product_id', '=', 'products_details.products_id')
             ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
             ->leftJoin('master_offers as o', 'o.id', '=', 'products.offers')
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'products.vendor_id')
             ->leftJoin('ratings', function ($join) {
                 $join->on('ratings.products_id', '=', 'products.id')
                     ->where('ratings.status', 1);
@@ -1445,6 +1451,7 @@ class FrontendController extends Controller
             )
             ->where('products.vendor_id', $vendor_id)
             ->where('products.status', 1)
+            ->where('vp.status', 1)
             ->groupBy(
                 'products.id',
                 'products.slug',
@@ -1474,6 +1481,7 @@ class FrontendController extends Controller
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
             ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
             ->leftJoin('master_offers', 'master_offers.id', '=', 'products.offers')
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'products.vendor_id')
             ->leftJoin('ratings', function ($join) {
                 $join->on('ratings.products_id', '=', 'products.id')
                     ->where('ratings.status', 1);
@@ -1496,6 +1504,7 @@ class FrontendController extends Controller
             ->where('products.vendor_id', $vendor_id)
             ->where('products.offers', $offer_id)
             ->where('products.status', 1)
+            ->where('vp.status', 1)
             ->groupBy(
                 'products.id',
                 'products.slug',
@@ -1523,6 +1532,7 @@ class FrontendController extends Controller
         $products = DB::table('products')
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
             ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'products.vendor_id')
             ->select(
                 'products.id',
                 'products.slug',
@@ -1534,6 +1544,7 @@ class FrontendController extends Controller
             )
             ->where('products.category_sub', $category_sub)
             ->where('products.status', 1)
+            ->where('vp.status', 1)
             ->groupBy(
                 'products.id',
                 'products.slug',
@@ -2158,7 +2169,9 @@ class FrontendController extends Controller
 
         $colours = DB::table('products_details')
             ->leftJoin('products', 'products.id', '=', 'products_details.products_id')
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'products.vendor_id')
             ->where('products.status', 1)
+            ->where('vp.status', 1)
             ->where('products.category_main', $main_category_id)
             ->whereNotNull('products_details.attributevalue1')
             ->where('products_details.attributevalue1', '!=', '')
@@ -2179,8 +2192,10 @@ class FrontendController extends Controller
         // Sizes available in this main category
         $sizes = DB::table('products_details')
             ->leftJoin('products', 'products.id', '=', 'products_details.products_id')
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'products.vendor_id')
             ->where('products.category_main', $main_category_id)
             ->where('products.status', 1)
+            ->where('vp.status', 1)
             ->whereNotNull('products_details.attributevalue2')
             ->where('products_details.attributevalue2', '!=', '')
             ->select(DB::raw('DISTINCT(products_details.attributevalue2) as size'))
@@ -2196,8 +2211,10 @@ class FrontendController extends Controller
         // Offer types for filter
         $offerTypes = DB::table('products')
             ->join('master_offers', 'master_offers.id', '=', 'products.offers')
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'products.vendor_id')
             ->where('products.category_main', $main_category_id)
             ->where('products.status', 1)
+            ->where('vp.status', 1)
             ->where('master_offers.status', 1)
             ->whereNotNull('products.offers')
             ->where('products.offers', '!=', '')
@@ -2234,9 +2251,11 @@ class FrontendController extends Controller
         // Colours
         $colorsQuery = DB::table('products_details')
             ->leftJoin('products', 'products.id', '=', 'products_details.products_id')
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'products.vendor_id')
             ->select('products_details.attributevalue1 as color', DB::raw('COUNT(DISTINCT products.id) as count'))
             ->where('products.category', $category_id)
             ->where('products.status', 1)
+            ->where('vp.status', 1)
             ->whereNotNull('products_details.attributevalue1')
             ->where('products_details.attributevalue1', '!=', '')
             ->groupBy('products_details.attributevalue1')
@@ -2250,8 +2269,10 @@ class FrontendController extends Controller
         // Sizes
         $sizesQuery = DB::table('products_details')
             ->leftJoin('products', 'products.id', '=', 'products_details.products_id')
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'products.vendor_id')
             ->where('products.category', $category_id)
             ->where('products.status', 1)
+            ->where('vp.status', 1)
             ->whereNotNull('products_details.attributevalue2')
             ->where('products_details.attributevalue2', '!=', '')
             ->select(DB::raw('DISTINCT(products_details.attributevalue2) as size'));
@@ -2267,8 +2288,10 @@ class FrontendController extends Controller
         // Offer Types
         $offerQuery = DB::table('products')
             ->join('master_offers', 'products.offers', '=', 'master_offers.id')
+            ->leftJoin('vendor_details as vp', 'vp.id', '=', 'products.vendor_id')
             ->where('products.category', $category_id)
             ->where('products.status', 1)
+            ->where('vp.status', 1)
             ->whereNotNull('products.offers')
             ->where('products.offers', '!=', 0)
             ->select('master_offers.id', 'master_offers.type', 'master_offers.title', 'master_offers.buy', 'master_offers.getoffer', 'master_offers.cashbacktype', 'master_offers.cashbackvalue', 'master_offers.value', 'master_offers.buyproduct', 'master_offers.getamt', 'master_offers.discount_type')
@@ -2572,6 +2595,7 @@ class FrontendController extends Controller
                 }
             })
             ->where('p.status', 1)
+            ->where('vp.status', 1)
             ->select(
                 'p.id',
             'p.slug',
@@ -3899,7 +3923,8 @@ class FrontendController extends Controller
             ->leftJoin('products_details as pd', 'pd.products_id', '=', 'p.id')
             ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
             ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers')
-            ->where('p.status', 1);
+            ->where('p.status', 1)
+            ->where('vp.status', 1);
 
         if (!empty($keyword)) {
                                                                                                                                                                                                                                                                                                                             $rawTokens = preg_split('/\s+/', strtolower($keyword), -1, PREG_SPLIT_NO_EMPTY);

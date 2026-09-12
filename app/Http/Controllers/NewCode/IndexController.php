@@ -125,9 +125,12 @@ class IndexController extends Controller
             return;
         }
 
-        $activeIds = Products::whereIn('id', $productIds)
-            ->where('status', 1)
-            ->pluck('id')
+        $activeIds = Products::from('products as p')
+            ->join('vendor_details as v', 'v.id', '=', 'p.vendor_id')
+            ->whereIn('p.id', $productIds)
+            ->where('p.status', 1)
+            ->where('v.status', 1)
+            ->pluck('p.id')
             ->map(fn($id) => (int) $id)
             ->all();
 
@@ -145,7 +148,10 @@ class IndexController extends Controller
        
         $products = DB::table('products as p')
             ->leftJoin('category as c', 'c.id', '=', 'p.category')
-            ->leftJoin('products_details as i', 'i.products_id', '=', 'p.id');
+            ->leftJoin('products_details as i', 'i.products_id', '=', 'p.id')
+            ->leftJoin('vendor_details as v', 'v.id', '=', 'p.vendor_id')
+            ->where('p.status', 1)
+            ->where('v.status', 1);
             //->leftJoin('size as s', 's.id', '=', 'p.size_id');
         if ($id > 0 && $id != '') {
             $products = $products->Where('p.id', $id);
