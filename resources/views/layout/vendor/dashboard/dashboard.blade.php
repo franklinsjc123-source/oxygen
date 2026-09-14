@@ -340,8 +340,8 @@
         }
         .shop-owner-details-row {
             display: grid; 
-            grid-template-columns: 1fr 1fr 1.25fr; 
-            gap: 10px; 
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr) minmax(0, 1.3fr); 
+            gap: 8px; 
             margin-bottom: 14px; 
             border-bottom: 1px solid #edf2f7; 
             padding-bottom: 14px;
@@ -352,6 +352,12 @@
             border-radius: 8px;
             padding: 8px 10px;
             transition: all 0.2s ease;
+            min-width: 0;
+        }
+        .shop-owner-details-row > div > div:first-child {
+            white-space: nowrap !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .shop-owner-details-row > div:hover {
             border-color: #cbd5e0;
@@ -707,19 +713,19 @@
                             <!-- Owner, Phone, Email Details Row -->
                             <div class="shop-owner-details-row">
                                 <div>
-                                    <div style="font-size: 11.5px; text-transform: uppercase; color: #a0aec0; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 2px;">Owner Name</div>
+                                    <div style="font-size: 11.5px; text-transform: uppercase; color: #a0aec0; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 2px; white-space: nowrap !important;">Owner Name</div>
                                     <div style="font-size: 14px; font-weight: 600; color: #2d3748; display: flex; align-items: center; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                         <i class="fa fa-user" style="color: #718096; font-size: 13px;"></i>{{ $vendorDetails->owner_name ?? 'N/A' }}
                                     </div>
                                 </div>
                                 <div>
-                                    <div style="font-size: 11.5px; text-transform: uppercase; color: #a0aec0; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 2px;">Mobile Number</div>
+                                    <div style="font-size: 11.5px; text-transform: uppercase; color: #a0aec0; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 2px; white-space: nowrap !important;">Mobile Number</div>
                                     <div style="font-size: 14px; font-weight: 600; color: #2d3748; display: flex; align-items: center; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                         <i class="fa fa-phone" style="color: #718096; font-size: 13px;"></i>{{ $vendorDetails->mobile_number1 ?? 'N/A' }}
                                     </div>
                                 </div>
                                 <div>
-                                    <div style="font-size: 11.5px; text-transform: uppercase; color: #a0aec0; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 2px;">Email Address</div>
+                                    <div style="font-size: 11.5px; text-transform: uppercase; color: #a0aec0; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 2px; white-space: nowrap !important;">Email Address</div>
                                     <div style="font-size: 14px; font-weight: 600; color: #2d3748; display: flex; align-items: center; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $vendorDetails->email ?? 'N/A' }}">
                                         <i class="fa fa-envelope" style="color: #718096; font-size: 13px;"></i>{{ $vendorDetails->email ?? 'N/A' }}
                                     </div>
