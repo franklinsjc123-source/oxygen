@@ -17,9 +17,21 @@ class SpecificationGroupController extends Controller
     public function index()
     {
         $login_id = session()->get('login_id');
-        $groups = SpecificationGroup::where('created_byid', $login_id)
-            ->orWhere('created_by', 'Admin')
-            ->get();
+        $vendorcreate = vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
+        $vendorSubCategoryIds = array_values(array_filter(array_map('intval', array_map('trim', explode(',', (string) optional($vendorcreate)->sub_category_ids)))));
+
+        $groups = SpecificationGroup::where(function ($q) use ($login_id, $vendorSubCategoryIds) {
+            $q->where('created_byid', $login_id);
+
+            if (!empty($vendorSubCategoryIds)) {
+                $q->orWhere(function ($subQ) use ($vendorSubCategoryIds) {
+                    foreach ($vendorSubCategoryIds as $subId) {
+                        $subQ->orWhereRaw("FIND_IN_SET(?, sub_category_ids)", [$subId]);
+                    }
+                });
+            }
+        })->get();
+
         return view('layout.vendor.specification_groups.index', compact('groups'));
     }
 

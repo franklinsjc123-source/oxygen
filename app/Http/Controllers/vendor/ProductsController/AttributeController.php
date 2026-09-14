@@ -22,26 +22,21 @@ class AttributeController extends Controller
      */
     public function index()
     {
-        // $category_main_data = CategoryMain::get();
-        // $subcategory = CategorySub::get();
-        // // $attribute_data = Attribute::get();
-        // $attribute = CategorySub::join(
-        //     'master_attribute',
-        //     'category_sub.id',
-        //     '=',
-        //     'master_attribute.category_sub_id'
-        // )
-        //     ->get();
+        $login_id = session()->get('login_id');
+        $vendorcreate = \App\Models\vendor\vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
+        $vendorSubCategoryIds = array_values(array_filter(array_map('intval', array_map('trim', explode(',', (string) optional($vendorcreate)->sub_category_ids)))));
 
-        // return view('layout.vendor.products.attribute-listing')
-        //     ->with([
-        //         'category_main_data' => $category_main_data,
-        //         'subcategory' => $subcategory,
-        //         'attribute' => $attribute
-        //     ]);
-         $login_id = session()->get('login_id');
-         
-         $groups = \App\Models\Master\Attribute\AttributeGroup::whereIn('created_byid', [$login_id, 1])->get();
+        $groups = \App\Models\Master\Attribute\AttributeGroup::where(function ($q) use ($login_id, $vendorSubCategoryIds) {
+            $q->where('created_byid', $login_id);
+
+            if (!empty($vendorSubCategoryIds)) {
+                $q->orWhere(function ($subQ) use ($vendorSubCategoryIds) {
+                    foreach ($vendorSubCategoryIds as $subId) {
+                        $subQ->orWhereRaw("FIND_IN_SET(?, sub_category_ids)", [$subId]);
+                    }
+                });
+            }
+        })->get();
 
         return view('layout.vendor.products.attribute-listing')
             ->with([
