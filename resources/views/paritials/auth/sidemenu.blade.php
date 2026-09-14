@@ -16,7 +16,7 @@
                 <img class="img-60 rounded-circle lazyloaded blur-up"
                     src="{{ asset('assets/images/dashboard/man.jpeg') }}" alt="#">
             </div>
-            <h6 class="mt-3 f-14">{{session()->get('log_name') ?? 'ADMIN'}}</h6>
+            <h6 class="mt-3 f-14 vendor-shop-name" style="font-family: 'Pristina', 'Dancing Script', 'Pinyon Script', cursive, sans-serif !important; font-size: 20px !important; font-weight: 700;">{{session()->get('log_name') ?? 'ADMIN'}}</h6>
             <p> {{session()->get('log_type') ?? 'Administrator'}}</p>
         </div>
         <ul class="sidebar-menu">
