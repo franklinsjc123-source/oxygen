@@ -203,7 +203,7 @@
 
            {{-- </div> --}}
            <center>
-               <p class="mt-3">Copyright © 2026 TRYNEWW</p>
+               <p class="mt-3">Copyright © 2026 TRYMENOW</p>
            </center><br>
            {{-- <br> --}}
        </div>

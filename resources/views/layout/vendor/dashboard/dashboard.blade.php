@@ -1687,7 +1687,7 @@
                     "key": "{{ config('services.razorpay.key') }}",
                     "amount": amountInPaise,
                     "currency": "INR",
-                    "name": "{{ $vendorDetails->shop_name ?? 'Tryneww Store' }}",
+                    "name": "{{ $vendorDetails->shop_name ?? 'Trymenow Store' }}",
                     "description": packageName + " - Subscription Renewal",
                     "webview_intent": /iPhone|iPad|iPod|Android/i.test(navigator.userAgent),
                     "handler": function (response) {

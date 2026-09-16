@@ -3299,7 +3299,7 @@ class FrontendController extends Controller
 
             $data = [
                 'seller' => [
-                    'name' => 'Tryneww',
+                    'name' => 'Trymenow',
                     'address' => 'India',
                     'pan' => '-',
                     'gst' => '-',
@@ -3362,7 +3362,7 @@ class FrontendController extends Controller
         $grandTotal = (float) $mappedItems->sum('total');
         $data = [
             'seller' => [
-                'name' => 'Tryneww',
+                'name' => 'Trymenow',
                 'address' => 'India',
                 'pan' => '-',
                 'gst' => '-',

@@ -471,7 +471,7 @@
                         "key": "{{ config('services.razorpay.key') }}",
                         "amount": totalAmount * 100,
                         "currency": "INR",
-                        "name": "Tryneww Store",
+                        "name": "Trymenow Store",
                         "description": "Order Payment",
                         "image": "{{ asset('assets/images/logo.png') }}",
                         "webview_intent": /iPhone|iPad|iPod|Android/i.test(navigator.userAgent),

@@ -1,5 +1,5 @@
 @extends('app_template')
- @section('title','Tryneww')
+ @section('title','Trymenow')
  @section('content')
  @php
      $masterOffersMap = \Illuminate\Support\Facades\DB::table('master_offers')->get()->keyBy('id');
