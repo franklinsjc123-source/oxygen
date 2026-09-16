@@ -2,17 +2,22 @@
 @section('title', 'Privacy Policy - Trymenow')
 @section('content')
 <main class="main">
-    <!-- Beautiful Page Header -->
-    <div class="page-header" style="background: linear-gradient(135deg, #172337 0%, #0088dd 100%); padding: 60px 0; text-align: center; color: #ffffff;">
+    <!-- Breadcrumb Nav -->
+    <nav class="breadcrumb-nav mb-4 mt-4">
         <div class="container">
-            <h1 class="page-title text-white" style="font-size: 2.5rem; font-weight: 700; margin-bottom: 10px;">
+            <ul class="breadcrumb bb-no">
+                <li><a href="{{ url('home') }}">Home</a></li>
+                <li>Privacy Policy</li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header" style="background: linear-gradient(135deg, #172337 0%, #0088dd 100%); padding: 40px 0; text-align: left; color: #ffffff;">
+        <div class="container">
+            <h1 class="page-title text-white" style="font-size: 2.2rem; font-weight: 700; margin: 0;">
                 Privacy Policy
             </h1>
-            <ul class="breadcrumb justify-content-center" style="background: transparent; padding: 0; margin: 0; font-size: 0.9rem;">
-                <li><a href="{{ url('home') }}" style="color: rgba(255,255,255,0.8);">Home</a></li>
-                <li style="color: #ffffff; padding: 0 10px;">/</li>
-                <li class="active" style="color: #ffffff;">Privacy Policy</li>
-            </ul>
         </div>
     </div>
 
