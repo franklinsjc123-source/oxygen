@@ -13,9 +13,9 @@
     </nav>
 
     <!-- Page Header -->
-    <div class="page-header" style="background: linear-gradient(135deg, #172337 0%, #0088dd 100%); padding: 40px 0; text-align: left; color: #ffffff;">
+    <div class="page-header" style="background: transparent; padding: 15px 0; text-align: left;">
         <div class="container">
-            <h1 class="page-title text-white" style="font-size: 2.2rem; font-weight: 700; margin: 0;">
+            <h1 class="page-title" style="font-size: 2.2rem; font-weight: 700; margin: 0; color: #172337;">
                 Privacy Policy
             </h1>
         </div>
