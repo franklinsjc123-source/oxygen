@@ -51,8 +51,8 @@
     <div class="admin-mmenu-box">
         <div class="admin-mmenu-user">
             <img src="{{ asset('assets/images/dashboard/man.jpeg') }}" alt="User">
-            <h6>{{ session()->get('log_name') ?? 'Staff' }}</h6>
-            <p>Staff</p>
+            <h6 style="text-transform: capitalize !important;">{{ ucwords(strtolower(session()->get('log_name') ?? 'Staff')) }}</h6>
+            <p style="text-transform: capitalize !important;">{{ ucwords(strtolower(session()->get('log_type') ?? 'Staff')) }}</p>
         </div>
         <ul class="admin-mmenu">
             <li><a href="{{ url('admin/dashboard') }}"><i data-feather="home"></i> <span class="text-label">Dashboard</span></a></li>

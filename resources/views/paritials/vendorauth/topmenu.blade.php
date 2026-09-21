@@ -202,8 +202,8 @@
     <div class="admin-mmenu-box">
         <div class="admin-mmenu-user">
             <img src="{{ $vImg }}" alt="Vendor">
-            <h6 class="vendor-shop-name" style="font-family: 'Pristina', 'Dancing Script', 'Pinyon Script', cursive, sans-serif !important; font-size: 20px !important; font-weight: 700; text-transform: uppercase;">{{ $vName }}</h6>
-            <p>{{ $vRole }}</p>
+            <h6 class="vendor-shop-name" style="font-family: 'Pristina', 'Dancing Script', 'Pinyon Script', cursive, sans-serif !important; font-size: 20px !important; font-weight: 700; text-transform: capitalize !important;">{{ ucwords(strtolower($vName)) }}</h6>
+            <p style="text-transform: capitalize !important;">{{ ucwords(strtolower($vRole)) }}</p>
         </div>
         <ul class="admin-mmenu">
             @if(session()->get('login_id'))

@@ -15,8 +15,8 @@ use Illuminate\Support\Facades\Route;
                 <img class="img-60 rounded-circle lazyloaded blur-up"
                     src="{{ asset('assets/images/dashboard/man.jpeg') }}" alt="#">
             </div>
-            <h6 class="mt-3 f-14 vendor-shop-name" style="font-family: 'Pristina', 'Dancing Script', 'Pinyon Script', cursive, sans-serif !important; font-size: 20px !important; font-weight: 700;">{{session()->get('log_name') ?? 'STAFF'}}</h6>
-            <p> {{session()->get('log_type') ?? 'Staff'}}</p>
+            <h6 class="mt-3 f-14 vendor-shop-name" style="font-family: 'Pristina', 'Dancing Script', 'Pinyon Script', cursive, sans-serif !important; font-size: 20px !important; font-weight: 700; text-transform: capitalize !important;">{{ ucwords(strtolower(session()->get('log_name') ?? 'Staff')) }}</h6>
+            <p style="text-transform: capitalize !important;">{{ ucwords(strtolower(session()->get('log_type') ?? 'Staff')) }}</p>
         </div>
         <ul class="sidebar-menu">
         <li><a class="sidebar-header" href="{{ route('staffdashboard', session()->get('login_id')) }}"><i data-feather="home"></i><span>Dashboard</span></a></li>
