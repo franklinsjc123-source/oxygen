@@ -24,21 +24,14 @@
             <div class="container-fluid fcolor">
                 <div class="page-header">
                     <div class="row">
-                        <div class="col-lg-6">
-                            <div class="page-header-left">
-                                <h3>Order Transactions
-                                   
-                                </h3>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <ol class="breadcrumb pull-right">
-                                <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
+                        <div class="col-12">
+                        <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
+                            <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
                                 <li class="breadcrumb-item active">Transactions</li>
-                            </ol>
-                        </div>
+                        </ol>
                     </div>
                 </div>
+            </div>
             </div>
             <!-- Container-fluid Ends-->
 

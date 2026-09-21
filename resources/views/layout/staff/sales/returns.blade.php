@@ -51,13 +51,8 @@
         <div class="container-fluid">
             <div class="page-header">
                 <div class="row">
-                    <div class="col-lg-6">
-                        <div class="page-header-left">
-                            <h3>Returns & Replacements</h3>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <ol class="breadcrumb pull-right">
+                    <div class="col-12">
+                        <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
                             <li class="breadcrumb-item"><a href="{{ route('staffdashboard', session()->get('login_id')) }}"><i data-feather="home"></i></a></li>
                             <li class="breadcrumb-item active">Returns & Replacements</li>
                         </ol>
