@@ -1163,7 +1163,6 @@
                         <div class="card-header" style="background-color: transparent; border: none; padding: 24px 24px 12px 24px; display: flex; justify-content: space-between; align-items: center;">
                             <h4 style="font-weight: 700; color: #1a202c; margin: 0; font-size: 18px;">Recent Activities</h4>
                             <div style="display: flex; gap: 8px;">
-                                <a href="#" style="font-size: 12px; font-weight: 600; color: #718096; text-decoration: none;">Cancel</a>
                                 <a href="#" style="font-size: 12px; font-weight: 700; color: #5c67f2; text-decoration: none; border-bottom: 2px solid #5c67f2; padding-bottom: 2px;">All</a>
                             </div>
                         </div>
