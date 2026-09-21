@@ -609,13 +609,8 @@
     <div class="container-fluid">
         <div class="page-header" style="margin-top: 15px !important;">
             <div class="row">
-                <div class="col-lg-6">
-                    <div class="page-header-left">
-                        <h3 style="font-weight: 700; color: #1a202c; font-size: 22px; margin-top: 15px !important;">Dashboard</h3>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <ol class="breadcrumb pull-right" style="margin-top: 15px !important;">
+                <div class="col-12">
+                    <ol class="breadcrumb" style="float: left !important; margin-top: 15px !important; margin-bottom: 0; padding-left: 0;">
                         <li class="breadcrumb-item"><a href="{{ route('portal_selection') }}"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item active">Dashboard</li>
                     </ol>
