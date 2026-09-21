@@ -116,7 +116,7 @@
                                         data-sort-order="asc" data-mobile-responsive="true" data-toggle="table"
                                         data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true"
                                         data-show-refresh="false" data-key-events="true" data-resizable="true"
-                                        data-cookie="true" data-show-export="true" data-click-to-select="true"
+                                        data-cookie="true" data-show-export="false" data-click-to-select="true"
                                         data-toolbar="#toolbar">
                                         <thead>
                                             <tr>
