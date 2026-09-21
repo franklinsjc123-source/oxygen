@@ -463,6 +463,14 @@ class DashboardController extends Controller
             }
         }
 
+        $prospectsMap = [
+            'Qualified' => ($pipelineMap['Appointment Fixed'] ?? 0) + ($pipelineMap['Package Explained'] ?? 0),
+            'Negotiating' => $pipelineMap['Negotiating'] ?? 0,
+            'Decision Pending' => $pipelineMap['Pending Decision'] ?? 0,
+            'Interested' => $pipelineMap['Interested'] ?? 0,
+            'Not Interested' => $pipelineMap['Not Interested'] ?? 0
+        ];
+
         $activityStats = [
             'pipeline' => [
                 'labels' => array_keys($pipelineMap),
@@ -475,6 +483,10 @@ class DashboardController extends Controller
             'reference' => [
                 'labels' => array_keys($refMap),
                 'values' => array_values($refMap)
+            ],
+            'prospects' => [
+                'labels' => array_keys($prospectsMap),
+                'values' => array_values($prospectsMap)
             ]
         ];
 
@@ -2749,6 +2761,14 @@ class DashboardController extends Controller
             }
         }
 
+        $prospectsMap = [
+            'Qualified' => ($pipelineMap['Appointment Fixed'] ?? 0) + ($pipelineMap['Package Explained'] ?? 0),
+            'Negotiating' => $pipelineMap['Negotiating'] ?? 0,
+            'Decision Pending' => $pipelineMap['Pending Decision'] ?? 0,
+            'Interested' => $pipelineMap['Interested'] ?? 0,
+            'Not Interested' => $pipelineMap['Not Interested'] ?? 0
+        ];
+
         $activityStats = [
             'pipeline' => [
                 'labels' => array_keys($pipelineMap),
@@ -2761,6 +2781,10 @@ class DashboardController extends Controller
             'reference' => [
                 'labels' => array_keys($refMap),
                 'values' => array_values($refMap)
+            ],
+            'prospects' => [
+                'labels' => array_keys($prospectsMap),
+                'values' => array_values($prospectsMap)
             ]
         ];
 

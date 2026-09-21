@@ -979,14 +979,14 @@
                 <!-- Right Card: Gauge Ratio Analytics -->
                 <div class="col-xl-4 col-lg-4 col-md-12 mb-4">
                     <div class="activity-tracker-container" style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
-                        <div class="activity-header d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                        <div class="activity-header d-flex justify-content-between align-items-center mb-3">
                             <!-- Left Sub-Tabs -->
-                            <div class="d-flex align-items-center gap-1">
-                                <ul class="activity-nav-pills" id="gauge-tabs">
-                                    <li><button type="button" class="activity-nav-link active" onclick="switchGaugeTab(this, 'client')">Clients</button></li>
-                                    <li><button type="button" class="activity-nav-link" onclick="switchGaugeTab(this, 'prospect')">Prospects</button></li>
-                                    <li><button type="button" class="activity-nav-link" onclick="switchGaugeTab(this, 'loyal')">Loyal</button></li>
-                                    <li><button type="button" class="activity-nav-link" onclick="switchGaugeTab(this, 'auction')">Auction</button></li>
+                            <div class="d-flex align-items-center w-100">
+                                <ul class="activity-nav-pills w-100" id="gauge-tabs" style="flex-wrap: nowrap; gap: 4px;">
+                                    <li style="flex: 1; min-width: 0;"><button type="button" class="activity-nav-link active w-100 text-center" style="white-space: nowrap; font-size: 11.5px; padding: 6px 4px;" onclick="switchGaugeTab(this, 'client')">Clients</button></li>
+                                    <li style="flex: 1; min-width: 0;"><button type="button" class="activity-nav-link w-100 text-center" style="white-space: nowrap; font-size: 11.5px; padding: 6px 4px;" onclick="switchGaugeTab(this, 'prospect')">Prospects</button></li>
+                                    <li style="flex: 1; min-width: 0;"><button type="button" class="activity-nav-link w-100 text-center" style="white-space: nowrap; font-size: 11.5px; padding: 6px 4px;" onclick="switchGaugeTab(this, 'loyal')">Loyal</button></li>
+                                    <li style="flex: 1; min-width: 0;"><button type="button" class="activity-nav-link w-100 text-center" style="white-space: nowrap; font-size: 11.5px; padding: 6px 4px;" onclick="switchGaugeTab(this, 'auction')">Auction</button></li>
                                 </ul>
                             </div>
                         </div>
@@ -1051,25 +1051,20 @@
                 <!-- Right Card: Prospect & Activity Analytics -->
                 <div class="col-xl-4 col-lg-4 col-md-12 mb-4">
                     <div class="activity-tracker-container" style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
-                        <div class="activity-header d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                        <div class="activity-header d-flex justify-content-between align-items-center mb-3" style="flex-wrap: nowrap; gap: 4px; width: 100%;">
                             <!-- Left Sub-Tabs -->
-                            <div class="d-flex align-items-center gap-1">
-                                <ul class="activity-nav-pills" id="prospect-tabs">
-                                    <li><button type="button" class="activity-nav-link active" onclick="switchProspectTab(this, 'pipeline')">Pipeline</button></li>
-                                    <li><button type="button" class="activity-nav-link" onclick="switchProspectTab(this, 'win')">Win %</button></li>
-                                    <li><button type="button" class="activity-nav-link" onclick="switchProspectTab(this, 'reference')">Reference</button></li>
+                            <div class="d-flex align-items-center" style="flex-grow: 1; min-width: 0;">
+                                <ul class="activity-nav-pills w-100" id="prospect-tabs" style="flex-wrap: nowrap; gap: 4px;">
+                                    <li style="flex: 1; min-width: 0;"><button type="button" class="activity-nav-link active w-100 text-center" style="white-space: nowrap; font-size: 11.5px; padding: 6px 4px; height: 30px; display: inline-flex; align-items: center; justify-content: center;" onclick="switchProspectTab(this, 'pipeline')">Pipeline</button></li>
+                                    <li style="flex: 1; min-width: 0;"><button type="button" class="activity-nav-link w-100 text-center" style="white-space: nowrap; font-size: 11.5px; padding: 6px 4px; height: 30px; display: inline-flex; align-items: center; justify-content: center;" onclick="switchProspectTab(this, 'win')">Win %</button></li>
+                                    <li style="flex: 1; min-width: 0;"><button type="button" class="activity-nav-link w-100 text-center" style="white-space: nowrap; font-size: 11.5px; padding: 6px 4px; height: 30px; display: inline-flex; align-items: center; justify-content: center;" onclick="switchProspectTab(this, 'reference')">Reference</button></li>
+                                    <li style="flex: 1; min-width: 0;"><button type="button" class="activity-nav-link w-100 text-center" style="white-space: nowrap; font-size: 11.5px; padding: 6px 4px; height: 30px; display: inline-flex; align-items: center; justify-content: center;" onclick="switchProspectTab(this, 'prospects')">Prospects</button></li>
                                 </ul>
-                            </div>
-                            <!-- Prospects Total Badge -->
-                            <div class="d-flex align-items-center">
-                                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 6px 16px; border-radius: 8px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                    <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">Prospects</span>
-                                    <strong id="prospects-badge-count" style="font-size: 18px; color: #1e293b; font-weight: 800; line-height: 1;">0</strong>
-                                </div>
                             </div>
                         </div>
                         <div style="flex-grow: 1; min-height: 320px; position: relative;">
                             <canvas id="prospectsChart"></canvas>
+                            <div id="pipelineCardsContainer" style="display: none; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 4px 0; height: 100%; align-content: start;"></div>
                         </div>
                     </div>
                 </div>
@@ -1320,19 +1315,56 @@ function renderPerformanceChart(leftTab, rightTab) {
     });
 }
 
+function renderPipelineCards(labels, values, container) {
+    let html = '';
+    labels.forEach((label, i) => {
+        const val = values[i] !== undefined ? values[i] : 0;
+        
+        html += `
+            <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; justify-content: space-between; min-height: 85px;">
+                <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2;">${label}</span>
+                <strong style="font-size: 24px; font-weight: 800; color: #1e293b; margin-top: 6px; line-height: 1;">${val}</strong>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+}
+
 function renderProspectsChart(tab) {
-    const dataObj = activityStats[tab];
-    const labels = dataObj.labels || [];
+    const dataObj = activityStats[tab] || {};
+    const rawLabels = dataObj.labels || [];
     const values = dataObj.values || [];
 
     const totalProspects = values.reduce((a, b) => a + b, 0);
-    document.getElementById('prospects-badge-count').innerText = totalProspects;
+    const badgeEl = document.getElementById('prospects-badge-count');
+    if (badgeEl) {
+        badgeEl.innerText = totalProspects;
+    }
 
-    const ctx = document.getElementById('prospectsChart').getContext('2d');
+    const canvasEl = document.getElementById('prospectsChart');
+    const containerEl = document.getElementById('pipelineCardsContainer');
+
+    if (tab === 'pipeline') {
+        if (canvasEl) canvasEl.style.display = 'none';
+        if (containerEl) {
+            containerEl.style.display = 'grid';
+            renderPipelineCards(rawLabels, values, containerEl);
+        }
+        return;
+    }
+
+    if (containerEl) containerEl.style.display = 'none';
+    if (canvasEl) canvasEl.style.display = 'block';
+
+    const ctx = canvasEl.getContext('2d');
     
     if (prospectsChartInstance) {
         prospectsChartInstance.destroy();
     }
+
+    // Split multi-word labels into arrays for horizontal multi-line rendering
+    const labels = rawLabels.map(l => (typeof l === 'string' && l.includes(' ')) ? l.split(' ') : l);
 
     const pipelineColors = [
         '#2563eb', // Blue
@@ -1356,6 +1388,27 @@ function renderProspectsChart(tab) {
                 barThickness: 24
             }]
         },
+        plugins: [{
+            id: 'topBarLabels',
+            afterDatasetsDraw(chart) {
+                const { ctx } = chart;
+                chart.data.datasets.forEach((dataset, i) => {
+                    const meta = chart.getDatasetMeta(i);
+                    meta.data.forEach((bar, index) => {
+                        const val = dataset.data[index];
+                        if (val !== null && val !== undefined) {
+                            ctx.save();
+                            ctx.fillStyle = '#64748b';
+                            ctx.font = '600 11px Inter, system-ui, sans-serif';
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'bottom';
+                            ctx.fillText(val, bar.x, bar.y - 4);
+                            ctx.restore();
+                        }
+                    });
+                });
+            }
+        }],
         options: {
             responsive: true,
             maintainAspectRatio: false,
@@ -1370,19 +1423,16 @@ function renderProspectsChart(tab) {
                         display: false
                     },
                     ticks: {
+                        maxRotation: 0,
+                        minRotation: 0,
                         font: {
-                            weight: '600'
+                            weight: '600',
+                            size: 11
                         }
                     }
                 },
                 y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(0,0,0,0.03)'
-                    },
-                    ticks: {
-                        stepSize: 1
-                    }
+                    display: false
                 }
             }
         }
@@ -1525,7 +1575,11 @@ function renderDoubleChart(leftTab, rightTab) {
     let scalesConfig = {
         x: {
             grid: { display: false },
-            ticks: { font: { weight: '600' } }
+            ticks: {
+                maxRotation: 0,
+                minRotation: 0,
+                font: { weight: '600' }
+            }
         },
         y: {
             type: 'linear',
