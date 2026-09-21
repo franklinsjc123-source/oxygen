@@ -26,7 +26,7 @@
                 <div class="row">
                     <div class="col-12">
                         <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
-                            <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
                             <li class="breadcrumb-item active">Dashboard</li>
                         </ol>
                     </div>
