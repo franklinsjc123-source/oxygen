@@ -49,7 +49,7 @@
 								<!-- Button to Open Modal for Creating State -->
 								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#stateModal">
 									Add State
-								</button>
+								</button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
 								
 								<!-- Bootstrap Modal -->
 								<div class="modal fade" id="stateModal" tabindex="-1" aria-labelledby="stateModalLabel" aria-hidden="true">

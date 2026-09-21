@@ -45,7 +45,7 @@
                            
                             <div class="card-body">
                                 
-                          <a href="{{route('auction.create')}}" class="btn mb-4 btn-primary"><i class="fa fa-plus"></i> Add Auction </a> 
+                          <a href="{{route('auction.create')}}" class="btn mb-4 btn-primary"><i class="fa fa-plus"></i> Add Auction </a> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button> 
                           @if ($errors->any())
                           <div class="alert alert-danger">
                               <ul>

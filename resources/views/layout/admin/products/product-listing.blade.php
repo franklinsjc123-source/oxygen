@@ -117,7 +117,7 @@
                                 <a href="{{ route('products.crud.index') }}">
                                     <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add
                                         Product
-                                    </button>
+                                    </button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
                                 </a>
 
                                 <button class="btn border-warning text-warning delete">Delete</button>

@@ -54,7 +54,7 @@
                            
                             <div class="card-body">
 							 
-<a href="{{ route('staffrole.create') }}"  class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add"><i class="fa fa-plus"></i> Add Role</a> 
+<a href="{{ route('staffrole.create') }}"  class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add"><i class="fa fa-plus"></i> Add Role</a> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button> 
                                              
 
 

@@ -188,7 +188,7 @@
 
       <!-- Modal footer -->
       <div class="modal-footer">
-	  <button type="button" class="btn btn-primary" data-bs-dismiss="modal" >SUBMIT</button>
+	  <button type="button" class="btn btn-primary" data-bs-dismiss="modal" >SUBMIT</button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
       </div>
 

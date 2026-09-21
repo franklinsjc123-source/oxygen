@@ -52,7 +52,7 @@
                             <div class="card-body order-datatable">
 
                                 <button type="button" class="btn mb-4 btn-primary" data-bs-toggle="modal"
-                                    data-original-title="test" data-bs-target="#exampleModal">Add Attributes</button>
+                                    data-original-title="test" data-bs-target="#exampleModal">Add Attributes</button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
                                 <br>
                                 <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id"
                                     data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true"

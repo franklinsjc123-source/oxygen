@@ -49,7 +49,7 @@
 
                             <div class="card-body">
                                 <a href="{{ route('staffvendorcreate.index') }}" class="btn  btn-primary"><i class="fa fa-plus"></i> Add
-                                    vendor</a>
+                                    vendor</a> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
 
 
 

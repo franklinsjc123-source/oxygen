@@ -48,7 +48,7 @@
 								<!-- Button to Open Modal for Creating City -->
 								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cityModal" id="addCityBtn">
 									Add City
-								</button>
+								</button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
 								
 								<!-- Bootstrap Modal for Adding/Editing City -->
 								<div class="modal fade" id="cityModal" tabindex="-1" aria-labelledby="cityModalLabel" aria-hidden="true">

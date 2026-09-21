@@ -44,7 +44,7 @@
                         <div class="card">
                        
                                 <div class="card-body">
-                                <a href="vendor_create.php" class="btn  btn-primary"><i class="fa fa-plus"></i> Add Vendor</a>
+                                <a href="vendor_create.php" class="btn  btn-primary"><i class="fa fa-plus"></i> Add Vendor</a> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
 
 
                             

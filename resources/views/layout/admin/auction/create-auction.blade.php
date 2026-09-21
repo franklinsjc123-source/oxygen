@@ -233,7 +233,7 @@
 
 
 									<div class="justify-content-end gap-2 mt-4 d-flex">
-										<button class="btn btn-primary px-4" type="submit">Save</button>
+										<button class="btn btn-primary px-4" type="submit">Save</button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
 										<a href="{{route('auction/list')}}" class="btn btn-secondary px-4" type="button">Close</a>
 									</div>
 						</form>

@@ -51,7 +51,9 @@
                                    
                                     <div class="row">
                                   
-                                      <div class="datatable-dashv1-list custom-datatable-overright">
+                                       <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+<div class="mb-3"></div>
+<div class="datatable-dashv1-list custom-datatable-overright">
 
                             
                                     <table class="table fcolor" id="table"  data-click-to-select="true"  data-sort-name="id" data-show-columns="true" data-sort-order="desc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="25" data-search="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"

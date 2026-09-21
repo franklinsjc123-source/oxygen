@@ -45,7 +45,7 @@
                         <div class="card">
                        
                                 <div class="card-body">
-                                <a href="{{url('admin/staff/create')}}" class="btn  btn-primary"><i class="fa fa-plus"></i> Add Staff</a>
+                                <a href="{{url('admin/staff/create')}}" class="btn  btn-primary"><i class="fa fa-plus"></i> Add Staff</a> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
 
                                 </br>
                                 <a href="{{ route('staff.export') }}" class="btn btn-success px-2 " data-toggle="tooltip" data-placement="top" title="Report" data-original-title="Report"><i

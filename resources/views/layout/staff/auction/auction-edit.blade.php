@@ -233,7 +233,7 @@
 										<div class="form-group row ">
 											<div class="text-center">
 										<div class="col-xl-8 col-md-8">
-										<button class="btn btn-primary" type="submit">Save</button>
+										<button class="btn btn-primary" type="submit">Save</button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
                                                     <a href="{{route('staffauction/list')}}" class="btn btn-secondary" type="button">Close</a>
 									</div>
 								</div>

@@ -222,10 +222,17 @@
             };
 
             // Alias swal to Swal.fire for backward compatibility
-            if (typeof Swal !== 'undefined') {
-                window.swal = Swal.fire;
-            }
         })();
+    </script>
+    <script>
+        $(document).on('click', '.btn-export-excel', function(e) {
+            e.preventDefault();
+            var $card = $(this).closest('.card-body, .container-fluid, body');
+            var $table = $card.find('table[data-toggle="table"]').length ? $card.find('table[data-toggle="table"]').first() : $card.find('table').first();
+            if ($table.length && $.isFunction($.fn.tableExport)) {
+                $table.tableExport({ type: 'excel', escape: 'false' });
+            }
+        });
     </script>
     </body>
 

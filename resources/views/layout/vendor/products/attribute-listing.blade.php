@@ -178,7 +178,7 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button class="btn btn-primary" type="submit">Update</button>
+                            <button class="btn btn-primary" type="submit">Update</button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
                             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
                         </div>
                     </form>

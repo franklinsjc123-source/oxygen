@@ -67,7 +67,7 @@
                             <div class="card-body order-datatable">
 
                                 <button type="button" class="btn mb-4 btn-primary" data-bs-toggle="modal"
-                                    data-original-title="test" data-bs-target="#exampleModal" onclick="showModal()">Add Attributes</button>
+                                    data-original-title="test" data-bs-target="#exampleModal" onclick="showModal()">Add Attributes</button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
                                 <br>
                                 <form action="{{ route('adminsearchdetails') }}" method="post">
                                     @csrf
