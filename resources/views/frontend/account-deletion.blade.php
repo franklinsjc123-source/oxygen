@@ -24,12 +24,34 @@
             flex-direction: column;
         }
 
-        /* Top Purple Header Banner */
+        /* Top Blue Header Banner */
         .deletion-hero-header {
-            background: linear-gradient(135deg, #6366f1 0%, #7c3aed 50%, #4f46e5 100%);
-            padding: 45px 20px 85px;
+            background: linear-gradient(135deg, #0099ee 0%, #0088dd 50%, #0066c0 100%);
+            padding: 35px 20px 85px;
             text-align: center;
             color: #ffffff;
+        }
+
+        .deletion-header-logo-container {
+            margin-bottom: 16px;
+        }
+
+        .deletion-header-logo-container a {
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .deletion-header-logo {
+            max-height: 75px;
+            width: auto;
+            max-width: 220px;
+            object-fit: contain;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .deletion-header-logo-container a:hover .deletion-header-logo {
+            transform: scale(1.03);
+            opacity: 0.95;
         }
 
         .deletion-hero-header h1 {
@@ -41,7 +63,7 @@
 
         /* Main Center Card */
         .deletion-main-container {
-            max-width: 560px;
+            max-width: 720px;
             width: 100%;
             margin: -55px auto 50px;
             padding: 0 16px;
@@ -65,7 +87,7 @@
         .deletion-title-accent {
             width: 4px;
             height: 24px;
-            background-color: #6366f1;
+            background-color: #0088dd;
             border-radius: 2px;
             margin-right: 12px;
             display: inline-block;
@@ -85,10 +107,10 @@
             margin-bottom: 24px;
         }
 
-        /* Pink Form Container Box */
+        /* Blue Form Container Box */
         .deletion-form-box {
-            background: #fef2f2;
-            border: 1px solid #fee2e2;
+            background: #f0f9ff;
+            border: 1px solid #e0f2fe;
             border-radius: 14px;
             padding: 24px;
             margin-bottom: 28px;
@@ -115,14 +137,14 @@
         }
 
         .deletion-input:focus {
-            border-color: #ef4444;
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+            border-color: #0088dd;
+            box-shadow: 0 0 0 3px rgba(0, 136, 221, 0.15);
         }
 
-        /* Red Submit Button */
+        /* Blue Submit Button */
         .btn-permanently-delete {
             width: 100%;
-            background: #ef4444;
+            background: #0088dd;
             color: #ffffff;
             font-weight: 700;
             font-size: 0.975rem;
@@ -132,15 +154,15 @@
             margin-top: 16px;
             cursor: pointer;
             transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+            box-shadow: 0 4px 12px rgba(0, 136, 221, 0.25);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .btn-permanently-delete:hover {
-            background: #dc2626;
-            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
+            background: #0077cc;
+            box-shadow: 0 6px 16px rgba(0, 136, 221, 0.35);
         }
 
         .btn-permanently-delete:active {
@@ -192,6 +214,48 @@
             font-size: 1.1rem;
             flex-shrink: 0;
             margin-top: 1px;
+        }
+
+        /* Developer Information Box */
+        .developer-info-box {
+            margin-top: 24px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 22px 24px;
+        }
+
+        .developer-heading {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 16px;
+        }
+
+        .developer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .developer-detail-item {
+            font-size: 0.885rem;
+            line-height: 1.5;
+        }
+
+        .developer-detail-label {
+            font-weight: 600;
+            color: #64748b;
+            font-size: 0.775rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 4px;
+        }
+
+        .developer-detail-value {
+            color: #1e293b;
+            font-weight: 500;
+            word-break: break-word;
         }
 
         /* Alert Status Boxes */
@@ -253,6 +317,9 @@
             .deletion-hero-header h1 {
                 font-size: 1.75rem;
             }
+            .deletion-header-logo {
+                max-height: 42px;
+            }
         }
     </style>
 </head>
@@ -260,6 +327,11 @@
 
     <!-- Header Banner -->
     <header class="deletion-hero-header">
+        <div class="deletion-header-logo-container">
+            <a href="{{ url('/') }}" title="Home">
+                <img src="{{ asset('frontend/images/header-logo.png') }}" alt="TryMeNow Logo" class="deletion-header-logo">
+            </a>
+        </div>
         <h1>Account Deletion Request</h1>
     </header>
 
@@ -337,6 +409,33 @@
                         <span>Deletion requests are processed instantly and data removal takes <strong>3–5 working days.</strong></span>
                     </li>
                 </ul>
+            </div>
+
+            <!-- Developer & Publisher Information Section -->
+            <div class="developer-info-box">
+                <h3 class="developer-heading">Developer & Publisher Information</h3>
+                <div class="developer-grid">
+                    <div class="developer-detail-item">
+                        <div class="developer-detail-label">Developer Name</div>
+                        <div class="developer-detail-value">Franklin@oxygen</div>
+                    </div>
+                    <div class="developer-detail-item">
+                        <div class="developer-detail-label">Developer Account ID</div>
+                        <div class="developer-detail-value">7918467219000463538</div>
+                    </div>
+                    <div class="developer-detail-item">
+                        <div class="developer-detail-label">Account Owner</div>
+                        <div class="developer-detail-value">T MADHAN SWAMI NATHAN (<a href="mailto:oxygen.pdm@gmail.com" style="color: #0088dd; text-decoration: none;">oxygen.pdm@gmail.com</a>)</div>
+                    </div>
+                    <div class="developer-detail-item" style="grid-column: 1 / -1;">
+                        <div class="developer-detail-label">Legal Name & Address</div>
+                        <div class="developer-detail-value">
+                            T MADHAN SWAMI NATHAN<br>
+                            4, Syed Nadhi Mullah Street, Mylapore<br>
+                            Chennai - 600004, India (IN)
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
