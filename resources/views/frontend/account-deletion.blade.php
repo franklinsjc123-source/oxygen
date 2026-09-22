@@ -329,7 +329,7 @@
     <header class="deletion-hero-header">
         <div class="deletion-header-logo-container">
             <a href="{{ url('/') }}" title="Home">
-                <img src="{{ asset('frontend/images/header-logo.png') }}" alt="TryMeNow Logo" class="deletion-header-logo">
+                <img src="{{ asset('frontend/images/header-logo.jpeg') }}" alt="Oxygen Logo" class="deletion-header-logo">
             </a>
         </div>
         <h1>Account Deletion Request</h1>
