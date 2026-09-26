@@ -67,24 +67,65 @@
 
                 /*.btn-primary:hover, .btn-primary:focus { background-color: #0486b9; }*/
                 
-                .action-buttons-container {
+                .product-toolbar {
+                    padding: 0;
+                }
+                .product-toolbar .toolbar-row {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 8px 0;
+                }
+                .product-toolbar .toolbar-row:first-child {
+                    border-bottom: 1px solid #e9ecef;
+                    padding-bottom: 12px;
+                    margin-bottom: 4px;
+                }
+                .product-toolbar .toolbar-row:first-child .btn,
+                .product-toolbar .toolbar-row:first-child a {
+                    flex: 1;
+                    text-align: center;
+                }
+                .product-toolbar .toolbar-row .btn {
+                    white-space: nowrap;
+                    font-size: 13px;
+                    padding: 6px 14px;
+                    border-radius: 4px;
+                }
+                .product-toolbar .search-box {
+                    flex: 1;
+                    max-width: 400px;
+                }
+                .product-toolbar .search-box .form-control {
+                    border-left: none;
+                    font-size: 13px;
+                }
+                .product-toolbar .search-box .input-group-text {
+                    background: #fff;
+                    border-right: none;
+                }
+                .product-toolbar .bulk-actions {
+                    margin-left: auto;
                     display: flex;
                     gap: 8px;
-                    overflow-x: auto;
-                    white-space: nowrap;
-                    padding-bottom: 10px;
-                    margin-left: 15px;
-                    margin-right: 15px;
                 }
-                
-                .action-buttons-container .btn {
-                    white-space: nowrap;
+                /* Hide the bootstrap-table default toolbar buttons row */
+                .fixed-table-toolbar .columns,
+                .fixed-table-toolbar .search {
+                    display: none !important;
                 }
                 
                 @media (max-width: 768px) {
-                    .action-buttons-container .btn {
-                        padding: 4px 8px;
+                    .product-toolbar .toolbar-row {
+                        flex-wrap: wrap;
+                    }
+                    .product-toolbar .toolbar-row .btn {
+                        padding: 4px 10px;
                         font-size: 12px;
+                    }
+                    .product-toolbar .search-box {
+                        max-width: 100%;
+                        width: 100%;
                     }
                 }
             </style>
@@ -114,26 +155,40 @@
 
                         <div class="card">
                             <div class="card-body">
-                                <div class="action-buttons-container d-flex align-items-center" id="toolbar">
-                                    <button type="button" class="btn btn-success btn-export-excel me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
-                                    <a href="{{ route('products.crud.index') }}" class="me-2">
-                                        <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add
-                                            Product
+                                <div id="toolbar" class="product-toolbar">
+                                    <div class="toolbar-row">
+                                        <button type="button" class="btn btn-success btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;">
+                                            <i class="fa fa-file-excel-o me-1"></i> Export Excel
                                         </button>
-                                    </a>
-                                    <a href="{{ route('product.export') }}" class="btn btn-success me-2" data-toggle="tooltip" data-placement="top" title="Report" data-original-title="Report">
-                                        <i class="fa fa-list me-1"></i> Download Report
-                                    </a>
-
-                                    <button class="btn border-warning text-warning delete me-1">Delete</button>
-                                    <button class="btn border-success text-success active me-1">Active</button>
-                                    <button class="btn border-danger text-danger deactive">De-Active</button>
+                                        <a href="{{ route('products.crud.index') }}">
+                                            <button type="button" class="btn btn-primary">
+                                                <i class="fa fa-plus me-1"></i> Add Product
+                                            </button>
+                                        </a>
+                                        <a href="{{ route('product.export') }}" class="btn btn-success" style="background-color: #28a745; border-color: #28a745; color: #fff;">
+                                            <i class="fa fa-download me-1"></i> Download Report
+                                        </a>
+                                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#importProductModal" style="background-color: #17a2b8; border-color: #17a2b8; color: #fff;">
+                                            <i class="fa fa-upload me-1"></i> Import Products
+                                        </button>
+                                    </div>
+                                    <div class="toolbar-row">
+                                        <div class="input-group search-box">
+                                            <span class="input-group-text"><i class="fa fa-search"></i></span>
+                                            <input type="text" class="form-control" id="customSearch" placeholder="Search products...">
+                                        </div>
+                                        <div class="bulk-actions">
+                                            <button class="btn btn-outline-warning delete"><i class="fa fa-trash me-1"></i> Delete</button>
+                                            <button class="btn btn-outline-success active"><i class="fa fa-check me-1"></i> Active</button>
+                                            <button class="btn btn-outline-danger deactive"><i class="fa fa-ban me-1"></i> De-Active</button>
+                                        </div>
+                                    </div>
                                 </div>
                                 
                                 <div class="datatable-dashv1-list custom-datatable-overright">
                                 <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id"
                                     data-sort-order="asc" data-mobile-responsive="true" data-toggle="table"
-                                    data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true"
+                                    data-show-columns="false" data-sort="true" data-pagination="true" data-page-size="25" data-search="false"
                                     data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true"
                                     data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">
 
@@ -794,6 +849,12 @@ function getquantity(id, productName) {
         });
     });
 
+    // Custom search for bootstrap-table
+    $('#customSearch').on('keyup', function() {
+        var searchText = $(this).val();
+        $('#table').bootstrapTable('resetSearch', searchText);
+    });
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
@@ -803,5 +864,37 @@ function getquantity(id, productName) {
         max-width: 90% !important;
     }
 </style>
+
+<!-- Import Products Modal -->
+<div class="modal fade" id="importProductModal" tabindex="-1" aria-labelledby="importProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="{{ route('product.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-header" style="background-color: #17a2b8; color: #fff;">
+                    <h5 class="modal-title" id="importProductModalLabel"><i class="fa fa-upload me-2"></i>Import Products</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="importFile" class="form-label fw-bold">Select Excel/CSV File</label>
+                        <input type="file" class="form-control" id="importFile" name="file" accept=".xlsx,.xls,.csv" required>
+                        <div class="form-text">Supported formats: .xlsx, .xls, .csv (Max: 10MB)</div>
+                    </div>
+                    <div class="alert alert-info d-flex align-items-center" role="alert">
+                        <i class="fa fa-info-circle me-2" style="font-size: 18px;"></i>
+                        <div>
+                            Download the <a href="{{ route('product.import.template') }}" class="alert-link">sample template</a> to see the required format.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-info" style="background-color: #17a2b8; border-color: #17a2b8; color: #fff;"><i class="fa fa-upload me-1"></i> Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 

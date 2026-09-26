@@ -189,6 +189,8 @@ Route::post("products/offerupdate", [ProductsController::class, "offerupdate"])-
 Route::get('products/getsubproductdetails', [ProductsController::class, 'getsubproductdetails'])->name('getsubproductdetails');
 
 Route::get('product_export',[ProductsController::class, 'get_product_data'])->name('product.export');
+Route::post('product_import',[ProductsController::class, 'import_products'])->name('product.import');
+Route::get('product_import_template',[ProductsController::class, 'download_import_template'])->name('product.import.template');
 
 Route::resource('attribute-listing', AttributeController::class, ['names' => 'attribute.master']);
 
