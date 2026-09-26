@@ -82,21 +82,25 @@
                                 </div>
                             @endif
 
-                            <div class="table-responsive">
-                                <table class="table table-striped table-bordered align-middle">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Date</th>
-                                            <th>Customer Info</th>
-                                            <th>Invoice ID</th>
-                                            <th>Products</th>
-                                            <th>Type</th>
-                                            <th>Reason</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
+                            <div class="row">
+                                <div id="toolbar" class="d-flex align-items-center">
+                                    <button type="button" class="btn btn-success btn-export-excel" style="background-color: #73b400; border-color: #73b400; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> EXPORT EXCEL</button>
+                                </div>
+                                <div class="datatable-dashv1-list custom-datatable-overright">
+                                    <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-show-columns="true" data-sort-order="desc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-toolbar="#toolbar">
+                                        <thead>
+                                            <tr>
+                                                <th data-field="id" data-sortable="true">ID</th>
+                                                <th data-field="date" data-sortable="true">Date</th>
+                                                <th data-field="customer" data-sortable="true">Customer Info</th>
+                                                <th data-field="invoice" data-sortable="true">Invoice ID</th>
+                                                <th data-field="products" data-sortable="true">Products</th>
+                                                <th data-field="type" data-sortable="true">Type</th>
+                                                <th data-field="reason" data-sortable="true">Reason</th>
+                                                <th data-field="status" data-sortable="true">Status</th>
+                                                <th data-field="action" data-sortable="true">Action</th>
+                                            </tr>
+                                        </thead>
                                     <tbody>
                                         @forelse($returns as $item)
                                             <tr>
@@ -162,6 +166,7 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
                         </div>
                     </div>
                 </div>

@@ -143,6 +143,44 @@ background-color: transparent;
     color: #333 !important;
 }
 
+/* Toolbar flex ordering: Search input -> Column filter toggle (joined edges) -> Action buttons (Export & Add with gap) */
+.fixed-table-toolbar {
+    display: flex !important;
+    align-items: center !important;
+}
+.fixed-table-toolbar .search {
+    order: 0 !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+}
+.fixed-table-toolbar .search .form-control {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+.fixed-table-toolbar .columns {
+    order: 1 !important;
+    margin-left: 0 !important;
+    margin-right: 15px !important;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+}
+.fixed-table-toolbar .columns > .btn,
+.fixed-table-toolbar .columns > .btn-group > .btn,
+.fixed-table-toolbar .columns button {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-left: 0 !important;
+}
+.fixed-table-toolbar .bs-bars {
+    order: 2 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+}
+
 /* Make form-select match form-control size and height */
 .form-select {
     padding: .5rem 2.25rem .5rem .75rem !important;

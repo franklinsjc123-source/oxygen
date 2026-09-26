@@ -120,7 +120,6 @@
                                             </div>
                                         </div>
                                     </div>
-                            </div>
 
                             <div class="datatable-dashv1-list custom-datatable-overright">
 

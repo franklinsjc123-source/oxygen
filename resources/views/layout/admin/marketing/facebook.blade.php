@@ -40,7 +40,10 @@
 				<div class="col-sm-12">
 					<div class="card">						
 						<div class="card-body">							
-						<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus"></i> Create Types</button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+							<div id="toolbar" class="d-flex align-items-center gap-2">
+								<button type="button" class="btn btn-success btn-export-excel" style="background-color: #73b400; border-color: #73b400; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> EXPORT EXCEL</button>
+								<button type="button" class="btn btn-primary text-uppercase ms-2" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus"></i> Create Types</button>
+							</div>
 
 							<div class="btn-popup pull-right">
 								<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -209,9 +212,10 @@
 
 
 
-							<div class="datatable-dashv1-list custom-datatable-overright">                            
-                            	<table class="table" id="table"  data-click-to-select="true" data-show-columns="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="25" data-search="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
-                                         data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">                                        
+							<div class="row">
+								<div class="datatable-dashv1-list custom-datatable-overright">                            
+									<table class="table" id="table"  data-click-to-select="true" data-show-columns="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="25" data-search="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
+											 data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">                                        
                                     <thead>
                                      <tr>
                                         <th data-field="id" data-sortable="true">Id</th> 
@@ -269,6 +273,7 @@
                                     </tbody>
                             	</table>
 							</div> 
+						</div>
 						</div>								
 					</div>
 				</div>

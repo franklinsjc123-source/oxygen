@@ -44,7 +44,12 @@
                     <div class="col-sm-12">
                         <div class="card">                           
                             <div class="card-body">
-							 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus"></i> Add Category Banner</button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>                                   
+							 <div class="d-flex justify-content-between align-items-center mb-3">
+							     <div id="toolbar" class="d-flex align-items-center">
+							         <button type="button" class="btn btn-success btn-export-excel" style="background-color: #73b400; border-color: #73b400; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> EXPORT EXCEL</button>
+							     </div>
+							     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus"></i> Add Category Banner</button>
+							 </div>                                   
                                 <div class="btn-popup pull-right">								
                                     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" data-backdrop="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered" style="max-width: 550px;" role="document">

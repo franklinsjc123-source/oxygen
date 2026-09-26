@@ -553,6 +553,7 @@
     </div>
 
     <style>
+        /* Base Popup Overlay */
         .mfp-newsletter.mfp-bg {
             background: rgba(15, 23, 42, 0.45) !important;
             backdrop-filter: blur(6px) !important;
@@ -560,14 +561,22 @@
             opacity: 1 !important;
         }
 
+        .mfp-newsletter .mfp-container {
+            padding: 16px 10px !important;
+            text-align: center !important;
+        }
+
         .mfp-newsletter .mfp-content {
             max-width: 440px !important;
-            width: 92% !important;
+            width: calc(100% - 24px) !important;
             border-radius: 28px !important;
             box-shadow: none !important;
             background: transparent !important;
             margin: 0 auto !important;
             text-align: center !important;
+            display: inline-block !important;
+            vertical-align: middle !important;
+            float: none !important;
         }
 
         .newsletter-popup {
@@ -585,6 +594,7 @@
             overflow: hidden !important;
             position: relative !important;
             text-align: center !important;
+            box-sizing: border-box !important;
         }
 
         .pincode-modal-container {
@@ -620,7 +630,7 @@
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            z-index: 10 !important;
+            z-index: 20 !important;
             text-indent: 0 !important;
         }
 
@@ -644,56 +654,6 @@
             object-fit: contain !important;
             display: inline-block !important;
             filter: brightness(0) saturate(100%) invert(39%) sepia(88%) saturate(1637%) hue-rotate(196deg) brightness(96%) contrast(92%) drop-shadow(0px 2px 4px rgba(37, 130, 231, 0.2)) !important;
-        }
-
-        /* Mobile View Sizing and Responsiveness */
-        @media (max-width: 767px) {
-            .mfp-newsletter .mfp-content {
-                width: 94% !important;
-                max-width: 420px !important;
-                margin: 0 auto !important;
-            }
-
-            .newsletter-popup {
-                border-radius: 24px !important;
-            }
-
-            .pincode-modal-container {
-                padding: 24px 18px 20px !important;
-            }
-
-            .pincode-modal-title {
-                font-size: 19.5px !important;
-            }
-
-            .pincode-modal-subtitle {
-                font-size: 12px !important;
-                margin-bottom: 14px !important;
-            }
-
-            .pincode-app-subtext {
-                font-size: 11px !important;
-                gap: 4px !important;
-                margin: 14px 0 !important;
-            }
-
-            .pincode-feature-title {
-                font-size: 11px !important;
-            }
-
-            .pincode-feature-desc {
-                font-size: 10px !important;
-            }
-
-            .pincode-feature-icon-box {
-                width: 44px !important;
-                height: 44px !important;
-                margin-bottom: 6px !important;
-            }
-
-            .pincode-playstore-img {
-                height: 38px !important;
-            }
         }
 
         .pincode-location-badge {
@@ -730,6 +690,10 @@
             font-weight: 500 !important;
         }
 
+        .pincode-form {
+            width: 100% !important;
+        }
+
         .pincode-input-pill {
             background: #ffffff !important;
             border-radius: 35px !important;
@@ -740,6 +704,7 @@
             box-shadow: 0 4px 16px rgba(37, 130, 231, 0.12) !important;
             transition: all 0.2s ease !important;
             width: 100% !important;
+            box-sizing: border-box !important;
         }
 
         .pincode-input-pill:focus-within {
@@ -808,11 +773,12 @@
             align-items: center !important;
             justify-content: center !important;
             gap: 6px !important;
-            font-size: 12px !important;
+            font-size: 12.5px !important;
             font-weight: 600 !important;
             color: #1e3a8a !important;
             margin: 18px 0 !important;
             text-align: center !important;
+            flex-wrap: wrap !important;
         }
 
         .pincode-features-row {
@@ -827,7 +793,7 @@
         .pincode-feature-col {
             flex: 1 !important;
             text-align: center !important;
-            padding: 0 2px !important;
+            padding: 0 4px !important;
             position: relative !important;
             display: flex !important;
             flex-direction: column !important;
@@ -840,7 +806,7 @@
             position: absolute !important;
             right: 0 !important;
             top: 5px !important;
-            height: 55px !important;
+            height: 52px !important;
             width: 1px !important;
             background: #bfdbfe !important;
         }
@@ -863,14 +829,16 @@
             color: #1e293b !important;
             line-height: 1.2 !important;
             margin-bottom: 2px !important;
-            white-space: nowrap !important;
+            white-space: normal !important;
+            text-align: center !important;
         }
 
         .pincode-feature-desc {
             font-size: 10.5px !important;
             color: #64748b !important;
             line-height: 1.2 !important;
-            white-space: nowrap !important;
+            white-space: normal !important;
+            text-align: center !important;
         }
 
         .pincode-playstore-wrap {
@@ -883,10 +851,80 @@
             width: auto !important;
             object-fit: contain !important;
             transition: transform 0.2s ease !important;
+            display: inline-block !important;
         }
 
         .pincode-playstore-img:hover {
             transform: translateY(-1px) !important;
+        }
+
+        /* Mobile View Sizing and Responsiveness */
+        @media (max-width: 767px) {
+            .mfp-newsletter .mfp-container {
+                padding: 12px 8px !important;
+            }
+
+            .mfp-newsletter .mfp-content {
+                width: calc(100% - 16px) !important;
+                max-width: 420px !important;
+                margin: 0 auto !important;
+                text-align: center !important;
+            }
+
+            .newsletter-popup {
+                border-radius: 24px !important;
+            }
+
+            .pincode-modal-container {
+                padding: 24px 18px 20px !important;
+            }
+
+            .pincode-modal-title {
+                font-size: 21px !important;
+                margin-bottom: 4px !important;
+            }
+
+            .pincode-modal-subtitle {
+                font-size: 13px !important;
+                margin-bottom: 15px !important;
+            }
+
+            .pincode-input-pill {
+                padding: 4px 4px 4px 14px !important;
+            }
+
+            .pincode-input-field {
+                font-size: 14px !important;
+            }
+
+            .pincode-submit-btn {
+                padding: 10px 22px !important;
+                font-size: 14px !important;
+            }
+
+            .pincode-app-subtext {
+                font-size: 12px !important;
+                gap: 5px !important;
+                margin: 15px 0 !important;
+            }
+
+            .pincode-feature-title {
+                font-size: 11.5px !important;
+            }
+
+            .pincode-feature-desc {
+                font-size: 10.5px !important;
+            }
+
+            .pincode-feature-icon-box {
+                width: 46px !important;
+                height: 46px !important;
+                margin-bottom: 6px !important;
+            }
+
+            .pincode-playstore-img {
+                height: 40px !important;
+            }
         }
     </style>
 
@@ -1189,7 +1227,7 @@
                 padding-left: 10px !important;
                 padding-right: 10px !important;
             }
-            .mfp-content {
+            .mfp-content:not(.mfp-newsletter .mfp-content) {
                 display: inline-block !important;
                 text-align: left !important;
                 float: none !important;

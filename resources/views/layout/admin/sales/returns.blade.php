@@ -82,85 +82,90 @@
                                 </div>
                             @endif
 
-                            <div class="table-responsive">
-                                <table class="table table-striped table-bordered align-middle fcolor">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Date</th>
-                                            <th>Customer Info</th>
-                                            <th>Invoice ID</th>
-                                            <th>Products</th>
-                                            <th>Type</th>
-                                            <th>Reason</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($returns as $item)
+                            <div class="row">
+                                <div id="toolbar" class="d-flex align-items-center">
+                                    <button type="button" class="btn btn-success btn-export-excel" style="background-color: #73b400; border-color: #73b400; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> EXPORT EXCEL</button>
+                                </div>
+                                <div class="datatable-dashv1-list custom-datatable-overright">
+                                    <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-show-columns="true" data-sort-order="desc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-toolbar="#toolbar">
+                                        <thead>
                                             <tr>
-                                                <td>{{ $item->id }}</td>
-                                                <td>{{ Carbon\Carbon::parse($item->created_at)->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}</td>
-                                                <td>
-                                                    <strong>{{ $item->customer_firstname }} {{ $item->customer_lastname }}</strong><br>
-                                                    <small class="text-muted"><i class="fa fa-envelope"></i> {{ $item->customer_email }}</small><br>
-                                                    <small class="text-muted"><i class="fa fa-phone"></i> {{ $item->customer_mobileno }}</small>
-                                                </td>
-                                                <td><code>{{ $item->invoice_id }}</code></td>
-                                                <td>
-                                                    @foreach($item->products as $prod)
-                                                        <div class="d-flex align-items-center mb-1">
-                                                            <img src="{{ asset('assets/images/products/detail/' . $prod->product_image) }}" class="product-img me-2" alt="product">
-                                                            <span>{{ $prod->product_name }}</span>
-                                                        </div>
-                                                    @endforeach
-                                                </td>
-                                                <td>
-                                                    <span class="badge-type">{{ $item->request_type }}</span>
-                                                </td>
-                                                <td>
-                                                    <p class="mb-0 text-wrap" style="max-width: 250px; font-style: italic;">"{{ $item->reason }}"</p>
-                                                </td>
-                                                <td>
-                                                    @if(strtolower($item->status) === 'pending')
-                                                        <span class="badge-pending">Pending</span>
-                                                    @elseif(strtolower($item->status) === 'approved')
-                                                        <span class="badge-approved">Approved</span>
-                                                    @else
-                                                        <span class="badge-rejected">Rejected</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if(strtolower($item->status) === 'pending')
-                                                        <div class="d-flex gap-2">
-                                                            <form action="{{ route('returns.status', $item->id) }}" method="POST" id="approve-form-{{ $item->id }}">
-                                                                @csrf
-                                                                <input type="hidden" name="status" value="Approved">
-                                                                <button type="button" class="btn btn-xs btn-success" onclick="confirmAction({{ $item->id }}, 'Approve')">
-                                                                    <i class="fa fa-check"></i> Approve
-                                                                </button>
-                                                            </form>
-                                                            <form action="{{ route('returns.status', $item->id) }}" method="POST" id="reject-form-{{ $item->id }}">
-                                                                @csrf
-                                                                <input type="hidden" name="status" value="Rejected">
-                                                                <button type="button" class="btn btn-xs btn-danger" onclick="confirmAction({{ $item->id }}, 'Reject')">
-                                                                    <i class="fa fa-times"></i> Reject
-                                                                </button>
-                                                            </form>
-                                                        </div>
-                                                    @else
-                                                        <span class="text-muted"><small>Resolved</small></span>
-                                                    @endif
-                                                </td>
+                                                <th data-field="id" data-sortable="true">ID</th>
+                                                <th data-field="date" data-sortable="true">Date</th>
+                                                <th data-field="customer" data-sortable="true">Customer Info</th>
+                                                <th data-field="invoice" data-sortable="true">Invoice ID</th>
+                                                <th data-field="products" data-sortable="true">Products</th>
+                                                <th data-field="type" data-sortable="true">Type</th>
+                                                <th data-field="reason" data-sortable="true">Reason</th>
+                                                <th data-field="status" data-sortable="true">Status</th>
+                                                <th data-field="action" data-sortable="true">Action</th>
                                             </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="9" class="text-center">No return/replacement requests found.</td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @forelse($returns as $item)
+                                                <tr>
+                                                    <td>{{ $item->id }}</td>
+                                                    <td>{{ Carbon\Carbon::parse($item->created_at)->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}</td>
+                                                    <td>
+                                                        <strong>{{ $item->customer_firstname }} {{ $item->customer_lastname }}</strong><br>
+                                                        <small class="text-muted"><i class="fa fa-envelope"></i> {{ $item->customer_email }}</small><br>
+                                                        <small class="text-muted"><i class="fa fa-phone"></i> {{ $item->customer_mobileno }}</small>
+                                                    </td>
+                                                    <td><code>{{ $item->invoice_id }}</code></td>
+                                                    <td>
+                                                        @foreach($item->products as $prod)
+                                                            <div class="d-flex align-items-center mb-1">
+                                                                <img src="{{ asset('assets/images/products/detail/' . $prod->product_image) }}" class="product-img me-2" alt="product">
+                                                                <span>{{ $prod->product_name }}</span>
+                                                            </div>
+                                                        @endforeach
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge-type">{{ $item->request_type }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <p class="mb-0 text-wrap" style="max-width: 250px; font-style: italic;">"{{ $item->reason }}"</p>
+                                                    </td>
+                                                    <td>
+                                                        @if(strtolower($item->status) === 'pending')
+                                                            <span class="badge-pending">Pending</span>
+                                                        @elseif(strtolower($item->status) === 'approved')
+                                                            <span class="badge-approved">Approved</span>
+                                                        @else
+                                                            <span class="badge-rejected">Rejected</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if(strtolower($item->status) === 'pending')
+                                                            <div class="d-flex gap-2">
+                                                                <form action="{{ route('returns.status', $item->id) }}" method="POST" id="approve-form-{{ $item->id }}">
+                                                                    @csrf
+                                                                    <input type="hidden" name="status" value="Approved">
+                                                                    <button type="button" class="btn btn-xs btn-success" onclick="confirmAction({{ $item->id }}, 'Approve')">
+                                                                        <i class="fa fa-check"></i> Approve
+                                                                    </button>
+                                                                </form>
+                                                                <form action="{{ route('returns.status', $item->id) }}" method="POST" id="reject-form-{{ $item->id }}">
+                                                                    @csrf
+                                                                    <input type="hidden" name="status" value="Rejected">
+                                                                    <button type="button" class="btn btn-xs btn-danger" onclick="confirmAction({{ $item->id }}, 'Reject')">
+                                                                        <i class="fa fa-times"></i> Reject
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        @else
+                                                            <span class="text-muted"><small>Resolved</small></span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="9" class="text-center">No return/replacement requests found.</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>

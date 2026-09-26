@@ -100,16 +100,19 @@
                         <div class="tab-content" id="myTabContent">
 
                             <div class="tab-pane fade active show" id="new" role="tabpanel" aria-labelledby="new-tabs">
-                            <div class="mt-3"> <button class="btn border border-success text-success accept" onclick="edit()">Accept</button> 
-                        </div>
+                            <div class="mt-3"> 
+                                <button class="btn border border-success text-success accept" onclick="edit()">Accept</button> 
+                            </div>
                                 {{-- <form class="needs-validation" novalidate=""> --}}
         
                                     <div class="row">
 
                                         <div class="datatable-dashv1-list custom-datatable-overright" >
+                                            <div id="toolbar-vendor-new" class="d-flex align-items-center">
+                                                <button type="button" class="btn btn-success btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+                                            </div>
 
-
-                                            <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar" >
+                                            <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-vendor-new" >
                                                 <thead>
                                                     <tr>
                                                         <th><input type="checkbox" id="master"></th>

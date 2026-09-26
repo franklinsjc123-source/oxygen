@@ -113,26 +113,24 @@
                     <div class="col-sm-12">
 
                         <div class="card">
-                            <div class="mt-3 action-buttons-container" id="toolbar">
-                                <a href="{{ route('products.crud.index') }}">
-                                    <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add
-                                        Product
-                                    </button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
-                                </a>
+                            <div class="card-body">
+                                <div class="action-buttons-container d-flex align-items-center" id="toolbar">
+                                    <button type="button" class="btn btn-success btn-export-excel me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+                                    <a href="{{ route('products.crud.index') }}" class="me-2">
+                                        <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add
+                                            Product
+                                        </button>
+                                    </a>
+                                    <a href="{{ route('product.export') }}" class="btn btn-success me-2" data-toggle="tooltip" data-placement="top" title="Report" data-original-title="Report">
+                                        <i class="fa fa-list me-1"></i> Download Report
+                                    </a>
 
-                                <button class="btn border-warning text-warning delete">Delete</button>
-                                <button class="btn border-success text-success active">Active</button>
-                                <button class="btn border-danger text-danger deactive">De-Active</button>
-                            </div>
-
-                            <div class="pt-3 px-3">
-                                <a href="{{ route('product.export') }}" class="btn btn-success px-2 float-right" style="float: right;" data-toggle="tooltip" data-placement="top" title="Report" data-original-title="Report">
-                                    <i class="fa fa-list"></i> Download Report
-                                </a>
-                                <div class="clearfix"></div>
-                            </div>
-                            
-                            <div class="datatable-dashv1-list custom-datatable-overright">
+                                    <button class="btn border-warning text-warning delete me-1">Delete</button>
+                                    <button class="btn border-success text-success active me-1">Active</button>
+                                    <button class="btn border-danger text-danger deactive">De-Active</button>
+                                </div>
+                                
+                                <div class="datatable-dashv1-list custom-datatable-overright">
                                 <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id"
                                     data-sort-order="asc" data-mobile-responsive="true" data-toggle="table"
                                     data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true"
@@ -330,6 +328,7 @@
                             </div>
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
 

@@ -45,7 +45,10 @@
 							
 							
 							
-							<a href="{{ route('staffproduct_colors.create') }}" class="btn btn-primary">Add Color</a> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button><br>
+							<div id="toolbar" class="d-flex align-items-center">
+								<button type="button" class="btn btn-success btn-export-excel me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+								<a href="{{ route('staffproduct_colors.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Color</a>
+							</div>
 							
 							<table class="table" id="table"  data-click-to-select="true"  data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-columns="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
                          data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">

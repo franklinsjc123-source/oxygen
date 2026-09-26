@@ -92,9 +92,7 @@
                                 <li class="nav-item"><a class="nav-link" id="dispatch-tab" data-bs-toggle="tab" href="#dispatch" role="tab" aria-controls="dispatch" aria-selected="true" data-original-title="" title=""><span class="fw-bold">Dispatch ({{$dispatch}})</span> </a></li>
                                 <li class="nav-item"><a class="nav-link" id="delivery-tab" data-bs-toggle="tab" href="#delivery" role="tab" aria-controls="delivery" aria-selected="true" data-original-title="" title=""><span class="fw-bold">Delivered ({{$delivered}})</span></a></li>
                                 <li class="nav-item"><a class="nav-link" id="usage-tab" data-bs-toggle="tab" href="#usage" role="tab" aria-controls="usage" aria-selected="false" data-original-title="" title=""><span class="fw-bold">Return ({{$return}})</span> </a></li>
-								
-								<li class="nav-item"><a class="nav-link" id="cancel-tab" data-bs-toggle="tab" href="#cancel" role="tab" aria-controls="cancel" aria-selected="false" data-original-title="" title=""><span class="fw-bold">Cancel ({{$cancel}})</span></a></li>
-								
+                                <li class="nav-item"><a class="nav-link" id="cancel-tab" data-bs-toggle="tab" href="#cancel" role="tab" aria-controls="cancel" aria-selected="false" data-original-title="" title=""><span class="fw-bold">Cancel ({{$cancel}})</span></a></li>
                             </ul>
 
                             <div class="tab-content" id="myTabContent">
@@ -109,9 +107,12 @@
                                         <div class="row">
 
                                             <div class="datatable-dashv1-list custom-datatable-overright" >
+                                                <div id="toolbar-new" class="d-flex align-items-center">
+                                                    <button type="button" class="btn btn-success btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+                                                </div>
 
 
-                                                <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar" >
+                                                <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-new" >
                                                     <thead>
                                                         <tr>
 														{{-- <th data-field="dd" data-checkbox="true">
@@ -259,16 +260,16 @@
 
 
                                 <div class="tab-pane fade" id="general" role="tabpanel" aria-labelledby="general-tab">
-											<div class="mt-3"> <button class="btn border border-primary text-primary dispatch" >Dispatch</button> 
+											<div class="mt-3"> 
+                                                <button class="btn border border-primary text-primary dispatch" >Dispatch</button> 
                                                 <button class="btn border border-danger text-danger cancelbulkdispatch">Cancel</button> 
                                             </div>
                                     
-                                    <div class="row">
+                                            <div id="toolbar-general" class="d-flex align-items-center">
+                                                <button type="button" class="btn btn-success btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+                                            </div>
 
-                                        <div class="datatable-dashv1-list custom-datatable-overright" >
-
-
-                                            <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar" >
+                                            <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-general" >
                                                 <thead>
                                                     <tr>
                                                     {{-- <th data-field="dd" data-checkbox="true">
@@ -396,17 +397,16 @@
                                 </div>
 					
                                 <div class="tab-pane fade" id="dispatch" role="tabpanel" aria-labelledby="dispatch-tabs">
-						<div class="mt-3"> <button class="btn border border-success text-success delivered" >Delivered</button> 
-                           
+						<div class="mt-3"> 
+                            <button class="btn border border-success text-success delivered" >Delivered</button> 
                         </div>
                                 
                         
-                        <div class="row">
+                                <div id="toolbar-dispatch" class="d-flex align-items-center">
+                                    <button type="button" class="btn btn-success btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+                                </div>
 
-                            <div class="datatable-dashv1-list custom-datatable-overright" >
-
-
-                                <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar" >
+                                <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-dispatch" >
                                     <thead>
                                         <tr>
                                         {{-- <th data-field="dd" data-checkbox="true">
@@ -540,12 +540,11 @@
                                     
 
 
-                                    <div class="row">
+                                            <div id="toolbar-delivery" class="d-flex align-items-center">
+                                                <button type="button" class="btn btn-success btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+                                            </div>
 
-                                        <div class="datatable-dashv1-list custom-datatable-overright" >
-            
-            
-                                            <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar" >
+                                            <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-delivery" >
                                                 <thead>
                                                     <tr>
                                                     <th data-field="dd" data-checkbox="true">
@@ -677,12 +676,11 @@
                                 <div class="tab-pane fade" id="usage" role="tabpanel" aria-labelledby="usage-tab">
                                    
                                    
-                                    <div class="row">
+                                            <div id="toolbar-return" class="d-flex align-items-center">
+                                                <button type="button" class="btn btn-success btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+                                            </div>
 
-                                        <div class="datatable-dashv1-list custom-datatable-overright" >
-            
-            
-                                            <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar" >
+                                            <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-return" >
                                                 <thead>
                                                     <tr>
                                                     <th data-field="dd" data-checkbox="true">
@@ -812,12 +810,11 @@
 								
 							<div class="tab-pane fade" id="cancel" role="tabpanel" aria-labelledby="cancel-tabs">	
 								    
-                                <div class="row">
+                                        <div id="toolbar-cancel" class="d-flex align-items-center">
+                                            <button type="button" class="btn btn-success btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+                                        </div>
 
-                                    <div class="datatable-dashv1-list custom-datatable-overright" >
-        
-        
-                                        <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar" >
+                                        <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-cancel" >
                                             <thead>
                                                 <tr>
                                                 <th data-field="dd" data-checkbox="true">
