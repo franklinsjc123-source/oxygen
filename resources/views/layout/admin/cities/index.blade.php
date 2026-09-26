@@ -45,10 +45,67 @@
 						<div class="card-body">
 							
 							<div class="tab-content" id="top-tabContent">
-								<!-- Button to Open Modal for Creating City -->
-								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cityModal" id="addCityBtn">
-									Add City
-								</button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+								<style>
+									.city-toolbar {
+										padding: 0;
+										width: 100% !important;
+									}
+									.fixed-table-toolbar,
+									.fixed-table-toolbar .bs-bars,
+									.fixed-table-toolbar .pull-left,
+									.fixed-table-toolbar .float-left {
+										float: none !important;
+										width: 100% !important;
+										clear: both;
+									}
+									.city-toolbar .toolbar-row {
+										display: flex;
+										align-items: center;
+										justify-content: space-between;
+										gap: 12px;
+										padding: 8px 0;
+										width: 100%;
+									}
+									.city-toolbar .toolbar-row .btn {
+										white-space: nowrap;
+										font-size: 13px;
+										padding: 6px 14px;
+										border-radius: 4px;
+									}
+									.city-toolbar .search-box {
+										flex: 1;
+										max-width: 500px;
+									}
+									.city-toolbar .search-box .form-control {
+										border-left: none;
+										font-size: 13px;
+									}
+									.city-toolbar .search-box .input-group-text {
+										background: #fff;
+										border-right: none;
+									}
+									.fixed-table-toolbar .columns,
+									.fixed-table-toolbar .search {
+										display: none !important;
+									}
+								</style>
+
+								<div id="toolbar" class="city-toolbar">
+									<div class="toolbar-row">
+										<div class="input-group search-box">
+											<span class="input-group-text"><i class="fa fa-search"></i></span>
+											<input type="text" class="form-control" id="customCitySearch" placeholder="Search For ID, Name, Status, or Something..">
+										</div>
+										<div class="d-flex align-items-center gap-2 ms-auto">
+											<button type="button" class="btn btn-success btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;">
+												<i class="fa fa-file-excel-o me-1"></i> Export Excel
+											</button>
+											<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cityModal" id="addCityBtn">
+												<i class="fa fa-plus me-1"></i> Add City
+											</button>
+										</div>
+									</div>
+								</div>
 								
 								<!-- Bootstrap Modal for Adding/Editing City -->
 								<div class="modal fade" id="cityModal" tabindex="-1" aria-labelledby="cityModalLabel" aria-hidden="true">
@@ -97,8 +154,8 @@
 								
 								<!-- Table of Cities -->
 								<div class="mt-4">
-									<table class="table" id="table"  data-click-to-select="true"  data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
-									data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">
+									<table class="table" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="false" data-sort="true" data-pagination="true" data-page-size="25" data-search="false" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true"
+									data-show-export="false" data-toolbar="#toolbar">
 										<thead>
 											<tr>
 												<th>ID</th>
@@ -236,6 +293,11 @@
 </style>
 <script>
 $(document).ready(function() {
+    $('#customCitySearch').on('keyup', function() {
+        var searchText = $(this).val();
+        $('#table').bootstrapTable('resetSearch', searchText);
+    });
+
     // Status Toggle
     $(document).on('change', '.toggle-status', function() {
         var status = $(this).prop('checked') ? 'Active' : 'Inactive';

@@ -69,12 +69,24 @@
                 
                 .product-toolbar {
                     padding: 0;
+                    width: 100% !important;
+                }
+                /* Ensure bootstrap-table toolbar wrapper takes full width */
+                .fixed-table-toolbar,
+                .fixed-table-toolbar .bs-bars,
+                .fixed-table-toolbar .pull-left,
+                .fixed-table-toolbar .float-left {
+                    float: none !important;
+                    width: 100% !important;
+                    clear: both;
                 }
                 .product-toolbar .toolbar-row {
                     display: flex;
                     align-items: center;
+                    justify-content: space-between;
                     gap: 10px;
                     padding: 8px 0;
+                    width: 100%;
                 }
                 .product-toolbar .toolbar-row:first-child {
                     border-bottom: 1px solid #e9ecef;
@@ -94,7 +106,7 @@
                 }
                 .product-toolbar .search-box {
                     flex: 1;
-                    max-width: 400px;
+                    max-width: 650px;
                 }
                 .product-toolbar .search-box .form-control {
                     border-left: none;
@@ -105,7 +117,7 @@
                     border-right: none;
                 }
                 .product-toolbar .bulk-actions {
-                    margin-left: auto;
+                    margin-left: auto !important;
                     display: flex;
                     gap: 8px;
                 }
@@ -177,7 +189,7 @@
                                             <span class="input-group-text"><i class="fa fa-search"></i></span>
                                             <input type="text" class="form-control" id="customSearch" placeholder="Search products...">
                                         </div>
-                                        <div class="bulk-actions">
+                                        <div class="bulk-actions ms-auto float-end">
                                             <button class="btn btn-outline-warning delete"><i class="fa fa-trash me-1"></i> Delete</button>
                                             <button class="btn btn-outline-success active"><i class="fa fa-check me-1"></i> Active</button>
                                             <button class="btn btn-outline-danger deactive"><i class="fa fa-ban me-1"></i> De-Active</button>
