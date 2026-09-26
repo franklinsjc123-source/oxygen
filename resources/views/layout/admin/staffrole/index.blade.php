@@ -53,13 +53,10 @@
                         <div class="card">
                            
                             <div class="card-body">
-							 
-<a href="{{ route('staffrole.create') }}"  class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add"><i class="fa fa-plus"></i> Add Role</a> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button> 
-                                             
-
-
-
-								
+							 <div id="toolbar" class="d-flex align-items-center gap-2">
+							     <button type="button" class="btn btn-success btn-export-excel" style="background-color: #73b400; border-color: #73b400; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> EXPORT EXCEL</button>
+							     <a href="{{ route('staffrole.create') }}" class="btn btn-primary text-uppercase ms-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Add"><i class="fa fa-plus me-1"></i> Add Role</a>
+							 </div>
 								<div class="datatable-dashv1-list custom-datatable-overright">
 
                             
