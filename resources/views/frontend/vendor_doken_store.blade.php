@@ -13,6 +13,28 @@
             /* margin-top: 12px; */
     }
 
+    @media (min-width: 768px) {
+        .vendor-banner-row {
+            min-height: 450px;
+        }
+        .vendor-image-col {
+            position: relative;
+        }
+        .vendor-banner-image {
+            position: absolute !important;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+        }
+    }
+    @media (max-width: 767px) {
+        .vendor-banner-image {
+            height: 200px !important;
+            position: relative !important;
+        }
+    }
+
     /* Mobile view button styles for store product tabs */
     @media (max-width: 576px) {
         #productTabs.nav-tabs {
@@ -293,14 +315,15 @@
 
                         <div class="main-content">
                             <div class="container-fluid store store-banner mb-4" style="padding:0; overflow:hidden; border-radius:8px;">
-                                <div class="row g-0 align-items-stretch" style="background-color: #333333;">
+                                <div class="row g-0 align-items-stretch vendor-banner-row" style="background-color: #333333;">
 
                                     <!-- Left 25% : Store Content -->
                                     <div class="col-md-3 text-white">
                                     <div class="store-content h-100 p-4">
                                         <figure class="seller-brand mb-3">
                                         <img src="{{ asset('assets/images/vendor/profile/' . $vendordetails->profile_image) }}"
-                                            alt="Brand" width="80" height="80" />
+                                            alt="Brand" width="80" height="80"
+                                            onerror="this.src='{{ asset('frontend/images/default-shop-image.png') }}';" />
                                         </figure>
 
                                         <h4 class="store-title">{{ $vendordetails->shop_name }}</h4>
@@ -339,12 +362,13 @@
                                     </div>
 
                                     <!-- Right 75% : Image -->
-                                    <div class="col-md-9">
+                                    <div class="col-md-9 vendor-image-col">
                                     
                                         <img src="{{ asset('assets/images/vendor/profile/' . $vendordetails->profile_image) }}"
                                             alt="Vendor"
-                                            class="img-fluid w-100 h-100"
-                                            style="object-fit:cover; background-color:#414960;" />
+                                            class="img-fluid w-100 h-100 vendor-banner-image"
+                                            style="object-fit:cover; background-color:#414960;"
+                                            onerror="this.src='{{ asset('frontend/images/default-shop-image.png') }}';" />
                                     
                                     </div>
 

@@ -128,7 +128,9 @@
                                     </div>
 
                                     <div class="store-right">
-                                        <img src="{{ asset('assets/images/vendor/profile/' . $vendorcreate->profile_image) }}" alt="" onerror="this.src='{{ asset('frontend/images/default-shop-image.png') }}';">
+                                        <a href="{{ url('/shop/' . ($vendorcreate->slug ?? $vendorcreate->id)) }}" style="display:block; width:100%; height:100%;">
+                                            <img src="{{ asset('assets/images/vendor/profile/' . $vendorcreate->profile_image) }}" alt="" onerror="this.src='{{ asset('frontend/images/default-shop-image.png') }}';" style="width:100%; height:100%; object-fit:cover;">
+                                        </a>
                                     </div>
                                 </div>
 
