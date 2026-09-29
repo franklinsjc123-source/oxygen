@@ -15,7 +15,7 @@
 /* ── LEFT SIDEBAR (OFFERS LIST) ── */
 .offers-sidebar {
     position: sticky;
-    top: 90px;
+    top: 20px;
     align-self: flex-start;
     overflow-y: auto;
     scrollbar-width: none;
@@ -487,7 +487,7 @@
                                                 <a href="{{ url('/vendor-offer-products/'.$vendor->id.'?ids='.($groupOfferIds[$groupKey] ?? '')) }}" class="store-img-link">
                                                     <img src="{{ asset('assets/images/vendor/profile/' . $vendor->profile_image) }}" 
                                                          alt="{{ $vendor->shop_name }}"
-                                                         onerror="this.src='{{ asset('assets/images/vendor/profile/1683363518.jpg') }}';" />
+                                                         onerror="this.src='{{ asset('frontend/images/default-shop-image.png') }}';" />
                                                 </a>
                                             </div>
                                         </div>

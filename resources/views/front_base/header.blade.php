@@ -1824,6 +1824,7 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                                 </nav>
                             </div>
                             <div class="header-right" style="display: flex !important; align-items: center !important; margin-left: auto !important; margin-top: 0 !important; margin-bottom: 0 !important; margin-right: 0 !important; padding: 0 !important; gap: 22px !important;">
+                                <a href="{{ url('offers') }}" style="display: inline-flex !important; align-items: center !important; gap: 6px !important; margin: 0 !important;"><i class="w-icon-sale" style="font-size: 18px !important;"></i>Offers</a>
                                 @if($hasLiveAuction)
                                     <a href="{{ url('auction') }}" style="display: inline-flex !important; align-items: center !important; gap: 6px !important; margin: 0 !important;"><i class="fas fa-gavel" style="font-size: 17px !important;"></i>Bid &amp; Win</a>
                                 @endif
