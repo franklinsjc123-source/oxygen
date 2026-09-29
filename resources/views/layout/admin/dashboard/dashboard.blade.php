@@ -1101,10 +1101,10 @@
                                 <table class="table table-borderless align-middle" style="margin: 0;">
                                     <thead>
                                         <tr style="border-bottom: 1px solid #edf2f7;">
-                                            <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Order No.</th>
-                                            <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Date</th>
                                             <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Customer</th>
                                             <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Location</th>
+                                            <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Order No.</th>
+                                            <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Date</th>
                                             <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Amount</th>
                                             <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Status</th>
                                         </tr>
@@ -1112,8 +1112,6 @@
                                     <tbody>
                                         @forelse($transactionsList as $tx)
                                             <tr class="tx-row" data-status="{{ $tx['status'] }}" style="border-bottom: 1px solid #f7fafc; transition: all 0.2s;">
-                                                <td style="font-size: 13.5px; font-weight: 700; color: #2d3748; padding: 16px 8px;">{{ $tx['order_no'] }}</td>
-                                                <td style="font-size: 13px; color: #718096; font-weight: 500; padding: 16px 8px;">{{ $tx['date'] }}</td>
                                                 <td style="padding: 16px 8px;">
                                                     <div style="display: flex; align-items: center; gap: 10px;">
                                                         @php
@@ -1127,6 +1125,8 @@
                                                     </div>
                                                 </td>
                                                 <td style="font-size: 13px; color: #718096; font-weight: 600; padding: 16px 8px;">{{ $tx['location'] }}</td>
+                                                <td style="font-size: 13.5px; font-weight: 700; color: #2d3748; padding: 16px 8px;">{{ $tx['order_no'] }}</td>
+                                                <td style="font-size: 13px; color: #718096; font-weight: 500; padding: 16px 8px;">{{ $tx['date'] }}</td>
                                                 <td style="font-size: 13.5px; font-weight: 700; color: #2d3748; padding: 16px 8px;">{{ $tx['amount'] }}</td>
                                                 <td style="padding: 16px 8px;">
                                                     <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: {{ $tx['status'] === 'Paid' ? '#2ecc71' : '#a0aec0' }};">

@@ -564,13 +564,63 @@
                                           DELIVERY OPTIONS <i class="w-icon-truck" style="font-size: 18px; color: #333;"></i>
                                       </h4>
                                       
-                                      <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-                                          <div style="display: flex; align-items: center; gap: 8px; background: #f7f8fa; border: 1px solid #e1e1e1; border-radius: 4px; padding: 6px 16px; font-size: 14px; font-weight: 600; color: #222;">
-                                              <span>{{ session()->get('pincode') ?? '600020' }}</span>
-                                              <i class="fas fa-check-circle" style="color: #2ecc71; font-size: 14px;"></i>
+                                      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                                          <div style="display: flex; align-items: center; background: #f7f8fa; border: 1px solid #e1e1e1; border-radius: 4px; overflow: hidden; height: 40px;">
+                                              <input type="text" id="direct_pincode_input" value="{{ session()->get('pincode') ?? '600020' }}" placeholder="Enter Pincode" maxlength="6" style="border: none; padding: 0 16px; font-size: 14px; font-weight: 600; color: #222; width: 130px; outline: none; background: transparent;" oninput="this.value = this.value.replace(/[^0-9]/g, '');" onkeypress="if(event.key === 'Enter') { checkDirectPincode(); return false; }">
+                                              <div style="display: flex; align-items: center; justify-content: center; width: 40px; height: 100%; background: #f7f8fa;">
+                                                  <i class="fas fa-check-circle" id="direct_pincode_status_icon" style="color: {{ session()->has('pincode') ? '#2ecc71' : '#ccc' }}; font-size: 16px;"></i>
+                                              </div>
                                           </div>
-                                          <a href="javascript:void(0);" onclick="showPicodePopup()" style="color: #ff3f6c; font-weight: 700; font-size: 14px; text-decoration: none; border-bottom: 1px dashed #ff3f6c; padding-bottom: 2px;">Change</a>
+                                          <button type="button" onclick="checkDirectPincode()" id="direct_pincode_btn" style="background: #ff3f6c; color: #fff; border: none; border-radius: 4px; padding: 0 20px; font-size: 14px; font-weight: 700; cursor: pointer; height: 40px; transition: background 0.3s;">Change</button>
                                       </div>
+                                      <div id="direct_pincode_response" style="margin-top: -10px; margin-bottom: 15px; font-size: 13px; font-weight: 600;"></div>
+
+                                      <script>
+                                          function checkDirectPincode() {
+                                              var pin = document.getElementById('direct_pincode_input').value;
+                                              var btn = document.getElementById('direct_pincode_btn');
+                                              var responseBox = document.getElementById('direct_pincode_response');
+                                              var icon = document.getElementById('direct_pincode_status_icon');
+                                              
+                                              if (pin.length !== 6) {
+                                                  responseBox.innerHTML = '<span style="color: #ff5b5b;">Please enter a valid 6-digit pincode.</span>';
+                                                  icon.style.color = '#ff5b5b';
+                                                  return;
+                                              }
+                                              
+                                              btn.innerHTML = 'Checking...';
+                                              btn.disabled = true;
+                                              
+                                              $.ajax({
+                                                  url: "{{ route('checkPincode') }}",
+                                                  type: "POST",
+                                                  data: {
+                                                      _token: "{{ csrf_token() }}",
+                                                      pincode: pin
+                                                  },
+                                                  success: function(response) {
+                                                      btn.innerHTML = 'Change';
+                                                      btn.disabled = false;
+                                                      if (response.status === 'success') {
+                                                          responseBox.innerHTML = '<span style="color: #2ecc71;">' + response.message + '</span>';
+                                                          icon.style.color = '#2ecc71';
+                                                          setTimeout(function() {
+                                                              location.reload();
+                                                          }, 1000);
+                                                      } else {
+                                                          responseBox.innerHTML = '<span style="color: #ff5b5b;">' + response.message + '</span>';
+                                                          icon.style.color = '#ff5b5b';
+                                                      }
+                                                  },
+                                                  error: function() {
+                                                      btn.innerHTML = 'Change';
+                                                      btn.disabled = false;
+                                                      responseBox.innerHTML = '<span style="color: #ff5b5b;">An error occurred. Please try again.</span>';
+                                                      icon.style.color = '#ff5b5b';
+                                                  }
+                                              });
+                                          }
+                                      </script>
 
                                       <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 15px; font-size: 14px; color: #444;">
                                           <li style="display: flex; align-items: center; gap: 12px; font-weight: 500;">
