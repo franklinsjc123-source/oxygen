@@ -128,14 +128,14 @@
                                     </div>
 
                                     <div class="store-right">
-                                        <img src="{{ asset('assets/images/vendor/profile/' . $vendorcreate->profile_image) }}" alt="">
+                                        <img src="{{ asset('assets/images/vendor/profile/' . $vendorcreate->profile_image) }}" alt="" onerror="this.src='{{ asset('frontend/images/default-shop-image.png') }}';">
                                     </div>
                                 </div>
 
                                 
                                 <div class="store-footer">
                                     <figure class="seller-brand">
-                                        <img src="{{ asset('assets/images/vendor/profile/' . $vendorcreate->profile_image) }}" alt="Brand" width="80" height="80" />
+                                        <img src="{{ asset('assets/images/vendor/profile/' . $vendorcreate->profile_image) }}" alt="Brand" width="80" height="80" onerror="this.src='{{ asset('frontend/images/default-shop-image.png') }}';" />
                                     </figure>
                                     <a href=" {{ url('/shop/' . ($vendorcreate->slug ?? $vendorcreate->id)) }}" class="btn btn-dark btn-link btn-underline btn-icon-right btn-visit">
                                        <b>Visit Store</b> <i class="w-icon-long-arrow-right"></i></a>

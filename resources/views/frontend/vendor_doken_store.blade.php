@@ -292,8 +292,8 @@
                         <!-- End of Sidebar -->
 
                         <div class="main-content">
-                            <div class="container-fluid store store-banner mb-4">
-                                <div class="rows g-0 align-items-stretch">
+                            <div class="container-fluid store store-banner mb-4" style="padding:0; overflow:hidden; border-radius:8px;">
+                                <div class="row g-0 align-items-stretch" style="background-color: #333333;">
 
                                     <!-- Left 25% : Store Content -->
                                     <div class="col-md-3 text-white">
