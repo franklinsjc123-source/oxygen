@@ -4,6 +4,15 @@
 
 <style>
 /* ── Unified Offers Layout Styles ── */
+/* Make header sticky for this page only */
+header.header {
+    position: sticky !important;
+    top: 0;
+    z-index: 1050;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
 .offers-split-layout {
     display: flex;
     gap: 20px;
@@ -15,7 +24,7 @@
 /* ── LEFT SIDEBAR (OFFERS LIST) ── */
 .offers-sidebar {
     position: sticky;
-    top: 20px;
+    top: 140px;
     align-self: flex-start;
     overflow-y: auto;
     scrollbar-width: none;
