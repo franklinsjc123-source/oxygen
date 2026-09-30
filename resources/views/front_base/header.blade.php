@@ -45,6 +45,13 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
             s.parentNode.insertBefore(wf, s);
         })(document);
     </script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Pristina';
+            src: local('Pristina'), local('Pristina Regular');
+        }
+    </style>
 
     <!-- Default CSS -->
     <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/css/style.min.css">
