@@ -45,13 +45,6 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
             s.parentNode.insertBefore(wf, s);
         })(document);
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
-    <style>
-        @font-face {
-            font-family: 'Pristina';
-            src: local('Pristina'), local('Pristina Regular');
-        }
-    </style>
 
     <!-- Default CSS -->
     <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/css/style.min.css">
@@ -78,16 +71,7 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
     <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/css/demo8.min.css">
 
     <script src="<?= asset('frontend') ?>/vendor/jquery/jquery.min.js"></script>
-    <style>
-        .sold-by a {
-            font-family: 'Pristina', 'Dancing Script', 'Pinyon Script', cursive, sans-serif !important;
-            font-size: 16px !important;
-            font-weight: 700;
-            text-transform: capitalize !important;
-            color: #ff8084 !important;
-            transition: all 0.3s ease;
-        }
-    </style>
+
 </head>
 
 <body>

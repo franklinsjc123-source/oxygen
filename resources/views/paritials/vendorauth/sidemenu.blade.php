@@ -39,7 +39,7 @@
                     src="{{ $vendorImage }}" alt="{{ $vendorName }}"
                     style="width: 60px !important; height: 60px !important; object-fit: cover !important; border: 2px solid rgba(255, 255, 255, 0.4); box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin: 0 auto; display: block;">
             </div>
-            <h6 class="mt-3 f-14 vendor-shop-name" style="font-family: 'Pristina', 'Dancing Script', 'Pinyon Script', cursive, sans-serif !important; font-size: 20px !important; font-weight: 700; text-transform: capitalize !important; color: #ff8084 !important;">{{ ucwords(strtolower($vendorName)) }}</h6>
+            <h6 class="mt-3 f-14 vendor-shop-name" style="font-family: 'Pristina', 'Dancing Script', 'Pinyon Script', cursive, sans-serif !important; font-size: 20px !important; font-weight: 700; text-transform: capitalize !important;">{{ ucwords(strtolower($vendorName)) }}</h6>
             <p style="text-transform: capitalize !important;">{{ ucwords(strtolower($vendorRole)) }}</p>
         </div>
         <ul class="sidebar-menu">
