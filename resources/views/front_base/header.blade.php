@@ -920,6 +920,33 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
             background-color: #ff5e5e !important;
         }
 
+        /* Desktop sticky header-bottom nav bar */
+        @media (min-width: 768px) {
+            .header-bottom {
+                transition: all 0.3s ease;
+            }
+            body.desktop-header-sticky .header-bottom {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                z-index: 10000 !important;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+                background: #fff !important;
+                animation: slideDownNav 0.3s ease forwards;
+            }
+            body.desktop-header-sticky .header-bottom-placeholder {
+                display: block !important;
+            }
+            .header-bottom-placeholder {
+                display: none;
+            }
+            @keyframes slideDownNav {
+                from { transform: translateY(-100%); }
+                to { transform: translateY(0); }
+            }
+        }
+
             /* Mobile Category Nav Bar styles */
             .mobile-categories-nav-wrapper {
                 background: #f8fcff;
@@ -1086,11 +1113,31 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
             });
 
             // Scroll handler for mobile sticky header (search and menu only)
+            // + desktop sticky header-bottom nav bar
+            var $headerBottom = $('.header-bottom');
+            var headerBottomOffset = $headerBottom.length ? $headerBottom.offset().top + $headerBottom.outerHeight() : 200;
+            // Insert placeholder div right after header-bottom to prevent layout jump
+            if ($headerBottom.length && !$headerBottom.next('.header-bottom-placeholder').length) {
+                $('<div class="header-bottom-placeholder" style="display:none;"></div>').insertAfter($headerBottom);
+            }
             $(window).on('scroll', function() {
-                if ($(window).scrollTop() > 60) {
+                var scrollTop = $(window).scrollTop();
+                // Mobile sticky
+                if (scrollTop > 60) {
                     $('body').addClass('mobile-header-sticky');
                 } else {
                     $('body').removeClass('mobile-header-sticky');
+                }
+                // Desktop sticky for header-bottom nav
+                if (scrollTop > headerBottomOffset) {
+                    if (!$('body').hasClass('desktop-header-sticky')) {
+                        // Set placeholder height to prevent jump
+                        $('.header-bottom-placeholder').css('height', $headerBottom.outerHeight()).show();
+                        $('body').addClass('desktop-header-sticky');
+                    }
+                } else {
+                    $('body').removeClass('desktop-header-sticky');
+                    $('.header-bottom-placeholder').hide();
                 }
             });
         });
