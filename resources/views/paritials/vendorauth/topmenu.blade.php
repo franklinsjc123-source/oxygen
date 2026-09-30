@@ -212,15 +212,15 @@
                 <a href="#"><i data-feather="box"></i> <span class="text-label">Category</span> <span class="arr">&#10095;</span></a>
                 <ul class="sub">
                     <li><a href="{{ route('vendorcategory.sub.index') }}">Sub Category</a></li>
+                    <li><a href="{{ route('vendorattribute.master.index') }}">Attributes</a></li>
+                    <li><a href="{{ url('vendor/specification_groups') }}">Specification</a></li>
                 </ul>
             </li>
             <li class="has-sub">
                 <a href="#"><i data-feather="package"></i> <span class="text-label">Products</span> <span class="arr">&#10095;</span></a>
                 <ul class="sub">
                     <li><a href="{{ route('vendorproductscreate') }}">Add Product</a></li>
-                    <li><a href="{{ route('vendorattribute.master.index') }}">Attributes</a></li>
                     <li><a href="{{ route('vendorproducts.crud.listing') }}">Product List</a></li>
-                    <li><a href="{{ url('vendor/specification_groups') }}">Specification</a></li>
                 </ul>
             </li>
             <li class="has-sub">
