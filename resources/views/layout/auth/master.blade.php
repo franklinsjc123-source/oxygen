@@ -81,8 +81,41 @@
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap1.css') }}">
 
     <style>
-
-
+        /* Fix breadcrumb spacing globally */
+        .page-header .breadcrumb {
+            display: flex;
+            align-items: center;
+        }
+        .page-header .breadcrumb .breadcrumb-item + .breadcrumb-item {
+            padding-left: 2px !important;
+            margin-left: 2px !important;
+        }
+        .page-header .breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+            padding-right: 6px !important;
+            padding-left: 0 !important;
+            margin: 0 !important;
+        }
+        .page-header .breadcrumb .breadcrumb-item a {
+            display: flex;
+            align-items: center;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        /* Hide the feather home icon and use text 'Home' instead */
+        .page-header .breadcrumb .breadcrumb-item:first-child a svg {
+            display: none !important;
+        }
+        .page-header .breadcrumb .breadcrumb-item:first-child a::before {
+            content: "Home";
+            font-weight: 600;
+            color: #555555;
+        }
+        .page-header .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            padding: 0;
+            margin: 0;
+        }
     </style>
 
     @include('paritials.auth.header-css')
