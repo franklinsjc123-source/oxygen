@@ -678,6 +678,7 @@
                                                   class="vendor-profile-img"
                                                   src="{{ asset('assets/images/vendor/profile/' . $row->profile_image) }}"
                                                   alt="{{ $row->shop_name }}"
+                                                  onerror="this.onerror=null;this.src='{{ asset('frontend/images/default-shop-image.png') }}';"
                                               />
                                               <span class="vendor-name-overlay">{{ $row->shop_name }}</span>
                                           </span>
