@@ -127,6 +127,58 @@
 </script>
 
 @stack('scripts')
+
+<!-- Global Bootstrap Table State Persistence -->
+<script>
+    // Save table state before leaving the page or reloading
+    window.addEventListener('beforeunload', function() {
+        var $table = $('#table');
+        if ($table.length && typeof $table.bootstrapTable === 'function') {
+            try {
+                var options = $table.bootstrapTable('getOptions');
+                if (options) {
+                    var searchText = options.searchText || $('.fixed-table-toolbar .search input').val() || '';
+                    var currentPage = options.pageNumber || 1;
+                    var path = window.location.pathname;
+                    
+                    sessionStorage.setItem('globalTableSearch_' + path, searchText);
+                    sessionStorage.setItem('globalTablePage_' + path, currentPage);
+                }
+            } catch (e) {
+                // Ignore if table isn't fully initialized
+            }
+        }
+    });
+
+    // Restore table state on page load
+    $(document).ready(function() {
+        var path = window.location.pathname;
+        var savedSearch = sessionStorage.getItem('globalTableSearch_' + path);
+        var savedPage = sessionStorage.getItem('globalTablePage_' + path);
+        
+        if (savedSearch || savedPage) {
+            setTimeout(function() {
+                var $table = $('#table');
+                if ($table.length && typeof $table.bootstrapTable === 'function') {
+                    if (savedSearch) {
+                        $('.fixed-table-toolbar .search input').val(savedSearch);
+                        $table.bootstrapTable('resetSearch', savedSearch);
+                    }
+                    if (savedPage) {
+                        var pageNum = parseInt(savedPage, 10);
+                        if (pageNum > 1) {
+                            $table.bootstrapTable('selectPage', pageNum);
+                        }
+                    }
+                }
+                // Clear so it doesn't artificially persist longer than one navigation/reload
+                sessionStorage.removeItem('globalTableSearch_' + path);
+                sessionStorage.removeItem('globalTablePage_' + path);
+            }, 500);
+        }
+    });
+</script>
+
 </body>
 
 </html>
