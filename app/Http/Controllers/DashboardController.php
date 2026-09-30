@@ -751,9 +751,9 @@ class DashboardController extends Controller
             ]
         ];
 
-        $filterText = 'Showing cumulative data';
+        $filterText = 'Cumulative data';
         if ($startDate && $endDate) {
-            $filterText = 'Showing data from ' . \Carbon\Carbon::parse($startDate)->format('M d, Y') . ' to ' . \Carbon\Carbon::parse($endDate)->format('M d, Y');
+            $filterText = \Carbon\Carbon::parse($startDate)->format('M d, Y') . ' to ' . \Carbon\Carbon::parse($endDate)->format('M d, Y');
         }
 
         // Admin details for the profile card
@@ -2276,9 +2276,9 @@ class DashboardController extends Controller
         $returningCustomersPercent = $totalCustomersWhoOrdered > 0 ? round(($returningCustomersCount / $totalCustomersWhoOrdered) * 100, 1) : 0;
 
         // Format date display
-        $filterText = 'Showing cumulative data';
+        $filterText = 'Cumulative data';
         if ($startDate && $endDate) {
-            $filterText = 'Showing data from ' . \Carbon\Carbon::parse($startDate)->format('M d, Y') . ' to ' . \Carbon\Carbon::parse($endDate)->format('M d, Y');
+            $filterText = \Carbon\Carbon::parse($startDate)->format('M d, Y') . ' to ' . \Carbon\Carbon::parse($endDate)->format('M d, Y');
         }
 
         return response()->json([
@@ -3037,9 +3037,9 @@ class DashboardController extends Controller
             ]
         ];
 
-        $filterText = 'Showing cumulative data';
+        $filterText = 'Cumulative data';
         if ($startDate && $endDate) {
-            $filterText = 'Showing data from ' . \Carbon\Carbon::parse($startDate)->format('M d, Y') . ' to ' . \Carbon\Carbon::parse($endDate)->format('M d, Y');
+            $filterText = \Carbon\Carbon::parse($startDate)->format('M d, Y') . ' to ' . \Carbon\Carbon::parse($endDate)->format('M d, Y');
         }
 
         if ($request->ajax() || $request->wantsJson() || $request->routeIs('staff.dashboard.filter_data')) {

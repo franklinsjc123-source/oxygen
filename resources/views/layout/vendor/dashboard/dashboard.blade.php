@@ -1025,40 +1025,40 @@
         </div>
 
         <!-- Premium Period Wise Activity Filter Bar -->
-        <div class="filter-bar d-flex justify-content-between align-items-center flex-nowrap gap-3 mb-4" style="background: #ffffff; padding: 16px 24px; border-radius: 16px; border: 1px solid #edf2f7; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02); margin-top: 20px; overflow-x: auto; white-space: nowrap;">
-            <div class="filter-title d-flex align-items-center gap-3">
-                <div style="background-color: rgba(24, 53, 67, 0.08); width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                    <i class="fa fa-calendar" style="color: #183543; font-size: 16px;"></i>
+        <div class="filter-bar d-flex justify-content-between align-items-center flex-nowrap gap-2 mb-4" style="background: #ffffff; padding: 12px 16px; border-radius: 16px; border: 1px solid #edf2f7; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02); margin-top: 20px; overflow-x: auto; white-space: nowrap;">
+            <div class="filter-title d-flex align-items-center gap-2">
+                <div style="background-color: rgba(24, 53, 67, 0.08); width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <i class="fa fa-calendar" style="color: #183543; font-size: 14px;"></i>
                 </div>
                 <div>
-                    <span style="font-weight: 700; color: #1a202c; font-size: 15px; display: block;">Period Filter</span>
+                    <span style="font-weight: 700; color: #1a202c; font-size: 14px; display: block; line-height: 1;">Period Filter</span>
                     <span id="filterDateText" style="font-size: 11px; color: #718096; font-weight: 500;">
                         @if($startDate && $endDate)
-                            Showing data from {{ \Carbon\Carbon::parse($startDate)->format('M d, Y') }} to {{ \Carbon\Carbon::parse($endDate)->format('M d, Y') }}
+                            {{ \Carbon\Carbon::parse($startDate)->format('M d, Y') }} to {{ \Carbon\Carbon::parse($endDate)->format('M d, Y') }}
                         @else
-                            Showing cumulative data
+                            Cumulative data
                         @endif
                     </span>
                 </div>
             </div>
-            <div class="filter-controls d-flex align-items-center gap-3 flex-nowrap">
+            <div class="filter-controls d-flex align-items-center gap-2 flex-nowrap">
                 <!-- Period Preset Buttons (AJAX powered - no page refresh) -->
                 <div class="period-selector d-flex p-1" style="border-radius: 30px; background-color: #f1f5f9; border: 1px solid #e2e8f0; flex-shrink: 0;">
-                    <button type="button" class="period-btn {{ $period === 'today' ? 'active' : '' }}" onclick="applyPeriodFilter('today', this)" style="padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; text-align: center; border: none; cursor: pointer;">Today</button>
-                    <button type="button" class="period-btn {{ $period === 'week' ? 'active' : '' }}" onclick="applyPeriodFilter('week', this)" style="padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; text-align: center; border: none; cursor: pointer;">Week</button>
-                    <button type="button" class="period-btn {{ $period === 'month' ? 'active' : '' }}" onclick="applyPeriodFilter('month', this)" style="padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; text-align: center; border: none; cursor: pointer;">Month</button>
+                    <button type="button" class="period-btn {{ $period === 'today' ? 'active' : '' }}" onclick="applyPeriodFilter('today', this)" style="padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; text-align: center; border: none; cursor: pointer;">Today</button>
+                    <button type="button" class="period-btn {{ $period === 'week' ? 'active' : '' }}" onclick="applyPeriodFilter('week', this)" style="padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; text-align: center; border: none; cursor: pointer;">Week</button>
+                    <button type="button" class="period-btn {{ $period === 'month' ? 'active' : '' }}" onclick="applyPeriodFilter('month', this)" style="padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; text-align: center; border: none; cursor: pointer;">Month</button>
                 </div>
                 
                 <!-- Custom Date Form (AJAX powered) -->
                 <form id="customDateFilterForm" class="d-flex align-items-center gap-2 m-0 flex-nowrap" onsubmit="return applyCustomDateFilter(event)">
-                    <div class="custom-date-inputs d-flex align-items-center gap-2">
-                        <input type="date" id="filterStartDate" class="form-control form-control-sm" value="{{ $startDate }}" style="border-color: #cbd5e1; border-radius: 8px; font-size: 12px; font-weight: 500; color: #334155; width: 135px; height: 32px; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);">
-                        <span style="font-size: 12px; color: #64748b; font-weight: 600; padding: 0 4px;">to</span>
-                        <input type="date" id="filterEndDate" class="form-control form-control-sm" value="{{ $endDate }}" style="border-color: #cbd5e1; border-radius: 8px; font-size: 12px; font-weight: 500; color: #334155; width: 135px; height: 32px; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);">
+                    <div class="custom-date-inputs d-flex align-items-center gap-1">
+                        <input type="date" id="filterStartDate" class="form-control form-control-sm" value="{{ $startDate }}" style="border-color: #cbd5e1; border-radius: 8px; font-size: 11px; font-weight: 500; color: #334155; width: 115px; height: 32px; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); padding: 4px;">
+                        <span style="font-size: 12px; color: #64748b; font-weight: 600; padding: 0 2px;">to</span>
+                        <input type="date" id="filterEndDate" class="form-control form-control-sm" value="{{ $endDate }}" style="border-color: #cbd5e1; border-radius: 8px; font-size: 11px; font-weight: 500; color: #334155; width: 115px; height: 32px; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); padding: 4px;">
                     </div>
-                    <div class="custom-date-buttons">
-                        <button type="submit" id="applyFilterBtn" class="btn btn-sm text-white" style="background-color: #183543; border-radius: 8px; font-size: 12px; font-weight: 600; padding: 0 16px; border: none; height: 32px; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(24, 53, 67, 0.15);">Apply</button>
-                        <button type="button" class="btn btn-sm btn-light d-inline-flex align-items-center justify-content-center" onclick="applyPeriodFilter('month', document.querySelector('.period-btn:last-child'))" style="border-radius: 8px; font-size: 12px; font-weight: 600; padding: 0 12px; border: 1px solid #cbd5e1; height: 32px; background-color: #f8fafc;">Clear</button>
+                    <div class="custom-date-buttons d-flex gap-1">
+                        <button type="submit" id="applyFilterBtn" class="btn btn-sm text-white" style="background-color: #183543; border-radius: 8px; font-size: 11px; font-weight: 600; padding: 0 10px; border: none; height: 32px; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(24, 53, 67, 0.15);">Apply</button>
+                        <button type="button" class="btn btn-sm btn-light d-inline-flex align-items-center justify-content-center" onclick="applyPeriodFilter('month', document.querySelector('.period-btn:last-child'))" style="border-radius: 8px; font-size: 11px; font-weight: 600; padding: 0 8px; border: 1px solid #cbd5e1; height: 32px; background-color: #f8fafc;">Clear</button>
                     </div>
                 </form>
             </div>
