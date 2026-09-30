@@ -904,9 +904,9 @@
 
         <!-- Period Filter Bar -->
         <div class="container-fluid mt-4 mb-4">
-            <div class="filter-bar d-flex justify-content-between align-items-center flex-wrap gap-3" style="background: #ffffff; padding: 16px 24px; border-radius: 16px; border: 1px solid #edf2f7; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02);">
+            <div class="filter-bar d-flex justify-content-between align-items-center flex-nowrap gap-3" style="background: #ffffff; padding: 16px 24px; border-radius: 16px; border: 1px solid #edf2f7; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02); overflow-x: auto; white-space: nowrap;">
                 <div class="filter-title d-flex align-items-center gap-3">
-                    <div style="background-color: rgba(24, 53, 67, 0.08); width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <div style="background-color: rgba(24, 53, 67, 0.08); width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <i class="fa fa-calendar" style="color: #183543; font-size: 16px;"></i>
                     </div>
                     <div>
@@ -920,7 +920,7 @@
                         </span>
                     </div>
                 </div>
-                <div class="filter-controls d-flex align-items-center gap-3 flex-wrap">
+                <div class="filter-controls d-flex align-items-center gap-3 flex-nowrap">
                     <!-- Employee Filter Dropdown -->
                     <div class="employee-filter-container d-flex align-items-center gap-2">
                         <div style="background-color: rgba(24, 53, 67, 0.08); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
@@ -934,14 +934,14 @@
                         </select>
                     </div>
 
-                    <div class="period-selector d-flex p-1" style="border-radius: 30px; background-color: #f1f5f9; border: 1px solid #e2e8f0;">
+                    <div class="period-selector d-flex p-1" style="border-radius: 30px; background-color: #f1f5f9; border: 1px solid #e2e8f0; flex-shrink: 0;">
                         <button type="button" class="period-btn {{ $period === 'today' ? 'active' : '' }}" onclick="applyPeriodFilter('today', this)" style="padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; text-align: center; border: none; cursor: pointer;">Today</button>
                         <button type="button" class="period-btn {{ $period === 'week' ? 'active' : '' }}" onclick="applyPeriodFilter('week', this)" style="padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; text-align: center; border: none; cursor: pointer;">Week</button>
                         <button type="button" class="period-btn {{ $period === 'month' ? 'active' : '' }}" onclick="applyPeriodFilter('month', this)" style="padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-block; text-align: center; border: none; cursor: pointer;">Month</button>
                     </div>
                     
-                    <form id="customDateFilterForm" class="d-flex align-items-center gap-2 m-0 flex-wrap" onsubmit="return applyCustomDateFilter(event)">
-                        <div class="custom-date-inputs">
+                    <form id="customDateFilterForm" class="d-flex align-items-center gap-2 m-0 flex-nowrap" onsubmit="return applyCustomDateFilter(event)">
+                        <div class="custom-date-inputs d-flex align-items-center gap-2">
                             <input type="date" id="filterStartDate" class="form-control form-control-sm" value="{{ $startDate }}" style="border-color: #cbd5e1; border-radius: 8px; font-size: 12px; font-weight: 500; color: #334155; width: 135px; height: 32px; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);">
                             <span style="font-size: 12px; color: #64748b; font-weight: 600; padding: 0 4px;">to</span>
                             <input type="date" id="filterEndDate" class="form-control form-control-sm" value="{{ $endDate }}" style="border-color: #cbd5e1; border-radius: 8px; font-size: 12px; font-weight: 500; color: #334155; width: 135px; height: 32px; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);">
