@@ -41,12 +41,19 @@
     .title-link-wrapper a i {
         color: inherit !important;
     }
-    .sold-by a,
     .ratings-container a,
     .rating-reviews {
         color: #0088dd !important;
         font-weight: 700;
         transition: color 0.2s ease;
+    }
+    .sold-by a {
+        font-family: 'Pristina', 'Dancing Script', 'Pinyon Script', cursive, sans-serif !important;
+        font-size: 16px !important;
+        font-weight: 700;
+        text-transform: capitalize !important;
+        color: #ff8084 !important;
+        transition: all 0.3s ease;
     }
     a:hover,
     a:focus,
