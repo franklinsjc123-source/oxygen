@@ -62,6 +62,38 @@
             </div>
         </div>
 
+        <style>
+            .fixed-table-toolbar {
+                display: flex !important;
+                flex-wrap: wrap;
+                align-items: center;
+                margin-bottom: 15px;
+            }
+            .fixed-table-toolbar .search {
+                order: 1;
+                flex: 1;
+                margin-bottom: 0 !important;
+                float: none !important;
+            }
+            .fixed-table-toolbar .search input {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            .fixed-table-toolbar .columns {
+                order: 2;
+                margin-left: 10px;
+                margin-bottom: 0 !important;
+                float: none !important;
+            }
+            .fixed-table-toolbar .bs-bars {
+                order: 3;
+                margin-left: 15px;
+                margin-top: 0 !important;
+                float: none !important;
+                width: auto !important;
+            }
+        </style>
+
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-12">
@@ -80,9 +112,13 @@
                                 </div>
                             @endif
 
-                             <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
-<div class="mb-3"></div>
-<div class="datatable-dashv1-list custom-datatable-overright">
+                            <div id="toolbar" class="mt-2">
+                                <div class="d-inline-block">
+                                    <button type="button" class="btn btn-success btn-export-excel me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+                                </div>
+                            </div>
+
+                            <div class="datatable-dashv1-list custom-datatable-overright">
                                 <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-show-columns="true" data-sort-order="desc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">
                                     <thead>
                                         <tr>

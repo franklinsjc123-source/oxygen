@@ -2,6 +2,38 @@
 @section('contents')
 
     @include('paritials.css.product.attribute-css')
+    
+    <style>
+        .fixed-table-toolbar {
+            display: flex !important;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .fixed-table-toolbar .search {
+            order: 1;
+            flex: 1;
+            margin-bottom: 0 !important;
+            float: none !important;
+        }
+        .fixed-table-toolbar .search input {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        .fixed-table-toolbar .columns {
+            order: 2;
+            margin-left: 10px;
+            margin-bottom: 0 !important;
+            float: none !important;
+        }
+        .fixed-table-toolbar .bs-bars {
+            order: 3;
+            margin-left: 15px;
+            margin-top: 0 !important;
+            float: none !important;
+            width: auto !important;
+        }
+    </style>
 
     @include('paritials.vendorauth.header')?>
 
@@ -45,7 +77,12 @@
                            
                             <div class="card-body">
                                 
-                          <a href="{{route('specification_groups.create')}}" class="btn mb-4 btn-primary"><i class="fa fa-plus"></i> Add Specification  </a> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button> 
+                                <div id="toolbar" class="mt-2">
+                                    <div class="d-inline-block">
+                                        <button type="button" class="btn btn-success btn-export-excel me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button> 
+                                        <a href="{{route('specification_groups.create')}}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Specification</a>
+                                    </div>
+                                </div>
                          
 
                             <div class="datatable-dashv1-list custom-datatable-overright">
