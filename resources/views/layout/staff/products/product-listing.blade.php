@@ -67,25 +67,34 @@
 
                 /*.btn-primary:hover, .btn-primary:focus { background-color: #0486b9; }*/
                 
-                .action-buttons-container {
-                    display: flex;
-                    gap: 8px;
-                    overflow-x: auto;
-                    white-space: nowrap;
-                    padding-bottom: 10px;
+                .fixed-table-toolbar {
+                    display: flex !important;
+                    flex-wrap: wrap;
+                    align-items: center;
+                    margin-bottom: 15px;
+                }
+                .fixed-table-toolbar .search {
+                    order: 1;
+                    flex: 1;
+                    margin-bottom: 0 !important;
+                    float: none !important;
+                }
+                .fixed-table-toolbar .search input {
+                    width: 100% !important;
+                    max-width: 100% !important;
+                }
+                .fixed-table-toolbar .columns {
+                    order: 2;
+                    margin-left: 10px;
+                    margin-bottom: 0 !important;
+                    float: none !important;
+                }
+                .fixed-table-toolbar .bs-bars {
+                    order: 3;
                     margin-left: 15px;
-                    margin-right: 15px;
-                }
-                
-                .action-buttons-container .btn {
-                    white-space: nowrap;
-                }
-                
-                @media (max-width: 768px) {
-                    .action-buttons-container .btn {
-                        padding: 4px 8px;
-                        font-size: 12px;
-                    }
+                    margin-top: 0 !important;
+                    float: none !important;
+                    width: auto !important;
                 }
             </style>
 
@@ -113,42 +122,36 @@
                     <div class="col-sm-12">
 
                         <div class="card">
-                            <div class="mt-3 action-buttons-container" id="toolbar">
-                                <a href="{{ route('staffproducts.crud.index') }}">
-                                    <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add
-                                        Product
-                                    </button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
-                                </a>
-
-                                {{-- Commented out to adhere to read-only deletion policy --}}
-                                {{-- <button class="btn border-warning text-warning delete">Delete</button> --}}
-                                <button class="btn border-success text-success active">Active</button>
-                                <button class="btn border-danger text-danger deactive">De-Active</button>
-                            </div>
-
-                            <div class="card-body">
-                                <form action="{{ route('importpincode') }}"
-                                      method="POST"
-                                      enctype="multipart/form-data">
-                                    @csrf
-                                     {{-- <div class="row">
-                                         <div class="col col-sm-6">
-                                    <input type="file" name="file"
-                                           class="">
-                                    </div> --}}
-                                    <div class="col col-sm-2">
-                                        </div>
-                                    <div class="col col-sm-4">
-                                    {{-- <button class="btn btn-success">
-                                           Import Pincode
-                                        </button> --}}
-                                       <a href="{{ route('staffproduct.export') }}" class="btn btn-success px-2 " data-toggle="tooltip" data-placement="top" title="Report" data-original-title="Report"><i
-                                        class="fa fa-list"></i> Download Report</a>   
+                                <div class="card-body pb-0 pt-0">
+                                    <form action="{{ route('importpincode') }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                    </form>
+                                </div>
+                                <div id="toolbar" class="mt-2">
+                                    <div class="d-inline-block">
+                                        <button type="button" class="btn btn-success btn-export-excel me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;">
+                                            <i class="fa fa-file-excel-o me-1"></i> Export Excel
+                                        </button>
+                                        <a href="{{ route('staffproducts.crud.index') }}">
+                                            <button type="button" class="btn btn-primary">
+                                                <i class="fa fa-plus me-1"></i> Add Product
+                                            </button>
+                                        </a>
                                     </div>
-                                       
-                                    </div>
-                                </form>
-                            </div>
+                                </div>
+                                
+                                <div id="secondary-toolbar" class="d-block mb-3 mt-3 ms-3">
+                                    <a href="{{ route('staffproduct.export') }}" class="btn btn-success px-2 me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;" data-toggle="tooltip" data-placement="top" title="Report" data-original-title="Report">
+                                        <i class="fa fa-download me-1"></i> Download Report
+                                    </a> 
+                                    <button type="button" class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#importProductModal" style="background-color: #17a2b8; border-color: #17a2b8; color: #fff;">
+                                        <i class="fa fa-upload me-1"></i> Import Products
+                                    </button>
+                                    {{-- Commented out to adhere to read-only deletion policy --}}
+                                    {{-- <button class="btn border-warning text-warning delete me-2">Delete</button> --}}
+                                    <button class="btn border-success text-success active me-2">Active</button>
+                                    <button class="btn border-danger text-danger deactive">De-Active</button>
+                                </div>
                             
                             <div class="datatable-dashv1-list custom-datatable-overright">
                                 <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id"
@@ -822,3 +825,35 @@ function getquantity(id, productName) {
     }
 </style>
 @endsection
+
+<!-- Import Products Modal -->
+<div class="modal fade" id="importProductModal" tabindex="-1" aria-labelledby="importProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="#" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-header" style="background-color: #17a2b8; color: #fff;">
+                    <h5 class="modal-title" id="importProductModalLabel"><i class="fa fa-upload me-2"></i>Import Products</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="importFile" class="form-label fw-bold">Select Excel/CSV File</label>
+                        <input type="file" class="form-control" id="importFile" name="file" accept=".xlsx,.xls,.csv" required>
+                        <div class="form-text">Supported formats: .xlsx, .xls, .csv (Max: 10MB)</div>
+                    </div>
+                    <div class="alert alert-info d-flex align-items-center" role="alert">
+                        <i class="fa fa-info-circle me-2" style="font-size: 18px;"></i>
+                        <div>
+                            Download the <a href="#" class="alert-link">sample template</a> to see the required format.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-info" style="background-color: #17a2b8; border-color: #17a2b8; color: #fff;"><i class="fa fa-upload me-1"></i> Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -67,78 +67,34 @@
 
                 /*.btn-primary:hover, .btn-primary:focus { background-color: #0486b9; }*/
                 
-                .product-toolbar {
-                    padding: 0;
-                    width: 100% !important;
-                }
-                /* Ensure bootstrap-table toolbar wrapper takes full width */
-                .fixed-table-toolbar,
-                .fixed-table-toolbar .bs-bars,
-                .fixed-table-toolbar .pull-left,
-                .fixed-table-toolbar .float-left {
-                    float: none !important;
-                    width: 100% !important;
-                    clear: both;
-                }
-                .product-toolbar .toolbar-row {
-                    display: flex;
+                .fixed-table-toolbar {
+                    display: flex !important;
+                    flex-wrap: wrap;
                     align-items: center;
-                    justify-content: space-between;
-                    gap: 10px;
-                    padding: 8px 0;
-                    width: 100%;
+                    margin-bottom: 15px;
                 }
-                .product-toolbar .toolbar-row:first-child {
-                    border-bottom: 1px solid #e9ecef;
-                    padding-bottom: 12px;
-                    margin-bottom: 4px;
-                }
-                .product-toolbar .toolbar-row:first-child .btn,
-                .product-toolbar .toolbar-row:first-child a {
-                    flex: 1;
-                    text-align: center;
-                }
-                .product-toolbar .toolbar-row .btn {
-                    white-space: nowrap;
-                    font-size: 13px;
-                    padding: 6px 14px;
-                    border-radius: 4px;
-                }
-                .product-toolbar .search-box {
-                    flex: 1;
-                    max-width: 650px;
-                }
-                .product-toolbar .search-box .form-control {
-                    border-left: none;
-                    font-size: 13px;
-                }
-                .product-toolbar .search-box .input-group-text {
-                    background: #fff;
-                    border-right: none;
-                }
-                .product-toolbar .bulk-actions {
-                    margin-left: auto !important;
-                    display: flex;
-                    gap: 8px;
-                }
-                /* Hide the bootstrap-table default toolbar buttons row */
-                .fixed-table-toolbar .columns,
                 .fixed-table-toolbar .search {
-                    display: none !important;
+                    order: 1;
+                    flex: 1;
+                    margin-bottom: 0 !important;
+                    float: none !important;
                 }
-                
-                @media (max-width: 768px) {
-                    .product-toolbar .toolbar-row {
-                        flex-wrap: wrap;
-                    }
-                    .product-toolbar .toolbar-row .btn {
-                        padding: 4px 10px;
-                        font-size: 12px;
-                    }
-                    .product-toolbar .search-box {
-                        max-width: 100%;
-                        width: 100%;
-                    }
+                .fixed-table-toolbar .search input {
+                    width: 100% !important;
+                    max-width: 100% !important;
+                }
+                .fixed-table-toolbar .columns {
+                    order: 2;
+                    margin-left: 10px;
+                    margin-bottom: 0 !important;
+                    float: none !important;
+                }
+                .fixed-table-toolbar .bs-bars {
+                    order: 3;
+                    margin-left: 15px;
+                    margin-top: 0 !important;
+                    float: none !important;
+                    width: auto !important;
                 }
             </style>
 
@@ -167,9 +123,9 @@
 
                         <div class="card">
                             <div class="card-body">
-                                <div id="toolbar" class="product-toolbar">
-                                    <div class="toolbar-row">
-                                        <button type="button" class="btn btn-success btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;">
+                                <div id="toolbar" class="mt-2">
+                                    <div class="d-inline-block">
+                                        <button type="button" class="btn btn-success btn-export-excel me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;">
                                             <i class="fa fa-file-excel-o me-1"></i> Export Excel
                                         </button>
                                         <a href="{{ route('products.crud.index') }}">
@@ -177,30 +133,26 @@
                                                 <i class="fa fa-plus me-1"></i> Add Product
                                             </button>
                                         </a>
-                                        <a href="{{ route('product.export') }}" class="btn btn-success" style="background-color: #28a745; border-color: #28a745; color: #fff;">
-                                            <i class="fa fa-download me-1"></i> Download Report
-                                        </a>
-                                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#importProductModal" style="background-color: #17a2b8; border-color: #17a2b8; color: #fff;">
-                                            <i class="fa fa-upload me-1"></i> Import Products
-                                        </button>
                                     </div>
-                                    <div class="toolbar-row">
-                                        <div class="input-group search-box">
-                                            <span class="input-group-text"><i class="fa fa-search"></i></span>
-                                            <input type="text" class="form-control" id="customSearch" placeholder="Search products...">
-                                        </div>
-                                        <div class="bulk-actions ms-auto float-end">
-                                            <button class="btn btn-outline-warning delete"><i class="fa fa-trash me-1"></i> Delete</button>
-                                            <button class="btn btn-outline-success active"><i class="fa fa-check me-1"></i> Active</button>
-                                            <button class="btn btn-outline-danger deactive"><i class="fa fa-ban me-1"></i> De-Active</button>
-                                        </div>
-                                    </div>
+                                </div>
+                                
+                                <div id="secondary-toolbar" class="d-block mb-3">
+                                    <a href="{{ route('product.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;">
+                                        <i class="fa fa-download me-1"></i> Download Report
+                                    </a>
+                                    <button type="button" class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#importProductModal" style="background-color: #17a2b8; border-color: #17a2b8; color: #fff;">
+                                        <i class="fa fa-upload me-1"></i> Import Products
+                                    </button>
+                                    
+                                    <button class="btn border-warning text-warning delete me-2"><i class="fa fa-trash me-1"></i> Delete</button>
+                                    <button class="btn border-success text-success active me-2"><i class="fa fa-check me-1"></i> Active</button>
+                                    <button class="btn border-danger text-danger deactive"><i class="fa fa-ban me-1"></i> De-Active</button>
                                 </div>
                                 
                                 <div class="datatable-dashv1-list custom-datatable-overright">
                                 <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id"
                                     data-sort-order="asc" data-mobile-responsive="true" data-toggle="table"
-                                    data-show-columns="false" data-sort="true" data-pagination="true" data-page-size="25" data-search="false"
+                                    data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true"
                                     data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true"
                                     data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">
 
@@ -861,11 +813,6 @@ function getquantity(id, productName) {
         });
     });
 
-    // Custom search for bootstrap-table
-    $('#customSearch').on('keyup', function() {
-        var searchText = $(this).val();
-        $('#table').bootstrapTable('resetSearch', searchText);
-    });
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
