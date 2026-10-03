@@ -1223,15 +1223,19 @@
                 white-space: nowrap !important;
             }
             .mfp-container {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding-left: 15px !important;
+                padding-right: 15px !important;
                 text-align: center !important;
-                padding-left: 10px !important;
-                padding-right: 10px !important;
             }
             .mfp-content:not(.mfp-newsletter .mfp-content) {
-                display: inline-block !important;
+                display: block !important;
                 text-align: left !important;
                 float: none !important;
                 margin: 0 auto !important;
+                width: 100% !important;
             }
         }
     </style>
