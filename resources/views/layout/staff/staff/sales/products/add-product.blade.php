@@ -236,7 +236,7 @@
                                                     <div class="form-group">
                                                         <h5 class="fw-bold">Is Color Available?</h5>
                                                         <div id="clothing">
-                                                            <select class="form-control" name="is_color" id="is_color" required>
+                                                            <select class="custom-select form-control" name="is_color" id="is_color" required>
                                                                 <option value="yes" selected>Yes</option>
                                                                 <option value="no">No</option>
                                                             </select>
@@ -481,7 +481,7 @@
                                                     <div class="form-group">
                                                         <h5 class="fw-bold">Color Available?</h5>
                                                         <div id="clothing">
-                                                            <select class="form-control" name="is_color_summary" id="is_color_summary" disabled required>
+                                                            <select class="custom-select form-control" name="is_color_summary" id="is_color_summary" disabled required>
                                                                 <option value="yes" {{(@$is_color=="yes")?'Selected':'';}}>Yes</option>
                                                                 <option value="no" {{(@$is_color=="no")?'Selected':'';}}>No</option>
                                                             </select>

@@ -224,7 +224,7 @@
                                                      <div class="form-group">
                                                          <label class="form-label fw-bold text-dark">Is Color Available?</label>
                                                          <div id="clothing">
-                                                             <select class="form-control" name="is_color" id="is_color" required>
+                                                             <select class="custom-select form-control" name="is_color" id="is_color" required>
                                                                  <option value="yes" selected>Yes</option>
                                                                  <option value="no">No</option>
                                                              </select>
@@ -452,7 +452,7 @@
                                                      <div class="form-group">
                                                          <label class="form-label fw-bold text-dark">Color Available?</label>
                                                          <div id="clothing">
-                                                             <select class="form-control" name="is_color_summary" id="is_color_summary" disabled required>
+                                                             <select class="custom-select form-control" name="is_color_summary" id="is_color_summary" disabled required>
                                                                  <option value="yes" {{(@$is_color=="yes")?'Selected':'';}}>Yes</option>
                                                                  <option value="no" {{(@$is_color=="no")?'Selected':'';}}>No</option>
                                                              </select>

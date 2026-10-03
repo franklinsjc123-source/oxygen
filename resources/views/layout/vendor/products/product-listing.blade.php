@@ -139,7 +139,7 @@
                                     <a href="#" class="btn btn-success px-2 me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;" data-toggle="tooltip" data-placement="top" title="Report" data-original-title="Report">
                                         <i class="fa fa-download me-1"></i> Download Report
                                     </a> 
-                                    <button type="button" class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#importProductModal" style="background-color: #17a2b8; border-color: #17a2b8; color: #fff;">
+                                    <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#importProductModal">
                                         <i class="fa fa-upload me-1"></i> Import Products
                                     </button>
                                     <button class="btn border-warning text-warning delete me-2">Delete</button>
@@ -833,7 +833,7 @@ function createProductRow(productDetails) {
         <div class="modal-content">
             <form action="{{ route('vendorproduct.import') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <div class="modal-header" style="background-color: #17a2b8; color: #fff;">
+                <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title" id="importProductModalLabel"><i class="fa fa-upload me-2"></i>Import Products</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -852,7 +852,7 @@ function createProductRow(productDetails) {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-info" style="background-color: #17a2b8; border-color: #17a2b8; color: #fff;"><i class="fa fa-upload me-1"></i> Import</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-upload me-1"></i> Import</button>
                 </div>
             </form>
         </div>
