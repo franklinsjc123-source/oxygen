@@ -114,7 +114,7 @@
             <!-- 2. Center: Logo (mobile only) -->
             <div class="main-header-left d-lg-none col text-center">
                 <div class="logo-wrapper" style="display: inline-block;"><a href="{{ url('admin/dashboard') }}"><img class="blur-up lazyloaded"
-                            src="{{ asset('assets/images/dashboard/logo/newlogo.png') }}" alt="Logo" style="max-height: 45px; object-fit: contain;"></a></div>
+                            src="{{ asset('assets/images/dashboard/logo/newlogo.png') }}" alt="Logo" style="height: 65px !important; width: auto; object-fit: contain;"></a></div>
             </div>
 <script>
 (function(){
