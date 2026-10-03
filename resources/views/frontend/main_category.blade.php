@@ -232,6 +232,34 @@
                                         </div>
                                     </div>
 
+                                    {{-- Review Filter --}}
+                                    <div class="filter-section" style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                                        <div class="filter-header" onclick="toggleFilter(this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                                            <h5 style="font-size: 15px; font-weight: 600; margin: 0; color: #333;">Ratings</h5>
+                                            <i class="fas fa-chevron-down" style="font-size: 12px; color: #999; transition: transform 0.3s;"></i>
+                                        </div>
+                                        <div class="filter-body" style="max-height: 0; overflow: hidden; transition: max-height 0.35s ease;">
+                                            <ul style="list-style: none; padding: 10px 0 0 0; margin: 0;">
+                                                @foreach([5, 4, 3, 2, 1] as $rating)
+                                                <li style="padding: 4px 0;">
+                                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #555;">
+                                                        <input type="checkbox" name="filter_rating" value="{{ $rating }}" class="filter-checkbox rating-checkbox" style="accent-color: #222; width: 15px; height: 15px;" onchange="$('.rating-checkbox').not(this).prop('checked', false);">
+                                                        <div style="color: #ffb800; font-size: 12px; margin-top: 2px;">
+                                                            @for($i=1; $i<=5; $i++)
+                                                                @if($i <= $rating)
+                                                                    <i class="fas fa-star"></i>
+                                                                @else
+                                                                    <i class="far fa-star"></i>
+                                                                @endif
+                                                            @endfor
+                                                        </div>
+                                                    </label>
+                                                </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </div>
+
                                     {{-- Discount Filter --}}
                                     <div class="filter-section" style="border-bottom: 1px solid #eee; padding: 15px 0;">
                                         <div class="filter-header" onclick="toggleFilter(this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
@@ -298,33 +326,7 @@
                                         </div>
                                     </div>
 
-                                    {{-- Review Filter --}}
-                                    <div class="filter-section" style="border-bottom: 1px solid #eee; padding: 15px 0;">
-                                        <div class="filter-header" onclick="toggleFilter(this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
-                                            <h5 style="font-size: 15px; font-weight: 600; margin: 0; color: #333;">Ratings</h5>
-                                            <i class="fas fa-chevron-down" style="font-size: 12px; color: #999; transition: transform 0.3s;"></i>
-                                        </div>
-                                        <div class="filter-body" style="max-height: 0; overflow: hidden; transition: max-height 0.35s ease;">
-                                            <ul style="list-style: none; padding: 10px 0 0 0; margin: 0;">
-                                                @foreach([5, 4, 3, 2, 1] as $rating)
-                                                <li style="padding: 4px 0;">
-                                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #555;">
-                                                        <input type="checkbox" name="filter_rating" value="{{ $rating }}" class="filter-checkbox rating-checkbox" style="accent-color: #222; width: 15px; height: 15px;" onchange="$('.rating-checkbox').not(this).prop('checked', false);">
-                                                        <div style="color: #ffb800; font-size: 12px; margin-top: 2px;">
-                                                            @for($i=1; $i<=5; $i++)
-                                                                @if($i <= $rating)
-                                                                    <i class="fas fa-star"></i>
-                                                                @else
-                                                                    <i class="far fa-star"></i>
-                                                                @endif
-                                                            @endfor
-                                                        </div>
-                                                    </label>
-                                                </li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    </div>
+
 
                                     {{-- Clear All Filters --}}
                                     <div style="padding: 15px 0; text-align: center;">
