@@ -71,7 +71,7 @@
                     display: flex !important;
                     flex-wrap: wrap;
                     align-items: center;
-                    margin-bottom: 15px;
+                    margin-bottom: 15px !important;
                 }
                 .fixed-table-toolbar .search {
                     order: 1;
@@ -171,6 +171,7 @@
                                             <!--<th style="width: 10%" data-field="startDate" data-sortable="true">START DATE </th>-->
                                             <!--<th style="width: 10%" data-field="endDate" data-sortable="true">END DATE </th>-->
                                             <th style="width: 5%" data-field="status" data-sortable="true">STATUS</th>
+                                            <th style="width: 10%" data-field="created_by" data-sortable="true">CREATED BY</th>
                                             <th style="width: 20%" data-field="action" data-sortable="true">Action</th>
                                         </tr>
                                     </thead>
@@ -328,6 +329,16 @@
                                                          </div>
                                                      </label>
 
+                                                </td>
+                                                <td>
+                                                    @if($products->logintype == 'Vendor')
+                                                        @php
+                                                            $vendorName = App\Models\vendor\vendorcreate::where('user_id', $products->login_id)->value('shop_name') ?? 'Vendor';
+                                                        @endphp
+                                                        {{ $vendorName }}
+                                                    @else
+                                                        Admin
+                                                    @endif
                                                 </td>
                                                 <td>
                                                     <div class="mt-2 d-flex">
@@ -820,7 +831,7 @@ function createProductRow(productDetails) {
 <div class="modal fade" id="importProductModal" tabindex="-1" aria-labelledby="importProductModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form action="#" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('vendorproduct.import') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header" style="background-color: #17a2b8; color: #fff;">
                     <h5 class="modal-title" id="importProductModalLabel"><i class="fa fa-upload me-2"></i>Import Products</h5>
@@ -835,7 +846,7 @@ function createProductRow(productDetails) {
                     <div class="alert alert-info d-flex align-items-center" role="alert">
                         <i class="fa fa-info-circle me-2" style="font-size: 18px;"></i>
                         <div>
-                            Download the <a href="#" class="alert-link">sample template</a> to see the required format.
+                            Download the <a href="{{ route('vendorproduct.import.template') }}" class="alert-link">sample template</a> to see the required format.
                         </div>
                     </div>
                 </div>

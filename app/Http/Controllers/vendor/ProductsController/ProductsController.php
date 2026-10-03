@@ -33,6 +33,8 @@ use session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManagerStatic as Image;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\ImportProduct;
 
 class ProductsController extends Controller
 {
@@ -1648,6 +1650,69 @@ public function store(Request $request, FlasherInterface $flasher)
 
     }
     /*End*/
+
+    /**
+     * Import products from Excel file
+     */
+    public function import_products(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:10240',
+        ]);
+
+        try {
+            Excel::import(new ImportProduct, $request->file('file')->store('files'));
+            flash()->success('Products imported successfully!');
+        } catch (\Exception $e) {
+            flash()->error('Import failed: ' . $e->getMessage());
+        }
+
+        return redirect()->back();
+    }
+
+    /**
+     * Download sample import template
+     */
+    public function download_import_template()
+    {
+        $headers = [
+            'Product Name',
+            'HSN Code',
+            'Main Category ID',
+            'Category ID',
+            'Sub Category ID',
+            'Description',
+            'Weight',
+            'Color ID',
+            'Size',
+            'Quantity',
+            'Retail Price (MRP)',
+            'Selling Price',
+            'SKU',
+            'Return/Replace',
+            'Return Days',
+            'Low Stock Limit',
+            'GST ID',
+            'Offer ID',
+            'Status (1=Active, 0=Inactive)',
+        ];
+
+        $callback = function() use ($headers) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $headers);
+            // Add a sample row
+            fputcsv($file, [
+                'Sample Product', '1234', '1', '1', '1', 'Sample description', '0.5',
+                '1', 'M', '100', '999', '799', 'SKU-001', 'return', '7', '10', '1', '', '1'
+            ]);
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="product_import_template.csv"',
+        ]);
+    }
 }
 
 
