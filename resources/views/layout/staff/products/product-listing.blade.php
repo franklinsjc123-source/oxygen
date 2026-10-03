@@ -127,30 +127,30 @@
                                         @csrf
                                     </form>
                                 </div>
-                                <div id="toolbar" class="mt-2">
-                                    <div class="d-inline-block">
-                                        <button type="button" class="btn btn-success btn-export-excel me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;">
+                                <div id="toolbar" class="mt-2 mb-2">
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <button type="button" class="btn btn-success btn-sm btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;">
                                             <i class="fa fa-file-excel-o me-1"></i> Export Excel
                                         </button>
                                         <a href="{{ route('staffproducts.crud.index') }}">
-                                            <button type="button" class="btn btn-primary">
+                                            <button type="button" class="btn btn-primary btn-sm">
                                                 <i class="fa fa-plus me-1"></i> Add Product
                                             </button>
                                         </a>
                                     </div>
                                 </div>
                                 
-                                <div id="secondary-toolbar" class="d-block mb-3 mt-3 ms-3">
-                                    <a href="{{ route('staffproduct.export') }}" class="btn btn-success px-2 me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;" data-toggle="tooltip" data-placement="top" title="Report" data-original-title="Report">
+                                <div id="secondary-toolbar" class="d-flex flex-wrap gap-2 mb-3 mt-3">
+                                    <a href="{{ route('staffproduct.export') }}" class="btn btn-success btn-sm px-2" style="background-color: #28a745; border-color: #28a745; color: #fff;" data-toggle="tooltip" data-placement="top" title="Report" data-original-title="Report">
                                         <i class="fa fa-download me-1"></i> Download Report
                                     </a> 
-                                    <button type="button" class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#importProductModal" style="background-color: #17a2b8; border-color: #17a2b8; color: #fff;">
+                                    <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#importProductModal" style="background-color: #17a2b8; border-color: #17a2b8; color: #fff;">
                                         <i class="fa fa-upload me-1"></i> Import Products
                                     </button>
                                     {{-- Commented out to adhere to read-only deletion policy --}}
-                                    {{-- <button class="btn border-warning text-warning delete me-2">Delete</button> --}}
-                                    <button class="btn border-success text-success active me-2">Active</button>
-                                    <button class="btn border-danger text-danger deactive">De-Active</button>
+                                    {{-- <button class="btn btn-sm border-warning text-warning delete">Delete</button> --}}
+                                    <button class="btn btn-sm border-success text-success active">Active</button>
+                                    <button class="btn btn-sm border-danger text-danger deactive">De-Active</button>
                                 </div>
                             
                             <div class="datatable-dashv1-list custom-datatable-overright">
