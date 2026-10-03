@@ -331,7 +331,7 @@
                                     {{-- Review Filter --}}
                                     <div class="filter-section" style="border-bottom: 1px solid #eee; padding: 15px 0;">
                                         <div class="filter-header" onclick="toggleFilter(this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
-                                            <h5 style="font-size: 15px; font-weight: 600; margin: 0; color: #333;">Review / Ratings</h5>
+                                            <h5 style="font-size: 15px; font-weight: 600; margin: 0; color: #333;">Ratings</h5>
                                             <i class="fas fa-chevron-down" style="font-size: 12px; color: #999; transition: transform 0.3s;"></i>
                                         </div>
                                         <div class="filter-body" style="max-height: 0; overflow: hidden; transition: max-height 0.35s ease;">
