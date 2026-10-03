@@ -328,6 +328,34 @@
                                         </div>
                                     </div>
 
+                                    {{-- Review Filter --}}
+                                    <div class="filter-section" style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                                        <div class="filter-header" onclick="toggleFilter(this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                                            <h5 style="font-size: 15px; font-weight: 600; margin: 0; color: #333;">Review / Ratings</h5>
+                                            <i class="fas fa-chevron-down" style="font-size: 12px; color: #999; transition: transform 0.3s;"></i>
+                                        </div>
+                                        <div class="filter-body" style="max-height: 0; overflow: hidden; transition: max-height 0.35s ease;">
+                                            <ul style="list-style: none; padding: 10px 0 0 0; margin: 0;">
+                                                @foreach([5, 4, 3, 2, 1] as $rating)
+                                                <li style="padding: 4px 0;">
+                                                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #555;">
+                                                        <input type="checkbox" name="filter_rating" value="{{ $rating }}" class="filter-checkbox rating-checkbox" style="accent-color: #222; width: 15px; height: 15px;" onchange="$('.rating-checkbox').not(this).prop('checked', false);">
+                                                        <div style="color: #ffb800; font-size: 12px; margin-top: 2px;">
+                                                            @for($i=1; $i<=5; $i++)
+                                                                @if($i <= $rating)
+                                                                    <i class="fas fa-star"></i>
+                                                                @else
+                                                                    <i class="far fa-star"></i>
+                                                                @endif
+                                                            @endfor
+                                                        </div>
+                                                    </label>
+                                                </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </div>
+
                                     {{-- Clear All Filters --}}
                                     <div style="padding: 15px 0; text-align: center;">
                                         <button onclick="clearAllFilters()" style="background: #222; color: #fff; border: none; padding: 8px 25px; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer; letter-spacing: 0.5px; transition: background 0.2s;">Clear All Filters</button>
@@ -468,6 +496,7 @@
                 $('input[name="filter_size[]"]').on('change', function() { getproducts(); });
                 $('input[name="filter_discount"]').on('change', function() { getproducts(); });
                 $('input[name="filter_offer[]"]').on('change', function() { getproducts(); });
+                $('input[name="filter_rating"]').on('change', function() { getproducts(); });
             });
 
             function updateActiveFilters() {
@@ -530,6 +559,16 @@
                     });
                     $container.append($tag);
                 }
+
+                if ($('input[name="filter_rating"]:checked').length > 0) {
+                    var ratingVal = $('input[name="filter_rating"]:checked').val();
+                    var $tag = $('<div class="filter-tag">Rating: ' + ratingVal + ' Stars <span class="remove-tag">×</span></div>');
+                    $tag.on('click', function() {
+                        $('input[name="filter_rating"]').prop('checked', false);
+                        getproducts();
+                    });
+                    $container.append($tag);
+                }
             }
 
             function getproducts() {
@@ -549,6 +588,7 @@
                 $('input[name="filter_offer[]"]:checked').each(function() { checkedOffers.push($(this).val()); });
 
                 var discount = $('input[name="filter_discount"]:checked').val() || '';
+                var rating = $('input[name="filter_rating"]:checked').val() || '';
 
                 var siteurl = "{{ url('/') }}";
                 $.ajax({
@@ -562,7 +602,8 @@
                         color: checkedColors,
                         size: checkedSizes,
                         offer_id: checkedOffers,
-                        discount: discount
+                        discount: discount,
+                        rating: rating
                     },
                     success: function(data) {
                         $('#productslist').empty();
@@ -600,16 +641,16 @@
                                                         ${product.product_name}
                                                     </a>
                                                 </h4>
-                                                <div class="ratings-container" style="margin-bottom: 5px;">
-                                                    <div class="ratings-full">
-                                                        <span class="ratings" style="width: 0%;"></span>
-                                                    </div>
-                                                    <a class="rating-reviews" style="font-size: 1.1rem; color: #0088dd;">(0 Reviews)</a>
-                                                </div>
                                                 <div class="product-pa-wrapper" style="display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; flex-wrap: nowrap;">
                                                     <div class="product-price-home" style="font-family: monospace; font-size: 1.5rem; font-weight: 700; color: #000;"><span style="font-family: Arial, sans-serif;">₹</span>${product.selling_price}</div>
                                                     <div class="product-price-discount" style="text-decoration: line-through; color: #888; font-size: 1.1rem; font-weight: 600;"><span style="font-family: Arial, sans-serif;">₹</span>${product.retail_price}</div>
                                                     <div class="product-offer-percentage" style="color: #27ae60; font-weight: 700; font-size: 1.1rem;">${discount_rounded}% Off</div>
+                                                </div>
+                                                <div class="ratings-container" style="margin-bottom: 5px; margin-top: 5px;">
+                                                    <div class="ratings-full">
+                                                        <span class="ratings" style="width: ${product.avg_rating ? (product.avg_rating / 5) * 100 : 0}%;"></span>
+                                                    </div>
+                                                    <a class="rating-reviews" style="font-size: 1.1rem; color: #0088dd;">(${product.review_count ? product.review_count : 0} Reviews)</a>
                                                 </div>
                                             </div>
                                         </div>

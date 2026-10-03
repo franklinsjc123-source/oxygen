@@ -90,13 +90,6 @@
                  </a>
              </h4>
  
-             <div class="ratings-container" style="margin-bottom: 5px;">
-                 <div class="ratings-full">
-                     <span class="ratings" style="width: {{ $product->rating_percent ?? 0 }}%"></span>
-                 </div>
-                 <a class="rating-reviews" style="font-size: 1.1rem; color: #0088dd;">({{ $product->review_count ?? 0 }} Reviews)</a>
-             </div>
- 
              <div class="product-pa-wrapper" style="display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; flex-wrap: nowrap;">
                  <div class="product-price-home" style="font-family: monospace; font-size: 1.5rem; font-weight: 700; color: #000;">
                     <span style="font-family: Arial, sans-serif;">₹</span>{{ $product->selling_price }}
@@ -117,6 +110,17 @@
                  <div class="product-offer-percentage" style="color: #27ae60; font-weight: 700; font-size: 1.1rem;">
                     {{ $discount_rounded }}% Off
                  </div>
+             </div>
+
+             <div class="ratings-container" style="margin-bottom: 5px; margin-top: 5px;">
+                 @php
+                     $ratingPercent = $product->rating_percent ?? (isset($product->avg_rating) ? ($product->avg_rating / 5) * 100 : 0);
+                     $reviewCount = $product->review_count ?? 0;
+                 @endphp
+                 <div class="ratings-full">
+                     <span class="ratings" style="width: {{ $ratingPercent }}%"></span>
+                 </div>
+                 <a class="rating-reviews" style="font-size: 1.1rem; color: #0088dd;">({{ $reviewCount }} Reviews)</a>
              </div>
             @php
                 $showStockCount = $showStockCount ?? false;

@@ -2076,7 +2076,9 @@ class FrontendController extends Controller
             'o.cashbackvalue as offer_cashbackvalue',
             'o.value as offer_value',
             'o.buyproduct as offer_buyproduct',
-            'o.getamt as offer_getamt'
+            'o.getamt as offer_getamt',
+            DB::raw('(SELECT COALESCE(AVG(star_rating), 0) FROM ratings WHERE ratings.products_id = p.id) as avg_rating'),
+            DB::raw('(SELECT COUNT(id) FROM ratings WHERE ratings.products_id = p.id) as review_count')
         )->get();
 
 
@@ -2125,6 +2127,8 @@ class FrontendController extends Controller
                     'profile_image' => $val->profile_image,
                     'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
                     'offer_text' => $offerText,
+                    'avg_rating' => $val->avg_rating,
+                    'review_count' => $val->review_count,
                 ];
             }
         }
@@ -4054,6 +4058,16 @@ class FrontendController extends Controller
             $productsQuery->whereRaw('ROUND(((pd.retail_price - pd.selling_price) / pd.retail_price) * 10, 0) * 10 >= ?', [$discountVal]);
         }
 
+        if (!empty($request->rating)) {
+            $ratingVal = (int) $request->rating;
+            if ($ratingVal == 5) {
+                $productsQuery->whereRaw('(SELECT COALESCE(AVG(star_rating), 0) FROM ratings WHERE ratings.products_id = p.id) = 5');
+            } else {
+                $productsQuery->whereRaw('(SELECT COALESCE(AVG(star_rating), 0) FROM ratings WHERE ratings.products_id = p.id) >= ?', [$ratingVal])
+                              ->whereRaw('(SELECT COALESCE(AVG(star_rating), 0) FROM ratings WHERE ratings.products_id = p.id) < ?', [$ratingVal + 1]);
+            }
+        }
+
         switch ($orderby) {
             case 'new-collections':
                 $productsQuery->orderByRaw("CASE WHEN p.collection = 'New Arrivals' THEN 0 ELSE 1 END ASC")
@@ -4102,7 +4116,9 @@ class FrontendController extends Controller
             'o.cashbackvalue as offer_cashbackvalue',
             'o.value as offer_value',
             'o.buyproduct as offer_buyproduct',
-            'o.getamt as offer_getamt'
+            'o.getamt as offer_getamt',
+            DB::raw('(SELECT COALESCE(AVG(star_rating), 0) FROM ratings WHERE ratings.products_id = p.id) as avg_rating'),
+            DB::raw('(SELECT COUNT(id) FROM ratings WHERE ratings.products_id = p.id) as review_count')
         )->get();
 
         $resultArr = [];
@@ -4160,6 +4176,8 @@ class FrontendController extends Controller
                     'discount' => $discount_percentage,
                     'offer_image' => $this->resolveOfferImage($val->offer_logo, $val->offer_type, $val->discount_type ?? null),
                     'offer_text' => $offerText,
+                    'avg_rating' => $val->avg_rating,
+                    'review_count' => $val->review_count,
                 ];
             }
         }
