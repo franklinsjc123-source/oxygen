@@ -34,15 +34,42 @@
                         <div class="container">
                             <div class="shop-content row gutter-lg mb-10">
                                 @php
-                                    $colours = \Illuminate\Support\Facades\DB::table('products_details')
-                                            ->select('color', \Illuminate\Support\Facades\DB::raw('COUNT(products_id) as count'))
-                                            ->whereNotNull('color')
-                                            ->groupBy('color')
+                                    $productIds = collect($prouctsList)->pluck('id')->toArray();
+
+                                    $allDetails = \Illuminate\Support\Facades\DB::table('products_details')
+                                            ->whereIn('products_id', $productIds)
                                             ->get();
 
-                                    $sizes = \Illuminate\Support\Facades\DB::table('products_details')
-                                            ->whereNotNull('size')
-                                            ->pluck('size')->unique()->toArray();
+                                    $coloursArray = [];
+                                    $sizesArray = [];
+                                    foreach($allDetails as $detail) {
+                                        $c = $detail->color;
+                                        if(!$c) {
+                                            if($detail->attributename1 == 'Color') $c = $detail->attributevalue1;
+                                            elseif($detail->attributename2 == 'Color') $c = $detail->attributevalue2;
+                                            elseif($detail->attributename3 == 'Color') $c = $detail->attributevalue3;
+                                        }
+                                        if($c && $c != '') {
+                                            if(!isset($coloursArray[$c])) $coloursArray[$c] = [];
+                                            $coloursArray[$c][] = $detail->products_id;
+                                        }
+
+                                        $s = $detail->size;
+                                        if(!$s) {
+                                            if(str_contains(strtolower($detail->attributename1 ?? ''), 'size')) $s = $detail->attributevalue1;
+                                            elseif(str_contains(strtolower($detail->attributename2 ?? ''), 'size')) $s = $detail->attributevalue2;
+                                            elseif(str_contains(strtolower($detail->attributename3 ?? ''), 'size')) $s = $detail->attributevalue3;
+                                        }
+                                        if($s && $s != '' && strtoupper($s) != 'NA') {
+                                            $sizesArray[] = $s;
+                                        }
+                                    }
+
+                                    $colours = [];
+                                    foreach($coloursArray as $c => $pIds) {
+                                        $colours[] = (object)['color' => $c, 'count' => count(array_unique($pIds))];
+                                    }
+                                    $sizes = array_unique($sizesArray);
 
                                     $offerTypes = \App\Models\Master\Offers\Offers::all();
                                     $offer = \App\Models\Master\Offers\Offers::all();
@@ -80,10 +107,41 @@
                                 </form>
                             </div>
 
-                              <div class="product-wrapper row cols-md-6 cols-sm-2 cols-2"  id="productslist">
+                              <div class="product-wrapper row cols-xl-5 cols-lg-5 cols-md-4 cols-sm-3 cols-2"  id="productslist">
                                  @if(count($prouctsList) > 0)
-                                     @foreach($prouctsList as $product)
-                                         @include('frontend/product-card', ['product' => $product, 'showStockCount' => false])
+                                      @foreach($prouctsList as $product)
+                                          @php
+                                              $p_id = is_array($product) ? $product['id'] : $product->id;
+                                              $details = \Illuminate\Support\Facades\DB::table('products_details')->where('products_id', $p_id)->get();
+                                              $c_list = []; $s_list = [];
+                                              foreach($details as $d) {
+                                                  $c = $d->color;
+                                                  if(!$c) {
+                                                      if($d->attributename1 == 'Color') $c = $d->attributevalue1;
+                                                      elseif($d->attributename2 == 'Color') $c = $d->attributevalue2;
+                                                      elseif($d->attributename3 == 'Color') $c = $d->attributevalue3;
+                                                  }
+                                                  if($c && $c != '') $c_list[] = $c;
+
+                                                  $s = $d->size;
+                                                  if(!$s) {
+                                                      if(str_contains(strtolower($d->attributename1 ?? ''), 'size')) $s = $d->attributevalue1;
+                                                      elseif(str_contains(strtolower($d->attributename2 ?? ''), 'size')) $s = $d->attributevalue2;
+                                                      elseif(str_contains(strtolower($d->attributename3 ?? ''), 'size')) $s = $d->attributevalue3;
+                                                  }
+                                                  if($s && $s != '' && strtoupper($s) != 'NA') $s_list[] = $s;
+                                              }
+                                              $p_colors = implode(',', array_unique($c_list));
+                                              $p_sizes = implode(',', array_unique($s_list));
+                                              $p_price = collect($product)->get('selling_price') ?? 0;
+                                              $p_rating = collect($product)->get('avg_rating') ?? (collect($product)->get('rating_percent') ? collect($product)->get('rating_percent') / 20 : 0);
+                                          @endphp
+                                          <span class="product-filter-data" style="display:none;" 
+                                               data-price="{{ (float)$p_price }}" 
+                                               data-colors="{{ strtolower($p_colors) }}"
+                                               data-sizes="{{ strtolower($p_sizes) }}"
+                                               data-rating="{{ (float)$p_rating }}"></span>
+                                          @include('frontend/product-card', ['product' => $product, 'showStockCount' => false])
                                      @endforeach
                                   @endif
                            

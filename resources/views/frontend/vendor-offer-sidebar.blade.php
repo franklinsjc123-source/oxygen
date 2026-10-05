@@ -141,26 +141,6 @@
                                         </div>
                                     </div>
 
-                                    {{-- Discount Filter --}}
-                                    <div class="filter-section" style="border-bottom: 1px solid #eee; padding: 15px 0;">
-                                        <div class="filter-header" onclick="toggleFilter(this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
-                                            <h5 style="font-size: 15px; font-weight: 600; margin: 0; color: #333;">Discount</h5>
-                                            <i class="fas fa-chevron-down" style="font-size: 12px; color: #999; transition: transform 0.3s;"></i>
-                                        </div>
-                                        <div class="filter-body" style="max-height: 0; overflow: hidden; transition: max-height 0.35s ease;">
-                                            <ul style="list-style: none; padding: 10px 0 0 0; margin: 0;">
-                                                @foreach ([10, 20, 30, 40, 50, 60, 70] as $disc)
-                                                    <li style="padding: 4px 0;">
-                                                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #555;">
-                                                            <input type="checkbox" name="filter_discount[]" value="{{ $disc }}" class="filter-checkbox" style="accent-color: #222; width: 15px; height: 15px;">
-                                                            {{ $disc }}% and above
-                                                        </label>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    </div>
-
                                     {{-- Clear All Filters --}}
                                     <div style="padding: 15px 0; text-align: center;">
                                         <button onclick="clearAllFilters()" style="background: #222; color: #fff; border: none; padding: 8px 25px; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer; letter-spacing: 0.5px; transition: background 0.2s;">Clear All Filters</button>
@@ -198,7 +178,7 @@
     });
 
     function clearAllFilters() {
-        document.querySelectorAll('.filter-checkbox, .filter-radio, input[name="colors[]"]').forEach(function(el) {
+        document.querySelectorAll('.filter-checkbox, .filter-radio, input[name="colors[]"], input[name="filter_rating"]').forEach(function(el) {
             el.checked = false;
         });
         document.querySelectorAll('input[name="filter_size[]"]').forEach(function(cb) {
@@ -247,4 +227,49 @@
         maxSlider.addEventListener("input", updateRange);
         updateRange();
     }
+</script>
+<script>
+    function getproducts() {
+        var minPrice = document.getElementById('minPrice') ? parseInt(document.getElementById('minPrice').value) : 0;
+        var maxPrice = document.getElementById('maxPrice') ? parseInt(document.getElementById('maxPrice').value) : 5000;
+        
+        var selectedColors = Array.from(document.querySelectorAll('input[name="colors[]"]:checked')).map(el => el.value.toLowerCase());
+        var selectedSizes = Array.from(document.querySelectorAll('input[name="filter_size[]"]:checked')).map(el => el.value.toLowerCase());
+        
+        var selectedRating = document.querySelector('input[name="filter_rating"]:checked') ? parseInt(document.querySelector('input[name="filter_rating"]:checked').value) : 0;
+        
+        var products = document.querySelectorAll('.product-wrap');
+        products.forEach(function(product) {
+            var dataSpan = product.previousElementSibling;
+            if(!dataSpan || !dataSpan.classList.contains('product-filter-data')) return;
+
+            var price = parseFloat(dataSpan.getAttribute('data-price') || 0);
+            var rating = parseFloat(dataSpan.getAttribute('data-rating') || 0);
+            var colorsAttr = dataSpan.getAttribute('data-colors') || '';
+            var sizesAttr = dataSpan.getAttribute('data-sizes') || '';
+            
+            var colors = colorsAttr ? colorsAttr.split(',') : [];
+            var sizes = sizesAttr ? sizesAttr.split(',') : [];
+            
+            var priceMatch = price >= minPrice && price <= maxPrice;
+            var colorMatch = selectedColors.length === 0 || selectedColors.some(c => colors.includes(c));
+            var sizeMatch = selectedSizes.length === 0 || selectedSizes.some(s => sizes.includes(s));
+            var ratingMatch = rating >= selectedRating;
+            
+            if (priceMatch && colorMatch && sizeMatch && ratingMatch) {
+                product.style.display = 'block';
+            } else {
+                product.style.display = 'none';
+            }
+        });
+    }
+
+    if(document.getElementById('minPrice')) {
+        document.getElementById('minPrice').addEventListener("change", getproducts);
+        document.getElementById('maxPrice').addEventListener("change", getproducts);
+    }
+
+    document.querySelectorAll('input[name="colors[]"], input[name="filter_size[]"], input[name="filter_rating"]').forEach(function(el) {
+        el.addEventListener("change", getproducts);
+    });
 </script>
