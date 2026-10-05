@@ -303,7 +303,7 @@
 
        <?php  
            if(session('customer_id')){ 
-               $customerName = optional(\App\Models\Ecom_Customer_info::where('customer_id', Session::get('customer_id'))->first())->customer_firstname;
+               $customerName = optional(\App\Models\Ecom_Customer_info::where('customer_id', session('customer_id'))->first())->customer_firstname;
                $displayName = $customerName ? $customerName : 'My Account';
        ?>
        <a href="{{ route('myAccount') }}" class="sticky-link {{ request()->is('my-account') || request()->is('my-account/*') || request()->is('customer/*') ? 'active' : '' }}">
