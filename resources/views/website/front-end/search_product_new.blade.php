@@ -301,7 +301,7 @@
                                                 @foreach ([10, 20, 30, 40, 50, 60, 70] as $disc)
                                                     <li style="padding: 4px 0;">
                                                         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #555;">
-                                                            <input type="radio" name="filter_discount" value="{{ $disc }}" class="filter-radio" style="accent-color: #222; width: 15px; height: 15px;">
+                                                            <input type="checkbox" name="filter_discount[]" value="{{ $disc }}" class="filter-checkbox" style="accent-color: #222; width: 15px; height: 15px;">
                                                             {{ $disc }}% and above
                                                         </label>
                                                     </li>
@@ -496,7 +496,12 @@
                 $('#orderby').change(function() { getproducts(); });
                 $('.price-filter').change(function() { getproducts(); });
                 $('input[name="filter_size[]"]').on('change', function() { getproducts(); });
-                $('input[name="filter_discount"]').on('change', function() { getproducts(); });
+                $('input[name="filter_discount[]"]').on('change', function() {
+                    if($(this).is(':checked')) {
+                        $('input[name="filter_discount[]"]').not(this).prop('checked', false);
+                    }
+                    getproducts(); 
+                });
                 $('input[name="filter_offer[]"]').on('change', function() { getproducts(); });
                 $('input[name="filter_rating"]').on('change', function() { getproducts(); });
             });
@@ -544,10 +549,10 @@
                     $container.append($tag);
                 }
 
-                if ($('input[name="filter_discount"]:checked').length > 0) {
+                if ($('input[name="filter_discount[]"]:checked').length > 0) {
                     var $tag = $('<div class="filter-tag">Discount <span class="remove-tag">×</span></div>');
                     $tag.on('click', function() {
-                        $('input[name="filter_discount"]').prop('checked', false);
+                        $('input[name="filter_discount[]"]').prop('checked', false);
                         getproducts();
                     });
                     $container.append($tag);
@@ -589,7 +594,10 @@
                 var checkedOffers = [];
                 $('input[name="filter_offer[]"]:checked').each(function() { checkedOffers.push($(this).val()); });
 
-                var discount = $('input[name="filter_discount"]:checked').val() || '';
+                var checkedDiscounts = [];
+                $('input[name="filter_discount[]"]:checked').each(function() { checkedDiscounts.push($(this).val()); });
+                var discount = checkedDiscounts.length > 0 ? checkedDiscounts : '';
+
                 var rating = $('input[name="filter_rating"]:checked').val() || '';
 
                 var siteurl = "{{ url('/') }}";

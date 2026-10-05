@@ -301,10 +301,14 @@
            <p>Category</p>
        </a>
 
-       <?php  if(session('customer_id')){ ?>
+       <?php  
+           if(session('customer_id')){ 
+               $customerName = optional(\App\Models\Ecom_Customer_info::where('customer_id', Session::get('customer_id'))->first())->customer_firstname;
+               $displayName = $customerName ? $customerName : 'My Account';
+       ?>
        <a href="{{ route('myAccount') }}" class="sticky-link {{ request()->is('my-account') || request()->is('my-account/*') || request()->is('customer/*') ? 'active' : '' }}">
            <i class="w-icon-account"></i>
-           <p>My Account</p>
+           <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 65px; margin: 0 auto;">{{ $displayName }}</p>
        </a>
        <?php  }else{ ?>
        <a onclick="showLoginPopup()" class="sticky-link">

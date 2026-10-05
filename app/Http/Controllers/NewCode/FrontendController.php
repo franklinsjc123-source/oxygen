@@ -4054,7 +4054,11 @@ class FrontendController extends Controller
         }
 
         if (!empty($request->discount)) {
-            $discountVal = (int) $request->discount;
+            if (is_array($request->discount)) {
+                $discountVal = min(array_map('intval', $request->discount));
+            } else {
+                $discountVal = (int) $request->discount;
+            }
             $productsQuery->whereRaw('ROUND(((pd.retail_price - pd.selling_price) / pd.retail_price) * 10, 0) * 10 >= ?', [$discountVal]);
         }
 
