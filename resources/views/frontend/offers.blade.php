@@ -175,23 +175,23 @@ header.header {
 /* Responsive screen size rules */
 @media (min-width: 992px) {
     .offers-sidebar {
-        width: 320px;
-        min-width: 320px;
-        max-width: 320px;
+        width: 260px;
+        min-width: 260px;
+        max-width: 260px;
         max-height: calc(100vh - 110px);
         padding-right: 15px;
     }
     .offers-sidebar-inner {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 14px 8px;
+        gap: 10px 6px;
     }
     .category-media {
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
     }
     .category-name {
-        font-size: 11px;
+        font-size: 10px;
     }
     .offer-cards-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -201,23 +201,23 @@ header.header {
 
 @media (min-width: 768px) and (max-width: 991px) {
     .offers-sidebar {
-        width: 220px;
-        min-width: 220px;
-        max-width: 220px;
+        width: 180px;
+        min-width: 180px;
+        max-width: 180px;
         max-height: calc(100vh - 100px);
         padding-right: 10px;
     }
     .offers-sidebar-inner {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 12px 6px;
+        gap: 10px 4px;
     }
     .category-media {
-        width: 52px;
-        height: 52px;
+        width: 44px;
+        height: 44px;
     }
     .category-name {
-        font-size: 10px;
+        font-size: 9px;
     }
     .offer-cards-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -284,8 +284,8 @@ header.header {
 }
 
 .store-card-left {
-    width: 48%;
-    min-width: 48%;
+    width: 35%;
+    min-width: 35%;
     background: #25262a;
     color: #ffffff;
     padding: 12px 10px;
@@ -344,8 +344,8 @@ header.header {
 }
 
 .store-card-right {
-    width: 52%;
-    min-width: 52%;
+    width: 65%;
+    min-width: 65%;
     position: relative;
     overflow: hidden;
     background: #1e1f23;
