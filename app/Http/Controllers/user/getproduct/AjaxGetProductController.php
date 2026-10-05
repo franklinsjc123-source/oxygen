@@ -281,8 +281,8 @@ class AjaxGetProductController extends Controller
 
 	public function order_tracking($orders_id)
 	{
-		if (!session('username') && !session('userId')) {
-			return redirect()->to('Cuslogin')->with('error', 'Please login to track your order.');
+		if (!session('username') && !session('userId') && !session('customer_id') && !session('customerId')) {
+			return redirect()->route('track_order_page')->with('error', 'Please login to track your order.');
 		}
 		
 		$order_info = Ecom_Orders::where('order_id',$orders_id)->first();

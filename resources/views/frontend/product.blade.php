@@ -571,7 +571,7 @@
                                                   <i class="fas fa-check-circle" id="direct_pincode_status_icon" style="color: {{ session()->has('pincode') ? '#2ecc71' : '#ccc' }}; font-size: 16px;"></i>
                                               </div>
                                           </div>
-                                          <button type="button" onclick="checkDirectPincode()" id="direct_pincode_btn" style="background: #ff3f6c; color: #fff; border: none; border-radius: 4px; padding: 0 20px; font-size: 14px; font-weight: 700; cursor: pointer; height: 40px; transition: background 0.3s;">Change</button>
+                                          <button type="button" onclick="checkDirectPincode()" id="direct_pincode_btn" style="background: #0088dd; color: #fff; border: none; border-radius: 4px; padding: 0 20px; font-size: 14px; font-weight: 700; cursor: pointer; height: 40px; transition: background 0.3s;">Change</button>
                                       </div>
                                       <div id="direct_pincode_response" style="margin-top: -10px; margin-bottom: 15px; font-size: 13px; font-weight: 600;"></div>
 
