@@ -24,7 +24,7 @@
 
             /* Reduce title size */
             .main-footer .widget-title {
-                font-size: 11px;
+                font-size: 9px;
                 margin-bottom: 6px;
             }
 
@@ -285,20 +285,20 @@
     <!-- Start of Sticky Footer -->
     <div class="sticky-footer sticky-content fix-bottom">
        <a href="{{ url('home') }}" class="sticky-link {{ request()->is('/') || request()->is('home') ? 'active' : '' }}">
-           <i class="w-icon-home"></i>
-           <p>Home</p>
+           <i class="w-icon-home" style="margin-bottom: 5px;"></i>
+           <p style="font-size: 9px; margin: 4px 0 0 0; line-height: 1;">Home</p>
        </a>
        <a href="{{ url('shops') }}" class="sticky-link {{ request()->is('shops') || request()->is('shops/*') ? 'active' : '' }}">
-           <i class="w-icon-vendor-store"></i>
-           <p>Shops</p>
+           <i class="w-icon-vendor-store" style="margin-bottom: 5px;"></i>
+           <p style="font-size: 9px; margin: 4px 0 0 0; line-height: 1;">Shops</p>
        </a>
        <a href="{{ url('offers') }}" class="sticky-link {{ request()->is('offers') || request()->is('offers/*') ? 'active' : '' }}">
-           <i class="w-icon-sale"></i>
-           <p>Offer</p>
+           <i class="w-icon-sale" style="margin-bottom: 5px;"></i>
+           <p style="font-size: 9px; margin: 4px 0 0 0; line-height: 1;">Offer</p>
        </a>
        <a href="{{ url('categories') }}" class="sticky-link {{ request()->is('categories') ? 'active' : '' }}">
-           <i class="w-icon-grid"></i>
-           <p>Category</p>
+           <i class="w-icon-grid" style="margin-bottom: 5px;"></i>
+           <p style="font-size: 9px; margin: 4px 0 0 0; line-height: 1;">Category</p>
        </a>
 
        <?php  
@@ -307,13 +307,13 @@
                $displayName = $customerName ? $customerName : 'My Account';
        ?>
        <a href="{{ route('myAccount') }}" class="sticky-link {{ request()->is('my-account') || request()->is('my-account/*') || request()->is('customer/*') ? 'active' : '' }}">
-           <i class="w-icon-account"></i>
-           <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 65px; margin: 0 auto;">{{ $displayName }}</p>
+           <i class="w-icon-account" style="margin-bottom: 5px;"></i>
+           <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 65px; margin: 4px auto 0; font-size: 9px; line-height: 1;">{{ $displayName }}</p>
        </a>
        <?php  }else{ ?>
        <a onclick="showLoginPopup()" class="sticky-link">
-           <i class="w-icon-account"></i>
-           <p>Login</p>
+           <i class="w-icon-account" style="margin-bottom: 5px;"></i>
+           <p style="font-size: 9px; margin: 4px 0 0 0; line-height: 1;">Login</p>
        </a>
        <?php } ?>
     </div>
