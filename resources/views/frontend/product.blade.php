@@ -678,7 +678,7 @@
                                  <div class="row mb-4">
                                      <div class="col-md-12 mb-5">
                                          <h4 class="title tab-pane-title font-weight-bold mb-2">Product details</h4>
-                                         <p class="mb-4">{{ $getProduct->description }}</p>
+                                         <div class="mb-4">{!! $getProduct->description !!}</div>
                                      </div>
                                     
                                  </div>
