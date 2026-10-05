@@ -306,7 +306,7 @@
                $customerName = optional(\App\Models\Ecom_Customer_info::where('customer_id', session('customer_id'))->first())->customer_firstname;
                $displayName = $customerName ? $customerName : 'My Account';
        ?>
-       <a href="{{ route('myAccount') }}" class="sticky-link {{ request()->is('my-account') || request()->is('my-account/*') || request()->is('customer/*') ? 'active' : '' }}">
+       <a href="{{ route('myAccount') }}" class="sticky-link {{ request()->is('myAccount') || request()->is('myAccount/*') || request()->is('customer/*') ? 'active' : '' }}">
            <i class="w-icon-account" style="margin-bottom: 5px;"></i>
            <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 65px; margin: 4px auto 0; font-size: 9px; line-height: 1;">{{ $displayName }}</p>
        </a>
