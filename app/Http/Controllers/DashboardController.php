@@ -1584,231 +1584,11 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // --- NEW WIDGETS DATA FOR SCREENSHOT 3 ---
-        // 1. Category/Offer Mix Chart (Subcategory stats per parent tab)
-        $subcategoryStats = [
-            'All' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
-            'Men' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
-            'Women' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
-            'Kids' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
-            'Living' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []]
-        ];
-
-        if ($vendorDetails && $vendorDetails->sub_category_ids) {
-            $subCategoryIds = array_filter(explode(',', $vendorDetails->sub_category_ids));
-            if (!empty($subCategoryIds)) {
-                $assignedSubCategories = DB::table('category_sub')
-                    ->join('category_main', 'category_sub.category_main_id', '=', 'category_main.id')
-                    ->whereIn('category_sub.id', $subCategoryIds)
-                    ->select('category_sub.id', 'category_sub.category_sub_name', 'category_main.category_main_name')
-                    ->get();
-
-                $realStatsBySubId = [];
-                $realStatsData = DB::table('products')
-                    ->where('products.login_id', $id)
-                    ->where('products.logintype', 'Vendor')
-                    ->where('products.flag', 1)
-                    ->whereIn('products.category_sub', $subCategoryIds)
-                    ->leftJoin('products_details', 'products_details.products_id', '=', 'products.id')
-                    ->leftJoin('ecom_order_product', 'ecom_order_product.product_id', '=', 'products_details.id')
-                    ->leftJoin('ecom_order_info', 'ecom_order_info.order_id', '=', 'ecom_order_product.order_id')
-                    ->select(
-                        'products.category_sub as sub_id',
-                        DB::raw('COUNT(DISTINCT products.id) as product_count'),
-                        DB::raw('COALESCE(SUM(ecom_order_product.product_quantity), 0) as sales_count'),
-                        DB::raw('COUNT(DISTINCT ecom_order_info.customer_id) as customer_count')
-                    )
-                    ->groupBy('products.category_sub')
-                    ->get();
-
-                foreach ($realStatsData as $stat) {
-                    $realStatsBySubId[$stat->sub_id] = $stat;
-                }
-
-                $groupedSubCategories = [
-                    'All' => [],
-                    'Men' => [],
-                    'Women' => [],
-                    'Kids' => [],
-                    'Living' => []
-                ];
-
-                foreach ($assignedSubCategories as $sub) {
-                    $subId = $sub->id;
-                    $subName = $sub->category_sub_name;
-                    $catMain = $sub->category_main_name;
-
-                    $tabKey = 'Living';
-                    if (stripos($catMain, 'men') !== false && stripos($catMain, 'women') === false) {
-                        $tabKey = 'Men';
-                    } elseif (stripos($catMain, 'women') !== false) {
-                        $tabKey = 'Women';
-                    } elseif (stripos($catMain, 'kids') !== false) {
-                        $tabKey = 'Kids';
-                    }
-
-                    $prodCount = 0;
-                    $salesCount = 0;
-                    $custCount = 0;
-
-                    if (isset($realStatsBySubId[$subId])) {
-                        $prodCount = $realStatsBySubId[$subId]->product_count;
-                        $salesCount = $realStatsBySubId[$subId]->sales_count;
-                        $custCount = $realStatsBySubId[$subId]->customer_count;
-                    }
-
-                    $salesVal = ($orderCount > 0 && $prodCount > 0) ? ($salesCount * 1000 ?: 500) : 0;
-                    $custVal = ($orderCount > 0 && $prodCount > 0) ? ($custCount ?: 1) : 0;
-
-                    $item = [
-                        'label' => $subName,
-                        'products' => $prodCount,
-                        'sales' => $salesVal,
-                        'customers' => $custVal,
-                        'sales_count' => $salesCount
-                    ];
-
-                    $groupedSubCategories[$tabKey][] = $item;
-                    $groupedSubCategories['All'][] = $item;
-                }
-
-                // Sort desc by sales_count and slice top 8, sum the rest into 'Others'
-                foreach ($groupedSubCategories as $tk => $items) {
-                    usort($items, function($a, $b) {
-                        return $b['sales_count'] <=> $a['sales_count'];
-                    });
-
-                    $top8 = array_slice($items, 0, 8);
-                    $others = array_slice($items, 8);
-
-                    foreach ($top8 as $item) {
-                        $subcategoryStats[$tk]['labels'][] = $item['label'];
-                        $subcategoryStats[$tk]['products'][] = $item['products'];
-                        $subcategoryStats[$tk]['sales'][] = $item['sales'];
-                        $subcategoryStats[$tk]['customers'][] = $item['customers'];
-                    }
-
-                    if (!empty($others)) {
-                        $otherProducts = 0;
-                        $otherSales = 0.0;
-                        $otherCustomers = 0;
-                        foreach ($others as $item) {
-                            $otherProducts += $item['products'];
-                            $otherSales += $item['sales'];
-                            $otherCustomers += $item['customers'];
-                        }
-                        $subcategoryStats[$tk]['labels'][] = 'Others';
-                        $subcategoryStats[$tk]['products'][] = $otherProducts;
-                        $subcategoryStats[$tk]['sales'][] = $otherSales;
-                        $subcategoryStats[$tk]['customers'][] = $otherCustomers;
-                    }
-                }
-            }
-        }
-
-        // 1b. Offer Stats (Actual offers created by this vendor, grouped by parent category tabs)
-        $offerStats = [
-            'All' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
-            'Men' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
-            'Women' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
-            'Kids' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
-            'Living' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []]
-        ];
-
-        $dbOffersList = DB::table('master_offers')
-            ->leftJoin('category_main', 'category_main.id', '=', 'master_offers.catagory_id')
-            ->where('master_offers.created_by_id', $id)
-            ->select('master_offers.*', 'category_main.category_main_name')
-            ->get();
-
-        if ($dbOffersList->isNotEmpty()) {
-            $groupedOffers = [
-                'All' => [],
-                'Men' => [],
-                'Women' => [],
-                'Kids' => [],
-                'Living' => []
-            ];
-
-            foreach ($dbOffersList as $offer) {
-                // Get products with this offer
-                $offerProdStats = DB::table('products')
-                    ->join('products_details', 'products_details.products_id', '=', 'products.id')
-                    ->leftJoin('ecom_order_product', 'ecom_order_product.product_id', '=', 'products_details.id')
-                    ->leftJoin('ecom_order_info', 'ecom_order_info.order_id', '=', 'ecom_order_product.order_id')
-                    ->where('products.login_id', $id)
-                    ->where('products.logintype', 'Vendor')
-                    ->where('products.flag', 1)
-                    ->where('products.offers', $offer->id)
-                    ->select(
-                        DB::raw('COUNT(DISTINCT products.id) as product_count'),
-                        DB::raw('COALESCE(SUM(ecom_order_product.product_quantity), 0) as sales_count'),
-                        DB::raw('COUNT(DISTINCT ecom_order_info.customer_id) as customer_count')
-                    )
-                    ->first();
-
-                $cat = $offer->category_main_name;
-                $tabKey = 'Living';
-                if ($cat) {
-                    if (stripos($cat, 'men') !== false && stripos($cat, 'women') === false) {
-                        $tabKey = 'Men';
-                    } elseif (stripos($cat, 'women') !== false) {
-                        $tabKey = 'Women';
-                    } elseif (stripos($cat, 'kids') !== false) {
-                        $tabKey = 'Kids';
-                    }
-                }
-
-                $salesVal = $orderCount > 0 ? (float) ($offerProdStats->sales_count * 1000 ?: 500) : 0.0;
-                $prodCount = (int) $offerProdStats->product_count;
-                $custCount = (int) $offerProdStats->customer_count;
-                $salesCount = (int) $offerProdStats->sales_count;
-
-                $item = [
-                    'label' => $offer->title,
-                    'products' => $prodCount,
-                    'sales' => $salesVal,
-                    'customers' => $custCount,
-                    'sales_count' => $salesCount
-                ];
-
-                $groupedOffers[$tabKey][] = $item;
-                $groupedOffers['All'][] = $item;
-            }
-
-            // Now sort desc by sales_count and take top 8, sum the rest into 'Others'
-            foreach ($groupedOffers as $tk => $items) {
-                usort($items, function($a, $b) {
-                    return $b['sales_count'] <=> $a['sales_count'];
-                });
-
-                $top8 = array_slice($items, 0, 8);
-                $others = array_slice($items, 8);
-
-                foreach ($top8 as $item) {
-                    $offerStats[$tk]['labels'][] = $item['label'];
-                    $offerStats[$tk]['products'][] = $item['products'];
-                    $offerStats[$tk]['sales'][] = $item['sales'];
-                    $offerStats[$tk]['customers'][] = $item['customers'];
-                }
-
-                if (!empty($others)) {
-                    $otherProducts = 0;
-                    $otherSales = 0.0;
-                    $otherCustomers = 0;
-                    foreach ($others as $item) {
-                        $otherProducts += $item['products'];
-                        $otherSales += $item['sales'];
-                        $otherCustomers += $item['customers'];
-                    }
-                    $offerStats[$tk]['labels'][] = 'Others';
-                    $offerStats[$tk]['products'][] = $otherProducts;
-                    $offerStats[$tk]['sales'][] = $otherSales;
-                    $offerStats[$tk]['customers'][] = $otherCustomers;
-                }
-            }
-        }
-
+                // --- NEW WIDGETS DATA FOR SCREENSHOT 3 ---
+        $catOfferStats = $this->getVendorCatAndOfferStats($id, $startDate, $endDate, $orderCount);
+        $subcategoryStats = $catOfferStats['subcategoryStats'];
+        $offerStats = $catOfferStats['offerStats'];
+        
         // 2. Doughnut Order Status Chart
         $dbOrderStatuses = DB::table('ecom_order_product')
             ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
@@ -2306,6 +2086,10 @@ class DashboardController extends Controller
             $filterText = \Carbon\Carbon::parse($startDate)->format('M d, Y') . ' to ' . \Carbon\Carbon::parse($endDate)->format('M d, Y');
         }
 
+                $catOfferStats = $this->getVendorCatAndOfferStats($id, $startDate, $endDate, $orderCount);
+        $subcategoryStats = $catOfferStats['subcategoryStats'];
+        $offerStats = $catOfferStats['offerStats'];
+
         return response()->json([
             'success' => true,
             'period' => $period,
@@ -2338,6 +2122,8 @@ class DashboardController extends Controller
             // Gauge
             'returningCustomersCount' => $returningCustomersCount,
             'returningCustomersPercent' => $returningCustomersPercent,
+                    'subcategoryStats' => $subcategoryStats,
+            'offerStats' => $offerStats,
         ]);
     }
 
@@ -3307,6 +3093,246 @@ class DashboardController extends Controller
         }
 
         return response()->json(['success' => false, 'message' => 'Failed to update status.'], 500);
+    }
+
+
+    private function getVendorCatAndOfferStats($id, $startDate, $endDate, $orderCount) {
+        $vendorDetails = DB::table('vendor_details')->where('id', $id)->first();
+// --- NEW WIDGETS DATA FOR SCREENSHOT 3 ---
+        // 1. Category/Offer Mix Chart (Subcategory stats per parent tab)
+        $subcategoryStats = [
+            'All' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
+            'Men' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
+            'Women' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
+            'Kids' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
+            'Living' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []]
+        ];
+
+        if ($vendorDetails && $vendorDetails->sub_category_ids) {
+            $subCategoryIds = array_filter(explode(',', $vendorDetails->sub_category_ids));
+            if (!empty($subCategoryIds)) {
+                $assignedSubCategories = DB::table('category_sub')
+                    ->join('category_main', 'category_sub.category_main_id', '=', 'category_main.id')
+                    ->whereIn('category_sub.id', $subCategoryIds)
+                    ->select('category_sub.id', 'category_sub.category_sub_name', 'category_main.category_main_name')
+                    ->get();
+
+                $realStatsBySubId = [];
+                $realStatsDataQuery = DB::table('products')
+                    ->where('products.login_id', $id)
+                    ->where('products.logintype', 'Vendor')
+                    ->where('products.flag', 1)
+                    ->whereIn('products.category_sub', $subCategoryIds)
+                    ->leftJoin('products_details', 'products_details.products_id', '=', 'products.id')
+                    ->leftJoin('ecom_order_product', function($join) use ($startDate, $endDate) {
+                        $join->on('ecom_order_product.product_id', '=', 'products_details.id');
+                        if ($startDate && $endDate) {
+                            $join->whereBetween('ecom_order_product.created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+                        }
+                    })
+                    ->leftJoin('ecom_order_info', 'ecom_order_info.order_id', '=', 'ecom_order_product.order_id')
+                    ->select(
+                        'products.category_sub as sub_id',
+                        DB::raw('COUNT(DISTINCT products.id) as product_count'),
+                        DB::raw('COALESCE(SUM(ecom_order_product.product_quantity), 0) as sales_count'),
+                        DB::raw('COUNT(DISTINCT ecom_order_info.customer_id) as customer_count'),
+                        DB::raw('COALESCE(SUM(ecom_order_product.total_price), 0) as total_revenue')
+                    )
+                    ->groupBy('products.category_sub');
+                
+                $realStatsData = $realStatsDataQuery->get();
+
+                foreach ($realStatsData as $stat) {
+                    $realStatsBySubId[$stat->sub_id] = $stat;
+                }
+
+                $groupedSubCategories = [
+                    'All' => [],
+                    'Men' => [],
+                    'Women' => [],
+                    'Kids' => [],
+                    'Living' => []
+                ];
+
+                foreach ($assignedSubCategories as $sub) {
+                    $subId = $sub->id;
+                    $subName = $sub->category_sub_name;
+                    $catMain = $sub->category_main_name;
+
+                    $tabKey = 'Living';
+                    if (stripos($catMain, 'men') !== false && stripos($catMain, 'women') === false) {
+                        $tabKey = 'Men';
+                    } elseif (stripos($catMain, 'women') !== false) {
+                        $tabKey = 'Women';
+                    } elseif (stripos($catMain, 'kids') !== false) {
+                        $tabKey = 'Kids';
+                    }
+
+                    $prodCount = 0;
+                    $salesCount = 0;
+                    $custCount = 0;
+
+                    $salesVal = 0;
+                    if (isset($realStatsBySubId[$subId])) {
+                        $prodCount = $realStatsBySubId[$subId]->product_count;
+                        $salesCount = $realStatsBySubId[$subId]->sales_count;
+                        $custCount = $realStatsBySubId[$subId]->customer_count;
+                        $salesVal = $realStatsBySubId[$subId]->total_revenue;
+                    }
+
+                    $custVal = $custCount;
+
+                    $item = [
+                        'label' => $subName,
+                        'products' => $prodCount,
+                        'sales' => $salesVal,
+                        'customers' => $custVal,
+                        'sales_count' => $salesCount
+                    ];
+
+                    $groupedSubCategories[$tabKey][] = $item;
+                    $groupedSubCategories['All'][] = $item;
+                }
+
+                // Sort desc by sales_count and slice top 8, sum the rest into 'Others'
+                foreach ($groupedSubCategories as $tk => $items) {
+                    usort($items, function($a, $b) {
+                        return $b['sales'] <=> $a['sales'];
+                    });
+
+                    $top8 = array_slice($items, 0, 8);
+                    $others = array_slice($items, 8);
+
+                    foreach ($top8 as $item) {
+                        $subcategoryStats[$tk]['labels'][] = $item['label'];
+                        $subcategoryStats[$tk]['products'][] = $item['products'];
+                        $subcategoryStats[$tk]['sales'][] = $item['sales'];
+                        $subcategoryStats[$tk]['customers'][] = $item['customers'];
+                    }
+
+                    if (!empty($others)) {
+                        $otherProducts = 0;
+                        $otherSales = 0.0;
+                        $otherCustomers = 0;
+                        foreach ($others as $item) {
+                            $otherProducts += $item['products'];
+                            $otherSales += $item['sales'];
+                            $otherCustomers += $item['customers'];
+                        }
+                        $subcategoryStats[$tk]['labels'][] = 'Others';
+                        $subcategoryStats[$tk]['products'][] = $otherProducts;
+                        $subcategoryStats[$tk]['sales'][] = $otherSales;
+                        $subcategoryStats[$tk]['customers'][] = $otherCustomers;
+                    }
+                }
+            }
+        }
+
+        // 1b. Offer Stats (Actual offers created by this vendor, grouped by parent category tabs)
+        $offerStats = [
+            'All' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
+            'Men' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
+            'Women' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
+            'Kids' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []],
+            'Living' => ['labels' => [], 'sales' => [], 'products' => [], 'customers' => []]
+        ];
+
+        $dbOffersList = DB::table('master_offers')
+            ->leftJoin('category_main', 'category_main.id', '=', 'master_offers.catagory_id')
+            ->where('master_offers.created_by_id', $id)
+            ->select('master_offers.*', 'category_main.category_main_name')
+            ->get();
+
+        if ($dbOffersList->isNotEmpty()) {
+            $groupedOffers = [
+                'All' => [],
+                'Men' => [],
+                'Women' => [],
+                'Kids' => [],
+                'Living' => []
+            ];
+
+            foreach ($dbOffersList as $offer) {
+                // Get products with this offer
+                $offerProdStats = DB::table('products')
+                    ->join('products_details', 'products_details.products_id', '=', 'products.id')
+                    ->leftJoin('ecom_order_product', 'ecom_order_product.product_id', '=', 'products_details.id')
+                    ->leftJoin('ecom_order_info', 'ecom_order_info.order_id', '=', 'ecom_order_product.order_id')
+                    ->where('products.login_id', $id)
+                    ->where('products.logintype', 'Vendor')
+                    ->where('products.flag', 1)
+                    ->where('products.offers', $offer->id)
+                    ->select(
+                        DB::raw('COUNT(DISTINCT products.id) as product_count'),
+                        DB::raw('COALESCE(SUM(ecom_order_product.product_quantity), 0) as sales_count'),
+                        DB::raw('COUNT(DISTINCT ecom_order_info.customer_id) as customer_count')
+                    )
+                    ->first();
+
+                $cat = $offer->category_main_name;
+                $tabKey = 'Living';
+                if ($cat) {
+                    if (stripos($cat, 'men') !== false && stripos($cat, 'women') === false) {
+                        $tabKey = 'Men';
+                    } elseif (stripos($cat, 'women') !== false) {
+                        $tabKey = 'Women';
+                    } elseif (stripos($cat, 'kids') !== false) {
+                        $tabKey = 'Kids';
+                    }
+                }
+
+                $salesVal = $orderCount > 0 ? (float) ($offerProdStats->sales_count * 1000 ?: 500) : 0.0;
+                $prodCount = (int) $offerProdStats->product_count;
+                $custCount = (int) $offerProdStats->customer_count;
+                $salesCount = (int) $offerProdStats->sales_count;
+
+                $item = [
+                    'label' => $offer->title,
+                    'products' => $prodCount,
+                    'sales' => $salesVal,
+                    'customers' => $custCount,
+                    'sales_count' => $salesCount
+                ];
+
+                $groupedOffers[$tabKey][] = $item;
+                $groupedOffers['All'][] = $item;
+            }
+
+            // Now sort desc by sales_count and take top 8, sum the rest into 'Others'
+            foreach ($groupedOffers as $tk => $items) {
+                usort($items, function($a, $b) {
+                    return $b['sales_count'] <=> $a['sales_count'];
+                });
+
+                $top8 = array_slice($items, 0, 8);
+                $others = array_slice($items, 8);
+
+                foreach ($top8 as $item) {
+                    $offerStats[$tk]['labels'][] = $item['label'];
+                    $offerStats[$tk]['products'][] = $item['products'];
+                    $offerStats[$tk]['sales'][] = $item['sales'];
+                    $offerStats[$tk]['customers'][] = $item['customers'];
+                }
+
+                if (!empty($others)) {
+                    $otherProducts = 0;
+                    $otherSales = 0.0;
+                    $otherCustomers = 0;
+                    foreach ($others as $item) {
+                        $otherProducts += $item['products'];
+                        $otherSales += $item['sales'];
+                        $otherCustomers += $item['customers'];
+                    }
+                    $offerStats[$tk]['labels'][] = 'Others';
+                    $offerStats[$tk]['products'][] = $otherProducts;
+                    $offerStats[$tk]['sales'][] = $otherSales;
+                    $offerStats[$tk]['customers'][] = $otherCustomers;
+                }
+            }
+        }
+
+        
+        return ['subcategoryStats' => $subcategoryStats, 'offerStats' => $offerStats];
     }
 
 }

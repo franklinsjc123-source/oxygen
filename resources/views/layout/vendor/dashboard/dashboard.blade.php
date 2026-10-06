@@ -1077,7 +1077,7 @@
                             </div>
                             <!-- Period / Location Tabs -->
                             <div style="display: flex; gap: 8px;">
-                                <span class="chart-view-tab active" onclick="switchChartView('period', this)" style="background-color: #e2e8f0; padding: 6px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #2d3748; cursor: pointer; transition: all 0.2s ease;">Period</span>
+                                <span class="chart-view-tab active" onclick="switchChartView('period', this)" style="background-color: #183543; padding: 6px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #ffffff; cursor: pointer; transition: all 0.2s ease;">Period</span>
                                 <span class="chart-view-tab" onclick="switchChartView('location', this)" style="background-color: #edf2f7; padding: 6px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #718096; cursor: pointer; transition: all 0.2s ease;">Location</span>
                             </div>
                         </div>
@@ -1164,7 +1164,7 @@
                             </div>
                             <!-- Right Category/Offer Buttons -->
                             <div style="display: flex; gap: 8px;">
-                                <span class="catsub-mode-tab active" onclick="switchCatSubMode('category', this)" style="background-color: #e2e8f0; padding: 6px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #2d3748; cursor: pointer; transition: all 0.2s ease;">Category</span>
+                                <span class="catsub-mode-tab active" onclick="switchCatSubMode('category', this)" style="background-color: #183543; padding: 6px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #ffffff; cursor: pointer; transition: all 0.2s ease;">Category</span>
                                 <span class="catsub-mode-tab" onclick="switchCatSubMode('offer', this)" style="background-color: #edf2f7; padding: 6px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #718096; cursor: pointer; transition: all 0.2s ease;">Offer</span>
                             </div>
                         </div>
@@ -1401,6 +1401,7 @@
 </style>
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
     // === Vendor Status Toggle ===
@@ -1895,11 +1896,37 @@
                 }
             ]
         },
+        plugins: [ChartDataLabels],
         options: {
             responsive: true,
             maintainAspectRatio: false,
             interaction: { mode: 'index', intersect: false },
             plugins: {
+                datalabels: {
+                    display: function(context) {
+                        return context.dataset.data[context.dataIndex] > 0;
+                    },
+                    align: 'top',
+                    anchor: 'end',
+                    offset: 4,
+                    color: function(context) {
+                        let color = context.dataset.borderColor;
+                        if (!color || color === 'transparent') {
+                            color = context.dataset.backgroundColor;
+                        }
+                        return color || '#333';
+                    },
+                    font: {
+                        weight: 'bold',
+                        size: 11
+                    },
+                    formatter: function(value) {
+                        if (value >= 1000) {
+                            return (value / 1000).toFixed(1) + 'k';
+                        }
+                        return value;
+                    }
+                },
                 legend: { display: false },
                 tooltip: {
                     backgroundColor: 'rgba(26, 32, 44, 0.92)',
@@ -2002,8 +2029,8 @@
             tab.style.backgroundColor = '#edf2f7';
         });
         el.classList.add('active');
-        el.style.color = '#2d3748';
-        el.style.backgroundColor = '#e2e8f0';
+        el.style.color = '#ffffff';
+        el.style.backgroundColor = '#183543';
 
         currentChartViewMode = mode;
         sessionStorage.setItem('currentChartViewMode', mode);
@@ -2210,8 +2237,8 @@
             tab.style.backgroundColor = '#edf2f7';
         });
         el.classList.add('active');
-        el.style.color = '#2d3748';
-        el.style.backgroundColor = '#e2e8f0';
+        el.style.color = '#ffffff';
+        el.style.backgroundColor = '#183543';
 
         currentCatsubMode = mode;
         var tabsContainer = document.getElementById('catsubTabsContainer');
@@ -2395,6 +2422,13 @@
                 document.getElementById('metricViewerCount').textContent = new Intl.NumberFormat().format(data.totalViews);
                 document.getElementById('metricSalesCount').textContent = new Intl.NumberFormat().format(data.completedOrdersCount);
                 document.getElementById('metricRevenueValue').textContent = '₹' + new Intl.NumberFormat().format(data.completedOrdersTotalValue);
+
+                if (data.subcategoryStats) catsubStats = data.subcategoryStats;
+                if (data.offerStats) offerStats = data.offerStats;
+                var activeCatsubTab = document.querySelector('.catsub-tab.active');
+                if (activeCatsubTab) {
+                    switchCatSubTab(currentCatsubTab, activeCatsubTab);
+                }
 
                 // Update charts
                 updateMainChart();
