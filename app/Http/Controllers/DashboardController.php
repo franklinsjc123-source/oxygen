@@ -293,7 +293,7 @@ class DashboardController extends Controller
         $subStaffIds = $subStaffList->pluck('id')->toArray();
 
         $staffVendorsQuery = DB::table('vendor_details')
-            ->select('id', 'shop_name', 'city', 'staff_id');
+            ->select('id', 'shop_name', 'city', 'staff_id', 'route');
         if ($staffId) {
             $staffVendorsQuery->where('staff_id', $staffId);
         }
@@ -336,6 +336,31 @@ class DashboardController extends Controller
         foreach ($subStaffList as $ss) {
             $staffNameMap[$ss->id] = $ss->fullname;
             $employeesData[$ss->fullname] = ['revenue' => 0.0, 'auction' => 0];
+        }
+
+        foreach ($staffVendors as $sv) {
+            $vName = $sv->shop_name ?? 'Vendor #' . $sv->id;
+            $vendorsData[$vName] = ['revenue' => 0.0, 'auction' => 0];
+
+            $loc = !empty($sv->route) ? $sv->route : 'Unknown';
+            $locationsData[$loc] = ['revenue' => 0.0, 'auction' => 0];
+        }
+
+        $defaultLocations = ['Mylapore', 'Anna Road GPO', 'Park Town', 'Triplicane', 'Egmore', 'Royapettah', 'Nungambakkam', 'Adyar'];
+        foreach ($defaultLocations as $dl) {
+            $locationsData[$dl] = ['revenue' => 0.0, 'auction' => 0];
+        }
+
+        $latestCustomers = DB::table('ecom_customer_info')
+            ->select('customer_id', 'customer_firstname', 'customer_lastname')
+            ->limit(8)
+            ->get();
+        foreach ($latestCustomers as $lc) {
+            $cName = trim($lc->customer_firstname . ' ' . $lc->customer_lastname);
+            if (empty($cName)) {
+                $cName = 'Customer #' . $lc->customer_id;
+            }
+            $customersData[$cName] = ['revenue' => 0.0, 'auction' => 0];
         }
 
         foreach ($salesRecords as $row) {
@@ -382,7 +407,7 @@ class DashboardController extends Controller
             uasort($data, function($a, $b) use ($metric) {
                 return $b[$metric] <=> $a[$metric];
             });
-            $sliced = array_slice($data, 0, 10, true);
+            $sliced = array_slice($data, 0, 8, true);
             
             $labels = [];
             $values = [];
@@ -2590,7 +2615,7 @@ class DashboardController extends Controller
 
         $staffVendors = DB::table('vendor_details')
             ->whereIn('staff_id', $subStaffIds)
-            ->select('id', 'shop_name', 'city')
+            ->select('id', 'shop_name', 'city', 'route')
             ->get();
         $staffVendorIds = $staffVendors->pluck('id')->toArray();
 
@@ -2630,6 +2655,31 @@ class DashboardController extends Controller
         foreach ($subStaffList as $ss) {
             $staffNameMap[$ss->id] = $ss->fullname;
             $employeesData[$ss->fullname] = ['revenue' => 0.0, 'auction' => 0];
+        }
+
+        foreach ($staffVendors as $sv) {
+            $vName = $sv->shop_name ?? 'Vendor #' . $sv->id;
+            $vendorsData[$vName] = ['revenue' => 0.0, 'auction' => 0];
+
+            $loc = !empty($sv->route) ? $sv->route : 'Unknown';
+            $locationsData[$loc] = ['revenue' => 0.0, 'auction' => 0];
+        }
+
+        $defaultLocations = ['Mylapore', 'Anna Road GPO', 'Park Town', 'Triplicane', 'Egmore', 'Royapettah', 'Nungambakkam', 'Adyar'];
+        foreach ($defaultLocations as $dl) {
+            $locationsData[$dl] = ['revenue' => 0.0, 'auction' => 0];
+        }
+
+        $latestCustomers = DB::table('ecom_customer_info')
+            ->select('customer_id', 'customer_firstname', 'customer_lastname')
+            ->limit(8)
+            ->get();
+        foreach ($latestCustomers as $lc) {
+            $cName = trim($lc->customer_firstname . ' ' . $lc->customer_lastname);
+            if (empty($cName)) {
+                $cName = 'Customer #' . $lc->customer_id;
+            }
+            $customersData[$cName] = ['revenue' => 0.0, 'auction' => 0];
         }
 
         foreach ($salesRecords as $row) {
@@ -2676,7 +2726,7 @@ class DashboardController extends Controller
             uasort($data, function($a, $b) use ($metric) {
                 return $b[$metric] <=> $a[$metric];
             });
-            $sliced = array_slice($data, 0, 10, true);
+            $sliced = array_slice($data, 0, 8, true);
             
             $labels = [];
             $values = [];

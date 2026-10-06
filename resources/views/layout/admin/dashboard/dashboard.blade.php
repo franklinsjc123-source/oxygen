@@ -403,9 +403,9 @@
         }
 
         .activity-nav-link.active {
-            background-color: #e2e8f0;
-            color: #2d3748;
-            box-shadow: none;
+            background-color: #183543 !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         .activity-grid {
@@ -634,9 +634,9 @@
             transition: all 0.2s ease;
         }
         .chart-sub-pill.active {
-            background: #e2e8f0 !important;
-            color: #2d3748 !important;
-            box-shadow: none !important;
+            background: #183543 !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
         }
 
         /* Period filter bar styling */
