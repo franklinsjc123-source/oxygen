@@ -1,7 +1,4 @@
 @php
-    $colors = ['#10b981', '#f43f5e', '#f59e0b', '#8b5cf6'];
-    $color = $colors[$index % count($colors)];
-    
     $win = $act->win ?? '';
     $pctStart = 75;
     $pctEnd = 100;
@@ -16,16 +13,16 @@
         }
     }
     
-    $pillBg = '#d1fae5';
-    $pillText = '#065f46';
-    
     if ($pctStart < 40) {
-        $pillBg = '#fee2e2';
-        $pillText = '#991b1b';
+        $color = '#f43f5e'; // Red
     } elseif ($pctStart < 70) {
-        $pillBg = '#fef3c7';
-        $pillText = '#92400e';
+        $color = '#f59e0b'; // Yellow
+    } else {
+        $color = '#10b981'; // Green
     }
+    
+    $pillBg = $color;
+    $pillText = '#ffffff';
     
     $timeStr = 'Today, 2:00 PM';
     if ($act->next_follow_date) {

@@ -3113,7 +3113,15 @@ class DashboardController extends Controller
             ]);
         }
 
+        $subStaffList = DB::table('staffother')
+            ->select('id', 'fullname')
+            ->where('id', $staffDbId)
+            ->get();
+        $staffId = $staffDbId;
+
         return view('layout.staff.dashboard.dashboard')->with([
+            'subStaffList' => $subStaffList,
+            'selectedStaffId' => $staffId,
             'vendorid' => $id,
             'staffDetails' => $staffDetails,
             'vendorCount' => $vendorCount,

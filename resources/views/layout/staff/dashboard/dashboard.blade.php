@@ -403,9 +403,9 @@
         }
 
         .activity-nav-link.active {
-            background-color: #e2e8f0;
-            color: #2d3748;
-            box-shadow: none;
+            background-color: #183543 !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         .activity-grid {
@@ -634,9 +634,9 @@
             transition: all 0.2s ease;
         }
         .chart-sub-pill.active {
-            background: #e2e8f0 !important;
-            color: #2d3748 !important;
-            box-shadow: none !important;
+            background: #183543 !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
         }
 
         /* Period filter bar styling */
@@ -1190,6 +1190,7 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <script>
 // === Transaction Filter ===
 function filterTransactions(status, el) {
@@ -1621,6 +1622,7 @@ function renderDoubleChart(leftTab, rightTab) {
             labels: labels,
             datasets: dataSets
         },
+        plugins: [ChartDataLabels],
         options: {
             responsive: true,
             maintainAspectRatio: false,
@@ -1629,6 +1631,31 @@ function renderDoubleChart(leftTab, rightTab) {
                 intersect: false,
             },
             plugins: {
+                datalabels: {
+                    display: function(context) {
+                        return context.dataset.data[context.dataIndex] > 0;
+                    },
+                    align: 'top',
+                    anchor: 'end',
+                    offset: 4,
+                    color: function(context) {
+                        let color = context.dataset.borderColor;
+                        if (!color || color === 'transparent') {
+                            color = context.dataset.backgroundColor;
+                        }
+                        return color || '#333';
+                    },
+                    font: {
+                        weight: 'bold',
+                        size: 11
+                    },
+                    formatter: function(value) {
+                        if (value >= 1000) {
+                            return (value / 1000).toFixed(1) + 'k';
+                        }
+                        return value;
+                    }
+                },
                 legend: {
                     position: 'bottom',
                     labels: { boxWidth: 12, font: { weight: '600' } }
