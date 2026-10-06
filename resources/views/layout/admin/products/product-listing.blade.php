@@ -830,7 +830,7 @@ function getquantity(id, productName) {
         <div class="modal-content">
             <form action="{{ route('product.import') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <div class="modal-header bg-primary text-white">
+                <div class="modal-header text-white" style="background-color: #183543;">
                     <h5 class="modal-title" id="importProductModalLabel"><i class="fa fa-upload me-2"></i>Import Products</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
