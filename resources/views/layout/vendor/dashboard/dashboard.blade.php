@@ -1263,15 +1263,15 @@
                     <div class="card-body" style="padding: 0 24px 24px 24px;">
                         <div class="table-responsive">
                             <table class="table table-borderless align-middle" style="margin: 0;">
-                                <thead>
-                                    <tr style="border-bottom: 1px solid #edf2f7;">
-                                        <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Order No.</th>
-                                        <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Date</th>
-                                        <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Customer</th>
-                                        <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Location</th>
-                                        <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Amount</th>
-                                        <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px;">Status</th>
-                                        <th style="font-size: 11px; font-weight: 600; color: #ffffff; text-transform: uppercase; padding: 12px 8px; text-align: right;"></th>
+                                <thead style="background-color: transparent !important;">
+                                    <tr style="border-bottom: 1px solid #edf2f7; background-color: transparent !important;">
+                                        <th style="background-color: transparent !important; font-size: 11px; font-weight: 700; color: #4a5568 !important; text-transform: uppercase; padding: 12px 8px;">Order No.</th>
+                                        <th style="background-color: transparent !important; font-size: 11px; font-weight: 700; color: #4a5568 !important; text-transform: uppercase; padding: 12px 8px;">Date</th>
+                                        <th style="background-color: transparent !important; font-size: 11px; font-weight: 700; color: #4a5568 !important; text-transform: uppercase; padding: 12px 8px;">Customer</th>
+                                        <th style="background-color: transparent !important; font-size: 11px; font-weight: 700; color: #4a5568 !important; text-transform: uppercase; padding: 12px 8px;">Location</th>
+                                        <th style="background-color: transparent !important; font-size: 11px; font-weight: 700; color: #4a5568 !important; text-transform: uppercase; padding: 12px 8px;">Amount</th>
+                                        <th style="background-color: transparent !important; font-size: 11px; font-weight: 700; color: #4a5568 !important; text-transform: uppercase; padding: 12px 8px;">Status</th>
+                                        <th style="background-color: transparent !important; font-size: 11px; font-weight: 700; color: #4a5568 !important; text-transform: uppercase; padding: 12px 8px; text-align: right;"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
