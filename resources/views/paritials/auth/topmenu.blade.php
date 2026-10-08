@@ -303,279 +303,50 @@
                             <i data-feather="sun" class="icon-sun"></i>
                         </a>
                     </li>
+                    @php
+                        $loginId = session()->get('userId') ?? session()->get('login_id') ?? 1;
+                        $loginType = session()->get('role') == 'Admin' ? 'Admin' : (session()->get('role') == 'Staff' ? 'Staff' : 'Admin');
+                        
+                        $notifications = \Illuminate\Support\Facades\DB::table('notifications')
+                            ->where(function($q) use ($loginId, $loginType) {
+                                $q->where('login_id', $loginId)->where('login_type', $loginType);
+                            })
+                            ->orderBy('created_at', 'desc')
+                            ->take(5)
+                            ->get();
+                            
+                        $unreadCount = \Illuminate\Support\Facades\DB::table('notifications')
+                            ->where(function($q) use ($loginId, $loginType) {
+                                $q->where('login_id', $loginId)->where('login_type', $loginType);
+                            })
+                            ->where('status', 0)
+                            ->count();
+                    @endphp
                     <li class="onhover-dropdown"><i data-feather="bell"></i><span
-                            class="badge badge-pill badge-primary pull-right notification-badge">{{($adminorders_pro) ? $adminorders_pro : $vendarorders_pro}}</span><span
+                            class="badge badge-pill badge-primary pull-right notification-badge">{{ $unreadCount }}</span><span
                             class="dot"></span>
                         <ul class="notification-dropdown onhover-show-div p-0">
-                            
-                         
-                            
-                            @if(!empty($adminorders_pro1) || empty($adminorders_pro1))
-
-
-
-
-                                @if(isset($adminorders_pro1) && $adminorders_pro1->created_by == 1)
-                                       @foreach ($orderspro as $item)
-                                                @php           
-                                                                                                    $ptime1 = $item->created_at;
-                                                    $ptime = strtotime($ptime1);
-                                                    // echo time_elapsed_string($ptime);
-                                                @endphp
-                                        @if ($item->details == "New")
-                                            <li>New Order {{$item->orders_id}} Placed by Admin<span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $adminorders_pro}}</a></span></li>
-                                        @elseif($item->details == "Accept")
-                                            @php
-                                                $acc_count = DB::table('notifications')->where('details', 'Accept')->count();
-                                                $acc_count1 = DB::table('notifications')->where('details', 'Accept')->get();
-                                            @endphp
-                                            <li>Orders {{$acc_count1->orders_id}}have been Accepted by Admin<span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $acc_count }}</a></span></li>
-                                        @elseif($item->details == "Dispatch")
-                                            @php
-                                                $acc_count = DB::table('notifications')->where('details', 'Dispatch')->count();
-                                                //  dd($acc_count); // This dd() function will halt execution, remove it if not needed
-                                            @endphp
-                                            <li>Orders have been Dispatched by Admin<span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $adminorders_pro}}</a></span></li>
-                                        @elseif($item->details == "Delivered")
-                                                @php
-                                                    $acc_count = DB::table('notifications')->where('details', 'Delivered')->count();
-                                                    //  dd($acc_count); // This dd() function will halt execution, remove it if not needed
-                                                @endphp
-                                                <li>Orders have been Delivered by Admin<span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $adminorders_pro}}</a></span></li>
-
-
-                                            @elseif($item->details == "Cancel")
-                                                <li>New Order {{$item->orders_id}}has been Canceled by {{$item->login_id}}<span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $adminorders_pro}}</a></span></li>
-
-                                            @elseif($item->details == "Return")
-                                                <li>New Order {{$item->orders_id}} has been Return by {{$item->login_id}}<span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $adminorders_pro}}</a></span></li>
-
-                                            @endif
-
-                                    @endforeach     
-
-
-                                 @elseif($vendarorders_pro1)
-                                     {{-- [0]->logintype =='Vendor' --}}
-                                        @foreach($venorderspro as $item)
-
-                                                @php           
-                                                                                            $ptime1 = $item->created_at;
-                                                    $ptime = strtotime($ptime1);
-                                                    // echo time_elapsed_string($ptime);
-                                                    $userId = session('userId');
-
-                                                @endphp
-
-
-                                                @if ($item->details == "New")
-
-                                                    <li>New Order {{$item->orders_id}} Placed by Vendar<span class="badge badge-pill badge-primary pull-right"> <a href="{{ route('order') }}">{{ $adminorders_pro}}</a></span></li>
-                                                @elseif($item->details == "Accept")
-
-                                                                                 @php
-                                                                                    $acc_count = DB::table('notifications')->where('details', 'Accept')->count();
-                                                                                    $acc_count1 = DB::table('notifications')->where('details', 'Accept')->get();
-
-
-                                                                                 @endphp
-
-                                                                                <li>Orders  
-                                                                                {{ isset($acc_count1[0]->orders_id) ?
-                                                    ($acc_count1[0]->orders_id ? $acc_count1[0]->orders_id . ' has been Accepted by Vendor' : 'Not Accepted')
-                                                    : 'NA' 
-                                                                                            }}
-                                                                                        <span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $acc_count }}</a></span></li>
-                                                @elseif($item->details == "Dispatch")
-                                                                                 @php
-                                                                                    $acc_count = DB::table('notifications')->where('details', 'Dispatch')->count();
-                                                                                    $acc_count1 = DB::table('notifications')->where('details', 'Dispatch')->get();
-
-                                                                                 @endphp
-                                                                                <li>Orders
-                                                                                {{ isset($acc_count1[0]->orders_id) ?
-                                                    ($acc_count1[0]->orders_id ? $acc_count1[0]->orders_id . 'has been Dispatched by Vendor' : 'Not Accepted')
-                                                    : 'NA' 
-                                                                                            }}
-
-
-                                                                               <span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $acc_count}}</a></span></li>
-                                                @elseif($item->details == "Cancel")
-                                                    <li>New Order has been Canceled by {{$item->login_id}}<span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $adminorders_pro}}</a></span></li>
-
-                                                 @endif
-
-                                            @if ($item->details == "New")
-                                                <li>New Order Placed by Vendar<span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $acc_count}}</a></span></li>
-                                            @elseif($item->details == "Accept" && $item->login_id == 1)
-                                                @php
-                                                    $acc_count = DB::table('notifications')->where('details', 'Accept')->count();
-                                                    $acc_count1 = DB::table('notifications')->where('details', 'Accept')->get();
-                                                @endphp
-                                                <li>Orders {{ $acc_count1->orders_id }} have been Accepted by Vendar<span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $acc_count }}</a></span></li>
-                                            @elseif($item->details == "Dispatch" && $item->login_id == 1)
-                                                @php
-                                                    $acc_count = DB::table('notifications')->where('details', 'Dispatch')->count();
-                                                    $acc_count1 = DB::table('notifications')->where('details', 'Dispatch')->get();
-
-                                                    //  dd($acc_count); // This dd() function will halt execution, remove it if not needed
-                                                @endphp
-                                                <li>Orders {{$acc_count1->orders_id }} have been Dispatched by Vendar<span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $adminorders_pro}}</a></span></li>
-
-
-
-                                            @elseif($item->details == "Delivered" && $item->login_id == 1)
-                                                                                @php
-                                                                                    $acc_count = DB::table('notifications')->where('details', 'Delivered')->count();
-                                                                                    $acc_count1 = DB::table('notifications')->where('details', 'Delivered')->get();
-
-                                                                                    //  dd($acc_count); // This dd() function will halt execution, remove it if not needed
-                                                                                @endphp
-                                                                                <li>Orders
-
-                                                                                {{ isset($acc_count1[0]->orders_id) ?
-                                                    ($acc_count1[0]->orders_id ? $acc_count1[0]->orders_id . 'have been Delivered by Vendar' : 'Not Accepted')
-                                                    : 'NA' 
-                                                                                            }}
-                                                                                <span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $adminorders_pro}}</a></span></li>
-
-
-                                                @elseif($item->details == "Cancel")
-
-                                                    <li>New Order has been Canceled by {{$item->login_id}}<span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $adminorders_pro}}</a></span></li>
-
-                                                @elseif($item->details == "Return")
-                                                    <li>New Order has been Return by {{$item->login_id}}<span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $adminorders_pro}}</a></span></li>
-
-                                                @endif
-
-                                        @endforeach  
-
-
-                                @else
-
-                                    <li>Notification Vendar  product<span class="badge badge-pill badge-primary pull-right">{{ $vendarorders_pro}}</span></li>     
-
-                                @endif
-
-
-                            @elseif($vendarorders_pro1[0]->logintype == 'Vendor')
-
-                                    @foreach($venorderspro as $item)
-
-                                            @php           
-                                                                                            $ptime1 = $item->created_at;
-                                                $ptime = strtotime($ptime1);
-                                                // echo time_elapsed_string($ptime);
-                                                $userId = session('userId');
-
-                                            @endphp
-
-
-                                            @if ($item->details == "New")
-
-                                                <li>New Order {{$item->orders_id}} Placed by Vendar<span class="badge badge-pill badge-primary pull-right"> <a href="{{ route('order') }}">{{ $adminorders_pro}}</a></span></li>
-                                            @elseif($item->details == "Accept")
-                                                                                 @php
-                                                                                    $acc_count = DB::table('notifications')->where('details', 'Accept')->where('login_id', $userId)->count();
-                                                                                    $acc_count1 = DB::table('notifications')->where('details', 'Accept')->where('login_id', $userId)->get();
-                                                                                    //dd($acc_count1[0]->orders_id);
-
-                                                                                 @endphp
-
-                                                                                <li>Orders  
-
-                                                                                {{ isset($acc_count1[0]->orders_id) ?
-                                                ($acc_count1[0]->orders_id ? $acc_count1[0]->orders_id . ' has been Accepted by Vendor' : 'Not Accepted')
-                                                : 'NA' 
-                                                                                            }}
-                                                                                        <span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $acc_count }}</a></span></li>
-                                            @elseif($item->details == "Dispatch")
-                                                                                 @php
-                                                                                    $acc_count = DB::table('notifications')->where('details', 'Dispatch')->where('login_id', $userId)->count();
-                                                                                    $acc_count1 = DB::table('notifications')->where('details', 'Dispatch')->where('login_id', $userId)->get();
-
-                                                                                 @endphp
-                                                                                <li>Orders
-                                                                                {{ isset($acc_count1[0]->orders_id) ?
-                                                ($acc_count1[0]->orders_id ? $acc_count1[0]->orders_id . 'has been Dispatched by Vendor' : 'Not Accepted')
-                                                : 'NA' 
-                                                                                            }}
-
-
-                                                                               <span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $acc_count}}</a></span></li>
-                                            @elseif($item->details == "Cancel")
-                                                <li>New Order has been Canceled by {{$item->login_id}}<span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $adminorders_pro}}</a></span></li>
-
-                                             @endif
-
-                                        @if ($item->details == "New")
-                                            <li>New Order Placed by Vendar<span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $acc_count}}</a></span></li>
-                                        @elseif($item->details == "Accept" && $item->login_id == 1)
-                                            @php
-                                                $acc_count = DB::table('notifications')->where('details', 'Accept')->where('login_id', $userId)->count();
-                                                $acc_count1 = DB::table('notifications')->where('details', 'Accept')->where('login_id', $userId)->get();
-                                            @endphp
-                                            <li>Orders {{ $acc_count1->orders_id }} have been Accepted by Vendar<span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $acc_count }}</a></span></li>
-                                        @elseif($item->details == "Dispatch" && $item->login_id == 1)
-                                            @php
-                                                $acc_count = DB::table('notifications')->where('details', 'Dispatch')->where('login_id', $userId)->count();
-                                                $acc_count1 = DB::table('notifications')->where('details', 'Dispatch')->where('login_id', $userId)->get();
-
-                                                //  dd($acc_count); // This dd() function will halt execution, remove it if not needed
-                                            @endphp
-                                            <li>Orders {{$acc_count1->orders_id }} have been Dispatched by Vendar<span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $adminorders_pro}}</a></span></li>
-
-
-
-                                        @elseif($item->details == "Delivered" && $item->login_id == 1)
-                                                                                @php
-                                                                                    $acc_count = DB::table('notifications')->where('details', 'Delivered')->where('login_id', $userId)->count();
-                                                                                    $acc_count1 = DB::table('notifications')->where('details', 'Delivered')->where('login_id', $userId)->get();
-
-                                                                                    //  dd($acc_count); // This dd() function will halt execution, remove it if not needed
-                                                                                @endphp
-                                                                                <li>Orders
-
-                                                                                {{ isset($acc_count1[0]->orders_id) ?
-                                                ($acc_count1[0]->orders_id ? $acc_count1[0]->orders_id . 'have been Delivered by Vendar' : 'Not Accepted')
-                                                : 'NA' 
-                                                                                            }}
-                                                                                <span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $adminorders_pro}}</a></span></li>
-
-
-                                            @elseif($item->details == "Cancel")
-
-                                                <li>New Order has been Canceled by {{$item->login_id}}<span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $adminorders_pro}}</a></span></li>
-
-                                            @elseif($item->details == "Return")
-                                                <li>New Order has been Return by {{$item->login_id}}<span class="badge badge-pill badge-primary pull-right"><a href="{{ route('order') }}">{{ $adminorders_pro}}</a></span></li>
-
-                                            @endif
-
-                                    @endforeach
-
-
-                                 @else
-
-                                 <li>Notification Vendar  product<span class="badge badge-pill badge-primary pull-right">{{ $vendarorders_pro}}</span></li>     
-
-                            @endif
-                            
-                           
+                            <li>Notification <span class="badge badge-pill badge-primary pull-right">{{ $unreadCount }}</span></li>
+                            @forelse($notifications as $noti)
                             <li>
                                 <div class="media">
                                     <div class="media-body">
-                                        <h6 class="mt-0"><span><i class="shopping-color"
-                                                    data-feather="shopping-bag"></i></span>Login by {{$user_info->name }} </h6>
-                                                   
-                                        <p class="mb-0">Short top</p>
+                                        <h6 class="mt-0" style="font-size: 13px;"><span><i class="shopping-color"
+                                                    data-feather="bell"></i></span>{{ \Carbon\Carbon::parse($noti->created_at)->diffForHumans() }}</h6>
+                                        <p class="mb-0" style="font-size: 12px; line-height: 1.4;">{{ $noti->details }}</p>
                                     </div>
                                 </div>
                             </li>
-
-
-                            <li class="txt-dark"><a href="{{ route('order') }}">All notification</a> </li>
+                            @empty
+                            <li>
+                                <div class="media">
+                                    <div class="media-body">
+                                        <p class="mb-0">No new notifications</p>
+                                    </div>
+                                </div>
+                            </li>
+                            @endforelse
+                            <li class="txt-dark"><a href="javascript:void(0)">All notifications</a></li>
                         </ul>
                     </li>
                     <li class="onhover-dropdown">

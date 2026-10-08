@@ -348,21 +348,45 @@
                             <i data-feather="sun" class="icon-sun"></i>
                         </a>
                     </li>
+                    @php
+                        $loginId = session()->get('login_id');
+                        $notifications = \Illuminate\Support\Facades\DB::table('notifications')
+                            ->where('login_id', $loginId)
+                            ->where('login_type', 'Vendor')
+                            ->orderBy('created_at', 'desc')
+                            ->take(5)
+                            ->get();
+                        $unreadCount = \Illuminate\Support\Facades\DB::table('notifications')
+                            ->where('login_id', $loginId)
+                            ->where('login_type', 'Vendor')
+                            ->where('status', 0)
+                            ->count();
+                    @endphp
                     <li class="onhover-dropdown"><i data-feather="bell"></i><span
-                            class="badge badge-pill badge-primary pull-right notification-badge">3</span><span
+                            class="badge badge-pill badge-primary pull-right notification-badge">{{ $unreadCount }}</span><span
                             class="dot"></span>
                         <ul class="notification-dropdown onhover-show-div p-0">
-                            <li>Notification <span class="badge badge-pill badge-primary pull-right">3</span></li>
+                            <li>Notification <span class="badge badge-pill badge-primary pull-right">{{ $unreadCount }}</span></li>
+                            @forelse($notifications as $noti)
                             <li>
                                 <div class="media">
                                     <div class="media-body">
-                                        <h6 class="mt-0"><span><i class="shopping-color"
-                                                    data-feather="shopping-bag"></i></span>Your 1 order </h6>
-                                        <p class="mb-0">Short top</p>
+                                        <h6 class="mt-0" style="font-size: 13px;"><span><i class="shopping-color"
+                                                    data-feather="bell"></i></span>{{ \Carbon\Carbon::parse($noti->created_at)->diffForHumans() }}</h6>
+                                        <p class="mb-0" style="font-size: 12px; line-height: 1.4;">{{ $noti->details }}</p>
                                     </div>
                                 </div>
                             </li>
-                            <li class="txt-dark"><a href="#">All</a> notification</li>
+                            @empty
+                            <li>
+                                <div class="media">
+                                    <div class="media-body">
+                                        <p class="mb-0">No new notifications</p>
+                                    </div>
+                                </div>
+                            </li>
+                            @endforelse
+                            <li class="txt-dark"><a href="javascript:void(0)">All notifications</a></li>
                         </ul>
                     </li>
                     <li class="onhover-dropdown">
