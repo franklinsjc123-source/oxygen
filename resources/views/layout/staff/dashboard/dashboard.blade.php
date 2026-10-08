@@ -1595,6 +1595,7 @@ function renderDoubleChart(leftTab, rightTab) {
             type: 'linear',
             display: true,
             position: 'left',
+            min: 0,
             grid: { color: 'rgba(0,0,0,0.03)' },
             title: {
                 display: true,
@@ -1608,6 +1609,7 @@ function renderDoubleChart(leftTab, rightTab) {
             type: 'linear',
             display: true,
             position: 'right',
+            min: 0,
             grid: { drawOnChartArea: false },
             title: {
                 display: true,

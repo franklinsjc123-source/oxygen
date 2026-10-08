@@ -1980,6 +1980,7 @@
                         stepSize: 5
                     },
                     beginAtZero: true,
+                    min: 0,
                     title: {
                         display: false
                     }
@@ -2002,6 +2003,7 @@
                         }
                     },
                     beginAtZero: true,
+                    min: 0,
                     title: {
                         display: false
                     }
