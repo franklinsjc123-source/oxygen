@@ -64,6 +64,22 @@ class Products extends Model
                 $product->slug = static::generateUniqueSlug($product->product_name, $product->id);
             }
         });
+
+        static::addGlobalScope('activeVendor', function (\Illuminate\Database\Eloquent\Builder $builder) {
+            $prefix = request()->segment(1);
+            if (!in_array($prefix, ['admin', 'staff', 'vendor'])) {
+                $builder->where(function($query) {
+                    $query->where('products.logintype', '!=', 'Vendor')
+                          ->orWhereExists(function ($sub) {
+                              $sub->select(\Illuminate\Support\Facades\DB::raw(1))
+                                  ->from('vendor_details')
+                                  ->whereColumn('vendor_details.id', 'products.login_id')
+                                  ->whereDate('vendor_details.expired_date', '>=', date('Y-m-d'))
+                                  ->where('vendor_details.status', 1);
+                          });
+                });
+            }
+        });
     }
 
     /**

@@ -672,9 +672,18 @@
                         </div>
                         
                         <div class="shop-profile-status-badge">
-                            <button id="vendorStatusBtn" onclick="toggleVendorStatus()" style="background-color: {{ (int)($vendorDetails->status ?? 1) === 1 ? 'rgba(46, 204, 113, 0.25)' : 'rgba(231, 76, 60, 0.25)' }}; color: {{ (int)($vendorDetails->status ?? 1) === 1 ? '#2ecc71' : '#e74c3c' }}; padding: 4px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 700; text-transform: uppercase; border: 1px solid {{ (int)($vendorDetails->status ?? 1) === 1 ? 'rgba(46, 204, 113, 0.4)' : 'rgba(231, 76, 60, 0.4)' }}; letter-spacing: 0.5px; backdrop-filter: blur(4px); cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s; outline: none;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                                <span id="vendorStatusDot" class="{{ (int)($vendorDetails->status ?? 1) === 1 ? 'status-dot-active' : '' }}" style="width: 6px; height: 6px; border-radius: 50%; background-color: {{ (int)($vendorDetails->status ?? 1) === 1 ? '#2ecc71' : '#e74c3c' }}; display: inline-block;"></span>
-                                <span id="vendorStatusText">{{ (int)($vendorDetails->status ?? 1) === 1 ? 'Active' : 'Inactive' }}</span>
+                            @php
+                                $isExpired = !empty($vendorDetails->expired_date) && strtotime(date('Y-m-d', strtotime($vendorDetails->expired_date))) < strtotime(date('Y-m-d'));
+                                $isActive = !$isExpired && (int)($vendorDetails->status ?? 1) === 1;
+                                $btnBgColor = $isActive ? 'rgba(46, 204, 113, 0.25)' : 'rgba(231, 76, 60, 0.25)';
+                                $btnColor = $isActive ? '#2ecc71' : '#e74c3c';
+                                $btnBorderColor = $isActive ? 'rgba(46, 204, 113, 0.4)' : 'rgba(231, 76, 60, 0.4)';
+                                $dotClass = $isActive ? 'status-dot-active' : '';
+                                $statusText = $isExpired ? 'Expired' : ($isActive ? 'Active' : 'Inactive');
+                            @endphp
+                            <button id="vendorStatusBtn" onclick="toggleVendorStatus()" style="background-color: {{ $btnBgColor }}; color: {{ $btnColor }}; padding: 4px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 700; text-transform: uppercase; border: 1px solid {{ $btnBorderColor }}; letter-spacing: 0.5px; backdrop-filter: blur(4px); cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s; outline: none;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                <span id="vendorStatusDot" class="{{ $dotClass }}" style="width: 6px; height: 6px; border-radius: 50%; background-color: {{ $btnColor }}; display: inline-block;"></span>
+                                <span id="vendorStatusText">{{ $statusText }}</span>
                             </button>
                         </div>
 

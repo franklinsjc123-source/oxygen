@@ -17,6 +17,9 @@ class Kernel extends ConsoleKernel
     {
         // Settle expired auctions, determine winners, generate coupons & send emails
         $schedule->command('auction:settle-expired')->everyMinute();
+
+        // Send vendor expiry reminders (15 days before and on expiry)
+        $schedule->command('vendor:expiry-reminders')->dailyAt('09:00');
     }
 
     /**

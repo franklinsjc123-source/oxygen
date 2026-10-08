@@ -539,46 +539,91 @@ class DashboardController extends Controller
         }
 
         if ($startDate && $endDate) {
-            $dateRange = new \DatePeriod(
-                new \DateTime($startDate),
-                new \DateInterval('P1D'),
-                (new \DateTime($endDate))->modify('+1 day')
-            );
-            foreach ($dateRange as $date) {
-                $dayLabel = $date->format('d M');
-                $dayKey = $date->format('Y-m-d');
-                $trendLabels[] = $dayLabel;
-                $trendStats[$dayKey] = [
-                    'revenue' => 0.0,
-                    'target' => 0.0,
-                    'clients' => []
-                ];
-            }
-
-            // Fetch sum of active staff daily targets
-            $dailyTarget = (float) (DB::table('staffother')->sum('dailytarget') ?? 0);
-            foreach ($trendStats as $dayKey => $val) {
-                $trendStats[$dayKey]['target'] = $dailyTarget;
-            }
-
-            foreach ($yearlySales as $row) {
-                $day = date('Y-m-d', strtotime($row->created_at));
-                if (isset($trendStats[$day])) {
-                    $trendStats[$day]['revenue'] += (float) $row->total_price;
-                    $trendStats[$day]['clients'][$row->customer_id] = true;
+            $diffDays = (new \DateTime($startDate))->diff(new \DateTime($endDate))->days;
+            if ($diffDays > 60) {
+                $dateRange = new \DatePeriod(
+                    (new \DateTime($startDate))->modify('first day of this month'),
+                    new \DateInterval('P1M'),
+                    (new \DateTime($endDate))->modify('last day of this month')->modify('+1 day')
+                );
+                foreach ($dateRange as $date) {
+                    $monthLabel = $date->format('M Y');
+                    $monthKey = $date->format('Y-m');
+                    $trendLabels[] = $monthLabel;
+                    $trendStats[$monthKey] = [
+                        'revenue' => 0.0,
+                        'target' => 0.0,
+                        'clients' => []
+                    ];
                 }
-            }
 
-            $monthlyLabels = $trendLabels;
-            $monthlyRevenueVals = [];
-            $monthlyTargetVals = [];
-            $monthlyClientVals = [];
+                // Fetch sum of active staff monthly targets
+                $monthlyTarget = (float) (DB::table('staffother')->sum('monthlytarget') ?? 0);
+                foreach ($trendStats as $monthKey => $val) {
+                    $trendStats[$monthKey]['target'] = $monthlyTarget;
+                }
 
-            foreach ($trendLabels as $idx => $label) {
-                $dayKey = array_keys($trendStats)[$idx];
-                $monthlyRevenueVals[] = round($trendStats[$dayKey]['revenue'], 2);
-                $monthlyTargetVals[] = round($trendStats[$dayKey]['target'], 2);
-                $monthlyClientVals[] = count($trendStats[$dayKey]['clients']);
+                foreach ($yearlySales as $row) {
+                    $mKey = date('Y-m', strtotime($row->created_at));
+                    if (isset($trendStats[$mKey])) {
+                        $trendStats[$mKey]['revenue'] += (float) $row->total_price;
+                        $trendStats[$mKey]['clients'][$row->customer_id] = true;
+                    }
+                }
+
+                $monthlyLabels = $trendLabels;
+                $monthlyRevenueVals = [];
+                $monthlyTargetVals = [];
+                $monthlyClientVals = [];
+
+                foreach ($trendLabels as $idx => $label) {
+                    $mKey = array_keys($trendStats)[$idx];
+                    $monthlyRevenueVals[] = round($trendStats[$mKey]['revenue'], 2);
+                    $monthlyTargetVals[] = round($trendStats[$mKey]['target'], 2);
+                    $monthlyClientVals[] = count($trendStats[$mKey]['clients']);
+                }
+            } else {
+                $dateRange = new \DatePeriod(
+                    new \DateTime($startDate),
+                    new \DateInterval('P1D'),
+                    (new \DateTime($endDate))->modify('+1 day')
+                );
+                foreach ($dateRange as $date) {
+                    $dayLabel = $date->format('d M');
+                    $dayKey = $date->format('Y-m-d');
+                    $trendLabels[] = $dayLabel;
+                    $trendStats[$dayKey] = [
+                        'revenue' => 0.0,
+                        'target' => 0.0,
+                        'clients' => []
+                    ];
+                }
+
+                // Fetch sum of active staff daily targets
+                $dailyTarget = (float) (DB::table('staffother')->sum('dailytarget') ?? 0);
+                foreach ($trendStats as $dayKey => $val) {
+                    $trendStats[$dayKey]['target'] = $dailyTarget;
+                }
+
+                foreach ($yearlySales as $row) {
+                    $day = date('Y-m-d', strtotime($row->created_at));
+                    if (isset($trendStats[$day])) {
+                        $trendStats[$day]['revenue'] += (float) $row->total_price;
+                        $trendStats[$day]['clients'][$row->customer_id] = true;
+                    }
+                }
+
+                $monthlyLabels = $trendLabels;
+                $monthlyRevenueVals = [];
+                $monthlyTargetVals = [];
+                $monthlyClientVals = [];
+
+                foreach ($trendLabels as $idx => $label) {
+                    $dayKey = array_keys($trendStats)[$idx];
+                    $monthlyRevenueVals[] = round($trendStats[$dayKey]['revenue'], 2);
+                    $monthlyTargetVals[] = round($trendStats[$dayKey]['target'], 2);
+                    $monthlyClientVals[] = count($trendStats[$dayKey]['clients']);
+                }
             }
         } else {
             for ($m = 1; $m <= 12; $m++) {
@@ -2648,27 +2693,55 @@ class DashboardController extends Controller
         }
 
         if ($startDate && $endDate) {
-            $dateRange = new \DatePeriod(
-                new \DateTime($startDate),
-                new \DateInterval('P1D'),
-                (new \DateTime($endDate))->modify('+1 day')
-            );
-            foreach ($dateRange as $date) {
-                $dayLabel = $date->format('d M');
-                $trendLabels[] = $dayLabel;
-                $trendStats[$dayLabel] = [
-                    'revenue' => 0.0,
-                    'clients' => 0,
-                    'client_ids' => []
-                ];
-            }
-            foreach ($yearlySales as $sale) {
-                $dayLabel = date('d M', strtotime($sale->created_at));
-                if (isset($trendStats[$dayLabel])) {
-                    $trendStats[$dayLabel]['revenue'] += (float) $sale->total_price;
-                    if (!in_array($sale->customer_id, $trendStats[$dayLabel]['client_ids'])) {
-                        $trendStats[$dayLabel]['client_ids'][] = $sale->customer_id;
-                        $trendStats[$dayLabel]['clients']++;
+            $diffDays = (new \DateTime($startDate))->diff(new \DateTime($endDate))->days;
+            if ($diffDays > 60) {
+                $dateRange = new \DatePeriod(
+                    (new \DateTime($startDate))->modify('first day of this month'),
+                    new \DateInterval('P1M'),
+                    (new \DateTime($endDate))->modify('last day of this month')->modify('+1 day')
+                );
+                foreach ($dateRange as $date) {
+                    $monthLabel = $date->format('M Y');
+                    $trendLabels[] = $monthLabel;
+                    $trendStats[$monthLabel] = [
+                        'revenue' => 0.0,
+                        'clients' => 0,
+                        'client_ids' => []
+                    ];
+                }
+                foreach ($yearlySales as $sale) {
+                    $monthLabel = date('M Y', strtotime($sale->created_at));
+                    if (isset($trendStats[$monthLabel])) {
+                        $trendStats[$monthLabel]['revenue'] += (float) $sale->total_price;
+                        if (!in_array($sale->customer_id, $trendStats[$monthLabel]['client_ids'])) {
+                            $trendStats[$monthLabel]['client_ids'][] = $sale->customer_id;
+                            $trendStats[$monthLabel]['clients']++;
+                        }
+                    }
+                }
+            } else {
+                $dateRange = new \DatePeriod(
+                    new \DateTime($startDate),
+                    new \DateInterval('P1D'),
+                    (new \DateTime($endDate))->modify('+1 day')
+                );
+                foreach ($dateRange as $date) {
+                    $dayLabel = $date->format('d M');
+                    $trendLabels[] = $dayLabel;
+                    $trendStats[$dayLabel] = [
+                        'revenue' => 0.0,
+                        'clients' => 0,
+                        'client_ids' => []
+                    ];
+                }
+                foreach ($yearlySales as $sale) {
+                    $dayLabel = date('d M', strtotime($sale->created_at));
+                    if (isset($trendStats[$dayLabel])) {
+                        $trendStats[$dayLabel]['revenue'] += (float) $sale->total_price;
+                        if (!in_array($sale->customer_id, $trendStats[$dayLabel]['client_ids'])) {
+                            $trendStats[$dayLabel]['client_ids'][] = $sale->customer_id;
+                            $trendStats[$dayLabel]['clients']++;
+                        }
                     }
                 }
             }
@@ -3043,6 +3116,77 @@ class DashboardController extends Controller
             ]);
 
             DB::commit();
+
+            // Notify about successful renewal
+            try {
+                $formattedExpiry = date('d M Y', strtotime($expiredDate));
+                $subject = "Success: Vendor Plan Renewed - " . ($vendor->shop_name ?? 'Vendor');
+                
+                // Mail logic
+                $mailData = [
+                    'shopName' => $vendor->shop_name ?? 'Vendor',
+                    'packageName' => $package->name,
+                    'expiryDate' => $formattedExpiry,
+                ];
+
+                $adminEmail = DB::table('users')->where('log_type', 'Admin')->value('username') ?? 'admin@oxygen.com';
+                
+                // 1. Vendor
+                if (!empty($vendor->email)) {
+                    $mailData['recipientName'] = $vendor->owner_name ?? 'Vendor';
+                    \Illuminate\Support\Facades\Mail::send('emails.vendor-renewal', $mailData, function($message) use ($vendor, $subject) {
+                        $message->to($vendor->email)->subject($subject);
+                    });
+                    
+                    DB::table('notifications')->insert([
+                        'login_id' => $vendor->id,
+                        'login_type' => 'Vendor',
+                        'details' => $subject,
+                        'status' => 0,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+                }
+
+                // 2. Staff
+                if (!empty($vendor->staff_id)) {
+                    $staff = DB::table('staffother')->where('id', $vendor->staff_id)->first();
+                    if ($staff && !empty($staff->email)) {
+                        $mailData['recipientName'] = $staff->fullname ?? 'Staff';
+                        \Illuminate\Support\Facades\Mail::send('emails.vendor-renewal', $mailData, function($message) use ($staff, $subject) {
+                            $message->to($staff->email)->subject("Staff Notice: " . $subject);
+                        });
+                        
+                        DB::table('notifications')->insert([
+                            'login_id' => $staff->employee_id,
+                            'login_type' => 'Staff',
+                            'details' => "Staff Notice: " . $subject,
+                            'status' => 0,
+                            'created_at' => now(),
+                            'updated_at' => now()
+                        ]);
+                    }
+                }
+
+                // 3. Admin
+                if (!empty($adminEmail)) {
+                    $mailData['recipientName'] = 'Admin';
+                    \Illuminate\Support\Facades\Mail::send('emails.vendor-renewal', $mailData, function($message) use ($adminEmail, $subject) {
+                        $message->to($adminEmail)->subject("Admin Notice: " . $subject);
+                    });
+                    
+                    DB::table('notifications')->insert([
+                        'login_id' => 1,
+                        'login_type' => 'Admin',
+                        'details' => "Admin Notice: " . $subject,
+                        'status' => 0,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Renewal notification failed: ' . $e->getMessage());
+            }
 
             return response()->json([
                 'success' => true,
