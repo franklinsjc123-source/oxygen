@@ -68,12 +68,15 @@ class Products extends Model
         static::addGlobalScope('activeVendor', function (\Illuminate\Database\Eloquent\Builder $builder) {
             $prefix = request()->segment(1);
             if (!in_array($prefix, ['admin', 'staff', 'vendor'])) {
-                $builder->where(function($query) {
-                    $query->where('products.logintype', '!=', 'Vendor')
-                          ->orWhereExists(function ($sub) {
+                $from = $builder->getQuery()->from;
+                $tablePrefix = (is_string($from) && preg_match('/ as (\w+)$/i', $from, $matches)) ? $matches[1] . '.' : 'products.';
+                
+                $builder->where(function($query) use ($tablePrefix) {
+                    $query->where($tablePrefix . 'logintype', '!=', 'Vendor')
+                          ->orWhereExists(function ($sub) use ($tablePrefix) {
                               $sub->select(\Illuminate\Support\Facades\DB::raw(1))
                                   ->from('vendor_details')
-                                  ->whereColumn('vendor_details.id', 'products.login_id')
+                                  ->whereColumn('vendor_details.id', $tablePrefix . 'login_id')
                                   ->whereDate('vendor_details.expired_date', '>=', date('Y-m-d'))
                                   ->where('vendor_details.status', 1);
                           });
