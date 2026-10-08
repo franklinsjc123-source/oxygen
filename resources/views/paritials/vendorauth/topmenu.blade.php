@@ -405,8 +405,35 @@
                         </ul>
                     </li>
                 </ul>
-                <div class="d-lg-none pull-right" style="display: flex; align-items: center;">
-                    <a href="{{ url('vendor/logout') }}" style="color: #333; padding: 10px;">
+                <div class="d-lg-none pull-right" style="display: flex; align-items: center; gap: 5px;">
+                    <div class="onhover-dropdown" style="padding: 10px; cursor: pointer;">
+                        <i data-feather="bell" style="color: #ffffff;"></i>
+                        <span class="badge badge-pill badge-primary pull-right notification-badge" style="position: absolute; top: 0px; right: 0px;">{{ $unreadCount }}</span>
+                        <ul class="notification-dropdown onhover-show-div p-0">
+                            <li>Notification <span class="badge badge-pill badge-primary pull-right">{{ $unreadCount }}</span></li>
+                            @forelse($notifications as $noti)
+                            <li>
+                                <div class="media">
+                                    <div class="media-body">
+                                        <h6 class="mt-0" style="font-size: 13px;"><span><i class="shopping-color"
+                                                    data-feather="bell"></i></span>{{ \Carbon\Carbon::parse($noti->created_at)->diffForHumans() }}</h6>
+                                        <p class="mb-0" style="font-size: 12px; line-height: 1.4;">{{ $noti->details }}</p>
+                                    </div>
+                                </div>
+                            </li>
+                            @empty
+                            <li>
+                                <div class="media">
+                                    <div class="media-body">
+                                        <p class="mb-0">No new notifications</p>
+                                    </div>
+                                </div>
+                            </li>
+                            @endforelse
+                            <li class="txt-dark"><a href="javascript:void(0)">All notifications</a></li>
+                        </ul>
+                    </div>
+                    <a href="{{ url('vendor/logout') }}" style="color: #ffffff; padding: 10px;">
                         <i data-feather="log-out"></i>
                     </a>
                 </div>
