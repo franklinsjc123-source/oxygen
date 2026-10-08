@@ -663,7 +663,13 @@
                                 </p>
                                 @if(!empty($vendorDetails->location_map))
                                     <div class="desktop-address" style="margin-top: 4px;">
-                                        <a href="{{ $vendorDetails->location_map }}" target="_blank" style="background-color: rgba(255, 255, 255, 0.15); color: #ffffff; padding: 2px 8px; border-radius: 4px; font-size: 10.5px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 3px;">
+                                        @php
+                                            $mapLink = $vendorDetails->location_map;
+                                            if (!preg_match('/^https?:\/\//', $mapLink)) {
+                                                $mapLink = 'https://maps.google.com/?q=' . urlencode($mapLink);
+                                            }
+                                        @endphp
+                                        <a href="{{ $mapLink }}" target="_blank" style="background-color: rgba(255, 255, 255, 0.15); color: #ffffff; padding: 2px 8px; border-radius: 4px; font-size: 10.5px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 3px;">
                                             <i class="fa fa-map-marker" style="font-size: 9.5px;"></i> Map View
                                         </a>
                                     </div>
@@ -688,7 +694,7 @@
                         </div>
 
                         <!-- Mobile-only address block -->
-                        <div class="mobile-address" style="display: none; width: 100%; margin-top: 2px !important;">
+                        <div class="mobile-address" style="display: none; width: 100%; margin-top: 2px !important; flex-direction: column;">
                             <p style="font-size: 12px; color: #ffffff; margin: 0; display: flex; align-items: flex-start; gap: 4px; line-height: 1.35;">
                                 <i class="fa fa-map-marker" style="color: #ffffff; margin-top: 2px; font-size: 12px; width: 12px; text-align: center; flex-shrink: 0;"></i>
                                 <span style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
@@ -699,6 +705,19 @@
                                     @if(!empty($vendorDetails->pincode)) - {{ $vendorDetails->pincode }} @endif
                                 </span>
                             </p>
+                            @if(!empty($vendorDetails->location_map))
+                                <div style="margin-top: 8px; padding-left: 16px;">
+                                    @php
+                                        $mapLink = $vendorDetails->location_map;
+                                        if (!preg_match('/^https?:\/\//', $mapLink)) {
+                                            $mapLink = 'https://maps.google.com/?q=' . urlencode($mapLink);
+                                        }
+                                    @endphp
+                                    <a href="{{ $mapLink }}" target="_blank" style="background-color: rgba(255, 255, 255, 0.15); color: #ffffff; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                                        <i class="fa fa-map-marker" style="font-size: 10px;"></i> Map View
+                                    </a>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
