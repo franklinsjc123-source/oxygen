@@ -71,6 +71,9 @@ Route::get('/', function () {
 })->name('portal_selection');
 
 Route::get('/login', function () {
+    if (auth()->check() && (int) auth()->user()->status === 1) {
+        return redirect()->route('admindashboard', auth()->user()->admin_id ?? null);
+    }
     return view('auth.adminlogin');
 })->name('admin_login_form');
 

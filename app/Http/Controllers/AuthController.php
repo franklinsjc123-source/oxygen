@@ -11,10 +11,13 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Session as FacadesSession;
 
 class AuthController extends Controller
 {
+    protected $commonHelper;
+
     public function __construct(
         CommonHelper $commonHelper
     ) {
@@ -24,8 +27,9 @@ class AuthController extends Controller
     {
         $data['username'] = $request->username;
         $data['password'] = $request->password;
+        $remember = $request->boolean('remember');
         
-        if (auth()->attempt($data)) {
+        if (auth()->attempt($data, $remember)) {
             $user = Auth::user();
             if ($user->status == 1) {
                 $userId = $user->id;
@@ -40,6 +44,16 @@ class AuthController extends Controller
                 FacadesSession::put('status', $status);
                 FacadesSession::put('log_type', $log_type);
                 FacadesSession::put('login_id', $login_id);
+
+                if ($remember) {
+                    Cookie::queue('remember_admin_username', $request->username, 60 * 24 * 30);
+                    Cookie::queue('remember_admin_password', $request->password, 60 * 24 * 30);
+                    Cookie::queue('remember_admin_check', '1', 60 * 24 * 30);
+                } else {
+                    Cookie::queue(Cookie::forget('remember_admin_username'));
+                    Cookie::queue(Cookie::forget('remember_admin_password'));
+                    Cookie::queue(Cookie::forget('remember_admin_check'));
+                }
 
                 return redirect()->route('admindashboard', $user->admin_id);
             } else {
@@ -56,14 +70,27 @@ class AuthController extends Controller
     {
         $data['username'] = $request->username;
         $data['password'] = $request->password;
+        $remember = $request->boolean('remember');
         
-        if (auth()->attempt($data)) {
+        if (auth()->attempt($data, $remember)) {
             $user = Auth::user();
             if ($user->status == 2) {
                 FacadesSession::put('username', $data['username']);
                 FacadesSession::put('userId', $user->id);
                 FacadesSession::put('status', $user->status);
                 FacadesSession::put('login_id', $user->login_id);
+                FacadesSession::put('log_name', $user->name);
+                FacadesSession::put('log_type', $user->log_type ?? 'Vendor');
+
+                if ($remember) {
+                    Cookie::queue('remember_vendor_username', $request->username, 60 * 24 * 30);
+                    Cookie::queue('remember_vendor_password', $request->password, 60 * 24 * 30);
+                    Cookie::queue('remember_vendor_check', '1', 60 * 24 * 30);
+                } else {
+                    Cookie::queue(Cookie::forget('remember_vendor_username'));
+                    Cookie::queue(Cookie::forget('remember_vendor_password'));
+                    Cookie::queue(Cookie::forget('remember_vendor_check'));
+                }
                 
                 return redirect()->route('vendordashboard', $user->login_id);
             } else {
@@ -81,8 +108,9 @@ class AuthController extends Controller
     {
         $data['username'] = $request->username;
         $data['password'] = $request->password;
+        $remember = $request->boolean('remember');
         
-        if (auth()->attempt($data)) {
+        if (auth()->attempt($data, $remember)) {
             $user = Auth::user();
             $staffExists = \App\Models\Staffcreates::where('employee_id', $user->login_id)->exists();
 
@@ -109,6 +137,16 @@ class AuthController extends Controller
                     $roll = \App\Models\Roll::where('roll', $staffCreates->department)->get();
                     FacadesSession::put('roll', $roll);
                 }
+
+                if ($remember) {
+                    Cookie::queue('remember_staff_username', $request->username, 60 * 24 * 30);
+                    Cookie::queue('remember_staff_password', $request->password, 60 * 24 * 30);
+                    Cookie::queue('remember_staff_check', '1', 60 * 24 * 30);
+                } else {
+                    Cookie::queue(Cookie::forget('remember_staff_username'));
+                    Cookie::queue(Cookie::forget('remember_staff_password'));
+                    Cookie::queue(Cookie::forget('remember_staff_check'));
+                }
                 
                 return redirect()->route('staffdashboard', $user->login_id);
             }
@@ -125,8 +163,9 @@ class AuthController extends Controller
     {
         $data['username'] = $request->username;
         $data['password'] = $request->password;
+        $remember = $request->boolean('remember');
         
-        if (auth()->attempt($data)) {
+        if (auth()->attempt($data, $remember)) {
             $user = Auth::user();
             if ($user->status == 4) {
                 FacadesSession::put([
@@ -134,7 +173,19 @@ class AuthController extends Controller
                     'userId' => $user->id,
                     'level' => $user->level,
                     'status' => $user->status,
+                    'login_id' => $user->login_id,
+                    'log_name' => $user->name,
                 ]);
+
+                if ($remember) {
+                    Cookie::queue('remember_user_username', $request->username, 60 * 24 * 30);
+                    Cookie::queue('remember_user_password', $request->password, 60 * 24 * 30);
+                    Cookie::queue('remember_user_check', '1', 60 * 24 * 30);
+                } else {
+                    Cookie::queue(Cookie::forget('remember_user_username'));
+                    Cookie::queue(Cookie::forget('remember_user_password'));
+                    Cookie::queue(Cookie::forget('remember_user_check'));
+                }
 
                 if ($user->login_id) {
                     return redirect()->route('home');

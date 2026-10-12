@@ -57,6 +57,9 @@ Route::get('/', function () {
 	return view('auth.vendorlogin');
 });
 Route::get('login', function () {
+	if (auth()->check() && (int) auth()->user()->status === 2) {
+		return redirect()->route('vendordashboard', auth()->user()->login_id);
+	}
 	$viewBag['error'] = '';
 	return view('auth.vendorlogin');
 })->name('vendorerror');

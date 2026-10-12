@@ -216,9 +216,10 @@ return [
     'aliases' => [
         'Helper' => App\Helpers\Helper::class,
         'Flasher' => Flasher\Laravel\Facade\Flasher::class,
-		 'DB' => Illuminate\Support\Facades\DB::class,
-         'Image' => Intervention\Image\Facades\Image::class,
-         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+		'DB' => Illuminate\Support\Facades\DB::class,
+        'Image' => Intervention\Image\Facades\Image::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Cookie' => Illuminate\Support\Facades\Cookie::class,
     ],
 
 ];

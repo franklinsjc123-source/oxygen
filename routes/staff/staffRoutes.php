@@ -67,6 +67,9 @@ Route::get('/', function () {
     return view('auth.stafflogin');
 });
 Route::get('login', function () {
+    if (auth()->check() && (int) auth()->user()->status === 3) {
+        return redirect()->route('staffdashboard', auth()->user()->login_id);
+    }
     $viewBag['error'] = '';     
     return view('auth.stafflogin');
 })->name('stafferror');

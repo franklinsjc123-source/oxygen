@@ -20,16 +20,16 @@
                                  @csrf
                                     <div class="form-group">
                                         <label for="username">Username:</label>
-                                        <input type="text" class="form-control" id="username" name="username" required>
+                                        <input type="text" class="form-control" id="username" name="username" value="{{ Cookie::get('remember_user_username') ?? old('username') }}" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="pwd">Password:</label>
-                                        <input type="password" class="form-control" id="pwd" name="password" required>
+                                        <input type="password" class="form-control" id="pwd" name="password" value="{{ Cookie::get('remember_user_password') ?? '' }}" required>
                                     </div>
 
                                     <div class="form-terms">
                                         <div class="form-check mesm-2">
-                                            <input type="checkbox" class="form-check-input" id="customControlAutosizing">
+                                            <input type="checkbox" class="form-check-input" id="customControlAutosizing" name="remember" {{ (Cookie::has('remember_user_check') || Cookie::has('remember_user_username')) ? 'checked' : '' }}>
                                             <label class="form-check-label ps-2" for="customControlAutosizing">Remember
                                                 me</label>
                                             <a href="#" class="btn btn-default forgot-pass">lost your password</a>
