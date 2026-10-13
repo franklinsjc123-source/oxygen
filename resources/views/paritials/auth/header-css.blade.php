@@ -74,21 +74,78 @@
         overflow-x: hidden !important;
     }
 
-    /* Bootstrap Table Mobile Toolbar & Pagination Fix */
-    @media (max-width: 575.98px) {
-        .fixed-table-toolbar .search {
-            width: 100% !important;
-            float: none !important;
-            padding-left: 0 !important;
+    /* ── Bootstrap Table Mobile Toolbar Fix: Search and Filter button on Row 1, Action buttons on Row 2 ── */
+    @media (max-width: 767.98px) {
+        .fixed-table-toolbar {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            align-items: center !important;
+            justify-content: flex-start !important;
             margin-bottom: 10px !important;
+            width: 100% !important;
+        }
+        .fixed-table-toolbar .search {
+            order: 1 !important;
+            flex: 1 1 auto !important;
+            min-width: 0 !important;
+            width: auto !important;
+            margin: 4px 0 !important;
+            padding: 0 !important;
+            float: none !important;
+        }
+        .fixed-table-toolbar .search .form-control,
+        .fixed-table-toolbar .search input {
+            width: 100% !important;
+            height: 38px !important;
+            min-height: 38px !important;
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            font-size: 13px !important;
+            padding: 6px 10px !important;
+            box-sizing: border-box !important;
         }
         .fixed-table-toolbar .columns {
-            width: 100% !important;
+            order: 2 !important;
+            flex: 0 0 auto !important;
+            width: auto !important;
+            margin: 4px 0 !important;
+            margin-right: 0 !important;
             float: none !important;
             display: flex !important;
+            align-items: center !important;
             justify-content: flex-start !important;
-            margin-top: 5px !important;
-            margin-bottom: 10px !important;
+        }
+        .fixed-table-toolbar .columns > .btn,
+        .fixed-table-toolbar .columns > .btn-group > .btn,
+        .fixed-table-toolbar .columns button {
+            height: 38px !important;
+            min-height: 38px !important;
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-left: 0 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 6px 12px !important;
+            margin: 0 !important;
+            background-color: #fff !important;
+            color: #333 !important;
+            border-color: #ced4da !important;
+        }
+        .fixed-table-toolbar .bs-bars {
+            order: 3 !important;
+            flex: 0 0 100% !important;
+            width: 100% !important;
+            margin: 8px 0 4px 0 !important;
+            float: none !important;
+        }
+        .fixed-table-toolbar .bs-bars #toolbar,
+        .fixed-table-toolbar .bs-bars > div {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            align-items: center !important;
+            gap: 8px !important;
+            width: 100% !important;
         }
     }
 
@@ -256,41 +313,44 @@
     }
 
     /* Toolbar flex ordering: Search input -> Column filter toggle (joined edges) -> Action buttons (Export & Add with gap) */
-    .fixed-table-toolbar {
-        display: flex !important;
-        align-items: center !important;
-    }
-    .fixed-table-toolbar .search {
-        order: 0 !important;
-        margin-right: 0 !important;
-        margin-left: 0 !important;
-        margin-top: 5px !important;
-        margin-bottom: 5px !important;
-    }
-    .fixed-table-toolbar .search .form-control {
-        border-top-right-radius: 0 !important;
-        border-bottom-right-radius: 0 !important;
-    }
-    .fixed-table-toolbar .columns {
-        order: 1 !important;
-        margin-left: 0 !important;
-        margin-right: 15px !important;
-        margin-top: 5px !important;
-        margin-bottom: 5px !important;
-    }
-    .fixed-table-toolbar .columns > .btn,
-    .fixed-table-toolbar .columns > .btn-group > .btn,
-    .fixed-table-toolbar .columns button {
-        border-top-left-radius: 0 !important;
-        border-bottom-left-radius: 0 !important;
-        border-left: 0 !important;
-    }
-    .fixed-table-toolbar .bs-bars {
-        order: 2 !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        margin-top: 5px !important;
-        margin-bottom: 5px !important;
+    @media (min-width: 768px) {
+        .fixed-table-toolbar {
+            display: flex !important;
+            align-items: center !important;
+            flex-wrap: nowrap !important;
+        }
+        .fixed-table-toolbar .search {
+            order: 1 !important;
+            margin-right: 0 !important;
+            margin-left: 0 !important;
+            margin-top: 5px !important;
+            margin-bottom: 5px !important;
+        }
+        .fixed-table-toolbar .search .form-control {
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+        }
+        .fixed-table-toolbar .columns {
+            order: 2 !important;
+            margin-left: 0 !important;
+            margin-right: 15px !important;
+            margin-top: 5px !important;
+            margin-bottom: 5px !important;
+        }
+        .fixed-table-toolbar .columns > .btn,
+        .fixed-table-toolbar .columns > .btn-group > .btn,
+        .fixed-table-toolbar .columns button {
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-left: 0 !important;
+        }
+        .fixed-table-toolbar .bs-bars {
+            order: 3 !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            margin-top: 5px !important;
+            margin-bottom: 5px !important;
+        }
     }
 
     /* Remove dotted column resizer drag guide border */
