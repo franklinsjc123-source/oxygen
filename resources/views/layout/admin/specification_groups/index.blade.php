@@ -4,34 +4,48 @@
     @include('paritials.css.product.attribute-css')
     
     <style>
-        .fixed-table-toolbar {
-            display: flex !important;
-            flex-wrap: wrap;
-            align-items: center;
-            margin-bottom: 15px;
+        @media (min-width: 768px) {
+            .fixed-table-toolbar {
+                display: flex !important;
+                flex-wrap: wrap;
+                align-items: center;
+                margin-bottom: 15px;
+            }
+            .fixed-table-toolbar .search {
+                order: 1;
+                flex: 1;
+                margin-bottom: 0 !important;
+                float: none !important;
+            }
+            .fixed-table-toolbar .search input {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            .fixed-table-toolbar .columns {
+                order: 2;
+                margin-left: 10px;
+                margin-bottom: 0 !important;
+                float: none !important;
+            }
+            .fixed-table-toolbar .bs-bars {
+                order: 3;
+                margin-left: 15px;
+                margin-top: 0 !important;
+                float: none !important;
+                width: auto !important;
+            }
         }
-        .fixed-table-toolbar .search {
-            order: 1;
-            flex: 1;
-            margin-bottom: 0 !important;
-            float: none !important;
-        }
-        .fixed-table-toolbar .search input {
-            width: 100% !important;
-            max-width: 100% !important;
-        }
-        .fixed-table-toolbar .columns {
-            order: 2;
-            margin-left: 10px;
-            margin-bottom: 0 !important;
-            float: none !important;
-        }
-        .fixed-table-toolbar .bs-bars {
-            order: 3;
-            margin-left: 15px;
-            margin-top: 0 !important;
-            float: none !important;
-            width: auto !important;
+        @media (max-width: 767.98px) {
+            .fixed-table-toolbar .bs-bars {
+                margin-top: 14px !important;
+                margin-bottom: 10px !important;
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                width: 100% !important;
+            }
+            .fixed-table-toolbar .bs-bars #toolbar {
+                margin-top: 0 !important;
+            }
         }
     </style>
 
