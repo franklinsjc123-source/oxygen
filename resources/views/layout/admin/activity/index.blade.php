@@ -51,121 +51,18 @@
                               
                                 <div class="tab-content" id="top-tabContent">
 
-                                    <style>
-                                        .activity-toolbar {
-                                            padding: 0;
-                                            width: 100% !important;
-                                        }
-                                        .fixed-table-toolbar,
-                                        .fixed-table-toolbar .bs-bars,
-                                        .fixed-table-toolbar .pull-left,
-                                        .fixed-table-toolbar .float-left {
-                                            float: none !important;
-                                            width: 100% !important;
-                                            clear: both;
-                                        }
-                                        .activity-toolbar .toolbar-row {
-                                            display: flex;
-                                            align-items: center;
-                                            justify-content: space-between;
-                                            gap: 12px;
-                                            padding: 8px 0;
-                                            width: 100%;
-                                        }
-                                        .activity-toolbar .toolbar-row .btn {
-                                            white-space: nowrap;
-                                            font-size: 13px;
-                                            padding: 6px 14px;
-                                            border-radius: 4px;
-                                        }
-                                        .activity-toolbar .search-box {
-                                            flex: 1;
-                                            max-width: 500px;
-                                        }
-                                        .activity-toolbar .search-box .form-control {
-                                            border-left: none;
-                                            font-size: 13px;
-                                        }
-                                        .activity-toolbar .search-box .input-group-text {
-                                            background: #fff;
-                                            border-right: none;
-                                        }
-                                        .fixed-table-toolbar .columns,
-                                        .fixed-table-toolbar .search {
-                                            display: none !important;
-                                        }
-
-                                        @media (max-width: 767.98px) {
-                                            .activity-toolbar .toolbar-row {
-                                                flex-direction: column !important;
-                                                align-items: stretch !important;
-                                                gap: 10px !important;
-                                                width: 100% !important;
-                                                padding: 4px 0 !important;
-                                            }
-                                            .activity-toolbar .search-box {
-                                                flex: 0 0 100% !important;
-                                                max-width: 100% !important;
-                                                width: 100% !important;
-                                            }
-                                            .activity-toolbar .search-box .form-control {
-                                                height: 38px !important;
-                                                min-height: 38px !important;
-                                                font-size: 13px !important;
-                                                padding: 6px 10px !important;
-                                            }
-                                            .activity-toolbar .search-box .input-group-text {
-                                                height: 38px !important;
-                                                min-height: 38px !important;
-                                                font-size: 13px !important;
-                                                padding: 6px 12px !important;
-                                            }
-                                            .activity-toolbar .toolbar-row > div:last-child {
-                                                width: 100% !important;
-                                                margin-left: 0 !important;
-                                                display: flex !important;
-                                                flex-wrap: wrap !important;
-                                                gap: 8px !important;
-                                                align-items: center !important;
-                                                justify-content: flex-start !important;
-                                            }
-                                            .activity-toolbar .toolbar-row .btn {
-                                                height: 38px !important;
-                                                min-height: 38px !important;
-                                                font-size: 12px !important;
-                                                padding: 6px 12px !important;
-                                                display: inline-flex !important;
-                                                align-items: center !important;
-                                                justify-content: center !important;
-                                                margin: 0 !important;
-                                            }
-                                            .activity-toolbar .toolbar-row a {
-                                                display: inline-flex !important;
-                                                text-decoration: none !important;
-                                            }
-                                        }
-                                    </style>
-
-                                    <div id="toolbar" class="activity-toolbar">
-                                        <div class="toolbar-row">
-                                            <div class="input-group search-box">
-                                                <span class="input-group-text"><i class="fa fa-search"></i></span>
-                                                <input type="text" class="form-control" id="customActivitySearch" placeholder="Search For ID, Name, Status, or Something..">
-                                            </div>
-                                            <div class="d-flex align-items-center gap-2 ms-auto">
-                                                <button type="button" class="btn btn-success btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;">
-                                                    <i class="fa fa-file-excel-o me-1"></i> Export Excel
-                                                </button>
-                                                <a href="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.create' : 'activity_trackers.create') }}">
-                                                    <button type="button" class="btn btn-primary">
-                                                        <i class="fa fa-plus me-1"></i> New Vendor Tracker
-                                                    </button>
-                                                </a>
-                                            </div>
-                                        </div>
+                                    <div id="toolbar" class="d-flex align-items-center">
+                                        <button type="button" class="btn btn-success btn-export-excel me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;">
+                                            <i class="fa fa-file-excel-o me-1"></i> Export Excel
+                                        </button>
+                                        <a href="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.create' : 'activity_trackers.create') }}">
+                                            <button type="button" class="btn btn-primary">
+                                                <i class="fa fa-plus me-1"></i> New Vendor Tracker
+                                            </button>
+                                        </a>
                                     </div>
 
-                                    <table class="table" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="false" data-sort="true" data-pagination="true" data-page-size="100" data-search="false" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true"
+                                    <table class="table" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true"
                                     data-show-export="false" data-toolbar="#toolbar">
             <thead>
                                     <tr>
@@ -288,13 +185,6 @@
         });
         return false;
     }
-
-    $(document).ready(function() {
-        $('#customActivitySearch').on('keyup', function() {
-            var searchText = $(this).val();
-            $('#table').bootstrapTable('resetSearch', searchText);
-        });
-    });
 </script>
 
 @endsection
