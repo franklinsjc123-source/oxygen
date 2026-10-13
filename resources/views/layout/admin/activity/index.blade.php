@@ -94,6 +94,56 @@
                                         .fixed-table-toolbar .search {
                                             display: none !important;
                                         }
+
+                                        @media (max-width: 767.98px) {
+                                            .activity-toolbar .toolbar-row {
+                                                flex-direction: column !important;
+                                                align-items: stretch !important;
+                                                gap: 10px !important;
+                                                width: 100% !important;
+                                                padding: 4px 0 !important;
+                                            }
+                                            .activity-toolbar .search-box {
+                                                flex: 0 0 100% !important;
+                                                max-width: 100% !important;
+                                                width: 100% !important;
+                                            }
+                                            .activity-toolbar .search-box .form-control {
+                                                height: 38px !important;
+                                                min-height: 38px !important;
+                                                font-size: 13px !important;
+                                                padding: 6px 10px !important;
+                                            }
+                                            .activity-toolbar .search-box .input-group-text {
+                                                height: 38px !important;
+                                                min-height: 38px !important;
+                                                font-size: 13px !important;
+                                                padding: 6px 12px !important;
+                                            }
+                                            .activity-toolbar .toolbar-row > div:last-child {
+                                                width: 100% !important;
+                                                margin-left: 0 !important;
+                                                display: flex !important;
+                                                flex-wrap: wrap !important;
+                                                gap: 8px !important;
+                                                align-items: center !important;
+                                                justify-content: flex-start !important;
+                                            }
+                                            .activity-toolbar .toolbar-row .btn {
+                                                height: 38px !important;
+                                                min-height: 38px !important;
+                                                font-size: 12px !important;
+                                                padding: 6px 12px !important;
+                                                display: inline-flex !important;
+                                                align-items: center !important;
+                                                justify-content: center !important;
+                                                margin: 0 !important;
+                                            }
+                                            .activity-toolbar .toolbar-row a {
+                                                display: inline-flex !important;
+                                                text-decoration: none !important;
+                                            }
+                                        }
                                     </style>
 
                                     <div id="toolbar" class="activity-toolbar">
