@@ -8,38 +8,78 @@
 <!-- Page Header Ends -->
 
 <style>
-    /* Modern, soft-pill tab styling */
+    /* ── Modern Order Custom Tabs: Symmetrical 2-Column Grid on Mobile, Pills on Desktop ── */
     .order-custom-tabs {
-        border-bottom: none;
-        margin-bottom: 25px;
-        background-color: #f4f6f9; /* Soft gray container */
-        padding: 8px;
-        border-radius: 12px;
-        display: inline-flex;
-        flex-wrap: wrap;
-        gap: 5px;
+        border-bottom: none !important;
+        margin-bottom: 20px !important;
+        background-color: #f1f5f9 !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 14px !important;
+        box-sizing: border-box !important;
     }
     .order-custom-tabs .nav-item {
-        margin-bottom: 0;
+        margin-bottom: 0 !important;
     }
     .order-custom-tabs .nav-link {
-        color: #495057 !important;
-        font-weight: 600;
-        font-size: 1.05rem;
-        border: none !important;
-        border-radius: 8px !important;
-        padding: 10px 22px;
-        transition: all 0.25s ease-in-out;
+        color: #475569 !important;
+        font-weight: 600 !important;
+        border: 1px solid transparent !important;
+        border-radius: 9px !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
         background-color: transparent !important;
+        text-align: center !important;
+        white-space: nowrap !important;
     }
     .order-custom-tabs .nav-link:hover {
-        color: #1a1d20 !important;
-        background-color: #e9ecef !important;
+        color: #1e293b !important;
+        background-color: rgba(255, 255, 255, 0.6) !important;
     }
-    .order-custom-tabs .nav-link.active, .order-custom-tabs .nav-item.show .nav-link {
-        color: #0d6efd !important; /* Rich blue text */
-        background-color: #ffffff !important; /* White pill */
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Soft shadow to make it pop */
+    .order-custom-tabs .nav-link.active, 
+    .order-custom-tabs .nav-item.show .nav-link {
+        color: #0d6efd !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 2px 8px rgba(13, 110, 253, 0.12), 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+        border-color: rgba(13, 110, 253, 0.15) !important;
+        font-weight: 700 !important;
+    }
+
+    /* Mobile: 2 Equal Columns Grid (No scrollbar, perfectly balanced) */
+    @media (max-width: 767.98px) {
+        .order-custom-tabs {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            width: 100% !important;
+            gap: 6px !important;
+            padding: 6px !important;
+        }
+        .order-custom-tabs .nav-item {
+            width: 100% !important;
+            display: flex !important;
+        }
+        .order-custom-tabs .nav-link {
+            width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 9px 8px !important;
+            font-size: 12.5px !important;
+            line-height: 1.2 !important;
+            box-sizing: border-box !important;
+        }
+    }
+
+    /* Desktop: Horizontal Pill Bar */
+    @media (min-width: 768px) {
+        .order-custom-tabs {
+            display: inline-flex !important;
+            flex-wrap: wrap !important;
+            gap: 6px !important;
+            padding: 6px 8px !important;
+        }
+        .order-custom-tabs .nav-link {
+            padding: 8px 18px !important;
+            font-size: 0.95rem !important;
+        }
     }
     
     /* SweetAlert2 font size adjustment for visual consistency */
@@ -100,15 +140,13 @@
                         <div class="tab-content" id="myTabContent">
 
                             <div class="tab-pane fade active show" id="new" role="tabpanel" aria-labelledby="new-tabs">
-                            <div class="mt-3"> 
-                                <button class="btn border border-success text-success accept" onclick="edit()">Accept</button> 
-                            </div>
                                 {{-- <form class="needs-validation" novalidate=""> --}}
         
                                     <div class="row">
 
                                         <div class="datatable-dashv1-list custom-datatable-overright" >
-                                            <div id="toolbar-vendor-new" class="d-flex align-items-center">
+                                            <div id="toolbar-vendor-new" class="d-flex align-items-center gap-2">
+                                                <button type="button" class="btn border border-success text-success accept" onclick="edit()">Accept</button> 
                                                 <button type="button" class="btn btn-success btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
                                             </div>
 
