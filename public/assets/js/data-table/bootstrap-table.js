@@ -311,7 +311,7 @@
         sidePagination: 'client', // client or server
         totalRows: 0, // server side need to set
         pageNumber: 1,
-        pageSize: 10,
+        pageSize: 100,
         pageList: [10, 25, 50, 100],
         paginationHAlign: 'right', //right, left
         paginationVAlign: 'bottom', //bottom, top, both
@@ -3043,9 +3043,18 @@
 
         this.each(function () {
             var $this = $(this),
-                data = $this.data('bootstrap.table'),
-                options = $.extend({}, BootstrapTable.DEFAULTS, $this.data(),
+                data = $this.data('bootstrap.table');
+
+            if ($this.attr('data-page-size') === '25' || $this.attr('data-page-size') === '10' || !$this.attr('data-page-size')) {
+                $this.attr('data-page-size', '100');
+                $this.data('page-size', 100);
+            }
+
+            var options = $.extend({}, BootstrapTable.DEFAULTS, $this.data(),
                     typeof option === 'object' && option);
+            if (!options.pageSize || options.pageSize === 25 || options.pageSize === 10) {
+                options.pageSize = 100;
+            }
 
             if (typeof option === 'string') {
                 if ($.inArray(option, allowedMethods) < 0) {

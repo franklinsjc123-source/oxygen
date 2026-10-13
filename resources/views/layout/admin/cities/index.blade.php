@@ -154,7 +154,7 @@
 								
 								<!-- Table of Cities -->
 								<div class="mt-4">
-									<table class="table" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="false" data-sort="true" data-pagination="true" data-page-size="25" data-search="false" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true"
+									<table class="table" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="false" data-sort="true" data-pagination="true" data-page-size="100" data-search="false" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true"
 									data-show-export="false" data-toolbar="#toolbar">
 										<thead>
 											<tr>

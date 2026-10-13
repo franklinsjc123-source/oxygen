@@ -112,7 +112,7 @@
                                                 </div>
 
 
-                                                <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-new" >
+                                                <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-new" >
                                                     <thead>
                                                         <tr>
 														{{-- <th data-field="dd" data-checkbox="true">
@@ -269,7 +269,7 @@
                                                 <button type="button" class="btn btn-success btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
                                             </div>
 
-                                            <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-general" >
+                                            <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-general" >
                                                 <thead>
                                                     <tr>
                                                     {{-- <th data-field="dd" data-checkbox="true">
@@ -406,7 +406,7 @@
                                     <button type="button" class="btn btn-success btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
                                 </div>
 
-                                <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-dispatch" >
+                                <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-dispatch" >
                                     <thead>
                                         <tr>
                                         {{-- <th data-field="dd" data-checkbox="true">
@@ -544,7 +544,7 @@
                                                 <button type="button" class="btn btn-success btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
                                             </div>
 
-                                            <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-delivery" >
+                                            <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-delivery" >
                                                 <thead>
                                                     <tr>
                                                     <th data-field="dd" data-checkbox="true">
@@ -680,7 +680,7 @@
                                                 <button type="button" class="btn btn-success btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
                                             </div>
 
-                                            <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-return" >
+                                            <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-return" >
                                                 <thead>
                                                     <tr>
                                                     <th data-field="dd" data-checkbox="true">
@@ -814,7 +814,7 @@
                                             <button type="button" class="btn btn-success btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
                                         </div>
 
-                                        <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-cancel" >
+                                        <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-cancel" >
                                             <thead>
                                                 <tr>
                                                 <th data-field="dd" data-checkbox="true">
@@ -942,7 +942,7 @@
                                             <div class="datatable-dashv1-list custom-datatable-overright">
 
 
-                                            <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="25" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">
+                                            <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">
                                                  <thead>
                                                         <tr>
 														<th data-field="dd" data-checkbox="true">

@@ -145,7 +145,7 @@
 									<div class="col-md-8 m-auto d-none">
 										<table class="table" id="table" data-click-to-select="true" data-sort-name="id"
 											data-sort-order="asc" data-mobile-responsive="true" data-toggle="table"
-											data-sort="true" data-pagination="true" data-page-size="25"
+											data-sort="true" data-pagination="true" data-page-size="100"
 											data-resizable="true" data-cookie="true" data-click-to-select="true"
 											data-toolbar="#toolbar">
 
@@ -280,7 +280,7 @@
 
 							<table class="table" id="table" data-click-to-select="true" data-sort-name="id"
 								data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true"
-								data-pagination="true" data-page-size="25" data-search="true" data-resizable="true"
+								data-pagination="true" data-page-size="100" data-search="true" data-resizable="true"
 								data-cookie="true" data-click-to-select="true" data-toolbar="#toolbar">
 
 								<thead>
