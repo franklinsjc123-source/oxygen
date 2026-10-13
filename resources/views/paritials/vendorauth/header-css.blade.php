@@ -182,6 +182,23 @@ background-color: transparent;
         margin-top: 5px !important;
         margin-bottom: 5px !important;
     }
+    .fixed-table-toolbar .bs-bars > div {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+    .fixed-table-toolbar .bs-bars .btn,
+    .fixed-table-toolbar .bs-bars a.btn,
+    .fixed-table-toolbar .bs-bars a > .btn,
+    .fixed-table-toolbar .bs-bars button {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        padding: 6px 14px !important;
+    }
+    .fixed-table-toolbar .bs-bars a {
+        flex: 0 0 auto !important;
+        width: auto !important;
+    }
 }
 
 @media (max-width: 767.98px) {
@@ -246,7 +263,7 @@ background-color: transparent;
         order: 3 !important;
         flex: 0 0 100% !important;
         width: 100% !important;
-        margin: 8px 0 4px 0 !important;
+        margin: 10px 0 8px 0 !important;
         float: none !important;
     }
     .fixed-table-toolbar .bs-bars #toolbar,
@@ -254,10 +271,11 @@ background-color: transparent;
         display: flex !important;
         flex-wrap: nowrap !important;
         align-items: center !important;
-        gap: 6px !important;
+        gap: 8px !important;
         width: 100% !important;
         overflow-x: auto !important;
         -webkit-overflow-scrolling: touch !important;
+        box-sizing: border-box !important;
     }
     .fixed-table-toolbar .bs-bars #toolbar::-webkit-scrollbar,
     .fixed-table-toolbar .bs-bars > div::-webkit-scrollbar {
@@ -267,11 +285,11 @@ background-color: transparent;
     .fixed-table-toolbar .bs-bars a.btn,
     .fixed-table-toolbar .bs-bars a > .btn,
     .fixed-table-toolbar .bs-bars button {
-        height: 36px !important;
-        min-height: 36px !important;
+        height: 38px !important;
+        min-height: 38px !important;
         font-size: 11.5px !important;
         font-weight: 600 !important;
-        padding: 4px 10px !important;
+        padding: 6px 8px !important;
         white-space: nowrap !important;
         display: inline-flex !important;
         align-items: center !important;
@@ -279,15 +297,38 @@ background-color: transparent;
         margin: 0 !important;
         margin-right: 0 !important;
         margin-left: 0 !important;
-        flex: 0 0 auto !important;
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
         line-height: 1.2 !important;
         box-sizing: border-box !important;
+        border-radius: 6px !important;
+        text-align: center !important;
     }
     .fixed-table-toolbar .bs-bars a {
         display: inline-flex !important;
-        flex: 0 0 auto !important;
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
         margin: 0 !important;
         text-decoration: none !important;
+    }
+    .fixed-table-toolbar .bs-bars .btn.border,
+    .fixed-table-toolbar .bs-bars button.border {
+        background-color: #ffffff !important;
+    }
+    .fixed-table-toolbar .bs-bars .accept:hover,
+    .fixed-table-toolbar .bs-bars .delivered:hover {
+        background-color: #e8f5e9 !important;
+    }
+    .fixed-table-toolbar .bs-bars .dispatch:hover {
+        background-color: #e7f1ff !important;
+    }
+    .fixed-table-toolbar .bs-bars .cancelbulk:hover,
+    .fixed-table-toolbar .bs-bars .cancelbulkdispatch:hover {
+        background-color: #ffebee !important;
+    }
+    .fixed-table-toolbar .bs-bars .btn-export-excel:hover {
+        background-color: #218838 !important;
+        border-color: #1e7e34 !important;
     }
 
     /* ── Custom Toolbar Row Fix (Activity Tracker, Cities, States, etc.) ── */
