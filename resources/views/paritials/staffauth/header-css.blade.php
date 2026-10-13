@@ -302,6 +302,10 @@ background-color: transparent;
         background-color: #218838 !important;
         border-color: #1e7e34 !important;
     }
+    .fixed-table-toolbar .bs-bars .btn-import-auction-desktop,
+    .fixed-table-toolbar .bs-bars button.btn-import-auction-desktop {
+        display: none !important;
+    }
 
     /* ── Custom Toolbar Row Fix (Activity Tracker, Cities, States, etc.) ── */
     .toolbar-row {

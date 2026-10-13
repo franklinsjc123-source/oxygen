@@ -38,6 +38,22 @@
         box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
     }
 }
+@media (max-width: 767.98px) {
+    .btn-import-auction-mobile {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 8px !important;
+    }
+    .fixed-table-toolbar .bs-bars .btn-import-auction-desktop,
+    .fixed-table-toolbar .bs-bars button.btn-import-auction-desktop {
+        display: none !important;
+    }
+}
+@media (min-width: 768px) {
+    .btn-import-auction-mobile {
+        display: none !important;
+    }
+}
 </style>
 
 <!-- page-wrapper Start-->
@@ -81,36 +97,17 @@
                             <div class="card-body">
                                 
                           @if(!isset($title) || $title !== 'Live Auction')
-                          <div id="toolbar" class="d-flex align-items-center">
-                              <button type="button" class="btn btn-success btn-export-excel me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
-                              <a href="{{route('auction.create')}}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Auction </a>
+                          <div class="btn-import-auction-mobile mb-2">
+                              <button type="button" class="btn btn-info text-white w-100" data-bs-toggle="modal" data-bs-target="#importAuctionModal" data-toggle="modal" data-target="#importAuctionModal" style="background-color: #17a2b8; border-color: #17a2b8; color: #fff; height: 38px; font-weight: 600; font-size: 13px; display: flex; align-items: center; justify-content: center; border-radius: 6px;">
+                                  <i class="fa fa-upload me-2"></i> Import Auction Data
+                              </button>
+                          </div>
+                          <div id="toolbar" class="d-flex align-items-center gap-2">
+                              <button type="button" class="btn btn-info text-white btn-import-auction-desktop" data-bs-toggle="modal" data-bs-target="#importAuctionModal" data-toggle="modal" data-target="#importAuctionModal" style="background-color: #17a2b8; border-color: #17a2b8; color: #fff;"><i class="fa fa-upload me-1"></i> Import Auction</button>
+                              <button type="button" class="btn btn-success btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+                              <a href="{{route('auction.create')}}" class="btn btn-primary"><i class="fa fa-plus me-1"></i> Add Auction</a>
                           </div> 
                           @endif
-                                    @if(!isset($title) || $title !== 'Live Auction')
-                                    <div class="card-body">
-                                        <form action="{{ route('import') }}"
-                                              method="POST"
-                                              enctype="multipart/form-data">
-                                            @csrf
-                                            <input type="file" name="file"
-                                                   class="form-control">
-                                            @error('file')
-                                                <div class="invalid-feedback-custom" style="display: block; color: #dc3545; font-size: 1.05rem; margin-top: 0.25rem;">Please upload file</div>
-                                            @enderror
-                                            <br>
-                                            <button class="btn btn-success">
-                                                  Import Auction Data
-                                               </button>
-                                            <a href="{{ asset('assets/sample/auction_sample.csv') }}" class="btn btn-info ms-2" download="auction_sample.csv">
-                                                <i class="fa fa-download"></i> Download Sample Format
-                                            </a>
-                                            {{-- <a class="btn btn-warning"
-                                               href="{{ url('export') }}">
-                                                      Export Auction Data
-                                              </a> --}}
-                                        </form>
-                                    </div>
-                                    @endif
 
                             <div class="datatable-dashv1-list custom-datatable-overright">
 
@@ -241,6 +238,49 @@
             </div>
             <!-- Container-fluid Ends-->
 
+        </div>
+
+        <!-- Import Auction Modal -->
+        <div class="modal fade" id="importAuctionModal" tabindex="-1" role="dialog" aria-labelledby="importAuctionModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <form action="{{ route('import') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="modal-header text-white" style="background-color: #183543;">
+                            <h5 class="modal-title f-w-600" id="importAuctionModalLabel">
+                                <i class="fa fa-upload me-2"></i>Import Auction Data
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body p-4">
+                            <div class="mb-3">
+                                <label for="importAuctionFile" class="form-label fw-bold text-dark">Select File (CSV / Excel) <span class="text-danger">*</span></label>
+                                <input type="file" class="form-control" id="importAuctionFile" name="file" accept=".csv,.xlsx,.xls" required>
+                                @error('file')
+                                    <div class="invalid-feedback-custom" style="display: block; color: #dc3545; font-size: 0.95rem; margin-top: 0.25rem;">Please upload file</div>
+                                @enderror
+                                <div class="form-text text-muted mt-1" style="font-size: 12px;">Supported formats: .csv, .xlsx, .xls</div>
+                            </div>
+
+                            <div class="d-flex align-items-center justify-content-between p-3 rounded bg-light border mt-3">
+                                <div>
+                                    <div class="fw-bold text-dark" style="font-size: 13px;"><i class="fa fa-file-excel-o text-success me-1"></i> Sample Format</div>
+                                    <div class="text-muted" style="font-size: 11.5px;">Download sample CSV template before uploading.</div>
+                                </div>
+                                <a href="{{ asset('assets/sample/auction_sample.csv') }}" class="btn btn-sm btn-outline-primary" download="auction_sample.csv">
+                                    <i class="fa fa-download me-1"></i> Download Sample
+                                </a>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-light">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-success" style="background-color: #28a745; border-color: #28a745; color: #fff;">
+                                <i class="fa fa-upload me-1"></i> Import Auction Data
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <!-- Bid History Modal -->
