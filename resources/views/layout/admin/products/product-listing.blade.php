@@ -96,6 +96,83 @@
                     float: none !important;
                     width: auto !important;
                 }
+
+                /* Secondary Toolbar: Download Report & Import Products in same row */
+                #secondary-toolbar {
+                    margin-bottom: 15px !important;
+                }
+                @media (max-width: 767.98px) {
+                    #secondary-toolbar {
+                        display: flex !important;
+                        flex-direction: column !important;
+                        gap: 8px !important;
+                        width: 100% !important;
+                        margin-left: 0 !important;
+                        margin-right: 0 !important;
+                    }
+                    #secondary-toolbar .secondary-toolbar-row1 {
+                        display: flex !important;
+                        flex-direction: row !important;
+                        flex-wrap: nowrap !important;
+                        gap: 6px !important;
+                        width: 100% !important;
+                    }
+                    #secondary-toolbar .secondary-toolbar-row1 > a,
+                    #secondary-toolbar .secondary-toolbar-row1 > button {
+                        flex: 1 1 50% !important;
+                        min-width: 0 !important;
+                        width: 50% !important;
+                        white-space: nowrap !important;
+                        font-size: 11.5px !important;
+                        font-weight: 600 !important;
+                        padding: 4px 6px !important;
+                        height: 36px !important;
+                        min-height: 36px !important;
+                        display: inline-flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        box-sizing: border-box !important;
+                        text-align: center !important;
+                    }
+                    #secondary-toolbar .secondary-toolbar-row2 {
+                        display: flex !important;
+                        flex-direction: row !important;
+                        flex-wrap: nowrap !important;
+                        gap: 6px !important;
+                        width: 100% !important;
+                    }
+                    #secondary-toolbar .secondary-toolbar-row2 > button {
+                        flex: 1 1 0% !important;
+                        min-width: 0 !important;
+                        white-space: nowrap !important;
+                        font-size: 11.5px !important;
+                        font-weight: 600 !important;
+                        padding: 4px 6px !important;
+                        height: 36px !important;
+                        min-height: 36px !important;
+                        display: inline-flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        box-sizing: border-box !important;
+                        text-align: center !important;
+                    }
+                }
+                @media (min-width: 768px) {
+                    #secondary-toolbar {
+                        display: flex !important;
+                        flex-direction: row !important;
+                        flex-wrap: wrap !important;
+                        align-items: center !important;
+                        gap: 8px !important;
+                    }
+                    #secondary-toolbar .secondary-toolbar-row1,
+                    #secondary-toolbar .secondary-toolbar-row2 {
+                        display: inline-flex !important;
+                        flex-direction: row !important;
+                        align-items: center !important;
+                        gap: 8px !important;
+                    }
+                }
             </style>
 
         <div class="page-body">
@@ -137,16 +214,19 @@
                                 </div>
                                 
                                 <div id="secondary-toolbar" class="d-flex flex-wrap gap-2 mb-3">
-                                    <a href="{{ route('product.export') }}" class="btn btn-success btn-sm" style="background-color: #28a745; border-color: #28a745; color: #fff;">
-                                        <i class="fa fa-download me-1"></i> Download Report
-                                    </a>
-                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#importProductModal">
-                                        <i class="fa fa-upload me-1"></i> Import Products
-                                    </button>
-                                    
-                                    <button class="btn btn-sm border-warning text-warning delete"><i class="fa fa-trash me-1"></i> Delete</button>
-                                    <button class="btn btn-sm border-success text-success active"><i class="fa fa-check me-1"></i> Active</button>
-                                    <button class="btn btn-sm border-danger text-danger deactive"><i class="fa fa-ban me-1"></i> De-Active</button>
+                                    <div class="secondary-toolbar-row1">
+                                        <a href="{{ route('product.export') }}" class="btn btn-success btn-sm" style="background-color: #28a745; border-color: #28a745; color: #fff;">
+                                            <i class="fa fa-download me-1"></i> Download Report
+                                        </a>
+                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#importProductModal">
+                                            <i class="fa fa-upload me-1"></i> Import Products
+                                        </button>
+                                    </div>
+                                    <div class="secondary-toolbar-row2">
+                                        <button class="btn btn-sm border-warning text-warning delete"><i class="fa fa-trash me-1"></i> Delete</button>
+                                        <button class="btn btn-sm border-success text-success active"><i class="fa fa-check me-1"></i> Active</button>
+                                        <button class="btn btn-sm border-danger text-danger deactive"><i class="fa fa-ban me-1"></i> De-Active</button>
+                                    </div>
                                 </div>
                                 
                                 <div class="datatable-dashv1-list custom-datatable-overright">
