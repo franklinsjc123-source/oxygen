@@ -122,4 +122,86 @@ background-color: transparent;
     line-height: 1.5 !important;
     height: auto !important;
 }
+
+/* ── Bootstrap Table Pagination Alignment: Rows per page (Left), < 1 2 3 > (Centre), Showing info (Right) ── */
+.fixed-table-pagination {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+    width: 100% !important;
+    margin-top: 15px !important;
+    margin-bottom: 15px !important;
+    position: relative !important;
+    clear: both !important;
+}
+.fixed-table-pagination:before,
+.fixed-table-pagination:after {
+    display: none !important;
+}
+.fixed-table-pagination .pull-left,
+.fixed-table-pagination .pull-right {
+    float: none !important;
+}
+.fixed-table-pagination .pagination-detail {
+    display: contents !important;
+}
+.fixed-table-pagination .page-list {
+    order: 1 !important;
+    flex: 1 1 0% !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+}
+.fixed-table-pagination .page-list .btn-group {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px !important;
+}
+.fixed-table-pagination div.pagination {
+    order: 2 !important;
+    flex: 0 0 auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 auto !important;
+    float: none !important;
+}
+.fixed-table-pagination div.pagination .pagination {
+    margin: 0 !important;
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+.fixed-table-pagination .pagination-info {
+    order: 3 !important;
+    flex: 1 1 0% !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    text-align: right !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    line-height: normal !important;
+}
+@media (max-width: 767.98px) {
+    .fixed-table-pagination {
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+    .fixed-table-pagination .page-list,
+    .fixed-table-pagination div.pagination,
+    .fixed-table-pagination .pagination-info {
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+}
     </style>

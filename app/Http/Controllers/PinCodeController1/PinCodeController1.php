@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Flasher\Prime\FlasherInterface;
 use Maatwebsite\Excel\Facades\Excel;
 
-class PincodeController1 extends Controller
+class PinCodeController1 extends Controller
 {
     
     public function index()

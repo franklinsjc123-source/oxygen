@@ -824,6 +824,31 @@ function getquantity(id, productName) {
         max-width: 90% !important;
     }
 </style>
+
+{{-- Mobile-only floating bottom action bar --}}
+<div class="mobile-bottom-action-bar" id="mobileBottomActionBar">
+    <a href="{{ route('staffproducts.crud.index') }}" class="btn btn-primary">
+        <i class="fa fa-plus"></i> Add Product
+    </a>
+    <button type="button" class="btn btn-warning delete">
+        <i class="fa fa-trash"></i> Delete
+    </button>
+</div>
+
+<script>
+    // Add body class for bottom padding on mobile
+    if (window.innerWidth < 768) {
+        document.body.classList.add('has-mobile-bottom-bar');
+    }
+    window.addEventListener('resize', function() {
+        if (window.innerWidth < 768) {
+            document.body.classList.add('has-mobile-bottom-bar');
+        } else {
+            document.body.classList.remove('has-mobile-bottom-bar');
+        }
+    });
+</script>
+
 @endsection
 
 <!-- Import Products Modal -->

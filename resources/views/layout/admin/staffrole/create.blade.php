@@ -120,14 +120,16 @@
 					
                         @foreach ($mainmenus as $mainmenu)
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="mainmenu{{ $mainmenu->id }}" name="mainmenus[]" value="{{ $mainmenu->id }}" 
+                                <input type="checkbox" class="form-check-input main-menu-checkbox" id="mainmenu{{ $mainmenu->id }}" name="mainmenus[]" value="{{ $mainmenu->id }}" 
+                                    data-mainmenu-id="{{ $mainmenu->id }}"
                                     {{ (isset($role) && in_array($mainmenu->id, explode(',', $role->mainmenus))) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="mainmenu{{ $mainmenu->id }}"><u>{{ $mainmenu->title }}</u></label>
                             </div>
 							 @foreach ($submenus as $submenu)
 							 @if($mainmenu->id==$submenu->main_menu)
                             
-                                <input type="checkbox" class="form-check-input" id="submenu{{ $submenu->id }}" name="submenus[]" value="{{ $submenu->id }}" 
+                                <input type="checkbox" class="form-check-input sub-menu-checkbox" id="submenu{{ $submenu->id }}" name="submenus[]" value="{{ $submenu->id }}" 
+                                    data-parent-mainmenu="{{ $mainmenu->id }}"
                                     {{ (isset($role) && in_array($submenu->id, explode(',', $role->submenus))) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="submenu{{ $submenu->id }}">{{ $submenu->title }}</label>
                          
@@ -220,6 +222,22 @@ function getAjaxValue(url, method, callback) {
                 });
             });
 
+
+            // Select/Deselect all sub-menus when a main menu header checkbox is toggled
+            $(document).on('change', '.main-menu-checkbox', function() {
+                var mainMenuId = $(this).data('mainmenu-id');
+                var isChecked = $(this).is(':checked');
+                $('.sub-menu-checkbox[data-parent-mainmenu="' + mainMenuId + '"]').prop('checked', isChecked);
+            });
+
+            // If a sub-menu is unchecked, uncheck its parent header;
+            // If all sub-menus are checked, re-check the parent header
+            $(document).on('change', '.sub-menu-checkbox', function() {
+                var mainMenuId = $(this).data('parent-mainmenu');
+                var allSubs = $('.sub-menu-checkbox[data-parent-mainmenu="' + mainMenuId + '"]');
+                var allChecked = allSubs.length === allSubs.filter(':checked').length;
+                $('.main-menu-checkbox[data-mainmenu-id="' + mainMenuId + '"]').prop('checked', allChecked);
+            });
 
 </script>
 @endpush

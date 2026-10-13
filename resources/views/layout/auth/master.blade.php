@@ -116,6 +116,44 @@
             padding: 0;
             margin: 0;
         }
+        /* Mobile-only floating bottom action bar */
+        .mobile-bottom-action-bar {
+            display: none;
+        }
+        @media (max-width: 767.98px) {
+            .mobile-bottom-action-bar {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 1050;
+                background: rgba(33, 37, 41, 0.95);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                padding: 10px 16px;
+                gap: 10px;
+                justify-content: center;
+                align-items: center;
+                box-shadow: 0 -2px 12px rgba(0,0,0,0.25);
+                border-top: 1px solid rgba(255,255,255,0.1);
+            }
+            .mobile-bottom-action-bar .btn {
+                flex: 1;
+                font-size: 14px;
+                font-weight: 600;
+                padding: 10px 12px;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+            }
+            /* Push page content up so it doesn't hide behind the bar */
+            body.has-mobile-bottom-bar .page-body-wrapper {
+                padding-bottom: 70px;
+            }
+        }
     </style>
 
     @include('paritials.auth.header-css')
