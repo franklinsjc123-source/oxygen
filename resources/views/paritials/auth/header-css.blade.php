@@ -142,10 +142,42 @@
         .fixed-table-toolbar .bs-bars #toolbar,
         .fixed-table-toolbar .bs-bars > div {
             display: flex !important;
-            flex-wrap: wrap !important;
+            flex-wrap: nowrap !important;
             align-items: center !important;
-            gap: 8px !important;
+            gap: 6px !important;
             width: 100% !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+        .fixed-table-toolbar .bs-bars #toolbar::-webkit-scrollbar,
+        .fixed-table-toolbar .bs-bars > div::-webkit-scrollbar {
+            display: none !important;
+        }
+        .fixed-table-toolbar .bs-bars .btn,
+        .fixed-table-toolbar .bs-bars a.btn,
+        .fixed-table-toolbar .bs-bars a > .btn,
+        .fixed-table-toolbar .bs-bars button {
+            height: 36px !important;
+            min-height: 36px !important;
+            font-size: 11.5px !important;
+            font-weight: 600 !important;
+            padding: 4px 10px !important;
+            white-space: nowrap !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 0 !important;
+            margin-right: 0 !important;
+            margin-left: 0 !important;
+            flex: 0 0 auto !important;
+            line-height: 1.2 !important;
+            box-sizing: border-box !important;
+        }
+        .fixed-table-toolbar .bs-bars a {
+            display: inline-flex !important;
+            flex: 0 0 auto !important;
+            margin: 0 !important;
+            text-decoration: none !important;
         }
 
         /* ── Custom Toolbar Row Fix (Activity Tracker, Cities, States, etc.) ── */
