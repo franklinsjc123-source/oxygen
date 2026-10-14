@@ -1,6 +1,26 @@
 @extends('layout.auth.master')
 @section('contents')
 
+<style>
+@media (max-width: 767.98px) {
+    .fixed-table-toolbar .bs-bars #toolbar .btn-add-category-banner,
+    .fixed-table-toolbar .bs-bars #toolbar button.btn-add-category-banner,
+    .fixed-table-toolbar .bs-bars #toolbar button:first-child {
+        font-size: 11.5px !important;
+        padding: 6px 4px !important;
+        flex: 1.45 1 0 !important;
+        white-space: nowrap !important;
+    }
+    .fixed-table-toolbar .bs-bars #toolbar .btn-export-excel,
+    .fixed-table-toolbar .bs-bars #toolbar button.btn-export-excel {
+        font-size: 11.5px !important;
+        padding: 6px 4px !important;
+        flex: 0.85 1 0 !important;
+        white-space: nowrap !important;
+    }
+}
+</style>
+
 <!-- page-wrapper Start-->
 @include('paritials.auth.topmenu');
 <!-- Page Header Ends -->
@@ -45,7 +65,7 @@
                         <div class="card">                           
                             <div class="card-body">
 							 <div id="toolbar" class="d-flex align-items-center gap-2">
-							     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus"></i> Add Category Banner</button>
+							     <button type="button" class="btn btn-primary btn-add-category-banner" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus me-1"></i> Add Category Banner</button>
 							     <button type="button" class="btn btn-success btn-export-excel" style="background-color: #73b400; border-color: #73b400; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> EXPORT EXCEL</button>
 							 </div>                                   
                                 <div class="btn-popup pull-right">								
