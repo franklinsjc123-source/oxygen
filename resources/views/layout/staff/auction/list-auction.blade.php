@@ -40,9 +40,16 @@
 }
 @media (max-width: 767.98px) {
     .btn-import-auction-mobile {
-        display: block !important;
+        display: flex !important;
+        justify-content: flex-end !important;
         width: 100% !important;
         margin-bottom: 8px !important;
+        text-align: right !important;
+    }
+    .btn-import-auction-mobile button,
+    .btn-import-auction-mobile .btn {
+        width: auto !important;
+        float: right !important;
     }
     .fixed-table-toolbar .bs-bars .btn-import-auction-desktop,
     .fixed-table-toolbar .bs-bars button.btn-import-auction-desktop {
@@ -101,8 +108,8 @@
                             <div class="card-body">
                                 
                           @if(!isset($title) || $title !== 'Live Auction')
-                          <div class="btn-import-auction-mobile mb-2">
-                              <button type="button" class="btn btn-info text-white w-100" data-bs-toggle="modal" data-bs-target="#importAuctionModal" data-toggle="modal" data-target="#importAuctionModal" style="background-color: #17a2b8; border-color: #17a2b8; color: #fff; height: 38px; font-weight: 600; font-size: 13px; display: flex; align-items: center; justify-content: center; border-radius: 6px;">
+                          <div class="btn-import-auction-mobile mb-2 d-flex justify-content-end">
+                              <button type="button" class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#importAuctionModal" data-toggle="modal" data-target="#importAuctionModal" style="background-color: #17a2b8; border-color: #17a2b8; color: #fff; height: 38px; font-weight: 600; font-size: 12.5px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; padding: 6px 14px; width: auto;">
                                   <i class="fa fa-upload me-2"></i> Import Auction Data
                               </button>
                           </div>
