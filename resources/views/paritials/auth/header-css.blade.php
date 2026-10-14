@@ -590,5 +590,147 @@
         box-shadow: none !important;
         opacity: 0.65 !important;
     }
+
+    /* ── Mobile Form Wizard Tabs & Action Buttons (Admin, Staff, Vendor) ── */
+    @media (max-width: 767.98px) {
+        /* Segmented 2-Column Tabs on Mobile (Staff & Form Wizards) */
+        .tab2-card ul#top-tab,
+        .tab2-card ul.nav-material,
+        ul#top-tab.nav-material {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 8px !important;
+            width: 100% !important;
+            padding: 6px !important;
+            padding-bottom: 6px !important;
+            margin-bottom: 18px !important;
+            background-color: #f1f5f9 !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 12px !important;
+            box-sizing: border-box !important;
+        }
+        .tab2-card ul#top-tab::before,
+        .tab2-card ul#top-tab::after,
+        ul#top-tab.nav-material::before,
+        ul#top-tab.nav-material::after {
+            display: none !important;
+        }
+        .tab2-card ul#top-tab li.nav-item,
+        .tab2-card ul.nav-material li.nav-item,
+        ul#top-tab.nav-material li.nav-item {
+            display: flex !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        .tab2-card ul#top-tab li.nav-item a.nav-link,
+        .tab2-card ul.nav-material li.nav-item a.nav-link,
+        ul#top-tab.nav-material li.nav-item a.nav-link {
+            width: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+            padding: 9px 6px !important;
+            font-size: 11.5px !important;
+            font-weight: 600 !important;
+            line-height: 1.25 !important;
+            border-radius: 9px !important;
+            border: 1px solid transparent !important;
+            border-bottom: 1px solid transparent !important;
+            background-color: transparent !important;
+            color: #475569 !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-sizing: border-box !important;
+            white-space: normal !important;
+            word-break: break-word !important;
+            text-decoration: none !important;
+        }
+        .tab2-card ul#top-tab li.nav-item a.nav-link::before,
+        .tab2-card ul#top-tab li.nav-item a.nav-link::after,
+        ul#top-tab.nav-material li.nav-item a.nav-link::before,
+        ul#top-tab.nav-material li.nav-item a.nav-link::after {
+            display: none !important;
+        }
+        .tab2-card ul#top-tab li.nav-item a.nav-link svg,
+        .tab2-card ul#top-tab li.nav-item a.nav-link i,
+        ul#top-tab.nav-material li.nav-item a.nav-link svg,
+        ul#top-tab.nav-material li.nav-item a.nav-link i {
+            margin: 0 0 4px 0 !important;
+            width: 16px !important;
+            height: 16px !important;
+            font-size: 15px !important;
+            display: inline-block !important;
+        }
+        .tab2-card ul#top-tab li.nav-item a.nav-link span,
+        ul#top-tab.nav-material li.nav-item a.nav-link span {
+            display: inline-block !important;
+            text-align: center !important;
+        }
+        .tab2-card ul#top-tab li.nav-item a.nav-link.active,
+        .tab2-card ul.nav-material li.nav-item a.nav-link.active,
+        ul#top-tab.nav-material li.nav-item a.nav-link.active {
+            color: #ff4c3b !important;
+            background-color: #ffffff !important;
+            border-color: rgba(255, 76, 59, 0.25) !important;
+            border-bottom-color: rgba(255, 76, 59, 0.25) !important;
+            box-shadow: 0 2px 8px rgba(255, 76, 59, 0.14), 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+            font-weight: 700 !important;
+        }
+
+        /* ── Mobile Wizard & Action Buttons (Previous, Next, Save, Close) ── */
+        #staff-wizard-controls,
+        #final-wizard-controls,
+        .staff-final-actions,
+        #vendor-wizard-controls,
+        .vendor-final-actions,
+        .tab2-card .modal-footer {
+            width: 100% !important;
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            gap: 8px !important;
+            margin-top: 24px !important;
+            margin-bottom: 10px !important;
+            padding: 0 !important;
+            justify-content: stretch !important;
+            align-items: center !important;
+            border-top: none !important;
+            box-sizing: border-box !important;
+        }
+        #staff-wizard-controls.d-none,
+        #final-wizard-controls.d-none,
+        .staff-final-actions.d-none,
+        #vendor-wizard-controls.d-none,
+        .vendor-final-actions.d-none {
+            display: none !important;
+        }
+        #staff-wizard-controls .btn,
+        #final-wizard-controls .btn,
+        .staff-final-actions .btn,
+        #vendor-wizard-controls .btn,
+        .vendor-final-actions .btn,
+        .tab2-card .modal-footer .btn {
+            flex: 1 1 0 !important;
+            width: 100% !important;
+            min-width: 0 !important;
+            height: 42px !important;
+            min-height: 42px !important;
+            max-height: 42px !important;
+            padding: 0 8px !important;
+            font-size: 13.5px !important;
+            font-weight: 600 !important;
+            line-height: 40px !important;
+            border-radius: 8px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+            margin: 0 !important;
+            box-sizing: border-box !important;
+            white-space: nowrap !important;
+        }
+    }
 </style>
 

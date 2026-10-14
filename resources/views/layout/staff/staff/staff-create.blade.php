@@ -45,10 +45,10 @@
                         <div class="card tab2-card">
                             <div class="card-body">
                                 <ul class="nav nav-tabs nav-material" id="top-tab" role="tablist">
-                                    <li class="nav-item"><a class="nav-link active" id="top-profile-tab" data-bs-toggle="tab" href="#top-profile" role="tab" aria-controls="top-profile" aria-selected="true"><i data-feather="user" class="me-2"></i>Personal Information</a>
+                                    <li class="nav-item"><a class="nav-link active" id="top-profile-tab" href="#top-profile" role="tab" aria-controls="top-profile" aria-selected="true"><i data-feather="user" class="me-2"></i><span class="fw-bold">Personal Information</span></a>
                                     </li>
                                   
-									<li class="nav-item"><a class="nav-link" id="upload-top-tab" data-bs-toggle="tab" href="#top-upload" role="tab" aria-controls="top-upload" aria-selected="false"><i data-feather="settings" class="me-2"></i>Documents & Other Information</a>
+									<li class="nav-item"><a class="nav-link" id="upload-top-tab" href="#top-upload" role="tab" aria-controls="top-upload" aria-selected="false"><i data-feather="settings" class="me-2"></i><span class="fw-bold">Documents & Other Information</span></a>
                                     </li>
                                 </ul>
                                 <div class="tab-content" id="top-tabContent">
@@ -260,21 +260,6 @@
 										</div>
 										</div>
 										</div>
-																				
-										<div class="modal-footer">
-										    
-										    
-										    
-										    <ul class="nav nav-tabs nav-material" id="top-tab" role="tablist">
-
-												  
-													<li class="nav-item"><a class="nav-link" id="upload-top-tab" data-bs-toggle="tab" href="#top-upload" role="tab" aria-controls="top-upload" aria-selected="false"><i data-feather="settings" class="me-2"></i>Next</a>
-													</li>
-												</ul>
-										      
-                                                  
-                                                </div>
-                                    <!--</form>-->
 									</div>
                                     
                                     </div>
@@ -404,14 +389,18 @@
 												</div>
 												</div>
 
-						
-												<div class="modal-footer">   
-												<button class="btn btn-lg btn-secondary px-5" type="button">Close</button>
-												<button class="btn  px-5 btn-lg btn-primary"  type="submit">Save</button>
-														
-														</div>
-
-
+								<div class="justify-content-end gap-2 mt-4 d-flex" id="staff-wizard-controls">
+									<button type="button" class="btn btn-secondary px-4"
+														id="wizard-prev-btn">Previous</button>
+									<button type="button" class="btn btn-primary px-4"
+														id="wizard-next-btn">Next</button>
+								</div>
+								<div class="justify-content-end align-items-center gap-2 mt-4 staff-final-actions d-none" id="final-wizard-controls">
+									<button type="button" class="btn btn-secondary px-4"
+														id="wizard-prev-last-btn">Previous</button>
+									<button class="btn btn-primary px-4" type="submit">Save</button>
+									<a href="{{ route('sstaff-list') }}" class="btn btn-secondary px-4" type="button">Close</a>
+								</div>
                                     </form>
                                         
                                     </div>
@@ -440,25 +429,94 @@
 
 @endsection
 @push('scripts')
-
-{{-- <script>
-
-function Validate() {
-        var password = document.getElementById("Password").value;
-		alert(password);
-        var confirmPassword = document.getElementById("confirm_password").value;
-        if (password != confirmPassword) {
-            alert("Passwords do not match.");
-            return false;
-        }
-        return true;
-    }
-	</script> --}}
-
 <script>
-function save() {
-	alert('vendor has been added successfully');
-	window.location.href='{{route("vendor-list")}}'
-}
+        $(function() {
+            var isUsernameValid = true;
+            const $tabLinks = $('#top-tab .nav-link');
+            const $tabPanes = $('#top-tabContent > .tab-pane');
+            const tabCount = $tabLinks.length;
+
+            function getActiveIndex() {
+                const idx = $tabLinks.index($('#top-tab .nav-link.active'));
+                return idx >= 0 ? idx : 0;
+            }
+
+            function isCurrentTabValid() {
+                const currentTab = $('#top-tabContent .tab-pane.active');
+                const inputs = currentTab.find('input[required], select[required], textarea[required], [required]');
+                let valid = true;
+
+                $('form.needs-validation').addClass('validation-attempted');
+
+                inputs.each(function() {
+                    if (!this.checkValidity()) {
+                        valid = false;
+                        this.reportValidity();
+                        $(this).focus();
+                        return false;
+                    }
+                });
+
+                return valid;
+            }
+
+            function showTab(index) {
+                if (index < 0 || index >= tabCount) return;
+                $tabLinks.removeClass('active').attr('aria-selected', 'false');
+                $($tabLinks.get(index)).addClass('active').attr('aria-selected', 'true');
+                $tabPanes.removeClass('show active');
+                const targetSelector = $($tabLinks.get(index)).attr('href');
+                $(targetSelector).addClass('show active');
+                
+                syncWizardButtons();
+                window.scrollTo(0, 0);
+            }
+
+            function syncWizardButtons() {
+                const index = getActiveIndex();
+                const isLastTab = index === tabCount - 1;
+
+                if (isLastTab) {
+                    $('#staff-wizard-controls').removeClass('d-flex').addClass('d-none');
+                    $('.staff-final-actions').removeClass('d-none').addClass('d-flex');
+                } else {
+                    $('#staff-wizard-controls').removeClass('d-none').addClass('d-flex');
+                    $('.staff-final-actions').removeClass('d-flex').addClass('d-none');
+                }
+
+                $('#wizard-prev-btn').toggle(index > 0);
+                $('#wizard-next-btn').toggle(index < tabCount - 1);
+            }
+
+            $('#wizard-next-btn').on('click', function() {
+                if (isCurrentTabValid()) {
+                    showTab(getActiveIndex() + 1);
+                }
+            });
+
+            $('#wizard-prev-btn').on('click', function() {
+                showTab(getActiveIndex() - 1);
+            });
+
+            $('#wizard-prev-last-btn').on('click', function() {
+                showTab(getActiveIndex() - 1);
+            });
+
+            $tabLinks.on('click', function(e) {
+                e.preventDefault();
+                const targetIdx = $tabLinks.index(this);
+                const currentIdx = getActiveIndex();
+
+                if (targetIdx > currentIdx) {
+                    if (targetIdx !== currentIdx + 1 || !isCurrentTabValid()) {
+                        return;
+                    }
+                }
+                showTab(targetIdx);
+            });
+
+            showTab(getActiveIndex());
+            syncWizardButtons();
+        });
 </script>
 @endpush
