@@ -171,8 +171,10 @@
             margin-right: 0 !important;
             margin-left: 0 !important;
             flex: 1 1 calc(50% - 4px) !important;
-            min-width: calc(50% - 4px) !important;
+            min-width: 0 !important;
             max-width: 100% !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
             line-height: 1.2 !important;
             box-sizing: border-box !important;
             border-radius: 6px !important;
@@ -181,10 +183,17 @@
         .fixed-table-toolbar .bs-bars a {
             display: inline-flex !important;
             flex: 1 1 calc(50% - 4px) !important;
-            min-width: calc(50% - 4px) !important;
+            min-width: 0 !important;
             max-width: 100% !important;
             margin: 0 !important;
             text-decoration: none !important;
+        }
+        .fixed-table-toolbar .bs-bars .btn-export-excel {
+            flex: 0 0 auto !important;
+            min-width: auto !important;
+            max-width: 45% !important;
+            width: auto !important;
+            padding: 6px 10px !important;
         }
         .fixed-table-toolbar .bs-bars .btn.border,
         .fixed-table-toolbar .bs-bars button.border {

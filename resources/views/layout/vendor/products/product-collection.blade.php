@@ -41,8 +41,8 @@
                                 <div id="toolbar" class="d-flex align-items-center">
                                     <button type="button" class="btn btn-success btn-export-excel me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus"></i> Add
-                                        Product Collection</button>
+                                        data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus me-1"></i> Add
+                                        <span class="d-none d-sm-inline">Product </span>Collection</button>
                                 </div>
 
                                 <div class="btn-popup pull-right">
@@ -166,5 +166,32 @@
         </div>
         <!-- Container-fluid Ends-->
     </div>
+    <style>
+        @media (max-width: 767.98px) {
+            .fixed-table-toolbar .bs-bars #toolbar {
+                display: flex !important;
+                flex-wrap: nowrap !important;
+                gap: 8px !important;
+                width: 100% !important;
+            }
+            .fixed-table-toolbar .bs-bars #toolbar .btn-export-excel {
+                flex: 0 0 auto !important;
+                width: auto !important;
+                max-width: 42% !important;
+                font-size: 11px !important;
+                padding: 6px 8px !important;
+                white-space: nowrap !important;
+            }
+            .fixed-table-toolbar .bs-bars #toolbar .btn-primary {
+                flex: 1 1 auto !important;
+                min-width: 0 !important;
+                font-size: 11px !important;
+                padding: 6px 8px !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+        }
+    </style>
 @endsection
 
