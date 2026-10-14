@@ -36,20 +36,12 @@
             <!-- Container-fluid Ends-->
           
             <!-- Container-fluid starts-->
-            <div class="container-fluid ">
+            <div class="container-fluid">
            
                 <div class="row">
                         
                     <div class="col-sm-12">
                         
-                        <div class="card">
-                     	
-    <div class="card-body">
-                
-                        <!-- Container-fluid starts-->
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-sm-12">
                         <div class="card">
                            
                             <div class="card-body">
@@ -111,15 +103,12 @@
                             </div>
                         </div>
                     </div>
-	
-			</div>
-			</div>
-			
-		</div>
-		</div></div>
-		
-		</div>
-		</div>	
+                </div>
+            </div>
+            <!-- Container-fluid Ends-->
+
+        </div>
+    </div>
 
     @endsection
 
