@@ -1,6 +1,6 @@
 @extends('layout.auth.master')
 @section('contents')
-    @include('paritials.auth.header')?>
+    @include('paritials.auth.header')
 
     <!-- page-wrapper Start-->
     @include('paritials.auth.topmenu');
@@ -26,7 +26,7 @@
                     <div class="row">
                         <div class="col-12">
                         <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
-                            <li class="breadcrumb-item"><a href="dashboard.php"><i data-feather="home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('staffdashboard', session()->get('login_id')) }}"><i data-feather="home"></i></a></li>
                                 <li class="breadcrumb-item active">Pincode</li>
                         </ol>
                     </div>
@@ -40,12 +40,101 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="card">
+<style>
+/* Pincode Toolbar: 2x2 Grid on Mobile, Balanced Flex on Desktop */
+@media (max-width: 767.98px) {
+    .fixed-table-toolbar .bs-bars {
+        width: 100% !important;
+        margin: 10px 0 8px 0 !important;
+        float: none !important;
+    }
+    .fixed-table-toolbar .bs-bars #toolbar,
+    .fixed-table-toolbar .bs-bars .pincode-toolbar,
+    #toolbar.pincode-toolbar {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+        width: 100% !important;
+        overflow-x: visible !important;
+        box-sizing: border-box !important;
+    }
+    .fixed-table-toolbar .bs-bars #toolbar .btn,
+    .fixed-table-toolbar .bs-bars #toolbar a.btn,
+    .fixed-table-toolbar .bs-bars #toolbar button,
+    .fixed-table-toolbar .bs-bars #toolbar a,
+    .fixed-table-toolbar .bs-bars .pincode-toolbar .btn,
+    .fixed-table-toolbar .bs-bars .pincode-toolbar a.btn,
+    .fixed-table-toolbar .bs-bars .pincode-toolbar button,
+    .fixed-table-toolbar .bs-bars .pincode-toolbar a,
+    #toolbar.pincode-toolbar .btn,
+    #toolbar.pincode-toolbar a.btn,
+    #toolbar.pincode-toolbar button,
+    #toolbar.pincode-toolbar a {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: none !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        font-size: 11.5px !important;
+        font-weight: 600 !important;
+        padding: 6px 4px !important;
+        white-space: nowrap !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        margin: 0 !important;
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+        border-radius: 6px !important;
+        box-sizing: border-box !important;
+        line-height: 1.2 !important;
+        text-decoration: none !important;
+    }
+    .fixed-table-toolbar .bs-bars #toolbar .btn i,
+    .fixed-table-toolbar .bs-bars #toolbar a.btn i,
+    #toolbar.pincode-toolbar .btn i,
+    #toolbar.pincode-toolbar a.btn i {
+        margin-right: 4px !important;
+        font-size: 12px !important;
+    }
+}
 
+@media (min-width: 768px) {
+    .fixed-table-toolbar .bs-bars #toolbar,
+    .fixed-table-toolbar .bs-bars .pincode-toolbar,
+    #toolbar.pincode-toolbar {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        gap: 8px !important;
+        width: auto !important;
+    }
+    .fixed-table-toolbar .bs-bars #toolbar .btn,
+    .fixed-table-toolbar .bs-bars #toolbar a.btn,
+    .fixed-table-toolbar .bs-bars #toolbar button,
+    .fixed-table-toolbar .bs-bars #toolbar a,
+    #toolbar.pincode-toolbar .btn,
+    #toolbar.pincode-toolbar a.btn,
+    #toolbar.pincode-toolbar button,
+    #toolbar.pincode-toolbar a {
+        width: auto !important;
+        flex: 0 0 auto !important;
+        margin: 0 !important;
+    }
+}
+</style>
                             <div class="card-body">
 
-                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                    data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus"></i> Add
-                                    Pincode</button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+                                <div id="toolbar" class="d-flex align-items-center pincode-toolbar">
+                                    <button type="button" class="btn btn-success btn-export-excel me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+                                    <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
+                                        data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus me-1"></i> Add Pincode</button>
+                                    <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
+                                        data-original-title="test" data-bs-target="#exampleModalImport"><i class="fa fa-plus me-1"></i> Import Pincode</button>
+                                    <a href="{{ route('pincode.export') }}" class="btn btn-success px-2" style="background-color: #28a745; border-color: #28a745; color: #fff;" data-toggle="tooltip" data-placement="top" title="Report" data-original-title="Report"><i
+                                        class="fa fa-list me-1"></i> Download Report</a>
+                                </div>
 
                                     <div id="successmessage">
                                     </div>
@@ -113,6 +202,42 @@
                                                             </div>
                                                         </div>
 
+                                                        <div class="modal-footer">
+                                                            <button class="btn btn-primary" class="submit"
+                                                                type="submit">Save</button>
+                                                            <button class="btn btn-secondary" type="button"
+                                                                data-bs-dismiss="modal">Close</button>
+                                                        </div>
+
+                                                    </form>
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="btn-popup pull-right">
+                                    <div class="modal fade" id="exampleModalImport" tabindex="-1" role="dialog"
+                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title f-w-600" id="exampleModalLabel">Upload Pincode <a href="{{asset('assets/img/sample_pincode.csv')}}" class='btn btn-primary' download> Sample Format Download </a></h5>
+                                                    <button class="btn-close" type="button" data-bs-dismiss="modal"
+                                                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                     <form action="{{ route('importpincode') }}"
+                                                              method="POST"
+                                                              enctype="multipart/form-data">
+                                                            @csrf
+                                                        <div class="form">
+                                                           <div class="form-group">
+                                                                <label for="validationCustom02"
+                                                                    class="mb-1">File </label>
+                                                               <input type="file" name="file" class="">
+                                                              </div>
+                                                        </div>
                                                         <div class="modal-footer">
                                                             <button class="btn btn-primary" class="submit"
                                                                 type="submit">Save</button>

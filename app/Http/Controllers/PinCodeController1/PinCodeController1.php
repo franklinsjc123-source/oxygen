@@ -29,11 +29,12 @@ class PinCodeController1 extends Controller
 */
 
 
-        //  print_r($pincode);die;
         $route=Route::where('status', 1)->get();
         $Zonal=Zonal::where('status', 1)->get();
 
-        return view('layout.admin.master.pincode')
+        $view = (request()->is('staff/*') || (session()->get('log_type') == 'Staff')) ? 'layout.staff.master.pincode' : 'layout.admin.master.pincode';
+
+        return view($view)
             ->with(
                 [
                     "pincode" => $pincode,
@@ -61,6 +62,7 @@ class PinCodeController1 extends Controller
      */
     public function store(Request $request, FlasherInterface $flasher)
     {
+        $redirectRoute = (request()->is('staff/*') || (session()->get('log_type') == 'Staff')) ? 'staffpincode1.index' : 'pincode1.index';
         try {
             $pincodeValue = trim((string) $request->pincode);
             $areaValue = trim((string) $request->area);
@@ -68,7 +70,7 @@ class PinCodeController1 extends Controller
             $exists = PinCode::where('name', $pincodeValue)->exists();
             if ($exists) {
                 $flasher->addError('Pincode "' . $pincodeValue . '" already exists!');
-                return redirect()->route('pincode1.index');
+                return redirect()->route($redirectRoute);
             }
 
             $pincode = new PinCode();
@@ -81,10 +83,10 @@ class PinCodeController1 extends Controller
             $pincode->save();
 
             $flasher->addSuccess('Data has been saved successfully!');
-            return redirect()->route('pincode1.index');
+            return redirect()->route($redirectRoute);
         } catch (\Throwable $th) {
             $flasher->addError('Something Error!! ' . $th->getMessage());
-            return redirect()->route('pincode1.index');
+            return redirect()->route($redirectRoute);
         }
     }
 
@@ -167,16 +169,17 @@ class PinCodeController1 extends Controller
      */
     public function destroy($id, FlasherInterface $flasher)
     {
+        $redirectRoute = (request()->is('staff/*') || (session()->get('log_type') == 'Staff')) ? 'staffpincode1.index' : 'pincode1.index';
         try {
            
             PinCode::where("id", $id)->delete();
             // $flasher->addsuccess('Pincode Removed!');
             $flasher->addSuccess('Pincode Removed!');
-            return redirect()->route('pincode1.index');
+            return redirect()->route($redirectRoute);
         } catch (\Throwable $th) {
             // $flasher->addError('Something Error!!');
             $flasher->addError('Something Error!!');
-            return redirect()->route('pincode1.index');
+            return redirect()->route($redirectRoute);
         }
     }
     

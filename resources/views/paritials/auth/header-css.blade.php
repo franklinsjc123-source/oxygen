@@ -142,11 +142,11 @@
         .fixed-table-toolbar .bs-bars #toolbar,
         .fixed-table-toolbar .bs-bars > div {
             display: flex !important;
-            flex-wrap: nowrap !important;
+            flex-wrap: wrap !important;
             align-items: center !important;
             gap: 8px !important;
             width: 100% !important;
-            overflow-x: auto !important;
+            overflow-x: visible !important;
             -webkit-overflow-scrolling: touch !important;
             box-sizing: border-box !important;
         }
@@ -170,8 +170,9 @@
             margin: 0 !important;
             margin-right: 0 !important;
             margin-left: 0 !important;
-            flex: 1 1 0 !important;
-            min-width: 0 !important;
+            flex: 1 1 calc(50% - 4px) !important;
+            min-width: calc(50% - 4px) !important;
+            max-width: 100% !important;
             line-height: 1.2 !important;
             box-sizing: border-box !important;
             border-radius: 6px !important;
@@ -179,8 +180,9 @@
         }
         .fixed-table-toolbar .bs-bars a {
             display: inline-flex !important;
-            flex: 1 1 0 !important;
-            min-width: 0 !important;
+            flex: 1 1 calc(50% - 4px) !important;
+            min-width: calc(50% - 4px) !important;
+            max-width: 100% !important;
             margin: 0 !important;
             text-decoration: none !important;
         }
