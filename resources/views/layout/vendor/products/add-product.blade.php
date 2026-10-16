@@ -584,23 +584,7 @@
                                                      </div>
                                                  </div>
                                             </div>
-                                            <hr>
-                                            <div class="card">
-                                                <div class="card-header d-flex justify-content-between align-items-center">
-                                                    <label class="form-label fw-bold text-dark fs-5 m-0">Product Description <span class="text-danger">*</span></label>
-                                                    {{-- <button type="button" class="btn btn-sm text-white" id="btn-generate-desc" style="background-color: #183543 !important; border-color: #183543 !important; color: #ffffff !important;"><i class="fa fa-magic"></i> Generate Description</button> --}}
-                                                </div>
-                                                <div class="card-body">
-                                                    <div class="digital-add needs-validation">
-                                                        <div class="form-group mb-0">
-                                                            <div class="description-sm">
-                                                                <textarea id="description" class="form-control ckeditor" required cols="10" rows="4" name="description"></textarea>
-                                                                <div class="invalid-feedback-custom">Please enter product description</div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -826,6 +810,26 @@
                                         @endif
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Description Section -->
+                    <div class="col-xl-12">
+                        <div class="card shadow-sm border-0 mb-4">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <label class="form-label fw-bold text-dark h5 m-0">Product Description <span class="text-danger">*</span></label>
+                                    <button type="button" class="btn btn-sm text-white" id="btn-generate-desc" style="background-color: #183543 !important; border-color: #183543 !important; color: #ffffff !important;"><i class="fa fa-magic"></i> Generate Description</button>
+                                </div>
+                                <div class="digital-add needs-validation">
+                                    <div class="form-group mb-0">
+                                        <div class="description-sm">
+                                            <textarea id="description" class="form-control ckeditor" required cols="10" rows="4" name="description"></textarea>
+                                            <div class="invalid-feedback-custom">Please enter product description</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1328,7 +1332,7 @@
 
     $(document).ready(function() {
         $('#btn-generate-desc').click(function() {
-            var descParts = [];
+            var productName = $('input[name="product_name"]').val() ? $('input[name="product_name"]').val().trim() : '';
 
             // Gather categories & attributes
             var mainCat = $('#main_category option:selected').text().trim();
@@ -1342,97 +1346,188 @@
             
             var attribute = $('#selected_attribute_summary option:selected').text().trim();
             if (attribute.indexOf('--') === 0 || attribute === '') attribute = '';
-            
-            var colorAvail = $('#is_color_summary option:selected').text().trim();
-            if (colorAvail.indexOf('--') === 0 || colorAvail === '') colorAvail = '';
 
-            var introPara = "";
-            if (mainCat || cat || subCat) {
-                var catChain = [mainCat, cat, subCat].filter(Boolean).join(" > ");
-                introPara = "Discover our premium quality product under the " + catChain + " category.";
-                if (attribute) {
-                    introPara += " Designed with " + attribute + " specifications.";
+            var displayName = productName || subCat || (cat ? cat + " Item" : "Premium Product");
+            var catChain = [mainCat, cat, subCat].filter(Boolean).join(" &rsaquo; ");
+
+            // SKU & Return
+            var sku = $('input[name="sku"]').val() ? $('input[name="sku"]').val().trim() : '';
+            var returnReplace = $('select[name="return_replace"]').val() || '';
+            var rDays = $('input[name="r_days"]').val() ? $('input[name="r_days"]').val().trim() : '';
+
+            // Colors & Sizes from variants
+            var colorsList = [];
+            $('.attrcolor').each(function() {
+                var c = $(this).val();
+                if (c && c !== 'Color' && c !== 'Multicolor' && colorsList.indexOf(c) === -1) {
+                    colorsList.push(c);
                 }
-                if (colorAvail) {
-                    introPara += " Color options available: " + colorAvail + ".";
+            });
+
+            var sizesList = [];
+            $('.attrsize').each(function() {
+                var s = $(this).val();
+                if (s && s !== 'Size' && sizesList.indexOf(s) === -1) {
+                    sizesList.push(s);
                 }
-                introPara += " Excellent styling and durable build, perfect for your needs.";
-                
-                descParts.push(introPara);
-            }
-            
-            // Gather shipping details (general)
-            var weight = $('input[name="weight"]').val();
-            var length = $('input[name="length"]').val();
-            var width = $('input[name="width"]').val();
-            var height = $('input[name="height"]').val();
-            
-            // Gather details for each variant
-            var variantsCount = {{ $nproduct ?? 1 }};
-            var variantSections = [];
-            
-            for (var i = 1; i <= variantsCount; i++) {
-                var sku = $('input[name="sku[' + i + ']"]').val();
-                var returnReplace = $('select[name="return_replace[' + i + ']"]').val();
-                var rDays = $('input[name="r_days[' + i + ']"]').val();
-                
-                // Color Select
-                var color = $('#attrcolor' + i).val() || $('select[name="attributecolorval[' + i + '][]"]').val();
-                
-                // Size / Attributes Selects
-                var attributes = [];
-                $('select[name^="attributeval[' + i + ']"]').each(function() {
-                    var val = $(this).val();
-                    if (val) {
-                        attributes.push(val);
+            });
+
+            // Prices
+            var minPrice = null, maxPrice = null, mrpVal = null;
+            $('input[name="selling_price[]"]').each(function() {
+                var p = parseFloat($(this).val());
+                if (!isNaN(p)) {
+                    if (minPrice === null || p < minPrice) minPrice = p;
+                    if (maxPrice === null || p > maxPrice) maxPrice = p;
+                }
+            });
+            $('input[name="retail_price[]"]').each(function() {
+                var p = parseFloat($(this).val());
+                if (!isNaN(p)) {
+                    if (mrpVal === null || p > mrpVal) mrpVal = p;
+                }
+            });
+
+            // Specifications
+            var specs = [];
+            $('select[name^="specify_value"]').each(function() {
+                var val = $(this).val();
+                if (val && val !== '') {
+                    var groupName = $(this).closest('td').prev('td').text().trim();
+                    if (!groupName) {
+                        groupName = $(this).closest('tr').find('input[name^="specify_attribute"]').val();
                     }
+                    if (groupName) {
+                        specs.push({ name: groupName, value: val });
+                    }
+                }
+            });
+
+            // Shipping
+            var weight = $('input[name="weight"]').val() ? $('input[name="weight"]').val().trim() : '';
+            var length = $('input[name="length"]').val() ? $('input[name="length"]').val().trim() : '';
+            var width = $('input[name="width"]').val() ? $('input[name="width"]').val().trim() : '';
+            var height = $('input[name="height"]').val() ? $('input[name="height"]').val().trim() : '';
+
+            // Offers & Collection
+            var collection = $('#collection option:selected').text().trim();
+            if (collection === 'Select Here' || collection.indexOf('--') === 0) collection = '';
+            
+            var offer = $('#offtype option:selected').text().trim();
+            if (offer === 'Select' || offer.indexOf('--') === 0) offer = '';
+
+            // Check if at least some context exists
+            if (!productName && !catChain && colorsList.length === 0 && sizesList.length === 0 && !sku) {
+                alert("Please select category or enter product details to generate the description.");
+                return;
+            }
+
+            // Construct HTML description with rich elaboration & polite mannerisms
+            var html = '';
+            html += '<p><strong>Welcome to TryNew!</strong> We are delighted to present the <strong>' + displayName + '</strong>, thoughtfully designed to bring together timeless elegance, superior craftsmanship, and day-to-day comfort.</p>';
+
+            if (catChain) {
+                html += '<p>Proudly featured under our distinguished <strong>' + catChain + '</strong> collection' + (collection ? ' as part of the exclusive <em>' + collection + '</em> range' : '') + ', this product represents a harmonious blend of contemporary aesthetics and dependable durability. Created to satisfy discerning standards, it effortlessly elevates your style and fits seamlessly into your lifestyle.</p>';
+            }
+
+            if (offer) {
+                html += '<p><em><strong>Special Offer:</strong> Take advantage of our exclusive promotion &mdash; ' + offer + ' &mdash; available for a limited time!</em></p>';
+            }
+
+            html += '<h4>Key Features &amp; Highlights</h4>';
+            html += '<ul>';
+            html += '<li><strong>Superior Craftsmanship:</strong> Meticulously constructed using premium grade materials, ensuring an exquisite finish, luxurious touch, and exceptional longevity.</li>';
+            html += '<li><strong>Tailored Comfort:</strong> Ergonomically engineered to provide a flattering, relaxed fit that guarantees all-day ease and unrestricted movement.</li>';
+            html += '<li><strong>Versatile Appeal:</strong> Styled with contemporary sophistication, effortlessly adapting to formal events, casual outings, or everyday routines.</li>';
+
+            if (colorsList.length > 0) {
+                html += '<li><strong>Vibrant Colors:</strong> Available in appealing shade' + (colorsList.length > 1 ? 's: ' : ': ') + '<strong>' + colorsList.join(', ') + '</strong>.</li>';
+            }
+            if (sizesList.length > 0) {
+                html += '<li><strong>Available Sizing:</strong> Offered in standard sizes: <strong>' + sizesList.join(', ') + '</strong> for your ideal fit.</li>';
+            }
+            if (attribute) {
+                html += '<li><strong>Design Attribute:</strong> Specially developed under <strong>' + attribute + '</strong> design standards.</li>';
+            }
+            html += '</ul>';
+
+            if (specs.length > 0) {
+                html += '<h4>Product Specifications</h4>';
+                html += '<ul>';
+                specs.forEach(function(sp) {
+                    html += '<li><strong>' + sp.name + ':</strong> ' + sp.value + '</li>';
                 });
-                
-                var mrp = $('input[name="retail_price[' + i + '][]"]').val();
-                var sellingPrice = $('input[name="selling_price[' + i + '][]"]').val();
-                var qty = $('input[name="quantity[' + i + '][]"]').val();
-                var lowStock = $('input[name="low_stock_limit[' + i + '][]"]').val();
-                
-                // Only build section if at least some details are filled
-                if (sku || color || attributes.length > 0 || mrp || sellingPrice) {
-                    var items = [];
-                    if (sku) items.push("SKU: " + sku);
-                    if (color) items.push("Color: " + color);
-                    if (attributes.length > 0) items.push("Size/Spec: " + attributes.join(', '));
-                    if (mrp) items.push("MRP: ₹" + mrp);
-                    if (sellingPrice) items.push("Selling Price: ₹" + sellingPrice);
-                    if (qty) items.push("Stock Quantity: " + qty);
-                    if (lowStock) items.push("Low Stock Alert: " + lowStock);
-                    if (returnReplace) {
-                        var returnStr = "Return/Replacement: " + returnReplace;
-                        if (rDays) returnStr += " (within " + rDays + " Days)";
-                        items.push(returnStr);
-                    }
-                    
-                    variantSections.push("Product Variant #" + i + " Details:\n" + items.map(function(it) { return "• " + it; }).join("\n"));
+                html += '</ul>';
+            }
+
+            var hasShipping = weight || (length && width && height);
+            var hasPolicy = returnReplace;
+            var hasSku = sku;
+            var hasPricing = minPrice !== null;
+
+            if (hasSku || hasShipping || hasPolicy || hasPricing) {
+                html += '<h4>Product Details &amp; Assurance</h4>';
+                html += '<ul>';
+                if (hasSku) {
+                    html += '<li><strong>Product SKU / Code:</strong> ' + sku + '</li>';
                 }
+                if (hasPricing) {
+                    var priceText = '₹' + minPrice;
+                    if (maxPrice !== null && maxPrice !== minPrice) {
+                        priceText += ' - ₹' + maxPrice;
+                    }
+                    if (mrpVal && mrpVal > minPrice) {
+                        priceText += ' (MRP: ₹' + mrpVal + ')';
+                    }
+                    html += '<li><strong>Pricing:</strong> ' + priceText + '</li>';
+                }
+                if (hasShipping) {
+                    var shipParts = [];
+                    if (weight) shipParts.push('Net Weight: ' + weight + ' g');
+                    if (length && width && height) shipParts.push('Dimensions: ' + length + ' &times; ' + width + ' &times; ' + height + ' cm');
+                    html += '<li><strong>Packaging &amp; Dimensions:</strong> ' + shipParts.join(' | ') + '</li>';
+                }
+                if (hasPolicy) {
+                    var policyDesc = returnReplace;
+                    if (rDays) policyDesc += ' within ' + rDays + ' days of delivery';
+                    html += '<li><strong>Customer Satisfaction Policy:</strong> Easy ' + policyDesc + ' guaranteed for your complete peace of mind.</li>';
+                }
+                html += '</ul>';
             }
-            
-            if (variantSections.length > 0) {
-                descParts.push(variantSections.join("\n\n"));
+
+            html += '<h4>Care &amp; Handling Instructions</h4>';
+            html += '<ul>';
+            html += '<li>Handle with gentle care and follow standard cleaning practices to preserve fabric vibrancy and texture.</li>';
+            html += '<li>Store in a clean, dry environment away from prolonged direct sunlight and moisture.</li>';
+            html += '<li>Avoid harsh bleaches, strong chemicals, or aggressive scrubbing to maintain prime condition.</li>';
+            html += '</ul>';
+
+            html += '<p><em>Thank you for shopping with us! Your satisfaction is our highest priority, and we are committed to delivering excellence with every purchase. Should you have any questions or require assistance, our customer care team is always delighted to assist you.</em></p>';
+
+            var plainText = html
+                .replace(/<h4>/g, '\n\n')
+                .replace(/<\/h4>/g, ':\n')
+                .replace(/<ul>/g, '')
+                .replace(/<\/ul>/g, '\n')
+                .replace(/<li><strong>/g, '• ')
+                .replace(/<\/strong>/g, '')
+                .replace(/<li>/g, '• ')
+                .replace(/<\/li>/g, '\n')
+                .replace(/<p>/g, '')
+                .replace(/<\/p>/g, '\n\n')
+                .replace(/<strong>|<\/strong>|<em>|<\/em>/g, '')
+                .replace(/&rsaquo;/g, '>')
+                .replace(/&gt;/g, '>')
+                .replace(/&times;/g, 'x')
+                .replace(/&mdash;/g, '-')
+                .replace(/&amp;/g, '&')
+                .replace(/\n{3,}/g, '\n\n')
+                .trim();
+
+            if (typeof CKEDITOR !== 'undefined' && CKEDITOR.instances.description) {
+                CKEDITOR.instances.description.setData(html);
             }
-            
-            var shippingItems = [];
-            if (weight) shippingItems.push("Weight: " + weight + " g");
-            if (length || width || height) {
-                shippingItems.push("Dimensions: " + (length || 0) + " cm x " + (width || 0) + " cm x " + (height || 0) + " cm");
-            }
-            
-            if (shippingItems.length > 0) {
-                descParts.push("Shipping & Dimensions:\n" + shippingItems.map(function(it) { return "• " + it; }).join("\n"));
-            }
-            
-            var generatedText = descParts.join("\n\n");
-            if (generatedText.trim() !== "") {
-                $('#description').val(generatedText);
-            } else {
-                alert("Please fill in some product details (SKU, Prices, Color, Size, etc.) to generate the description.");
-            }
+            $('#description').val(html);
         });
     });
 </script>
