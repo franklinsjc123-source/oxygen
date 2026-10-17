@@ -820,7 +820,7 @@
                             <div class="card-body p-4">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <label class="form-label fw-bold text-dark h5 m-0">Product Description <span class="text-danger">*</span></label>
-                                    <button type="button" class="btn btn-sm text-white" id="btn-generate-desc" style="background-color: #183543 !important; border-color: #183543 !important; color: #ffffff !important;"><i class="fa fa-magic"></i> Generate Description</button>
+                                    {{-- <button type="button" class="btn btn-sm text-white" id="btn-generate-desc" style="background-color: #183543 !important; border-color: #183543 !important; color: #ffffff !important;"><i class="fa fa-magic"></i> Generate Description</button> --}}
                                 </div>
                                 <div class="digital-add needs-validation">
                                     <div class="form-group mb-0">
@@ -1424,7 +1424,7 @@
 
             // Construct HTML description with rich elaboration & polite mannerisms
             var html = '';
-            html += '<p><strong>Welcome to TryNew!</strong> We are delighted to present the <strong>' + displayName + '</strong>, thoughtfully designed to bring together timeless elegance, superior craftsmanship, and day-to-day comfort.</p>';
+            html += '<p>The <strong>' + displayName + '</strong> is thoughtfully designed to bring together timeless elegance, superior craftsmanship, and day-to-day comfort.</p>';
 
             if (catChain) {
                 html += '<p>Proudly featured under our distinguished <strong>' + catChain + '</strong> collection' + (collection ? ' as part of the exclusive <em>' + collection + '</em> range' : '') + ', this product represents a harmonious blend of contemporary aesthetics and dependable durability. Created to satisfy discerning standards, it effortlessly elevates your style and fits seamlessly into your lifestyle.</p>';
