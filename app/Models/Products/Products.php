@@ -72,13 +72,17 @@ class Products extends Model
                 $tablePrefix = (is_string($from) && preg_match('/ as (\w+)$/i', $from, $matches)) ? $matches[1] . '.' : 'products.';
                 
                 $builder->where(function($query) use ($tablePrefix) {
-                    $query->where($tablePrefix . 'logintype', '!=', 'Vendor')
+                    $query->whereNull($tablePrefix . 'vendor_id')
+                          ->orWhere($tablePrefix . 'vendor_id', 0)
                           ->orWhereExists(function ($sub) use ($tablePrefix) {
                               $sub->select(\Illuminate\Support\Facades\DB::raw(1))
                                   ->from('vendor_details')
-                                  ->whereColumn('vendor_details.id', $tablePrefix . 'login_id')
-                                  ->whereDate('vendor_details.expired_date', '>=', date('Y-m-d'))
-                                  ->where('vendor_details.status', 1);
+                                  ->whereColumn('vendor_details.id', $tablePrefix . 'vendor_id')
+                                  ->where('vendor_details.status', 1)
+                                  ->where(function ($vq) {
+                                      $vq->whereNull('vendor_details.expired_date')
+                                         ->orWhereDate('vendor_details.expired_date', '>=', date('Y-m-d'));
+                                  });
                           });
                 });
             }
@@ -132,9 +136,13 @@ class Products extends Model
         return $this->belongsTo(Offers::class, 'offers', 'id');
     }
 
-    // public function vendor_details()
-    // {
-    //     return $this->belongsTo(vendor::class, 'vendor_id', 'id');
-    // }
+    public function vendorDetails()
+    {
+        return $this->belongsTo(\App\Models\vendor\vendorcreate::class, 'vendor_id', 'id');
+    }
 
+    public function vendor_details()
+    {
+        return $this->belongsTo(\App\Models\vendor\vendorcreate::class, 'vendor_id', 'id');
+    }
 }

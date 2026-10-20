@@ -150,6 +150,10 @@ class FrontendController extends Controller
             ->whereIn('p.id', $productIds)
             ->where('p.status', 1)
             ->where('v.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('v.expired_date')
+                  ->orWhereDate('v.expired_date', '>=', now()->toDateString());
+            })
             ->pluck('p.id')
             ->map(fn($id) => (int) $id)
             ->all();
@@ -173,7 +177,7 @@ class FrontendController extends Controller
     public function shops(Request $request)
     {
         $keyword = trim((string) ($request->input('keywords') ?? $request->input('vendor') ?? ''));
-        $vendorcreate = vendorcreate::query()->where('status', 1);
+        $vendorcreate = vendorcreate::active();
         if ($keyword !== '') {
             $vendorcreate->where('shop_name', 'LIKE', '%' . $keyword . '%');
         }
@@ -188,8 +192,7 @@ class FrontendController extends Controller
             return response()->json(['suggestions' => []]);
         }
 
-        $vendors = vendorcreate::query()
-            ->where('status', 1)
+        $vendors = vendorcreate::active()
             ->where('shop_name', 'LIKE', '%' . $term . '%')
             ->orderBy('shop_name', 'asc')
             ->limit(10)
@@ -387,9 +390,23 @@ class FrontendController extends Controller
 
     public function vendorDetailsBySlug($slug)
     {
-        $vendor = \DB::table('vendor_details')->where('slug', $slug)->where('status', 1)->first();
+        $vendor = \DB::table('vendor_details')
+            ->where('slug', $slug)
+            ->where('status', 1)
+            ->where(function ($q) {
+                $q->whereNull('expired_date')
+                  ->orWhereDate('expired_date', '>=', now()->toDateString());
+            })
+            ->first();
         if (!$vendor) {
-            $vendor = \DB::table('vendor_details')->where('id', $slug)->where('status', 1)->first();
+            $vendor = \DB::table('vendor_details')
+                ->where('id', $slug)
+                ->where('status', 1)
+                ->where(function ($q) {
+                    $q->whereNull('expired_date')
+                      ->orWhereDate('expired_date', '>=', now()->toDateString());
+                })
+                ->first();
             if ($vendor && !empty($vendor->slug)) {
                 return redirect()->route('shop.show', $vendor->slug, 301);
             }
@@ -532,13 +549,13 @@ class FrontendController extends Controller
             )
             ->get();
 
-        $vendorcreate = vendorcreate::where('user_id', $id)->where('status', 1)->first();
+        $vendorcreate = vendorcreate::where('id', $id)->active()->first();
         if (!$vendorcreate) {
-            $vendorcreate = vendorcreate::where('id', $id)->where('status', 1)->first();
+            $vendorcreate = vendorcreate::where('user_id', $id)->active()->first();
         }
 
         if (!$vendorcreate) {
-            return redirect()->route('shops')->with('error', 'Vendor details not found or store is inactive.');
+            return redirect()->route('shops')->with('error', 'Vendor details not found or store has expired.');
         }
 
         // Increment view count
@@ -602,6 +619,10 @@ class FrontendController extends Controller
             ->where('p.status', 1)
             ->where('p.flag', 1)
             ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            })
             ->inRandomOrder();
         if ($id != '') {
             $productsData = $productsData->where('p.id', $id);
@@ -684,7 +705,11 @@ class FrontendController extends Controller
             ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers')
             ->where('p.status', 1)
             ->where('p.flag', 1)
-            ->where('vp.status', 1);
+            ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            });
         if ($id != '') {
             $productsData = $productsData->where('p.id', $id);
         }
@@ -860,6 +885,10 @@ class FrontendController extends Controller
             ->where('p.status', 1)
             ->where('p.flag', 1)
             ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            })
             ->inRandomOrder();
 
         $productsData = $productsData->select(
@@ -931,6 +960,10 @@ class FrontendController extends Controller
             ->where('p.status', 1)
             ->where('p.flag', 1)
             ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            })
             ->inRandomOrder();
 
         $productsData = $productsData->select(
@@ -1001,6 +1034,10 @@ class FrontendController extends Controller
             ->where('p.status', 1)
             ->where('p.flag', 1)
             ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            })
             ->inRandomOrder();
 
         $productsData = $productsData->select(
@@ -1070,6 +1107,10 @@ class FrontendController extends Controller
             ->where('p.status', 1)
             ->where('p.flag', 1)
             ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            })
             ->inRandomOrder();
 
         $productsData = $productsData->select(
@@ -1150,7 +1191,7 @@ class FrontendController extends Controller
         $attachRatings($topRatedProducts);
         $attachRatings($offerProducts);
 
-        $vendorcreate = vendorcreate::where('vendor_details.status', 1)
+        $vendorcreate = vendorcreate::active()
             ->select('vendor_details.*')
             ->selectSub(function ($query) {
                 $query->from('products')
@@ -1166,6 +1207,10 @@ class FrontendController extends Controller
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
             ->leftJoin('vendor_details', 'vendor_details.id', '=', 'products.vendor_id')
             ->where('vendor_details.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vendor_details.expired_date')
+                  ->orWhereDate('vendor_details.expired_date', '>=', now()->toDateString());
+            })
             ->select(
                 'auctions.id as auction_id',
                 'auctions.bid_price as selling_price',
@@ -1219,12 +1264,20 @@ class FrontendController extends Controller
             ->where('o.status', 1)
             ->where('p.status', 1)
             ->where('vd.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vd.expired_date')
+                  ->orWhereDate('vd.expired_date', '>=', now()->toDateString());
+            })
             ->pluck('o.id');
 
         $activeOffersFromCreators = DB::table('vendor_details as vd')
             ->join('master_offers as o', 'o.created_by_id', '=', 'vd.user_id')
             ->where('o.status', 1)
             ->where('vd.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vd.expired_date')
+                  ->orWhereDate('vd.expired_date', '>=', now()->toDateString());
+            })
             ->pluck('o.id');
 
         $activeOfferIds = $activeOffersFromProducts->merge($activeOffersFromCreators)->unique()->values()->toArray();
@@ -1399,6 +1452,10 @@ class FrontendController extends Controller
             ->where('products.vendor_id', $vendor_id)
             ->where('products.status', 1)
             ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            })
             ->groupBy(
                 'products.id',
                 'products.slug',
@@ -1452,6 +1509,10 @@ class FrontendController extends Controller
             ->where('products.vendor_id', $vendor_id)
             ->where('products.status', 1)
             ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            })
             ->groupBy(
                 'products.id',
                 'products.slug',
@@ -1505,6 +1566,10 @@ class FrontendController extends Controller
             ->where('products.offers', $offer_id)
             ->where('products.status', 1)
             ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            })
             ->groupBy(
                 'products.id',
                 'products.slug',
@@ -1545,6 +1610,10 @@ class FrontendController extends Controller
             ->where('products.category_sub', $category_sub)
             ->where('products.status', 1)
             ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            })
             ->groupBy(
                 'products.id',
                 'products.slug',
@@ -1595,10 +1664,14 @@ class FrontendController extends Controller
         }
 
         if ($getSpecificProduct && $getSpecificProduct->product) {
-            // Check if vendor is active
+            // Check if vendor is active and not expired
             $vendorActive = DB::table('vendor_details')
                 ->where('id', $getSpecificProduct->product->vendor_id)
                 ->where('status', 1)
+                ->where(function ($q) {
+                    $q->whereNull('expired_date')
+                      ->orWhereDate('expired_date', '>=', now()->toDateString());
+                })
                 ->exists();
             if (!$vendorActive) {
                 return redirect('home');
@@ -1886,7 +1959,12 @@ class FrontendController extends Controller
             $productsData = $productsData->where('p.category_sub', $sub_category_id);
         }
 
-        $productsData = $productsData->where('p.status', 1)->where('vp.status', 1);
+        $productsData = $productsData->where('p.status', 1)
+            ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            });
 
         $productsData = $productsData->select(
             'p.id',
@@ -1961,7 +2039,12 @@ class FrontendController extends Controller
             $productsData = $productsData->whereNotNull('p.offers');
         }
 
-        $productsData = $productsData->where('p.status', 1)->where('vp.status', 1);
+        $productsData = $productsData->where('p.status', 1)
+            ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            });
 
         $productsData = $productsData->select(
             'p.id',
@@ -2046,7 +2129,12 @@ class FrontendController extends Controller
             $productsData = $productsData->where('p.category_main', $main_category_id);
         }
 
-        $productsData = $productsData->where('p.status', 1)->where('vp.status', 1);
+        $productsData = $productsData->where('p.status', 1)
+            ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            });
 
         $productsData = $productsData->select(
             'p.id',
@@ -2176,6 +2264,10 @@ class FrontendController extends Controller
             ->leftJoin('vendor_details as vp', 'vp.id', '=', 'products.vendor_id')
             ->where('products.status', 1)
             ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            })
             ->where('products.category_main', $main_category_id)
             ->whereNotNull('products_details.attributevalue1')
             ->where('products_details.attributevalue1', '!=', '')
@@ -2200,6 +2292,10 @@ class FrontendController extends Controller
             ->where('products.category_main', $main_category_id)
             ->where('products.status', 1)
             ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            })
             ->whereNotNull('products_details.attributevalue2')
             ->where('products_details.attributevalue2', '!=', '')
             ->select(DB::raw('DISTINCT(products_details.attributevalue2) as size'))
@@ -2219,6 +2315,10 @@ class FrontendController extends Controller
             ->where('products.category_main', $main_category_id)
             ->where('products.status', 1)
             ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            })
             ->where('master_offers.status', 1)
             ->whereNotNull('products.offers')
             ->where('products.offers', '!=', '')
@@ -2260,6 +2360,10 @@ class FrontendController extends Controller
             ->where('products.category', $category_id)
             ->where('products.status', 1)
             ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            })
             ->whereNotNull('products_details.attributevalue1')
             ->where('products_details.attributevalue1', '!=', '')
             ->groupBy('products_details.attributevalue1')
@@ -2277,6 +2381,10 @@ class FrontendController extends Controller
             ->where('products.category', $category_id)
             ->where('products.status', 1)
             ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            })
             ->whereNotNull('products_details.attributevalue2')
             ->where('products_details.attributevalue2', '!=', '')
             ->select(DB::raw('DISTINCT(products_details.attributevalue2) as size'));
@@ -2296,6 +2404,10 @@ class FrontendController extends Controller
             ->where('products.category', $category_id)
             ->where('products.status', 1)
             ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            })
             ->whereNotNull('products.offers')
             ->where('products.offers', '!=', 0)
             ->select('master_offers.id', 'master_offers.type', 'master_offers.title', 'master_offers.buy', 'master_offers.getoffer', 'master_offers.cashbacktype', 'master_offers.cashbackvalue', 'master_offers.value', 'master_offers.buyproduct', 'master_offers.getamt', 'master_offers.discount_type')
@@ -2326,12 +2438,20 @@ class FrontendController extends Controller
             ->where('o.status', 1)
             ->where('p.status', 1)
             ->where('vd.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vd.expired_date')
+                  ->orWhereDate('vd.expired_date', '>=', now()->toDateString());
+            })
             ->pluck('o.id');
 
         $activeOffersFromCreators = DB::table('vendor_details as vd')
             ->join('master_offers as o', 'o.created_by_id', '=', 'vd.user_id')
             ->where('o.status', 1)
             ->where('vd.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vd.expired_date')
+                  ->orWhereDate('vd.expired_date', '>=', now()->toDateString());
+            })
             ->pluck('o.id');
 
         $activeOfferIds = $activeOffersFromProducts->merge($activeOffersFromCreators)->unique()->values()->toArray();
@@ -2458,7 +2578,11 @@ class FrontendController extends Controller
             )
             ->where('o.status', 1)
             ->where('p.status', 1)
-            ->where('vd.status', 1);
+            ->where('vd.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vd.expired_date')
+                  ->orWhereDate('vd.expired_date', '>=', now()->toDateString());
+            });
 
         $query2 = DB::table('vendor_details as vd')
             ->join('master_offers as o', 'o.created_by_id', '=', 'vd.user_id')
@@ -2484,7 +2608,11 @@ class FrontendController extends Controller
                 'o.getamt'
             )
             ->where('o.status', 1)
-            ->where('vd.status', 1);
+            ->where('vd.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vd.expired_date')
+                  ->orWhereDate('vd.expired_date', '>=', now()->toDateString());
+            });
 
         if (!empty($filterOfferIds)) {
             $query1->whereIn('o.id', $filterOfferIds);
@@ -2531,6 +2659,11 @@ class FrontendController extends Controller
 
     public function vendor_offer_products($vendor_id)
     {
+        $vendor = vendorcreate::active()->find($vendor_id);
+        if (!$vendor) {
+            abort(404);
+        }
+
         $offer = Offer::get();
 
         // Accept comma-separated offer IDs (e.g. ?ids=8,13)
@@ -2600,6 +2733,10 @@ class FrontendController extends Controller
             })
             ->where('p.status', 1)
             ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            })
             ->select(
                 'p.id',
             'p.slug',
@@ -3928,7 +4065,11 @@ class FrontendController extends Controller
             ->leftJoin('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
             ->leftJoin('master_offers as o', 'o.id', '=', 'p.offers')
             ->where('p.status', 1)
-            ->where('vp.status', 1);
+            ->where('vp.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vp.expired_date')
+                  ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+            });
 
         if (!empty($keyword)) {
                                                                                                                                                                                                                                                                                                                             $rawTokens = preg_split('/\s+/', strtolower($keyword), -1, PREG_SPLIT_NO_EMPTY);

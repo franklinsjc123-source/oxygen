@@ -91,7 +91,14 @@ Route::get('vendorDokenStore',[FrontendController::class,'vendorDokenStore'])->n
 Route::get('shop/{slug}', [FrontendController::class, 'vendorDetailsBySlug'])->name('shop.show');
 
 Route::get('shop-details/{id}', function($id) {
-    $vendor = \DB::table('vendor_details')->where('id', $id)->first();
+    $vendor = \DB::table('vendor_details')
+        ->where('id', $id)
+        ->where('status', 1)
+        ->where(function ($q) {
+            $q->whereNull('expired_date')
+              ->orWhereDate('expired_date', '>=', now()->toDateString());
+        })
+        ->first();
     if ($vendor && $vendor->slug) {
         return redirect()->route('shop.show', $vendor->slug, 301);
     }

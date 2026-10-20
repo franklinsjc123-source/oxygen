@@ -56,7 +56,11 @@ class HomeController extends Controller
         $newArrivals = Products::with(['vendor', 'productdetails', 'offer'])
             ->where('flag', 1)->where('status', 1)
             ->whereHas('vendorDetails', function ($query) {
-                $query->where('status', 1);
+                $query->where('status', 1)
+                      ->where(function ($q) {
+                          $q->whereNull('expired_date')
+                            ->orWhereDate('expired_date', '>=', now()->toDateString());
+                      });
             })
             ->latest('created_at')->take(10)->get();
         // dd( $newArrivals);
@@ -70,7 +74,13 @@ class HomeController extends Controller
             ->leftJoin('vendor_details as v', 'products.vendor_id', '=', 'v.id')
             ->where('category_main.status', 1)
             ->where(function ($q) {
-                $q->whereNull('products.id')->orWhere('v.status', 1);
+                $q->whereNull('products.id')->orWhere(function ($vq) {
+                    $vq->where('v.status', 1)
+                       ->where(function ($eq) {
+                           $eq->whereNull('v.expired_date')
+                              ->orWhereDate('v.expired_date', '>=', now()->toDateString());
+                       });
+                });
             })
             ->groupBy('category_main.id', 'category_main.category_main_name', 'category_main.category_main_image') // Include the columns needed for grouping
             ->orderByDesc('product_count')
@@ -90,7 +100,11 @@ class HomeController extends Controller
             ->where('products.flag', 1)
             ->where('products.status', 1)
             ->whereHas('vendorDetails', function ($query) {
-                $query->where('status', 1);
+                $query->where('status', 1)
+                      ->where(function ($q) {
+                          $q->whereNull('expired_date')
+                            ->orWhereDate('expired_date', '>=', now()->toDateString());
+                      });
             })
             ->whereHas('categoryMain', function ($query) {
                 $query->where('category_main_name', 'LIKE', 'men');
@@ -101,7 +115,11 @@ class HomeController extends Controller
             ->where('products.flag', 1)
             ->where('products.status', 1)
             ->whereHas('vendorDetails', function ($query) {
-                $query->where('status', 1);
+                $query->where('status', 1)
+                      ->where(function ($q) {
+                          $q->whereNull('expired_date')
+                            ->orWhereDate('expired_date', '>=', now()->toDateString());
+                      });
             })
             ->whereHas('categoryMain', function ($query) {
                 $query->where('category_main_name', 'LIKE', 'women');
@@ -113,7 +131,11 @@ class HomeController extends Controller
             ->where('products.flag', 1)
             ->where('products.status', 1)
             ->whereHas('vendorDetails', function ($query) {
-                $query->where('status', 1);
+                $query->where('status', 1)
+                      ->where(function ($q) {
+                          $q->whereNull('expired_date')
+                            ->orWhereDate('expired_date', '>=', now()->toDateString());
+                      });
             })
             ->whereHas('categoryMain', function ($query) {
                 $query->where('category_main_name', 'LIKE', 'kid');
@@ -561,9 +583,9 @@ class HomeController extends Controller
                 'products_details.selling_price'
             )->get();
 
-        $vendorcreate = vendorcreate::where('user_id', $id)->first();
+        $vendorcreate = vendorcreate::active()->where('user_id', $id)->first();
         if (!$vendorcreate) {
-            $vendorcreate = vendorcreate::where('id', $id)->first();
+            $vendorcreate = vendorcreate::active()->where('id', $id)->first();
         }
 
         if (!$vendorcreate) {
@@ -585,7 +607,9 @@ class HomeController extends Controller
     {
 
         $product = Products::where('id', $productdetail_id)->first();
-        //  dd($product);
+        if (!$product) {
+            return redirect('/')->with('error', 'Product not found.');
+        }
         $products = Products::join('products_details', 'products.product_id', '=', 'products_details.products_id')
             ->select('products.*', 'products_details.*')
             ->where('products.login_id', $product->login_id)
@@ -593,7 +617,7 @@ class HomeController extends Controller
 
         $products1 = User::where('login_id', $product->login_id)->get();
         // dd($products1);
-        $vendorcreate = vendorcreate::where('user_id', $products1[0]->login_id)->first();
+        $vendorcreate = vendorcreate::active()->where('user_id', $products1[0]->login_id ?? null)->first();
 
         // dd($vendorcreate);
         // $products = Products::get();
@@ -630,7 +654,7 @@ class HomeController extends Controller
     public function vendorsList()
     {
 
-        $vendorcreate = vendorcreate::get();
+        $vendorcreate = vendorcreate::active()->get();
         return view('website.front-end.vendor-list')->with([
             "vendorcreate" => $vendorcreate,
 
@@ -640,7 +664,7 @@ class HomeController extends Controller
     public function allvendors()
     {
 
-        $vendorcreate = vendorcreate::get();
+        $vendorcreate = vendorcreate::active()->get();
         return view('website.front-end.allvendors')->with([
             "vendorcreate" => $vendorcreate,
 
@@ -1140,6 +1164,10 @@ class HomeController extends Controller
             )
             ->where('products.status', 1)
             ->where('v.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('v.expired_date')
+                  ->orWhereDate('v.expired_date', '>=', now()->toDateString());
+            })
             // Apply color filter as a strict AND condition
             ->when(!empty($matchedColorNames), function ($query) use ($matchedColorNames) {
                 $query->whereIn(DB::raw('LOWER(pd.attributevalue1)'), $matchedColorNames);
@@ -1181,6 +1209,10 @@ class HomeController extends Controller
             ->whereIn('products.id', !empty($productIds) ? $productIds : [0])
             ->where('products.status', 1)
             ->where('v.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('v.expired_date')
+                  ->orWhereDate('v.expired_date', '>=', now()->toDateString());
+            })
             ->whereNotNull('products_details.attributevalue1')
             ->where('products_details.attributevalue1', '!=', '')
             ->groupBy('products_details.attributevalue1')
@@ -1193,6 +1225,10 @@ class HomeController extends Controller
             ->whereIn('products.id', !empty($productIds) ? $productIds : [0])
             ->where('products.status', 1)
             ->where('v.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('v.expired_date')
+                  ->orWhereDate('v.expired_date', '>=', now()->toDateString());
+            })
             ->whereNotNull('products_details.attributevalue2')
             ->where('products_details.attributevalue2', '!=', '')
             ->select(DB::raw('DISTINCT(products_details.attributevalue2) as size'))
@@ -1205,6 +1241,10 @@ class HomeController extends Controller
             ->whereIn('products.id', !empty($productIds) ? $productIds : [0])
             ->where('products.status', 1)
             ->where('v.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('v.expired_date')
+                  ->orWhereDate('v.expired_date', '>=', now()->toDateString());
+            })
             ->where('master_offers.status', 1)
             ->whereNotNull('products.offers')
             ->where('products.offers', '!=', '')
@@ -1284,6 +1324,10 @@ class HomeController extends Controller
             ->leftJoin('vendor_details as v', 'products.vendor_id', '=', 'v.id')
             ->where('products.status', 1)
             ->where('v.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('v.expired_date')
+                  ->orWhereDate('v.expired_date', '>=', now()->toDateString());
+            })
             ->where(function ($query) use ($tokens) {
                 foreach ($tokens as $token) {
                     $query->where(function ($q) use ($token) {
@@ -1366,6 +1410,10 @@ class HomeController extends Controller
                 ->leftJoin('vendor_details as v', 'products.vendor_id', '=', 'v.id')
                 ->where('products.status', 1)
                 ->where('v.status', 1)
+                ->where(function ($q) {
+                    $q->whereNull('v.expired_date')
+                      ->orWhereDate('v.expired_date', '>=', now()->toDateString());
+                })
                 ->where(function ($q) use ($searchTokens) {
                     foreach ($searchTokens as $st) {
                         $q->where(function ($sq) use ($st) {
@@ -1410,6 +1458,10 @@ class HomeController extends Controller
             ->leftJoin('vendor_details as v', 'products.vendor_id', '=', 'v.id')
             ->where('products.status', 1)
             ->where('v.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('v.expired_date')
+                  ->orWhereDate('v.expired_date', '>=', now()->toDateString());
+            })
             ->where('products.product_name', 'LIKE', '%' . $term . '%')
             ->select('products.id', 'products.product_name as value', 'products.product_image', 'cs.category_sub_name', 'c.category_name', 'cm.category_main_name')
             ->orderBy('products.created_at', 'desc')
@@ -1483,6 +1535,10 @@ class HomeController extends Controller
             ->where('specify_value', 'LIKE', '%' . $term . '%')
             ->where('p.status', 1)
             ->where('v.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('v.expired_date')
+                  ->orWhereDate('v.expired_date', '>=', now()->toDateString());
+            })
             ->select('specify_value as value', 'p.product_image')
             ->distinct()
             ->limit(3)
@@ -1511,6 +1567,10 @@ class HomeController extends Controller
                 ->leftJoin('vendor_details as v', 'products.vendor_id', '=', 'v.id')
                 ->where('products.status', 1)
                 ->where('v.status', 1)
+                ->where(function ($q) {
+                    $q->whereNull('v.expired_date')
+                      ->orWhereDate('v.expired_date', '>=', now()->toDateString());
+                })
                 ->whereNotNull('products_details.attributevalue1')
                 ->where('products_details.attributevalue1', '!=', '')
                 ->where(function ($q) use ($searchTokens) {
@@ -1608,6 +1668,10 @@ class HomeController extends Controller
 
         $products->where('products.status', 1)
             ->where('v.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('v.expired_date')
+                  ->orWhereDate('v.expired_date', '>=', now()->toDateString());
+            })
             ->groupBy(
                 'products_details.products_id', // Group by the product to avoid duplicate product rows
                 'category_main.category_main_name',
@@ -1672,6 +1736,10 @@ class HomeController extends Controller
 
         $products->where('products.status', 1)
             ->where('v.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('v.expired_date')
+                  ->orWhereDate('v.expired_date', '>=', now()->toDateString());
+            })
             ->groupBy(
                 'products_details.products_id', // Group by the product to avoid duplicate product rows
                 'category.category_name',
@@ -1760,6 +1828,10 @@ class HomeController extends Controller
         // Only fetch products that are active
         $products->where('products.status', 1)
             ->where('v.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('v.expired_date')
+                  ->orWhereDate('v.expired_date', '>=', now()->toDateString());
+            })
             ->groupBy('products_details.products_id', 'category.category_name', 'products.product_name', 'products.product_image');
 
         // Add dynamic orderBy based on the 'orderby' parameter
@@ -1839,6 +1911,10 @@ class HomeController extends Controller
         // Only fetch products that are active
         $products->where('products.status', 1)
             ->where('v.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('v.expired_date')
+                  ->orWhereDate('v.expired_date', '>=', now()->toDateString());
+            })
             ->groupBy('products_details.products_id', 'category.category_name', 'products.product_name', 'products.product_image');
 
         // Add dynamic orderBy based on the 'orderby' parameter

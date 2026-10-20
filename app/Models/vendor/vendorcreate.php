@@ -40,4 +40,35 @@ class vendorcreate extends Model
 
         return $slug;
     }
+
+    /**
+     * Scope query to only include active and non-expired vendors.
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('vendor_details.status', 1)
+            ->where(function ($q) {
+                $q->whereNull('vendor_details.expired_date')
+                  ->orWhereDate('vendor_details.expired_date', '>=', now()->toDateString());
+            });
+    }
+
+    /**
+     * Determine if this vendor's package has expired.
+     */
+    public function isExpired(): bool
+    {
+        if (empty($this->expired_date)) {
+            return false;
+        }
+        return strtotime(date('Y-m-d', strtotime($this->expired_date))) < strtotime(date('Y-m-d'));
+    }
+
+    /**
+     * Determine if this vendor is active and not expired.
+     */
+    public function isActive(): bool
+    {
+        return (int)($this->status ?? 0) === 1 && !$this->isExpired();
+    }
 }
