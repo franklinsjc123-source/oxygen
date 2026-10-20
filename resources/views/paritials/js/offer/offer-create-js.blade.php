@@ -197,14 +197,14 @@ function nonetype(){
 </script>
 
 <script>
-	 const myDatePicker1 = MCDatepicker.create({ 
-      
+if (typeof myDatePicker1 === 'undefined') {
+    var myDatePicker1 = MCDatepicker.create({ 
 	  el:'#example'
-	  
-})
-	 const myDatePicker2 = MCDatepicker.create({ 
-      
+    });
+}
+if (typeof myDatePicker2 === 'undefined') {
+    var myDatePicker2 = MCDatepicker.create({ 
 	  el:'#example1'
-	  
-})
+    });
+}
 </script>

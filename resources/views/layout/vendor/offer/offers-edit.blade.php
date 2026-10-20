@@ -18,11 +18,11 @@
 
 <!-- Right sidebar Ends-->
 
-        <div class="page-body">
+        <div class="page-body" style="margin-top: 60px !important;">
 
             <!-- Container-fluid starts-->
             <div class="container-fluid">
-                <div class="page-header">
+                <div class="page-header" style="margin-top: 15px !important; margin-bottom: 15px !important;">
                     <div class="row">
                         <div class="col-12">
                         <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">

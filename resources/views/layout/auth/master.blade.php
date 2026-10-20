@@ -81,10 +81,15 @@
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap1.css') }}">
 
     <style>
+        /* Ensure page-body clears the 60px fixed top header across all views */
+        .page-wrapper .page-body-wrapper .page-body {
+            margin-top: 60px !important;
+        }
+
         /* Fix breadcrumb spacing globally */
         .page-header .breadcrumb {
-            display: flex;
-            align-items: center;
+            display: flex !important;
+            align-items: center !important;
         }
         .page-header .breadcrumb .breadcrumb-item + .breadcrumb-item {
             padding-left: 2px !important;
@@ -96,25 +101,32 @@
             margin: 0 !important;
         }
         .page-header .breadcrumb .breadcrumb-item a {
-            display: flex;
-            align-items: center;
+            display: inline-flex !important;
+            align-items: center !important;
             padding: 0 !important;
             margin: 0 !important;
+            text-decoration: none !important;
         }
-        /* Hide the feather home icon and use text 'Home' instead */
-        .page-header .breadcrumb .breadcrumb-item:first-child a svg {
-            display: none !important;
+        /* Make the feather home icon visible alongside Home text */
+        .page-header .breadcrumb .breadcrumb-item:first-child a svg,
+        .page-header .breadcrumb .breadcrumb-item:first-child a i {
+            display: inline-block !important;
+            width: 14px !important;
+            height: 14px !important;
+            vertical-align: middle !important;
+            color: #555555 !important;
         }
-        .page-header .breadcrumb .breadcrumb-item:first-child a::before {
+        .page-header .breadcrumb .breadcrumb-item:first-child a::after {
             content: "Home";
             font-weight: 600;
             color: #555555;
+            margin-left: 4px;
         }
         .page-header .breadcrumb-item {
-            display: flex;
-            align-items: center;
-            padding: 0;
-            margin: 0;
+            display: flex !important;
+            align-items: center !important;
+            padding: 0 !important;
+            margin: 0 !important;
         }
         /* Mobile-only floating bottom action bar */
         .mobile-bottom-action-bar {
