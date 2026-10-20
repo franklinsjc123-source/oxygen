@@ -47,7 +47,7 @@
                     <div class="row">
                         <div class="col-12">
                             <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
-                                <li class="breadcrumb-item"><a href="{{ url('vendor/dashboard') }}"><i data-feather="home"></i></a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('vendordashboard', session()->get('login_id')) }}"><i data-feather="home"></i></a></li>
                                 <li class="breadcrumb-item">Settings</li>
                                 <li class="breadcrumb-item active">Profile</li>
                             </ol>

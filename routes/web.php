@@ -55,6 +55,30 @@ Route::get('{any_dashboard}', function ($any_dashboard) {
     return redirect('/');
 })->where('any_dashboard', '.*dashboard\.php');
 
+Route::get('/dashboard', function () {
+    if (auth()->check()) {
+        $user = auth()->user();
+        if ((int) $user->status === 2) {
+            return redirect()->route('vendordashboard', $user->login_id);
+        } elseif ((int) $user->status === 5) {
+            return redirect()->route('staffdashboard', $user->login_id);
+        } elseif ((int) $user->status === 1) {
+            return redirect('admin/dashboard');
+        }
+    }
+    if (session()->has('login_id')) {
+        $loginId = session()->get('login_id');
+        if (session()->get('log_type') === 'Vendor' || (int) session()->get('status') === 2) {
+            return redirect()->route('vendordashboard', $loginId);
+        } elseif (session()->get('log_type') === 'Staff' || (int) session()->get('status') === 5) {
+            return redirect()->route('staffdashboard', $loginId);
+        } elseif (session()->get('log_type') === 'Admin' || (int) session()->get('status') === 1) {
+            return redirect('admin/dashboard');
+        }
+    }
+    return redirect('/');
+});
+
 // Routes For Admin
 Route::prefix('/admin')->middleware('panel.session')->group(__DIR__.'/admin/adminRoutes.php');
 

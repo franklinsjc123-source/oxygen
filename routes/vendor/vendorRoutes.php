@@ -97,6 +97,19 @@ Route::get(
 	->name('vendor.dashboard.filter_data')
 	->middleware('auth');
 
+Route::get('dashboard', function() {
+	$id = null;
+	if (auth()->check() && (int) auth()->user()->status === 2) {
+		$id = auth()->user()->login_id;
+	} elseif (session()->has('login_id')) {
+		$id = session()->get('login_id');
+	}
+	if ($id) {
+		return redirect()->route('vendordashboard', $id);
+	}
+	return redirect('vendor/login');
+})->name('vendor.dashboard');
+
 Route::get('dashboard.php', function() {
 	$id = null;
 	if (auth()->check() && (int) auth()->user()->status === 2) {
