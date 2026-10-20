@@ -282,13 +282,28 @@
                                              @endif
                                          </li>
                                     </ul>
+                                    @php
+                                        $fbLink = !empty($vendordetails->facebook_link) ? trim($vendordetails->facebook_link) : '';
+                                        if ($fbLink && !preg_match('~^(?:f|ht)tps?://~i', $fbLink)) {
+                                            $fbLink = 'https://' . ltrim($fbLink, '/');
+                                        }
+
+                                        $waRaw = !empty($vendordetails->whatsapp_number) ? $vendordetails->whatsapp_number : ($vendordetails->mobile_number1 ?? '');
+                                        $waClean = preg_replace('/[^0-9]/', '', $waRaw);
+                                        if ($waClean && strlen($waClean) == 10) {
+                                            $waClean = '91' . $waClean;
+                                        }
+                                        $waLink = $waClean ? 'https://wa.me/' . $waClean : '';
+
+                                        $igLink = !empty($vendordetails->instagram_link) ? trim($vendordetails->instagram_link) : '';
+                                        if ($igLink && !preg_match('~^(?:f|ht)tps?://~i', $igLink)) {
+                                            $igLink = 'https://' . ltrim($igLink, '/');
+                                        }
+                                    @endphp
                                     <div class="social-icons social-no-color border-thin">
-                                        <a href="#" class="social-icon social-facebook w-icon-facebook"></a>
-                                        <a href="#" class="social-icon social-google w-icon-google"></a>
-                                        <a href="#" class="social-icon social-twitter w-icon-twitter"></a>
-                                        <a href="#" class="social-icon social-pinterest w-icon-pinterest"></a>
-                                        <a href="#" class="social-icon social-youtube w-icon-youtube"></a>
-                                        <a href="#" class="social-icon social-instagram w-icon-instagram"></a>
+                                        <a href="{{ $fbLink ?: '#' }}" @if($fbLink) target="_blank" rel="noopener noreferrer" @endif class="social-icon social-facebook w-icon-facebook" title="Facebook"></a>
+                                        <a href="{{ $waLink ?: '#' }}" @if($waLink) target="_blank" rel="noopener noreferrer" @endif class="social-icon social-whatsapp fab fa-whatsapp" title="WhatsApp" style="display: inline-flex; align-items: center; justify-content: center; font-size: 15px;"></a>
+                                        <a href="{{ $igLink ?: '#' }}" @if($igLink) target="_blank" rel="noopener noreferrer" @endif class="social-icon social-instagram w-icon-instagram" title="Instagram"></a>
                                     </div>
                                 </div>
                             </div>
