@@ -206,8 +206,8 @@
             <p style="text-transform: capitalize !important;">{{ ucwords(strtolower($vRole)) }}</p>
         </div>
         <ul class="admin-mmenu">
-            @if(session()->get('login_id'))
-            <li><a href="{{ url('vendor/dashboard/'.session()->get('login_id')) }}"><i data-feather="home"></i> <span class="text-label">Dashboard</span></a></li>
+            @if(session()->get('login_id') || (auth()->check() && auth()->user()->login_id))
+            <li><a href="{{ route('vendordashboard', session()->get('login_id') ?? auth()->user()->login_id) }}"><i data-feather="home"></i> <span class="text-label">Dashboard</span></a></li>
             <li class="has-sub">
                 <a href="#"><i data-feather="box"></i> <span class="text-label">Category</span> <span class="arr">&#10095;</span></a>
                 <ul class="sub">
@@ -294,7 +294,7 @@
 
             <!-- 2. Center: Logo (mobile only) -->
             <div class="main-header-left d-lg-none col text-center">
-                <div class="logo-wrapper" style="display: inline-block;"><a href="{{ url('vendor/dashboard/'.session()->get('login_id')) }}"><img class="blur-up lazyloaded"
+                <div class="logo-wrapper" style="display: inline-block;"><a href="{{ route('vendordashboard', session()->get('login_id') ?? (auth()->check() ? auth()->user()->login_id : 1)) }}"><img class="blur-up lazyloaded"
                             src="{{ asset('assets/images/dashboard/logo/newlogo.png') }}" alt="Logo" style="height: 55px !important; width: auto; object-fit: contain;"></a></div>
             </div>
 <script>

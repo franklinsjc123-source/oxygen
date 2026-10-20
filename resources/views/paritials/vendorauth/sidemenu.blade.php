@@ -27,7 +27,7 @@
 <div class="page-sidebar">
     <div class="main-header-left d-none d-lg-block">
         <div class="logo-wrapper">
-            <a href="index.php">
+            <a href="{{ route('vendordashboard', session()->get('login_id') ?? (auth()->check() ? auth()->user()->login_id : 1)) }}">
                 <img class="blur-up lazyloaded" src="{{ asset('assets/images/dashboard/logo/logo.png') }}" alt="">
             </a>
         </div>
@@ -43,8 +43,8 @@
             <p style="text-transform: capitalize !important;">{{ ucwords(strtolower($vendorRole)) }}</p>
         </div>
         <ul class="sidebar-menu">
-            @if (session()->get('login_id'))
-            <li><a class="sidebar-header" href="{{ url('vendor/dashboard/'.session()->get('login_id')) }}"><i
+            @if (session()->get('login_id') || (auth()->check() && auth()->user()->login_id))
+            <li><a class="sidebar-header" href="{{ route('vendordashboard', session()->get('login_id') ?? auth()->user()->login_id) }}"><i
                         data-feather="home"></i><span>Dashboard</span></a></li>
 
                 {{-- category --}}

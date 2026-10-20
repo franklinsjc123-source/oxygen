@@ -27,7 +27,7 @@
                     <div class="row">
                         <div class="col-12">
                         <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
-                            <li class="breadcrumb-item"><a href="dashboard.php"><i data-feather="home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('vendordashboard', session()->get('login_id') ?? (auth()->check() ? auth()->user()->login_id : 1)) }}"><i data-feather="home"></i></a></li>
                                 <li class="breadcrumb-item active">Oxygen Adv Banner</li>
                         </ol>
                     </div>
