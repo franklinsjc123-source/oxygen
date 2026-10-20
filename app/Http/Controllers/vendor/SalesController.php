@@ -429,8 +429,8 @@ class SalesController extends Controller
     {
         $vendorId = session()->get('login_id');
         $returns = DB::table('ecom_return_requests')
-            ->join('ecom_invoice', 'ecom_invoice.invoice_id', '=', 'ecom_return_requests.invoice_id')
-            ->leftJoin('ecom_customer_info', 'ecom_customer_info.customer_id', '=', 'ecom_return_requests.customer_id')
+            ->join('ecom_invoice', DB::raw('ecom_invoice.invoice_id COLLATE utf8mb4_unicode_ci'), '=', DB::raw('ecom_return_requests.invoice_id COLLATE utf8mb4_unicode_ci'))
+            ->leftJoin('ecom_customer_info', DB::raw('ecom_customer_info.customer_id COLLATE utf8mb4_unicode_ci'), '=', DB::raw('ecom_return_requests.customer_id COLLATE utf8mb4_unicode_ci'))
             ->where('ecom_invoice.vendor_id', $vendorId)
             ->select(
                 'ecom_return_requests.*',
@@ -473,7 +473,7 @@ class SalesController extends Controller
 
         $vendorId = session()->get('login_id');
         $returnRequest = DB::table('ecom_return_requests')
-            ->join('ecom_invoice', 'ecom_invoice.invoice_id', '=', 'ecom_return_requests.invoice_id')
+            ->join('ecom_invoice', DB::raw('ecom_invoice.invoice_id COLLATE utf8mb4_unicode_ci'), '=', DB::raw('ecom_return_requests.invoice_id COLLATE utf8mb4_unicode_ci'))
             ->where('ecom_invoice.vendor_id', $vendorId)
             ->where('ecom_return_requests.id', $id)
             ->select('ecom_return_requests.*')

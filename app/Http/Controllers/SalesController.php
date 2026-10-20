@@ -253,8 +253,8 @@ class SalesController extends Controller
     public function returns()
     {
         $returns = DB::table('ecom_return_requests')
-            ->leftJoin('ecom_invoice', 'ecom_invoice.invoice_id', '=', 'ecom_return_requests.invoice_id')
-            ->leftJoin('ecom_customer_info', 'ecom_customer_info.customer_id', '=', 'ecom_return_requests.customer_id')
+            ->leftJoin('ecom_invoice', DB::raw('ecom_invoice.invoice_id COLLATE utf8mb4_unicode_ci'), '=', DB::raw('ecom_return_requests.invoice_id COLLATE utf8mb4_unicode_ci'))
+            ->leftJoin('ecom_customer_info', DB::raw('ecom_customer_info.customer_id COLLATE utf8mb4_unicode_ci'), '=', DB::raw('ecom_return_requests.customer_id COLLATE utf8mb4_unicode_ci'))
             ->select(
                 'ecom_return_requests.*',
                 'ecom_customer_info.customer_firstname',
