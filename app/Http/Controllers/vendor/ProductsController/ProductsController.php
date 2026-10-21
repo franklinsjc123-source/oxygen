@@ -1676,8 +1676,9 @@ public function store(Request $request, FlasherInterface $flasher)
      */
     public function download_import_template()
     {
+        $vendor_id = session()->get('login_id') ?? session()->get('userId');
         try {
-            return Excel::download(new ProductTemplateExport, 'sample_product_upload.xlsx');
+            return Excel::download(new ProductTemplateExport($vendor_id), 'sample_product_upload.xlsx');
         } catch (\Exception $e) {
             return response()->download(public_path('Bulk_Upload1.xlsx'), 'sample_upload.xlsx');
         }

@@ -22,9 +22,60 @@ use App\Models\Category\CategorySub;
 use App\Models\Master\Colors\ProductColor;
 use App\Models\Master\GST\GST;
 use App\Models\Offer\Offer;
+use App\Models\vendor\vendorcreate;
 
 class ProductTemplateExport implements FromArray, WithHeadings, WithEvents, WithStyles, WithColumnWidths
 {
+    protected $vendorId;
+
+    public function __construct($vendorId = null)
+    {
+        if ($vendorId !== null) {
+            $this->vendorId = $vendorId;
+        } elseif (session()->get('log_type') === 'Vendor' && session()->has('login_id')) {
+            $this->vendorId = session()->get('login_id');
+        }
+    }
+
+    /**
+     * Helper to resolve vendor's allotted subcategories, categories, and main categories
+     */
+    protected function getVendorAllottedHierarchy(): array
+    {
+        $allowedSubIds = null;
+        $allowedCatIds = null;
+        $allowedMainCatIds = null;
+
+        if ($this->vendorId) {
+            $vendor = vendorcreate::where('id', $this->vendorId)
+                ->orWhere('user_id', $this->vendorId)
+                ->first();
+
+            if ($vendor && !empty($vendor->sub_category_ids)) {
+                $subCategoryArray = array_values(array_filter(array_map('intval', array_map('trim', explode(',', (string) $vendor->sub_category_ids)))));
+
+                if (!empty($subCategoryArray)) {
+                    $subQuery = CategorySub::where('status', 1)->whereIn('id', $subCategoryArray);
+                    $allowedSubIds = $subQuery->pluck('id')->toArray();
+                    $allowedCatIds = $subQuery->pluck('category_id')->unique()->filter()->toArray();
+
+                    $cats = Category::where('status', 1)->whereIn('id', $allowedCatIds)->get();
+                    $allowedMainCatIds = $cats->pluck('main_category_id')
+                        ->merge($subQuery->pluck('category_main_id'))
+                        ->unique()
+                        ->filter()
+                        ->toArray();
+                }
+            }
+        }
+
+        return [
+            'subIds'     => $allowedSubIds,
+            'catIds'     => $allowedCatIds,
+            'mainCatIds' => $allowedMainCatIds
+        ];
+    }
+
     /**
      * Clean strings to form valid Excel named range identifiers.
      */
@@ -73,18 +124,48 @@ class ProductTemplateExport implements FromArray, WithHeadings, WithEvents, With
      */
     public function array(): array
     {
+        $hierarchy = $this->getVendorAllottedHierarchy();
+
+        $mainCatQuery = CategoryMain::where('status', 1);
+        if ($hierarchy['mainCatIds'] !== null) {
+            $mainCatQuery->whereIn('id', $hierarchy['mainCatIds']);
+        }
+        $mainCats = $mainCatQuery->get();
+
+        $catQuery = Category::where('status', 1);
+        if ($hierarchy['catIds'] !== null) {
+            $catQuery->whereIn('id', $hierarchy['catIds']);
+        }
+        $cats = $catQuery->get();
+
+        $subQuery = CategorySub::where('status', 1);
+        if ($hierarchy['subIds'] !== null) {
+            $subQuery->whereIn('id', $hierarchy['subIds']);
+        }
+        $subs = $subQuery->get();
+
+        $firstMain = $mainCats->first();
+        $sampleMainCat = $firstMain ? $firstMain->category_main_name : 'Men';
+
+        $firstCat = $cats->first();
+        $sampleCat = $firstCat ? $firstCat->category_name : 'Topwear';
+
+        $firstSub = $subs->first();
+        $sampleSubCat1 = $firstSub ? $firstSub->category_sub_name : 'Casual Shirt';
+        $sampleSubCat2 = $subs->count() > 1 ? $subs->get(1)->category_sub_name : $sampleSubCat1;
+
         $color = ProductColor::where('status', 1)->value('color_name') ?? 'Red';
         $gst = GST::where('status', 1)->value('gst_name') ?? 'GST 5%';
         $offer = Offer::where('status', 1)->value('title') ?? '';
 
         return [
             [
-                'Men Slim Fit Cotton Casual Shirt',
+                $sampleSubCat1 . ' Sample Product',
                 '6205',
-                'Men',
-                'Topwear',
-                'Casual Shirt',
-                'Premium 100% combed cotton casual shirt for everyday comfort.',
+                $sampleMainCat,
+                $sampleCat,
+                $sampleSubCat1,
+                'High quality product crafted with premium materials.',
                 '0.35',
                 'Yes',
                 $color,
@@ -92,7 +173,7 @@ class ProductTemplateExport implements FromArray, WithHeadings, WithEvents, With
                 50,
                 1499,
                 799,
-                'SHIRT-COT-M-001',
+                'SKU-SAMPLE-001',
                 'return',
                 7,
                 5,
@@ -101,20 +182,20 @@ class ProductTemplateExport implements FromArray, WithHeadings, WithEvents, With
                 'Active'
             ],
             [
-                'Kids Printed Round Neck Cotton T-Shirt',
+                $sampleSubCat2 . ' Sample Product',
                 '6205',
-                'Kids',
-                'Boys',
-                'T-Shirts',
-                'Comfortable soft cotton regular fit daily wear t-shirt.',
-                '0.20',
+                $sampleMainCat,
+                $sampleCat,
+                $sampleSubCat2,
+                'High quality product crafted with premium materials.',
+                '0.35',
                 'No',
                 'NA',
                 'L',
                 40,
                 899,
                 499,
-                'KIDS-TSHIRT-L-001',
+                'SKU-SAMPLE-002',
                 'return',
                 7,
                 5,
@@ -187,6 +268,7 @@ class ProductTemplateExport implements FromArray, WithHeadings, WithEvents, With
     /**
      * Setup cascading dependent dropdowns:
      * Main Category (Column C) -> Category (Column D) -> Sub Category (Column E)
+     * Filtered by vendor allotted subcategories if downloaded by a vendor.
      */
     public function registerEvents(): array
     {
@@ -194,6 +276,8 @@ class ProductTemplateExport implements FromArray, WithHeadings, WithEvents, With
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
                 $spreadsheet = $sheet->getParent();
+
+                $hierarchy = $this->getVendorAllottedHierarchy();
 
                 // Freeze header row
                 $sheet->freezePane('A2');
@@ -206,7 +290,12 @@ class ProductTemplateExport implements FromArray, WithHeadings, WithEvents, With
                 $colIndex = 1;
 
                 // 1. Column 1 (lists!A): Main Categories List
-                $mainCategories = CategoryMain::where('status', 1)->get();
+                $mainCategoryQuery = CategoryMain::where('status', 1);
+                if ($hierarchy['mainCatIds'] !== null) {
+                    $mainCategoryQuery->whereIn('id', $hierarchy['mainCatIds']);
+                }
+                $mainCategories = $mainCategoryQuery->get();
+
                 $mainCatNames = [];
                 foreach ($mainCategories as $r => $m) {
                     $mName = trim($m->category_main_name);
@@ -220,9 +309,11 @@ class ProductTemplateExport implements FromArray, WithHeadings, WithEvents, With
                 // 2. Named ranges for Category dependent on Main Category
                 foreach ($mainCategories as $m) {
                     $mClean = self::cleanRangeName($m->category_main_name);
-                    $cats = Category::where('main_category_id', $m->id)
-                        ->where('status', 1)
-                        ->pluck('category_name')
+                    $catsQuery = Category::where('main_category_id', $m->id)->where('status', 1);
+                    if ($hierarchy['catIds'] !== null) {
+                        $catsQuery->whereIn('id', $hierarchy['catIds']);
+                    }
+                    $cats = $catsQuery->pluck('category_name')
                         ->filter()
                         ->unique()
                         ->values()
@@ -242,17 +333,21 @@ class ProductTemplateExport implements FromArray, WithHeadings, WithEvents, With
                 // 3. Named ranges for Sub Category dependent on Main Category + Category
                 foreach ($mainCategories as $m) {
                     $mClean = self::cleanRangeName($m->category_main_name);
-                    $cats = Category::where('main_category_id', $m->id)
-                        ->where('status', 1)
-                        ->get();
+                    $catsQuery = Category::where('main_category_id', $m->id)->where('status', 1);
+                    if ($hierarchy['catIds'] !== null) {
+                        $catsQuery->whereIn('id', $hierarchy['catIds']);
+                    }
+                    $cats = $catsQuery->get();
 
                     foreach ($cats as $c) {
                         $cClean = self::cleanRangeName($c->category_name);
                         $rangeName = $mClean . '_' . $cClean;
 
-                        $subs = CategorySub::where('category_id', $c->id)
-                            ->where('status', 1)
-                            ->pluck('category_sub_name')
+                        $subsQuery = CategorySub::where('category_id', $c->id)->where('status', 1);
+                        if ($hierarchy['subIds'] !== null) {
+                            $subsQuery->whereIn('id', $hierarchy['subIds']);
+                        }
+                        $subs = $subsQuery->pluck('category_sub_name')
                             ->filter()
                             ->unique()
                             ->values()
@@ -330,7 +425,6 @@ class ProductTemplateExport implements FromArray, WithHeadings, WithEvents, With
                         ->setFormula1($mainCatFormula);
 
                     // Column D: Category (Dependent on Main Category in Column C)
-                    // Excel / LibreOffice formula: =INDIRECT(clean(C{row}))
                     $cleanC = 'SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(C' . $row . '," & ","_")," ","_"),"/","_")';
                     $vD = $sheet->getCell("D{$row}")->getDataValidation();
                     $vD->setType(DataValidation::TYPE_LIST)
@@ -343,7 +437,6 @@ class ProductTemplateExport implements FromArray, WithHeadings, WithEvents, With
                         ->setFormula1('=INDIRECT(' . $cleanC . ')');
 
                     // Column E: Sub Category (Dependent on Main Category C{row} and Category D{row})
-                    // Excel / LibreOffice formula: =INDIRECT(clean(C{row}) & "_" & clean(D{row}))
                     $cleanD = 'SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(D' . $row . '," & ","_")," ","_"),"/","_")';
                     $vE = $sheet->getCell("E{$row}")->getDataValidation();
                     $vE->setType(DataValidation::TYPE_LIST)
