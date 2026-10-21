@@ -616,6 +616,75 @@ $(document).ready(function() {
     });
 
     // ========================================================
+    // UPDATE INLINE SIZE ROW BUTTONS
+    // Ensures '+' button is always on the LAST row of each variant card,
+    // and earlier rows only have remove (or none on first row)
+    // ========================================================
+    function updateInlineSizeRowButtons($targetCard) {
+        let $cards = ($targetCard && $targetCard.length) ? $targetCard : $('.variant-card');
+        $cards.each(function() {
+            let $rows = $(this).find('.variant-fields-wrapper:visible');
+            if (!$rows.length) {
+                $rows = $(this).find('.variant-fields-wrapper');
+            }
+            let total = $rows.length;
+
+            $rows.each(function(index) {
+                let isFirst = (index === 0);
+                let isLast = (index === total - 1);
+                let $row = $(this);
+                let $removeBtn = $row.find('.remove-size-row-inline-btn');
+                let $addBtn = $row.find('.add-size-row-inline-btn');
+                let $actionsCol = $row.find('.actions-col-wrapper, .col-md-1:has(.add-size-row-inline-btn, .remove-size-row-inline-btn)');
+
+                $row.toggleClass('is-first-row', isFirst);
+                $row.toggleClass('is-last-row', isLast);
+
+                if (isFirst) {
+                    $removeBtn.css('display', 'none');
+                } else {
+                    $removeBtn.css('display', 'inline-block');
+                }
+
+                if (isLast) {
+                    $addBtn.css('display', 'inline-block');
+                } else {
+                    $addBtn.css('display', 'none');
+                }
+
+                if (isFirst && !isLast) {
+                    $actionsCol.addClass('d-none-mobile-actions');
+                } else {
+                    $actionsCol.removeClass('d-none-mobile-actions');
+                }
+            });
+        });
+    }
+    window.updateInlineSizeRowButtons = updateInlineSizeRowButtons;
+
+    // Format Specifications table for responsive mobile display
+    function formatSpecTableMobile() {
+        $('.spectable td').each(function() {
+            let $td = $(this);
+            if ($td.find('select, input').length > 0) {
+                $td.addClass('spec-value-col');
+            } else if ($td.text().trim() !== '') {
+                $td.addClass('spec-label-col');
+            } else {
+                $td.addClass('empty-spec-td');
+            }
+        });
+    }
+    window.formatSpecTableMobile = formatSpecTableMobile;
+
+    // Run on page load
+    formatSpecTableMobile();
+    if ($('.variant-card').length) {
+        syncVariantImages();
+        updateInlineSizeRowButtons();
+    }
+
+    // ========================================================
     // INLINE "+ Add Size" — simply clones the input row
     // ========================================================
     $(document).on('click', '.add-size-row-inline-btn', function(e) {
@@ -672,6 +741,9 @@ $(document).ready(function() {
             '<input type="hidden" name="old_subimg3[]" value="">'
         );
         $cardBody.append($hiddenImgs);
+
+        // 8. Update button states so '+' moves to this newly appended row
+        updateInlineSizeRowButtons($parentCard);
     });
 
     // ========================================================
@@ -680,12 +752,14 @@ $(document).ready(function() {
     $(document).on('click', '.remove-size-row-inline-btn', function(e) {
         e.preventDefault();
         let $wrapper = $(this).closest('.variant-fields-wrapper');
+        let $parentCard = $wrapper.closest('.variant-card');
 
         // If inline-cloned, remove the row + its hidden image inputs
         let cloneUid = $wrapper.attr('data-clone-uid');
         if (cloneUid) {
             $wrapper.closest('.variant-card').find('.cloned-row-images[data-clone-uid="' + cloneUid + '"]').remove();
             $wrapper.remove();
+            updateInlineSizeRowButtons($parentCard);
             return;
         }
 
@@ -706,12 +780,16 @@ $(document).ready(function() {
             }
         }
         $wrapper.remove();
+        updateInlineSizeRowButtons($parentCard);
         setTimeout(syncVariantImages, 300);
     });
 
     // Re-run when variant removed
     $(document).on('click', '.remove_field', function() {
-        setTimeout(syncVariantImages, 300);
+        setTimeout(function() {
+            syncVariantImages();
+            updateInlineSizeRowButtons();
+        }, 300);
     });
 });
 </script>

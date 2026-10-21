@@ -28,19 +28,22 @@
     }
 
 
-    .variant-card .variant-fields-wrapper:first-of-type .remove-size-row-inline-btn {
+    .variant-card .variant-fields-wrapper .add-size-row-inline-btn {
         display: none !important;
     }
-    .variant-card .variant-fields-wrapper:first-of-type .add-size-row-inline-btn {
+    .variant-card .variant-fields-wrapper:first-of-type .remove-size-row-inline-btn,
+    .variant-card .variant-fields-wrapper.is-first-row .remove-size-row-inline-btn {
+        display: none !important;
+    }
+    .variant-card .variant-fields-wrapper:not(:has(~ .variant-fields-wrapper)) .add-size-row-inline-btn,
+    .variant-card .variant-fields-wrapper.is-last-row .add-size-row-inline-btn {
         display: inline-block !important;
     }
     .variant-card .variant-fields-wrapper ~ .variant-fields-wrapper label {
         display: none !important;
     }
-    .variant-card .variant-fields-wrapper ~ .variant-fields-wrapper .add-size-row-inline-btn {
-        display: none !important;
-    }
-    .variant-card .variant-fields-wrapper ~ .variant-fields-wrapper .remove-size-row-inline-btn {
+    .variant-card .variant-fields-wrapper ~ .variant-fields-wrapper .remove-size-row-inline-btn,
+    .variant-card .variant-fields-wrapper:not(.is-first-row) .remove-size-row-inline-btn {
         display: inline-block !important;
     }
     .variant-card .variant-fields-wrapper ~ .variant-fields-wrapper {
@@ -181,7 +184,7 @@
                                 </div>
 
                                 <!-- Actions -->
-                                <div class="col-md-1 d-flex flex-column justify-content-end">
+                                <div class="col-md-1 actions-col-wrapper d-flex flex-column justify-content-end">
                                     <label class="form-label fw-bold text-dark mb-1">&nbsp;</label>
                                     <div class="d-flex gap-1 justify-content-end">
                                         <button type="button" class="btn btn-danger w-100 remove-size-row-inline-btn" title="Remove Size"><i class="fa fa-trash"></i></button>

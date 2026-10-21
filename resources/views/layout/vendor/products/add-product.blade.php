@@ -100,19 +100,22 @@
             box-shadow: none !important;
         }
 
-        .variant-card .variant-fields-wrapper:first-of-type .remove-size-row-inline-btn {
+        .variant-card .variant-fields-wrapper .add-size-row-inline-btn {
             display: none !important;
         }
-        .variant-card .variant-fields-wrapper:first-of-type .add-size-row-inline-btn {
+        .variant-card .variant-fields-wrapper:first-of-type .remove-size-row-inline-btn,
+        .variant-card .variant-fields-wrapper.is-first-row .remove-size-row-inline-btn {
+            display: none !important;
+        }
+        .variant-card .variant-fields-wrapper:not(:has(~ .variant-fields-wrapper)) .add-size-row-inline-btn,
+        .variant-card .variant-fields-wrapper.is-last-row .add-size-row-inline-btn {
             display: inline-block !important;
         }
         .variant-card .variant-fields-wrapper ~ .variant-fields-wrapper label {
             display: none !important;
         }
-        .variant-card .variant-fields-wrapper ~ .variant-fields-wrapper .add-size-row-inline-btn {
-            display: none !important;
-        }
-        .variant-card .variant-fields-wrapper ~ .variant-fields-wrapper .remove-size-row-inline-btn {
+        .variant-card .variant-fields-wrapper ~ .variant-fields-wrapper .remove-size-row-inline-btn,
+        .variant-card .variant-fields-wrapper:not(.is-first-row) .remove-size-row-inline-btn {
             display: inline-block !important;
         }
         .variant-card .variant-fields-wrapper ~ .variant-fields-wrapper {
@@ -673,7 +676,7 @@
                                                     </div>
 
                                                     {{-- Actions --}}
-                                                    <div class="col-md-1 d-flex flex-column justify-content-end">
+                                                    <div class="col-md-1 actions-col-wrapper d-flex flex-column justify-content-end">
                                                         <label class="form-label fw-bold text-secondary mb-1">&nbsp;</label>
                                                         <div class="d-flex gap-1 justify-content-end">
                                                             <button type="button" class="btn btn-danger w-100 remove-size-row-inline-btn" title="Remove Size"><i class="fa fa-trash"></i></button>
@@ -787,7 +790,7 @@
                         <div class="card shadow-sm border-0 mb-4">
                             <div class="card-body p-4">
                                 <h5 class="fw-bold text-dark mb-3">Specifications</h5>
-                                <table class="table table-hover table-bordered m-0 align-middle">
+                                <table class="table table-hover table-bordered m-0 align-middle spectable-table">
                                     <tbody class="spectable">
                                         @if(!empty($specification))
                                         @foreach (collect($specification)->chunk(2) as $specPair)
@@ -796,8 +799,8 @@
                                             @php
                                             $spec_val = json_decode($spec->specification_values, true) ?: [];
                                             @endphp
-                                            <td style="width: 20%; vertical-align: middle;">{{ $spec->specification_group_name }}</td>
-                                            <td style="width: 30%;">
+                                            <td class="spec-label-col" style="width: 20%; vertical-align: middle;">{{ $spec->specification_group_name }}</td>
+                                            <td class="spec-value-col" style="width: 30%;">
                                                 <input type="hidden" name="spec_id[]" value="{{ $spec->id }}">
                                                 <select class='form-control text-secondary' name='specify_value[{{ $spec->id}}]'>
                                                     <option selected value='' hidden> --Select {{ $spec->specification_group_name}}--</option>
@@ -809,8 +812,8 @@
                                             </td>
                                             @endforeach
                                             @if($specPair->count() === 1)
-                                            <td></td>
-                                            <td></td>
+                                            <td class="empty-spec-td"></td>
+                                            <td class="empty-spec-td"></td>
                                             @endif
                                         </tr>
                                         @endforeach
@@ -1177,7 +1180,7 @@
                     '                <input type="number" name="low_stock_limit[]" id="low_stock_limit'+(x+1)+'" placeholder="Low Stock Limit" class="low_stock_limit form-control" required>' +
                     '                <div class="invalid-feedback-custom">Please enter low stock limit</div>' +
                     '            </div>' +
-                    '            <div class="col-md-1 d-flex flex-column justify-content-end">' +
+                    '            <div class="col-md-1 actions-col-wrapper d-flex flex-column justify-content-end">' +
                     '                <label class="form-label fw-bold text-secondary mb-1">&nbsp;</label>' +
                     '                <div class="d-flex gap-1 justify-content-end">' +
                     '                    <button type="button" class="btn btn-danger w-100 remove-size-row-inline-btn" title="Remove Size"><i class="fa fa-trash"></i></button>' +
