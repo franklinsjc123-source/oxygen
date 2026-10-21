@@ -81,11 +81,6 @@
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap1.css') }}">
 
     <style>
-        /* Ensure page-body clears the 60px fixed top header across all views */
-        .page-wrapper .page-body-wrapper .page-body {
-            margin-top: 60px !important;
-        }
-
         /* Fix breadcrumb spacing globally */
         .page-header .breadcrumb {
             display: flex !important;
