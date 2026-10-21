@@ -488,16 +488,15 @@
                                             <div class="col-md-12 digital-add needs-validation">
                                                 <div class="row">
                                                     <div class="col-md-9">
-                                                        <div class="form-group mt-2">
-                                                            <label for=""
-                                                                class="form-label fw-bold text-dark">Product Name <span class="text-danger">*</span></label>
+                                                        <div class="form-group mb-3">
+                                                            <label class="form-label fw-bold text-dark">Product Name <span class="text-danger">*</span></label>
                                                             <input class="form-control" id="validationCustom01"
                                                                 type="text" name="product_name" required>
                                                             <div class="invalid-feedback-custom">Please enter product name</div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <div class="form-group mt-2">
+                                                        <div class="form-group mb-3">
                                                             <label class="form-label fw-bold text-dark">Product Status <span class="text-danger">*</span></label>
                                                             <select class="custom-select form-control text-secondary"
                                                                 id="status" name="status" required>
@@ -508,73 +507,80 @@
                                                             <div class="invalid-feedback-custom">Please select product status</div>
                                                         </div>
                                                     </div>
-                                                </div>
 
-                                                <div class="card shadow-sm border-0 mb-4">
-                                                    <div class="card-body p-4">
-                                                        <div class="row g-3">
-                                                            <div class="col-md-3">
-                                                                <label class="form-label fw-bold text-dark">Tax <span class="text-danger">*</span></label>
-                                                                <select class="custom-select form-control text-secondary"
-                                                                    id="gs" onchange="r()" name="tax_id" required>
-                                                                    <option value="" selected hidden>--Select Tax Type--</option>
-                                                                    <option value="1">Included</option>
-                                                                    <option value="0">Excluded</option>
-                                                                </select>
-                                                                <div class="invalid-feedback-custom">Please select tax type</div>
-                                                            </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group mb-3">
+                                                            <label class="form-label fw-bold text-dark">Tax <span class="text-danger">*</span></label>
+                                                            <select class="custom-select form-control text-secondary"
+                                                                id="gs" onchange="r()" name="tax_id" required>
+                                                                <option value="" selected hidden>--Select Tax Type--</option>
+                                                                <option value="1">Included</option>
+                                                                <option value="0">Excluded</option>
+                                                            </select>
+                                                            <div class="invalid-feedback-custom">Please select tax type</div>
+                                                        </div>
+                                                    </div>
 
-                                                            <div class="col-md-3">
-                                                                <label class="form-label fw-bold text-dark">GST <span class="text-danger">*</span></label>
-                                                                <select class="custom-select form-control dropdown text-secondary"
-                                                                    id="gst1" onchange="r()" required name="gst_id">
-                                                                    <option value="" selected hidden value="">--Select
-                                                                        GST %--</option>
-                                                                    @foreach ($gst as $gs)
-                                                                    <option value="{{ $gs->value }}">{{ $gs->gst_name }}
-                                                                    </option>
-                                                                    @endforeach
-                                                                </select>
-                                                                <div class="invalid-feedback-custom">Please select GST percentage</div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <label class="form-label fw-bold text-dark">HSN CODE <span class="text-danger">*</span></label>
-                                                                <input class="form-control" id="validationCustom01"
-                                                                    type="text" name="hsncode" required>
-                                                                <div class="invalid-feedback-custom">Please enter HSN code</div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <label class="form-label fw-bold text-dark">Return / Replacement <span class="text-danger">*</span></label>
-                                                                <select class="custom-select form-control dropdown text-secondary" name="return_replace" required>
-                                                                    <option value="" selected hidden>--Select Return/Replacement--</option>
-                                                                    <option value="Return">Return</option>
-                                                                    <option value="Replacement">Replacement</option>
-                                                                </select>
-                                                                <div class="invalid-feedback-custom">Please select return/replacement option</div>
-                                                            </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group mb-3">
+                                                            <label class="form-label fw-bold text-dark">GST <span class="text-danger">*</span></label>
+                                                            <select class="custom-select form-control dropdown text-secondary"
+                                                                id="gst1" onchange="r()" required name="gst_id">
+                                                                <option value="" selected hidden value="">--Select GST %--</option>
+                                                                @foreach ($gst as $gs)
+                                                                <option value="{{ $gs->value }}">{{ $gs->gst_name }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                            <div class="invalid-feedback-custom">Please select GST percentage</div>
                                                         </div>
-                                                        <div class="row g-3 mt-2">
-                                                            <div class="col-md-3">
-                                                                <label class="form-label fw-bold text-dark">Return Days <span class="text-danger">*</span></label>
-                                                                <input type="text" name="r_days" placeholder="Days" class="form-control" required>
-                                                                <div class="invalid-feedback-custom">Please enter return days</div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <label class="form-label fw-bold text-dark">SKU <span class="text-danger">*</span></label>
-                                                                <input type="text" name="sku" placeholder="SKU" class="form-control" required>
-                                                                <div class="invalid-feedback-custom">Please enter SKU</div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <label class="form-label fw-bold text-dark">Upload Main Image <span class="text-danger">*</span></label>
-                                                                <input class="form-control" type="file" id="mainImg" accept="image/*"
-                                                                    name="mainImage" required/>
-                                                                <div class="text-muted small mt-1">Upload Format: jpg, jpeg, png</div>
-                                                                <div class="invalid-feedback-custom">Please upload main image</div>
-                                                            </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group mb-3">
+                                                            <label class="form-label fw-bold text-dark">HSN CODE <span class="text-danger">*</span></label>
+                                                            <input class="form-control" id="validationCustom01"
+                                                                type="text" name="hsncode" required>
+                                                            <div class="invalid-feedback-custom">Please enter HSN code</div>
                                                         </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group mb-3">
+                                                            <label class="form-label fw-bold text-dark">Return / Replacement <span class="text-danger">*</span></label>
+                                                            <select class="custom-select form-control dropdown text-secondary" name="return_replace" required>
+                                                                <option value="" selected hidden>--Select Return/Replacement--</option>
+                                                                <option value="Return">Return</option>
+                                                                <option value="Replacement">Replacement</option>
+                                                            </select>
+                                                            <div class="invalid-feedback-custom">Please select return/replacement option</div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                        <div class="form-group mb-3">
+                                                            <label class="form-label fw-bold text-dark">Return Days <span class="text-danger">*</span></label>
+                                                            <input type="text" name="r_days" placeholder="Days" class="form-control" required>
+                                                            <div class="invalid-feedback-custom">Please enter return days</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group mb-3">
+                                                            <label class="form-label fw-bold text-dark">SKU <span class="text-danger">*</span></label>
+                                                            <input type="text" name="sku" placeholder="SKU" class="form-control" required>
+                                                            <div class="invalid-feedback-custom">Please enter SKU</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group mb-3">
+                                                            <label class="form-label fw-bold text-dark">Upload Main Image <span class="text-danger">*</span></label>
+                                                            <input class="form-control" type="file" id="mainImg" accept="image/*"
+                                                                name="mainImage" required/>
+                                                            <div class="text-muted small mt-1">Upload Format: jpg, jpeg, png</div>
+                                                            <div class="invalid-feedback-custom">Please upload main image</div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-12">
                                                         <div class="row" id="ming_preview">
                                                         </div>
-                                                       
                                                     </div>
                                                 </div>
                                             </div>

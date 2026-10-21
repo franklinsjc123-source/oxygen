@@ -28,4 +28,21 @@
         form.validation-attempted .invalid-field ~ .invalid-feedback-custom {
             display: block !important;
         }
+
+        /* Mobile alignment & line spacing adjustments */
+        .digital-add .form-group {
+            margin-bottom: 1rem;
+        }
+        .digital-add .form-label {
+            margin-bottom: 0.35rem !important;
+            display: inline-block;
+        }
+        @media (max-width: 767.98px) {
+            .digital-add .form-group {
+                margin-bottom: 1rem !important;
+            }
+            .digital-add .form-label {
+                margin-bottom: 0.35rem !important;
+            }
+        }
     </style>
