@@ -936,7 +936,7 @@ function getquantity(id, productName) {
     </div>
 </div>
 
-{{-- Mobile-only floating bottom action bar --}}
+{{-- Mobile-only floating bottom action bar
 <div class="mobile-bottom-action-bar" id="mobileBottomActionBar">
     <a href="{{ route('products.crud.index') }}" class="btn btn-primary">
         <i class="fa fa-plus"></i> Add Product
@@ -959,6 +959,7 @@ function getquantity(id, productName) {
         }
     });
 </script>
+--}}
 
 @endsection
 
