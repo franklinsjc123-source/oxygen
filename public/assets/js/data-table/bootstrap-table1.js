@@ -469,8 +469,13 @@
          formatRecordsPerPage: function (pageNumber) {
             return sprintf('%s rows per page', pageNumber);
         },
-         formatShowingRows: function (pageFrom, pageTo, totalRows) {
-            return sprintf('Showing  %s to %s of %s rows', pageFrom, pageTo, totalRows);
+        formatShowingRows: function (pageFrom, pageTo, totalRows, totalPages) {
+            var currentPage = (this && this.options && this.options.pageNumber) ? this.options.pageNumber : 1;
+            var pages = totalPages || (this && (this.options.totalPages || this.totalPages)) || 1;
+            if (!totalRows || totalRows === 0) {
+                return 'Showing 0 of 0 pages';
+            }
+            return sprintf('Showing %s of %s pages', currentPage, pages);
         },
          formatDetailPagination: function (totalRows) {
             return sprintf('Showing %s rows', totalRows);
@@ -1355,7 +1360,7 @@
             '<div class="pull-' + this.options.paginationDetailHAlign + ' pagination-detail">',
             '<span class="pagination-info">',
             this.options.onlyInfoPagination ? this.options.formatDetailPagination(this.options.totalRows) :
-            this.options.formatShowingRows(this.pageFrom, this.pageTo, this.options.totalRows),
+            this.options.formatShowingRows.call(this, this.pageFrom, this.pageTo, this.options.totalRows, this.totalPages),
             '</span>');
 
         if (!this.options.onlyInfoPagination) {
