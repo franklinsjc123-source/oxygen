@@ -46,13 +46,6 @@
                                     <img src="{{asset('assets/images/dashboard/logo/fav.png')}}" alt="" class="img-fluid img-90 rounded-circle blur-up lazyloaded">
                                     <h5 class="f-w-600 mb-0">{{$data['user']->name}}</h5>
                                     <span>{{$data['user']->email}}</span>
-                                    <div class="social">
-                                        <div class="form-group btn-showcase">
-                                            <button class="btn social-btn btn-fb d-inline-block"> <i class="fa fa-facebook"></i></button>
-                                            <button class="btn social-btn btn-twitter d-inline-block"><i class="fa fa-google"></i></button>
-                                            <button class="btn social-btn btn-google d-inline-block me-0"><i class="fa fa-twitter"></i></button>
-                                        </div>
-                                    </div>
                                 </div>
                                 <hr>
                                 <div class="project-status d-none">
