@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\ProductsController;
 use App\Exports\ProductList;
+use App\Exports\ProductTemplateExport;
 use App\Imports\ImportProduct;
 use App\Helper\ImageUploadHelper\ImageUploadHelper;
 use App\Http\Controllers\Controller;
@@ -1631,6 +1632,10 @@ class ProductsController extends Controller
      */
     public function download_import_template()
     {
-        return response()->download(public_path('Bulk_Upload1.xlsx'), 'sample_upload.xlsx');
+        try {
+            return Excel::download(new ProductTemplateExport, 'sample_product_upload.xlsx');
+        } catch (\Exception $e) {
+            return response()->download(public_path('Bulk_Upload1.xlsx'), 'sample_upload.xlsx');
+        }
     }
 }

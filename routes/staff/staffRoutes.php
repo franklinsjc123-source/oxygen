@@ -156,6 +156,8 @@ Route::post('productbulkdelete', [ProductsController::class, 'productbulkdelete'
 Route::post('productbulkactive', [ProductsController::class, 'productbulkactive'])->name('staffproductbulkactive');
 Route::post('productbulkdeactive', [ProductsController::class, 'productbulkdeactive'])->name('staffproductbulkdeactive');
 Route::get('product_export', [ProductsController::class, 'get_Product_data'])->name('staffproduct.export');
+Route::post('product_import', [ProductsController::class, 'import_products'])->name('staffproduct.import');
+Route::get('product_import_template', [ProductsController::class, 'download_import_template'])->name('staffproduct.import.template');
 Route::post("products/details_update", [ProductsController::class, "updateProductDetails"])->name('staffproducts.details.update');
 Route::get('get_product_details', [ProductsController::class, 'getProductDetails'])->name('staffgetProductDetails');
 

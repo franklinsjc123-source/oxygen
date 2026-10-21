@@ -937,7 +937,7 @@ function getquantity(id, productName) {
 <div class="modal fade" id="importProductModal" tabindex="-1" aria-labelledby="importProductModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form action="#" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('staffproduct.import') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header text-white" style="background-color: #183543;">
                     <h5 class="modal-title" id="importProductModalLabel"><i class="fa fa-upload me-2"></i>Import Products</h5>
@@ -952,7 +952,7 @@ function getquantity(id, productName) {
                     <div class="alert alert-info d-flex align-items-center" role="alert">
                         <i class="fa fa-info-circle me-2" style="font-size: 18px;"></i>
                         <div>
-                            Download the <a href="#" class="alert-link">sample template</a> to see the required format.
+                            Download the <a href="{{ route('staffproduct.import.template') }}" class="alert-link">sample template</a> to see the required format.
                         </div>
                     </div>
                 </div>

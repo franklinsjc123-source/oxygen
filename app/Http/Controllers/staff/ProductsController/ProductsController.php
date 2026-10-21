@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers\staff\ProductsController;
 use App\Exports\ProductList;
+use App\Exports\ProductTemplateExport;
+use App\Imports\ImportProduct;
 use App\Helper\ImageUploadHelper\ImageUploadHelper;
 use App\Http\Controllers\Controller;
 
@@ -1618,4 +1620,35 @@ class ProductsController extends Controller
 
     }
     /*End*/
+
+    /**
+     * Import products from Excel/CSV file
+     */
+    public function import_products(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:10240',
+        ]);
+
+        try {
+            Excel::import(new ImportProduct, $request->file('file')->store('files'));
+            flash()->success('Products imported successfully!');
+        } catch (\Exception $e) {
+            flash()->error('Import failed: ' . $e->getMessage());
+        }
+
+        return redirect()->back();
+    }
+
+    /**
+     * Download sample import template
+     */
+    public function download_import_template()
+    {
+        try {
+            return Excel::download(new ProductTemplateExport, 'sample_product_upload.xlsx');
+        } catch (\Exception $e) {
+            return response()->download(public_path('Bulk_Upload1.xlsx'), 'sample_upload.xlsx');
+        }
+    }
 }

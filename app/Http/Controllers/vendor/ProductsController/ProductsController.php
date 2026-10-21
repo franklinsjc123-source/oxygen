@@ -35,6 +35,7 @@ use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManagerStatic as Image;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ImportProduct;
+use App\Exports\ProductTemplateExport;
 
 class ProductsController extends Controller
 {
@@ -1675,7 +1676,11 @@ public function store(Request $request, FlasherInterface $flasher)
      */
     public function download_import_template()
     {
-        return response()->download(public_path('Bulk_Upload1.xlsx'), 'sample_upload.xlsx');
+        try {
+            return Excel::download(new ProductTemplateExport, 'sample_product_upload.xlsx');
+        } catch (\Exception $e) {
+            return response()->download(public_path('Bulk_Upload1.xlsx'), 'sample_upload.xlsx');
+        }
     }
 }
 

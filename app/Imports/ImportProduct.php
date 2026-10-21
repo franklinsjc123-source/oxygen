@@ -64,19 +64,27 @@ class ImportProduct implements ToModel, WithStartRow, WithMultipleSheets
             $mainCatId = $catM ? $catM->id : (is_numeric($mainCat) ? intval($mainCat) : null);
         }
 
-        // Resolve Category
+        // Resolve Category (scoped to selected Main Category)
         $cat = trim($row[3] ?? '');
         $catId = null;
         if ($cat !== '') {
-            $catObj = Category::where('category_name', 'LIKE', $cat)->first();
+            $catQuery = Category::where('category_name', 'LIKE', $cat);
+            if ($mainCatId) {
+                $catQuery->where('main_category_id', $mainCatId);
+            }
+            $catObj = $catQuery->first();
             $catId = $catObj ? $catObj->id : (is_numeric($cat) ? intval($cat) : null);
         }
 
-        // Resolve Sub Category
+        // Resolve Sub Category (scoped to selected Category)
         $subCat = trim($row[4] ?? '');
         $subCatId = null;
         if ($subCat !== '') {
-            $subCatObj = CategorySub::where('category_sub_name', 'LIKE', $subCat)->first();
+            $subCatQuery = CategorySub::where('category_sub_name', 'LIKE', $subCat);
+            if ($catId) {
+                $subCatQuery->where('category_id', $catId);
+            }
+            $subCatObj = $subCatQuery->first();
             $subCatId = $subCatObj ? $subCatObj->id : (is_numeric($subCat) ? intval($subCat) : null);
         }
 
