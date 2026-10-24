@@ -134,6 +134,13 @@
         h2.title {
             font-size: 1.2rem !important;
         }
+        <?php if (isset($mainslider)): foreach ($mainslider as $idx => $s): 
+            $mbImg = str_replace('_mobile', '', pathinfo($s->image, PATHINFO_FILENAME)) . '_mobile.webp';
+        ?>
+        .slide-item-<?= $idx ?> {
+            background-image: url('<?= asset("assets/images/banners/mainslider/" . $mbImg) ?>') !important;
+        }
+        <?php endforeach; endif; ?>
     }
         .main > div.pb-2 {
             padding-bottom: 0 !important;
@@ -179,7 +186,7 @@
           <div class="mt-4" style="margin-left: 0 !important; margin-right: 0 !important; padding-left: 0 !important; padding-right: 0 !important;">
               <div class="swiper-container swiper-theme pg-inner animation-slider row cols-1 gutter-no" data-swiper-options="{
                             'autoplay': {
-                                'delay':3000,
+                                'delay':5000,
                                 'disableOnInteraction': false
                             }
                         }">
@@ -188,7 +195,7 @@
                             foreach ($mainslider as $slideIndex => $val) { 
                                 $slideUrl = !empty($val->link) ? (filter_var($val->link, FILTER_VALIDATE_URL) ? $val->link : url($val->link)) : url('shops');
                             ?>
-                             <div class="swiper-slide banner banner-fixed intro-slide intro-slide1 br-sm"
+                             <div class="swiper-slide banner banner-fixed intro-slide intro-slide1 br-sm slide-item-<?= $slideIndex ?>"
                                  style="background-image: url(<?php echo asset('assets/images/banners/mainslider/' . $val->image) ?>); background-color: #E8EAEF; cursor: pointer;"
                                  onclick="window.location.href='<?php echo $slideUrl; ?>';">
                                  <a href="<?php echo $slideUrl; ?>" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: block;" aria-label="Slider Banner Link"></a>
@@ -321,7 +328,7 @@
                           <a href="{{ url('offers?id='.$offer->id) }}">
                               @if(!empty($offer->db_logo))
                                   <div class="offer-badge-img-wrapper">
-                                      <img class="offer-badge-img" src="{{ asset('assets/images/offer_logo/' . $offer->offer_logo) }}" alt="{{ $offer->title }}" loading="lazy" decoding="async">
+                                      <img class="offer-badge-img" src="{{ asset('assets/images/offer_logo/' . $offer->offer_logo) }}" alt="{{ $offer->title }}" decoding="async">
                                   </div>
                               @else
                                    @php

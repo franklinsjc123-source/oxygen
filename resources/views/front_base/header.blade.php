@@ -23,9 +23,14 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
 
     <title>@yield('title')</title>
 
-    <?php if (isset($mainslider) && count($mainslider) > 0 && !empty($mainslider[0]->image)): ?>
-    <!-- Preload LCP Hero Banner Image (Next-Gen WebP) -->
-    <link rel="preload" as="image" href="<?= asset('assets/images/banners/mainslider/' . $mainslider[0]->image) ?>" fetchpriority="high">
+    <?php if (isset($mainslider) && count($mainslider) > 0 && !empty($mainslider[0]->image)): 
+        $firstImg = $mainslider[0]->image;
+        $firstImgBase = str_replace('_mobile', '', pathinfo($firstImg, PATHINFO_FILENAME));
+        $mobileImg = $firstImgBase . '_mobile.webp';
+    ?>
+    <!-- Preload LCP Hero Banner Image Responsively (15KB on Mobile, 36KB on Desktop) -->
+    <link rel="preload" as="image" href="<?= asset('assets/images/banners/mainslider/' . $mobileImg) ?>" media="(max-width: 767px)" fetchpriority="high">
+    <link rel="preload" as="image" href="<?= asset('assets/images/banners/mainslider/' . $firstImg) ?>" media="(min-width: 768px)" fetchpriority="high">
     <?php endif; ?>
 
     <!-- WebFont.js - Non-blocking font loader -->
