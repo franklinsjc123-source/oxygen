@@ -20,9 +20,10 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-
     <title>@yield('title')</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <?php if (isset($mainslider) && count($mainslider) > 0 && !empty($mainslider[0]->image)): 
         $firstImg = $mainslider[0]->image;
         $firstImgBase = pathinfo($firstImg, PATHINFO_FILENAME);

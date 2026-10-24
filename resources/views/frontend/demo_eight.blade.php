@@ -2,7 +2,9 @@
  @section('title','Trymenow')
  @section('content')
  @php
-     $masterOffersMap = \Illuminate\Support\Facades\DB::table('master_offers')->get()->keyBy('id');
+     $masterOffersMap = \Illuminate\Support\Facades\Cache::remember('master_offers_map', 3600, function() {
+         return \Illuminate\Support\Facades\DB::table('master_offers')->get()->keyBy('id');
+     });
  @endphp
  <style>
     .animation-slider {
