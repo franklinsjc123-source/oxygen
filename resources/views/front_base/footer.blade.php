@@ -1526,7 +1526,7 @@
    <script src="<?= asset('frontend') ?>/vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
    <script src="<?= asset('frontend') ?>/vendor/zoom/jquery.zoom.js"></script>
    <script src="<?= asset('frontend') ?>/vendor/jquery.countdown/jquery.countdown.min.js"></script>
-   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js" defer></script>
    <!-- Main JS -->
    <script src="<?= asset('frontend') ?>/js/main.min.js"></script>
    <script src="<?= asset('frontend') ?>/js/notify.min.js"></script>

@@ -135,13 +135,15 @@
             font-size: 1.2rem !important;
         }
         <?php if (isset($mainslider)): foreach ($mainslider as $idx => $s): 
-            $mbImg = str_replace('_mobile', '', pathinfo($s->image, PATHINFO_FILENAME)) . '_mobile.webp';
+            $baseName = pathinfo($s->image, PATHINFO_FILENAME);
+            $mbImg = file_exists(public_path('assets/images/banners/mainslider/' . $baseName . '_mobile.webp')) 
+                ? $baseName . '_mobile.webp' 
+                : (file_exists(public_path('assets/images/banners/mainslider/' . $baseName . '.webp')) ? $baseName . '.webp' : $s->image);
         ?>
         .slide-item-<?= $idx ?> {
             background-image: url('<?= asset("assets/images/banners/mainslider/" . $mbImg) ?>') !important;
         }
         <?php endforeach; endif; ?>
-    }
         .main > div.pb-2 {
             padding-bottom: 0 !important;
         }
@@ -176,38 +178,41 @@
             aspect-ratio: 330 / 160 !important;
         }
     }
- </style>
- <!-- Start of Main -->
+  </style>
+  <!-- Start of Main -->
 
 
- <main class="main">
+  <main class="main">
 
-     <div class="container-fluid p-0 pb-2" style="padding-left: 0 !important; padding-right: 0 !important; max-width: 100% !important;">
-          <div class="mt-4" style="margin-left: 0 !important; margin-right: 0 !important; padding-left: 0 !important; padding-right: 0 !important;">
-              <div class="swiper-container swiper-theme pg-inner animation-slider row cols-1 gutter-no" data-swiper-options="{
-                            'autoplay': {
-                                'delay':5000,
-                                'disableOnInteraction': false
-                            }
-                        }">
-                 <div class="swiper-wrapper">
-                     <?php if (isset($mainslider)) {
-                            foreach ($mainslider as $slideIndex => $val) { 
-                                $slideUrl = !empty($val->link) ? (filter_var($val->link, FILTER_VALIDATE_URL) ? $val->link : url($val->link)) : url('shops');
-                            ?>
-                             <div class="swiper-slide banner banner-fixed intro-slide intro-slide1 br-sm slide-item-<?= $slideIndex ?>"
-                                 style="background-image: url(<?php echo asset('assets/images/banners/mainslider/' . $val->image) ?>); background-color: #E8EAEF; cursor: pointer;"
-                                 onclick="window.location.href='<?php echo $slideUrl; ?>';">
-                                 <a href="<?php echo $slideUrl; ?>" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: block;" aria-label="Slider Banner Link"></a>
-                                 <div class="banner-content y-50 text-right">
-                                     <div class="slide-animate" data-animation-options="{
-                                            'name': 'fadeInUpShorter', 'duration': '1s'
-                                        }">
-                                     </div>
-                                 </div>
-                             </div>
-                     <?php }
-                        } ?>
+      <div class="container-fluid p-0 pb-2" style="padding-left: 0 !important; padding-right: 0 !important; max-width: 100% !important;">
+           <div class="mt-4" style="margin-left: 0 !important; margin-right: 0 !important; padding-left: 0 !important; padding-right: 0 !important;">
+               <div class="swiper-container swiper-theme pg-inner animation-slider row cols-1 gutter-no" data-swiper-options="{
+                             'autoplay': {
+                                 'delay':7000,
+                                 'disableOnInteraction': false
+                             }
+                         }">
+                  <div class="swiper-wrapper">
+                      <?php if (isset($mainslider)) {
+                             foreach ($mainslider as $slideIndex => $val) { 
+                                 $slideUrl = !empty($val->link) ? (filter_var($val->link, FILTER_VALIDATE_URL) ? $val->link : url($val->link)) : url('shops');
+                                 $baseName = pathinfo($val->image, PATHINFO_FILENAME);
+                                 $desktopWebp = $baseName . '.webp';
+                                 $desktopImg = file_exists(public_path('assets/images/banners/mainslider/' . $desktopWebp)) ? $desktopWebp : $val->image;
+                             ?>
+                              <div class="swiper-slide banner banner-fixed intro-slide intro-slide1 br-sm slide-item-<?= $slideIndex ?>"
+                                  style="background-image: url(<?php echo asset('assets/images/banners/mainslider/' . $desktopImg) ?>); background-color: #E8EAEF; cursor: pointer;"
+                                  onclick="window.location.href='<?php echo $slideUrl; ?>';">
+                                  <a href="<?php echo $slideUrl; ?>" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: block;" aria-label="Slider Banner Link"></a>
+                                  <div class="banner-content y-50 text-right">
+                                      <div class="slide-animate" data-animation-options="{
+                                             'name': 'fadeInUpShorter', 'duration': '1s'
+                                         }">
+                                      </div>
+                                  </div>
+                              </div>
+                      <?php }
+                         } ?>
 
                  </div>
                  <div class="swiper-pagination"></div>

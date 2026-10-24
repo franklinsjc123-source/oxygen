@@ -25,12 +25,17 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
 
     <?php if (isset($mainslider) && count($mainslider) > 0 && !empty($mainslider[0]->image)): 
         $firstImg = $mainslider[0]->image;
-        $firstImgBase = str_replace('_mobile', '', pathinfo($firstImg, PATHINFO_FILENAME));
-        $mobileImg = $firstImgBase . '_mobile.webp';
+        $firstImgBase = pathinfo($firstImg, PATHINFO_FILENAME);
+        $mobileImg = file_exists(public_path('assets/images/banners/mainslider/' . $firstImgBase . '_mobile.webp')) 
+            ? $firstImgBase . '_mobile.webp' 
+            : (file_exists(public_path('assets/images/banners/mainslider/' . $firstImgBase . '.webp')) ? $firstImgBase . '.webp' : $firstImg);
+        $desktopImg = file_exists(public_path('assets/images/banners/mainslider/' . $firstImgBase . '.webp')) 
+            ? $firstImgBase . '.webp' 
+            : $firstImg;
     ?>
-    <!-- Preload LCP Hero Banner Image Responsively (15KB on Mobile, 36KB on Desktop) -->
+    <!-- Preload LCP Hero Banner Image Responsively -->
     <link rel="preload" as="image" href="<?= asset('assets/images/banners/mainslider/' . $mobileImg) ?>" media="(max-width: 767px)" fetchpriority="high">
-    <link rel="preload" as="image" href="<?= asset('assets/images/banners/mainslider/' . $firstImg) ?>" media="(min-width: 768px)" fetchpriority="high">
+    <link rel="preload" as="image" href="<?= asset('assets/images/banners/mainslider/' . $desktopImg) ?>" media="(min-width: 768px)" fetchpriority="high">
     <?php endif; ?>
 
     <!-- WebFont.js - Non-blocking font loader -->
