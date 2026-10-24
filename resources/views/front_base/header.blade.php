@@ -51,14 +51,12 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
         crossorigin="anonymous">
     <!-- Vendor CSS -->
     <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/fontawesome-free/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/animate/animate.min.css" media="print" onload="this.media='all'">
 
     <!-- Plugins CSS -->
-    <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/magnific-popup/magnific-popup.min.css">
+    <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/magnific-popup/magnific-popup.min.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="<?= asset('frontend') ?>/vendor/swiper/swiper-bundle.min.css">
     <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/css/demo8.min.css">
-
-    <script src="<?= asset('frontend') ?>/vendor/jquery/jquery.min.js"></script>
 
 </head>
 
@@ -1072,7 +1070,8 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
 
     {{-- JavaScript hover handler for main-nav megamenu --}}
     <script>
-        $(document).ready(function() {
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof $ === 'undefined') return;
             // Target only main-nav menu items that have a .megamenu child
             $('.main-nav .menu > li').has('.megamenu').each(function() {
                 var $li = $(this);
