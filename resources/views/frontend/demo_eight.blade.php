@@ -191,14 +191,6 @@
                              <div class="swiper-slide banner banner-fixed intro-slide intro-slide1 br-sm"
                                  style="background-image: url(<?php echo asset('assets/images/banners/mainslider/' . $val->image) ?>); background-color: #E8EAEF; cursor: pointer;"
                                  onclick="window.location.href='<?php echo $slideUrl; ?>';">
-                                 <?php if ($slideIndex === 0): ?>
-                                 <img src="<?php echo asset('assets/images/banners/mainslider/' . $val->image) ?>" 
-                                      alt="Main Banner" 
-                                      width="1192" 
-                                      height="552"
-                                      fetchpriority="high"
-                                      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; pointer-events: none;" />
-                                 <?php endif; ?>
                                  <a href="<?php echo $slideUrl; ?>" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: block;" aria-label="Slider Banner Link"></a>
                                  <div class="banner-content y-50 text-right">
                                      <div class="slide-animate" data-animation-options="{

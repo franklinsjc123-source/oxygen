@@ -28,10 +28,21 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
     <link rel="preload" as="image" href="<?= asset('assets/images/banners/mainslider/' . $mainslider[0]->image) ?>" fetchpriority="high">
     <?php endif; ?>
 
-    <!-- Preconnect to Google Fonts for instant typography -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+    <!-- WebFont.js - Non-blocking font loader -->
+    <script>
+        WebFontConfig = {
+            google: {
+                families: ['Poppins:400,500,600,700']
+            }
+        };
+        (function(d) {
+            var wf = d.createElement('script'),
+                s = d.scripts[0];
+            wf.src = '<?= asset('frontend') ?>/js/webfont.js';
+            wf.async = true;
+            s.parentNode.insertBefore(wf, s);
+        })(document);
+    </script>
 
     <meta name="keywords" content="Marketplace ecommerce responsive HTML5 Template" />
     <meta name="description" content="Wolmart is powerful marketplace &amp; ecommerce responsive Html5 Template.">
