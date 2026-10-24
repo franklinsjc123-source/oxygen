@@ -84,7 +84,9 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
     use Darryldecode\Cart\Facades\CartFacade as Cart;
     use Illuminate\Support\Facades\Session;
     
-    $categorymain = CategoryMain::orderBy('category_main_sortorder', 'asc')->get();
+    $categorymain = \Illuminate\Support\Facades\Cache::remember('front_category_main_tree', 3600, function() {
+        return CategoryMain::with(['submenu.childmenu'])->orderBy('category_main_sortorder', 'asc')->get();
+    });
     $menCategory = $categorymain->firstWhere('slug', 'men') ?? $categorymain->filter(fn($c) => strtolower($c->category_main_name) === 'men')->first();
     $womenCategory = $categorymain->firstWhere('slug', 'women') ?? $categorymain->filter(fn($c) => strtolower($c->category_main_name) === 'women')->first();
     $kidsCategory = $categorymain->firstWhere('slug', 'kids') ?? $categorymain->filter(fn($c) => strtolower($c->category_main_name) === 'kids')->first();
@@ -92,7 +94,10 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
     
     $count = Cart::getContent()->count();
     if ( Session::has('customer_id')) {
-        $customerName = optional(Ecom_Customer_info::where('customer_id', Session::get('customer_id'))->first())->customer_firstname;
+        $customerName = session('customer_name') ?? optional(Ecom_Customer_info::where('customer_id', Session::get('customer_id'))->first())->customer_firstname;
+        if (!session()->has('customer_name') && $customerName) {
+            session(['customer_name' => $customerName]);
+        }
     }
     ?>
 
@@ -1352,7 +1357,9 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                                 <a href="javascript:void(0)" class="mobile-cat-nav-item" data-target="mobile-cat-living">Living <i class="w-icon-angle-down"></i></a>
                             @endif
                             @php
-                                $hasLiveAuction = \App\Models\auction\auction::where('status', 1)->whereRaw("REPLACE(end_date, 'T', ' ') >= ?", [now('Asia/Kolkata')->format('Y-m-d H:i:s')])->exists();
+                                $hasLiveAuction = \Illuminate\Support\Facades\Cache::remember('has_live_auction', 30, function() {
+                                    return \App\Models\auction\auction::where('status', 1)->whereRaw("REPLACE(end_date, 'T', ' ') >= ?", [now('Asia/Kolkata')->format('Y-m-d H:i:s')])->exists();
+                                });
                             @endphp
                             @if($hasLiveAuction)
                                 <a href="{{ url('auction') }}" class="auction-pulse-btn" title="Live Auction"><i class="fas fa-gavel"></i></a>

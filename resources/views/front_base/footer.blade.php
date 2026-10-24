@@ -112,11 +112,13 @@
        use App\Models\CMSPage;
        use Darryldecode\Cart\Facades\CartFacade as Cart;
        
-       $categorymain = CategoryMain::orderBy('category_main_sortorder', 'asc')->get();
-       $category = Category::get();
-       $categorysub = CategorySub::get();
+       $categorymain = \Illuminate\Support\Facades\Cache::remember('front_category_main_tree', 3600, function() {
+           return CategoryMain::with(['submenu.childmenu'])->orderBy('category_main_sortorder', 'asc')->get();
+       });
        $count = Cart::getContent()->count();
-       $cmspages = CMSPage::where('status', '1')->get();
+       $cmspages = \Illuminate\Support\Facades\Cache::remember('front_cmspages', 3600, function() {
+           return CMSPage::where('status', '1')->get();
+       });
        ?>
 
        <div class="container">
@@ -303,7 +305,7 @@
 
        <?php  
            if(session('customer_id')){ 
-               $customerName = optional(\App\Models\Ecom_Customer_info::where('customer_id', session('customer_id'))->first())->customer_firstname;
+               $customerName = session('customer_name') ?? optional(\App\Models\Ecom_Customer_info::where('customer_id', session('customer_id'))->first())->customer_firstname;
                $displayName = $customerName ? $customerName : 'My Account';
        ?>
        <a href="{{ route('myAccount') }}" class="sticky-link {{ request()->is('myAccount') || request()->is('myAccount/*') || request()->is('customer/*') ? 'active' : '' }}">

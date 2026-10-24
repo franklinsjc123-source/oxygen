@@ -607,7 +607,7 @@ class FrontendController extends Controller
         return view('frontend/vendor_doken_store');
     }
 
-    public function getSpecificProduct($id = '')
+    public function getSpecificProduct($id = '', $limit = null)
     {
         $productsData = Products::from('products as p')
             ->leftJoin('category as c', 'c.id', '=', 'p.category')
@@ -622,10 +622,28 @@ class FrontendController extends Controller
             ->where(function ($q) {
                 $q->whereNull('vp.expired_date')
                   ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
-            })
-            ->inRandomOrder();
+            });
         if ($id != '') {
             $productsData = $productsData->where('p.id', $id);
+        } else {
+            if ($limit) {
+                $limitedIds = Products::from('products as p')
+                    ->join('vendor_details as vp', 'vp.id', '=', 'p.vendor_id')
+                    ->where('p.status', 1)
+                    ->where('p.flag', 1)
+                    ->where('vp.status', 1)
+                    ->where(function ($q) {
+                        $q->whereNull('vp.expired_date')
+                          ->orWhereDate('vp.expired_date', '>=', now()->toDateString());
+                    })
+                    ->inRandomOrder()
+                    ->limit($limit)
+                    ->pluck('p.id')
+                    ->toArray();
+                $productsData = $productsData->whereIn('p.id', !empty($limitedIds) ? $limitedIds : [-1]);
+            } else {
+                $productsData = $productsData->inRandomOrder();
+            }
         }
         $productsData = $productsData->select(
             'p.id',
@@ -1168,9 +1186,11 @@ class FrontendController extends Controller
 
     public function home()
     {
-        $mainslider = mainslider::where('status', 1)->get();
+        $mainslider = \Illuminate\Support\Facades\Cache::remember('home_mainslider', 600, function() {
+            return mainslider::where('status', 1)->get();
+        });
 
-        $topRatedProducts = array_slice($this->getSpecificProduct(''), 0, 6);
+        $topRatedProducts = $this->getSpecificProduct('', 6);
         $offerProducts = array_slice($this->getOfferProductsHome(), 0, 6);
         $mensProducts = array_slice($this->getMensProduct(), 0, 6);
         $womensProducts = array_slice($this->getWomensProduct(), 0, 6);
@@ -4112,16 +4132,18 @@ class FrontendController extends Controller
                 $tokens = [strtolower($keyword)];
             }
 
-            // Get all known color values from the database
-            $allColors = DB::table('products_details')
-                ->whereNotNull('attributevalue1')
-                ->where('attributevalue1', '!=', '')
-                ->pluck('attributevalue1')
-                ->unique()
-                ->map(function ($c) { return strtolower(trim((string) $c)); })
-                ->unique()
-                ->values()
-                ->toArray();
+            // Get all known color values from the database (cached for 10 minutes)
+            $allColors = \Illuminate\Support\Facades\Cache::remember('filter_all_colors', 600, function() {
+                return DB::table('products_details')
+                    ->whereNotNull('attributevalue1')
+                    ->where('attributevalue1', '!=', '')
+                    ->distinct()
+                    ->pluck('attributevalue1')
+                    ->map(function ($c) { return strtolower(trim((string) $c)); })
+                    ->unique()
+                    ->values()
+                    ->toArray();
+            });
 
             // Separate tokens into color tokens and non-color (search) tokens
             $colorTokens = [];
