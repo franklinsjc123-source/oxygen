@@ -1511,11 +1511,6 @@
 
    <!-- Plugin JS File -->
 
-   <script src="<?= asset('frontend') ?>/vendor/jquery.plugin/jquery.plugin.min.js"></script>
-   <script src="<?= asset('frontend') ?>/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
-   <script src="<?= asset('frontend') ?>/vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
-
-
    <script src="<?= asset('frontend') ?>/vendor/photoswipe/photoswipe.min.js"></script>
    <script src="<?= asset('frontend') ?>/vendor/photoswipe/photoswipe-ui-default.min.js"></script>
    <script src="<?= asset('frontend') ?>/vendor/parallax/parallax.min.js"></script>

@@ -23,6 +23,16 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
 
     <title>@yield('title')</title>
 
+    <?php if (isset($mainslider) && count($mainslider) > 0 && !empty($mainslider[0]->image)): ?>
+    <!-- Preload LCP Hero Banner Image (Next-Gen WebP) -->
+    <link rel="preload" as="image" href="<?= asset('assets/images/banners/mainslider/' . $mainslider[0]->image) ?>" fetchpriority="high">
+    <?php endif; ?>
+
+    <!-- Preconnect to Google Fonts for instant typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+
     <meta name="keywords" content="Marketplace ecommerce responsive HTML5 Template" />
     <meta name="description" content="Wolmart is powerful marketplace &amp; ecommerce responsive Html5 Template.">
     <meta name="author" content="D-THEMES">
@@ -30,29 +40,8 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="<?= asset('frontend') ?>/images/favicon.png">
 
-    <!-- WebFont.js -->
-    <script>
-        WebFontConfig = {
-            google: {
-                families: ['Poppins:400,500,600,700']
-            }
-        };
-        (function(d) {
-            var wf = d.createElement('script'),
-                s = d.scripts[0];
-            wf.src = '<?= asset('frontend') ?>/js/webfont.js';
-            wf.async = true;
-            s.parentNode.insertBefore(wf, s);
-        })(document);
-    </script>
-
     <!-- Default CSS -->
     <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/css/style.min.css">
-
-    <?php if (isset($mainslider) && count($mainslider) > 0 && !empty($mainslider[0]->image)): ?>
-    <!-- Preload LCP Hero Banner Image -->
-    <link rel="preload" as="image" href="<?= asset('assets/images/banners/mainslider/' . $mainslider[0]->image) ?>" fetchpriority="high">
-    <?php endif; ?>
 
     <link rel="preload" href="<?= asset('frontend') ?>/vendor/fontawesome-free/webfonts/fa-regular-400.woff2"
         as="font" type="font/woff2" crossorigin="anonymous">
