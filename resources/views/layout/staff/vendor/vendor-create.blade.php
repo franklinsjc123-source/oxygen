@@ -420,13 +420,27 @@
                                                     <div class="form-group row">
                                                         <label class="col-xl-4 col-md-4"><span>*</span> Staff (RM)</label>
                                                         <div class="col-xl-8 col-md-8">
-                                                            @php $current_staff_id = session()->get('login_id'); @endphp
+                                                            @php 
+                                                                $current_staff_id = session()->get('login_id'); 
+                                                                $current_username = session()->get('username');
+                                                                $matched_staff = $staffs->first(function($s) use ($current_staff_id, $current_username) {
+                                                                    return ($current_staff_id && ($s->employee_id == $current_staff_id || $s->id == $current_staff_id))
+                                                                        || ($current_username && $s->username == $current_username);
+                                                                });
+                                                                if (!$matched_staff && $current_staff_id) {
+                                                                    $matched_staff = \App\Models\Staffcreates::where('employee_id', $current_staff_id)->orWhere('id', $current_staff_id)->first();
+                                                                }
+                                                            @endphp
                                                             <select class="form-control" name="staff_id" required readonly style="pointer-events: none;">
-                                                                @foreach ($staffs as $staff)
-                                                                    @if($staff->employee_id == $current_staff_id)
-                                                                        <option value="{{ $staff->id }}" selected>{{ $staff->fullname ?? $staff->username }}</option>
-                                                                    @endif
-                                                                @endforeach
+                                                                @if($matched_staff)
+                                                                    <option value="{{ $matched_staff->id }}" selected>{{ $matched_staff->fullname ?? $matched_staff->username }}</option>
+                                                                @else
+                                                                    @foreach ($staffs as $staff)
+                                                                        @if($staff->employee_id == $current_staff_id || $staff->id == $current_staff_id)
+                                                                            <option value="{{ $staff->id }}" selected>{{ $staff->fullname ?? $staff->username }}</option>
+                                                                        @endif
+                                                                    @endforeach
+                                                                @endif
                                                             </select>
                                                         </div>
                                                     </div>

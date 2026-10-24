@@ -418,15 +418,28 @@
                                                     <div class="form-group row">
                                                         <label class="col-xl-4 col-md-4">Staff (RM) <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
-                                                            <select class="form-control" name="staff_id" required>
-                                                                <option value="">Select Staff</option>
-                                                                @foreach ($staffs as $staff)
-                                                                    <option value="{{ $staff->id }}" {{ $vendorcreate->staff_id == $staff->id ? 'selected' : '' }}>
-                                                                        {{ $staff->fullname ?? $staff->username }}
-                                                                    </option>
-                                                                @endforeach
-                                                            </select>
-                                                            <div class="invalid-feedback-custom">Please select staff</div>
+                                                            @php
+                                                                $is_staff = session()->get('log_type') === 'Staff' || (auth()->check() && (int) auth()->user()->status === 3);
+                                                            @endphp
+                                                            @if($is_staff)
+                                                                <select class="form-control" name="staff_id" required readonly style="pointer-events: none;">
+                                                                    @foreach ($staffs as $staff)
+                                                                        <option value="{{ $staff->id }}" {{ $vendorcreate->staff_id == $staff->id ? 'selected' : '' }}>
+                                                                            {{ $staff->fullname ?? $staff->username }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            @else
+                                                                <select class="form-control" name="staff_id" required>
+                                                                    <option value="">Select Staff</option>
+                                                                    @foreach ($staffs as $staff)
+                                                                        <option value="{{ $staff->id }}" {{ $vendorcreate->staff_id == $staff->id ? 'selected' : '' }}>
+                                                                            {{ $staff->fullname ?? $staff->username }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                                <div class="invalid-feedback-custom">Please select staff</div>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                 </div>

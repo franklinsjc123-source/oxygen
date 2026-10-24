@@ -64,6 +64,10 @@ class VendorcreateController extends Controller
      */
     public function index()
     {
+        if (session()->get('log_type') === 'Staff' || (auth()->check() && (int) auth()->user()->status === 3)) {
+            return redirect()->route('staffvendorcreate.index');
+        }
+
         $package = packages::All();
         $route = Route::all();
         $Zonal = Zonal::all();
@@ -93,9 +97,17 @@ class VendorcreateController extends Controller
             ]
         );
     }
-    public function create() {}
+    public function create() {
+        if (session()->get('log_type') === 'Staff' || (auth()->check() && (int) auth()->user()->status === 3)) {
+            return redirect()->route('staffvendorcreate.index');
+        }
+    }
     public function list()
     {
+        if (session()->get('log_type') === 'Staff' || (auth()->check() && (int) auth()->user()->status === 3)) {
+            return redirect()->route('staffvendor-list');
+        }
+
         $vendorlist = vendorcreate::where('id', '!=', 22)->get();
         $zoneMap = Zonal::pluck('name', 'id');
         // dd($vendorlist);
@@ -383,6 +395,10 @@ class VendorcreateController extends Controller
      */
     public function edit($id)
     {
+        if (session()->get('log_type') === 'Staff' || (auth()->check() && (int) auth()->user()->status === 3)) {
+            return redirect()->route('staffvendorcreate.edit', $id);
+        }
+
         $vendorcreate = vendorcreate::find($id);
 
         $package = packages::all();

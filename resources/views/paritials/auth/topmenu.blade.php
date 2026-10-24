@@ -62,7 +62,11 @@
             <p style="text-transform: capitalize !important;">{{ ucwords(strtolower(session()->get('log_type') ?? 'Admin')) }}</p>
         </div>
         <ul class="admin-mmenu">
-            <li><a href="{{ url('admin/dashboard') }}"><i data-feather="home"></i> <span class="text-label">Dashboard</span></a></li>
+            @if (session()->get('log_type') == 'Staff')
+                <li><a href="{{ route('staffdashboard', session()->get('login_id')) }}"><i data-feather="home"></i> <span class="text-label">Dashboard</span></a></li>
+            @else
+                <li><a href="{{ url('admin/dashboard') }}"><i data-feather="home"></i> <span class="text-label">Dashboard</span></a></li>
+            @endif
             @if (session()->get('log_type') == 'Admin')
                 @php $mob_mains = App\Models\Mainmenus::where('id','!=','1')->get(); @endphp
                 @foreach($mob_mains as $mm)
@@ -105,7 +109,34 @@
                                     @endif
                                     @php $canSee = $mob_sr ? in_array($sm->id, explode(',', $mob_sr->submenus)) : true; @endphp
                                     @if($canSee)
-                                        <li><a href="{{ $sm->type=='route' ? route($sm->link) : url($sm->link) }}">{{ $sm->title }}</a></li>
+                                        @if($sm->type == 'route')
+                                            @php
+                                                $finalRoute = '#';
+                                                $possibleStaffRoute = 'staff' . $sm->link;
+                                                if (\Illuminate\Support\Facades\Route::has($possibleStaffRoute)) {
+                                                    $finalRoute = route($possibleStaffRoute);
+                                                } elseif (\Illuminate\Support\Facades\Route::has($possibleStaffRoute . '.index')) {
+                                                    $finalRoute = route($possibleStaffRoute . '.index');
+                                                } elseif (\Illuminate\Support\Facades\Route::has('staff.' . $sm->link)) {
+                                                    $finalRoute = route('staff.' . $sm->link);
+                                                } elseif (\Illuminate\Support\Facades\Route::has('staff.' . $sm->link . '.index')) {
+                                                    $finalRoute = route('staff.' . $sm->link . '.index');
+                                                } elseif ($sm->link == 'order') {
+                                                    $finalRoute = route('stafforder');
+                                                } elseif ($sm->link == 'transaction') {
+                                                    $finalRoute = route('stafftransaction');
+                                                } elseif ($sm->link == 'auction/list') {
+                                                    $finalRoute = route('staffauction/list');
+                                                } elseif ($sm->link == 'auction/live') {
+                                                    $finalRoute = route('staffauction/live');
+                                                } elseif (\Illuminate\Support\Facades\Route::has($sm->link)) {
+                                                    $finalRoute = route($sm->link);
+                                                }
+                                            @endphp
+                                            <li><a href="{{ $finalRoute }}">{{ $sm->title }}</a></li>
+                                        @else
+                                            <li><a href="{{ url($sm->link) }}">{{ $sm->title }}</a></li>
+                                        @endif
                                     @endif
                                 @endforeach
                             </ul>
@@ -113,7 +144,11 @@
                     @endif
                 @endforeach
             @endif
-            <li><a href="{{ url('admin/logout') }}"><i data-feather="log-in"></i> <span class="text-label">Logout</span></a></li>
+            @if (session()->get('log_type') == 'Staff')
+                <li><a href="{{ url('staff/logout') }}"><i data-feather="log-in"></i> <span class="text-label">Logout</span></a></li>
+            @else
+                <li><a href="{{ url('admin/logout') }}"><i data-feather="log-in"></i> <span class="text-label">Logout</span></a></li>
+            @endif
         </ul>
     </div>
 </div>
@@ -163,7 +198,7 @@
 
             <!-- 2. Center: Logo (mobile only) -->
             <div class="main-header-left d-lg-none col text-center">
-                <div class="logo-wrapper" style="display: inline-block;"><a href="{{ url('admin/dashboard') }}"><img class="blur-up lazyloaded"
+                <div class="logo-wrapper" style="display: inline-block;"><a href="{{ session()->get('log_type') == 'Staff' ? route('staffdashboard', session()->get('login_id')) : url('admin/dashboard') }}"><img class="blur-up lazyloaded"
                             src="{{ asset('assets/images/dashboard/logo/newlogo.png') }}" alt="Logo" style="height: 55px !important; width: auto; object-fit: contain;"></a></div>
             </div>
 <script>
@@ -357,7 +392,7 @@
                             <li class="txt-dark"><a href="javascript:void(0)">All notifications</a></li>
                         </ul>
                     </div>
-                    <a href="{{ url('admin/logout') }}" style="color: #ffffff; padding: 10px;">
+                    <a href="{{ session()->get('log_type') == 'Staff' ? url('staff/logout') : url('admin/logout') }}" style="color: #ffffff; padding: 10px;">
                         <i data-feather="log-out"></i>
                     </a>
                 </div>

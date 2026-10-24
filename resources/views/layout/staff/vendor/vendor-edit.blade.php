@@ -414,10 +414,21 @@
                                                     <div class="form-group row">
                                                         <label class="col-xl-4 col-md-4"><span>*</span> Staff (RM)</label>
                                                         <div class="col-xl-8 col-md-8">
+                                                            @php
+                                                                $current_staff_id = session()->get('login_id');
+                                                                $current_username = session()->get('username');
+                                                                $selected_staff_id = $vendorcreate->staff_id;
+                                                                if (!$selected_staff_id) {
+                                                                    $matched = $staffs->first(function($s) use ($current_staff_id, $current_username) {
+                                                                        return ($current_staff_id && ($s->employee_id == $current_staff_id || $s->id == $current_staff_id))
+                                                                            || ($current_username && $s->username == $current_username);
+                                                                    });
+                                                                    $selected_staff_id = $matched ? $matched->id : null;
+                                                                }
+                                                            @endphp
                                                             <select class="form-control" name="staff_id" required readonly style="pointer-events: none;">
-                                                                <option value="">Select Staff</option>
                                                                 @foreach ($staffs as $staff)
-                                                                    <option value="{{ $staff->id }}" {{ $vendorcreate->staff_id == $staff->id ? 'selected' : '' }}>
+                                                                    <option value="{{ $staff->id }}" {{ $selected_staff_id == $staff->id ? 'selected' : '' }}>
                                                                         {{ $staff->fullname ?? $staff->username }}
                                                                     </option>
                                                                 @endforeach

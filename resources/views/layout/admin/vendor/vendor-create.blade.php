@@ -425,13 +425,34 @@
                                                     <div class="form-group row">
                                                         <label class="col-xl-4 col-md-4">Staff (RM) <span class="text-danger">*</span></label>
                                                         <div class="col-xl-8 col-md-8">
-                                                            <select class="form-control" name="staff_id" required>
-                                                                <option value="">Select Staff</option>
-                                                                @foreach ($staffs as $staff)
-                                                                    <option value="{{ $staff->id }}">{{ $staff->fullname ?? $staff->username }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                            <div class="invalid-feedback-custom">Please select staff</div>
+                                                            @php
+                                                                $is_staff = session()->get('log_type') === 'Staff' || (auth()->check() && (int) auth()->user()->status === 3);
+                                                                $current_staff_id = session()->get('login_id');
+                                                                $current_username = session()->get('username');
+                                                                $matched_staff = null;
+                                                                if ($is_staff) {
+                                                                    $matched_staff = $staffs->first(function($s) use ($current_staff_id, $current_username) {
+                                                                        return ($current_staff_id && ($s->employee_id == $current_staff_id || $s->id == $current_staff_id))
+                                                                            || ($current_username && $s->username == $current_username);
+                                                                    });
+                                                                    if (!$matched_staff && $current_staff_id) {
+                                                                        $matched_staff = \App\Models\Staffcreates::where('employee_id', $current_staff_id)->orWhere('id', $current_staff_id)->first();
+                                                                    }
+                                                                }
+                                                            @endphp
+                                                            @if($is_staff && $matched_staff)
+                                                                <select class="form-control" name="staff_id" required readonly style="pointer-events: none;">
+                                                                    <option value="{{ $matched_staff->id }}" selected>{{ $matched_staff->fullname ?? $matched_staff->username }}</option>
+                                                                </select>
+                                                            @else
+                                                                <select class="form-control" name="staff_id" required>
+                                                                    <option value="">Select Staff</option>
+                                                                    @foreach ($staffs as $staff)
+                                                                        <option value="{{ $staff->id }}">{{ $staff->fullname ?? $staff->username }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                                <div class="invalid-feedback-custom">Please select staff</div>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                 </div>

@@ -55,7 +55,7 @@
             <p style="text-transform: capitalize !important;">{{ ucwords(strtolower(session()->get('log_type') ?? 'Staff')) }}</p>
         </div>
         <ul class="admin-mmenu">
-            <li><a href="{{ url('admin/dashboard') }}"><i data-feather="home"></i> <span class="text-label">Dashboard</span></a></li>
+            <li><a href="{{ route('staffdashboard', session()->get('login_id')) }}"><i data-feather="home"></i> <span class="text-label">Dashboard</span></a></li>
             @php
                 $mob_sid = session()->get('login_id');
                 $mob_mains = App\Models\Mainmenus::where('id','!=','1')->get();
@@ -81,7 +81,34 @@
                                 @endif
                                 @php $canSee = $mob_sr ? in_array($sm->id, explode(',', $mob_sr->submenus)) : true; @endphp
                                 @if($canSee)
-                                    <li><a href="{{ $sm->type=='route' ? route($sm->link) : url($sm->link) }}">{{ $sm->title }}</a></li>
+                                    @if($sm->type == 'route')
+                                        @php
+                                            $finalRoute = '#';
+                                            $possibleStaffRoute = 'staff' . $sm->link;
+                                            if (\Illuminate\Support\Facades\Route::has($possibleStaffRoute)) {
+                                                $finalRoute = route($possibleStaffRoute);
+                                            } elseif (\Illuminate\Support\Facades\Route::has($possibleStaffRoute . '.index')) {
+                                                $finalRoute = route($possibleStaffRoute . '.index');
+                                            } elseif (\Illuminate\Support\Facades\Route::has('staff.' . $sm->link)) {
+                                                $finalRoute = route('staff.' . $sm->link);
+                                            } elseif (\Illuminate\Support\Facades\Route::has('staff.' . $sm->link . '.index')) {
+                                                $finalRoute = route('staff.' . $sm->link . '.index');
+                                            } elseif ($sm->link == 'order') {
+                                                $finalRoute = route('stafforder');
+                                            } elseif ($sm->link == 'transaction') {
+                                                $finalRoute = route('stafftransaction');
+                                            } elseif ($sm->link == 'auction/list') {
+                                                $finalRoute = route('staffauction/list');
+                                            } elseif ($sm->link == 'auction/live') {
+                                                $finalRoute = route('staffauction/live');
+                                            } elseif (\Illuminate\Support\Facades\Route::has($sm->link)) {
+                                                $finalRoute = route($sm->link);
+                                            }
+                                        @endphp
+                                        <li><a href="{{ $finalRoute }}">{{ $sm->title }}</a></li>
+                                    @else
+                                        <li><a href="{{ url($sm->link) }}">{{ $sm->title }}</a></li>
+                                    @endif
                                 @endif
                             @endforeach
                         </ul>
@@ -113,7 +140,7 @@
 
             <!-- 2. Center: Logo (mobile only) -->
             <div class="main-header-left d-lg-none col text-center">
-                <div class="logo-wrapper" style="display: inline-block;"><a href="{{ url('admin/dashboard') }}"><img class="blur-up lazyloaded"
+                <div class="logo-wrapper" style="display: inline-block;"><a href="{{ route('staffdashboard', session()->get('login_id')) }}"><img class="blur-up lazyloaded"
                             src="{{ asset('assets/images/dashboard/logo/newlogo.png') }}" alt="Logo" style="height: 55px !important; width: auto; object-fit: contain;"></a></div>
             </div>
 <script>
