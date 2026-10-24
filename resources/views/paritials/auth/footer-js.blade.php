@@ -397,6 +397,10 @@
             e.preventDefault();
             var $card = $(this).closest('.card-body, .container-fluid, body');
             var $table = $card.find('table[data-toggle="table"]').length ? $card.find('table[data-toggle="table"]').first() : $card.find('table').first();
+            if ($table.find('tbody tr.no-records-found').length > 0 || ($table.find('tbody tr').length === 1 && $table.find('tbody tr').text().indexOf('No matching records found') !== -1)) {
+                alert('No records available to export.');
+                return false;
+            }
             if ($table.length && $.isFunction($.fn.tableExport)) {
                 $table.tableExport({ type: 'excel', escape: 'false' });
             }

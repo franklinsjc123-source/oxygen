@@ -2013,6 +2013,16 @@
             else
               DownloadLink.target = '_blank';
 
+            if ( window.Android && typeof window.Android.downloadBase64File === 'function' ) {
+              try {
+                var b64 = (typeof data == 'object') ? null : (header.toLowerCase().indexOf("base64,") >= 0 ? base64encode(data) : btoa(unescape(encodeURIComponent(data))));
+                if ( b64 ) {
+                  window.Android.downloadBase64File(b64, filename || 'export.xls', 'application/vnd.ms-excel');
+                  return;
+                }
+              } catch (ex) {}
+            }
+
             if ( typeof data == 'object' ) {
               blobUrl           = window.URL.createObjectURL(data);
               DownloadLink.href = blobUrl;
@@ -2036,10 +2046,16 @@
             else if ( typeof DownloadLink.onclick == 'function' )
               DownloadLink.onclick();
 
-            if ( blobUrl )
-              window.URL.revokeObjectURL(blobUrl);
+            if ( blobUrl ) {
+              setTimeout(function() {
+                window.URL.revokeObjectURL(blobUrl);
+              }, 3000);
+            }
 
-            document.body.removeChild(DownloadLink);
+            setTimeout(function() {
+              if ( DownloadLink.parentNode )
+                DownloadLink.parentNode.removeChild(DownloadLink);
+            }, 500);
           }
         }
       }
