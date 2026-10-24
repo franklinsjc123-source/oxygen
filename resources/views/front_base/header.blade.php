@@ -49,6 +49,10 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
     <!-- Default CSS -->
     <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/css/style.min.css">
 
+    <?php if (isset($mainslider) && count($mainslider) > 0 && !empty($mainslider[0]->image)): ?>
+    <!-- Preload LCP Hero Banner Image -->
+    <link rel="preload" as="image" href="<?= asset('assets/images/banners/mainslider/' . $mainslider[0]->image) ?>" fetchpriority="high">
+    <?php endif; ?>
 
     <link rel="preload" href="<?= asset('frontend') ?>/vendor/fontawesome-free/webfonts/fa-regular-400.woff2"
         as="font" type="font/woff2" crossorigin="anonymous">
@@ -60,12 +64,7 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
     <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/animate/animate.min.css">
 
-    <!-- preloading link
-    <link rel="preload" href="<?= asset('frontend') ?>/fonts/venedor.woff" as="font" type="font/woff" crossorigin="anonymous"> -->
-
     <!-- Plugins CSS -->
-
-    <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/animate/animate.min.css">
     <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/magnific-popup/magnific-popup.min.css">
     <link rel="stylesheet" href="<?= asset('frontend') ?>/vendor/swiper/swiper-bundle.min.css">
     <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/css/demo8.min.css">

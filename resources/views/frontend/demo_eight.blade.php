@@ -319,7 +319,7 @@
                           <a href="{{ url('offers?id='.$offer->id) }}">
                               @if(!empty($offer->db_logo))
                                   <div class="offer-badge-img-wrapper">
-                                      <img class="offer-badge-img" src="{{ asset('assets/images/offer_logo/' . $offer->offer_logo) }}" alt="{{ $offer->title }}">
+                                      <img class="offer-badge-img" src="{{ asset('assets/images/offer_logo/' . $offer->offer_logo) }}" alt="{{ $offer->title }}" loading="lazy" decoding="async">
                                   </div>
                               @else
                                    @php
@@ -400,7 +400,7 @@
                       <figure class="product-media">
                           <a href="{{ route('auction.detail', $auction->auction_id) }}">
                               <img src="{{ asset('assets/images/products/' . $auction->product_image) }}" alt="Product" width="260"
-                                  height="291" />
+                                  height="291" loading="lazy" decoding="async" />
                           </a>
                            <div class="product-action-vertical">
                                <a href="#" onclick="addwishlist('{{ $auction->id }}', this)" class="btn-product-icon btn-wishlist {{ in_array($auction->id, $wishlistedProductIds ?? []) ? 'w-icon-heart-full' : 'w-icon-heart' }}" style="{{ in_array($auction->id, $wishlistedProductIds ?? []) ? 'color: #ef4444 !important;' : '' }}"
@@ -462,7 +462,7 @@
                                   <figure class="product-media">
                                       <a href="<?= url('/products/' . ($row['slug'] ?? $row['id'])) ?>">
                                           <img src="<?php echo asset('assets') ?>/images/products/<?= $row['product_image'] ?>" alt="Product" width="260"
-                                              height="291" />
+                                              height="291" loading="lazy" decoding="async" />
                                       </a>
                                       @php
                                             $offerName = '';
@@ -581,7 +581,7 @@
                               <a href="{{ $cUrl }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block;" aria-label="{{ $item->title }}"></a>
                               <figure>
                                   <img src="{{ asset('assets/images/banners/category-banner/' . $item->image) }}" alt="Category Banner" width="447"
-                                      height="230" />
+                                      height="230" loading="lazy" decoding="async" />
                               </figure>
                               <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2" style="z-index: 2; pointer-events: none;">
                                    <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">{!! $item->sub_title !!}</h5>
@@ -593,7 +593,7 @@
                      <div class="swiper-slide banner banner-fixed category-banner br-sm">
                          <figure>
                              <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/1-1.jpg" alt="Category Banner" width="447"
-                                 height="230" style="background-color: #cfd1cf;" />
+                                 height="230" style="background-color: #cfd1cf;" loading="lazy" decoding="async" />
                          </figure>
                          <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2">
                              <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">Starting at <span class="text-secondary">₹29.00</span></h5>
@@ -604,7 +604,7 @@
                      <div class="swiper-slide banner banner-fixed category-banner br-sm">
                          <figure>
                              <img style="cursor:pointer" src="<?php echo asset('frontend') ?>/images/demos/demo8/category/1-2.jpg" alt="Category Banner" width="447"
-                                 height="230" style="background-color: #0088dd" />
+                                 height="230" style="background-color: #0088dd" loading="lazy" decoding="async" />
                          </figure>
                          <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2">
                              <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">Get 30% Off Your Entire Order!</h5>
@@ -615,7 +615,7 @@
                      <div class="swiper-slide banner banner-fixed category-banner br-sm">
                          <figure>
                              <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/1-3.jpg" alt="Category Banner" width="447"
-                                 height="230" style="background-color: #e0dddd;" />
+                                 height="230" style="background-color: #e0dddd;" loading="lazy" decoding="async" />
                          </figure>
                          <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2">
                              <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">From Only <span class="text-secondary">₹29.00</span></h5>
@@ -678,7 +678,7 @@
                                                   class="vendor-profile-img"
                                                   src="{{ asset('assets/images/vendor/profile/' . $row->profile_image) }}"
                                                   alt="{{ $row->shop_name }}"
-                                                  onerror="this.onerror=null;this.src='{{ asset('frontend/images/default-shop-image.png') }}';"
+                                                  onerror="this.onerror=null;this.src='{{ asset('frontend/images/default-shop-image.png') }}';" loading="lazy" decoding="async"
                                               />
                                               <span class="vendor-name-overlay">{{ $row->shop_name }}</span>
                                           </span>
@@ -709,7 +709,7 @@
                              <figure class="product-media">
                                  <a href="<?= url('/products/' . ($row['slug'] ?? $row['id'])) ?>">
                                      <img src="<?php echo asset('assets') ?>/images/products/<?= $row['product_image'] ?>" alt="Product" width="260"
-                                         height="291" />
+                                         height="291" loading="lazy" decoding="async" />
                                  </a>
 
                                   @php
@@ -819,7 +819,7 @@
                  <a href="{{ $advLink }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block;" aria-label="{{ $banner->title }}"></a>
                  <figure class="br-sm">
                      <img src="{{ asset('assets/images/banners/advoxygen/' . $banner->image) }}" alt="{{ $banner->title }}" width="330"
-                          height="160" style="background-color: {{ $key == 0 ? '#384744' : '#e7e7e7' }}; object-fit: cover; width: 100% !important; height: auto !important;" />
+                          height="160" style="background-color: {{ $key == 0 ? '#384744' : '#e7e7e7' }}; object-fit: cover; width: 100% !important; height: auto !important;" loading="lazy" decoding="async" />
                  </figure>
                  <div class="banner-content y-50" style="z-index: 2; pointer-events: none;">
                      <h5 class="banner-subtitle text-uppercase {{ $key == 0 ? 'text-white' : '' }} font-weight-bold">{{ $banner->title }}</h5>
@@ -1063,7 +1063,7 @@
                              <figure class="product-media">
                                  <a href="<?= url('/products/' . ($row['slug'] ?? $row['id'])) ?>">
                                      <img src="<?php echo asset('assets') ?>/images/products/<?= $row['product_image'] ?>" alt="Product" width="260"
-                                         height="291" />
+                                         height="291" loading="lazy" decoding="async" />
                                  </a>
 
                                   @php
@@ -1177,7 +1177,7 @@
                              <figure class="product-media">
                                  <a href="<?= url('/products/' . ($row['slug'] ?? $row['id'])) ?>">
                                      <img src="<?php echo asset('assets') ?>/images/products/<?= $row['product_image'] ?>" alt="Product" width="260"
-                                         height="291" />
+                                         height="291" loading="lazy" decoding="async" />
                                  </a>
 
                                   @php
@@ -1288,7 +1288,7 @@
                              <figure class="product-media">
                                  <a href="<?= url('/products/' . ($row['slug'] ?? $row['id'])) ?>">
                                      <img src="<?php echo asset('assets') ?>/images/products/<?= $row['product_image'] ?>" alt="Product" width="260"
-                                         height="291" />
+                                         height="291" loading="lazy" decoding="async" />
                                  </a>
 
                                   @php
@@ -1419,7 +1419,7 @@
                   <figure class="image-shoes skrollable">
                       <img src="<?php echo asset('frontend') ?>/images/demos/demo8/banner/shoes.png" alt="Shoes"
                           data-bottom-top="transform: translateY(2vh);"
-                          data-top-bottom="transform: translateY(-2vh);">
+                          data-top-bottom="transform: translateY(-2vh);" loading="lazy" decoding="async">
                   </figure>
               </div>
           @endif
