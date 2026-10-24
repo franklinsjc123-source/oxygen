@@ -1176,12 +1176,27 @@ class FrontendController extends Controller
         $womensProducts = array_slice($this->getWomensProduct(), 0, 6);
         $kidsProducts = array_slice($this->getKidsProduct(), 0, 6);
 
-        // Function to attach ratings
-        $attachRatings = function (&$products) {
+        // Bulk load ratings for all homepage product sections
+        $allProductIds = array_unique(array_filter(array_merge(
+            array_column($mensProducts, 'id'),
+            array_column($womensProducts, 'id'),
+            array_column($kidsProducts, 'id'),
+            array_column($topRatedProducts, 'id'),
+            array_column($offerProducts, 'id')
+        )));
+
+        $ratingsMap = !empty($allProductIds) ? Rating::whereIn('products_id', $allProductIds)
+            ->selectRaw('products_id, AVG(star_rating) as avg_rating, COUNT(*) as review_count')
+            ->groupBy('products_id')
+            ->get()
+            ->keyBy('products_id') : collect();
+
+        $attachRatings = function (&$products) use ($ratingsMap) {
             foreach ($products as &$product) {
-                $avg = Rating::where('products_id', $product['id'])->avg('star_rating');
+                $r = $ratingsMap->get($product['id']);
+                $avg = $r ? (float) $r->avg_rating : 0;
                 $product['rating_percent'] = $avg ? ($avg / 5) * 100 : 0;
-                $product['review_count'] = Rating::where('products_id', $product['id'])->count();
+                $product['review_count'] = $r ? (int) $r->review_count : 0;
             }
         };
 
@@ -1232,14 +1247,30 @@ class FrontendController extends Controller
             ->limit(6)
             ->get();
 
+        $auctionProductIds = $auctionProducts->pluck('id')->filter()->unique()->toArray();
+        $auctionRatingsMap = !empty($auctionProductIds) ? Rating::whereIn('products_id', $auctionProductIds)
+            ->selectRaw('products_id, AVG(star_rating) as avg_rating, COUNT(*) as review_count')
+            ->groupBy('products_id')
+            ->get()
+            ->keyBy('products_id') : collect();
+
+        $auctionIds = $auctionProducts->pluck('auction_id')->filter()->unique()->toArray();
+        $auctionMaxBids = !empty($auctionIds) ? DB::table('auction_bids')
+            ->whereIn('auction_id', $auctionIds)
+            ->selectRaw('auction_id, MAX(bid_amount) as max_bid')
+            ->groupBy('auction_id')
+            ->get()
+            ->keyBy('auction_id') : collect();
+
         foreach ($auctionProducts as $auction) {
-            $maxBid = DB::table('auction_bids')->where('auction_id', $auction->auction_id)->max('bid_amount');
-            if ($maxBid && $maxBid > 0) {
-                $auction->selling_price = $maxBid;
+            $mb = $auctionMaxBids->get($auction->auction_id);
+            if ($mb && $mb->max_bid > 0) {
+                $auction->selling_price = $mb->max_bid;
             }
-            $avg = \App\Models\Rating::where('products_id', $auction->id)->avg('star_rating');
+            $r = $auctionRatingsMap->get($auction->id);
+            $avg = $r ? (float) $r->avg_rating : 0;
             $auction->rating_percent = $avg ? ($avg / 5) * 100 : 0;
-            $auction->review_count = \App\Models\Rating::where('products_id', $auction->id)->count();
+            $auction->review_count = $r ? (int) $r->review_count : 0;
         }
 
         $pincode = session('pincode');
