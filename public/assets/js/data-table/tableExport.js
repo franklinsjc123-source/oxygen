@@ -2003,6 +2003,12 @@
         }
         else {
           var clientFallbackDownload = function () {
+            var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|wv/i.test(window.navigator.userAgent);
+            if ( isMobile ) {
+              console.warn('Cannot download data/blob URI on mobile webview.');
+              return;
+            }
+
             var DownloadLink = document.createElement('a');
 
             if ( DownloadLink ) {
@@ -2070,7 +2076,18 @@
             }
 
             var doServerPost = function(base64Payload) {
-              var exportUrl = (window.appBaseUrl || '') + '/export-table-data';
+              var exportUrl = window.tableExportUrl || (window.appBaseUrl ? window.appBaseUrl + '/export-table-data' : null);
+              if ( !exportUrl ) {
+                var path = window.location.pathname;
+                var prefix = '';
+                if ( path.indexOf('/oxygen/public') !== -1 ) {
+                  prefix = '/oxygen/public';
+                } else if ( path.indexOf('/oxygen') !== -1 ) {
+                  prefix = '/oxygen';
+                }
+                exportUrl = window.location.origin + prefix + '/export-table-data';
+              }
+
               var csrfToken = '';
               var metaCsrf = document.querySelector('meta[name="csrf-token"]');
               if ( metaCsrf ) csrfToken = metaCsrf.getAttribute('content');
@@ -2087,15 +2104,7 @@
                     try {
                       var resp = JSON.parse(xhr.responseText);
                       if ( resp && resp.download_url ) {
-                        var dlLink = document.createElement('a');
-                        dlLink.style.display = 'none';
-                        dlLink.href = resp.download_url;
-                        dlLink.setAttribute('download', filename || 'tableExport.xls');
-                        document.body.appendChild(dlLink);
-                        dlLink.click();
-                        setTimeout(function() {
-                          if ( dlLink.parentNode ) dlLink.parentNode.removeChild(dlLink);
-                        }, 1000);
+                        window.location.href = resp.download_url;
                         return;
                       }
                     } catch (e) {}

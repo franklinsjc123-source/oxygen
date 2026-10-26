@@ -63,10 +63,15 @@ class TableExportController extends Controller
         file_put_contents($tempDir . '/' . $token . '.meta', json_encode($meta));
         file_put_contents($tempDir . '/' . $token . '.data', $content);
 
+        $scheme = $request->secure() ? 'https://' : ($request->header('x-forwarded-proto') ? $request->header('x-forwarded-proto') . '://' : ($request->isSecure() ? 'https://' : 'http://'));
+        $host = $request->header('host') ?: $request->getHttpHost();
+        $basePath = $request->getBasePath();
+        $downloadUrl = $scheme . $host . $basePath . '/export-table-download/' . $token;
+
         return response()->json([
             'success' => true,
             'token' => $token,
-            'download_url' => $request->getSchemeAndHttpHost() . '/export-table-download/' . $token,
+            'download_url' => $downloadUrl,
         ]);
     }
 
