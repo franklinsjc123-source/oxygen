@@ -65,15 +65,14 @@ class TableExportController extends Controller
         @chmod($tempDir . '/' . $token . '.meta', 0666);
         @chmod($tempDir . '/' . $token . '.data', 0666);
 
-        $scheme = $request->secure() ? 'https://' : ($request->header('x-forwarded-proto') ? $request->header('x-forwarded-proto') . '://' : ($request->isSecure() ? 'https://' : 'http://'));
-        $host = $request->header('host') ?: $request->getHttpHost();
-        $basePath = $request->getBasePath();
-        $downloadUrl = $scheme . $host . $basePath . '/export-table-download/' . $token;
+        $relativeDownloadUrl = ($basePath ? $basePath : '') . '/export-table-download/' . $token;
+        $downloadUrl = $scheme . $host . $relativeDownloadUrl;
 
         return response()->json([
             'success' => true,
             'token' => $token,
-            'download_url' => $downloadUrl,
+            'download_url' => $relativeDownloadUrl,
+            'full_download_url' => $downloadUrl,
         ]);
     }
 

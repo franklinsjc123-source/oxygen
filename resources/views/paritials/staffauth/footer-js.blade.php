@@ -281,8 +281,49 @@
                 tableHtml +
                 '</body></html>';
 
+            // Helper for instant client-side download (works in all standard desktop and mobile browsers)
+            var downloadDirectBlob = function() {
+                try {
+                    var blob = new Blob(['\ufeff' + excelDoc], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+                    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                        window.navigator.msSaveOrOpenBlob(blob, safeFilename);
+                        $btn.prop('disabled', false).html(originalHtml);
+                        return true;
+                    }
+                    var link = document.createElement('a');
+                    if (link.download !== undefined) {
+                        var blobUrl = URL.createObjectURL(blob);
+                        link.setAttribute('href', blobUrl);
+                        link.setAttribute('download', safeFilename);
+                        link.style.visibility = 'hidden';
+                        document.body.appendChild(link);
+                        link.click();
+                        setTimeout(function() {
+                            document.body.removeChild(link);
+                            URL.revokeObjectURL(blobUrl);
+                            $btn.prop('disabled', false).html(originalHtml);
+                        }, 500);
+                        return true;
+                    }
+                } catch (e) {
+                    console.warn('Direct blob download error:', e);
+                }
+                return false;
+            };
+
+            // Detect Android WebView (where DownloadManager only handles HTTP/HTTPS)
+            var ua = navigator.userAgent || '';
+            var isAndroidWebView = (ua.indexOf('Android') !== -1 && (ua.indexOf('Version/') !== -1 || ua.indexOf('wv') !== -1));
+
+            // On standard browsers (Chrome, Edge, Firefox, Safari on Desktop & Mobile), use direct Blob download for instant 0ms download
+            if (!isAndroidWebView && downloadDirectBlob()) {
+                return;
+            }
+
+            // For Android WebView, use server-assisted HTTP download (with relative URL to prevent mixed content issues)
+            var exportUrl = '{{ route("table.export.store", [], false) }}';
             $.ajax({
-                url: "{{ url('export-table-data') }}",
+                url: exportUrl,
                 type: 'POST',
                 data: JSON.stringify({
                     filename: safeFilename,
@@ -300,14 +341,17 @@
                     $btn.prop('disabled', false).html(originalHtml);
                     if (res && res.download_url) {
                         window.location.href = res.download_url;
-                    } else {
+                    } else if (!downloadDirectBlob()) {
                         alert('Export failed. Please try again.');
                     }
                 },
                 error: function(xhr, status, error) {
-                    $btn.prop('disabled', false).html(originalHtml);
-                    console.error('Export error:', error, xhr.responseText);
-                    alert('Failed to generate export file. Please check connection and try again.');
+                    console.error('Server export error, falling back to direct download:', error, xhr.responseText);
+                    // Fallback to direct client-side download so user is never stuck
+                    if (!downloadDirectBlob()) {
+                        $btn.prop('disabled', false).html(originalHtml);
+                        alert('Failed to generate export file. Please check connection and try again.');
+                    }
                 }
             });
         });
