@@ -2002,61 +2002,156 @@
           }
         }
         else {
-          var DownloadLink = document.createElement('a');
+          var clientFallbackDownload = function () {
+            var DownloadLink = document.createElement('a');
 
-          if ( DownloadLink ) {
-            var blobUrl = null;
+            if ( DownloadLink ) {
+              var blobUrl = null;
 
-            DownloadLink.style.display = 'none';
-            if ( filename !== false )
-              DownloadLink.download = filename;
-            else
-              DownloadLink.target = '_blank';
+              DownloadLink.style.display = 'none';
+              if ( filename !== false )
+                DownloadLink.download = filename;
+              else
+                DownloadLink.target = '_blank';
 
-            if ( window.Android && typeof window.Android.downloadBase64File === 'function' ) {
-              try {
-                var b64 = (typeof data == 'object') ? null : (header.toLowerCase().indexOf("base64,") >= 0 ? base64encode(data) : btoa(unescape(encodeURIComponent(data))));
-                if ( b64 ) {
-                  window.Android.downloadBase64File(b64, filename || 'export.xls', 'application/vnd.ms-excel');
-                  return;
-                }
-              } catch (ex) {}
-            }
+              if ( typeof data == 'object' ) {
+                blobUrl           = window.URL.createObjectURL(data);
+                DownloadLink.href = blobUrl;
+              }
+              else if ( header.toLowerCase().indexOf("base64,") >= 0 )
+                DownloadLink.href = header + base64encode(data);
+              else
+                DownloadLink.href = header + encodeURIComponent(data);
 
-            if ( typeof data == 'object' ) {
-              blobUrl           = window.URL.createObjectURL(data);
-              DownloadLink.href = blobUrl;
-            }
-            else if ( header.toLowerCase().indexOf("base64,") >= 0 )
-              DownloadLink.href = header + base64encode(data);
-            else
-              DownloadLink.href = header + encodeURIComponent(data);
+              document.body.appendChild(DownloadLink);
 
-            document.body.appendChild(DownloadLink);
+              if ( document.createEvent ) {
+                if ( DownloadEvt === null )
+                  DownloadEvt = document.createEvent('MouseEvents');
 
-            if ( document.createEvent ) {
-              if ( DownloadEvt === null )
-                DownloadEvt = document.createEvent('MouseEvents');
+                DownloadEvt.initEvent('click', true, false);
+                DownloadLink.dispatchEvent(DownloadEvt);
+              }
+              else if ( document.createEventObject )
+                DownloadLink.fireEvent('onclick');
+              else if ( typeof DownloadLink.onclick == 'function' )
+                DownloadLink.onclick();
 
-              DownloadEvt.initEvent('click', true, false);
-              DownloadLink.dispatchEvent(DownloadEvt);
-            }
-            else if ( document.createEventObject )
-              DownloadLink.fireEvent('onclick');
-            else if ( typeof DownloadLink.onclick == 'function' )
-              DownloadLink.onclick();
+              if ( blobUrl ) {
+                setTimeout(function() {
+                  window.URL.revokeObjectURL(blobUrl);
+                }, 3000);
+              }
 
-            if ( blobUrl ) {
               setTimeout(function() {
-                window.URL.revokeObjectURL(blobUrl);
-              }, 3000);
+                if ( DownloadLink.parentNode )
+                  DownloadLink.parentNode.removeChild(DownloadLink);
+              }, 500);
+            }
+          };
+
+          if ( window.Android && typeof window.Android.downloadBase64File === 'function' ) {
+            try {
+              var b64 = (typeof data == 'object') ? null : (header.toLowerCase().indexOf("base64,") >= 0 ? base64encode(data) : btoa(unescape(encodeURIComponent(data))));
+              if ( b64 ) {
+                window.Android.downloadBase64File(b64, filename || 'export.xls', 'application/vnd.ms-excel');
+                return;
+              }
+            } catch (ex) {}
+          }
+
+          // Mobile / Android WebView HTTP/HTTPS Server Assisted Download
+          // Resolves: "Download failed: Can only download HTTP/HTTPS URIs: data:..."
+          try {
+            var mimeType = 'application/vnd.ms-excel';
+            if ( header && header.indexOf(':') !== -1 ) {
+              var parts = header.replace(/^data:/i, '').split(';');
+              if ( parts[0] ) mimeType = parts[0];
             }
 
-            setTimeout(function() {
-              if ( DownloadLink.parentNode )
-                DownloadLink.parentNode.removeChild(DownloadLink);
-            }, 500);
+            var doServerPost = function(base64Payload) {
+              var exportUrl = (window.appBaseUrl || '') + '/export-table-data';
+              var csrfToken = '';
+              var metaCsrf = document.querySelector('meta[name="csrf-token"]');
+              if ( metaCsrf ) csrfToken = metaCsrf.getAttribute('content');
+
+              var xhr = new XMLHttpRequest();
+              xhr.open('POST', exportUrl, true);
+              xhr.setRequestHeader('Content-Type', 'application/json');
+              xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+              if ( csrfToken ) xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+              xhr.timeout = 25000;
+              xhr.onreadystatechange = function() {
+                if ( xhr.readyState === 4 ) {
+                  if ( xhr.status >= 200 && xhr.status < 300 ) {
+                    try {
+                      var resp = JSON.parse(xhr.responseText);
+                      if ( resp && resp.download_url ) {
+                        var dlLink = document.createElement('a');
+                        dlLink.style.display = 'none';
+                        dlLink.href = resp.download_url;
+                        dlLink.setAttribute('download', filename || 'tableExport.xls');
+                        document.body.appendChild(dlLink);
+                        dlLink.click();
+                        setTimeout(function() {
+                          if ( dlLink.parentNode ) dlLink.parentNode.removeChild(dlLink);
+                        }, 1000);
+                        return;
+                      }
+                    } catch (e) {}
+                  }
+                  clientFallbackDownload();
+                }
+              };
+              xhr.onerror = function() { clientFallbackDownload(); };
+              xhr.ontimeout = function() { clientFallbackDownload(); };
+              xhr.send(JSON.stringify({
+                filename: filename || 'tableExport.xls',
+                content: base64Payload,
+                is_base64: true,
+                mime_type: mimeType
+              }));
+            };
+
+            if ( typeof data === 'object' ) {
+              if ( typeof Blob !== 'undefined' && data instanceof Blob ) {
+                var reader = new FileReader();
+                reader.onloadend = function() {
+                  var resultStr = reader.result || '';
+                  var b64Blob = resultStr.indexOf(',') !== -1 ? resultStr.split(',')[1] : resultStr;
+                  doServerPost(b64Blob);
+                };
+                reader.onerror = function() { clientFallbackDownload(); };
+                reader.readAsDataURL(data);
+                return;
+              } else if ( typeof ArrayBuffer !== 'undefined' && data instanceof ArrayBuffer ) {
+                var bin = '';
+                var u8 = new Uint8Array(data);
+                for ( var i = 0; i < u8.byteLength; i++ ) {
+                  bin += String.fromCharCode(u8[i]);
+                }
+                doServerPost(window.btoa(bin));
+                return;
+              }
+            } else if ( typeof data === 'string' ) {
+              var b64Str = '';
+              if ( header.toLowerCase().indexOf("base64,") >= 0 ) {
+                b64Str = base64encode(data);
+              } else {
+                try {
+                  b64Str = btoa(unescape(encodeURIComponent(data)));
+                } catch (e) {
+                  b64Str = base64encode(data);
+                }
+              }
+              doServerPost(b64Str);
+              return;
+            }
+          } catch (serverErr) {
+            console.warn('Server export error, fallback to client-side', serverErr);
           }
+
+          clientFallbackDownload();
         }
       }
 

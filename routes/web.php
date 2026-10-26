@@ -98,3 +98,8 @@ Route::prefix('/')->group(__DIR__.'/website/websiteRoutes.php');
 // Payment Callback and Pending Routes
 Route::get('/payment-callback', [App\Http\Controllers\PaymentCallbackController::class, 'paymentCallback'])->name('payment.callback');
 Route::get('/payment-pending', [App\Http\Controllers\PaymentCallbackController::class, 'paymentPending'])->name('payment.pending');
+
+// Table Export Routes for HTTP/HTTPS downloads (WebView / Mobile compatible)
+Route::post('/export-table-data', [App\Http\Controllers\TableExportController::class, 'storeTempExport'])->name('table.export.store');
+Route::get('/export-table-download/{token}', [App\Http\Controllers\TableExportController::class, 'downloadTempExport'])->name('table.export.download');
+

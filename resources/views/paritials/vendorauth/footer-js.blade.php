@@ -295,10 +295,25 @@
     <script>
         $(document).on('click', '.btn-export-excel', function(e) {
             e.preventDefault();
-            var $card = $(this).closest('.card-body, .container-fluid, body');
+            var $btn = $(this);
+            var $card = $btn.closest('.card-body, .container-fluid, body');
             var $table = $card.find('table[data-toggle="table"]').length ? $card.find('table[data-toggle="table"]').first() : $card.find('table').first();
+            if ($table.find('tbody tr.no-records-found').length > 0 || ($table.find('tbody tr').length === 1 && $table.find('tbody tr').text().indexOf('No matching records found') !== -1)) {
+                alert('No records available to export.');
+                return false;
+            }
             if ($table.length && $.isFunction($.fn.tableExport)) {
-                $table.tableExport({ type: 'excel', escape: 'false' });
+                var originalHtml = $btn.html();
+                $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin me-1"></i> Exporting...');
+                setTimeout(function() {
+                    try {
+                        $table.tableExport({ type: 'excel', escape: 'false' });
+                    } finally {
+                        setTimeout(function() {
+                            $btn.prop('disabled', false).html(originalHtml);
+                        }, 2500);
+                    }
+                }, 50);
             }
         });
     </script>
