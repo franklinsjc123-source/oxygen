@@ -392,7 +392,5 @@
             }
         })();
     </script>
-    <script src="{{ asset('assets/js/data-table/custom-table-export.js') }}?v={{ file_exists(public_path('assets/js/data-table/custom-table-export.js')) ? filemtime(public_path('assets/js/data-table/custom-table-export.js')) : '1.0' }}"></script>
-    </body>
+    @include('paritials.common.table-export-js')
 
-    </html>
