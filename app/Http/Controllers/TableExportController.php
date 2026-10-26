@@ -62,6 +62,8 @@ class TableExportController extends Controller
 
         file_put_contents($tempDir . '/' . $token . '.meta', json_encode($meta));
         file_put_contents($tempDir . '/' . $token . '.data', $content);
+        @chmod($tempDir . '/' . $token . '.meta', 0666);
+        @chmod($tempDir . '/' . $token . '.data', 0666);
 
         $scheme = $request->secure() ? 'https://' : ($request->header('x-forwarded-proto') ? $request->header('x-forwarded-proto') . '://' : ($request->isSecure() ? 'https://' : 'http://'));
         $host = $request->header('host') ?: $request->getHttpHost();

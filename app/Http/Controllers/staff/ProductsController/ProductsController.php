@@ -1464,7 +1464,8 @@ class ProductsController extends Controller
     /*Export Product report*/
     public function get_Product_data()
     {
-        return Excel::download(new ProductList, 'productreport.xlsx');
+        $vendor_id = request('vendor_id');
+        return Excel::download(new ProductList($vendor_id), 'productreport.xlsx');
     }
     /*End*/
     

@@ -201,9 +201,9 @@
                         <div class="card">
                                 <div id="toolbar" class="mt-2 mb-2 ms-3">
                                     <div class="d-flex flex-wrap gap-2">
-                                        <button type="button" class="btn btn-success btn-sm btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;">
+                                        <a href="{{ route('vendorproduct.export') }}" class="btn btn-success btn-sm" style="background-color: #28a745; border-color: #28a745; color: #fff;">
                                             <i class="fa fa-file-excel-o me-1"></i> Export Excel
-                                        </button>
+                                        </a>
                                         <a href="{{ route('vendorproducts.crud.index') }}">
                                             <button type="button" class="btn btn-primary btn-sm">
                                                 <i class="fa fa-plus me-1"></i> Add Product
@@ -214,7 +214,7 @@
                                 
                                 <div id="secondary-toolbar" class="d-flex flex-wrap gap-2 mb-3 mt-3 ms-3">
                                     <div class="secondary-toolbar-row1">
-                                        <a href="#" class="btn btn-success btn-sm px-2" style="background-color: #28a745; border-color: #28a745; color: #fff;" data-toggle="tooltip" data-placement="top" title="Report" data-original-title="Report">
+                                        <a href="{{ route('vendorproduct.export') }}" class="btn btn-success btn-sm px-2" style="background-color: #28a745; border-color: #28a745; color: #fff;" data-toggle="tooltip" data-placement="top" title="Report" data-original-title="Report">
                                             <i class="fa fa-download me-1"></i> Download Report
                                         </a> 
                                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#importProductModal">

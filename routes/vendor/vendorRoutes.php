@@ -209,6 +209,7 @@ Route::post("products/details_update", [ProductsController::class, "updateProduc
 
 Route::post('product_import',[ProductsController::class, 'import_products'])->name('vendorproduct.import');
 Route::get('product_import_template',[ProductsController::class, 'download_import_template'])->name('vendorproduct.import.template');
+Route::get('product_export', [ProductsController::class, 'get_Product_data'])->name('vendorproduct.export');
 /*Vendar bulk data*/
 Route::post('vendorproductbulkdelete', [ProductsController::class, 'vendorproductbulkdelete'])->name('vendorproductbulkdelete');
 Route::post('vendorproductbulkactive', [ProductsController::class, 'vendorproductbulkactive'])->name('vendorproductbulkactive');

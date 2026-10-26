@@ -133,7 +133,7 @@
                             <div class="card-body">
 
                                 <div id="toolbar" class="d-flex align-items-center pincode-toolbar">
-                                    <button type="button" class="btn btn-success btn-export-excel me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+                                    <a href="{{ route('pincode.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a>
                                     <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
                                         data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus me-1"></i> Add Pincode</button>
                                     <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"

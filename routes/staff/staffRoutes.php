@@ -295,6 +295,12 @@ Route::post('/zonalsListingPost', [MasterController::class, 'zonalsListingPost']
 Route::post('zonalupdate/{id}/update', [MasterController::class, 'updatezonal'])->name('staffzonalupdate');
 Route::post('zonaldelete/{id}', [MasterController::class, 'deletezonal'])->name('staffzonaldelete');
 
+/*Export data*/
+Route::get('route_export', [MasterController::class, 'get_route_data'])->name('staffroute.export');
+Route::get('zone_export', [MasterController::class, 'get_zone_data'])->name('staffzone.export');
+Route::get('pincode_export', [MasterController::class, 'get_pincode_data'])->name('staffpincode.export');
+Route::get('staff_export', [\App\Http\Controllers\StaffController::class, 'get_staff_data'])->name('staffstaff.export');
+
 //marketting   
 Route::resource('whatsapp',  WhAppController::class,['names' => 'staffwhatsapp']);
 Route::resource('facebook',  FaceBookController::class,['names' => 'stafffacebook']);

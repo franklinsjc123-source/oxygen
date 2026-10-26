@@ -202,9 +202,9 @@
                             <div class="card-body">
                                 <div id="toolbar" class="mt-2 mb-2">
                                     <div class="d-flex flex-wrap gap-2">
-                                        <button type="button" class="btn btn-success btn-sm btn-export-excel" style="background-color: #28a745; border-color: #28a745; color: #fff;">
+                                        <a href="{{ route('product.export') }}" class="btn btn-success btn-sm" style="background-color: #28a745; border-color: #28a745; color: #fff;">
                                             <i class="fa fa-file-excel-o me-1"></i> Export Excel
-                                        </button>
+                                        </a>
                                         <a href="{{ route('products.crud.index') }}">
                                             <button type="button" class="btn btn-primary btn-sm">
                                                 <i class="fa fa-plus me-1"></i> Add Product

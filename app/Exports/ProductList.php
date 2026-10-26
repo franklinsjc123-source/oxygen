@@ -12,12 +12,19 @@ use Illuminate\Support\Facades\DB;
 
 class ProductList implements FromCollection, WithHeadings, WithStyles, WithColumnWidths
 {
+    protected $vendor_id;
+
+    public function __construct($vendor_id = null)
+    {
+        $this->vendor_id = $vendor_id;
+    }
+
     /**
      * @return \Illuminate\Support\Collection
      */
     public function collection()
     {
-        $products = DB::table('products')
+        $query = DB::table('products')
             ->leftJoin('category_main', 'products.category_main', '=', 'category_main.id')
             ->leftJoin('category', 'products.category', '=', 'category.id')
             ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
@@ -41,9 +48,16 @@ class ProductList implements FromCollection, WithHeadings, WithStyles, WithColum
                 'zonals.name as zone_name',
                 'products.created_at'
             )
-            ->where('products.flag', '!=', 2)
-            ->orderBy('products.id', 'asc')
-            ->get();
+            ->where('products.flag', '!=', 2);
+
+        if ($this->vendor_id) {
+            $query->where(function ($q) {
+                $q->where('products.login_id', $this->vendor_id)
+                  ->orWhere('products.vendor_id', $this->vendor_id);
+            });
+        }
+
+        $products = $query->orderBy('products.id', 'asc')->get();
 
         // Get all product details
         $productDetails = DB::table('products_details')

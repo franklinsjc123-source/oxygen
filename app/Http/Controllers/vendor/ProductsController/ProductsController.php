@@ -36,6 +36,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ImportProduct;
 use App\Exports\ProductTemplateExport;
+use App\Exports\ProductList;
 
 class ProductsController extends Controller
 {
@@ -1682,6 +1683,15 @@ public function store(Request $request, FlasherInterface $flasher)
         } catch (\Exception $e) {
             return response()->download(public_path('Bulk_Upload1.xlsx'), 'sample_upload.xlsx');
         }
+    }
+
+    /**
+     * Download product export report for vendor
+     */
+    public function get_Product_data()
+    {
+        $vendor_id = session()->get('login_id') ?? session()->get('userId') ?? (auth()->check() ? auth()->user()->login_id : null);
+        return Excel::download(new ProductList($vendor_id), 'productreport.xlsx');
     }
 }
 
