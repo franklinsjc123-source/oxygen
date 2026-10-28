@@ -119,9 +119,9 @@
                     }
                     #secondary-toolbar .secondary-toolbar-row1 > a,
                     #secondary-toolbar .secondary-toolbar-row1 > button {
-                        flex: 1 1 50% !important;
+                        flex: 1 1 auto !important;
                         min-width: 0 !important;
-                        width: 50% !important;
+                        width: auto !important;
                         white-space: nowrap !important;
                         font-size: 11.5px !important;
                         font-weight: 600 !important;
@@ -203,7 +203,7 @@
                                 <div id="toolbar" class="mt-2 mb-2">
                                     <div class="d-flex flex-wrap gap-2">
                                         <a href="{{ route('product.export') }}" class="btn btn-success btn-sm" style="background-color: #28a745; border-color: #28a745; color: #fff;">
-                                            <i class="fa fa-file-excel-o me-1"></i> Export Excel
+                                            <i class="fa fa-download me-1"></i> Download Report
                                         </a>
                                         <a href="{{ route('products.crud.index') }}">
                                             <button type="button" class="btn btn-primary btn-sm">
@@ -215,9 +215,6 @@
                                 
                                 <div id="secondary-toolbar" class="d-flex flex-wrap gap-2 mb-3">
                                     <div class="secondary-toolbar-row1">
-                                        <a href="{{ route('product.export') }}" class="btn btn-success btn-sm" style="background-color: #28a745; border-color: #28a745; color: #fff;">
-                                            <i class="fa fa-download me-1"></i> Download Report
-                                        </a>
                                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#importProductModal">
                                             <i class="fa fa-upload me-1"></i> Import Products
                                         </button>

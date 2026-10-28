@@ -97,7 +97,7 @@
                                     </button>
                                 </a>
                                 <a href="{{ route('product.export', ['vendor_id' => $vendorid]) }}" class="btn btn-success ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;">
-                                    <i class="fa fa-file-excel-o me-1"></i> Export Excel
+                                    <i class="fa fa-download me-1"></i> Download Report
                                 </a>
 
                                 <button class="btn border-warning text-warning delete">Delete</button>
