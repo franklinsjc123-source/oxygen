@@ -43,7 +43,7 @@
                            
                             <div class="card-body">
                                 
-                          <a href="{{ route('staffcoupon.index') }}" class="btn mb-4 btn-primary"><i class="fa fa-plus"></i> Add Coupon </a> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button> 
+                          <a href="{{ route('staffcoupon.index') }}" class="btn mb-4 btn-primary"><i class="fa fa-plus"></i> Add Coupon </a> <a href="{{ route('staffcoupon.export') }}" class="btn mb-4 btn-success ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-download me-1"></i> Download Report</a>
 
 
                             <div class="datatable-dashv1-list custom-datatable-overright">

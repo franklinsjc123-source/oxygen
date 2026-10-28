@@ -43,7 +43,7 @@
                             <div class="card-body">
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                     data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus"></i> Add
-                                    Gst</button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+                                    Gst</button> <a href="{{ route('staffgst.export') }}" class="btn btn-success ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-download me-1"></i> Download Report</a>
 
                                 <div class="btn-popup pull-right">
                                     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"

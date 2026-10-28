@@ -39,7 +39,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <div id="toolbar" class="d-flex align-items-center">
-                                    <button type="button" class="btn btn-success btn-export-excel me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+                                    <a href="{{ route('staffcollection.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-download me-1"></i> Download Report</a>
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                         data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus me-1"></i> Add
                                         <span class="d-none d-sm-inline">Product </span>Collection</button>

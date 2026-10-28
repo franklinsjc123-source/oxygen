@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\GeneralExportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BannerController;
@@ -303,6 +304,19 @@ Route::get('route_export', [MasterController::class, 'get_route_data'])->name('s
 Route::get('zone_export', [MasterController::class, 'get_zone_data'])->name('staffzone.export');
 Route::get('pincode_export', [MasterController::class, 'get_pincode_data'])->name('staffpincode.export');
 Route::get('staff_export', [\App\Http\Controllers\StaffController::class, 'get_staff_data'])->name('staffstaff.export');
+Route::get('color_export', [GeneralExportController::class, 'exportColor'])->name('staffcolor.export');
+Route::get('collection_export', [GeneralExportController::class, 'exportCollection'])->name('staffcollection.export');
+Route::get('coupon_export', [GeneralExportController::class, 'exportCoupon'])->name('staffcoupon.export');
+Route::get('vendor_export', [GeneralExportController::class, 'exportVendor'])->name('staffvendor.export');
+Route::get('order_export', [GeneralExportController::class, 'exportOrder'])->name('stafforder.export');
+Route::get('offer_export', [GeneralExportController::class, 'exportOffer'])->name('staffoffer.export');
+Route::get('department_export', [GeneralExportController::class, 'exportDepartment'])->name('staffdepartment.export');
+Route::get('designation_export', [GeneralExportController::class, 'exportDesignation'])->name('staffdesignation.export');
+Route::get('gst_export', [GeneralExportController::class, 'exportGst'])->name('staffgst.export');
+Route::get('package_export', [GeneralExportController::class, 'exportPackage'])->name('staffpackage.export');
+Route::get('activity_export', [GeneralExportController::class, 'exportActivity'])->name('staffactivity.export');
+Route::get('state_export', [GeneralExportController::class, 'exportState'])->name('staffstate.export');
+Route::get('city_export', [GeneralExportController::class, 'exportCity'])->name('staffcity.export');
 
 //marketting   
 Route::resource('whatsapp',  WhAppController::class,['names' => 'staffwhatsapp']);

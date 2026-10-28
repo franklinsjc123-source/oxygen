@@ -78,7 +78,7 @@
                                 
                                 <div id="toolbar" class="mt-2">
                                     <div class="d-inline-block">
-                                        <button type="button" class="btn btn-success btn-export-excel me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button> 
+                                        <a href="{{ route('vendoroffer.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-download me-1"></i> Download Report</a>
                                         <a href="{{ route('vendoroffer.main.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Offers </a>
                                     </div>
                                 </div>

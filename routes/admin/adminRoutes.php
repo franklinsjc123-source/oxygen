@@ -411,6 +411,19 @@ Route::get('pincode_export',[MasterController::class, 'get_pincode_data'])->name
 Route::get('category_main_export',[CategoryMainController::class, 'get_category_main_data'])->name('category_main.export');
 Route::get('category_export',[CategoryController::class, 'get_category_data'])->name('category.export');
 Route::get('category_sub_export',[CategorySubController::class, 'get_category_sub_data'])->name('category_sub.export');
+Route::get('color_export', [GeneralExportController::class, 'exportColor'])->name('color.export');
+Route::get('collection_export', [GeneralExportController::class, 'exportCollection'])->name('collection.export');
+Route::get('coupon_export', [GeneralExportController::class, 'exportCoupon'])->name('coupon.export');
+Route::get('vendor_export', [GeneralExportController::class, 'exportVendor'])->name('vendor.export');
+Route::get('order_export', [GeneralExportController::class, 'exportOrder'])->name('order.export');
+Route::get('offer_export', [GeneralExportController::class, 'exportOffer'])->name('offer.export');
+Route::get('department_export', [GeneralExportController::class, 'exportDepartment'])->name('department.export');
+Route::get('designation_export', [GeneralExportController::class, 'exportDesignation'])->name('designation.export');
+Route::get('gst_export', [GeneralExportController::class, 'exportGst'])->name('gst.export');
+Route::get('package_export', [GeneralExportController::class, 'exportPackage'])->name('package.export');
+Route::get('activity_export', [GeneralExportController::class, 'exportActivity'])->name('activity.export');
+Route::get('state_export', [GeneralExportController::class, 'exportState'])->name('state.export');
+Route::get('city_export', [GeneralExportController::class, 'exportCity'])->name('city.export');
 
 //vendor
 

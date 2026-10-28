@@ -13,6 +13,7 @@ use App\Http\Controllers\VendorController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\GeneralExportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
@@ -214,6 +215,11 @@ Route::post("products/details_update", [ProductsController::class, "updateProduc
 Route::post('product_import',[ProductsController::class, 'import_products'])->name('vendorproduct.import');
 Route::get('product_import_template',[ProductsController::class, 'download_import_template'])->name('vendorproduct.import.template');
 Route::get('product_export', [ProductsController::class, 'get_Product_data'])->name('vendorproduct.export');
+Route::get('order_export', [GeneralExportController::class, 'exportOrder'])->name('vendororder.export');
+Route::get('collection_export', [GeneralExportController::class, 'exportCollection'])->name('vendorcollection.export');
+Route::get('coupon_export', [GeneralExportController::class, 'exportCoupon'])->name('vendorcoupon.export');
+Route::get('offer_export', [GeneralExportController::class, 'exportOffer'])->name('vendoroffer.export');
+Route::get('vendor_export', [GeneralExportController::class, 'exportVendor'])->name('vendorvendor.export');
 /*Vendar bulk data*/
 Route::post('vendorproductbulkdelete', [ProductsController::class, 'vendorproductbulkdelete'])->name('vendorproductbulkdelete');
 Route::post('vendorproductbulkactive', [ProductsController::class, 'vendorproductbulkactive'])->name('vendorproductbulkactive');

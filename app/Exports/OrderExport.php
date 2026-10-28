@@ -12,8 +12,26 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class OrderExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
 {
+    protected $vendorId;
+
+    public function __construct($vendorId = null)
+    {
+        $this->vendorId = $vendorId;
+    }
+
     public function collection()
     {
+        if ($this->vendorId) {
+            return Ecom_Orders::join('ecom_order_product', 'ecom_order_product.order_id', '=', 'ecom_order_info.order_id')
+                ->join('products_details', 'products_details.id', '=', 'ecom_order_product.product_id')
+                ->join('products', 'products.product_id', '=', 'products_details.products_id')
+                ->where('products.logintype', '=', 'Vendor')
+                ->where('products.created_by', '=', $this->vendorId)
+                ->select('ecom_order_info.*')
+                ->distinct()
+                ->orderBy('ecom_order_info.id', 'desc')
+                ->get();
+        }
         return Ecom_Orders::orderBy('id', 'desc')->get();
     }
 
