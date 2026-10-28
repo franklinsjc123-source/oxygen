@@ -1,7 +1,11 @@
 <script>
 /**
- * Safe Table Export Handler for Oxygen
- * Handles Instant Blob Download (Desktop) and Server-assisted HTTP/HTTPS download (Android & Mobile WebViews)
+ * Table Export Handler for Oxygen
+ * Uses a hidden form POST to directly download the file.
+ * Works on Desktop, Mobile browsers, AND Android WebView
+ * because it's a plain HTTP form submission — no AJAX, no blob URLs, no iframe.
+ * When the server responds with Content-Disposition: attachment, the browser
+ * downloads the file without navigating away from the current page.
  */
 (function($) {
     'use strict';
@@ -12,8 +16,8 @@
         e.preventDefault();
         var $btn = $(this);
         var $card = $btn.closest('.card-body, .container-fluid, body');
-        var $table = $card.find('table[data-toggle="table"]').length 
-            ? $card.find('table[data-toggle="table"]').first() 
+        var $table = $card.find('table[data-toggle="table"]').length
+            ? $card.find('table[data-toggle="table"]').first()
             : ($card.find('table').length ? $card.find('table').first() : $('table').first());
 
         if (!$table.length || $table.find('tbody tr.no-records-found').length > 0 || ($table.find('tbody tr').length === 1 && $table.find('tbody tr').text().indexOf('No matching records found') !== -1)) {
@@ -28,7 +32,7 @@
         var pageTitle = $('.breadcrumb-item.active').text().trim() || $('h3').first().text().trim() || 'tableExport';
         var safeFilename = (pageTitle.replace(/[^a-zA-Z0-9_\-]/g, '_') || 'tableExport') + '.xls';
 
-        // Clone table and remove non-exportable UI elements (checkboxes, action buttons, modals, dropdowns)
+        // Clone table and remove non-exportable UI elements
         var $clone = $table.clone();
         $clone.find('thead th:first-child:has(input[type="checkbox"])').remove();
         $clone.find('tbody td:first-child:has(input[type="checkbox"])').remove();
@@ -64,106 +68,32 @@
             tableHtml +
             '<' + '/body><' + '/html>';
 
-        var downloadDirectBlob = function() {
-            try {
-                var blob = new Blob(['\ufeff' + excelDoc], { type: 'application/vnd.ms-excel;charset=utf-8;' });
-                if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-                    window.navigator.msSaveOrOpenBlob(blob, safeFilename);
-                    $btn.prop('disabled', false).html(originalHtml);
-                    return true;
-                }
-                var link = document.createElement('a');
-                if (link.download !== undefined) {
-                    var blobUrl = URL.createObjectURL(blob);
-                    link.setAttribute('href', blobUrl);
-                    link.setAttribute('download', safeFilename);
-                    link.style.visibility = 'hidden';
-                    document.body.appendChild(link);
-                    link.click();
-                    setTimeout(function() {
-                        if (link.parentNode) link.parentNode.removeChild(link);
-                        URL.revokeObjectURL(blobUrl);
-                        $btn.prop('disabled', false).html(originalHtml);
-                    }, 500);
-                    return true;
-                }
-            } catch (e) {
-                console.warn('Direct blob download error:', e);
-            }
-            return false;
-        };
+        // Build a hidden form and submit it directly.
+        // The server returns Content-Disposition: attachment so the browser downloads
+        // the file without leaving the current page. This works everywhere.
+        var exportUrl = '{{ route("table.export.direct", [], false) }}';
 
-        // Android Native Bridge if available
-        if (window.Android && typeof window.Android.downloadBase64File === 'function') {
-            try {
-                var b64 = btoa(unescape(encodeURIComponent(excelDoc)));
-                window.Android.downloadBase64File(b64, safeFilename, 'application/vnd.ms-excel');
-                $btn.prop('disabled', false).html(originalHtml);
-                return;
-            } catch (e) {}
-        }
-
-        // Detect Mobile / Android WebView
-        // Android DownloadManager strictly requires HTTP/HTTPS URLs and throws an error on blob: URIs
-        var ua = navigator.userAgent || '';
-        var isAndroid = /Android/i.test(ua);
-        var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
-        var isWebView = /(wv|\.0\.0\.0|Version\/[\d\.]+|MobileApp|ReactNative|Flutter|Cordova|MobileWeb)/i.test(ua) || window.Android !== undefined;
-        var mustUseHttpDownload = isAndroid || isMobile || isWebView;
-
-        // Desktop non-mobile browsers: instant direct Blob download
-        if (!mustUseHttpDownload && downloadDirectBlob()) {
-            return;
-        }
-
-        // Server-assisted HTTP/HTTPS download for Android, WebViews, and Mobile
-        var exportUrl = '{{ route("table.export.store", [], false) }}';
-        var csrfToken = $('meta[name="csrf-token"]').attr('content') || '{{ csrf_token() }}';
-
-        $.ajax({
-            url: exportUrl,
-            type: 'POST',
-            data: JSON.stringify({
-                filename: safeFilename,
-                content: excelDoc,
-                is_base64: false,
-                mime_type: 'application/vnd.ms-excel'
-            }),
-            contentType: 'application/json',
-            dataType: 'json',
-            headers: csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {},
-            timeout: 30000,
-            success: function(res) {
-                $btn.prop('disabled', false).html(originalHtml);
-                if (res && (res.full_download_url || res.download_url)) {
-                    // Guarantee absolute HTTP/HTTPS URL
-                    var downloadUri = res.full_download_url;
-                    if (!downloadUri || downloadUri.indexOf('http') !== 0) {
-                        var rel = res.download_url || '';
-                        if (rel.charAt(0) !== '/') rel = '/' + rel;
-                        downloadUri = window.location.origin + rel;
-                    }
-
-                    // In Android WebView, location.href initiates the download via DownloadListener
-                    window.location.href = downloadUri;
-                } else {
-                    if (!mustUseHttpDownload && downloadDirectBlob()) {
-                        return;
-                    }
-                    alert('Export failed. Please try again.');
-                }
-            },
-            error: function(xhr, status, error) {
-                $btn.prop('disabled', false).html(originalHtml);
-                console.warn('Server export error:', error);
-                // NEVER fall back to blob on Android/Mobile WebView because it will trigger
-                // Android OS "Download failed: Can only download HTTP/HTTPS URIs: blob:..."
-                if (!mustUseHttpDownload && downloadDirectBlob()) {
-                    return;
-                }
-                alert('Failed to generate export file. Please check connection and try again.');
-            }
+        var $form = $('<form></form>');
+        $form.attr({
+            method: 'POST',
+            action: exportUrl,
+            style: 'display:none;'
         });
+
+        // Content goes in a textarea to preserve HTML
+        var $contentField = $('<textarea name="content"></textarea>');
+        $contentField.val(excelDoc);
+        $form.append($contentField);
+        $form.append('<input type="hidden" name="filename" value="' + safeFilename + '">');
+
+        $('body').append($form);
+        $form.submit();
+
+        // Re-enable button and clean up form after download starts
+        setTimeout(function() {
+            $btn.prop('disabled', false).html(originalHtml);
+            $form.remove();
+        }, 2000);
     });
 })(jQuery);
 </script>

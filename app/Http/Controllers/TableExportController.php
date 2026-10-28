@@ -9,6 +9,33 @@ use Illuminate\Support\Facades\File;
 class TableExportController extends Controller
 {
     /**
+     * Direct download: receives table HTML via form POST and streams the .xls file back immediately.
+     * Works on all platforms including Android WebView because it's a plain HTTP form submission
+     * that returns the file as an attachment — no AJAX, no blob URLs, no redirect needed.
+     */
+    public function directDownload(Request $request)
+    {
+        $content = $request->input('content', '');
+        $filename = $request->input('filename', 'tableExport.xls');
+
+        // Sanitize filename
+        $filename = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $filename);
+        if (empty($filename) || !str_contains($filename, '.')) {
+            $filename = 'tableExport.xls';
+        }
+
+        // Add BOM for Excel UTF-8 compatibility
+        $bom = "\xEF\xBB\xBF";
+
+        return response($bom . $content)
+            ->header('Content-Type', 'application/vnd.ms-excel; charset=utf-8')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
+    }
+
+    /**
      * Store temporary table export data for HTTP/HTTPS download.
      * Crucial for mobile WebViews where Android DownloadManager can only download HTTP/HTTPS URLs.
      */

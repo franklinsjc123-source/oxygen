@@ -13,5 +13,6 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'export-table-data',
+        'export-table-direct',
     ];
 }
