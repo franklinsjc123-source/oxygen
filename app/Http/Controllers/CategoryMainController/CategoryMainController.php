@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Flasher\Prime\FlasherInterface;
 use Intervention\Image\ImageManagerStatic as Image;
 use DB;
+use App\Exports\CategoryMainExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CategoryMainController extends Controller
 {
@@ -212,5 +214,13 @@ class CategoryMainController extends Controller
             $flasher->addError('Something Error!!');
             return redirect()->route('category.main.index');
         }
+    }
+
+    /**
+     * Export Main Category report as Excel (.xlsx)
+     */
+    public function get_category_main_data()
+    {
+        return Excel::download(new CategoryMainExport, 'category_main_report.xlsx');
     }
 }

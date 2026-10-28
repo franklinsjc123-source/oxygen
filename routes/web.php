@@ -100,7 +100,7 @@ Route::get('/payment-callback', [App\Http\Controllers\PaymentCallbackController:
 Route::get('/payment-pending', [App\Http\Controllers\PaymentCallbackController::class, 'paymentPending'])->name('payment.pending');
 
 // Table Export Routes for HTTP/HTTPS downloads (WebView / Mobile compatible)
-Route::post('/export-table-direct', [App\Http\Controllers\TableExportController::class, 'directDownload'])->name('table.export.direct');
+Route::match(['get', 'post'], '/export-table-direct', [App\Http\Controllers\TableExportController::class, 'directDownload'])->name('table.export.direct');
 Route::post('/export-table-data', [App\Http\Controllers\TableExportController::class, 'storeTempExport'])->name('table.export.store');
-Route::get('/export-table-download/{token}', [App\Http\Controllers\TableExportController::class, 'downloadTempExport'])->name('table.export.download');
+Route::get('/export-table-download/{token}/{filename?}', [App\Http\Controllers\TableExportController::class, 'downloadTempExport'])->name('table.export.download');
 

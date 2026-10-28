@@ -405,6 +405,9 @@ Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('route_export',[MasterController::class, 'get_route_data'])->name('route.export');
 Route::get('zone_export',[MasterController::class, 'get_zone_data'])->name('zone.export');
 Route::get('pincode_export',[MasterController::class, 'get_pincode_data'])->name('pincode.export');
+Route::get('category_main_export',[CategoryMainController::class, 'get_category_main_data'])->name('category_main.export');
+Route::get('category_export',[CategoryController::class, 'get_category_data'])->name('category.export');
+Route::get('category_sub_export',[CategorySubController::class, 'get_category_sub_data'])->name('category_sub.export');
 
 //vendor
 

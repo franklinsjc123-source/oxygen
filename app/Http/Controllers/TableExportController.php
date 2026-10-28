@@ -9,9 +9,8 @@ use Illuminate\Support\Facades\File;
 class TableExportController extends Controller
 {
     /**
-     * Direct download: receives table HTML via form POST and streams the .xls file back immediately.
-     * Works on all platforms including Android WebView because it's a plain HTTP form submission
-     * that returns the file as an attachment — no AJAX, no blob URLs, no redirect needed.
+     * Direct download: receives table HTML and streams the Excel file back.
+     * Compatible with desktop and mobile WebView.
      */
     public function directDownload(Request $request)
     {
@@ -24,11 +23,15 @@ class TableExportController extends Controller
             $filename = 'tableExport.xls';
         }
 
+        if (empty($content)) {
+            return redirect()->back();
+        }
+
         // Add BOM for Excel UTF-8 compatibility
         $bom = "\xEF\xBB\xBF";
 
         return response($bom . $content)
-            ->header('Content-Type', 'application/vnd.ms-excel; charset=utf-8')
+            ->header('Content-Type', 'application/vnd.ms-excel')
             ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
             ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
             ->header('Pragma', 'no-cache')
@@ -37,7 +40,7 @@ class TableExportController extends Controller
 
     /**
      * Store temporary table export data for HTTP/HTTPS download.
-     * Crucial for mobile WebViews where Android DownloadManager can only download HTTP/HTTPS URLs.
+     * Mobile WebViews can download via Android DownloadManager from this URL.
      */
     public function storeTempExport(Request $request)
     {
@@ -92,8 +95,8 @@ class TableExportController extends Controller
         @chmod($tempDir . '/' . $token . '.meta', 0666);
         @chmod($tempDir . '/' . $token . '.data', 0666);
 
-        $downloadUrl = route('table.export.download', ['token' => $token]);
-        $relativeDownloadUrl = route('table.export.download', ['token' => $token], false);
+        $downloadUrl = route('table.export.download', ['token' => $token, 'filename' => $filename]);
+        $relativeDownloadUrl = route('table.export.download', ['token' => $token, 'filename' => $filename], false);
 
         return response()->json([
             'success' => true,
@@ -106,7 +109,7 @@ class TableExportController extends Controller
     /**
      * Download stored temporary export file via HTTP/HTTPS.
      */
-    public function downloadTempExport($token)
+    public function downloadTempExport($token, $filename = null)
     {
         if (!preg_match('/^[a-zA-Z0-9]{40}$/', $token)) {
             abort(404, 'Invalid export token.');
@@ -121,12 +124,12 @@ class TableExportController extends Controller
         }
 
         $meta = json_decode(file_get_contents($metaPath), true);
-        $filename = $meta['filename'] ?? 'tableExport.xls';
+        $finalFilename = $filename ?: ($meta['filename'] ?? 'tableExport.xls');
         $mimeType = $meta['mime_type'] ?? 'application/vnd.ms-excel';
 
-        return response()->download($dataPath, $filename, [
+        return response()->download($dataPath, $finalFilename, [
             'Content-Type' => $mimeType,
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Content-Disposition' => 'attachment; filename="' . $finalFilename . '"',
             'Cache-Control' => 'no-cache, no-store, must-revalidate',
             'Pragma' => 'no-cache',
             'Expires' => '0',

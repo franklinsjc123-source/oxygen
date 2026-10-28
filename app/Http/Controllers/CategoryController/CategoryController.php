@@ -13,6 +13,8 @@ use Intervention\Image\ImageManagerStatic as Image;
 use DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
+use App\Exports\CategoryExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class CategoryController extends Controller
@@ -271,5 +273,13 @@ class CategoryController extends Controller
     {
         $sub_category_data = CategorySub::where('category_id', $request->category_id)->get();
         return response()->json($sub_category_data);
+    }
+
+    /**
+     * Export Category report as Excel (.xlsx)
+     */
+    public function get_category_data()
+    {
+        return Excel::download(new CategoryExport, 'category_report.xlsx');
     }
 }
