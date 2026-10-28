@@ -101,12 +101,15 @@
             } catch (e) {}
         }
 
-        // Detect Android WebView
+        // Detect Mobile / Android WebView
         var ua = navigator.userAgent || '';
-        var isAndroidWebView = (ua.indexOf('Android') !== -1 && (ua.indexOf('Version/') !== -1 || ua.indexOf('wv') !== -1));
+        var isAndroid = /Android/i.test(ua);
+        var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+        var isWebView = /(wv|\.0\.0\.0|Version\/[\d\.]+|MobileApp|ReactNative|Flutter|Cordova|MobileWeb)/i.test(ua) || window.Android !== undefined;
+        var mustUseHttpDownload = isAndroid || isMobile || isWebView;
 
-        // Desktop and standard mobile browsers: instant Blob download
-        if (!isAndroidWebView && downloadDirectBlob()) {
+        // Desktop non-mobile browsers: instant Blob download
+        if (!mustUseHttpDownload && downloadDirectBlob()) {
             return;
         }
 
@@ -129,18 +132,28 @@
             timeout: 30000,
             success: function(res) {
                 $btn.prop('disabled', false).html(originalHtml);
-                if (res && res.download_url) {
-                    window.location.href = res.download_url;
-                } else if (!downloadDirectBlob()) {
+                if (res && (res.full_download_url || res.download_url)) {
+                    var downloadUri = res.full_download_url;
+                    if (!downloadUri || downloadUri.indexOf('http') !== 0) {
+                        var rel = res.download_url || '';
+                        if (rel.charAt(0) !== '/') rel = '/' + rel;
+                        downloadUri = window.location.origin + rel;
+                    }
+                    window.location.href = downloadUri;
+                } else {
+                    if (!mustUseHttpDownload && downloadDirectBlob()) {
+                        return;
+                    }
                     alert('Export failed. Please try again.');
                 }
             },
             error: function(xhr, status, error) {
-                console.warn('Server export error, falling back to direct download:', error);
-                if (!downloadDirectBlob()) {
-                    $btn.prop('disabled', false).html(originalHtml);
-                    alert('Failed to generate export file. Please check connection and try again.');
+                $btn.prop('disabled', false).html(originalHtml);
+                console.warn('Server export error:', error);
+                if (!mustUseHttpDownload && downloadDirectBlob()) {
+                    return;
                 }
+                alert('Failed to generate export file. Please check connection and try again.');
             }
         });
     });
