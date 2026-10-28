@@ -13,7 +13,8 @@ use Illuminate\Http\Request;
 use Intervention\Image\ImageManagerStatic as Image;
 use DB;
 use Illuminate\Support\Facades\Session;
-
+use App\Exports\CategoryExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CategoryController extends Controller
 {
@@ -284,5 +285,10 @@ class CategoryController extends Controller
         //  dd($sub_category_data);
         
         return response()->json($sub_category_data);
+    }
+
+    public function get_category_data()
+    {
+        return Excel::download(new CategoryExport, 'category_report.xlsx');
     }
 }

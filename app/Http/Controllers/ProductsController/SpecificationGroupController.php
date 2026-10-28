@@ -13,6 +13,8 @@ use App\Models\Vendor;
 use DB;
 use Session;
 use App\Models\vendor\vendorcreate;
+use App\Exports\SpecificationGroupExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SpecificationGroupController extends Controller
 {
@@ -188,5 +190,10 @@ class SpecificationGroupController extends Controller
             return response()->json(['success' => true, 'message' => 'Status updated successfully.']);
         }
         return response()->json(['success' => false, 'message' => 'Specification  not found.'], 404);
+    }
+
+    public function export()
+    {
+        return Excel::download(new SpecificationGroupExport, 'specification_groups_report.xlsx');
     }
 }

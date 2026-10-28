@@ -118,15 +118,18 @@ Route::post('orderbulkstatusupdate', [SalesController::class, 'stafforderbulksta
 
 
 // Category Main
+Route::get('category_main_export', [CategoryMainController::class, 'get_category_main_data'])->name('staffcategory.main.export');
 Route::resource('category_main', CategoryMainController::class, ['names' => 'staffcategory.main']);
 Route::post('category_main/update/{id}', [CategoryMainController::class, 'update'])->name('staffcategory_main_update');
 Route::post('category_main/changestatus', [CategoryMainController::class, 'changestatus'])->name('staffcategory.main.changestatus');
 //category
+Route::get('category_export', [CategoryController::class, 'get_category_data'])->name('staffcategory.export');
 Route::resource('category', CategoryController::class, ['names' => 'staffcategory']);
 Route::post('category/update/{id}', [CategoryController::class, 'update'])->name('staffcategory_update');
 Route::post('category/changestatus', [CategoryController::class, 'changestatus'])->name('staffcategory.changestatus');
 
 // Category Sub
+Route::get('category_sub_export', [CategorySubController::class, 'get_category_sub_data'])->name('staffcategory.sub.export');
 Route::resource('category_sub', CategorySubController::class, ['names' => 'staffcategory.sub']);
 Route::post('category_sub/update/{id}', [CategorySubController::class, 'update'])->name('subcategory_update');
 Route::post('category_sub/changestatus', [CategorySubController::class, 'changestatus'])->name('staffcategory.sub.changestatus');

@@ -128,6 +128,7 @@ Route::resource('category_sub', CategorySubController::class, ['names' => 'vendo
 
 Route::get('viewcategory_sub/{id}', [CategorySubController::class, 'viewcategory_sub']);
 Route::post('viewcategory_sub/mapping/update/{id}', [CategorySubController::class, 'updateMapping'])->name('vendorsubcategory_mapping_update');
+Route::get('specification_groups_export', [SpecificationGroupController::class, 'export'])->name('vendor.specification_groups.export');
 Route::resource('specification_groups', SpecificationGroupController::class);
 Route::post('specification_groups/status', [SpecificationGroupController::class, 'statusUpdate'])->name('vendor.specification_groups.status');
 Route::post('update_specification', [SpecificationGroupController::class, 'update_specification'])->name('update_specification');
@@ -135,12 +136,15 @@ Route::post('update_specification', [SpecificationGroupController::class, 'updat
 
 
 // Category Main
+Route::get('category_main_export', [CategoryMainController::class, 'get_category_main_data'])->name('vendorcategory.main.export');
 Route::resource('category_main', CategoryMainController::class, ['names' => 'vendorcategory.main']);
 Route::post('category_main/update/{id}', [CategoryMainController::class, 'update'])->name('vendorcategory_main_update');
 
 //category
+Route::get('category_export', [CategoryController::class, 'get_category_data'])->name('vendorcategory.export');
 Route::resource('category', CategoryController::class, ['names' => 'vendorcategory']);
 Route::post('category/update/{id}', [CategoryController::class, 'update'])->name('vendorcategory_update');
+Route::get('category_sub_export', [CategorySubController::class, 'get_category_sub_data'])->name('vendorcategory.sub.export');
 Route::post('subcategory/update/{id}', [CategorySubController::class, 'update'])->name('vendorsubcategory_update');
 
 

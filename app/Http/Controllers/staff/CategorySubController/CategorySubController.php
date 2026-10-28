@@ -13,6 +13,8 @@ use App\Models\Master\Specification\SpecificationGroup;
 use App\Models\Master\Attribute\AttributeGroup;
 use Intervention\Image\ImageManagerStatic as Image;
 use DB;
+use App\Exports\CategorySubExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CategorySubController extends Controller
 {
@@ -215,5 +217,10 @@ class CategorySubController extends Controller
             $flasher->addError('Something Error!');
             return redirect()->route('staffcategory.sub.index');
         }
+    }
+
+    public function get_category_sub_data()
+    {
+        return Excel::download(new CategorySubExport, 'subcategory_report.xlsx');
     }
 }

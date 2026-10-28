@@ -65,9 +65,10 @@
                     <div class="col-sm-12">
                         <div class="card">
                             <div class="card-body">
+                                <a href="{{ route('staffcategory.sub.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-download me-1"></i> Download Report</a>
                                 <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                     data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus"></i> Add
-                                    sub Category</button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+                                    sub Category</button>
 
                                     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
                                         aria-labelledby="exampleModalLabel" aria-hidden="true">

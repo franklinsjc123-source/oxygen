@@ -12,6 +12,9 @@ use App\Models\Category\CategoryMain;
 use App\Models\vendor\vendorcreate;
 use DB;
 use SESSION;
+use App\Exports\SpecificationGroupExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class SpecificationGroupController extends Controller
 {
     public function index()
@@ -250,5 +253,11 @@ class SpecificationGroupController extends Controller
             return response()->json(['success' => true, 'message' => 'Status updated successfully.']);
         }
         return response()->json(['success' => false, 'message' => 'Specification  not found.'], 404);
+    }
+
+    public function export()
+    {
+        $vendor_id = session()->get('login_id');
+        return Excel::download(new SpecificationGroupExport($vendor_id), 'specification_groups_report.xlsx');
     }
 }

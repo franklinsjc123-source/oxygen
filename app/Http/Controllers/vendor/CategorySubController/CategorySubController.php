@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 use Flasher\Prime\FlasherInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use App\Exports\CategorySubExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CategorySubController extends Controller
 {
@@ -302,5 +304,10 @@ class CategorySubController extends Controller
         //$flasher->addError('Something Error!');
         // return redirect()->route('category.sub.index');
         //}
+    }
+
+    public function get_category_sub_data()
+    {
+        return Excel::download(new CategorySubExport, 'subcategory_report.xlsx');
     }
 }

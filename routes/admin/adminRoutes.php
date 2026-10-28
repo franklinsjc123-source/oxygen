@@ -28,6 +28,7 @@ use App\Http\Controllers\VendorController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\GeneralExportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController\CategoryController;
@@ -110,9 +111,11 @@ Route::post('subcategory/update/{id}', [CategorySubController::class, 'update'])
 // Category Sub
 Route::resource('category_sub', CategorySubController::class, ['names' => 'category.sub']);
 Route::post('category_sub/changestatus', [CategorySubController::class, 'changestatus'])->name('category_sub.changestatus');
+Route::get('attribute_groups_export', [AttributeGroupController::class, 'export'])->name('attribute_groups.export');
 Route::resource('attribute_groups', AttributeGroupController::class);
 Route::post('attribute_groups/status', [AttributeGroupController::class, 'statusUpdate'])->name('attribute_groups.status');
 Route::post('update_attributevalues', [AttributeGroupController::class, 'update_attributes'])->name('update_attributevalues');
+Route::get('specification_groups_export', [SpecificationGroupController::class, 'export'])->name('specification_groups.admin.export');
 Route::resource('specification_groups', SpecificationGroupController::class,['names' => 'specification_groups.admin']);
 Route::post('specification_groups/status', [SpecificationGroupController::class, 'statusUpdate'])->name('specification_groups.status');
 Route::post('update_specification', [SpecificationGroupController::class, 'update_specification'])->name('update_specification');

@@ -12,6 +12,8 @@ use App\Models\Category\CategoryMain;
 use DB;
 use Session;
 use App\Models\vendor\vendorcreate;
+use App\Exports\AttributeGroupExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AttributeGroupController extends Controller
 {
@@ -180,5 +182,10 @@ class AttributeGroupController extends Controller
             return response()->json(['success' => true, 'message' => 'Status updated successfully.']);
         }
         return response()->json(['success' => false, 'message' => 'Attribute Group not found.'], 404);
+    }
+
+    public function export()
+    {
+        return Excel::download(new AttributeGroupExport, 'attribute_groups_report.xlsx');
     }
 }
