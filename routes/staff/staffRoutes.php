@@ -317,6 +317,8 @@ Route::get('package_export', [GeneralExportController::class, 'exportPackage'])-
 Route::get('activity_export', [GeneralExportController::class, 'exportActivity'])->name('staffactivity.export');
 Route::get('state_export', [GeneralExportController::class, 'exportState'])->name('staffstate.export');
 Route::get('city_export', [GeneralExportController::class, 'exportCity'])->name('staffcity.export');
+Route::get('attribute_export', [GeneralExportController::class, 'exportAttribute'])->name('staffattribute.export');
+Route::get('specification_export', [GeneralExportController::class, 'exportSpecification'])->name('staffspecification.export');
 
 //marketting   
 Route::resource('whatsapp',  WhAppController::class,['names' => 'staffwhatsapp']);

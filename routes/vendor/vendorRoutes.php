@@ -130,6 +130,7 @@ Route::resource('category_sub', CategorySubController::class, ['names' => 'vendo
 Route::get('viewcategory_sub/{id}', [CategorySubController::class, 'viewcategory_sub']);
 Route::post('viewcategory_sub/mapping/update/{id}', [CategorySubController::class, 'updateMapping'])->name('vendorsubcategory_mapping_update');
 Route::get('specification_groups_export', [SpecificationGroupController::class, 'export'])->name('vendor.specification_groups.export');
+Route::get('attribute_groups_export', [GeneralExportController::class, 'exportAttribute'])->name('vendor.attribute_groups.export');
 Route::resource('specification_groups', SpecificationGroupController::class);
 Route::post('specification_groups/status', [SpecificationGroupController::class, 'statusUpdate'])->name('vendor.specification_groups.status');
 Route::post('update_specification', [SpecificationGroupController::class, 'update_specification'])->name('update_specification');

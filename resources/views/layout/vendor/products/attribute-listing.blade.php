@@ -67,6 +67,11 @@
 
                             <div class="card-body">
 
+                                <div id="toolbar" class="d-flex align-items-center mb-3">
+                                    <a href="{{ route('vendor.attribute_groups.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-download me-1"></i> Download Report</a>
+                                    <a href="{{ route('vendorattribute.master.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Attribute Group</a>
+                                </div>
+
                                 <div class="datatable-dashv1-list custom-datatable-overright">
 
                                     <table class="table" id="table" data-click-to-select="true" data-sort-name="id"
