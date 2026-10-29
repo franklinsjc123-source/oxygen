@@ -50,7 +50,7 @@
 
                                     <div class="form-button text-center mt-4">
                                         <button type="submit" name="submit" class="btn w-100 mb-2" style="background: linear-gradient(90deg, #4834d4 0%, #686de0 100%); color: #fff; font-weight: 700; border-radius: 12px; padding: 12px; border: none; box-shadow: 0 4px 15px rgba(72, 52, 212, 0.4); text-transform: uppercase;">Login</button>
-                                        <button type="button" onclick="window.location.href='{{ url('/admin') }}';" class="btn w-100" style="background: #eee; color: #444; font-weight: 600; border-radius: 12px; padding: 10px; border: none; font-size: 0.9rem;">Cancel</button>
+                                        <button type="button" onclick="window.location.href='{{ url('/staff/login') }}'; window.location.reload();" class="btn w-100" style="background: #eee; color: #444; font-weight: 600; border-radius: 12px; padding: 10px; border: none; font-size: 0.9rem;">Cancel</button>
                                     </div>
                                 </form>
                             </div>
