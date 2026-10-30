@@ -1451,10 +1451,10 @@
 
             <!-- Modal Footer -->
             <div class="modal-footer" style="padding: 10px 18px; background: #ffffff; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                <button type="button" onclick="copyMapCoordinates('{{ $mapLat }}, {{ $mapLng }}')" class="btn btn-sm" style="background: #f8fafc; border: 1px solid #cbd5e1; color: #475569; font-weight: 600; font-size: 12px; border-radius: 8px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 5px;">
+                <button type="button" onclick="copyMapCoordinates('{{ $mapLat }}, {{ $mapLng }}')" class="btn btn-sm desktop-only-copy-btn" style="background: #f8fafc; border: 1px solid #cbd5e1; color: #475569; font-weight: 600; font-size: 12px; border-radius: 8px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 5px;">
                     <i class="fa fa-copy"></i> <span id="copyCoordsText">Copy Coordinates</span>
                 </button>
-                <div style="display: flex; gap: 8px;">
+                <div style="display: flex; gap: 8px; margin-left: auto;">
                     <a href="https://maps.google.com/?q={{ $mapLat }},{{ $mapLng }}" target="_blank" class="btn btn-sm desktop-only-map-link" style="background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; font-weight: 600; font-size: 12px; border-radius: 8px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 5px; text-decoration: none;">
                         <i class="fa fa-external-link"></i> Google Maps
                     </a>
@@ -1485,6 +1485,12 @@
     .pricing-card:hover {
         transform: translateY(-6px) !important;
     }
+    @media (max-width: 768px) {
+        .desktop-only-copy-btn,
+        .desktop-only-map-link {
+            display: none !important;
+        }
+    }
 </style>
 @push('scripts')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -1501,7 +1507,7 @@
         var modalEl = document.getElementById('vendorMapModal');
         if (!modalEl) return;
         
-        // Hide external link in mobile app/webview so it never breaks navigation
+        // Hide external link and copy coords in mobile app/webview
         var isWebViewOrMobile = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent) || 
                                 /\bwv\b/.test(navigator.userAgent) || 
                                 /Android.*Version\/[0-9.]+/i.test(navigator.userAgent) ||
@@ -1509,6 +1515,10 @@
         var extLink = modalEl.querySelector('.desktop-only-map-link');
         if (extLink && isWebViewOrMobile) {
             extLink.style.display = 'none';
+        }
+        var copyBtn = modalEl.querySelector('.desktop-only-copy-btn');
+        if (copyBtn && isWebViewOrMobile) {
+            copyBtn.style.display = 'none';
         }
 
         if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
