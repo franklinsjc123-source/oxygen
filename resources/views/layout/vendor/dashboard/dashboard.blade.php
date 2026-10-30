@@ -1450,18 +1450,13 @@
             </div>
 
             <!-- Modal Footer -->
-            <div class="modal-footer" style="padding: 10px 18px; background: #ffffff; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                <button type="button" onclick="copyMapCoordinates('{{ $mapLat }}, {{ $mapLng }}')" class="btn btn-sm desktop-only-copy-btn" style="background: #f8fafc; border: 1px solid #cbd5e1; color: #475569; font-weight: 600; font-size: 12px; border-radius: 8px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 5px;">
-                    <i class="fa fa-copy"></i> <span id="copyCoordsText">Copy Coordinates</span>
+            <div class="modal-footer" style="padding: 10px 18px; background: #ffffff; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
+                <a href="https://maps.google.com/?q={{ $mapLat }},{{ $mapLng }}" target="_blank" class="btn btn-sm desktop-only-map-link" style="background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; font-weight: 600; font-size: 12px; border-radius: 8px; padding: 6px 14px; display: inline-flex; align-items: center; gap: 5px; text-decoration: none;">
+                    <i class="fa fa-external-link"></i> Google Maps
+                </a>
+                <button type="button" onclick="closeVendorMapModal();" data-bs-dismiss="modal" class="btn btn-sm" style="background: #183543; color: #ffffff; font-weight: 600; font-size: 12px; border-radius: 8px; padding: 6px 16px; border: none;">
+                    Close
                 </button>
-                <div style="display: flex; gap: 8px; margin-left: auto;">
-                    <a href="https://maps.google.com/?q={{ $mapLat }},{{ $mapLng }}" target="_blank" class="btn btn-sm desktop-only-map-link" style="background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; font-weight: 600; font-size: 12px; border-radius: 8px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 5px; text-decoration: none;">
-                        <i class="fa fa-external-link"></i> Google Maps
-                    </a>
-                    <button type="button" onclick="closeVendorMapModal();" data-bs-dismiss="modal" class="btn btn-sm" style="background: #183543; color: #ffffff; font-weight: 600; font-size: 12px; border-radius: 8px; padding: 6px 16px; border: none;">
-                        Close
-                    </button>
-                </div>
             </div>
 
         </div>
@@ -1486,7 +1481,6 @@
         transform: translateY(-6px) !important;
     }
     @media (max-width: 768px) {
-        .desktop-only-copy-btn,
         .desktop-only-map-link {
             display: none !important;
         }
@@ -1507,7 +1501,7 @@
         var modalEl = document.getElementById('vendorMapModal');
         if (!modalEl) return;
         
-        // Hide external link and copy coords in mobile app/webview
+        // Hide external link in mobile app/webview so it never breaks navigation
         var isWebViewOrMobile = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent) || 
                                 /\bwv\b/.test(navigator.userAgent) || 
                                 /Android.*Version\/[0-9.]+/i.test(navigator.userAgent) ||
@@ -1515,10 +1509,6 @@
         var extLink = modalEl.querySelector('.desktop-only-map-link');
         if (extLink && isWebViewOrMobile) {
             extLink.style.display = 'none';
-        }
-        var copyBtn = modalEl.querySelector('.desktop-only-copy-btn');
-        if (copyBtn && isWebViewOrMobile) {
-            copyBtn.style.display = 'none';
         }
 
         if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
@@ -1598,30 +1588,6 @@
             });
         }
     });
-
-    function copyMapCoordinates(coords) {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(coords).then(function() {
-                var txt = document.getElementById('copyCoordsText');
-                if (txt) {
-                    txt.textContent = 'Copied!';
-                    setTimeout(function() { txt.textContent = 'Copy Coordinates'; }, 2000);
-                }
-            });
-        } else {
-            var tempInput = document.createElement('input');
-            tempInput.value = coords;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-            var txt = document.getElementById('copyCoordsText');
-            if (txt) {
-                txt.textContent = 'Copied!';
-                setTimeout(function() { txt.textContent = 'Copy Coordinates'; }, 2000);
-            }
-        }
-    }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
