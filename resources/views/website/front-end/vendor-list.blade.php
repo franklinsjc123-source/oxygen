@@ -1380,15 +1380,101 @@
     <a id="scroll-top" class="scroll-top" href="#top" title="Top" role="button"> <i class="w-icon-angle-up"></i> <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"> <circle id="progress-indicator" fill="transparent" stroke="#000000" stroke-miterlimit="10" cx="35" cy="35" r="34" style="stroke-dasharray: 16.4198, 400;"></circle> </svg> </a>
     <!-- End of Scroll Top -->
 
+    <style>
+        /* Modern Mobile Menu Header & Close Button */
+        .mobile-menu-wrapper > .mobile-menu-close {
+            display: none !important;
+        }
+
+        .mobile-menu-container {
+            padding-top: 1.4rem !important;
+        }
+
+        .mobile-menu-header {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding-bottom: 12px !important;
+            margin-bottom: 12px !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+        }
+
+        .mobile-menu-header-title {
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            color: #ffffff !important;
+            letter-spacing: 0.8px !important;
+            text-transform: uppercase !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            user-select: none !important;
+        }
+
+        .mobile-menu-container .mobile-menu-close {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 30px !important;
+            height: 30px !important;
+            min-width: 30px !important;
+            min-height: 30px !important;
+            max-width: 30px !important;
+            max-height: 30px !important;
+            border-radius: 50% !important;
+            background: rgba(255, 255, 255, 0.12) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: #ffffff !important;
+            position: static !important;
+            opacity: 1 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            cursor: pointer !important;
+            text-decoration: none !important;
+            transition: all 0.2s ease-in-out !important;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) !important;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+
+        .mobile-menu-container .mobile-menu-close:hover,
+        .mobile-menu-container .mobile-menu-close:active {
+            background: rgba(255, 255, 255, 0.25) !important;
+            border-color: rgba(255, 255, 255, 0.35) !important;
+            color: #ffffff !important;
+            transform: scale(1.06) rotate(90deg) !important;
+        }
+
+        .mobile-menu-container .mobile-menu-close svg {
+            width: 13px !important;
+            height: 13px !important;
+            stroke: #ffffff !important;
+            stroke-width: 2.4 !important;
+            display: block !important;
+            pointer-events: none !important;
+        }
+
+        .mobile-menu-container .mobile-menu-close i {
+            font-size: 13px !important;
+            line-height: 1 !important;
+            color: #ffffff !important;
+        }
+    </style>
+
     <!-- Start of Mobile Menu -->
     <div class="mobile-menu-wrapper">
         <div class="mobile-menu-overlay"></div>
         <!-- End of .mobile-menu-overlay -->
 
-        <a href="#" class="mobile-menu-close"><i class="close-icon"></i></a>
-        <!-- End of .mobile-menu-close -->
-
         <div class="mobile-menu-container scrollable">
+            <div class="mobile-menu-header">
+                <span class="mobile-menu-header-title">Menu</span>
+                <a href="#" class="mobile-menu-close" aria-label="Close menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </a>
+            </div>
             <form action="#" method="get" class="input-wrapper">
                 <input type="text" class="form-control" name="search" autocomplete="off"
                     placeholder="Search" required />
