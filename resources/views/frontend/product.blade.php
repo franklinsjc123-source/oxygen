@@ -277,6 +277,258 @@
                 font-size: 12px;
             }
         }
+
+        /* ── Product Page Sidebar (Mobile & Desktop Enhancements) ── */
+        .product-sidebar .sidebar-content {
+            background: #ffffff !important;
+            padding: 20px !important;
+        }
+
+        .product-sidebar-mobile-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 0 12px 0;
+            margin-bottom: 14px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .product-sidebar-mobile-header span {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+        .product-sidebar-mobile-header .sidebar-close-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            color: #64748b;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .product-sidebar-mobile-header .sidebar-close-btn:hover {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        /* Modern Product Card in Sidebar */
+        .product-sidebar .product-widget {
+            display: flex !important;
+            align-items: center !important;
+            padding: 10px !important;
+            margin-bottom: 12px !important;
+            background: #ffffff !important;
+            border: 1px solid #f1f5f9 !important;
+            border-radius: 12px !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+            transition: all 0.2s ease !important;
+        }
+        .product-sidebar .product-widget:hover {
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06) !important;
+            transform: translateY(-1px);
+        }
+
+        .product-sidebar .product-widget .product-media {
+            flex: 0 0 76px !important;
+            width: 76px !important;
+            max-width: 76px !important;
+            min-width: 76px !important;
+            height: 86px !important;
+            margin: 0 12px 0 0 !important;
+            padding: 0 !important;
+            border-radius: 8px !important;
+            overflow: hidden !important;
+            position: relative !important;
+            background: #f8fafc !important;
+        }
+        .product-sidebar .product-widget .product-media a {
+            display: block !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
+        .product-sidebar .product-widget .product-media img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            border-radius: 8px !important;
+        }
+
+        /* Ribbon inside small sidebar media */
+        .product-sidebar .product-widget .product-media div[style*="clip-path"] {
+            transform: scale(0.85);
+            transform-origin: top left;
+        }
+
+        .product-sidebar .product-widget .product-details {
+            flex: 1 !important;
+            min-width: 0 !important;
+            padding: 0 !important;
+        }
+
+        .product-sidebar .product-widget .product-name {
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            color: #1e293b !important;
+            line-height: 1.35 !important;
+            margin-bottom: 4px !important;
+            display: -webkit-box !important;
+            -webkit-line-clamp: 2 !important;
+            -webkit-box-orient: vertical !important;
+            overflow: hidden !important;
+        }
+        .product-sidebar .product-widget .product-name a {
+            color: #1e293b !important;
+            text-decoration: none !important;
+        }
+        .product-sidebar .product-widget .product-name a:hover {
+            color: #0088dd !important;
+        }
+
+        .product-sidebar .product-widget .ratings-container {
+            display: flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            margin-bottom: 5px !important;
+            line-height: 1 !important;
+            flex-wrap: nowrap !important;
+        }
+        .product-sidebar .product-widget .ratings-full {
+            font-size: 11px !important;
+            letter-spacing: 1px !important;
+        }
+        .product-sidebar .product-widget .ratings-container a {
+            font-size: 11px !important;
+            color: #0284c7 !important;
+            white-space: nowrap !important;
+            line-height: 1 !important;
+        }
+
+        .product-sidebar .product-widget .product-pa-wrapper {
+            display: flex !important;
+            align-items: baseline !important;
+            flex-wrap: wrap !important;
+            gap: 6px !important;
+            margin-top: 3px !important;
+        }
+        .product-sidebar .product-widget .product-price {
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            color: #0f172a !important;
+            text-overflow: clip !important;
+            overflow: visible !important;
+            white-space: nowrap !important;
+            display: inline-block !important;
+            line-height: 1.2 !important;
+        }
+        .product-sidebar .product-widget .product-price-discount {
+            font-size: 12px !important;
+            color: #94a3b8 !important;
+            text-decoration: line-through !important;
+            white-space: nowrap !important;
+            line-height: 1.2 !important;
+            margin: 0 !important;
+        }
+        .product-sidebar .product-widget .product-offer-percentage {
+            font-size: 11px !important;
+            font-weight: 700 !important;
+            color: #16a34a !important;
+            white-space: nowrap !important;
+            background: #dcfce7 !important;
+            padding: 2px 6px !important;
+            border-radius: 4px !important;
+            line-height: 1.2 !important;
+            margin: 0 !important;
+        }
+
+        /* Widget Title Link Header */
+        .product-sidebar .widget-products .title-link-wrapper {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            margin-bottom: 12px !important;
+            padding-bottom: 8px !important;
+            border-bottom: 2px solid #0088dd !important;
+        }
+        .product-sidebar .widget-products .title-link {
+            font-size: 15px !important;
+            font-weight: 700 !important;
+            color: #0f172a !important;
+            margin: 0 !important;
+            text-transform: capitalize !important;
+            letter-spacing: -0.2px !important;
+        }
+        .product-sidebar .widget-products .title-link::after {
+            display: none !important;
+        }
+        .product-sidebar .widget-products .swiper-button-prev,
+        .product-sidebar .widget-products .swiper-button-next {
+            width: 26px !important;
+            height: 26px !important;
+            border-radius: 50% !important;
+            background: #f1f5f9 !important;
+            color: #475569 !important;
+            font-size: 11px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transition: all 0.2s ease !important;
+            border: 1px solid #e2e8f0 !important;
+        }
+        .product-sidebar .widget-products .swiper-button-prev:hover,
+        .product-sidebar .widget-products .swiper-button-next:hover {
+            background: #0088dd !important;
+            border-color: #0088dd !important;
+            color: #ffffff !important;
+        }
+
+        /* Widget Banner styling */
+        .product-sidebar .widget-banner {
+            margin-bottom: 18px !important;
+            border-radius: 12px !important;
+            overflow: hidden !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06) !important;
+        }
+        .product-sidebar .widget-banner .banner {
+            border-radius: 12px !important;
+            overflow: hidden !important;
+        }
+        .product-sidebar .widget-banner img {
+            border-radius: 12px !important;
+            width: 100% !important;
+            height: auto !important;
+            object-fit: cover !important;
+        }
+
+        /* Mobile specific adjustments for Product Sidebar Drawer */
+        @media (max-width: 991px) {
+            .product-sidebar.right-sidebar .sidebar-content {
+                width: 320px !important;
+                max-width: 86vw !important;
+                padding: 16px 14px 30px !important;
+                box-shadow: -4px 0 25px rgba(0, 0, 0, 0.15) !important;
+            }
+            .right-sidebar .sidebar-close {
+                display: none !important;
+            }
+            .right-sidebar .sidebar-toggle {
+                border-radius: 8px 0 0 8px !important;
+                background: #0088dd !important;
+                color: #ffffff !important;
+                box-shadow: -2px 2px 10px rgba(0, 136, 221, 0.3) !important;
+                width: 34px !important;
+                height: 42px !important;
+                align-items: center !important;
+                justify-content: center !important;
+                font-size: 14px !important;
+            }
+        }
     </style>
      <!-- Start of Breadcrumb -->
      <nav class="breadcrumb-nav container">
@@ -1494,6 +1746,12 @@
                      <a href="#" class="sidebar-toggle d-flex d-lg-none"><i class="fas fa-chevron-left"></i></a>
                      <div class="sidebar-content scrollable">
                          <div class="sticky-sidebar">
+                             <div class="product-sidebar-mobile-header d-flex d-lg-none">
+                                 <span>More Options</span>
+                                 <a href="#" class="sidebar-close-btn" onclick="jQuery('body').removeClass('right-sidebar-active'); return false;">
+                                     <i class="fas fa-times"></i>
+                                 </a>
+                             </div>
                              <div class="widget widget-icon-box mb-6">
                                  <div class="icon-box icon-box-side">
                                      <span class="icon-box-icon text-dark">
@@ -1613,7 +1871,7 @@
                                                      </figure>
                                                      <div class="product-details">
                                                          <h4 class="product-name">
-                                                             <a href="#">{{ $product->product_name }}</a>
+                                                             <a href="{{ url('products/' . ($product->slug ?? $product->id)) }}">{{ $product->product_name }}</a>
                                                          </h4>
                                                         
                                                             <div class="ratings-container">
@@ -1693,7 +1951,7 @@
                                                      </figure>
                                                      <div class="product-details">
                                                          <h4 class="product-name">
-                                                             <a href="#">{{ $product->product_name }}</a>
+                                                             <a href="{{ url('products/' . ($product->slug ?? $product->id)) }}">{{ $product->product_name }}</a>
                                                          </h4>
                                                         
                                                             <div class="ratings-container">
