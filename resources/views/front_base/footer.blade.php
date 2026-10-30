@@ -290,10 +290,6 @@
            <i class="w-icon-home" style="margin-bottom: 5px;"></i>
            <p style="font-size: 9px; margin: 4px 0 0 0; line-height: 1;">Home</p>
        </a>
-       <a href="{{ url('shops') }}" class="sticky-link {{ request()->is('shops') || request()->is('shops/*') ? 'active' : '' }}">
-           <i class="w-icon-vendor-store" style="margin-bottom: 5px;"></i>
-           <p style="font-size: 9px; margin: 4px 0 0 0; line-height: 1;">Shops</p>
-       </a>
        <a href="{{ url('offers') }}" class="sticky-link {{ request()->is('offers') || request()->is('offers/*') ? 'active' : '' }}">
            <i class="w-icon-sale" style="margin-bottom: 5px;"></i>
            <p style="font-size: 9px; margin: 4px 0 0 0; line-height: 1;">Offer</p>
@@ -301,6 +297,10 @@
        <a href="{{ url('categories') }}" class="sticky-link {{ request()->is('categories') ? 'active' : '' }}">
            <i class="w-icon-grid" style="margin-bottom: 5px;"></i>
            <p style="font-size: 9px; margin: 4px 0 0 0; line-height: 1;">Category</p>
+       </a>
+       <a href="{{ url('shops') }}" class="sticky-link {{ request()->is('shops') || request()->is('shops/*') ? 'active' : '' }}">
+           <i class="w-icon-vendor-store" style="margin-bottom: 5px;"></i>
+           <p style="font-size: 9px; margin: 4px 0 0 0; line-height: 1;">Shops</p>
        </a>
 
        <?php  
