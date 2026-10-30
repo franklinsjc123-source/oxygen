@@ -118,6 +118,18 @@
                 e.preventDefault();
                 var logoutUrl = $(this).attr('href');
                 
+                // Hide side menu in mobile view immediately
+                $('#admMobileMenu, .admin-mmenu-wrap').removeClass('open');
+                if (typeof window.closeAdminMobileMenu === 'function') {
+                    window.closeAdminMobileMenu();
+                }
+                if (typeof window.hideSidebarMenu === 'function') {
+                    window.hideSidebarMenu();
+                }
+                $('.page-sidebar').addClass('open');
+                $('.page-main-header').addClass('open');
+                $('body').removeClass('sidebar-open');
+
                 function performLogoutConfirm() {
                     Swal.fire({
                         title: 'Are you sure?',
@@ -151,6 +163,9 @@
             // Inject global SweetAlert2 styling for size consistency
             const style = document.createElement('style');
             style.innerHTML = `
+                .swal2-container {
+                    z-index: 1000000 !important;
+                }
                 .swal2-popup {
                     font-size: 1.6rem !important;
                 }

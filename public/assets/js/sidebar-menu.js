@@ -131,12 +131,19 @@
             hideSidebar();
         });
 
-        // Close sidebar after selecting a leaf menu item in mobile
-        $(document).on('click', '.page-sidebar .sidebar-menu a', function() {
+        // EXPOSE hide function globally
+        window.hideSidebarMenu = function() {
+            hideSidebar();
+            $('#admMobileMenu, .admin-mmenu-wrap').removeClass('open');
+        };
+
+        // Close sidebar after selecting a leaf menu item or logout in mobile
+        $(document).on('click', '.page-sidebar .sidebar-menu a, .admin-mmenu a:not(.has-sub > a), a[href*="logout"], a[href*="customer-logout"], a[href*="userlogout"]', function() {
             if (!isMobileSidebar()) return;
-            var hasSubmenu = $(this).next('.sidebar-submenu').length > 0;
+            var hasSubmenu = $(this).next('.sidebar-submenu, .sub').length > 0;
             if (!hasSubmenu) {
                 hideSidebar();
+                $('#admMobileMenu, .admin-mmenu-wrap').removeClass('open');
             }
         });
 

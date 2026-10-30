@@ -302,9 +302,21 @@
     var w=document.getElementById('admMobileMenu'),bg=document.getElementById('admMobileBg'),x=document.getElementById('admMobileX'),btn=document.getElementById('mobile-drawer-toggle');
     if(!w||!btn)return;
     function openM(){w.classList.add('open')}function closeM(){w.classList.remove('open')}
+    window.closeAdminMobileMenu = closeM;
     bg.addEventListener('click',closeM);bg.addEventListener('touchstart',function(e){e.preventDefault();closeM()},{passive:false});
     x.addEventListener('click',function(e){e.preventDefault();closeM()});x.addEventListener('touchstart',function(e){e.preventDefault();closeM()},{passive:false});
-    w.addEventListener('click',function(e){var t=e.target.closest('.has-sub > a');if(!t)return;e.preventDefault();t.parentElement.classList.toggle('opened')});
+    w.addEventListener('click',function(e){
+        var t=e.target.closest('.has-sub > a');
+        if(t){
+            e.preventDefault();
+            t.parentElement.classList.toggle('opened');
+            return;
+        }
+        var leaf=e.target.closest('a');
+        if(leaf){
+            closeM();
+        }
+    });
     var tf=false;
     btn.addEventListener('touchstart',function(e){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();tf=true;openM();setTimeout(function(){tf=false},800)},true);
     btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();if(tf)return;openM()},true);

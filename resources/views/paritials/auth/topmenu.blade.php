@@ -212,6 +212,7 @@
 
     function openM() { w.classList.add('open'); }
     function closeM() { w.classList.remove('open'); }
+    window.closeAdminMobileMenu = closeM;
 
     // Overlay & close
     bg.addEventListener('click', closeM);
@@ -219,12 +220,19 @@
     x.addEventListener('click', function(e){ e.preventDefault(); closeM(); });
     x.addEventListener('touchstart', function(e){ e.preventDefault(); closeM(); }, {passive:false});
 
-    // Submenu accordion
+    // Submenu accordion & close on leaf links
     w.addEventListener('click', function(e){
         var t = e.target.closest('.has-sub > a');
-        if(!t) return;
-        e.preventDefault();
-        t.parentElement.classList.toggle('opened');
+        if(t) {
+            e.preventDefault();
+            t.parentElement.classList.toggle('opened');
+            return;
+        }
+
+        var leaf = e.target.closest('a');
+        if(leaf) {
+            closeM();
+        }
     });
 
     // Toggle button — capture phase to block sidebar-menu.js
