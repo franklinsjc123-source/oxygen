@@ -40,6 +40,14 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="card">
+<style>
+/* Align breadcrumb cleanly under header on mobile without extra page body gap */
+@media (max-width: 991px) {
+    .page-wrapper .page-body-wrapper .page-header {
+        margin-top: 28px !important;
+    }
+}
+</style>
 
                             <div class="card-body">
 

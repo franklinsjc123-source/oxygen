@@ -41,6 +41,13 @@
                     <div class="col-sm-12">
                         <div class="card">
 <style>
+/* Align breadcrumb cleanly under header on mobile without extra page body gap */
+@media (max-width: 991px) {
+    .page-wrapper .page-body-wrapper .page-header {
+        margin-top: 28px !important;
+    }
+}
+
 /* Pincode Toolbar: 2x2 Grid on Mobile, Balanced Flex on Desktop */
 @media (max-width: 767.98px) {
     .fixed-table-toolbar .bs-bars {
