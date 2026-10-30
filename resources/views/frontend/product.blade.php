@@ -300,21 +300,28 @@
             letter-spacing: 0.6px;
         }
         .product-sidebar-mobile-header .sidebar-close-btn {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: #f1f5f9;
-            color: #64748b;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            text-decoration: none;
-            transition: all 0.2s ease;
+            width: 32px !important;
+            height: 32px !important;
+            border-radius: 50% !important;
+            background: #fee2e2 !important;
+            color: #ef4444 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 14px !important;
+            text-decoration: none !important;
+            transition: all 0.2s ease !important;
+            cursor: pointer !important;
+            border: none !important;
+            outline: none !important;
+            padding: 0 !important;
+            position: relative !important;
+            z-index: 100 !important;
         }
         .product-sidebar-mobile-header .sidebar-close-btn:hover {
-            background: #fee2e2;
-            color: #ef4444;
+            background: #fecaca !important;
+            color: #dc2626 !important;
+            transform: scale(1.08);
         }
 
         /* Modern Product Card in Sidebar */
@@ -1748,7 +1755,7 @@
                          <div class="sticky-sidebar">
                              <div class="product-sidebar-mobile-header d-flex d-lg-none">
                                  <span>More Options</span>
-                                 <a href="#" class="sidebar-close-btn" onclick="jQuery('body').removeClass('right-sidebar-active'); return false;">
+                                 <a href="javascript:void(0)" class="sidebar-close-btn" onclick="closeProductSidebar(event); return false;" aria-label="Close Sidebar">
                                      <i class="fas fa-times"></i>
                                  </a>
                              </div>
@@ -1992,6 +1999,24 @@
  </main>
  <!-- End of Main -->
  <script>
+      window.closeProductSidebar = function (e) {
+          if (e) {
+              if (typeof e.preventDefault === 'function') e.preventDefault();
+              if (typeof e.stopPropagation === 'function') e.stopPropagation();
+          }
+          jQuery('body').removeClass('sidebar-active right-sidebar-active');
+          jQuery('.sidebar, .right-sidebar, .product-sidebar').addClass('closed');
+          var $overlay = jQuery('.sidebar-overlay');
+          if ($overlay.length) {
+              $overlay.trigger('click');
+          }
+          return false;
+      };
+
+      jQuery(document).on('click', '.sidebar-close-btn', function (e) {
+          window.closeProductSidebar(e);
+      });
+
           const productVariants = @json($prouctsList['variants'] ?? []);
      const colorImageMap = @json($colorImageMap ?? []);
      const detailImageBase = '{{ asset("assets/images/products/detail") }}/';
