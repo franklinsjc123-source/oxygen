@@ -540,9 +540,24 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
             color: #0088dd;
         }
 
-        .sideCart .btn-close {
+        .sideCart .cart-header .btn-close {
+            position: relative;
+            right: auto;
+            top: auto;
+            font-size: 14px;
+            color: #64748b;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0;
+            width: auto;
+            height: auto;
+            box-shadow: none;
+        }
+
+        .sideCart .product-cart .btn-close {
             position: absolute;
-            right: -5px;
+            right: 10px;
             top: 10px;
             font-size: 14px;
             color: #aaa;
