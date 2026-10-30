@@ -273,9 +273,6 @@
                     <?php if ($size !== '') { ?>
                         <span>Size: <?= $size ?></span>
                     <?php } ?>
-                    <?php if ($size !== '' && $color !== '') { ?>
-                        <span>|</span>
-                    <?php } ?>
                     <?php if ($color !== '') { ?>
                         <span>Color: <?= $color ?></span>
                     <?php } ?>
