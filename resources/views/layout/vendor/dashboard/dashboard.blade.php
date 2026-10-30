@@ -622,6 +622,24 @@
 
 
     <div class="container-fluid dashboard-container">
+        @php
+            $mapLat = null;
+            $mapLng = null;
+            if (!empty($vendorDetails->latitude) && !empty($vendorDetails->longitude)) {
+                $mapLat = (float) $vendorDetails->latitude;
+                $mapLng = (float) $vendorDetails->longitude;
+            } elseif (!empty($vendorDetails->location_map)) {
+                if (preg_match('/(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)/', $vendorDetails->location_map, $matches)) {
+                    $mapLat = (float) $matches[1];
+                    $mapLng = (float) $matches[2];
+                }
+            }
+            if (empty($mapLat) || empty($mapLng)) {
+                $mapLat = 13.0827;
+                $mapLng = 80.2707;
+            }
+            $shopAddressFull = trim(($vendorDetails->address ?? '') . (!empty($vendorDetails->address1) ? ', ' . $vendorDetails->address1 : '') . (!empty($vendorDetails->city) ? ', ' . $vendorDetails->city : '') . (!empty($vendorDetails->state) ? ', ' . $vendorDetails->state : '') . (!empty($vendorDetails->pincode) ? ' - ' . $vendorDetails->pincode : ''));
+        @endphp
         <!-- Top Section: Profile Card (Left) and Metrics Grid (Right) -->
         <div class="row">
             <!-- 1. Profile / Business Card -->
@@ -661,15 +679,9 @@
                                         @if(!empty($vendorDetails->pincode)) - {{ $vendorDetails->pincode }} @endif
                                     </span>
                                 </p>
-                                @if(!empty($vendorDetails->location_map))
+                                @if(!empty($vendorDetails->location_map) || !empty($vendorDetails->latitude))
                                     <div class="desktop-address" style="margin-top: 4px;">
-                                        @php
-                                            $mapLink = $vendorDetails->location_map;
-                                            if (!preg_match('/^https?:\/\//', $mapLink)) {
-                                                $mapLink = 'https://maps.google.com/?q=' . urlencode($mapLink);
-                                            }
-                                        @endphp
-                                        <a href="{{ $mapLink }}" target="_blank" style="background-color: rgba(255, 255, 255, 0.15); color: #ffffff; padding: 2px 8px; border-radius: 4px; font-size: 10.5px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 3px;">
+                                        <a href="javascript:void(0);" onclick="openVendorMapModal();" style="background-color: rgba(255, 255, 255, 0.15); color: #ffffff; padding: 2px 8px; border-radius: 4px; font-size: 10.5px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 3px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='rgba(255,255,255,0.25)'" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.15)'">
                                             <i class="fa fa-map-marker" style="font-size: 9.5px;"></i> Map View
                                         </a>
                                     </div>
@@ -705,15 +717,9 @@
                                     @if(!empty($vendorDetails->pincode)) - {{ $vendorDetails->pincode }} @endif
                                 </span>
                             </p>
-                            @if(!empty($vendorDetails->location_map))
+                            @if(!empty($vendorDetails->location_map) || !empty($vendorDetails->latitude))
                                 <div style="margin-top: 8px; padding-left: 16px;">
-                                    @php
-                                        $mapLink = $vendorDetails->location_map;
-                                        if (!preg_match('/^https?:\/\//', $mapLink)) {
-                                            $mapLink = 'https://maps.google.com/?q=' . urlencode($mapLink);
-                                        }
-                                    @endphp
-                                    <a href="{{ $mapLink }}" target="_blank" style="background-color: rgba(255, 255, 255, 0.15); color: #ffffff; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                                    <a href="javascript:void(0);" onclick="openVendorMapModal();" style="background-color: rgba(255, 255, 255, 0.15); color: #ffffff; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='rgba(255,255,255,0.25)'" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.15)'">
                                         <i class="fa fa-map-marker" style="font-size: 10px;"></i> Map View
                                     </a>
                                 </div>
@@ -1409,6 +1415,59 @@
     </div>
 </div>
 
+<!-- Vendor Map Modal (Mobile & WebView Compatible) -->
+<div class="modal fade" id="vendorMapModal" tabindex="-1" aria-labelledby="vendorMapModalLabel" aria-hidden="true" style="backdrop-filter: blur(8px); background-color: rgba(15, 23, 42, 0.4); z-index: 1060;">
+    <div class="modal-dialog modal-lg modal-dialog-centered" style="max-width: 700px; margin: 15px auto;">
+        <div class="modal-content" style="border-radius: 18px; border: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden; background: #ffffff;">
+            
+            <!-- Modal Header -->
+            <div class="modal-header" style="background: linear-gradient(135deg, #183543 0%, #0f2430 100%); border: none; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(255, 255, 255, 0.15); display: flex; align-items: center; justify-content: center; color: #ff5e57; font-size: 18px;">
+                        <i class="fa fa-map-marker"></i>
+                    </div>
+                    <div>
+                        <h4 class="modal-title text-white" id="vendorMapModalLabel" style="font-weight: 700; font-size: 16px; margin: 0; line-height: 1.2;">{{ $vendorDetails->shop_name ?? 'Shop Location' }}</h4>
+                        <span style="font-size: 11px; color: rgba(255, 255, 255, 0.75); display: inline-flex; align-items: center; gap: 4px; margin-top: 2px;">
+                            <i class="fa fa-crosshairs" style="font-size: 10px;"></i> {{ $mapLat }}, {{ $mapLng }}
+                        </span>
+                    </div>
+                </div>
+                <button type="button" onclick="closeVendorMapModal();" data-bs-dismiss="modal" aria-label="Close" style="border: none; background: rgba(255, 255, 255, 0.1); color: #ffffff; width: 32px; height: 32px; border-radius: 50%; font-size: 22px; font-weight: 300; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; outline: none;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">&times;</button>
+            </div>
+
+            <!-- Address Banner -->
+            <div style="background-color: #f8fafc; padding: 10px 18px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: flex-start; gap: 8px;">
+                <i class="fa fa-map-pin" style="color: #64748b; margin-top: 3px; font-size: 13px; flex-shrink: 0;"></i>
+                <div style="font-size: 12.5px; color: #334155; line-height: 1.4; word-break: break-word;">
+                    <strong>Address:</strong> {{ $shopAddressFull ?: 'Address not specified' }}
+                </div>
+            </div>
+
+            <!-- Modal Body (Leaflet Map) -->
+            <div class="modal-body" style="padding: 0; position: relative; background: #e2e8f0;">
+                <div id="vendorLeafletMap" style="width: 100%; height: 360px; z-index: 1;"></div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer" style="padding: 10px 18px; background: #ffffff; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <button type="button" onclick="copyMapCoordinates('{{ $mapLat }}, {{ $mapLng }}')" class="btn btn-sm" style="background: #f8fafc; border: 1px solid #cbd5e1; color: #475569; font-weight: 600; font-size: 12px; border-radius: 8px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 5px;">
+                    <i class="fa fa-copy"></i> <span id="copyCoordsText">Copy Coordinates</span>
+                </button>
+                <div style="display: flex; gap: 8px;">
+                    <a href="https://maps.google.com/?q={{ $mapLat }},{{ $mapLng }}" target="_blank" class="btn btn-sm desktop-only-map-link" style="background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; font-weight: 600; font-size: 12px; border-radius: 8px; padding: 6px 12px; display: inline-flex; align-items: center; gap: 5px; text-decoration: none;">
+                        <i class="fa fa-external-link"></i> Google Maps
+                    </a>
+                    <button type="button" onclick="closeVendorMapModal();" data-bs-dismiss="modal" class="btn btn-sm" style="background: #183543; color: #ffffff; font-weight: 600; font-size: 12px; border-radius: 8px; padding: 6px 16px; border: none;">
+                        Close
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <style>
     .pricing-features-scroll::-webkit-scrollbar {
         width: 5px;
@@ -1428,6 +1487,132 @@
     }
 </style>
 @push('scripts')
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    var vendorLeafletMapInstance = null;
+    var vendorMarkerInstance = null;
+    var vendorMapLat = {{ $mapLat }};
+    var vendorMapLng = {{ $mapLng }};
+    var vendorShopName = {!! json_encode($vendorDetails->shop_name ?? 'Shop Location') !!};
+    var vendorShopAddr = {!! json_encode($shopAddressFull) !!};
+
+    function openVendorMapModal() {
+        var modalEl = document.getElementById('vendorMapModal');
+        if (!modalEl) return;
+        
+        // Hide external link in mobile app/webview so it never breaks navigation
+        var isWebViewOrMobile = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent) || 
+                                /\bwv\b/.test(navigator.userAgent) || 
+                                /Android.*Version\/[0-9.]+/i.test(navigator.userAgent) ||
+                                (window.innerWidth <= 768);
+        var extLink = modalEl.querySelector('.desktop-only-map-link');
+        if (extLink && isWebViewOrMobile) {
+            extLink.style.display = 'none';
+        }
+
+        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            var modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modalInstance.show();
+        } else if (typeof $ !== 'undefined' && typeof $(modalEl).modal === 'function') {
+            $(modalEl).modal('show');
+        } else {
+            modalEl.classList.add('show');
+            modalEl.style.display = 'block';
+        }
+
+        setTimeout(function() {
+            initOrUpdateVendorMap();
+        }, 350);
+    }
+
+    function closeVendorMapModal() {
+        var modalEl = document.getElementById('vendorMapModal');
+        if (!modalEl) return;
+        
+        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            var modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if (modalInstance) modalInstance.hide();
+        } else if (typeof $ !== 'undefined' && typeof $(modalEl).modal === 'function') {
+            $(modalEl).modal('hide');
+        } else {
+            modalEl.classList.remove('show');
+            modalEl.style.display = 'none';
+        }
+    }
+
+    function initOrUpdateVendorMap() {
+        var mapContainer = document.getElementById('vendorLeafletMap');
+        if (!mapContainer || typeof L === 'undefined') return;
+
+        if (!vendorLeafletMapInstance) {
+            vendorLeafletMapInstance = L.map('vendorLeafletMap', {
+                center: [vendorMapLat, vendorMapLng],
+                zoom: 15,
+                zoomControl: true
+            });
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(vendorLeafletMapInstance);
+
+            var customIcon = L.divIcon({
+                className: 'custom-vendor-pin',
+                html: '<div style="background-color: #ff5e57; width: 32px; height: 32px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2px solid #ffffff;"><i class="fa fa-shopping-bag" style="transform: rotate(45deg); color: #ffffff; font-size: 13px;"></i></div>',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32]
+            });
+
+            vendorMarkerInstance = L.marker([vendorMapLat, vendorMapLng], { icon: customIcon }).addTo(vendorLeafletMapInstance);
+            vendorMarkerInstance.bindPopup('<div style="text-align: center; padding: 4px;"><strong>' + vendorShopName + '</strong><br><span style="font-size: 11px; color: #64748b;">' + vendorShopAddr + '</span></div>').openPopup();
+        } else {
+            vendorLeafletMapInstance.setView([vendorMapLat, vendorMapLng], 15);
+            if (vendorMarkerInstance) {
+                vendorMarkerInstance.setLatLng([vendorMapLat, vendorMapLng]);
+            }
+            vendorLeafletMapInstance.invalidateSize();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var modalEl = document.getElementById('vendorMapModal');
+        if (modalEl) {
+            modalEl.addEventListener('shown.bs.modal', function () {
+                if (vendorLeafletMapInstance) {
+                    vendorLeafletMapInstance.invalidateSize();
+                } else {
+                    initOrUpdateVendorMap();
+                }
+            });
+        }
+    });
+
+    function copyMapCoordinates(coords) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(coords).then(function() {
+                var txt = document.getElementById('copyCoordsText');
+                if (txt) {
+                    txt.textContent = 'Copied!';
+                    setTimeout(function() { txt.textContent = 'Copy Coordinates'; }, 2000);
+                }
+            });
+        } else {
+            var tempInput = document.createElement('input');
+            tempInput.value = coords;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            var txt = document.getElementById('copyCoordsText');
+            if (txt) {
+                txt.textContent = 'Copied!';
+                setTimeout(function() { txt.textContent = 'Copy Coordinates'; }, 2000);
+            }
+        }
+    }
+</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
