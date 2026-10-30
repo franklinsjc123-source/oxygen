@@ -1285,7 +1285,7 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                             <?php  }else{ ?>
 
                             <a href="javascript:void(0)" onclick="showLoginPopup()"
-                                class="compare label-down link d-xs-show">
+                                class="login-btn-trigger compare label-down link d-xs-show" data-is-login="true">
                                 <i class="w-icon-account" style="font-size:28px;"></i>
                                 <span class="compare-label d-lg-show mt-1">Login</span>
                             </a>

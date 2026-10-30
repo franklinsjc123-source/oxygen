@@ -313,7 +313,7 @@
            <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 65px; margin: 4px auto 0; font-size: 9px; line-height: 1;">{{ $displayName }}</p>
        </a>
        <?php  }else{ ?>
-       <a onclick="showLoginPopup()" class="sticky-link">
+       <a onclick="showLoginPopup()" class="sticky-link login-btn-trigger" data-is-login="true">
            <i class="w-icon-account" style="margin-bottom: 5px;"></i>
            <p style="font-size: 9px; margin: 4px 0 0 0; line-height: 1;">Login</p>
        </a>
@@ -559,7 +559,7 @@
 
             <!-- Title & Subtitle -->
             <h3 class="pincode-modal-title">Where should we deliver?</h3>
-            <p class="pincode-modal-subtitle">Enter your pincode to check delivery availability</p>
+            <p class="pincode-modal-subtitle" id="pincodeModalSubtitle">Enter your pincode to check delivery availability</p>
 
             <!-- Form with Pill Input -->
             <form id="pincodeForm" class="pincode-form" novalidate data-no-validate="true">
@@ -1670,6 +1670,19 @@
 
 
         function showLoginPopup(redirectUrl = null, prefillMobile = null) {
+            var currentPincode = '{{ session()->get('pincode') ?? 0 }}';
+            if (currentPincode == 0) {
+                sessionStorage.setItem('pincode_for_login', 'true');
+                if (redirectUrl) {
+                    sessionStorage.setItem('post_login_redirect', redirectUrl);
+                }
+                if (prefillMobile) {
+                    sessionStorage.setItem('prefill_login_mobile', prefillMobile);
+                }
+                showPicodePopup('login');
+                return;
+            }
+
             if (redirectUrl) {
                 sessionStorage.setItem('post_login_redirect', redirectUrl);
             } else {
@@ -1711,6 +1724,12 @@
             if (serverLoginMobile || serverLoginRedirect) {
                 showLoginPopup(serverLoginRedirect || null, serverLoginMobile || null);
             }
+            if (sessionStorage.getItem('open_login_after_pincode') === 'true') {
+                sessionStorage.removeItem('open_login_after_pincode');
+                setTimeout(function() {
+                    showLoginPopup();
+                }, 400);
+            }
         });
 
        $('#pincodeForm').on('submit', function(e) {
@@ -1736,6 +1755,16 @@
                             document.removeEventListener('click', window._pincodeClickHandler, true);
                             window._pincodeClickHandler = null;
                         }
+
+                        var isForLogin = sessionStorage.getItem('pincode_for_login') === 'true';
+                        sessionStorage.removeItem('pincode_for_login');
+
+                        if (isForLogin) {
+                            sessionStorage.setItem('open_login_after_pincode', 'true');
+                            location.reload();
+                            return;
+                        }
+
                         var targetUrl = sessionStorage.getItem('pincode_redirect_url');
                         if (targetUrl) {
                             sessionStorage.removeItem('pincode_redirect_url');
@@ -1799,36 +1828,57 @@
                     if (e.target.closest('.newsletter-popup') || e.target.closest('.mfp-wrap') || e.target.closest('.mfp-bg')) {
                         return;
                     }
-                    
-                    // Capture redirect destination URL if they clicked on a link
-                    var link = e.target.closest('a');
-                    if (link && link.getAttribute('href') && !link.getAttribute('href').startsWith('javascript:') && link.getAttribute('href') !== '#') {
-                        sessionStorage.setItem('pincode_redirect_url', link.href);
-                    } else {
-                        sessionStorage.removeItem('pincode_redirect_url');
+
+                    // Check if clicked element is a login trigger
+                    var loginTarget = e.target.closest('[onclick*="showLoginPopup"], [data-is-login="true"], .login, .sign-in, .register, a[href*="login"], .login-btn-trigger, .sticky-link[onclick*="showLoginPopup"]');
+                    if (!loginTarget) {
+                        var linkEl = e.target.closest('a, button, div, span');
+                        if (linkEl) {
+                            var text = (linkEl.innerText || '').trim().toLowerCase();
+                            if (text === 'login' || text === 'sign in' || text === 'sign in / register' || text === 'register') {
+                                loginTarget = linkEl;
+                            }
+                        }
                     }
-                    
+
+                    if (loginTarget) {
+                        sessionStorage.setItem('pincode_for_login', 'true');
+                        sessionStorage.removeItem('pincode_redirect_url');
+                    } else {
+                        sessionStorage.removeItem('pincode_for_login');
+                        // Capture redirect destination URL if they clicked on a link
+                        var link = e.target.closest('a');
+                        if (link && link.getAttribute('href') && !link.getAttribute('href').startsWith('javascript:') && link.getAttribute('href') !== '#') {
+                            sessionStorage.setItem('pincode_redirect_url', link.href);
+                        } else {
+                            sessionStorage.removeItem('pincode_redirect_url');
+                        }
+                    }
+
                     e.preventDefault();
                     e.stopPropagation();
-                    
+
                     // Temporarily remove listener (will be re-added on popup close)
                     document.removeEventListener('click', window._pincodeClickHandler, true);
-                    
+
                     // Close active megamenu dropdowns
                     $('.megamenu').hide();
                     setTimeout(function() {
                         $('.megamenu').css('display', '');
                     }, 500);
 
-                    showPicodePopup();
+                    showPicodePopup(loginTarget ? 'login' : null);
                 };
                 document.addEventListener('click', window._pincodeClickHandler, true);
             }
        });
 
        // popup function
-       function showPicodePopup() {
+       function showPicodePopup(mode = null) {
+           var isLogin = (mode === 'login') || (sessionStorage.getItem('pincode_for_login') === 'true');
+           var subtitleText = isLogin ? 'Enter pincode and then continue login' : 'Enter your pincode to check delivery availability';
 
+           $('#pincodeModalSubtitle, .pincode-modal-subtitle').text(subtitleText);
 
            Wolmart.popup({
                items: {
@@ -1843,6 +1893,8 @@
                            overflow: 'hidden',
                            height: '100%'
                        });
+                       // Ensure text inside open popup is updated
+                       $('#pincodeModalSubtitle, .pincode-modal-subtitle').text(subtitleText);
                    },
                    close: function() {
                        // UNLOCK scroll
@@ -1850,6 +1902,11 @@
                            overflow: '',
                            height: ''
                        });
+
+                       // Reset login state and message back to default on close
+                       sessionStorage.removeItem('pincode_for_login');
+                       $('#pincodeModalSubtitle, .pincode-modal-subtitle').text('Enter your pincode to check delivery availability');
+
                        // Re-attach the click listener so popup shows again on next click
                        // (only if pincode is still not set)
                        if (window._pincodeClickHandler) {
