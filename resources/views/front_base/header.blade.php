@@ -241,6 +241,18 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                 padding-top: 102px !important;
             }
 
+            /* Hide mobile sticky header ONLY when any drawer, sidebar, filter, or cart is active */
+            body.cart-opened .mobile-sticky-container,
+            body.sidebar-active .mobile-sticky-container,
+            body.right-sidebar-active .mobile-sticky-container,
+            body.mmenu-active .mobile-sticky-container,
+            body:has(.cart-dropdown.opened) .mobile-sticky-container {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+            }
+
             .header-middle .container {
                 display: flex;
                 align-items: center;
@@ -454,6 +466,7 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
         }
 
         /* Side cart: make items scroll and keep actions visible at bottom */
+        .cart-dropdown.cart-offcanvas .dropdown-box,
         .cart-dropdown.cart-offcanvas .dropdown-box.sideCart {
             display: flex;
             flex-direction: column;
@@ -462,6 +475,36 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
             width: 350px;
             padding: 0;
             background: #fff;
+            z-index: 100010 !important;
+        }
+
+        .cart-dropdown.cart-offcanvas .cart-overlay {
+            z-index: 100005 !important;
+        }
+
+        .sidebar-overlay,
+        .right-sidebar .sidebar-overlay {
+            z-index: 100005 !important;
+        }
+
+        .sidebar-content,
+        .right-sidebar .sidebar-content {
+            z-index: 100010 !important;
+        }
+
+        /* Hide desktop sticky header when any drawer, sidebar, or cart is active */
+        body.cart-opened .header-bottom.fixed,
+        body.sidebar-active .header-bottom.fixed,
+        body.right-sidebar-active .header-bottom.fixed,
+        body.mmenu-active .header-bottom.fixed,
+        body.desktop-header-sticky.cart-opened .header-bottom,
+        body.desktop-header-sticky.sidebar-active .header-bottom,
+        body.desktop-header-sticky.right-sidebar-active .header-bottom,
+        body.desktop-header-sticky.mmenu-active .header-bottom {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
         }
 
         .sideCart .cart-header {
@@ -1160,6 +1203,33 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                     $('.header-bottom-placeholder').hide();
                 }
             });
+
+            // Ensure cart-opened is removed on initial page load
+            $('body').removeClass('cart-opened');
+
+            // Automatically track cart opened states on body to toggle header visibility
+            $(document).on('click', '.cart-toggle, [onclick*="showSideCart"]', function() {
+                $('body').addClass('cart-opened');
+            });
+            $(document).on('click', '.cart-offcanvas .cart-overlay, .cart-offcanvas .cart-header, .cart-offcanvas .cart-close, .cart-offcanvas .btn-close', function() {
+                $('body').removeClass('cart-opened');
+            });
+
+            var cartDropdownEl = document.querySelector('.cart-dropdown');
+            if (cartDropdownEl && window.MutationObserver) {
+                var cartObserver = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(m) {
+                        if (m.attributeName === 'class') {
+                            if (cartDropdownEl.classList.contains('opened')) {
+                                $('body').addClass('cart-opened');
+                            } else {
+                                $('body').removeClass('cart-opened');
+                            }
+                        }
+                    });
+                });
+                cartObserver.observe(cartDropdownEl, { attributes: true });
+            }
         });
     </script>
 
