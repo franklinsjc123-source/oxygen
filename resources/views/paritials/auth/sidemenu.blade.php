@@ -31,7 +31,79 @@
         @foreach($main_menus as $mainmenu)
             @php
                 $sub_menus = App\Models\Submenus::where('main_menu', '=', $mainmenu->id)->get();
-                if ($mainmenu->title == 'Banners') {
+                $mmTitle = strtolower(trim($mainmenu->title));
+
+                if ($mainmenu->id == 2 || $mmTitle == 'category') {
+                    $attrSpec = App\Models\Submenus::withoutGlobalScopes()
+                        ->where(function($q) {
+                            $q->whereIn('link', ['attribute_groups.index', 'specification_groups.admin.index'])
+                              ->orWhereIn('title', ['Attributes', 'Specification']);
+                        })->get();
+                    foreach ($attrSpec as $asItem) {
+                        if (!$sub_menus->contains('link', $asItem->link)) {
+                            $sub_menus->push($asItem);
+                        }
+                    }
+                    $order = [
+                        'category.main.index' => 1,
+                        'category.index' => 2,
+                        'category.sub.index' => 3,
+                        'attribute_groups.index' => 4,
+                        'specification_groups.admin.index' => 5,
+                    ];
+                    $sub_menus = $sub_menus->sortBy(function($submenu) use ($order) {
+                        return $order[$submenu->link] ?? 99;
+                    });
+                } elseif ($mainmenu->id == 3 || $mmTitle == 'products') {
+                    $sub_menus = $sub_menus->reject(function($submenu) {
+                        return in_array($submenu->link, ['attribute_groups.index', 'specification_groups.admin.index']) ||
+                               in_array($submenu->title, ['Attributes', 'Specification']);
+                    });
+                } elseif ($mainmenu->id == 4 || $mmTitle == 'sales') {
+                    $hasReturns = $sub_menus->contains(function($submenu) {
+                        return $submenu->link == 'returns' || strtolower(trim($submenu->title)) == 'returns & replacements';
+                    });
+                    if (!$hasReturns) {
+                        $returnsItem = App\Models\Submenus::withoutGlobalScopes()->where('link', 'returns')->first();
+                        if (!$returnsItem) {
+                            try {
+                                \Illuminate\Support\Facades\DB::table('sub_menu')->updateOrInsert(
+                                    ['link' => 'returns'],
+                                    [
+                                        'main_menu' => 4,
+                                        'title' => 'Returns & Replacements',
+                                        'type' => 'route',
+                                        'link' => 'returns',
+                                        'route' => '',
+                                        'created_at' => now(),
+                                        'updated_at' => now(),
+                                    ]
+                                );
+                                $returnsItem = App\Models\Submenus::withoutGlobalScopes()->where('link', 'returns')->first();
+                            } catch (\Throwable $e) {}
+                        }
+                        if ($returnsItem) {
+                            $sub_menus->push($returnsItem);
+                        } else {
+                            $sub_menus->push((object)[
+                                'id' => 44,
+                                'main_menu' => 4,
+                                'title' => 'Returns & Replacements',
+                                'type' => 'route',
+                                'link' => 'returns',
+                                'route' => ''
+                            ]);
+                        }
+                    }
+                    $order = [
+                        'order' => 1,
+                        'transaction' => 2,
+                        'returns' => 3,
+                    ];
+                    $sub_menus = $sub_menus->sortBy(function($submenu) use ($order) {
+                        return $order[$submenu->link] ?? 99;
+                    });
+                } elseif ($mainmenu->title == 'Banners') {
                     $order = [
                         'main slider' => 1,
                         'category banners' => 2,
@@ -41,7 +113,7 @@
                     $sub_menus = $sub_menus->sortBy(function($submenu) use ($order) {
                         return $order[strtolower($submenu->title)] ?? 99;
                     });
-                } elseif (strtolower(trim($mainmenu->title)) == 'role') {
+                } elseif ($mmTitle == 'role') {
                     $order = [
                         'department' => 1,
                         'designation' => 2,
@@ -93,7 +165,53 @@
         @if(in_array($mainmenu->id, $staffMainMenus))
             @php
                 $sub_menus = App\Models\Submenus::where('main_menu', '=', $mainmenu->id)->get();
-                if ($mainmenu->title == 'Banners') {
+                $mmTitle = strtolower(trim($mainmenu->title));
+
+                if ($mainmenu->id == 2 || $mmTitle == 'category') {
+                    $attrSpec = App\Models\Submenus::withoutGlobalScopes()
+                        ->where(function($q) {
+                            $q->whereIn('link', ['attribute_groups.index', 'specification_groups.admin.index'])
+                              ->orWhereIn('title', ['Attributes', 'Specification']);
+                        })->get();
+                    foreach ($attrSpec as $asItem) {
+                        if (!$sub_menus->contains('link', $asItem->link)) {
+                            $sub_menus->push($asItem);
+                        }
+                    }
+                    $order = [
+                        'category.main.index' => 1,
+                        'category.index' => 2,
+                        'category.sub.index' => 3,
+                        'attribute_groups.index' => 4,
+                        'specification_groups.admin.index' => 5,
+                    ];
+                    $sub_menus = $sub_menus->sortBy(function($submenu) use ($order) {
+                        return $order[$submenu->link] ?? 99;
+                    });
+                } elseif ($mainmenu->id == 3 || $mmTitle == 'products') {
+                    $sub_menus = $sub_menus->reject(function($submenu) {
+                        return in_array($submenu->link, ['attribute_groups.index', 'specification_groups.admin.index']) ||
+                               in_array($submenu->title, ['Attributes', 'Specification']);
+                    });
+                } elseif ($mainmenu->id == 4 || $mmTitle == 'sales') {
+                    $hasReturns = $sub_menus->contains(function($submenu) {
+                        return $submenu->link == 'returns' || strtolower(trim($submenu->title)) == 'returns & replacements';
+                    });
+                    if (!$hasReturns) {
+                        $returnsItem = App\Models\Submenus::withoutGlobalScopes()->where('link', 'returns')->first();
+                        if ($returnsItem) {
+                            $sub_menus->push($returnsItem);
+                        }
+                    }
+                    $order = [
+                        'order' => 1,
+                        'transaction' => 2,
+                        'returns' => 3,
+                    ];
+                    $sub_menus = $sub_menus->sortBy(function($submenu) use ($order) {
+                        return $order[$submenu->link] ?? 99;
+                    });
+                } elseif ($mainmenu->title == 'Banners') {
                     $order = [
                         'main slider' => 1,
                         'category banners' => 2,
@@ -103,7 +221,7 @@
                     $sub_menus = $sub_menus->sortBy(function($submenu) use ($order) {
                         return $order[strtolower($submenu->title)] ?? 99;
                     });
-                } elseif (strtolower(trim($mainmenu->title)) == 'role') {
+                } elseif ($mmTitle == 'role') {
                     $order = [
                         'department' => 1,
                         'designation' => 2,
@@ -129,11 +247,19 @@
                         }
                     @endphp
                     @if($canSeeSubmenu)
-                        @if($submenu->type=='route')
-                        <li><a href="{{ route($submenu->link) }}"><i class="fa fa-circle"></i>{{$submenu->title}}</a></li>
-                        @else
-                        <li><a href="{{ url($submenu->link) }}"><i class="fa fa-circle"></i>{{$submenu->title}}</a></li>
-                        @endif
+                        @php
+                            $routeUrl = '#';
+                            if ($submenu->type == 'route') {
+                                if ($submenu->link == 'returns' && \Illuminate\Support\Facades\Route::has('staffreturns')) {
+                                    $routeUrl = route('staffreturns');
+                                } elseif (\Illuminate\Support\Facades\Route::has($submenu->link)) {
+                                    $routeUrl = route($submenu->link);
+                                }
+                            } else {
+                                $routeUrl = url($submenu->link);
+                            }
+                        @endphp
+                        <li><a href="{{ $routeUrl }}"><i class="fa fa-circle"></i>{{$submenu->title}}</a></li>
                     @endif
                     @endforeach
                 </ul>

@@ -70,7 +70,33 @@
             @if (session()->get('log_type') == 'Admin')
                 @php $mob_mains = App\Models\Mainmenus::where('id','!=','1')->get(); @endphp
                 @foreach($mob_mains as $mm)
-                    @php $mob_subs = App\Models\Submenus::where('main_menu','=',$mm->id)->get(); @endphp
+                    @php
+                        $mob_subs = App\Models\Submenus::where('main_menu','=',$mm->id)->get();
+                        $mmTitle = strtolower(trim($mm->title));
+                        if ($mm->id == 2 || $mmTitle == 'category') {
+                            $attrSpec = App\Models\Submenus::withoutGlobalScopes()
+                                ->where(function($q) {
+                                    $q->whereIn('link', ['attribute_groups.index', 'specification_groups.admin.index'])
+                                      ->orWhereIn('title', ['Attributes', 'Specification']);
+                                })->get();
+                            foreach ($attrSpec as $asItem) {
+                                if (!$mob_subs->contains('link', $asItem->link)) {
+                                    $mob_subs->push($asItem);
+                                }
+                            }
+                            $order = ['category.main.index' => 1, 'category.index' => 2, 'category.sub.index' => 3, 'attribute_groups.index' => 4, 'specification_groups.admin.index' => 5];
+                            $mob_subs = $mob_subs->sortBy(fn($s) => $order[$s->link] ?? 99);
+                        } elseif ($mm->id == 3 || $mmTitle == 'products') {
+                            $mob_subs = $mob_subs->reject(fn($s) => in_array($s->link, ['attribute_groups.index', 'specification_groups.admin.index']) || in_array($s->title, ['Attributes', 'Specification']));
+                        } elseif ($mm->id == 4 || $mmTitle == 'sales') {
+                            if (!$mob_subs->contains(fn($s) => $s->link == 'returns' || strtolower(trim($s->title)) == 'returns & replacements')) {
+                                $rItem = App\Models\Submenus::withoutGlobalScopes()->where('link', 'returns')->first();
+                                if ($rItem) { $mob_subs->push($rItem); }
+                            }
+                            $order = ['order' => 1, 'transaction' => 2, 'returns' => 3];
+                            $mob_subs = $mob_subs->sortBy(fn($s) => $order[$s->link] ?? 99);
+                        }
+                    @endphp
                     <li class="has-sub">
                         <a href="#"><i data-feather="{{ $mm->font_icon }}"></i> <span class="text-label">{{ $mm->title }}</span> <span class="arr">&#10095;</span></a>
                         <ul class="sub">
@@ -99,7 +125,33 @@
                 @endphp
                 @foreach($mob_mains as $mm)
                     @if(in_array($mm->id, $mob_smm))
-                        @php $mob_subs = App\Models\Submenus::where('main_menu','=',$mm->id)->get(); @endphp
+                        @php
+                            $mob_subs = App\Models\Submenus::where('main_menu','=',$mm->id)->get();
+                            $mmTitle = strtolower(trim($mm->title));
+                            if ($mm->id == 2 || $mmTitle == 'category') {
+                                $attrSpec = App\Models\Submenus::withoutGlobalScopes()
+                                    ->where(function($q) {
+                                        $q->whereIn('link', ['attribute_groups.index', 'specification_groups.admin.index'])
+                                          ->orWhereIn('title', ['Attributes', 'Specification']);
+                                    })->get();
+                                foreach ($attrSpec as $asItem) {
+                                    if (!$mob_subs->contains('link', $asItem->link)) {
+                                        $mob_subs->push($asItem);
+                                    }
+                                }
+                                $order = ['category.main.index' => 1, 'category.index' => 2, 'category.sub.index' => 3, 'attribute_groups.index' => 4, 'specification_groups.admin.index' => 5];
+                                $mob_subs = $mob_subs->sortBy(fn($s) => $order[$s->link] ?? 99);
+                            } elseif ($mm->id == 3 || $mmTitle == 'products') {
+                                $mob_subs = $mob_subs->reject(fn($s) => in_array($s->link, ['attribute_groups.index', 'specification_groups.admin.index']) || in_array($s->title, ['Attributes', 'Specification']));
+                            } elseif ($mm->id == 4 || $mmTitle == 'sales') {
+                                if (!$mob_subs->contains(fn($s) => $s->link == 'returns' || strtolower(trim($s->title)) == 'returns & replacements')) {
+                                    $rItem = App\Models\Submenus::withoutGlobalScopes()->where('link', 'returns')->first();
+                                    if ($rItem) { $mob_subs->push($rItem); }
+                                }
+                                $order = ['order' => 1, 'transaction' => 2, 'returns' => 3];
+                                $mob_subs = $mob_subs->sortBy(fn($s) => $order[$s->link] ?? 99);
+                            }
+                        @endphp
                         <li class="has-sub">
                             <a href="#"><i data-feather="{{ $mm->font_icon }}"></i> <span class="text-label">{{ $mm->title }}</span> <span class="arr">&#10095;</span></a>
                             <ul class="sub">
@@ -125,6 +177,8 @@
                                                     $finalRoute = route('stafforder');
                                                 } elseif ($sm->link == 'transaction') {
                                                     $finalRoute = route('stafftransaction');
+                                                } elseif ($sm->link == 'returns') {
+                                                    $finalRoute = route('staffreturns');
                                                 } elseif ($sm->link == 'auction/list') {
                                                     $finalRoute = route('staffauction/list');
                                                 } elseif ($sm->link == 'auction/live') {
