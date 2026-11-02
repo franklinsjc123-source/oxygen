@@ -140,15 +140,31 @@
                                                      if ($vendor != null && !empty($vendor->shop_name)) {
                                                          $zzone = $vendor->zone_name ?? '-';
                                                          $shop_name = $vendor->shop_name;
-                                                         $created_by = $vendor->shop_name;
+                                                     } elseif (str_contains($attribute->title, ' - ')) {
+                                                         $parts = explode(' - ', $attribute->title);
+                                                         if (!empty($parts[0]) && strlen($parts[0]) < 30) {
+                                                             $shop_name = trim($parts[0]);
+                                                         }
                                                      } else {
                                                          $zzone = '-';
                                                          $shop_name = 'N/A';
-                                                         $created_by = !empty($attribute->added_by) && $attribute->added_by != 'Shop' ? $attribute->added_by : 'N/A';
                                                      }
                                                  }
-                                                 if ($shop_name != 'N/A' && $shop_name != '-' && $shop_name != 'Admin') {
-                                                     $created_by = $shop_name;
+
+                                                 $added_by = trim((string) ($attribute->added_by ?? ''));
+                                                 if ($added_by === 'Admin' || $attribute->created_by_id === 'Admin') {
+                                                     $created_by = 'Admin';
+                                                     $created_by_type = 'admin';
+                                                 } elseif (!empty($added_by) && $added_by !== 'Shop') {
+                                                     $created_by = $added_by;
+                                                     $created_by_type = 'staff';
+                                                 } else {
+                                                     if ($shop_name !== 'N/A' && $shop_name !== '-') {
+                                                         $created_by = $shop_name;
+                                                     } else {
+                                                         $created_by = 'Shop';
+                                                     }
+                                                     $created_by_type = 'shop';
                                                  }
                                                  @endphp
                                                 
@@ -174,10 +190,10 @@
                                                      {{ $attribute->types }}
                                                  </td>
                                                 <td>
-                                                    @if($created_by == 'Admin')
+                                                    @if($created_by_type == 'admin')
                                                         <span class="badge badge-primary px-2" style="color: #fff;">{{ $created_by }}</span>
-                                                    @elseif($created_by == 'N/A' || $created_by == '-')
-                                                        <span class="badge badge-secondary px-2" style="color: #fff;">{{ $created_by }}</span>
+                                                    @elseif($created_by_type == 'staff')
+                                                        <span class="badge badge-info px-2" style="color: #fff;">{{ $created_by }}</span>
                                                     @else
                                                         <span class="badge badge-success px-2" style="color: #fff;">{{ $created_by }}</span>
                                                     @endif
