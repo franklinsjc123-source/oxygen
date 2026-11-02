@@ -47,9 +47,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-button text-center mt-2">
-                                        <button type="submit" name="submit" class="btn w-100 mb-2" style="background: linear-gradient(90deg, #00cec9 0%, #0984e3 100%); color: #fff; font-weight: 700; border-radius: 12px; padding: 12px; border: none; box-shadow: 0 4px 15px rgba(0, 206, 201, 0.3); text-transform: uppercase;">Login</button>
-                                        <button type="button" onclick="window.location.href='{{ url('/admin/login') }}'; window.location.reload();" class="btn w-100" style="background: #eee; color: #444; font-weight: 600; border-radius: 12px; padding: 10px; border: none; font-size: 0.9rem;">Cancel</button>
+                                    <div class="form-button text-center mt-3">
+                                        <button type="submit" name="submit" class="btn w-100" style="background: linear-gradient(90deg, #00cec9 0%, #0984e3 100%); color: #fff; font-weight: 700; border-radius: 12px; padding: 12px; border: none; box-shadow: 0 4px 15px rgba(0, 206, 201, 0.3); text-transform: uppercase;">Login</button>
                                     </div>
                                 </form>
                             </div>
