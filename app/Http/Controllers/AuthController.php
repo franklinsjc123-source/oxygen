@@ -27,7 +27,7 @@ class AuthController extends Controller
     {
         $data['username'] = $request->username;
         $data['password'] = $request->password;
-        $remember = $request->boolean('remember');
+        $remember = $request->boolean('remember') || $request->has('remember') || $request->input('remember') === '1' || $request->input('remember') === 'on';
         
         if (auth()->attempt($data, $remember)) {
             $user = Auth::user();
@@ -45,17 +45,27 @@ class AuthController extends Controller
                 FacadesSession::put('log_type', $log_type);
                 FacadesSession::put('login_id', $login_id);
 
+                $redirect = redirect()->route('admindashboard', $user->admin_id);
+
                 if ($remember) {
                     Cookie::queue('remember_admin_username', $request->username, 60 * 24 * 30);
                     Cookie::queue('remember_admin_password', $request->password, 60 * 24 * 30);
                     Cookie::queue('remember_admin_check', '1', 60 * 24 * 30);
+
+                    $redirect = $redirect->withCookie(cookie()->make('remember_admin_username', $request->username, 60 * 24 * 30))
+                                         ->withCookie(cookie()->make('remember_admin_password', $request->password, 60 * 24 * 30))
+                                         ->withCookie(cookie()->make('remember_admin_check', '1', 60 * 24 * 30));
                 } else {
                     Cookie::queue(Cookie::forget('remember_admin_username'));
                     Cookie::queue(Cookie::forget('remember_admin_password'));
                     Cookie::queue(Cookie::forget('remember_admin_check'));
+
+                    $redirect = $redirect->withoutCookie('remember_admin_username')
+                                         ->withoutCookie('remember_admin_password')
+                                         ->withoutCookie('remember_admin_check');
                 }
 
-                return redirect()->route('admindashboard', $user->admin_id);
+                return $redirect;
             } else {
                 Auth::logout();
                 return view('auth.adminlogin', ['error' => 'You do not have admin access.']);
@@ -70,7 +80,7 @@ class AuthController extends Controller
     {
         $data['username'] = $request->username;
         $data['password'] = $request->password;
-        $remember = $request->boolean('remember');
+        $remember = $request->boolean('remember') || $request->has('remember') || $request->input('remember') === '1' || $request->input('remember') === 'on';
         
         if (auth()->attempt($data, $remember)) {
             $user = Auth::user();
@@ -82,17 +92,27 @@ class AuthController extends Controller
                 FacadesSession::put('log_name', $user->name);
                 FacadesSession::put('log_type', $user->log_type ?? 'Vendor');
 
+                $redirect = redirect()->route('vendordashboard', $user->login_id);
+
                 if ($remember) {
                     Cookie::queue('remember_vendor_username', $request->username, 60 * 24 * 30);
                     Cookie::queue('remember_vendor_password', $request->password, 60 * 24 * 30);
                     Cookie::queue('remember_vendor_check', '1', 60 * 24 * 30);
+
+                    $redirect = $redirect->withCookie(cookie()->make('remember_vendor_username', $request->username, 60 * 24 * 30))
+                                         ->withCookie(cookie()->make('remember_vendor_password', $request->password, 60 * 24 * 30))
+                                         ->withCookie(cookie()->make('remember_vendor_check', '1', 60 * 24 * 30));
                 } else {
                     Cookie::queue(Cookie::forget('remember_vendor_username'));
                     Cookie::queue(Cookie::forget('remember_vendor_password'));
                     Cookie::queue(Cookie::forget('remember_vendor_check'));
+
+                    $redirect = $redirect->withoutCookie('remember_vendor_username')
+                                         ->withoutCookie('remember_vendor_password')
+                                         ->withoutCookie('remember_vendor_check');
                 }
                 
-                return redirect()->route('vendordashboard', $user->login_id);
+                return $redirect;
             } else {
                 Auth::logout();
                 return view('auth.vendorlogin', ['error' => 'You do not have vendor access.']);
@@ -108,7 +128,7 @@ class AuthController extends Controller
     {
         $data['username'] = $request->username;
         $data['password'] = $request->password;
-        $remember = $request->boolean('remember');
+        $remember = $request->boolean('remember') || $request->has('remember') || $request->input('remember') === '1' || $request->input('remember') === 'on';
         
         if (auth()->attempt($data, $remember)) {
             $user = Auth::user();
@@ -138,17 +158,27 @@ class AuthController extends Controller
                     FacadesSession::put('roll', $roll);
                 }
 
+                $redirect = redirect()->route('staffdashboard', $user->login_id);
+
                 if ($remember) {
                     Cookie::queue('remember_staff_username', $request->username, 60 * 24 * 30);
                     Cookie::queue('remember_staff_password', $request->password, 60 * 24 * 30);
                     Cookie::queue('remember_staff_check', '1', 60 * 24 * 30);
+
+                    $redirect = $redirect->withCookie(cookie()->make('remember_staff_username', $request->username, 60 * 24 * 30))
+                                         ->withCookie(cookie()->make('remember_staff_password', $request->password, 60 * 24 * 30))
+                                         ->withCookie(cookie()->make('remember_staff_check', '1', 60 * 24 * 30));
                 } else {
                     Cookie::queue(Cookie::forget('remember_staff_username'));
                     Cookie::queue(Cookie::forget('remember_staff_password'));
                     Cookie::queue(Cookie::forget('remember_staff_check'));
+
+                    $redirect = $redirect->withoutCookie('remember_staff_username')
+                                         ->withoutCookie('remember_staff_password')
+                                         ->withoutCookie('remember_staff_check');
                 }
                 
-                return redirect()->route('staffdashboard', $user->login_id);
+                return $redirect;
             }
 
             Auth::logout();

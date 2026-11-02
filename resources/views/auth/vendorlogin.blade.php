@@ -12,7 +12,7 @@
                             <div class="card-body" style="background: #ffffff; padding: 30px 40px; color: #333;">
                                 <div class="logo-wrapper text-center mb-3">
                                     <a href="/">
-                                        <img src="{{ asset('assets/images/dashboard/logo/newlogo.png') }}" alt="Logo" style="width: 110px;">
+                                        <img src="{{ asset('assets/images/dashboard/logo/newlogo.png') }}" alt="Logo" style="width: 175px; max-width: 100%; height: auto;">
                                     </a>
                                 </div>
 
@@ -21,24 +21,24 @@
                                     <h6 style="color:#ff5e57;" class="text-center mb-2">{{ @$error }}</h6>
                                 @endif
                                 <h3 class="text-center mb-3" style="font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-size: 1.5rem; color: #1e272e;">Vendor Portal</h3>
-                                <form action="{{ route('vendorlogin') }}" method="post">
+                                <form action="{{ route('vendorlogin') }}" method="post" id="vendorLoginForm">
                                     @csrf
                                     <div class="form-group mb-3">
                                         <label for="username" style="font-weight: 500; opacity: 0.9; margin-bottom: 5px; display: block; font-size: 1.2rem; color: #555;">Username</label>
-                                        <input type="text" class="form-control" id="username" name="username" value="{{ Cookie::get('remember_vendor_username') ?? old('username') }}" placeholder="Enter your username" required style="border-radius: 10px; padding: 12px 15px; border: 1px solid #ddd; background: #f9f9f9; color: #333; font-size: 1.2rem;">
+                                        <input type="text" class="form-control" id="username" name="username" value="{{ request()->cookie('remember_vendor_username') ?? Cookie::get('remember_vendor_username') ?? old('username') }}" placeholder="Enter your username" required style="border-radius: 10px; padding: 12px 15px; border: 1px solid #ddd; background: #f9f9f9; color: #333; font-size: 1.2rem;">
                                     </div>
 
                                     <div class="form-group mb-3 position-relative">
                                         <label for="pwd" style="font-weight: 500; opacity: 0.9; margin-bottom: 5px; display: block; font-size: 1.2rem; color: #555;">Password</label>
                                         <div style="position: relative;">
-                                            <input type="password" class="form-control" id="pwd" name="password" value="{{ Cookie::get('remember_vendor_password') ?? '' }}" placeholder="Enter your password" required style="border-radius: 10px; padding: 12px 45px 12px 15px; border: 1px solid #ddd; background: #f9f9f9; color: #333; font-size: 1.2rem;">
+                                            <input type="password" class="form-control" id="pwd" name="password" value="{{ request()->cookie('remember_vendor_password') ?? Cookie::get('remember_vendor_password') ?? '' }}" placeholder="Enter your password" required style="border-radius: 10px; padding: 12px 45px 12px 15px; border: 1px solid #ddd; background: #f9f9f9; color: #333; font-size: 1.2rem;">
                                             <i class="fa fa-eye-slash" id="togglePassword" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888;"></i>
                                         </div>
                                     </div>
 
                                     <div class="form-terms d-flex justify-content-between align-items-center mb-3">
                                         <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" id="remember" name="remember" {{ (Cookie::has('remember_vendor_check') || Cookie::has('remember_vendor_username')) ? 'checked' : '' }} style="background-color: transparent; border-color: #ccc; transform: scale(1.2); margin-right: 8px;">
+                                            <input type="checkbox" class="form-check-input" id="remember" name="remember" value="1" {{ (request()->hasCookie('remember_vendor_check') || Cookie::has('remember_vendor_check') || request()->hasCookie('remember_vendor_username') || Cookie::has('remember_vendor_username') || old('remember')) ? 'checked' : '' }} style="background-color: transparent; border-color: #ccc; transform: scale(1.2); margin-right: 8px;">
                                             <label class="form-check-label" for="remember" style="font-size: 1.2rem; opacity: 0.8; color: #555;"> Remember me</label>
                                         </div>
                                     </div>
@@ -57,6 +57,7 @@
             </div>
         </div>
     </div>
+    <!-- Show/Hide Password & Remember Me Persistence Script -->
     <script>
         document.getElementById('togglePassword').addEventListener('click', function() {
             const pwdField = document.getElementById('pwd');
@@ -64,6 +65,48 @@
             pwdField.setAttribute('type', type);
             this.classList.toggle('fa-eye');
             this.classList.toggle('fa-eye-slash');
+        });
+
+        // Client-side persistence for Remember Me
+        document.addEventListener('DOMContentLoaded', function() {
+            var usernameField = document.getElementById('username');
+            var passwordField = document.getElementById('pwd');
+            var rememberField = document.getElementById('remember');
+            var loginForm = document.getElementById('vendorLoginForm');
+
+            try {
+                if (localStorage.getItem('remember_vendor_check') === '1') {
+                    if (rememberField) rememberField.checked = true;
+                    if (usernameField && (!usernameField.value || usernameField.value.trim() === '')) {
+                        var savedUser = localStorage.getItem('remember_vendor_username');
+                        if (savedUser) usernameField.value = savedUser;
+                    }
+                    if (passwordField && (!passwordField.value || passwordField.value.trim() === '')) {
+                        var savedPass = localStorage.getItem('remember_vendor_password');
+                        if (savedPass) passwordField.value = savedPass;
+                    }
+                } else if (rememberField && rememberField.checked) {
+                    localStorage.setItem('remember_vendor_check', '1');
+                    if (usernameField && usernameField.value) localStorage.setItem('remember_vendor_username', usernameField.value);
+                    if (passwordField && passwordField.value) localStorage.setItem('remember_vendor_password', passwordField.value);
+                }
+            } catch(e) {}
+
+            if (loginForm) {
+                loginForm.addEventListener('submit', function() {
+                    try {
+                        if (rememberField && rememberField.checked) {
+                            localStorage.setItem('remember_vendor_check', '1');
+                            if (usernameField) localStorage.setItem('remember_vendor_username', usernameField.value);
+                            if (passwordField) localStorage.setItem('remember_vendor_password', passwordField.value);
+                        } else {
+                            localStorage.removeItem('remember_vendor_check');
+                            localStorage.removeItem('remember_vendor_username');
+                            localStorage.removeItem('remember_vendor_password');
+                        }
+                    } catch(e) {}
+                });
+            }
         });
     </script>
 @endsection
