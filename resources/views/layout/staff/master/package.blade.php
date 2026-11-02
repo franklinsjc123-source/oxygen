@@ -3,17 +3,17 @@
   <script id="MathJax-script" async
           src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js">
   </script>
-    @include('paritials.auth.header')?>
+    @include('paritials.auth.header')
 
 <!-- page-wrapper Start-->
-@include('paritials.auth.topmenu');
+@include('paritials.auth.topmenu')
 <!-- Page Header Ends -->
 
 <!-- Page Body Start-->
 <div class="page-body-wrapper">
 	
 	<!-- Page Sidebar Start-->
-	@include('paritials.staffauth.sidemenu');
+	@include('paritials.staffauth.sidemenu')
 	<!-- Page Sidebar Ends-->
 	
 	<!-- Right sidebar Start-->
@@ -44,6 +44,22 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="card">
+<style>
+/* Ensure breadcrumb is cleanly visible under top navbar on both desktop and mobile */
+.page-wrapper .page-body-wrapper .page-body,
+.page-wrapper .page-body-wrapper .page-sidebar ~ .page-body,
+.page-wrapper .page-body-wrapper .page-sidebar.open ~ .page-body {
+    margin-top: 60px !important;
+    padding-top: 16px !important;
+}
+.page-wrapper .page-body-wrapper .page-header {
+    margin-top: 0 !important;
+    margin-bottom: 12px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    border-bottom: none !important;
+}
+</style>
 						
 						<div class="card-body">
 							
@@ -224,7 +240,6 @@
 									</div>
 								</div>
 							</div>
-						</div>
 							{{-- end package --}}
 							
 							<div class="datatable-dashv1-list custom-datatable-overright">
