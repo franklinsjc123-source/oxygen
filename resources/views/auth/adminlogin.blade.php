@@ -42,8 +42,8 @@
 
                                     <div class="form-terms d-flex justify-content-between align-items-center mb-3">
                                         <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" id="remember" name="remember" value="1" {{ (request()->hasCookie('remember_admin_check') || Cookie::has('remember_admin_check') || request()->hasCookie('remember_admin_username') || Cookie::has('remember_admin_username') || old('remember')) ? 'checked' : '' }} style="background-color: transparent; border-color: #ccc; transform: scale(1.2); margin-right: 8px;">
-                                            <label class="form-check-label" for="remember" style="font-size: 1.2rem; opacity: 0.8; color: #555;">Remember me</label>
+                                            <input type="checkbox" class="form-check-input" id="remember" name="remember" value="1" {{ (request()->hasCookie('remember_admin_check') || Cookie::has('remember_admin_check') || request()->hasCookie('remember_admin_username') || Cookie::has('remember_admin_username') || old('remember')) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="remember" style="font-size: 1.15rem; opacity: 0.9; color: #555;">Remember me</label>
                                         </div>
                                     </div>
 
