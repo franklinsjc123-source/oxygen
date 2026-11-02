@@ -239,6 +239,7 @@ Route::get('activity/list', [\App\Http\Controllers\ActivityTrackerController::cl
 //Master
 
 Route::resource('pincode1', PinCodeController1::class, ['names' => 'staffpincode1']);
+Route::get('sample-pincode-download', [PinCodeController1::class, 'sampleDownload'])->name('staff.pincode.sample.download');
 
 Route::get('department', [MasterController::class, 'department'])->name('staffdepartment');
 Route::post('department', [MasterController::class, 'department']);

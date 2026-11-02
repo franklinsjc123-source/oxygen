@@ -235,4 +235,16 @@ class PinCodeController1 extends Controller
             'message' => $exists ? 'Pincode "' . $pincode . '" already exists!' : ''
         ]);
     }
+
+    public function sampleDownload()
+    {
+        $filePath = public_path('assets/img/sample_pincode.xlsx');
+        if (!file_exists($filePath)) {
+            return redirect()->back();
+        }
+
+        return response()->download($filePath, 'sample_pincode.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
+    }
 }

@@ -303,6 +303,7 @@ Route::controller(AuctionController::class)->group(function(){
 Route::controller(PinCodeController1::class)->group(function(){
 
     Route::post('importpincode','importpincode')->name('importpincode'); 
+    Route::get('sample-pincode-download', 'sampleDownload')->name('pincode.sample.download');
   });
 //offer
 //Route::get('offer/create', [OfferController::class, 'create']);

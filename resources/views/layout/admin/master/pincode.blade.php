@@ -140,7 +140,7 @@
                             <div class="card-body">
 
                                 <div id="toolbar" class="d-flex align-items-center pincode-toolbar">
-                                    <a href="{{ route('pincode.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a>
+                                    {{-- <a href="{{ route('pincode.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a> --}}
                                     <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
                                         data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus me-1"></i> Add Pincode</button>
                                     <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
@@ -243,7 +243,7 @@
                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title f-w-600" id="exampleModalLabel">Upload Pincode <a href="{{asset('assets/img/sample_pincode.csv')}}" class='btn btn-primary' download> Sample Format Download </a></h5>
+                                                    <h5 class="modal-title f-w-600" id="exampleModalLabel">Upload Pincode <a href="{{ route('pincode.sample.download') }}" class='btn btn-primary' download="sample_pincode.xlsx"> Sample Format Download </a></h5>
                                                     <button class="btn-close" type="button" data-bs-dismiss="modal"
                                                         aria-label="Close"><span aria-hidden="true">×</span></button>
                                                 </div>
