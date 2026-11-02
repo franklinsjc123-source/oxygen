@@ -93,18 +93,8 @@ class SettingController extends Controller
             'updated_at'      => now(),
         ];
 
-        if ($request->filled('shop_name')) {
-            $updateData['shop_name'] = trim((string) $request->input('shop_name'));
-        }
-        if ($request->filled('owner_name')) {
-            $updateData['owner_name'] = trim((string) $request->input('owner_name'));
-        }
-        if ($request->filled('mobile_number1')) {
-            $updateData['mobile_number1'] = trim((string) $request->input('mobile_number1'));
-        }
-        if ($request->filled('address')) {
-            $updateData['address'] = trim((string) $request->input('address'));
-        }
+        // Shop & personal details are restricted / read-only for vendors.
+        // In case of any changes, vendors must contact their RM or Admin for revision.
 
         // Handle profile image upload
         if ($request->hasFile('profile_image')) {

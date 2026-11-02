@@ -248,7 +248,6 @@
                                                         </label>
                                                         <div class="col-xl-8 col-md-7">
                                                             <input class="form-control" id="whatsapp_number_input" type="text" name="whatsapp_number" placeholder="e.g. 919876543210" value="{{ $vendorObj->whatsapp_number ?? '' }}">
-                                                            <small class="text-muted">Enter mobile number with country code (e.g. 919876543210) for direct WhatsApp chat.</small>
                                                         </div>
                                                     </div>
 
@@ -258,7 +257,6 @@
                                                         </label>
                                                         <div class="col-xl-8 col-md-7">
                                                             <input class="form-control" id="facebook_link_input" type="text" name="facebook_link" placeholder="https://facebook.com/yourprofile" value="{{ $vendorObj->facebook_link ?? '' }}">
-                                                            <small class="text-muted">Full Facebook page/profile link (e.g. https://facebook.com/yourprofile) or username.</small>
                                                         </div>
                                                     </div>
 
@@ -268,7 +266,6 @@
                                                         </label>
                                                         <div class="col-xl-8 col-md-7">
                                                             <input class="form-control" id="instagram_link_input" type="text" name="instagram_link" placeholder="https://instagram.com/yourprofile" value="{{ $vendorObj->instagram_link ?? '' }}">
-                                                            <small class="text-muted">Full Instagram profile link (e.g. https://instagram.com/yourprofile) or @handle.</small>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -276,35 +273,40 @@
 
                                             <!-- Shop & Personal Info -->
                                             <div class="card mb-3 border">
-                                                <div class="card-header bg-light py-2">
+                                                <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
                                                     <strong class="text-dark"><i class="fa fa-user me-1 text-primary"></i> Shop & Personal Details</strong>
+                                                    <span class="badge bg-secondary text-white float-end pull-right" style="font-size: 11px;"><i class="fa fa-lock me-1"></i> Read Only</span>
                                                 </div>
                                                 <div class="card-body">
+                                                    <div class="alert alert-light border py-2 px-3 mb-3 text-muted" style="font-size: 12.5px; background-color: #f8f9fa;">
+                                                        <i class="fa fa-info-circle text-primary me-1"></i> In case of any changes or revision to your shop & personal details, please reach out to your <strong>Relationship Manager (RM)</strong> or <strong>Admin</strong>.
+                                                    </div>
+
                                                     <div class="form-group row mb-3">
                                                         <label class="col-xl-3 col-md-4 col-form-label">Shop Name</label>
                                                         <div class="col-xl-8 col-md-7">
-                                                            <input class="form-control" type="text" name="shop_name" value="{{ $vendorObj->shop_name ?? ($userObj->firstName ?? '') }}">
+                                                            <input class="form-control" type="text" name="shop_name" value="{{ $vendorObj->shop_name ?? ($userObj->firstName ?? '') }}" readonly style="background-color: #f8f9fa; cursor: not-allowed;">
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group row mb-3">
                                                         <label class="col-xl-3 col-md-4 col-form-label">Owner Name</label>
                                                         <div class="col-xl-8 col-md-7">
-                                                            <input class="form-control" type="text" name="owner_name" value="{{ $vendorObj->owner_name ?? ($userObj->name ?? '') }}">
+                                                            <input class="form-control" type="text" name="owner_name" value="{{ $vendorObj->owner_name ?? ($userObj->name ?? '') }}" readonly style="background-color: #f8f9fa; cursor: not-allowed;">
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group row mb-3">
                                                         <label class="col-xl-3 col-md-4 col-form-label">Mobile Number</label>
                                                         <div class="col-xl-8 col-md-7">
-                                                            <input class="form-control" type="text" name="mobile_number1" value="{{ $vendorObj->mobile_number1 ?? ($detailsObj->mobile ?? '') }}">
+                                                            <input class="form-control" type="text" name="mobile_number1" value="{{ $vendorObj->mobile_number1 ?? ($detailsObj->mobile ?? '') }}" readonly style="background-color: #f8f9fa; cursor: not-allowed;">
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group row mb-3">
                                                         <label class="col-xl-3 col-md-4 col-form-label">Address</label>
                                                         <div class="col-xl-8 col-md-7">
-                                                            <textarea class="form-control" name="address" rows="2">{{ $vendorObj->address ?? ($detailsObj->address ?? '') }}</textarea>
+                                                            <textarea class="form-control" name="address" rows="2" readonly style="background-color: #f8f9fa; cursor: not-allowed;">{{ $vendorObj->address ?? ($detailsObj->address ?? '') }}</textarea>
                                                         </div>
                                                     </div>
 
