@@ -270,4 +270,170 @@ class AuthController extends Controller
         $getUseragent = $this->commonHelper->findString($userAgent, $listAgents);
         return $getUseragent;
     }
+
+    public function staffSendForgotOtp(Request $request)
+    {
+        $identifier = trim($request->input('identifier', ''));
+        if (empty($identifier)) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Please enter your username, employee ID, or email address.'
+            ]);
+        }
+
+        $staff = \App\Models\Staffcreates::where('username', $identifier)
+            ->orWhere('employee_id', $identifier)
+            ->orWhere('email', $identifier)
+            ->first();
+
+        $user = null;
+        if ($staff) {
+            $user = \App\Models\User::where('login_id', $staff->employee_id)
+                ->orWhere('username', $staff->username)
+                ->first();
+        } else {
+            $user = \App\Models\User::where(function($q) use ($identifier) {
+                    $q->where('username', $identifier)
+                      ->orWhere('email', $identifier)
+                      ->orWhere('login_id', $identifier);
+                })
+                ->where(function($q) {
+                    $q->where('status', 3)->orWhere('log_type', 'Staff');
+                })
+                ->first();
+            if ($user) {
+                $staff = \App\Models\Staffcreates::where('employee_id', $user->login_id)->first();
+            }
+        }
+
+        if (!$staff && !$user) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'No active staff account found matching that username, employee ID, or email.'
+            ]);
+        }
+
+        $email = !empty($staff->email) ? $staff->email : ($user->email ?? null);
+        $fullname = !empty($staff->fullname) ? $staff->fullname : ($user->name ?? 'Staff');
+        $employeeId = !empty($staff->employee_id) ? $staff->employee_id : ($user->login_id ?? '');
+        $username = !empty($staff->username) ? $staff->username : ($user->username ?? '');
+
+        if (empty($email)) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'No registered email address found for this staff account. Please contact an Administrator.'
+            ]);
+        }
+
+        $otp = rand(100000, 999999);
+
+        session([
+            'staff_forgot_otp' => $otp,
+            'staff_forgot_email' => $email,
+            'staff_forgot_emp_id' => $employeeId,
+            'staff_forgot_username' => $username,
+            'staff_forgot_expiry' => now()->addMinutes(10),
+            'staff_forgot_verified' => false,
+        ]);
+
+        $maskedEmail = preg_replace('/(?<=.{2}).(?=.*@)/', '*', $email);
+
+        try {
+            \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\ForgotPasswordOtpMail($otp, $fullname));
+            return response()->json([
+                'status' => 'success',
+                'msg' => "A 6-digit OTP code has been sent to your registered email ({$maskedEmail}).",
+                'masked_email' => $maskedEmail
+            ]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Staff forgot mail error: " . $e->getMessage());
+            \Illuminate\Support\Facades\Log::info("Staff forgot OTP for {$email} is: {$otp}");
+            return response()->json([
+                'status' => 'success',
+                'msg' => "OTP generated. (Email server offline/unreachable. Dev OTP: {$otp})",
+                'masked_email' => $maskedEmail,
+                'dev_otp' => $otp
+            ]);
+        }
+    }
+
+    public function staffVerifyForgotOtp(Request $request)
+    {
+        $otp = trim($request->input('otp', ''));
+        if (empty($otp)) {
+            return response()->json(['status' => 'error', 'msg' => 'Please enter the 6-digit OTP code.']);
+        }
+
+        $sessionOtp = session('staff_forgot_otp');
+        $sessionExpiry = session('staff_forgot_expiry');
+
+        if (!$sessionOtp || !$sessionExpiry) {
+            return response()->json(['status' => 'error', 'msg' => 'OTP session expired. Please request a new OTP.']);
+        }
+
+        if (now()->greaterThan($sessionExpiry)) {
+            session()->forget(['staff_forgot_otp', 'staff_forgot_email', 'staff_forgot_emp_id', 'staff_forgot_username', 'staff_forgot_expiry', 'staff_forgot_verified']);
+            return response()->json(['status' => 'error', 'msg' => 'The OTP code has expired. Please request a new OTP.']);
+        }
+
+        if ((string) $otp !== (string) $sessionOtp) {
+            return response()->json(['status' => 'error', 'msg' => 'Invalid OTP code. Please check and try again.']);
+        }
+
+        session(['staff_forgot_verified' => true]);
+        return response()->json(['status' => 'success', 'msg' => 'OTP verified successfully! Please enter your new password.']);
+    }
+
+    public function staffResetPassword(Request $request)
+    {
+        if (!session('staff_forgot_verified')) {
+            return response()->json(['status' => 'error', 'msg' => 'Session not verified. Please verify OTP first.']);
+        }
+
+        $newPassword = $request->input('new_password');
+        $confirmPassword = $request->input('confirm_password');
+
+        if (empty($newPassword) || empty($confirmPassword)) {
+            return response()->json(['status' => 'error', 'msg' => 'Please fill in both password fields.']);
+        }
+
+        if (strlen($newPassword) < 5) {
+            return response()->json(['status' => 'error', 'msg' => 'Password must be at least 5 characters long.']);
+        }
+
+        if ($newPassword !== $confirmPassword) {
+            return response()->json(['status' => 'error', 'msg' => 'Passwords do not match.']);
+        }
+
+        $empId = session('staff_forgot_emp_id');
+        $username = session('staff_forgot_username');
+        $email = session('staff_forgot_email');
+
+        if (!empty($empId) || !empty($username) || !empty($email)) {
+            // Update staffother table
+            \App\Models\Staffcreates::where(function($q) use ($empId, $username, $email) {
+                if ($empId) $q->orWhere('employee_id', $empId);
+                if ($username) $q->orWhere('username', $username);
+                if ($email) $q->orWhere('email', $email);
+            })->update(['password' => $newPassword]);
+
+            // Update users table
+            \App\Models\User::where(function($q) use ($empId, $username, $email) {
+                if ($empId) $q->orWhere('login_id', $empId);
+                if ($username) $q->orWhere('username', $username);
+                if ($email) $q->orWhere('email', $email);
+            })->update(['password' => Hash::make($newPassword)]);
+        }
+
+        $savedUsername = $username ?: $empId;
+
+        // Clean up session
+        session()->forget(['staff_forgot_otp', 'staff_forgot_email', 'staff_forgot_emp_id', 'staff_forgot_username', 'staff_forgot_expiry', 'staff_forgot_verified']);
+
+        return response()->json([
+            'status' => 'success',
+            'msg' => 'Your password has been reset successfully! You can now log in.',
+            'username' => $savedUsername
+        ]);
+    }
 }

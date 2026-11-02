@@ -79,6 +79,11 @@ Route::get('login', function () {
 Route::post('login', [AuthController::class, 'stafflogin'])->name('stafflogin');
 Route::get('logout', [AuthController::class, 'logout'])->name('staff.logout');
 
+// Staff Forgot Password Routes
+Route::post('forgot-password/send-otp', [AuthController::class, 'staffSendForgotOtp'])->name('staff.forgot.send_otp');
+Route::post('forgot-password/verify-otp', [AuthController::class, 'staffVerifyForgotOtp'])->name('staff.forgot.verify_otp');
+Route::post('forgot-password/reset', [AuthController::class, 'staffResetPassword'])->name('staff.forgot.reset');
+
 Route::get('add_designation', [AdminController::class, 'designation']);
 
 Route::get('dashboard/{id}', 
