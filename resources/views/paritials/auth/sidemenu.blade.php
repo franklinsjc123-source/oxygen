@@ -41,6 +41,15 @@
                     $sub_menus = $sub_menus->sortBy(function($submenu) use ($order) {
                         return $order[strtolower($submenu->title)] ?? 99;
                     });
+                } elseif (strtolower(trim($mainmenu->title)) == 'role') {
+                    $order = [
+                        'department' => 1,
+                        'designation' => 2,
+                        'role assign' => 3
+                    ];
+                    $sub_menus = $sub_menus->sortBy(function($submenu) use ($order) {
+                        return $order[strtolower(trim($submenu->title))] ?? 99;
+                    });
                 }
             @endphp
             <li><a class="sidebar-header" href="#"><i data-feather="{{$mainmenu->font_icon}}"></i> <span>{{$mainmenu->title}}</span><i class="fa fa-angle-right pull-right" style="float: right;"></i></a>
@@ -93,6 +102,15 @@
                     ];
                     $sub_menus = $sub_menus->sortBy(function($submenu) use ($order) {
                         return $order[strtolower($submenu->title)] ?? 99;
+                    });
+                } elseif (strtolower(trim($mainmenu->title)) == 'role') {
+                    $order = [
+                        'department' => 1,
+                        'designation' => 2,
+                        'role assign' => 3
+                    ];
+                    $sub_menus = $sub_menus->sortBy(function($submenu) use ($order) {
+                        return $order[strtolower(trim($submenu->title))] ?? 99;
                     });
                 }
             @endphp
