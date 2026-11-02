@@ -119,23 +119,27 @@
                     <div class="checkbox-group">
 					
                         @foreach ($mainmenus as $mainmenu)
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input main-menu-checkbox" id="mainmenu{{ $mainmenu->id }}" name="mainmenus[]" value="{{ $mainmenu->id }}" 
+                            <div class="mainmenu-header d-inline-flex align-items-center mt-1 mb-2 px-2 py-1" style="background: #f4f6fa; border: 1px solid #e2e8f0; border-left: 4px solid #ff4c3b; border-radius: 4px;">
+                                <input type="checkbox" class="form-check-input main-menu-checkbox m-0" id="mainmenu{{ $mainmenu->id }}" name="mainmenus[]" value="{{ $mainmenu->id }}" 
                                     data-mainmenu-id="{{ $mainmenu->id }}"
-                                    {{ (isset($role) && in_array($mainmenu->id, explode(',', $role->mainmenus))) ? 'checked' : '' }}>
-                                <label class="form-check-label" for="mainmenu{{ $mainmenu->id }}"><u>{{ $mainmenu->title }}</u></label>
+                                    {{ (isset($role) && in_array($mainmenu->id, explode(',', $role->mainmenus))) ? 'checked' : '' }}
+                                    style="cursor: pointer; margin-right: 8px !important;">
+                                <label class="form-check-label m-0" for="mainmenu{{ $mainmenu->id }}" style="cursor: pointer; font-weight: 700; font-size: 14.5px; color: #132238;">{{ $mainmenu->title }}</label>
                             </div>
-							 @foreach ($submenus as $submenu)
-							 @if($mainmenu->id==$submenu->main_menu)
-                            
-                                <input type="checkbox" class="form-check-input sub-menu-checkbox" id="submenu{{ $submenu->id }}" name="submenus[]" value="{{ $submenu->id }}" 
-                                    data-parent-mainmenu="{{ $mainmenu->id }}"
-                                    {{ (isset($role) && in_array($submenu->id, explode(',', $role->submenus))) ? 'checked' : '' }}>
-                                <label class="form-check-label" for="submenu{{ $submenu->id }}">{{ $submenu->title }}</label>
-                         
-							@endif
-							@endforeach
-							<hr>
+                            <div class="submenus-wrapper d-flex flex-wrap align-items-center mb-2" style="padding-left: 6px;">
+                                @foreach ($submenus as $submenu)
+                                    @if($mainmenu->id == $submenu->main_menu)
+                                        <div class="d-inline-flex align-items-center" style="margin-right: 14px; margin-bottom: 6px;">
+                                            <input type="checkbox" class="form-check-input sub-menu-checkbox m-0" id="submenu{{ $submenu->id }}" name="submenus[]" value="{{ $submenu->id }}" 
+                                                data-parent-mainmenu="{{ $mainmenu->id }}"
+                                                {{ (isset($role) && in_array($submenu->id, explode(',', $role->submenus))) ? 'checked' : '' }}
+                                                style="cursor: pointer; margin-right: 5px !important;">
+                                            <label class="form-check-label m-0" for="submenu{{ $submenu->id }}" style="cursor: pointer;">{{ $submenu->title }}</label>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                            <hr>
                         @endforeach
                     </div>
                 </div>
