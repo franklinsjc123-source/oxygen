@@ -39,6 +39,11 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
     <link rel="preload" as="image" href="<?= asset('assets/images/banners/mainslider/' . $desktopImg) ?>" media="(min-width: 768px)" fetchpriority="high">
     <?php endif; ?>
 
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <!-- Preload Header Logo for Faster Mobile LCP -->
+    <link rel="preload" as="image" href="<?= asset('frontend') ?>/images/header-logo.png" fetchpriority="high">
+
     <!-- WebFont.js - Non-blocking font loader -->
     <script>
         WebFontConfig = {
@@ -1268,7 +1273,7 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
                             </a>
                             <a href="{{ url('home') }}" class="logo ml-lg-0 ">
                                 <img src="<?= asset('frontend') ?>/images/header-logo.png" alt="logo" width="144"
-                                    height="45" />
+                                    height="45" fetchpriority="high" decoding="async" />
                             </a>
 
                              <form method="get" action="{{ route('productsearchdetails') }}"

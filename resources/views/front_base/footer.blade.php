@@ -1599,21 +1599,21 @@
 
    <!-- Non-Critical CSS (Loaded after page paint) -->
    <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/fontawesome-free/css/all.min.css">
-   <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/animate/animate.min.css">
-   <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/magnific-popup/magnific-popup.min.css">
+   <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/animate/animate.min.css" media="print" onload="this.media='all'">
+   <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/magnific-popup/magnific-popup.min.css" media="print" onload="this.media='all'">
 
    <!-- Plugin JS File -->
 
-   <script src="<?= asset('frontend') ?>/vendor/photoswipe/photoswipe.min.js"></script>
-   <script src="<?= asset('frontend') ?>/vendor/photoswipe/photoswipe-ui-default.min.js"></script>
-   <script src="<?= asset('frontend') ?>/vendor/parallax/parallax.min.js"></script>
+   <script src="<?= asset('frontend') ?>/vendor/photoswipe/photoswipe.min.js" defer></script>
+   <script src="<?= asset('frontend') ?>/vendor/photoswipe/photoswipe-ui-default.min.js" defer></script>
+   <script src="<?= asset('frontend') ?>/vendor/parallax/parallax.min.js" defer></script>
    <script src="<?= asset('frontend') ?>/vendor/jquery.plugin/jquery.plugin.min.js"></script>
    <script src="<?= asset('frontend') ?>/vendor/swiper/swiper-bundle.min.js"></script>
    <script src="<?= asset('frontend') ?>/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
-   <script src="<?= asset('frontend') ?>/vendor/skrollr/skrollr.min.js"></script>
+   <script src="<?= asset('frontend') ?>/vendor/skrollr/skrollr.min.js" defer></script>
    <script src="<?= asset('frontend') ?>/vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
    <script src="<?= asset('frontend') ?>/vendor/zoom/jquery.zoom.js"></script>
-   <script src="<?= asset('frontend') ?>/vendor/jquery.countdown/jquery.countdown.min.js"></script>
+   <script src="<?= asset('frontend') ?>/vendor/jquery.countdown/jquery.countdown.min.js" defer></script>
    <!-- Main JS -->
    <script src="<?= asset('frontend') ?>/js/main.min.js"></script>
    <script src="<?= asset('frontend') ?>/js/notify.min.js"></script>
@@ -2807,7 +2807,7 @@
 
 
     <!-- SweetAlert2 CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
     <script>
         (function() {
             // Inject global SweetAlert2 styling for size consistency
