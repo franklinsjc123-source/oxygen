@@ -10,6 +10,7 @@ use App\Repository\ProfileRepo;
 use App\Helper\ImageUploadHelper\ImageUploadHelper;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Hash;
 
 class SettingController extends Controller
 { 
@@ -93,6 +94,37 @@ class SettingController extends Controller
             'updated_at'      => now(),
         ];
 
+        // Handle Username
+        $username = trim((string) $request->input('username', ''));
+        if (!empty($username)) {
+            // Check if username is already taken by another user
+            $conflictUser = DB::table('users')
+                ->where('username', $username)
+                ->when($userId, function ($q) use ($userId) {
+                    $q->where('id', '!=', $userId);
+                })
+                ->first();
+
+            if ($conflictUser) {
+                return redirect()->back()->with('error', 'The username "' . $username . '" is already taken. Please choose another username.');
+            }
+
+            $updateData['username'] = $username;
+            Session::put('username', $username);
+        }
+
+        // Handle Password
+        $password = (string) ($request->input('password') ?: $request->input('pass', ''));
+        $confirmPassword = (string) ($request->input('confirm_password') ?: $request->input('pass1', ''));
+
+        if (!empty($password)) {
+            if ($confirmPassword !== '' && $password !== $confirmPassword) {
+                return redirect()->back()->with('error', 'The password confirmation does not match.');
+            }
+            $updateData['pass']  = $password;
+            $updateData['pass1'] = $confirmPassword !== '' ? $confirmPassword : $password;
+        }
+
         // Shop & personal details are restricted / read-only for vendors.
         // In case of any changes, vendors must contact their RM or Admin for revision.
 
@@ -110,34 +142,28 @@ class SettingController extends Controller
         DB::table('vendor_details')->where('id', $vendor->id)->update($updateData);
 
         // Sync with users table
+        $userRecord = null;
         if ($userId) {
+            $userRecord = DB::table('users')->where('id', $userId)->first();
+        }
+        if (!$userRecord && !empty($vendor->id)) {
+            $userRecord = DB::table('users')->where('login_id', $vendor->id)->first();
+        }
+
+        if ($userRecord) {
             $userUpdate = [];
-            if ($request->filled('owner_name')) {
-                $userUpdate['name']     = trim((string) $request->input('owner_name'));
-                $userUpdate['lastName'] = trim((string) $request->input('owner_name'));
+            if (!empty($username)) {
+                $userUpdate['username'] = $username;
             }
-            if ($request->filled('shop_name')) {
-                $userUpdate['firstName'] = trim((string) $request->input('shop_name'));
+            if (!empty($password)) {
+                $userUpdate['password'] = Hash::make($password);
             }
             if (!empty($userUpdate)) {
-                DB::table('users')->where('id', $userId)->update($userUpdate);
+                $userUpdate['updated_at'] = now();
+                DB::table('users')->where('id', $userRecord->id)->update($userUpdate);
             }
         }
 
-        // Sync with user_details table
-        if ($userId) {
-            DB::table('user_details')->updateOrInsert(
-                ['user_id' => $userId],
-                [
-                    'firstName'  => $request->input('shop_name', $vendor->shop_name ?? ''),
-                    'lastName'   => $request->input('owner_name', $vendor->owner_name ?? ''),
-                    'mobile'     => $request->input('mobile_number1', $vendor->mobile_number1 ?? ''),
-                    'address'    => $request->input('address', $vendor->address ?? ''),
-                    'updated_at' => now(),
-                ]
-            );
-        }
-
-        return redirect()->back()->with('success', 'Profile and social media links updated successfully.');
+        return redirect()->back()->with('success', 'Profile and login details updated successfully.');
     }
 }

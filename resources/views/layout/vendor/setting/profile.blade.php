@@ -47,7 +47,7 @@
                     <div class="row">
                         <div class="col-12">
                             <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
-                                <li class="breadcrumb-item"><a href="{{ route('vendordashboard', session()->get('login_id')) }}"><i data-feather="home"></i></a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('vendordashboard', session()->get('login_id') ?? ($vendorObj->id ?? 1)) }}"><i data-feather="home"></i></a></li>
                                 <li class="breadcrumb-item">Settings</li>
                                 <li class="breadcrumb-item active">Profile</li>
                             </ol>
@@ -158,6 +158,10 @@
                                                     <tr>
                                                         <td style="width: 30%;">Shop Name:</td>
                                                         <td><strong>{{ $vendorObj->shop_name ?? ($detailsObj->firstName ?? $userObj->firstName ?? '—') }}</strong></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Username:</td>
+                                                        <td><span class="badge bg-light text-dark border px-2 py-1"><i class="fa fa-user me-1 text-primary"></i><strong>{{ $vendorObj->username ?? ($userObj->username ?? '—') }}</strong></span></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Owner Name:</td>
@@ -271,6 +275,50 @@
                                                 </div>
                                             </div>
 
+                                            <!-- Account & Login Credentials (Editable) -->
+                                            <div class="card mb-3 border">
+                                                <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
+                                                    <strong class="text-dark"><i class="fa fa-key me-1 text-primary"></i> Account & Login Credentials</strong>
+                                                    <span class="badge bg-success text-white float-end pull-right" style="font-size: 11px;"><i class="fa fa-pencil me-1"></i> Editable</span>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="form-group row mb-3">
+                                                        <label class="col-xl-3 col-md-4 col-form-label">
+                                                            <i class="fa fa-user text-primary me-1"></i> Username <span class="text-danger">*</span>
+                                                        </label>
+                                                        <div class="col-xl-8 col-md-7">
+                                                            <input class="form-control" id="username_input" type="text" name="username" value="{{ $vendorObj->username ?? ($userObj->username ?? '') }}" required placeholder="Enter username">
+                                                            <small class="text-muted">Username used to log in to your seller account.</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row mb-3">
+                                                        <label class="col-xl-3 col-md-4 col-form-label">
+                                                            <i class="fa fa-lock text-primary me-1"></i> Password
+                                                        </label>
+                                                        <div class="col-xl-8 col-md-7">
+                                                            <div style="position: relative;">
+                                                                <input class="form-control" id="password_input" type="password" name="password" value="{{ $vendorObj->pass ?? '' }}" placeholder="Enter password" style="padding-right: 42px;">
+                                                                <i class="fa fa-eye-slash" onclick="togglePasswordVisibility('password_input', this)" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888; font-size: 16px; z-index: 5;" title="Show/Hide Password"></i>
+                                                            </div>
+                                                            <small class="text-muted">Enter a new password or leave current.</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group row mb-3">
+                                                        <label class="col-xl-3 col-md-4 col-form-label">
+                                                            <i class="fa fa-check-circle text-primary me-1"></i> Confirm Password
+                                                        </label>
+                                                        <div class="col-xl-8 col-md-7">
+                                                            <div style="position: relative;">
+                                                                <input class="form-control" id="confirm_password_input" type="password" name="confirm_password" value="{{ $vendorObj->pass1 ?? ($vendorObj->pass ?? '') }}" placeholder="Confirm password" style="padding-right: 42px;">
+                                                                <i class="fa fa-eye-slash" onclick="togglePasswordVisibility('confirm_password_input', this)" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888; font-size: 16px; z-index: 5;" title="Show/Hide Password"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <!-- Shop & Personal Info -->
                                             <div class="card mb-3 border">
                                                 <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
@@ -364,6 +412,25 @@ function openEditTab(focusField) {
                 el.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }, 250);
+    }
+}
+
+function togglePasswordVisibility(inputId, el) {
+    var input = document.getElementById(inputId);
+    if (!input) return;
+    var icon = el.tagName && el.tagName.toLowerCase() === 'i' ? el : el.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        if (icon) {
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    } else {
+        input.type = 'password';
+        if (icon) {
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        }
     }
 }
 </script>
