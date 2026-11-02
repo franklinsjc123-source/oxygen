@@ -13,6 +13,18 @@ class Submenus extends Model
 
     protected static function booted()
     {
+        try {
+            static::withoutGlobalScopes()
+                ->where(function ($q) {
+                    $q->whereIn('link', ['attribute_groups.index', 'specification_groups.admin.index'])
+                      ->orWhereIn('title', ['Attributes', 'Specification']);
+                })
+                ->where('main_menu', '!=', 2)
+                ->update(['main_menu' => 2]);
+        } catch (\Throwable $e) {
+            // Silently pass if database is not reachable or during early bootstrap
+        }
+
         static::addGlobalScope('custom_order', function ($builder) {
             $builder->orderByRaw("CASE 
                 WHEN link = 'products.crud.listing' THEN 1
