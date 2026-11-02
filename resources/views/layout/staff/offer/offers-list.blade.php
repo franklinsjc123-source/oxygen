@@ -107,28 +107,48 @@
                                             <tr>
                                                 
                                                 @php
-                                                 if ($attribute->created_by_id == 'admin' || $attribute->created_by_id == 1) {
+                                                 if ($attribute->created_by_id == 'admin' || $attribute->created_by_id === '1' || $attribute->created_by_id === 1) {
                                                      $zzone = '-';
                                                      $shop_name = 'Admin';
                                                      $created_by = 'Admin';
                                                  } else {
                                                      $vendor = \DB::table('vendor_details')
-                                                         ->where('vendor_details.user_id', $attribute->created_by_id)
+                                                         ->where(function($q) use ($attribute) {
+                                                             $q->where('vendor_details.user_id', $attribute->created_by_id)
+                                                               ->orWhere('vendor_details.id', $attribute->created_by_id)
+                                                               ->orWhere('vendor_details.vendor_id', $attribute->created_by_id);
+                                                         })
                                                          ->leftJoin('zonals', 'zonals.id', '=', 'vendor_details.zone')
                                                          ->select('zonals.name as zone_name', 'vendor_details.shop_name')
                                                          ->first();
 
-                                                     if ($vendor != null) {
+                                                     if (!$vendor) {
+                                                         $u = \DB::table('users')->where('id', $attribute->created_by_id)->first();
+                                                         if ($u && !empty($u->login_id)) {
+                                                             $vendor = \DB::table('vendor_details')
+                                                                 ->where(function($q) use ($u) {
+                                                                     $q->where('vendor_details.user_id', $u->login_id)
+                                                                       ->orWhere('vendor_details.id', $u->login_id)
+                                                                       ->orWhere('vendor_details.vendor_id', $u->login_id);
+                                                                 })
+                                                                 ->leftJoin('zonals', 'zonals.id', '=', 'vendor_details.zone')
+                                                                 ->select('zonals.name as zone_name', 'vendor_details.shop_name')
+                                                                 ->first();
+                                                         }
+                                                     }
+
+                                                     if ($vendor != null && !empty($vendor->shop_name)) {
                                                          $zzone = $vendor->zone_name ?? '-';
-                                                         $shop_name = $vendor->shop_name ?? '-';
+                                                         $shop_name = $vendor->shop_name;
+                                                         $created_by = $vendor->shop_name;
                                                      } else {
                                                          $zzone = '-';
                                                          $shop_name = 'N/A';
+                                                         $created_by = !empty($attribute->added_by) && $attribute->added_by != 'Shop' ? $attribute->added_by : 'N/A';
                                                      }
-                                                     $created_by = 'Shop';
                                                  }
-                                                 if (!empty($attribute->added_by)) {
-                                                     $created_by = $attribute->added_by;
+                                                 if ($shop_name != 'N/A' && $shop_name != '-' && $shop_name != 'Admin') {
+                                                     $created_by = $shop_name;
                                                  }
                                                  @endphp
                                                 
@@ -156,10 +176,10 @@
                                                 <td>
                                                     @if($created_by == 'Admin')
                                                         <span class="badge badge-primary px-2" style="color: #fff;">{{ $created_by }}</span>
-                                                    @elseif($created_by == 'Shop')
-                                                        <span class="badge badge-success px-2" style="color: #fff;">{{ $created_by }}</span>
+                                                    @elseif($created_by == 'N/A' || $created_by == '-')
+                                                        <span class="badge badge-secondary px-2" style="color: #fff;">{{ $created_by }}</span>
                                                     @else
-                                                        <span class="badge badge-info px-2" style="color: #fff;">{{ $created_by }}</span>
+                                                        <span class="badge badge-success px-2" style="color: #fff;">{{ $created_by }}</span>
                                                     @endif
                                                 </td>
                                                  <td>
