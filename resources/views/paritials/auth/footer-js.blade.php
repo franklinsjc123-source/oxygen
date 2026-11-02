@@ -285,16 +285,19 @@
                 var logoutUrl = $(this).attr('href');
                 
                 // Hide side menu in mobile view immediately
-                $('#admMobileMenu, .admin-mmenu-wrap').removeClass('open');
-                if (typeof window.closeAdminMobileMenu === 'function') {
-                    window.closeAdminMobileMenu();
+                var isMobile = (window.matchMedia ? window.matchMedia('(max-width: 991px)').matches : $(window).width() <= 991);
+                if (isMobile) {
+                    $('#admMobileMenu, .admin-mmenu-wrap').removeClass('open');
+                    if (typeof window.closeAdminMobileMenu === 'function') {
+                        window.closeAdminMobileMenu();
+                    }
+                    if (typeof window.hideSidebarMenu === 'function') {
+                        window.hideSidebarMenu();
+                    }
+                    $('.page-sidebar').addClass('open');
+                    $('.page-main-header').addClass('open');
+                    $('body').removeClass('sidebar-open');
                 }
-                if (typeof window.hideSidebarMenu === 'function') {
-                    window.hideSidebarMenu();
-                }
-                $('.page-sidebar').addClass('open');
-                $('.page-main-header').addClass('open');
-                $('body').removeClass('sidebar-open');
 
                 function performLogoutConfirm() {
                     Swal.fire({

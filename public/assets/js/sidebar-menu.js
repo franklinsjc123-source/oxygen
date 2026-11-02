@@ -133,6 +133,7 @@
 
         // EXPOSE hide function globally
         window.hideSidebarMenu = function() {
+            if (!isMobileSidebar()) return;
             hideSidebar();
             $('#admMobileMenu, .admin-mmenu-wrap').removeClass('open');
         };
