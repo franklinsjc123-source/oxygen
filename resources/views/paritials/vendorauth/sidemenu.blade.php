@@ -28,7 +28,7 @@
     <div class="main-header-left d-none d-lg-block">
         <div class="logo-wrapper">
             <a href="{{ route('vendordashboard', session()->get('login_id') ?? (auth()->check() ? auth()->user()->login_id : 1)) }}">
-                <img class="blur-up lazyloaded" src="{{ asset('assets/images/dashboard/logo/logo.png') }}" alt="">
+                <img class="lazyloaded" src="{{ asset('assets/images/dashboard/logo/logo.png') }}" alt="TrymeNow" style="max-height: 42px; width: auto; max-width: 170px; object-fit: contain;">
             </a>
         </div>
     </div>

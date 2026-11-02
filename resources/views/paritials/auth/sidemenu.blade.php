@@ -6,7 +6,7 @@
     <div class="main-header-left d-none d-lg-block">
         <div class="logo-wrapper">
             <a href="{{ url('admin/dashboard') }}">
-                <img class="blur-up lazyloaded" src="{{ asset('assets/images/dashboard/logo/logo.png') }}" alt="">
+                <img class="lazyloaded" src="{{ asset('assets/images/dashboard/logo/logo.png') }}" alt="TrymeNow" style="max-height: 42px; width: auto; max-width: 170px; object-fit: contain;">
             </a>
         </div>
     </div>
