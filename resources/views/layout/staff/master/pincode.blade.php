@@ -130,7 +130,8 @@
         margin: 0 !important;
     }
 }
-</style>
+
+/* Modern Import Modal Styles */</style>
                             <div class="card-body">
 
                                 <div id="toolbar" class="d-flex align-items-center pincode-toolbar">
@@ -222,40 +223,34 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="btn-popup pull-right">
-                                    <div class="modal fade" id="exampleModalImport" tabindex="-1" role="dialog"
-                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title f-w-600" id="exampleModalLabel">Upload Pincode <a href="{{ route('staff.pincode.sample.download') }}" class='btn btn-primary' download="sample_pincode.xlsx"> Sample Format Download </a></h5>
-                                                    <button class="btn-close" type="button" data-bs-dismiss="modal"
-                                                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                                <!-- Import Pincode Modal -->
+                                <div class="modal fade" id="exampleModalImport" tabindex="-1" aria-labelledby="exampleModalImportLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <form action="{{ route('importpincode') }}" method="POST" enctype="multipart/form-data">
+                                                @csrf
+                                                <div class="modal-header text-white" style="background-color: #183543;">
+                                                    <h5 class="modal-title" id="exampleModalImportLabel"><i class="fa fa-upload me-2"></i>Import Pincode</h5>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                     <form action="{{ route('importpincode') }}"
-                                                              method="POST"
-                                                              enctype="multipart/form-data">
-                                                            @csrf
-                                                        <div class="form">
-                                                           <div class="form-group">
-                                                                <label for="validationCustom02"
-                                                                    class="mb-1">File </label>
-                                                               <input type="file" name="file" class="">
-                                                              </div>
+                                                    <div class="mb-3">
+                                                        <label for="importPincodeFile" class="form-label fw-bold">Select Excel/CSV File</label>
+                                                        <input type="file" class="form-control" id="importPincodeFile" name="file" accept=".xlsx,.xls,.csv" required>
+                                                        <div class="form-text">Supported formats: .xlsx, .xls, .csv (Max: 10MB)</div>
+                                                    </div>
+                                                    <div class="alert alert-info d-flex align-items-center" role="alert">
+                                                        <i class="fa fa-info-circle me-2" style="font-size: 18px;"></i>
+                                                        <div>
+                                                            Download the <a href="{{ route('staff.pincode.sample.download') }}" class="alert-link" download="sample_pincode.xlsx">sample template</a> to see the required format.
                                                         </div>
-                                                        <div class="modal-footer">
-                                                            <button class="btn btn-primary" class="submit"
-                                                                type="submit">Save</button>
-                                                            <button class="btn btn-secondary" type="button"
-                                                                data-bs-dismiss="modal">Close</button>
-                                                        </div>
-
-                                                    </form>
+                                                    </div>
                                                 </div>
-                                                
-                                            </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CANCEL</button>
+                                                    <button type="submit" class="btn btn-primary"><i class="fa fa-upload me-1"></i> IMPORT</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -786,10 +781,9 @@
                         `<option value="${zone.id}" selected>${zone.name}</option>`
                     );
                 });
-            })
+            });
         });
-       
-        
+
     </script>
 @endpush
 

@@ -42,7 +42,8 @@
 
                             <div class="card-body">
                                 <div id="toolbar" class="d-flex align-items-center">
-                                    <a href="{{ route('zone.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a>
+                                    <a href="{{ route('zone.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;" data-toggle="tooltip" data-placement="top" title="Report" data-original-title="Report"><i
+                                        class="fa fa-download me-1"></i> Download Report</a>
                                     <button type="button" class="btn btn-primary btn1" data-bs-toggle="modal"
                                         data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus"></i> Add
                                         Zonal</button>
@@ -103,8 +104,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                    <a href="{{ route('zone.export') }}" class="btn btn-success px-2 " data-toggle="tooltip" data-placement="top" title="Report" data-original-title="Report"><i
-                                    class="fa fa-list"></i> Download Report</a>
                                 {{-- EDIT  ZONAL --}}
 
                                 <div class="btn-popup pull-right">
