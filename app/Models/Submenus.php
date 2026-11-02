@@ -22,6 +22,9 @@ class Submenus extends Model
                 WHEN link = 'category.sub.index' THEN 5
                 WHEN link = 'attribute_groups.index' THEN 6
                 WHEN link = 'specification_groups.admin.index' THEN 7
+                WHEN link = 'department' THEN 30
+                WHEN link = 'designation.master.index' THEN 31
+                WHEN link = 'staffrole.index' THEN 32
                 ELSE 99
             END ASC")->orderBy('id', 'asc');
         });

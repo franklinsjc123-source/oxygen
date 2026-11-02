@@ -24,6 +24,8 @@ class PackageExport implements FromCollection, WithHeadings, WithMapping, Should
             'Package Name',
             'Price',
             'Validity (Days)',
+            '++ Days',
+            'Commission %',
             'Status',
             'Created Date'
         ];
@@ -36,6 +38,8 @@ class PackageExport implements FromCollection, WithHeadings, WithMapping, Should
             $row->name ?? '',
             $row->price ?? '',
             $row->validity ?? '',
+            $row->days ?? 0,
+            $row->commission ?? 0,
             $row->status == 1 ? 'Active' : 'Inactive',
             $row->created_at ? $row->created_at->format('Y-m-d H:i:s') : ''
         ];
