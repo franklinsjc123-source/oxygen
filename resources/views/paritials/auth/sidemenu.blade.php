@@ -126,9 +126,12 @@
             @endphp
             @php
                 $mmDisplayTitle = str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $mainmenu->title);
+                $isVendorMenu = (strtolower(trim($mainmenu->title)) == 'vendors');
+                $isRequestsActive = request()->routeIs('admin.seller_leads.*') || request()->is('admin/seller-requests*');
+                $isMainActive = $isVendorMenu && $isRequestsActive;
             @endphp
-            <li><a class="sidebar-header" href="#"><i data-feather="{{$mainmenu->font_icon}}"></i> <span>{{$mmDisplayTitle}}</span><i class="fa fa-angle-right pull-right" style="float: right;"></i></a>
-                <ul class="sidebar-submenu">
+            <li class="{{ $isMainActive ? 'active' : '' }}"><a class="sidebar-header {{ $isMainActive ? 'active' : '' }}" href="#"><i data-feather="{{$mainmenu->font_icon}}"></i> <span>{{$mmDisplayTitle}}</span><i class="fa fa-angle-right pull-right" style="float: right;"></i></a>
+                <ul class="sidebar-submenu" style="{{ $isMainActive ? 'display: block;' : '' }}">
                     @foreach($sub_menus as $submenu)
                         @if($submenu->title == 'Vendor Product List' || $submenu->link == 'vendor_products.crud.listing' || $submenu->title == 'Seller Product List')
                             @continue
@@ -143,22 +146,33 @@
                         <li><a href="{{ url($submenu->link) }}"><i class="fa fa-circle"></i>{{$smDisplayTitle}}</a></li>
 						@endif
                     @endforeach
+
+                    @if($isVendorMenu)
+                        @php
+                            $pendingLeadsCount = \Illuminate\Support\Facades\Schema::hasTable('seller_leads')
+                                ? \DB::table('seller_leads')->where('status', 'Pending')->count()
+                                : 0;
+                        @endphp
+                        <li class="{{ $isRequestsActive ? 'active' : '' }}">
+                            <a href="{{ route('admin.seller_leads.index') }}" class="{{ $isRequestsActive ? 'active' : '' }}" style="display: flex; align-items: center; white-space: nowrap;">
+                                <i class="fa fa-circle" style="margin-right: 6px;"></i>Seller Requests @if($pendingLeadsCount > 0)<span class="badge badge-primary" style="background-color: #ff8084 !important; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 5px; border-radius: 4px; line-height: 1; margin-left: 5px;">{{ $pendingLeadsCount }}</span>@endif
+                            </a>
+                        </li>
+                    @endif
                 </ul>
             </li>
         @endforeach
 
-        <li>
-            <a class="sidebar-header" href="{{ route('admin.seller_leads.index') }}">
-                <i data-feather="user-check"></i>
-                <span>Seller Requests</span>
-                @php
-                    $pendingLeadsCount = \Illuminate\Support\Facades\Schema::hasTable('seller_leads')
-                        ? \DB::table('seller_leads')->where('status', 'Pending')->count()
-                        : 0;
-                @endphp
-                @if($pendingLeadsCount > 0)
-                    <span class="badge badge-danger pull-right" style="float: right; margin-top: 3px; background-color: #ff5e57 !important; color: #fff; border-radius: 10px; padding: 2px 8px; font-size: 11px;">{{ $pendingLeadsCount }}</span>
-                @endif
+        @php
+            $pendingLeadsCount = \Illuminate\Support\Facades\Schema::hasTable('seller_leads')
+                ? \DB::table('seller_leads')->where('status', 'Pending')->count()
+                : 0;
+            $isRequestsActive = request()->routeIs('admin.seller_leads.*') || request()->is('admin/seller-requests*');
+        @endphp
+        <li class="{{ $isRequestsActive ? 'active' : '' }}">
+            <a class="sidebar-header {{ $isRequestsActive ? 'active' : '' }}" href="{{ route('admin.seller_leads.index') }}" style="display: flex; align-items: center; white-space: nowrap; letter-spacing: 0px !important;">
+                <i data-feather="user-check" style="margin-right: 7px !important; flex-shrink: 0;"></i>
+                <span style="font-size: 12px; font-weight: 600;">Seller Requests</span>@if($pendingLeadsCount > 0)<span class="badge badge-primary" style="background-color: #ff8084 !important; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 5px; border-radius: 4px; line-height: 1; margin-left: 5px; flex-shrink: 0; display: inline-block;">{{ $pendingLeadsCount }}</span>@endif
             </a>
         </li>
 		@else

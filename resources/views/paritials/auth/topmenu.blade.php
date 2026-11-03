@@ -193,13 +193,26 @@
                                         @endif
                                     @endif
                                 @endforeach
+                                @if(strtolower(trim($mm->title)) == 'vendors')
+                                    <li><a href="{{ route('admin.seller_leads.index') }}">{{ 'Seller Requests' }}</a></li>
+                                @endif
                             </ul>
                         </li>
                     @endif
                 @endforeach
             @endif
             @if (session()->get('log_type') != 'Staff')
-                <li><a href="{{ route('admin.seller_leads.index') }}"><i data-feather="user-check"></i> <span class="text-label">Seller Requests</span></a></li>
+                @php
+                    $pendingLeadsCountTop = \Illuminate\Support\Facades\Schema::hasTable('seller_leads')
+                        ? \DB::table('seller_leads')->where('status', 'Pending')->count()
+                        : 0;
+                @endphp
+                <li>
+                    <a href="{{ route('admin.seller_leads.index') }}" style="display: flex; align-items: center; white-space: nowrap;">
+                        <i data-feather="user-check" style="margin-right: 7px;"></i>
+                        <span class="text-label">Seller Requests</span>@if($pendingLeadsCountTop > 0)<span class="badge badge-primary" style="background-color: #ff8084 !important; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 5px; border-radius: 4px; line-height: 1; margin-left: 5px; display: inline-block;">{{ $pendingLeadsCountTop }}</span>@endif
+                    </a>
+                </li>
             @endif
             @if (session()->get('log_type') == 'Staff')
                 <li><a href="{{ url('staff/logout') }}"><i data-feather="log-in"></i> <span class="text-label">Logout</span></a></li>

@@ -22,6 +22,8 @@ return new class extends Migration
                 $table->string('email')->nullable();
                 $table->string('city', 100)->nullable();
                 $table->string('business_category', 100)->nullable();
+                $table->string('gstin', 50)->nullable();
+                $table->string('uin', 50)->nullable();
                 $table->text('address')->nullable();
                 $table->text('message')->nullable();
                 $table->string('status', 50)->default('Pending');

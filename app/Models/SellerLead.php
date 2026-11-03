@@ -18,6 +18,8 @@ class SellerLead extends Model
         'email',
         'city',
         'business_category',
+        'gstin',
+        'uin',
         'address',
         'message',
         'status',
