@@ -88,7 +88,7 @@
                                        <td>{{ $attribute->order_id }}</td>
                                        <td>{{ $attribute->order_date }}</td>
 									   <td>{{ $attribute->product_quantity }}</td>
-                                       <td> <span class="text-primary">Vendor </span> <br> <span>{{$attribute->customer_id}} </span> </td>
+                                       <td> <span class="text-primary">Seller </span> <br> <span>{{$attribute->customer_id}} </span> </td>
                                        <td>{{$attribute->delivery_date}}</td>
                                       <td>{{$attribute->grand_total}}</td>
                                       

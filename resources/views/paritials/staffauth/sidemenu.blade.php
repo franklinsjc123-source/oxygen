@@ -112,11 +112,14 @@ use Illuminate\Support\Facades\Route;
                     });
                 }
             @endphp
-            <li><a class="sidebar-header" href="#"><i data-feather="{{$mainmenu->font_icon}}"></i> <span>{{$mainmenu->title}}</span><i class="fa fa-angle-right pull-right" style="float: right;"></i></a>
+            @php
+                $mmDisplayTitle = str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $mainmenu->title);
+            @endphp
+            <li><a class="sidebar-header" href="#"><i data-feather="{{$mainmenu->font_icon}}"></i> <span>{{$mmDisplayTitle}}</span><i class="fa fa-angle-right pull-right" style="float: right;"></i></a>
                 <ul class="sidebar-submenu">
                     @foreach($sub_menus as $submenu)
                     @php
-                        if ($submenu->title == 'Vendor Product List' || $submenu->link == 'vendor_products.crud.listing') {
+                        if ($submenu->title == 'Vendor Product List' || $submenu->link == 'vendor_products.crud.listing' || $submenu->title == 'Seller Product List') {
                             continue;
                         }
                         $canSeeSubmenu = false;
@@ -153,9 +156,9 @@ use Illuminate\Support\Facades\Route;
                                     $finalRoute = route($submenu->link);
                                 }
                             @endphp
-                        <li><a href="{{ $finalRoute }}"><i class="fa fa-circle"></i>{{$submenu->title}}</a></li>
+                        <li><a href="{{ $finalRoute }}"><i class="fa fa-circle"></i>{{ str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $submenu->title) }}</a></li>
                         @else
-                        <li><a href="{{ url('staff/' . ltrim($submenu->link, '/')) }}"><i class="fa fa-circle"></i>{{$submenu->title}}</a></li>
+                        <li><a href="{{ url('staff/' . ltrim($submenu->link, '/')) }}"><i class="fa fa-circle"></i>{{ str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $submenu->title) }}</a></li>
                         @endif
                     @endif
                     @endforeach

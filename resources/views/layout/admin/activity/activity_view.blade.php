@@ -194,7 +194,7 @@
                                 </div>
 									</div>
                                     
-									<h3 class="d-flex justify-content-between align-items-center mb-3"><span>Activity Tracking</span> <a href="{{ route(request()->is('staff/*') ? 'staffvendorcreate.show' : 'vendorcreate.show', $vid) }}" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> Add Vendor </a></h3>
+									<h3 class="d-flex justify-content-between align-items-center mb-3"><span>Activity Tracking</span> <a href="{{ route(request()->is('staff/*') ? 'staffvendorcreate.show' : 'vendorcreate.show', $vid) }}" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> Add Seller </a></h3>
     <div class="table-responsive">
         <table class="table table-bordered track_tbl">
             <thead>

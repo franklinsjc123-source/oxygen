@@ -133,7 +133,7 @@
                             <div class="product-detail">
                                 <a href="{{ route('addtocart', $product->product_id ) }}">
                                     <?php $vendarname = App\Models\User::where('login_id', $product->created_by)->first(); ?>
-                                    <h6 style="background-color:lightgray;">{{ $vendarname->name ?? 'Vendor' }}</h6>
+                                    <h6 style="background-color:lightgray;">{{ $vendarname->name ?? 'Seller' }}</h6>
                                     <h6>{{ $product->product_name }}</h6>
                                     @php
                                         $retail = (float) ($product->retail_price ?? 0);

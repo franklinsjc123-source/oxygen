@@ -327,12 +327,12 @@
                                     <li><a href="#" class="has-submenu" id="sm-1653397609414521-13" aria-haspopup="true" aria-controls="sm-1653397609414521-14" aria-expanded="false">pages<span class="sub-arrow"></span></a>
                                         <ul id="sm-1653397609414521-14" role="group" aria-hidden="true" aria-labelledby="sm-1653397609414521-13" aria-expanded="false">
                                             <li>
-                                                <a href="#" class="has-submenu" id="sm-1653397609414521-15" aria-haspopup="true" aria-controls="sm-1653397609414521-16" aria-expanded="false">vendor<span class="sub-arrow"></span></a>
+                                                <a href="#" class="has-submenu" id="sm-1653397609414521-15" aria-haspopup="true" aria-controls="sm-1653397609414521-16" aria-expanded="false">seller<span class="sub-arrow"></span></a>
                                                 <ul id="sm-1653397609414521-16" role="group" aria-hidden="true" aria-labelledby="sm-1653397609414521-15" aria-expanded="false">
-                                                    <li><a href="vendor-dashboard.html">vendor dashboard</a>
+                                                    <li><a href="vendor-dashboard.html">seller dashboard</a>
                                                     </li>
-                                                    <li><a href="vendor-profile.html">vendor profile</a></li>
-                                                    <li><a href="become-vendor.html">become vendor</a></li>
+                                                    <li><a href="vendor-profile.html">seller profile</a></li>
+                                                    <li><a href="become-vendor.html">become seller</a></li>
                                                 </ul>
                                             </li>
                                             <li>

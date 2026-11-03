@@ -20,7 +20,7 @@
 				<div class="row">
 					<div class="col">
 						<div class="page-header-left">
-							<h3>Create Vendor
+							<h3>Create Seller
 							
 							</h3>
 						</div>
@@ -28,8 +28,8 @@
 					<div class="col-lg-6">
 						<ol class="breadcrumb pull-right">
 							<li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
-							<li class="breadcrumb-item">Vendors </li>
-							<li class="breadcrumb-item active">Create Vendor </li>
+							<li class="breadcrumb-item">Sellers </li>
+							<li class="breadcrumb-item active">Create Seller </li>
 						</ol>
 					</div>
 				</div>

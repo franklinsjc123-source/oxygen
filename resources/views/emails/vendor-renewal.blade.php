@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vendor Plan Renewal Success</title>
+    <title>Seller Plan Renewal Success</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #f4f4f7; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
     <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f7; padding: 40px 0;">
@@ -26,7 +26,7 @@
                                 Dear <strong>{{ $recipientName }}</strong>,
                             </p>
                             <p style="margin: 0 0 20px; color: #555; font-size: 15px; line-height: 1.6;">
-                                We're happy to inform you that the vendor plan for <strong>{{ $shopName }}</strong> has been successfully renewed.
+                                We're happy to inform you that the seller plan for <strong>{{ $shopName }}</strong> has been successfully renewed.
                             </p>
 
                             <table width="100%" cellpadding="0" cellspacing="0" style="margin: 20px 0; background-color: #f8f9fa; border-radius: 8px; padding: 15px;">

@@ -90,7 +90,7 @@
                                         <div class="icons-widgets col-4">
                                             <div class="align-self-center text-center"><i data-feather="users" class="font-danger"></i></div>
                                         </div>
-                                        <div class="media-body col-8"><span class="m-0"> Vendors</span>
+                                        <div class="media-body col-8"><span class="m-0"> Sellers</span>
                                             <h3 class="mt-0 mb-0"><span class="counter">45631</span><small> </small></h3>
                                         </div>
                                     </div>

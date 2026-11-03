@@ -1,7 +1,7 @@
 
 
  @extends('app_template')
- @section('title','Vendor Store')
+ @section('title','Seller Store')
  @section('content')
 @include('website.front-end.newhead')
  

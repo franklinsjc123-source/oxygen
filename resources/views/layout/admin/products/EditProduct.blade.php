@@ -96,12 +96,12 @@
                                     
                                      <!-- Category Selection -->
                                      <div class="row g-3">
-                                         <!-- Vendor -->
+                                         <!-- Seller -->
                                          <div class="col-md-3">
                                              <div class="form-group">
-                                                 <label class="form-label fw-bold text-dark">Vendor</label>
+                                                 <label class="form-label fw-bold text-dark">Seller</label>
                                                  <select class="js-select2 form-control text-secondary" id="vendorlist" disabled required>
-                                                     <option value="">Select Vendor</option>
+                                                     <option value="">Select Seller</option>
                                                      @foreach ($vendorlist ?? [] as $vendor)
                                                          <option id="{{ $vendor->id }}" value="{{ $vendor->id }}" {{ ($vendor->id == $product->vendor_id || $vendor->id == $product->login_id) ? 'selected' : '' }}>
                                                              {{ $vendor->shop_name }}

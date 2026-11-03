@@ -808,10 +808,10 @@
                             <i class="fa fa-users" style="position: absolute; right: 20px; bottom: 20px; font-size: 36px; opacity: 0.18; color: #ffffff;"></i>
                         </div>
                         
-                        <!-- Card 4: Vendors -->
+                        <!-- Card 4: Sellers -->
                         <div class="metric-card-custom card-style-vendors" style="position: relative;">
                             <div>
-                                <div class="metric-card-label">Vendors</div>
+                                <div class="metric-card-label">Sellers</div>
                                 <div class="metric-card-value" id="metricVendorCount">{{ $vendorCount ?? 0 }}</div>
                             </div>
                             <i class="fa fa-store" style="position: absolute; right: 20px; bottom: 20px; font-size: 36px; opacity: 0.18; color: #ffffff;"></i>
@@ -1039,7 +1039,7 @@
                             <div class="d-flex align-items-center gap-1">
                                 <ul class="activity-nav-pills" id="perf-left-tabs">
                                     <li><button type="button" class="activity-nav-link active" onclick="switchPerformanceLeftTab(this, 'employee')">Employee</button></li>
-                                    <li><button type="button" class="activity-nav-link" onclick="switchPerformanceLeftTab(this, 'vendor')">Vendor</button></li>
+                                    <li><button type="button" class="activity-nav-link" onclick="switchPerformanceLeftTab(this, 'vendor')">Seller</button></li>
                                     <li><button type="button" class="activity-nav-link" onclick="switchPerformanceLeftTab(this, 'location')">Location</button></li>
                                     <li><button type="button" class="activity-nav-link" onclick="switchPerformanceLeftTab(this, 'customer')">Customer</button></li>
                                 </ul>

@@ -46,7 +46,7 @@
 
                             <div class="card-body">
                                 <a href="{{ route('vendorcreate.index') }}" class="btn  btn-primary"><i class="fa fa-plus"></i> Add
-                                    vendor</a> <a href="{{ route('vendorvendor.export') }}" class="btn btn-success ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-download me-1"></i> Download Report</a>
+                                    Seller</a> <a href="{{ route('vendorvendor.export') }}" class="btn btn-success ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-download me-1"></i> Download Report</a>
 
 
 
@@ -59,7 +59,7 @@
                                     <thead>
                                         <tr>
                                             <th data-field="image"> Profile</th>
-                                            <th data-field="empdetails" data-sortable="true"> Vendor Details</th>
+                                            <th data-field="empdetails" data-sortable="true"> Seller Details</th>
                                             <th data-field="contactdetail" data-sortable="true">Username</th>
                                             <th data-field="package" data-sortable="true"> Package Details </th>
                                             <th data-field="documents" data-sortable="true">Documents Details </th>

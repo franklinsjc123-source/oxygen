@@ -124,17 +124,23 @@
                     });
                 }
             @endphp
-            <li><a class="sidebar-header" href="#"><i data-feather="{{$mainmenu->font_icon}}"></i> <span>{{$mainmenu->title}}</span><i class="fa fa-angle-right pull-right" style="float: right;"></i></a>
+            @php
+                $mmDisplayTitle = str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $mainmenu->title);
+            @endphp
+            <li><a class="sidebar-header" href="#"><i data-feather="{{$mainmenu->font_icon}}"></i> <span>{{$mmDisplayTitle}}</span><i class="fa fa-angle-right pull-right" style="float: right;"></i></a>
                 <ul class="sidebar-submenu">
                     @foreach($sub_menus as $submenu)
-                        @if($submenu->title == 'Vendor Product List' || $submenu->link == 'vendor_products.crud.listing')
+                        @if($submenu->title == 'Vendor Product List' || $submenu->link == 'vendor_products.crud.listing' || $submenu->title == 'Seller Product List')
                             @continue
                         @endif
+                        @php
+                            $smDisplayTitle = str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $submenu->title);
+                        @endphp
 						@if($submenu->type=='route')
-                        <li><a href="{{ route($submenu->link) }}"><i class="fa fa-circle"></i>{{$submenu->title}}</a></li>
+                        <li><a href="{{ route($submenu->link) }}"><i class="fa fa-circle"></i>{{$smDisplayTitle}}</a></li>
 						@else
 							
-                        <li><a href="{{ url($submenu->link) }}"><i class="fa fa-circle"></i>{{$submenu->title}}</a></li>
+                        <li><a href="{{ url($submenu->link) }}"><i class="fa fa-circle"></i>{{$smDisplayTitle}}</a></li>
 						@endif
                     @endforeach
                 </ul>
@@ -232,11 +238,14 @@
                     });
                 }
             @endphp
-            <li><a class="sidebar-header" href="#"><i data-feather="{{$mainmenu->font_icon}}"></i> <span>{{$mainmenu->title}}</span><i class="fa fa-angle-right pull-right" style="float: right;"></i></a>
+            @php
+                $mmDisplayTitle = str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $mainmenu->title);
+            @endphp
+            <li><a class="sidebar-header" href="#"><i data-feather="{{$mainmenu->font_icon}}"></i> <span>{{$mmDisplayTitle}}</span><i class="fa fa-angle-right pull-right" style="float: right;"></i></a>
                 <ul class="sidebar-submenu">
                     @foreach($sub_menus as $submenu)
                     @php
-                        if ($submenu->title == 'Vendor Product List' || $submenu->link == 'vendor_products.crud.listing') {
+                        if ($submenu->title == 'Vendor Product List' || $submenu->link == 'vendor_products.crud.listing' || $submenu->title == 'Seller Product List') {
                             continue;
                         }
                         $canSeeSubmenu = false;
@@ -258,8 +267,9 @@
                             } else {
                                 $routeUrl = url($submenu->link);
                             }
+                            $smDisplayTitle = str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $submenu->title);
                         @endphp
-                        <li><a href="{{ $routeUrl }}"><i class="fa fa-circle"></i>{{$submenu->title}}</a></li>
+                        <li><a href="{{ $routeUrl }}"><i class="fa fa-circle"></i>{{$smDisplayTitle}}</a></li>
                     @endif
                     @endforeach
                 </ul>

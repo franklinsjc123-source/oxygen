@@ -88,7 +88,7 @@
                     <div class="vendor-search-wrapper">
                         <form class="vendor-search-form" method="get" action="{{ route('shops') }}">
                             <input type="text" class="form-control mr-4 bg-white" name="vendor" id="vendor"
-                                placeholder="Search Vendors" autocomplete="off" value="{{ $keyword ?? '' }}" />
+                                placeholder="Search Sellers" autocomplete="off" value="{{ $keyword ?? '' }}" />
                             <div class="search-suggest-box" id="vendor_suggest_box"></div>
                             <button class="btn btn-primary btn-rounded" type="submit">Apply</button>
                         </form>

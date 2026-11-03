@@ -73,7 +73,7 @@
                                    <tr>
                                        <td>106</td>
                                        <td>09/05/2022 <br> 7.30 Am </td>
-                                       <td> <span>Vendor </span> <br> <span>SKAP MULTISERVICE </span> </td>
+                                       <td> <span>Seller </span> <br> <span>SKAP MULTISERVICE </span> </td>
                                        <td>1000</td>
                                       
                                       
@@ -99,7 +99,7 @@
                                     <tr>
                                        <td>057</td>
                                        <td>09/05/2022 <br> 7.30 Am </td>
-                                       <td> <span>Vendor </span> <br> <span>SKAP MULTISERVICE </span> </td>
+                                       <td> <span>Seller </span> <br> <span>SKAP MULTISERVICE </span> </td>
                                        <td>1000</td>
                                       
                                       

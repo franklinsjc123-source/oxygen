@@ -169,11 +169,11 @@
                                             <div class="row">
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <label class="form-label fw-bold text-dark" >Vendor</label>
+                                                        <label class="form-label fw-bold text-dark" >Seller</label>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="vendorlist"
                                                                 id="vendorlist"  required>
-                                                                <option value="">Select Vendor
+                                                                <option value="">Select Seller
                                                                     </option>
 																@foreach ($vendorlist as $vendor)
                                                                 <option id="{{ $vendor->id }}"
@@ -395,11 +395,11 @@
                                             <div class="row">
                                             <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <label class="form-label fw-bold text-dark">Vendor</label>
+                                                        <label class="form-label fw-bold text-dark">Seller</label>
                                                         <div id="clothing">
                                                             <select class="js-select2 form-control" name="vendorlist"
                                                                 id="vendorlist" disabled required>
-                                                                <option value="">Select Vendor
+                                                                <option value="">Select Seller
                                                                     </option>
 																@foreach ($vendorlist as $vendor)
                                                                 <option id="{{ $vendor->id }}"

@@ -115,7 +115,7 @@ class AuthController extends Controller
                 return $redirect;
             } else {
                 Auth::logout();
-                return view('auth.vendorlogin', ['error' => 'You do not have vendor access.']);
+                return view('auth.vendorlogin', ['error' => 'You do not have seller access.']);
             }
         } else {
             return view('auth.vendorlogin', ['error' => 'Invalid username or password.']);
@@ -252,7 +252,7 @@ class AuthController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
             if ($user->status == 2) {
-                $redirect = '/vendor/login';
+                $redirect = '/seller/login';
             } elseif ($user->status == 3) {
                 $redirect = '/staff/login';
             }

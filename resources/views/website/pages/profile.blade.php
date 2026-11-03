@@ -105,7 +105,7 @@
                                                     <td>rameshrajan</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Vendor / Admin</td>
+                                                    <td>Seller / Admin</td>
                                                     <td>SKAP GARMENTS</td>
                                                 </tr>
                                                 <tr>

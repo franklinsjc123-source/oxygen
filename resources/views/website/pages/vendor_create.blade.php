@@ -27,7 +27,7 @@
                         <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
                             <li class="breadcrumb-item"><a href="dashboard.php"><i data-feather="home"></i></a></li>
 							
-							<li class="breadcrumb-item active">Vendor Creation </li>
+							<li class="breadcrumb-item active">Seller Creation </li>
                         </ol>
                     </div>
                 </div>

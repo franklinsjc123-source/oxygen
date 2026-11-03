@@ -57,7 +57,7 @@
                                         </a>
                                         <a href="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.create' : 'activity_trackers.create') }}">
                                             <button type="button" class="btn btn-primary">
-                                                <i class="fa fa-plus me-1"></i> New Vendor Tracker
+                                                <i class="fa fa-plus me-1"></i> New Seller Tracker
                                             </button>
                                         </a>
                                     </div>

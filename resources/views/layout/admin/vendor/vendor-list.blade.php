@@ -50,7 +50,7 @@
                                 <div id="toolbar" class="d-flex align-items-center">
                                     <a href="{{ route('vendor.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-download me-1"></i> Download Report</a>
                                     <a href="{{ route('vendorcreate.index') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add
-                                        vendor</a>
+                                        Seller</a>
                                 </div>
 
 
@@ -66,7 +66,7 @@
                                             <th data-field="sno" data-sortable="true">S.No.</th>
                                             <th data-field="image">IMAGE</th>
                                             <th data-field="shopdetails">SHOP DETAILS</th>
-                                            <th data-field="vendordetails" data-sortable="true">VENDOR DETAILS</th>
+                                            <th data-field="vendordetails" data-sortable="true">SELLER DETAILS</th>
                                             <th data-field="package" data-sortable="true">PACKAGE DETAILS</th>
                                             <th data-field="business" data-sortable="true">BUSINESS DETAILS</th>
                                             <th data-field="rm_sales" data-sortable="true">RM & SALES DETAILS</th>

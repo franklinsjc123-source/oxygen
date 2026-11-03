@@ -1,5 +1,5 @@
  @extends('app_template')
- @section('title','Vendor Store')
+ @section('title','Seller Store')
  @section('content')
    <!-- Start of Main -->
 
@@ -46,7 +46,7 @@
                                     </div> --}}
                                     <!-- End of Widget -->
                                     <div class="widget widget-collapsible widget-contact">
-                                        <h3 class="widget-title"><span>Contact Vendor</span></h3>
+                                        <h3 class="widget-title"><span>Contact Seller</span></h3>
                                         <div class="widget-body">
                                             <input type="text" class="form-control" name="name" id="name"
                                                 placeholder="Your Name" />
@@ -245,7 +245,7 @@
                         <div class="main-content">
                             <div class="store store-banner mb-4">
                                 <figure class="store-media">
-                                    <img src="{{ asset('assets/images/vendor/profile/' . $vendordetails->profile_image) }}" alt="Vendor" width="930" height="446"
+                                    <img src="{{ asset('assets/images/vendor/profile/' . $vendordetails->profile_image) }}" alt="Seller" width="930" height="446"
                                         style="background-color: #414960;" />
                                 </figure>
                                 <div class="store-content">

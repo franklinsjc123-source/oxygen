@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vendor Plan Expiry Notification</title>
+    <title>Seller Plan Expiry Notification</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #f4f4f7; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
     <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f7; padding: 40px 0;">
@@ -26,7 +26,7 @@
                                 Dear <strong>{{ $recipientName }}</strong>,
                             </p>
                             <p style="margin: 0 0 20px; color: #555; font-size: 15px; line-height: 1.6;">
-                                This is a notification regarding the vendor plan for <strong>{{ $shopName }}</strong>.
+                                This is a notification regarding the seller plan for <strong>{{ $shopName }}</strong>.
                                 The subscription plan {{ $isExpiryToday ? 'has expired today' : 'is scheduled to expire on' }} 
                                 <strong style="color: #e74c3c;">{{ $expiryDate }}</strong>.
                             </p>
@@ -40,7 +40,7 @@
                             <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
                                 <tr>
                                     <td align="center">
-                                        <a href="{{ url('vendor/dashboard') }}" style="display: inline-block; background: linear-gradient(135deg, #183543 0%, #0f2430 100%); color: #ffffff; text-decoration: none; padding: 14px 40px; border-radius: 50px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 15px rgba(24, 53, 67, 0.4);">
+                                        <a href="{{ url('seller/dashboard') }}" style="display: inline-block; background: linear-gradient(135deg, #183543 0%, #0f2430 100%); color: #ffffff; text-decoration: none; padding: 14px 40px; border-radius: 50px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 15px rgba(24, 53, 67, 0.4);">
                                             Renew Now →
                                         </a>
                                     </td>

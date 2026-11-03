@@ -99,10 +99,10 @@
                         }
                     @endphp
                     <li class="has-sub">
-                        <a href="#"><i data-feather="{{ $mm->font_icon }}"></i> <span class="text-label">{{ $mm->title }}</span> <span class="arr">&#10095;</span></a>
+                        <a href="#"><i data-feather="{{ $mm->font_icon }}"></i> <span class="text-label">{{ str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $mm->title) }}</span> <span class="arr">&#10095;</span></a>
                         <ul class="sub">
                             @foreach($mob_subs as $sm)
-                                @if($sm->title == 'Vendor Product List' || $sm->link == 'vendor_products.crud.listing')
+                                @if($sm->title == 'Vendor Product List' || $sm->link == 'vendor_products.crud.listing' || $sm->title == 'Seller Product List')
                                     @continue
                                 @endif
                                 @php $canSee = $mob_sr ? in_array($sm->id, explode(',', $mob_sr->submenus)) : true; @endphp
@@ -133,9 +133,9 @@
                                                 $finalRoute = route($sm->link);
                                             }
                                         @endphp
-                                        <li><a href="{{ $finalRoute }}">{{ $sm->title }}</a></li>
+                                        <li><a href="{{ $finalRoute }}">{{ str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $sm->title) }}</a></li>
                                     @else
-                                        <li><a href="{{ url($sm->link) }}">{{ $sm->title }}</a></li>
+                                        <li><a href="{{ url($sm->link) }}">{{ str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $sm->title) }}</a></li>
                                     @endif
                                 @endif
                             @endforeach

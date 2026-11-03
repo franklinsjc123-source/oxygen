@@ -51,7 +51,7 @@ class EnsurePanelSession
                 if ((int) $user->status === 3) {
                     return redirect()->route('staffdashboard', $user->login_id);
                 }
-            } elseif ($request->is('*/vendor/login') || $request->is('vendor/login') || $request->is('*/vendar/login') || $request->is('vendar/login')) {
+            } elseif ($request->is('*/vendor/login') || $request->is('vendor/login') || $request->is('*/vendar/login') || $request->is('vendar/login') || $request->is('*/seller/login') || $request->is('seller/login')) {
                 if ((int) $user->status === 2) {
                     return redirect()->route('vendordashboard', $user->login_id);
                 }
@@ -59,9 +59,10 @@ class EnsurePanelSession
         }
 
         $isAdminAuthPage = $request->is('admin') || $request->is('admin/login') || $request->is('admin/register');
-        // Support correct vendor path and legacy typo path.
+        // Support correct vendor path, seller path, and legacy typo path.
         $isVendorAuthPage = $request->is('vendor') || $request->is('vendor/login') || $request->is('vendor/register')
-            || $request->is('vendar') || $request->is('vendar/login') || $request->is('vendar/register');
+            || $request->is('vendar') || $request->is('vendar/login') || $request->is('vendar/register')
+            || $request->is('seller') || $request->is('seller/login') || $request->is('seller/register');
         $isStaffAuthPage = $request->is('staff') || $request->is('staff/login') || $request->is('staff/register');
 
         if ($isAdminAuthPage || $isVendorAuthPage || $isStaffAuthPage) {
@@ -70,8 +71,8 @@ class EnsurePanelSession
 
         if (!auth()->check() || !$request->session()->has('login_id')) {
             // Redirect to the correct login page based on URL prefix
-            if ($request->is('vendor/*') || $request->is('vendor')) {
-                return redirect('/vendor/login');
+            if ($request->is('seller/*') || $request->is('seller') || $request->is('vendor/*') || $request->is('vendor')) {
+                return redirect('/seller/login');
             } elseif ($request->is('staff/*') || $request->is('staff')) {
                 return redirect('/staff/login');
             } elseif ($request->is('admin/*') || $request->is('admin')) {

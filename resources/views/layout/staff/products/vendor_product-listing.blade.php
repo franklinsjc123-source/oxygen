@@ -115,7 +115,7 @@
                                     <thead>
                                         <tr class="">
                                             <th style="width: 5%"data-field="dd" data-checkbox="true" data-sortable="true"></th>
-                                            <th style="width: 10%" data-field="PId" data-sortable="true">VENDOR Id</th>
+                                            <th style="width: 10%" data-field="PId" data-sortable="true">SELLER Id</th>
                                             
                                             <th style="width: 10%" data-field="id" data-sortable="true">IMAGE</th>
                                             <th style="width: 5%" data-field="pname" data-sortable="true">PRODUCT NAME</th>

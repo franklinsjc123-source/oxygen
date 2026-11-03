@@ -34,7 +34,7 @@
                         <div class="col-12">
                         <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
                             <li class="breadcrumb-item"><a href="dashboard.php"><i data-feather="home"></i></a></li>
-                                <li class="breadcrumb-item active">Vendors Listings</li>
+                                <li class="breadcrumb-item active">Sellers Listings</li>
                         </ol>
                     </div>
                 </div>
@@ -64,7 +64,7 @@
                                     <thead>
                                     <tr>
                                         <th data-field="id" data-sortable="true"> Id</th>
-                                        <th data-field="name" data-sortable="true"> Vendor Details</th>
+                                        <th data-field="name" data-sortable="true"> Seller Details</th>
                                         <th data-field="regno" data-sortable="true"> Registration No</th>
                                         <th data-field="package" data-sortable="true">Package </th>
                                         <th data-field="wallet" data-sortable="true">Wallet  </th>

@@ -27,7 +27,7 @@ Route::get('/autologin', function() {
 
 // Intercept all legacy dashboard.php requests globally across the application
 Route::get('{any_dashboard}', function ($any_dashboard) {
-    if (str_contains($any_dashboard, 'vendor') || str_contains($any_dashboard, 'vendar')) {
+    if (str_contains($any_dashboard, 'seller') || str_contains($any_dashboard, 'vendor') || str_contains($any_dashboard, 'vendar')) {
         $id = null;
         if (auth()->check() && (int) auth()->user()->status === 2) {
             $id = auth()->user()->login_id;
@@ -37,7 +37,7 @@ Route::get('{any_dashboard}', function ($any_dashboard) {
         if ($id) {
             return redirect()->route('vendordashboard', $id);
         }
-        return redirect('vendor/login');
+        return redirect('seller/login');
     } elseif (str_contains($any_dashboard, 'staff')) {
         $id = null;
         if (auth()->check() && (int) auth()->user()->status === 5) {
@@ -82,8 +82,22 @@ Route::get('/dashboard', function () {
 // Routes For Admin
 Route::prefix('/admin')->middleware('panel.session')->group(__DIR__.'/admin/adminRoutes.php');
 
-// Routes For Vendor
+// Backwards compatibility: Redirect /vendor to /seller
+Route::get('/vendor/login', function () {
+    return redirect('/seller/login', 301);
+});
+Route::get('/vendor', function () {
+    return redirect('/seller/login', 301);
+});
+Route::get('/vendor/dashboard/{id?}', function ($id = null) {
+    return redirect('/seller/dashboard' . ($id ? '/' . $id : ''), 301);
+});
+
+// Routes For Legacy Vendor (fallback)
 Route::prefix('/vendor')->middleware('panel.session')->group(__DIR__.'/vendor/vendorRoutes.php');
+
+// Routes For Seller (primary)
+Route::prefix('/seller')->middleware('panel.session')->group(__DIR__.'/vendor/vendorRoutes.php');
 
 
 // Routes For Staff

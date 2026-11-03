@@ -283,7 +283,7 @@
                                     <img  src="  "class="img-fluid bg-img" alt="">
                                 </div>
                                   </a>   
-                                 <h6>VENDORS</h6>                                 
+                                 <h6>SELLERS</h6>                                 
                             </div>
                         </a>
                     </div>
@@ -332,7 +332,7 @@
                                                         <div class="img-sec">
                                                             <img  src="  "class="img-fluid bg-img" alt="">
                                                         </div>                                                     
-                                                        <h6>VENDORS</h6>                                
+                                                        <h6>SELLERS</h6>                                
                                                     </div>                                            
                                             </div>
                                         </a>

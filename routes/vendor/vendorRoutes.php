@@ -108,7 +108,7 @@ Route::get('dashboard', function() {
 	if ($id) {
 		return redirect()->route('vendordashboard', $id);
 	}
-	return redirect('vendor/login');
+	return redirect('seller/login');
 })->name('vendor.dashboard');
 
 Route::get('dashboard.php', function() {
@@ -121,7 +121,7 @@ Route::get('dashboard.php', function() {
 	if ($id) {
 		return redirect()->route('vendordashboard', $id);
 	}
-	return redirect('vendor/login');
+	return redirect('seller/login');
 });
 // Category Sub
 Route::resource('category_sub', CategorySubController::class, ['names' => 'vendorcategory.sub']);

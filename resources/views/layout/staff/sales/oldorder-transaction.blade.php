@@ -82,7 +82,7 @@
                                        <td>#9877106</td>
                                        <td>03/June/2022 <br> 7.30 Am </td>
 									   <td>3</td>
-                                       <td> <span class="text-primary">Vendor </span> <br> <span>SKAP MULTISERVICE </span> </td>
+                                       <td> <span class="text-primary">Seller </span> <br> <span>SKAP MULTISERVICE </span> </td>
                                        <td>10/June/2022</td>
                                       <td>1000</td>
                                       
@@ -115,7 +115,7 @@
                                        <td>#9877106</td>
                                        <td>03/June/2022 <br> 7.30 Am </td>
 									   <td>3</td>
-                                       <td> <span class="text-primary">Vendor </span> <br> <span>SKAP MULTISERVICE </span> </td>
+                                       <td> <span class="text-primary">Seller </span> <br> <span>SKAP MULTISERVICE </span> </td>
                                        <td>10/June/2022</td>
                                       <td>1000</td>
                                       

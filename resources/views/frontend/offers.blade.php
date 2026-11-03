@@ -451,7 +451,7 @@ header.header {
                     <!-- Vendor Search Input -->
                     <div class="vendor-search-wrapper mb-4">
                         <form class="vendor-search-form" onsubmit="return false;">
-                            <input type="text" class="form-control mr-4 bg-white" name="vendor" id="vendor-search-input" placeholder="Search Vendors by shop name, address..." />
+                            <input type="text" class="form-control mr-4 bg-white" name="vendor" id="vendor-search-input" placeholder="Search Sellers by shop name, address..." />
                             <button class="btn btn-primary btn-rounded" type="button"><i class="w-icon-search"></i> Search</button>
                         </form>
                     </div>
@@ -476,7 +476,7 @@ header.header {
                                                 </div>
 
                                                 <div class="store-subtitle">
-                                                    {{ $vendor->owner_name ?: 'Vendor' }}
+                                                    {{ $vendor->owner_name ?: 'Seller' }}
                                                 </div>
 
                                                 <div class="store-address">

@@ -13,8 +13,8 @@
             }
         }
     }
-    $vName = optional($vendorProfile)->shop_name ?: (optional($vendorProfile)->owner_name ?: 'Vendor');
-    $vRole = optional($vendorProfile)->owner_name ?: 'Vendor Panel';
+    $vName = optional($vendorProfile)->shop_name ?: (optional($vendorProfile)->owner_name ?: 'Seller');
+    $vRole = optional($vendorProfile)->owner_name ?: 'Seller Panel';
     $vImg = optional($vendorProfile)->profile_image && file_exists(public_path('assets/images/vendor/profile/' . $vendorProfile->profile_image))
         ? asset('assets/images/vendor/profile/' . $vendorProfile->profile_image)
         : asset('assets/images/dashboard/man.jpeg');
@@ -201,7 +201,7 @@
     <a href="#" class="admin-mmenu-x" id="admMobileX">&times;</a>
     <div class="admin-mmenu-box">
         <div class="admin-mmenu-user">
-            <img src="{{ $vImg }}" alt="Vendor">
+            <img src="{{ $vImg }}" alt="Seller">
             <h6 class="vendor-shop-name" style="font-family: 'Pristina', 'Dancing Script', 'Pinyon Script', cursive, sans-serif !important; font-size: 20px !important; font-weight: 700; text-transform: capitalize !important;">{{ ucwords(strtolower($vName)) }}</h6>
             <p style="text-transform: capitalize !important;">{{ ucwords(strtolower($vRole)) }}</p>
         </div>

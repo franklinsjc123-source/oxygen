@@ -14,8 +14,8 @@
             }
         }
     }
-    $vendorName = optional($vendorProfile)->shop_name ?: (optional($vendorProfile)->owner_name ?: (session()->get('username') ?: 'Vendor'));
-    $vendorRole = optional($vendorProfile)->owner_name ?: 'Vendor Panel';
+    $vendorName = optional($vendorProfile)->shop_name ?: (optional($vendorProfile)->owner_name ?: (session()->get('username') ?: 'Seller'));
+    $vendorRole = optional($vendorProfile)->owner_name ?: 'Seller Panel';
     $vendorImage = optional($vendorProfile)->profile_image && file_exists(public_path('assets/images/vendor/profile/' . $vendorProfile->profile_image))
         ? asset('assets/images/vendor/profile/' . $vendorProfile->profile_image)
         : asset('assets/images/dashboard/man.jpeg');
@@ -127,20 +127,20 @@
             </li>
            
          
-           {{--<li><a class="sidebar-header" href=""><i data-feather="users"></i><span>Vendors</span><i
+           {{--<li><a class="sidebar-header" href=""><i data-feather="users"></i><span>Sellers</span><i
                 class="fa fa-angle-right pull-right"></i></a>
                 <ul class="sidebar-submenu">
-                    <li><a href="{{ route('vendor-list') }}"><i class="fa fa-circle"></i>Vendor List</a></li>
-                    <li><a href="{{ route('vendorcreate.index') }}"><i class="fa fa-circle"></i>Create Vendor</a>
+                    <li><a href="{{ route('vendor-list') }}"><i class="fa fa-circle"></i>Seller List</a></li>
+                    <li><a href="{{ route('vendorcreate.index') }}"><i class="fa fa-circle"></i>Create Seller</a>
                     </li>
                 </ul>
             </li>
              @if (session()->get('level') == 5)
-                <li><a class="sidebar-header" href=""><i data-feather="users"></i><span>Vendors</span><i
+                <li><a class="sidebar-header" href=""><i data-feather="users"></i><span>Sellers</span><i
                             class="fa fa-angle-right pull-right"></i></a>
                     <ul class="sidebar-submenu">
-                        <li><a href="{{ url('vendor/list') }}"><i class="fa fa-circle"></i>Vendor List</a></li>
-                        <li><a href="{{ route('vendorcreate.index') }}"><i class="fa fa-circle"></i>Create Vendor</a>
+                        <li><a href="{{ url('vendor/list') }}"><i class="fa fa-circle"></i>Seller List</a></li>
+                        <li><a href="{{ route('vendorcreate.index') }}"><i class="fa fa-circle"></i>Create Seller</a>
                         </li>
                     </ul>
                 </li>

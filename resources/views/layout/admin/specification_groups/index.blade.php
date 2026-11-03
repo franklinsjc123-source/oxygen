@@ -152,7 +152,7 @@
                     </td>
                     <td>
                         @if ($group->created_by == 'Vendor')
-                            <span class="badge badge-warning" style="background-color: #ff9f43 !important; color: white;">{{ $group->vendor_name ?? 'Vendor' }}</span>
+                            <span class="badge badge-warning" style="background-color: #ff9f43 !important; color: white;">{{ $group->vendor_name ?? 'Seller' }}</span>
                         @else
                             <span class="badge badge-success">Admin</span>
                         @endif

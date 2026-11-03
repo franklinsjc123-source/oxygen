@@ -121,7 +121,7 @@
                             <div class="vendor-search-wrapper">
                                 <form class="vendor-search-form">
                                     <input type="email" class="form-control mr-4 bg-white" name="vendor" id="vendor"
-                                        placeholder="Search Vendors" />
+                                        placeholder="Search Sellers" />
                                     <button class="btn btn-primary btn-rounded" type="submit">Apply</button>
                                 </form>
                             </div>

@@ -1,4 +1,5 @@
 @extends('layout.auth.master')
+@section('title', 'Seller Portal - Trymenow')
 @section('contents')
     @include('paritials.css.login-css')
     <!-- page-wrapper Start-->
@@ -20,7 +21,7 @@
                                 @if(@$error)
                                     <h6 style="color:#ff5e57;" class="text-center mb-2">{{ @$error }}</h6>
                                 @endif
-                                <h3 class="text-center mb-3" style="font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-size: 1.5rem; color: #1e272e;">Vendor Portal</h3>
+                                <h3 class="text-center mb-3" style="font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-size: 1.5rem; color: #1e272e;">Seller Portal</h3>
                                 <form action="{{ route('vendorlogin') }}" method="post" id="vendorLoginForm">
                                     @csrf
                                     <div class="form-group mb-3">

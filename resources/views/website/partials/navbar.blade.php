@@ -422,12 +422,12 @@
                                     <li><a href="#">pages</a>
                                         <ul>
                                             <li>
-                                                <a href="#">vendor</a>
+                                                <a href="#">seller</a>
                                                 <ul>
-                                                    <li><a href="vendor-dashboard.html">vendor dashboard</a>
+                                                    <li><a href="vendor-dashboard.html">seller dashboard</a>
                                                     </li>
-                                                    <li><a href="vendor-profile.html">vendor profile</a></li>
-                                                    <li><a href="become-vendor.html">become vendor</a></li>
+                                                    <li><a href="vendor-profile.html">seller profile</a></li>
+                                                    <li><a href="become-vendor.html">become seller</a></li>
                                                 </ul>
                                             </li>
                                             <li>

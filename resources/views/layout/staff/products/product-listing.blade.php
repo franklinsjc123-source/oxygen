@@ -387,7 +387,7 @@
                                                 <td>
                                                     @if($products->logintype == 'Vendor')
                                                         @php
-                                                            $vendorName = App\Models\vendor\vendorcreate::where('user_id', $products->login_id)->value('shop_name') ?? 'Vendor';
+                                                            $vendorName = App\Models\vendor\vendorcreate::where('user_id', $products->login_id)->value('shop_name') ?? 'Seller';
                                                         @endphp
                                                         {{ $vendorName }}
                                                     @else

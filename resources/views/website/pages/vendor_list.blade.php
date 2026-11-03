@@ -26,7 +26,7 @@
                         <div class="col-12">
                         <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
                             <li class="breadcrumb-item"><a href="dashboard.php"><i data-feather="home"></i></a></li>
-                                <li class="breadcrumb-item active">Vendor Listings</li>
+                                <li class="breadcrumb-item active">Seller Listings</li>
                         </ol>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
                         <div class="card">
                        
                                 <div class="card-body">
-                                <a href="vendor_create.php" class="btn  btn-primary"><i class="fa fa-plus"></i> Add Vendor</a> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+                                <a href="vendor_create.php" class="btn  btn-primary"><i class="fa fa-plus"></i> Add Seller</a> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
 
 
                             

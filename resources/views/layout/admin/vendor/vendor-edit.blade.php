@@ -56,7 +56,7 @@
                             <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}"><i
                                             data-feather="home"></i></a></li>
 
-                                <li class="breadcrumb-item active">Vendor Edition </li>
+                                <li class="breadcrumb-item active">Seller Edition </li>
                         </ol>
                     </div>
                 </div>
@@ -992,7 +992,7 @@
             </div>
             <div class="modal-body">
                 <div id="map" style="height: 450px; width: 100%; border-radius: 8px;"></div>
-                <p class="mt-2 text-muted">Click on the map or drag the blue marker to set the vendor's precise location.</p>
+                <p class="mt-2 text-muted">Click on the map or drag the blue marker to set the seller's precise location.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Confirm & Close</button>
