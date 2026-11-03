@@ -384,7 +384,7 @@
                                             </div>
 
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                {{-- <div class="col-md-6">
 
                                                     <div class="form-group row">
                                                         <label for="validationCustom0" class="col-xl-4 col-md-4"> <span>*</span> AADHAR
@@ -395,7 +395,7 @@
                                                                 name="aadhar_no" maxlength="16" minlength="16" pattern="[0-9]{16}" required>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
                                                         <label for="validationCustom2" class="col-xl-4 col-md-4"><span>*</span> GST
@@ -404,6 +404,28 @@
                                                             <input class="form-control" id="validationCustom2"
                                                                 value="{{ $vendorcreate->gst_number }}" type="text"
                                                                 name="gst_number" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label for="validationUin" class="col-xl-4 col-md-4 d-flex align-items-center justify-content-between">
+                                                            <span>UIN</span>
+                                                            <a href="https://reg.gst.gov.in/registration/generateuid?utm_source=meesho&utm_medium=website&utm_campaign=header"
+                                                                target="_blank" rel="noopener noreferrer"
+                                                                class="btn btn-sm"
+                                                                style="font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #fff5f5; color: #ff5e57; border: 1px solid #ff5e57; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 600; white-space: nowrap; line-height: 1.4;"
+                                                                onmouseover="this.style.background='#ff5e57'; this.style.color='#ffffff';"
+                                                                onmouseout="this.style.background='#fff5f5'; this.style.color='#ff5e57';"
+                                                                title="Generate UIN on GST Portal">
+                                                                <i class="fa fa-external-link"></i> Create UIN
+                                                            </a>
+                                                        </label>
+                                                        <div class="col-xl-8 col-md-8">
+                                                            <input class="form-control" id="validationUin"
+                                                                value="{{ $vendorcreate->uin ?? '' }}" type="text"
+                                                                name="uin" placeholder="Please enter UIN" maxlength="50">
+                                                            <div class="invalid-feedback-custom">Please enter UIN</div>
                                                         </div>
                                                     </div>
                                                 </div>

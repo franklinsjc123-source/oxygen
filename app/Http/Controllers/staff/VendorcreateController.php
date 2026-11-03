@@ -208,6 +208,7 @@ class VendorcreateController extends Controller
             $vendor->location_map = $request->location_map;
             $vendor->aadhar_no = $request->aadhar_no;
             $vendor->gst_number = $request->gst_number;
+            $vendor->uin = $request->uin ? trim($request->uin) : null;
             $vendor->staff_id = $request->staff_id;
 
 
@@ -485,6 +486,7 @@ class VendorcreateController extends Controller
             $vendor->longitude = $request->longitude;
             $vendor->aadhar_no = $request->aadhar_no;
             $vendor->gst_number = $this->sanitizeGstNumber($request->gst_number);
+            $vendor->uin = $request->uin ? trim($request->uin) : null;
             $vendor->staff_id = $request->staff_id;
 
             $selectedSubCategoryIds = $request->input('sub_category_ids', []);

@@ -148,6 +148,7 @@ class VendorcreateController extends Controller
             $vendor->location_map = $request->location_map;
             $vendor->aadhar_no = $request->aadhar_no;
             $vendor->gst_number = $request->gst_number;
+            $vendor->uin = $request->uin ? trim($request->uin) : null;
 
 
             $vendor->profile_image = $profilename;
@@ -413,6 +414,7 @@ class VendorcreateController extends Controller
             $vendor->location_map = $request->location_map;
             $vendor->aadhar_no = $request->aadhar_no;
             $vendor->gst_number = $request->gst_number;
+            $vendor->uin = $request->uin ? trim($request->uin) : null;
 
             $selectedSubCategoryIds = $request->input('sub_category_ids', []);
             if (empty($selectedSubCategoryIds) && $request->filled('sub_category_ids_csv')) {
