@@ -1,5 +1,6 @@
    <!-- Start of Footer -->
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+   <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 
    <style>
        .footer {
@@ -1598,9 +1599,13 @@
    </script>
 
    <!-- Non-Critical CSS (Loaded after page paint) -->
-   <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/fontawesome-free/css/all.min.css">
+   <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'">
+   <noscript><link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/fontawesome-free/css/all.min.css"></noscript>
    <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/animate/animate.min.css" media="print" onload="this.media='all'">
    <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/magnific-popup/magnific-popup.min.css" media="print" onload="this.media='all'">
+
+   <!-- Core jQuery (Moved from <head> to eliminate render blocking) -->
+   <script src="<?= asset('frontend') ?>/vendor/jquery/jquery.min.js"></script>
 
    <!-- Plugin JS File -->
 

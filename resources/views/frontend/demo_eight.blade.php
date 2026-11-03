@@ -180,6 +180,16 @@
             aspect-ratio: 330 / 160 !important;
         }
     }
+    @media (min-width: 768px) {
+        <?php if (isset($mainslider)): foreach ($mainslider as $idx => $s): 
+            $baseName = pathinfo($s->image, PATHINFO_FILENAME);
+            $dtImg = file_exists(public_path('assets/images/banners/mainslider/' . $baseName . '.webp')) ? $baseName . '.webp' : $s->image;
+        ?>
+        .slide-item-<?= $idx ?> {
+            background-image: url('<?= asset("assets/images/banners/mainslider/" . $dtImg) ?>') !important;
+        }
+        <?php endforeach; endif; ?>
+    }
   </style>
   <!-- Start of Main -->
 
@@ -203,7 +213,7 @@
                                  $desktopImg = file_exists(public_path('assets/images/banners/mainslider/' . $desktopWebp)) ? $desktopWebp : $val->image;
                              ?>
                               <div class="swiper-slide banner banner-fixed intro-slide intro-slide1 br-sm slide-item-<?= $slideIndex ?>"
-                                  style="background-image: url(<?php echo asset('assets/images/banners/mainslider/' . $desktopImg) ?>); background-color: #E8EAEF; cursor: pointer;"
+                                  style="background-color: #E8EAEF; cursor: pointer;"
                                   onclick="window.location.href='<?php echo $slideUrl; ?>';">
                                   <a href="<?php echo $slideUrl; ?>" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: block;" aria-label="Slider Banner Link"></a>
                                   <div class="banner-content y-50 text-right">
@@ -335,7 +345,7 @@
                           <a href="{{ url('offers?id='.$offer->id) }}">
                               @if(!empty($offer->db_logo))
                                   <div class="offer-badge-img-wrapper">
-                                      <img class="offer-badge-img" src="{{ asset('assets/images/offer_logo/' . $offer->offer_logo) }}" alt="{{ $offer->title }}" decoding="async">
+                                      <img class="offer-badge-img" src="{{ asset('assets/images/offer_logo/' . $offer->offer_logo) }}" alt="{{ $offer->title }}" loading="lazy" decoding="async">
                                   </div>
                               @else
                                    @php
@@ -1481,6 +1491,7 @@
                                               class="vendor-profile-img"
                                               src="{{ asset('frontend/images/00' .$imgNo  . '.jpg') }}"
                                               alt="{{ $row->area }}"
+                                              loading="lazy" decoding="async"
                                           />
                                           <span class="vendor-name-overlay">{{ $row->area }}</span>
                                       </span>
