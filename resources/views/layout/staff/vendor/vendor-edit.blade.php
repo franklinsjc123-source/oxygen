@@ -410,7 +410,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
                                                         <label for="validationUin" class="col-xl-4 col-md-4 d-flex align-items-center justify-content-between">
-                                                            <span>UIN</span>
+                                                            <span style="color: #333333 !important;">UIN</span>
                                                             <a href="https://reg.gst.gov.in/registration/generateuid?utm_source=meesho&utm_medium=website&utm_campaign=header"
                                                                 target="_blank" rel="noopener noreferrer"
                                                                 class="btn btn-sm"
