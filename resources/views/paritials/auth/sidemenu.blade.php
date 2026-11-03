@@ -146,6 +146,21 @@
                 </ul>
             </li>
         @endforeach
+
+        <li>
+            <a class="sidebar-header" href="{{ route('admin.seller_leads.index') }}">
+                <i data-feather="user-check"></i>
+                <span>Seller Requests</span>
+                @php
+                    $pendingLeadsCount = \Illuminate\Support\Facades\Schema::hasTable('seller_leads')
+                        ? \DB::table('seller_leads')->where('status', 'Pending')->count()
+                        : 0;
+                @endphp
+                @if($pendingLeadsCount > 0)
+                    <span class="badge badge-danger pull-right" style="float: right; margin-top: 3px; background-color: #ff5e57 !important; color: #fff; border-radius: 10px; padding: 2px 8px; font-size: 11px;">{{ $pendingLeadsCount }}</span>
+                @endif
+            </a>
+        </li>
 		@else
 		
         <li><a class="sidebar-header" href="{{ url('admin/dashboard') }}"><i data-feather="home"></i><span>Dashboard</span></a></li>

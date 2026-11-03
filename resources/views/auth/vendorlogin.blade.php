@@ -49,6 +49,18 @@
                                     </div>
 
                                 </form>
+
+                                <!-- New User / Become a Seller Box -->
+                                <div class="become-seller-wrapper mt-4 pt-3 text-center" style="border-top: 1px solid #f1f5f9;">
+                                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px 16px;">
+                                        <div style="font-size: 0.9rem; color: #475569; font-weight: 600; margin-bottom: 9px; letter-spacing: 0.2px;">
+                                            New to TrymeNow?
+                                        </div>
+                                        <a href="{{ url('seller/register') }}" class="btn w-100" style="background: #1e293b; color: #ffffff; font-weight: 600; border-radius: 10px; padding: 11px 16px; font-size: 0.92rem; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(30, 41, 59, 0.15); text-decoration: none;">
+                                            <i class="fa fa-user-plus" style="color: #38bdf8;"></i> Click here to become a seller
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

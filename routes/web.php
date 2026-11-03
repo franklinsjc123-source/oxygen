@@ -83,6 +83,12 @@ Route::get('/dashboard', function () {
 Route::prefix('/admin')->middleware('panel.session')->group(__DIR__.'/admin/adminRoutes.php');
 
 // Backwards compatibility: Redirect /vendor to /seller
+Route::get('/become-seller', function() {
+    return redirect('/seller/register');
+});
+Route::get('/become-a-seller', function() {
+    return redirect('/seller/register');
+});
 Route::get('/vendor/login', function () {
     return redirect('/seller/login', 301);
 });

@@ -458,4 +458,9 @@ Route::resource('cities', CityController::class);
 Route::post('cmspages/changestatus', [PageController::class, 'changestatus'])->name('cmspages.changestatus');
 Route::resource('cmspages', PageController::class);
 
+// Seller Leads & Enquiries
+Route::get('seller-requests', [App\Http\Controllers\SellerLeadController::class, 'adminIndex'])->name('admin.seller_leads.index');
+Route::post('seller-requests/{id}/status', [App\Http\Controllers\SellerLeadController::class, 'adminUpdateStatus'])->name('admin.seller_leads.update_status');
+Route::delete('seller-requests/{id}', [App\Http\Controllers\SellerLeadController::class, 'adminDestroy'])->name('admin.seller_leads.destroy');
+
 

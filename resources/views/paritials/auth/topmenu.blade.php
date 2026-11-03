@@ -198,6 +198,9 @@
                     @endif
                 @endforeach
             @endif
+            @if (session()->get('log_type') != 'Staff')
+                <li><a href="{{ route('admin.seller_leads.index') }}"><i data-feather="user-check"></i> <span class="text-label">Seller Requests</span></a></li>
+            @endif
             @if (session()->get('log_type') == 'Staff')
                 <li><a href="{{ url('staff/logout') }}"><i data-feather="log-in"></i> <span class="text-label">Logout</span></a></li>
             @else

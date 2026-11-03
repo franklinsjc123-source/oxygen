@@ -53,7 +53,8 @@ use App\Http\Controllers\vendor\Marketting\OxygenController;
 		|
 	*/
 
-Route::get('/register', [AuthController::class, 'register']);
+Route::get('/register', [App\Http\Controllers\SellerLeadController::class, 'showRegisterForm'])->name('seller.register');
+Route::post('/register', [App\Http\Controllers\SellerLeadController::class, 'submitRegister'])->name('seller.register.submit');
 Route::get('/', function () {
 	return view('auth.vendorlogin');
 });
