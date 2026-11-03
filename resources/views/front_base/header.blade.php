@@ -27,12 +27,8 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
     <?php if (isset($mainslider) && count($mainslider) > 0 && !empty($mainslider[0]->image)): 
         $firstImg = $mainslider[0]->image;
         $firstImgBase = pathinfo($firstImg, PATHINFO_FILENAME);
-        $mobileImg = file_exists(public_path('assets/images/banners/mainslider/' . $firstImgBase . '_mobile.webp')) 
-            ? $firstImgBase . '_mobile.webp' 
-            : (file_exists(public_path('assets/images/banners/mainslider/' . $firstImgBase . '.webp')) ? $firstImgBase . '.webp' : $firstImg);
-        $desktopImg = file_exists(public_path('assets/images/banners/mainslider/' . $firstImgBase . '.webp')) 
-            ? $firstImgBase . '.webp' 
-            : $firstImg;
+        $mobileImg = $firstImgBase . '_mobile.webp';
+        $desktopImg = $firstImgBase . '.webp';
     ?>
     <!-- Preload LCP Hero Banner Image Responsively -->
     <link rel="preload" as="image" href="<?= asset('assets/images/banners/mainslider/' . $mobileImg) ?>" media="(max-width: 767px)" fetchpriority="high">
@@ -73,6 +69,8 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
     <!-- Vendor & Theme CSS -->
     <link rel="stylesheet" href="<?= asset('frontend') ?>/vendor/swiper/swiper-bundle.min.css">
     <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/css/demo8.min.css">
+
+    <script src="<?= asset('frontend') ?>/vendor/jquery/jquery.min.js"></script>
 
 </head>
 

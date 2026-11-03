@@ -138,9 +138,7 @@
         }
         <?php if (isset($mainslider)): foreach ($mainslider as $idx => $s): 
             $baseName = pathinfo($s->image, PATHINFO_FILENAME);
-            $mbImg = file_exists(public_path('assets/images/banners/mainslider/' . $baseName . '_mobile.webp')) 
-                ? $baseName . '_mobile.webp' 
-                : (file_exists(public_path('assets/images/banners/mainslider/' . $baseName . '.webp')) ? $baseName . '.webp' : $s->image);
+            $mbImg = $baseName . '_mobile.webp';
         ?>
         .slide-item-<?= $idx ?> {
             background-image: url('<?= asset("assets/images/banners/mainslider/" . $mbImg) ?>') !important;
@@ -183,7 +181,7 @@
     @media (min-width: 768px) {
         <?php if (isset($mainslider)): foreach ($mainslider as $idx => $s): 
             $baseName = pathinfo($s->image, PATHINFO_FILENAME);
-            $dtImg = file_exists(public_path('assets/images/banners/mainslider/' . $baseName . '.webp')) ? $baseName . '.webp' : $s->image;
+            $dtImg = $baseName . '.webp';
         ?>
         .slide-item-<?= $idx ?> {
             background-image: url('<?= asset("assets/images/banners/mainslider/" . $dtImg) ?>') !important;
@@ -209,11 +207,10 @@
                              foreach ($mainslider as $slideIndex => $val) { 
                                  $slideUrl = !empty($val->link) ? (filter_var($val->link, FILTER_VALIDATE_URL) ? $val->link : url($val->link)) : url('shops');
                                  $baseName = pathinfo($val->image, PATHINFO_FILENAME);
-                                 $desktopWebp = $baseName . '.webp';
-                                 $desktopImg = file_exists(public_path('assets/images/banners/mainslider/' . $desktopWebp)) ? $desktopWebp : $val->image;
+                                 $firstSlideStyle = ($slideIndex === 0) ? 'background-image: url(' . asset('assets/images/banners/mainslider/' . $baseName . '_mobile.webp') . '); ' : '';
                              ?>
                               <div class="swiper-slide banner banner-fixed intro-slide intro-slide1 br-sm slide-item-<?= $slideIndex ?>"
-                                  style="background-color: #E8EAEF; cursor: pointer;"
+                                  style="<?= $firstSlideStyle ?>background-color: #E8EAEF; cursor: pointer;"
                                   onclick="window.location.href='<?php echo $slideUrl; ?>';">
                                   <a href="<?php echo $slideUrl; ?>" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: block;" aria-label="Slider Banner Link"></a>
                                   <div class="banner-content y-50 text-right">

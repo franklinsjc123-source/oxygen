@@ -1604,9 +1604,6 @@
    <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/animate/animate.min.css" media="print" onload="this.media='all'">
    <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/vendor/magnific-popup/magnific-popup.min.css" media="print" onload="this.media='all'">
 
-   <!-- Core jQuery (Moved from <head> to eliminate render blocking) -->
-   <script src="<?= asset('frontend') ?>/vendor/jquery/jquery.min.js"></script>
-
    <!-- Plugin JS File -->
 
    <script src="<?= asset('frontend') ?>/vendor/photoswipe/photoswipe.min.js" defer></script>
