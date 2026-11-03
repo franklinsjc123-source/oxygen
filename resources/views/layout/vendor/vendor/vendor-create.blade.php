@@ -527,7 +527,9 @@
                                                             Number</label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no" type="password"
-                                                                name="ac_no" inputmode="numeric" pattern="[0-9]*"
+                                                                name="ac_no" inputmode="numeric" pattern="[0-9]{10,16}"
+                                                                minlength="10" maxlength="16"
+                                                                title="Account number must be between 10 and 16 digits"
                                                                 autocomplete="off" spellcheck="false">
                                                         </div>
                                                     </div>
@@ -538,7 +540,9 @@
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no1" type="text"
                                                                 name="ac_no1"
-                                                                inputmode="numeric" pattern="[0-9]*"
+                                                                inputmode="numeric" pattern="[0-9]{10,16}"
+                                                                minlength="10" maxlength="16"
+                                                                title="Account number must be between 10 and 16 digits"
                                                                 autocomplete="off" spellcheck="false">
                                                         </div>
                                                     </div>
@@ -755,7 +759,7 @@ $(document).ready(function() {
         e.preventDefault();
     });
     accountFields.on('input', function() {
-        this.value = this.value.replace(/\D/g, '');
+        this.value = this.value.replace(/\D/g, '').slice(0, 16);
     });
 
     const upiField = $('#upi');
@@ -771,6 +775,24 @@ $(document).ready(function() {
     <script>
         $(document).ready(function() {
             $('#vendor-create-form').on('submit', function(e) {
+                var acNo = $('#ac_no').val() || '';
+                var acNo1 = $('#ac_no1').val() || '';
+
+                if (acNo.length > 0) {
+                    if (acNo.length < 10 || acNo.length > 16) {
+                        e.preventDefault();
+                        alert('Account number must be between 10 and 16 digits.');
+                        $('#ac_no').focus();
+                        return false;
+                    }
+                    if (acNo !== acNo1) {
+                        e.preventDefault();
+                        alert('Account number and confirm account number do not match.');
+                        $('#ac_no1').focus();
+                        return false;
+                    }
+                }
+
                 var totalSize = 0;
                 var maxPostSize = 8 * 1024 * 1024; // 8MB
                 var maxFileSize = 2 * 1024 * 1024; // 2MB

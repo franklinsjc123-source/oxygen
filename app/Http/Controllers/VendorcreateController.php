@@ -170,9 +170,11 @@ class VendorcreateController extends Controller
 
 
             $vendor->bank_name = $request->bank_name;
-            $vendor->ac_no = $request->ac_no;
-            if($request->ac_no == $request->ac_no1){
-            $vendor->ac_no1 = $request->ac_no1;
+            $cleanAcNo = $request->ac_no ? substr(preg_replace('/\D/', '', $request->ac_no), 0, 16) : null;
+            $cleanAcNo1 = $request->ac_no1 ? substr(preg_replace('/\D/', '', $request->ac_no1), 0, 16) : null;
+            $vendor->ac_no = $cleanAcNo;
+            if ($cleanAcNo && $cleanAcNo == $cleanAcNo1) {
+                $vendor->ac_no1 = $cleanAcNo1;
             }
             $vendor->ifsc = $request->ifsc;
             $vendor->upi = $request->upi;
@@ -440,11 +442,11 @@ class VendorcreateController extends Controller
 
 
             $vendor->bank_name = $request->bank_name;
-            $vendor->ac_no = $request->ac_no;
-                    $ac_no  = $request->ac_no;
-                    $ac_no1  =$request->ac_no1;
-            if($ac_no  == $ac_no1){
-            $vendor->ac_no1 = $ac_no;
+            $cleanAcNo = $request->ac_no ? substr(preg_replace('/\D/', '', $request->ac_no), 0, 16) : null;
+            $cleanAcNo1 = $request->ac_no1 ? substr(preg_replace('/\D/', '', $request->ac_no1), 0, 16) : null;
+            $vendor->ac_no = $cleanAcNo;
+            if ($cleanAcNo && $cleanAcNo == $cleanAcNo1) {
+                $vendor->ac_no1 = $cleanAcNo1;
             }
             $vendor->ifsc = $request->ifsc;
             $vendor->upi = $request->upi;

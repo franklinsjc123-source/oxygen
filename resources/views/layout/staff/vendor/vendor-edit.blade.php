@@ -759,13 +759,15 @@
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no" name="ac_no"
                                                                 type="password" value="{{ $vendorcreate->ac_no }}"
-                                                                inputmode="numeric" pattern="[0-9]*"
+                                                                inputmode="numeric" pattern="[0-9]{10,16}"
+                                                                minlength="10" maxlength="16"
+                                                                title="Account number must be between 10 and 16 digits"
                                                                 autocomplete="off" spellcheck="false"
                                                                 oncopy="return false" oncut="return false"
                                                                 onpaste="return false" oncontextmenu="return false"
                                                                 onselectstart="return false"
                                                                 style="user-select: none;">
-                                                            <div class="invalid-feedback-custom">Please enter account number</div>
+                                                            <div class="invalid-feedback-custom" id="ac_no_feedback">Please enter account number (10 - 16 digits)</div>
                                                         </div>
                                                     </div>
 
@@ -776,13 +778,15 @@
                                                             <input class="form-control" id="ac_no1" name="ac_no1"
                                                                 type="text" value="{{ $vendorcreate->ac_no1 }}"
                                                                 onkeyup="validate_acno()"
-                                                                inputmode="numeric" pattern="[0-9]*"
+                                                                inputmode="numeric" pattern="[0-9]{10,16}"
+                                                                minlength="10" maxlength="16"
+                                                                title="Account number must be between 10 and 16 digits"
                                                                 autocomplete="off" spellcheck="false"
                                                                 oncopy="return false" oncut="return false"
                                                                 onpaste="return false" oncontextmenu="return false"
                                                                 onselectstart="return false"
                                                                 style="user-select: none;">
-                                                            <div class="invalid-feedback-custom" id="confirm_ac_no_feedback">Please enter confirm account number</div>
+                                                            <div class="invalid-feedback-custom" id="confirm_ac_no_feedback">Please enter confirm account number (10 - 16 digits)</div>
                                                         </div>
                                                         <span id="wrong_ac_no_alert"></span>
                                                     </div>
@@ -1477,7 +1481,8 @@
                 }
             });
             accountFields.on('input', function() {
-                this.value = this.value.replace(/\D/g, '');
+                this.value = this.value.replace(/\D/g, '').slice(0, 16);
+                validate_acno();
             });
             maskedAccountField.on('focus blur', function() {
                 this.type = 'password';
@@ -1546,28 +1551,59 @@
         /*Account no valitation*/
 
         function validate_acno() {
-            var ac_no = document.getElementById('ac_no').value;
-            var ac_no1 = document.getElementById('ac_no1').value;
+            var acInput = document.getElementById('ac_no');
+            var ac_no = acInput ? acInput.value : '';
+            var confirmAcInput = document.getElementById('ac_no1');
+            var ac_no1 = confirmAcInput ? confirmAcInput.value : '';
             var upiVal = document.getElementById('upi').value.trim();
+            var alertSpan = document.getElementById('wrong_ac_no_alert');
+            var submitBtn = document.getElementById('create');
 
             if (ac_no === '' && ac_no1 === '' && upiVal !== '') {
-                document.getElementById('wrong_ac_no_alert').innerHTML = '';
-                document.getElementById('create').disabled = false;
-                document.getElementById('create').style.opacity = (1);
+                if (alertSpan) alertSpan.innerHTML = '';
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = (1);
+                }
                 return;
             }
 
-            if (ac_no != ac_no1) {
-                document.getElementById('wrong_ac_no_alert').style.color = 'red';
-                document.getElementById('wrong_ac_no_alert').innerHTML = '☒ Use same account number';
-                document.getElementById('create').disabled = true;
-                document.getElementById('create').style.opacity = (0.4);
+            if (ac_no1 === '') {
+                if (alertSpan) {
+                    alertSpan.style.color = 'red';
+                    alertSpan.innerHTML = '☒ Please enter confirm account number';
+                }
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.style.opacity = (0.4);
+                }
+            } else if (ac_no.length < 10 || ac_no.length > 16 || ac_no1.length < 10 || ac_no1.length > 16) {
+                if (alertSpan) {
+                    alertSpan.style.color = 'red';
+                    alertSpan.innerHTML = '☒ 10 - 16 digits required';
+                }
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.style.opacity = (0.4);
+                }
+            } else if (ac_no != ac_no1) {
+                if (alertSpan) {
+                    alertSpan.style.color = 'red';
+                    alertSpan.innerHTML = '☒ Use same account number';
+                }
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.style.opacity = (0.4);
+                }
             } else {
-                document.getElementById('wrong_ac_no_alert').style.color = 'green';
-                document.getElementById('wrong_ac_no_alert').innerHTML =
-                    '🗹 Acount number Matched';
-                document.getElementById('create').disabled = false;
-                document.getElementById('create').style.opacity = (1);
+                if (alertSpan) {
+                    alertSpan.style.color = 'green';
+                    alertSpan.innerHTML = '🗹 Account number Matched';
+                }
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = (1);
+                }
             }
         }
 
@@ -1837,6 +1873,16 @@
                             this.setCustomValidity('');
                         }
                     });
+                    return false;
+                } else if (has_bank_all && (ac_no.length < 10 || ac_no.length > 16)) {
+                    e.preventDefault();
+                    $('#ac_no').focus();
+                    alert('Account number must be between 10 and 16 digits.');
+                    return false;
+                } else if (has_bank_all && (ac_no1.length < 10 || ac_no1.length > 16)) {
+                    e.preventDefault();
+                    $('#ac_no1').focus();
+                    alert('Confirm account number must be between 10 and 16 digits.');
                     return false;
                 } else if (has_bank_all && ac_no !== ac_no1) {
                     e.preventDefault();

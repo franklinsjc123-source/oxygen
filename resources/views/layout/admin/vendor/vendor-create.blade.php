@@ -694,13 +694,15 @@
                                                         <label for="validationCustom0" class="col-xl-3 col-md-3">Account Number <span class="text-danger">*</span></label>
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no" type="password"
-                                                                name="ac_no" inputmode="numeric" pattern="[0-9]*"
+                                                                name="ac_no" inputmode="numeric" pattern="[0-9]{10,16}"
+                                                                minlength="10" maxlength="16"
+                                                                title="Account number must be between 10 and 16 digits"
                                                                 autocomplete="off" spellcheck="false"
                                                                 oncopy="return false" oncut="return false"
                                                                 onpaste="return false" oncontextmenu="return false"
                                                                 onselectstart="return false"
                                                                 style="user-select: none;">
-                                                            <div class="invalid-feedback-custom">Please enter account number</div>
+                                                            <div class="invalid-feedback-custom" id="ac_no_feedback">Please enter account number (10 - 16 digits)</div>
                                                         </div>
                                                     </div>
 
@@ -709,13 +711,15 @@
                                                         <div class="col-xl-9 col-md-9">
                                                             <input class="form-control" id="ac_no1" type="text"
                                                                 name="ac_no1" onkeyup="validate_acno()"
-                                                                inputmode="numeric" pattern="[0-9]*"
+                                                                inputmode="numeric" pattern="[0-9]{10,16}"
+                                                                minlength="10" maxlength="16"
+                                                                title="Account number must be between 10 and 16 digits"
                                                                 autocomplete="off" spellcheck="false"
                                                                 oncopy="return false" oncut="return false"
                                                                 onpaste="return false" oncontextmenu="return false"
                                                                 onselectstart="return false"
                                                                 style="user-select: none;">
-                                                            <div class="invalid-feedback-custom" id="confirm_ac_no_feedback">Please enter confirm account number</div>
+                                                            <div class="invalid-feedback-custom" id="confirm_ac_no_feedback">Please enter confirm account number (10 - 16 digits)</div>
                                                         </div>
                                                         <span id="wrong_ac_no_alert"></span>
                                                     </div>
@@ -1283,7 +1287,15 @@
                             }
                         });
                     } else if (has_bank_all) {
-                        if (ac_no !== ac_no1) {
+                        if (ac_no.length < 10 || ac_no.length > 16) {
+                            valid = false;
+                            $('#ac_no').focus();
+                            alert('Account number must be between 10 and 16 digits.');
+                        } else if (ac_no1.length < 10 || ac_no1.length > 16) {
+                            valid = false;
+                            $('#ac_no1').focus();
+                            alert('Confirm account number must be between 10 and 16 digits.');
+                        } else if (ac_no !== ac_no1) {
                             valid = false;
                             $('#ac_no1').focus();
                             document.getElementById('wrong_ac_no_alert').style.color = 'red';
@@ -1489,7 +1501,8 @@
                 }
             });
             accountFields.on('input', function() {
-                this.value = this.value.replace(/\D/g, '');
+                this.value = this.value.replace(/\D/g, '').slice(0, 16);
+                validate_acno();
             });
             maskedAccountField.on('focus blur', function() {
                 this.type = 'password';
@@ -1607,23 +1620,55 @@
             }
             updateSubmitButtonState();
         }
-        /*Account no valitation*/
+        /*Account no validation (10 - 16 digits)*/
 
         function validate_acno() {
-            var ac_no = document.getElementById('ac_no').value;
+            var acInput = document.getElementById('ac_no');
+            var ac_no = acInput ? acInput.value : '';
             var confirmAcInput = document.getElementById('ac_no1');
-            var ac_no1 = confirmAcInput.value;
+            var ac_no1 = confirmAcInput ? confirmAcInput.value : '';
+            var acFeedback = document.getElementById('ac_no_feedback');
             var feedback = document.getElementById('confirm_ac_no_feedback');
+            var wrongAlert = document.getElementById('wrong_ac_no_alert');
+
+            if (acInput) {
+                if (ac_no === '') {
+                    acInput.setCustomValidity("Please enter account number");
+                    if (acFeedback) acFeedback.innerHTML = "Please enter account number (10 - 16 digits)";
+                } else if (ac_no.length < 10 || ac_no.length > 16) {
+                    acInput.setCustomValidity("Account number must be between 10 and 16 digits");
+                    if (acFeedback) acFeedback.innerHTML = "Account number must be between 10 and 16 digits";
+                } else {
+                    acInput.setCustomValidity("");
+                    if (acFeedback) acFeedback.innerHTML = "";
+                }
+            }
 
             if (ac_no1 === '') {
                 confirmAcInput.setCustomValidity("Please enter confirm account number");
-                if (feedback) feedback.innerHTML = "Please enter confirm account number";
+                if (feedback) feedback.innerHTML = "Please enter confirm account number (10 - 16 digits)";
+                if (wrongAlert) wrongAlert.innerHTML = "";
+            } else if (ac_no1.length < 10 || ac_no1.length > 16) {
+                confirmAcInput.setCustomValidity("Account number must be between 10 and 16 digits");
+                if (feedback) feedback.innerHTML = "Account number must be between 10 and 16 digits";
+                if (wrongAlert) {
+                    wrongAlert.style.color = 'red';
+                    wrongAlert.innerHTML = '☒ 10 - 16 digits required';
+                }
             } else if (ac_no !== ac_no1) {
                 confirmAcInput.setCustomValidity("Account numbers do not match");
                 if (feedback) feedback.innerHTML = "Account numbers do not match";
+                if (wrongAlert) {
+                    wrongAlert.style.color = 'red';
+                    wrongAlert.innerHTML = '☒ Use same account number';
+                }
             } else {
                 confirmAcInput.setCustomValidity("");
                 if (feedback) feedback.innerHTML = "";
+                if (wrongAlert) {
+                    wrongAlert.style.color = 'green';
+                    wrongAlert.innerHTML = '✓ Account number matched';
+                }
             }
             updateSubmitButtonState();
         }
