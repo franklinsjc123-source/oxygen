@@ -129,7 +129,7 @@
                        <div class="widget widget-about">
                            <a href="demo1.html">
                                <img class="shop-footer" src="<?= asset('frontend') ?>/images/header-logo.png" alt="logo-footer"
-                                   width="144" height="45" />
+                                   width="144" height="45" loading="lazy" decoding="async" />
                            </a>
                            <div class="widget-body">
                                <p class="widget-about-title">Got Question? Call us 24/7</p>
@@ -546,7 +546,7 @@
 
             <!-- Brand Logo -->
             <div class="pincode-modal-logo text-center">
-                <img src="{{ asset('frontend/images/header-logo.png') }}" alt="TryNew" class="pincode-logo-img">
+                <img src="{{ asset('frontend/images/header-logo.png') }}" alt="TryNew" class="pincode-logo-img" loading="lazy" decoding="async">
             </div>
 
             <!-- Location Badge Icon -->
@@ -1613,12 +1613,12 @@
    <script src="<?= asset('frontend') ?>/vendor/swiper/swiper-bundle.min.js"></script>
    <script src="<?= asset('frontend') ?>/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
    <script src="<?= asset('frontend') ?>/vendor/skrollr/skrollr.min.js" defer></script>
-   <script src="<?= asset('frontend') ?>/vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
-   <script src="<?= asset('frontend') ?>/vendor/zoom/jquery.zoom.js"></script>
+   <script src="<?= asset('frontend') ?>/vendor/magnific-popup/jquery.magnific-popup.min.js" defer></script>
+   <script src="<?= asset('frontend') ?>/vendor/zoom/jquery.zoom.js" defer></script>
    <script src="<?= asset('frontend') ?>/vendor/jquery.countdown/jquery.countdown.min.js" defer></script>
    <!-- Main JS -->
    <script src="<?= asset('frontend') ?>/js/main.min.js"></script>
-   <script src="<?= asset('frontend') ?>/js/notify.min.js"></script>
+   <script src="<?= asset('frontend') ?>/js/notify.min.js" defer></script>
    <script>
        function togglePassword() {
            var input = document.getElementById("login_password");

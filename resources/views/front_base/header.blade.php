@@ -38,13 +38,13 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
     <!-- Preload Header Logo for Faster Mobile LCP -->
-    <link rel="preload" as="image" href="<?= asset('frontend') ?>/images/header-logo.png" fetchpriority="high">
+    <link rel="preload" as="image" href="<?= asset('frontend') ?>/images/header-logo.png">
 
     <!-- WebFont.js - Non-blocking font loader -->
     <script>
         WebFontConfig = {
             google: {
-                families: ['Poppins:400,500,600,700']
+                families: ['Poppins:400,500,600,700&display=swap']
             }
         };
         (function(d) {
