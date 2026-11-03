@@ -2,6 +2,28 @@
 @section('title', 'Seller Portal - Trymenow')
 @section('contents')
     @include('paritials.css.login-css')
+    <style>
+        .become-seller-btn {
+            text-transform: none !important;
+            letter-spacing: 0 !important;
+            white-space: normal !important;
+            line-height: 1.35 !important;
+            font-size: 0.9rem !important;
+            padding: 10px 12px !important;
+        }
+        @media (max-width: 576px) {
+            .auth-card-body {
+                padding: 24px 18px !important;
+            }
+            .become-seller-box-inner {
+                padding: 12px 10px !important;
+            }
+            .become-seller-btn {
+                font-size: 0.82rem !important;
+                padding: 9px 6px !important;
+            }
+        }
+    </style>
     <!-- page-wrapper Start-->
     <div class="page-wrapper">
         <div class="authentication-box">
@@ -10,7 +32,7 @@
 
                     <div class="col-md-5 m-auto p-0">
                         <div class="card" style="border-radius: 20px; overflow: hidden; border: none; box-shadow: 0 15px 35px rgba(0,0,0,0.3);">
-                            <div class="card-body" style="background: #ffffff; padding: 30px 40px; color: #333;">
+                            <div class="card-body auth-card-body" style="background: #ffffff; padding: 30px 40px; color: #333;">
                                 <div class="logo-wrapper text-center mb-3">
                                     <a href="/">
                                         <img src="{{ asset('assets/images/dashboard/logo/newlogo.png') }}" alt="Logo" style="width: 175px; max-width: 100%; height: auto;">
@@ -52,12 +74,12 @@
 
                                 <!-- New User / Become a Seller Box -->
                                 <div class="become-seller-wrapper mt-4 pt-3 text-center" style="border-top: 1px solid #f1f5f9;">
-                                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px 16px;">
+                                    <div class="become-seller-box-inner" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px 16px;">
                                         <div style="font-size: 0.9rem; color: #475569; font-weight: 600; margin-bottom: 9px; letter-spacing: 0.2px;">
                                             New to TrymeNow?
                                         </div>
-                                        <a href="{{ url('seller/register') }}" class="btn w-100" style="background: #1e293b; color: #ffffff; font-weight: 600; border-radius: 10px; padding: 11px 16px; font-size: 0.92rem; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(30, 41, 59, 0.15); text-decoration: none;">
-                                            <i class="fa fa-user-plus" style="color: #38bdf8;"></i> Click here to become a seller
+                                        <a href="{{ url('seller/register') }}" class="btn w-100 become-seller-btn" style="background: #1e293b; color: #ffffff; font-weight: 600; border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; text-align: center; text-transform: none !important; letter-spacing: 0 !important; white-space: normal !important; box-shadow: 0 4px 12px rgba(30, 41, 59, 0.15); text-decoration: none;">
+                                            Click here to become a seller
                                         </a>
                                     </div>
                                 </div>
