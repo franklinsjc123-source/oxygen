@@ -23,7 +23,6 @@
                                 @if(@$error)
                                     <h6 style="color:#ff4d4d;" class="text-center mb-2">{{ @$error }}</h6>
                                 @endif
-                                <h3 class="text-center mb-3" style="font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-size: 1.5rem; color: #1e3799;">Staff Portal</h3>
                                 
                                 <form action="{{ route('stafflogin') }}" method="post" id="staffLoginForm">
                                     @csrf
