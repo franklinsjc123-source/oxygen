@@ -406,8 +406,13 @@
                                                         <div class="col-xl-8 col-md-8">
                                                             <input class="form-control" id="validationCustom2"
                                                                 value="{{ $vendorcreate->gst_number }}" type="text"
-                                                                name="gst_number" required>
-                                                            <div class="invalid-feedback-custom">Please enter GST number</div>
+                                                                name="gst_number" required
+                                                                maxlength="15" minlength="15"
+                                                                pattern="[0-9]{2}[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}[1-9A-Za-z]{1}[Zz]{1}[0-9A-Za-z]{1}"
+                                                                title="15-digit GSTIN (e.g. 22AAAAA0000A1Z5): 2-digit state code + 10-digit PAN + 1 entity code + Z + 1 check digit"
+                                                                placeholder="e.g. 22AAAAA0000A1Z5"
+                                                                style="text-transform: uppercase;">
+                                                            <div class="invalid-feedback-custom">Please enter a valid 15-digit GST number (e.g. 22AAAAA0000A1Z5)</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1300,6 +1305,21 @@
 
                 // Password match check
                 if (currentTab.attr('id') === 'top-profile') {
+                    const gstInput = document.getElementById('validationCustom2');
+                    if (gstInput) {
+                        const gstVal = gstInput.value.trim().toUpperCase();
+                        const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+                        if (!gstRegex.test(gstVal)) {
+                            valid = false;
+                            gstInput.focus();
+                            gstInput.setCustomValidity('Please enter a valid 15-digit GST number (e.g. 22AAAAA0000A1Z5)');
+                            gstInput.reportValidity();
+                            return false;
+                        } else {
+                            gstInput.setCustomValidity('');
+                        }
+                    }
+
                     var pass = $('#pass').val();
                     var confirm_pass = $('#confirm_pass').val();
                     if (pass !== confirm_pass) {
@@ -1536,6 +1556,22 @@
 
             ifscField.on('input', function() {
                 this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 11);
+            });
+
+            $('#validationCustom2').on('input', function() {
+                this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 15);
+                const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+                if (this.value.length === 15) {
+                    if (!gstRegex.test(this.value)) {
+                        this.setCustomValidity('Invalid GSTIN format (e.g. 22AAAAA0000A1Z5)');
+                    } else {
+                        this.setCustomValidity('');
+                    }
+                } else if (this.value.length > 0) {
+                    this.setCustomValidity('GST number must be 15 alphanumeric characters');
+                } else {
+                    this.setCustomValidity('');
+                }
             });
 
             $('#aadharcard').on('input', function() {

@@ -32,23 +32,8 @@ class VendorcreateController extends Controller
     private function sanitizeGstNumber(?string $gstNumber): string
     {
         $gstNumber = strtoupper(trim((string) $gstNumber));
-        $gstNumber = preg_replace('/\s+/', '', $gstNumber);
-
-        // Respect DB column size to avoid SQLSTATE[22001] (Data too long).
-        try {
-            $columnMeta = FacadesDB::select("SHOW COLUMNS FROM vendor_details LIKE 'gst_number'");
-            if (!empty($columnMeta[0]->Type) && preg_match('/varchar\((\d+)\)/i', $columnMeta[0]->Type, $m)) {
-                $maxLen = (int) $m[1];
-                if ($maxLen > 0) {
-                    $gstNumber = substr($gstNumber, 0, $maxLen);
-                }
-            }
-        } catch (\Throwable $th) {
-            // Fallback: GSTIN standard length.
-            $gstNumber = substr($gstNumber, 0, 15);
-        }
-
-        return $gstNumber;
+        $gstNumber = preg_replace('/[^A-Z0-9]/', '', $gstNumber);
+        return substr($gstNumber, 0, 15);
     }
 
    private $PROFILE_IMAGE_PATH = "assets/images/vendor/profile";
@@ -156,6 +141,12 @@ class VendorcreateController extends Controller
      */
     public function store(Request $request, FlasherInterface $flasher)
     {
+        $gst_clean = strtoupper(trim((string)$request->gst_number));
+        if ($gst_clean && !preg_match('/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/', $gst_clean)) {
+            $flasher->addError('Please enter a valid 15-digit GST number (e.g. 22AAAAA0000A1Z5)');
+            return redirect()->back()->withInput()->with('error', 'Please enter a valid 15-digit GST number (e.g. 22AAAAA0000A1Z5)');
+        }
+
         if (User::where('username', $request->username)->exists() || vendorcreate::where('username', $request->username)->exists()) {
             $flasher->addError('Username already exists!');
             return redirect()->back()->withInput()->with('error', 'Username already exists!');
@@ -210,7 +201,7 @@ class VendorcreateController extends Controller
             $vendor->route = $request->route;
             $vendor->location_map = $request->location_map;
             $vendor->aadhar_no = $request->aadhar_no;
-            $vendor->gst_number = $request->gst_number;
+            $vendor->gst_number = $this->sanitizeGstNumber($request->gst_number);
             $vendor->uin = $request->uin ? trim($request->uin) : null;
             $vendor->staff_id = $request->staff_id;
 
@@ -424,6 +415,12 @@ class VendorcreateController extends Controller
      */
     public function update(Request $request, $id,  FlasherInterface $flasher)
     {
+        $gst_clean = strtoupper(trim((string)$request->gst_number));
+        if ($gst_clean && !preg_match('/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/', $gst_clean)) {
+            $flasher->addError('Please enter a valid 15-digit GST number (e.g. 22AAAAA0000A1Z5)');
+            return redirect()->back()->withInput()->with('error', 'Please enter a valid 15-digit GST number (e.g. 22AAAAA0000A1Z5)');
+        }
+
         $vendor = vendorcreate::find($id);
         $statement = FacadesDB::select("SHOW TABLE STATUS LIKE 'vendor_details'");
 

@@ -147,7 +147,7 @@ class VendorcreateController extends Controller
             $vendor->route = $request->route;
             $vendor->location_map = $request->location_map;
             $vendor->aadhar_no = $request->aadhar_no;
-            $vendor->gst_number = $request->gst_number;
+            $vendor->gst_number = $request->gst_number ? substr(strtoupper(preg_replace('/[^A-Z0-9]/', '', (string)$request->gst_number)), 0, 15) : null;
             $vendor->uin = $request->uin ? trim($request->uin) : null;
 
 
@@ -413,7 +413,7 @@ class VendorcreateController extends Controller
             $vendor->route = $request->route;
             $vendor->location_map = $request->location_map;
             $vendor->aadhar_no = $request->aadhar_no;
-            $vendor->gst_number = $request->gst_number;
+            $vendor->gst_number = $request->gst_number ? substr(strtoupper(preg_replace('/[^A-Z0-9]/', '', (string)$request->gst_number)), 0, 15) : null;
             $vendor->uin = $request->uin ? trim($request->uin) : null;
 
             $selectedSubCategoryIds = $request->input('sub_category_ids', []);
