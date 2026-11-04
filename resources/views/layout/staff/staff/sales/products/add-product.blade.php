@@ -860,9 +860,9 @@
                                     <div class="col-md-6">
                                         <label class="form-label fw-bold text-dark mb-1">Collection</label>
                                         <select class="form-control text-secondary" id="collection" name="collection">
-                                            <option selected hidden value="">Select Here</option>
+                                            <option hidden value="">Select Here</option>
                                             @foreach ($productcollection as $productcol)
-                                            <option id="{{ $productcol->id }}" value="{{ $productcol->name }}">
+                                            <option id="{{ $productcol->id }}" value="{{ $productcol->name }}" {{ strcasecmp(trim($productcol->name), 'New Arrivals') === 0 ? 'selected' : '' }}>
                                                 {{ $productcol->name }}
                                             </option>
                                             @endforeach

@@ -701,6 +701,17 @@ $(document).ready(function() {
         updateInlineSizeRowButtons();
     }
 
+    // Default "New Arrivals" in Collection dropdown if not already selected
+    if ($('#collection').length && (!$('#collection').val() || $('#collection').val() === 'Select Here')) {
+        let $match = $('#collection option').filter(function() {
+            return $(this).text().trim().toLowerCase() === 'new arrivals' || $(this).val().trim().toLowerCase() === 'new arrivals';
+        });
+        if ($match.length) {
+            $match.prop('selected', true);
+            $('#collection').val($match.val());
+        }
+    }
+
     // ========================================================
     // INLINE "+ Add Size" — simply clones the input row
     // ========================================================
