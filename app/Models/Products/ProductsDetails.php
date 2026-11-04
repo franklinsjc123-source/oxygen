@@ -12,6 +12,7 @@ class ProductsDetails extends Model
 
     protected $fillable = [
         "products_id",
+        "common_product",
         "product_detail_image",
         "color",
         "size",
@@ -24,6 +25,16 @@ class ProductsDetails extends Model
         "low_stock_limit",
         "threshold",
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($model) {
+            if (empty($model->common_product)) {
+                $max = static::where('products_id', $model->products_id)->max('common_product');
+                $model->common_product = $max ? ($max + 1) : 1;
+            }
+        });
+    }
 
     public function product()
     {
