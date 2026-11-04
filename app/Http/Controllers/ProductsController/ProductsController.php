@@ -425,6 +425,7 @@ class ProductsController extends Controller
             }
 
             $np = count($request->retail_price);
+            $lastValidImages = [];
           
             for ($key = 0; $key < $np; $key++) {
                 $arr = [];
@@ -435,7 +436,7 @@ class ProductsController extends Controller
                 $products_details_file2 = isset($request->subimg2[$key]) ? $request->subimg2[$key] : null;
                 $products_details_file3 = isset($request->subimg3[$key]) ? $request->subimg3[$key] : null;
 
-                if ($products_details_file) {
+                if ($products_details_file instanceof \Illuminate\Http\UploadedFile && $products_details_file->isValid()) {
                     $newName = $next_product_id . '_p' . $key . '_' . time() . '_0_' . $products_details_file->getClientOriginalName();
                     $img = Image::make($products_details_file->getRealPath());
                     $img->fit(800, 900)->save($image_path . $newName);
@@ -444,7 +445,7 @@ class ProductsController extends Controller
                     $arr[] = "";
                 }
                 
-                if ($products_details_file1) {
+                if ($products_details_file1 instanceof \Illuminate\Http\UploadedFile && $products_details_file1->isValid()) {
                     $newName1 = $next_product_id . '_p' . $key . '_' . time() . '_1_' . $products_details_file1->getClientOriginalName();
                     $img = Image::make($products_details_file1->getRealPath());
                     $img->fit(800, 900)->save($image_path . $newName1);
@@ -453,7 +454,7 @@ class ProductsController extends Controller
                     $arr[] = "";
                 }
 
-                if ($products_details_file2) {
+                if ($products_details_file2 instanceof \Illuminate\Http\UploadedFile && $products_details_file2->isValid()) {
                     $newName2 = $next_product_id . '_p' . $key . '_' . time() . '_2_' . $products_details_file2->getClientOriginalName();
                     $img = Image::make($products_details_file2->getRealPath());
                     $img->fit(800, 900)->save($image_path . $newName2);
@@ -462,13 +463,21 @@ class ProductsController extends Controller
                     $arr[] = "";
                 }
 
-                if ($products_details_file3) {
+                if ($products_details_file3 instanceof \Illuminate\Http\UploadedFile && $products_details_file3->isValid()) {
                     $newName3 = $next_product_id . '_p' . $key . '_' . time() . '_3_' . $products_details_file3->getClientOriginalName();
                     $img = Image::make($products_details_file3->getRealPath());
                     $img->fit(800, 900)->save($image_path . $newName3);
                     $arr[] = $newName3;
                 } else {
                     $arr[] = "";
+                }
+
+                // Sibling size rows inherit variant images when no new images uploaded
+                $hasAnyImage = !empty($arr[0]) || !empty($arr[1]) || !empty($arr[2]) || !empty($arr[3]);
+                if ($hasAnyImage) {
+                    $lastValidImages = $arr;
+                } elseif (!empty($lastValidImages)) {
+                    $arr = $lastValidImages;
                 }
 
                 $products_details = new ProductsDetails();       
@@ -502,15 +511,18 @@ class ProductsController extends Controller
 
             
                     foreach($request->spec_id as $key => $value) {
+                        $specifyVal = $request->specify_value[$value] ?? null;
+                        if ($specifyVal === null || trim((string)$specifyVal) === '') {
+                            continue;
+                        }
 
                         $products_spec = new ProductSpecs();
         
                         $products_spec->products_id = $next_product_id;
                         $products_spec->category_sub_id = $request->category_sub;
                         $products_spec->spec_id = $value;
-                        $products_spec->specify_attribute = $request->specify_attribute[$value] ?? '';
-                        $products_spec->specify_value = $request->specify_value[$value] ?? '';
-                       // dd($products_spec);
+                        $products_spec->specify_attribute = (string) ($request->specify_attribute[$value] ?? '');
+                        $products_spec->specify_value = (string) $specifyVal;
                         $products_spec->save();
                     }	
                

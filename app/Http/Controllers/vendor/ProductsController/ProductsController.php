@@ -396,6 +396,7 @@ public function store(Request $request, FlasherInterface $flasher)
         }
 
         $np = count($request->retail_price ?? []);
+        $lastValidImages = [];
 
         for ($key = 0; $key < $np; $key++) {
             $arr = [];
@@ -409,7 +410,7 @@ public function store(Request $request, FlasherInterface $flasher)
             $products_details_file2 = isset($request->subimg2[$key]) ? $request->subimg2[$key] : null;
             $products_details_file3 = isset($request->subimg3[$key]) ? $request->subimg3[$key] : null;
 
-            if ($products_details_file) {
+            if ($products_details_file instanceof \Illuminate\Http\UploadedFile && $products_details_file->isValid()) {
                 $newName = $productId . '_p' . $key . '_' . time() . '_0_' . $products_details_file->getClientOriginalName();
                 $img = Image::make($products_details_file->getRealPath());
                 $img->fit(800, 900)->save($image_path . '/' . $newName);
@@ -418,7 +419,7 @@ public function store(Request $request, FlasherInterface $flasher)
                 $arr[] = "";
             }
             
-            if ($products_details_file1) {
+            if ($products_details_file1 instanceof \Illuminate\Http\UploadedFile && $products_details_file1->isValid()) {
                 $newName1 = $productId . '_p' . $key . '_' . time() . '_1_' . $products_details_file1->getClientOriginalName();
                 $img = Image::make($products_details_file1->getRealPath());
                 $img->fit(800, 900)->save($image_path . '/' . $newName1);
@@ -427,7 +428,7 @@ public function store(Request $request, FlasherInterface $flasher)
                 $arr[] = "";
             }
 
-            if ($products_details_file2) {
+            if ($products_details_file2 instanceof \Illuminate\Http\UploadedFile && $products_details_file2->isValid()) {
                 $newName2 = $productId . '_p' . $key . '_' . time() . '_2_' . $products_details_file2->getClientOriginalName();
                 $img = Image::make($products_details_file2->getRealPath());
                 $img->fit(800, 900)->save($image_path . '/' . $newName2);
@@ -436,13 +437,21 @@ public function store(Request $request, FlasherInterface $flasher)
                 $arr[] = "";
             }
 
-            if ($products_details_file3) {
+            if ($products_details_file3 instanceof \Illuminate\Http\UploadedFile && $products_details_file3->isValid()) {
                 $newName3 = $productId . '_p' . $key . '_' . time() . '_3_' . $products_details_file3->getClientOriginalName();
                 $img = Image::make($products_details_file3->getRealPath());
                 $img->fit(800, 900)->save($image_path . '/' . $newName3);
                 $arr[] = $newName3;
             } else {
                 $arr[] = "";
+            }
+
+            // Sibling size rows inherit variant images when no new images uploaded
+            $hasAnyImage = !empty($arr[0]) || !empty($arr[1]) || !empty($arr[2]) || !empty($arr[3]);
+            if ($hasAnyImage) {
+                $lastValidImages = $arr;
+            } elseif (!empty($lastValidImages)) {
+                $arr = $lastValidImages;
             }
 
             $detail = new ProductsDetails();       
@@ -476,13 +485,17 @@ public function store(Request $request, FlasherInterface $flasher)
         if (!empty($request->spec_id)) {
 
             foreach ($request->spec_id as $value) {
+                $specifyVal = $request->specify_value[$value] ?? null;
+                if ($specifyVal === null || trim((string)$specifyVal) === '') {
+                    continue; // Skip specifications that are not selected
+                }
 
                 $spec = new ProductSpecs();
                 $spec->products_id = $productId;
                 $spec->category_sub_id = $request->category_sub;
                 $spec->spec_id = $value;
-                $spec->specify_attribute = $request->specify_attribute[$value] ?? '';
-                $spec->specify_value = $request->specify_value[$value] ?? '';
+                $spec->specify_attribute = (string) ($request->specify_attribute[$value] ?? '');
+                $spec->specify_value = (string) $specifyVal;
                 $spec->save();
             }
         }
@@ -501,7 +514,7 @@ public function store(Request $request, FlasherInterface $flasher)
             'line' => $e->getLine(),
         ]);
 
-        $flasher->addError('Something went wrong!');
+        $flasher->addError('Something went wrong: ' . $e->getMessage());
         return redirect()->back()->withInput();
     }
 } 
