@@ -536,16 +536,173 @@
                 font-size: 14px !important;
             }
         }
+
+        /* Product image zoom trigger button */
+        .product-image {
+            position: relative;
+            cursor: zoom-in;
+        }
+        .btn-image-zoom-trigger {
+            position: absolute;
+            right: 14px;
+            bottom: 14px;
+            z-index: 25;
+            width: 40px;
+            height: 40px;
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            color: #333333;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0;
+            outline: none;
+        }
+        .btn-image-zoom-trigger:hover {
+            background: #0088dd;
+            color: #ffffff;
+            transform: scale(1.08);
+            box-shadow: 0 6px 16px rgba(0, 136, 221, 0.35);
+        }
+
+        /* Lightbox Modal */
+        .product-zoom-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 999999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .product-zoom-modal.active {
+            display: flex !important;
+        }
+        .product-zoom-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 15, 25, 0.92);
+            backdrop-filter: blur(4px);
+            cursor: zoom-out;
+        }
+        .product-zoom-dialog {
+            position: relative;
+            z-index: 2;
+            max-width: 92vw;
+            max-height: 92vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+        .product-zoom-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 90vw;
+            max-height: 88vh;
+            overflow: hidden;
+        }
+        .product-zoom-content img {
+            max-width: 90vw;
+            max-height: 88vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            background: #ffffff;
+            cursor: zoom-in;
+            transition: transform 0.25s ease;
+        }
+        .product-zoom-content img.zoomed-in {
+            transform: scale(1.8);
+            cursor: zoom-out;
+        }
+        .product-zoom-close {
+            position: fixed;
+            top: 20px;
+            right: 24px;
+            z-index: 10;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            border: none;
+            font-size: 28px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .product-zoom-close:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: scale(1.08);
+        }
+        .product-zoom-prev, .product-zoom-next {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            border: none;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .product-zoom-prev { left: 24px; }
+        .product-zoom-next { right: 24px; }
+        .product-zoom-prev:hover, .product-zoom-next:hover {
+            background: #0088dd;
+            transform: translateY(-50%) scale(1.08);
+        }
+        .product-zoom-counter {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.55);
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+        }
     </style>
      <!-- Start of Breadcrumb -->
      <nav class="breadcrumb-nav container">
          <ul class="breadcrumb bb-no">
              <li><a href="{{ url('home') }}">Home</a></li>
              @if($getProduct->CategoryMain)
-                 <li><a href="{{ url('main-category/' . $getProduct->CategoryMain->slug) }}">{{ $getProduct->CategoryMain->category_main_name }}</a></li>
+                 <li><a href="{{ url('main-category/' . ($getProduct->CategoryMain->slug ?? $getProduct->CategoryMain->id)) }}">{{ $getProduct->CategoryMain->category_main_name }}</a></li>
              @endif
              @if($getProduct->CategorySub)
-                 <li><a href="{{ url('category/' . $getProduct->CategorySub->slug) }}">{{ $getProduct->CategorySub->category_name }}</a></li>
+                 <li><a href="{{ url('category/' . ($getProduct->CategorySub->slug ?? $getProduct->CategorySub->id)) }}">{{ $getProduct->CategorySub->category_name }}</a></li>
+             @endif
+             @php
+                 $subCatItem = $getProduct->CategoryChild ?? \App\Models\Category\CategorySub::find($getProduct->category_sub);
+             @endphp
+             @if($subCatItem)
+                 <li><a href="{{ url('category/' . ($getProduct->CategorySub->slug ?? $getProduct->category) . '/' . ($subCatItem->slug ?? $subCatItem->id)) }}">{{ $subCatItem->category_sub_name }}</a></li>
              @endif
              <li>{{ $getProduct->product_name }}</li>
          </ul>
@@ -641,6 +798,9 @@
                                                                 </div>
                                                             @endif
                                                        @endif
+                                                       <button type="button" class="btn-image-zoom-trigger" title="Zoom image" aria-label="Zoom image">
+                                                           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                                                       </button>
                                                   </figure>
                                                  </div>
                                          <?php }
@@ -681,6 +841,19 @@
                                      <button class="swiper-button-prev"></button>
                                  </div>
                              </div>
+                             <!-- Product Image Zoom / Lightbox Modal -->
+                             <div id="product-zoom-modal" class="product-zoom-modal">
+                                 <div class="product-zoom-backdrop"></div>
+                                 <div class="product-zoom-dialog">
+                                     <button type="button" class="product-zoom-close" aria-label="Close zoom">&times;</button>
+                                     <button type="button" class="product-zoom-prev" aria-label="Previous image"><i class="w-icon-angle-left"></i></button>
+                                     <button type="button" class="product-zoom-next" aria-label="Next image"><i class="w-icon-angle-right"></i></button>
+                                     <div class="product-zoom-content">
+                                         <img id="product-zoom-img" src="" alt="Zoomed Product Image">
+                                     </div>
+                                     <div class="product-zoom-counter"><span id="product-zoom-curr">1</span> / <span id="product-zoom-total">1</span></div>
+                                 </div>
+                             </div>
                          </div>
                          <div class="col-md-6 mb-6 mb-md-8">
                              <div class="product-details" data-sticky-options="{'minWidth': 767}">
@@ -694,7 +867,7 @@
                                       </a>
                                      <div class="product-meta">
                                          <div class="product-categories">
-                                            <b><span class="product-category"><a href="{{ url('shop/' . ($vendor_details->slug ?? $vendor_details->id)) }}">
+                                            <b><span class="product-category"><a href="{{ url('shop/' . ($vendor_details->slug ?? $vendor_details->id)) }}" style="color: #0088dd !important; font-weight: 700; font-size: 15px;">
                                                 <?php echo $vendor_details['shop_name'] ?></a></span></b> 
                                          </div>
                                          <div class="product-categories">
@@ -748,7 +921,7 @@
                                 </div>
 
                                  <div class="product-short-desc">
-                                    {{ $prouctsList['description'] }}
+                                    {!! html_entity_decode($prouctsList['description'] ?? '', ENT_QUOTES, 'UTF-8') !!}
                                  </div>
 
                                  <hr class="product-divider">
@@ -937,7 +1110,7 @@
                                  <div class="row mb-4">
                                      <div class="col-md-12 mb-5">
                                          <h4 class="title tab-pane-title font-weight-bold mb-2">Product details</h4>
-                                         <div class="mb-4">{!! $getProduct->description !!}</div>
+                                         <div class="mb-4">{!! html_entity_decode($getProduct->description ?? '', ENT_QUOTES, 'UTF-8') !!}</div>
                                      </div>
                                     
                                  </div>
@@ -998,7 +1171,7 @@
                                     <ul class="vendor-info list-style-none">
                                         <li class="store-name">
                                             <label>Shop Name:</label>
-                                            <span class="detail">{{ $vendor_details->shop_name }}</span>
+                                            <span class="detail" style="color: #0088dd !important; font-weight: 700;">{{ $vendor_details->shop_name }}</span>
                                         </li>
                                         <li class="store-address">
                                             <label>Address:</label>
@@ -2171,6 +2344,9 @@
                   '<figure class="product-image">' +
                   '<img src="' + imgSrc + '" data-zoom-image="' + imgSrc + '" alt="Product Image" width="800" height="900">' +
                   offerImageHtml +
+                  '<button type="button" class="btn-image-zoom-trigger" title="Zoom image" aria-label="Zoom image">' +
+                  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>' +
+                  '</button>' +
                   '</figure></div>';
               mainWrapper.append(slideHtml);
           });
@@ -2222,6 +2398,9 @@
                  mainSwiperInstance.slideTo(idx);
              }
          });
+
+         initImageZoom();
+         refreshZoomGallery();
      }
 
      function setColor(colorName, colorImage, commonProduct, element) {
@@ -2259,6 +2438,9 @@
          const $first = $('.product-color-option').first();
          if ($first.length) {
              setColor($first.data('color-name'), $first.data('color-image'), $first.data('common-product'), $first.get(0));
+         } else {
+             initImageZoom();
+             refreshZoomGallery();
          }
      });
 
@@ -2536,6 +2718,123 @@ $('.vote-btn').click(function () {
     });
 });
 
+ </script>
+ <script>
+    // Product Image Zoom & Lightbox
+    var zoomGallery = [];
+    var currentZoomIndex = 0;
+
+    function refreshZoomGallery() {
+        zoomGallery = [];
+        $('.product-single-swiper .swiper-slide:not(.swiper-slide-duplicate) .product-image img').each(function() {
+            var src = $(this).attr('data-zoom-image') || $(this).attr('src');
+            if (src && zoomGallery.indexOf(src) === -1) {
+                zoomGallery.push(src);
+            }
+        });
+    }
+
+    function openZoomModal(index) {
+        refreshZoomGallery();
+        if (!zoomGallery.length) return;
+        currentZoomIndex = (typeof index === 'number' && index >= 0 && index < zoomGallery.length) ? index : 0;
+        showZoomSlide(currentZoomIndex);
+        $('#product-zoom-modal').addClass('active').fadeIn(150);
+        $('body').css('overflow', 'hidden');
+    }
+
+    function showZoomSlide(index) {
+        if (!zoomGallery.length) return;
+        if (index < 0) index = zoomGallery.length - 1;
+        if (index >= zoomGallery.length) index = 0;
+        currentZoomIndex = index;
+        var $img = $('#product-zoom-img');
+        $img.removeClass('zoomed-in');
+        $img.attr('src', zoomGallery[currentZoomIndex]);
+        $('#product-zoom-curr').text(currentZoomIndex + 1);
+        $('#product-zoom-total').text(zoomGallery.length);
+        if (zoomGallery.length <= 1) {
+            $('.product-zoom-prev, .product-zoom-next, .product-zoom-counter').hide();
+        } else {
+            $('.product-zoom-prev, .product-zoom-next, .product-zoom-counter').show();
+        }
+    }
+
+    function closeZoomModal() {
+        $('#product-zoom-modal').removeClass('active').fadeOut(150);
+        $('#product-zoom-img').removeClass('zoomed-in');
+        $('body').css('overflow', '');
+    }
+
+    function initImageZoom() {
+        // Desktop hover-zoom via jquery.zoom if available
+        setTimeout(function() {
+            if (window.innerWidth > 991 && typeof $.fn.zoom === 'function') {
+                $('.product-single-swiper .product-image').each(function() {
+                    var $fig = $(this);
+                    var $img = $fig.find('img').first();
+                    var zoomUrl = $img.attr('data-zoom-image') || $img.attr('src');
+                    if (zoomUrl) {
+                        try {
+                            $fig.trigger('zoom.destroy');
+                        } catch(e) {}
+                        $fig.zoom({
+                            url: zoomUrl,
+                            touch: false,
+                            magnify: 1.5
+                        });
+                    }
+                });
+            }
+        }, 120);
+    }
+
+    // Trigger buttons
+    $(document).on('click', '.btn-image-zoom-trigger', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $slide = $(this).closest('.swiper-slide');
+        var index = $slide.index();
+        openZoomModal(index);
+    });
+
+    $(document).on('click', '.product-single-swiper .product-image', function(e) {
+        if ($(e.target).closest('.swiper-button-next, .swiper-button-prev, .btn-image-zoom-trigger').length) return;
+        e.preventDefault();
+        var $slide = $(this).closest('.swiper-slide');
+        var index = $slide.index();
+        openZoomModal(index);
+    });
+
+    // Lightbox Controls
+    $(document).on('click', '.product-zoom-close, .product-zoom-backdrop', function(e) {
+        e.preventDefault();
+        closeZoomModal();
+    });
+
+    $(document).on('click', '.product-zoom-prev', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        showZoomSlide(currentZoomIndex - 1);
+    });
+
+    $(document).on('click', '.product-zoom-next', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        showZoomSlide(currentZoomIndex + 1);
+    });
+
+    $(document).on('click', '#product-zoom-img', function(e) {
+        e.stopPropagation();
+        $(this).toggleClass('zoomed-in');
+    });
+
+    $(document).on('keydown', function(e) {
+        if (!$('#product-zoom-modal').hasClass('active')) return;
+        if (e.key === 'Escape') closeZoomModal();
+        if (e.key === 'ArrowLeft') showZoomSlide(currentZoomIndex - 1);
+        if (e.key === 'ArrowRight') showZoomSlide(currentZoomIndex + 1);
+    });
  </script>
  @endsection
 
