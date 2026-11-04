@@ -130,12 +130,17 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label for="username" class="col-xl-4 col-md-4"><span>*</span> User
-                                                            Name</label>
+                                                        <label for="username" class="col-xl-4 col-md-4"><span>*</span> User Name</label>
                                                         <div class="col-xl-8 col-md-8">
-                                                            <input class="form-control" id="username"
-                                                                type="text" name="username" required autocomplete="off">
-                                                            <span id="username_alert" class="mt-1 d-block" style="font-weight: bold;"></span>
+                                                            <div class="input-group">
+                                                                <input class="form-control" id="username"
+                                                                    type="text" name="username" required autocomplete="off" placeholder="8-digit alphanumeric">
+                                                                <button class="btn btn-outline-secondary" type="button" id="btn-generate-username" title="Generate Random 8-digit Username" style="border-color: #ced4da; background-color: #f8f9fa;">
+                                                                    <i class="fa fa-refresh"></i> Generate
+                                                                </button>
+                                                            </div>
+                                                            <div class="invalid-feedback-custom">Please enter user name</div>
+                                                            <span id="username_alert" class="mt-1 d-block" style="font-weight: bold; font-size: 13px;"></span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -144,35 +149,40 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Password
-                                                        </label>
+                                                        <label for="pass" class="col-xl-4 col-md-4"><span>*</span> Password</label>
                                                         <div class="col-xl-8 col-md-8">
-                                                            <div class="position-relative">
+                                                            <div class="input-group position-relative">
                                                                 <input class="form-control pe-5" id="pass" type="password"
-                                                                    name="pass" onkeyup="validate_password()" required>
-                                                                <span class="position-absolute toggle-password" style="right: 15px; top: 19px; transform: translateY(-50%); cursor: pointer;">
+                                                                    name="pass" required placeholder="Min 8 chars, 1 capital, 1 number">
+                                                                <span class="position-absolute toggle-password" style="right: 105px; top: 19px; transform: translateY(-50%); cursor: pointer; z-index: 10;">
                                                                     <i class="fa fa-eye"></i>
                                                                 </span>
+                                                                <button class="btn btn-outline-secondary" type="button" id="btn-generate-password" title="Generate Compliant Random Password" style="border-color: #ced4da; background-color: #f8f9fa; z-index: 5;">
+                                                                    <i class="fa fa-refresh"></i> Generate
+                                                                </button>
                                                             </div>
+                                                            <div class="invalid-feedback-custom" id="pass_feedback">Please enter password</div>
+                                                            <small class="text-muted d-block mt-1" style="font-size: 11px;">Rules: Min 8 chars, at least 1 uppercase letter (A-Z) & 1 number (0-9)</small>
+                                                            <span id="pass_rule_alert" class="d-block mt-1" style="font-size: 12px; font-weight: 500;"></span>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label for="validationCustom0" class="col-xl-4 col-md-4"><span>*</span> Confirm
-                                                            Password</label>
+                                                        <label for="confirm_pass" class="col-xl-4 col-md-4"><span>*</span> Confirm Password</label>
                                                         <div class="col-xl-8 col-md-8">
                                                             <div class="position-relative">
                                                                 <input class="form-control pe-5" id="confirm_pass" type="password"
-                                                                    name="pass1" onkeyup="validate_password()" required>
-                                                                <span class="position-absolute toggle-password" style="right: 15px; top: 19px; transform: translateY(-50%); cursor: pointer;">
+                                                                    name="pass1" onkeyup="validate_password()" required placeholder="Re-enter password">
+                                                                <span class="position-absolute toggle-password" style="right: 15px; top: 19px; transform: translateY(-50%); cursor: pointer; z-index: 10;">
                                                                     <i class="fa fa-eye"></i>
                                                                 </span>
+                                                                <div class="invalid-feedback-custom" id="confirm_pass_feedback">Please enter confirm password</div>
                                                             </div>
+                                                            <span id="wrong_pass_alert" class="mt-1 d-block" style="font-size: 12px; font-weight: bold;"></span>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <span id="wrong_pass_alert"></span>
                                             </div>
 
                                             <div class="row">
@@ -899,7 +909,7 @@
                                         <button type="button" class="btn btn-secondary px-4"
                                             id="wizard-prev-last-btn">Previous</button>
                                         <button class="btn btn-primary px-4" id="create"
-                                            type="submit" onclick="wrong_ac_no_alert()">Save</button>
+                                            type="submit">Save</button>
                                         {{-- <button class="btn btn-secondary px-4"
                                             type="button" onclick="window.location.href='{{ url('admin/vendor/list') }}'">Close</button> --}}
                                     </div>
@@ -1242,9 +1252,21 @@
                         $('#username').focus();
                         $('#username_alert').css('color', 'red').html('☒ Username already exists');
                     } else {
-                        var pass = $('#pass').val();
-                        var confirm_pass = $('#confirm_pass').val();
-                        if (pass !== confirm_pass) {
+                        var pass = $('#pass').val() || '';
+                        var confirm_pass = $('#confirm_pass').val() || '';
+                        var hasUpper = /[A-Z]/.test(pass);
+                        var hasNumber = /[0-9]/.test(pass);
+                        var hasMinLen = pass.length >= 8;
+
+                        if (!hasMinLen || !hasUpper || !hasNumber) {
+                            valid = false;
+                            $('#pass').focus();
+                            var passRuleAlert = document.getElementById('pass_rule_alert');
+                            if (passRuleAlert) {
+                                passRuleAlert.style.color = '#dc3545';
+                                passRuleAlert.innerHTML = '☒ Password must be min 8 chars with 1 capital letter (A-Z) & 1 number (0-9)';
+                            }
+                        } else if (pass !== confirm_pass) {
                             valid = false;
                             $('#confirm_pass').focus();
                             document.getElementById('wrong_pass_alert').style.color = 'red';
@@ -1596,18 +1618,53 @@
         /*Password valitation*/
         var isUsernameValid = true;
 
-        function updateSubmitButtonState() {
-            var pass = $('#pass').val();
-            var confirm_pass = $('#confirm_pass').val();
-            var passwordsMatch = (pass === confirm_pass && pass !== '');
+        function generateRandomUsername() {
+            var chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+            var username = "";
+            for (var i = 0; i < 8; i++) {
+                username += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return username;
+        }
 
-            var ac_no = $('#ac_no').val();
-            var ac_no1 = $('#ac_no1').val();
-            var upi = $('#upi').val();
+        function generateRandomPassword() {
+            var upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+            var digits = "23456789";
+            var lower = "abcdefghijkmnpqrstuvwxyz";
+            var all = upper + digits + lower;
+
+            var pwdChars = [
+                upper.charAt(Math.floor(Math.random() * upper.length)),
+                digits.charAt(Math.floor(Math.random() * digits.length)),
+                lower.charAt(Math.floor(Math.random() * lower.length))
+            ];
+
+            for (var i = 3; i < 8; i++) {
+                pwdChars.push(all.charAt(Math.floor(Math.random() * all.length)));
+            }
+
+            for (var i = pwdChars.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = pwdChars[i];
+                pwdChars[i] = pwdChars[j];
+                pwdChars[j] = temp;
+            }
+
+            return pwdChars.join('');
+        }
+
+        function updateSubmitButtonState() {
+            var pass = $('#pass').val() || '';
+            var confirm_pass = $('#confirm_pass').val() || '';
+            var isPassValid = (pass.length >= 8 && /[A-Z]/.test(pass) && /[0-9]/.test(pass) && pass === confirm_pass);
+
+            var ac_no = $('#ac_no').val() || '';
+            var ac_no1 = $('#ac_no1').val() || '';
+            var upi = $('#upi').val() || '';
             var bankOrUpiValid = (upi !== '') || (ac_no === ac_no1 && ac_no !== '');
 
             var $createBtn = $('#create');
-            if (isUsernameValid && passwordsMatch && bankOrUpiValid) {
+            if (isUsernameValid && isPassValid && bankOrUpiValid) {
                 $createBtn.prop('disabled', false).css('opacity', '1');
             } else {
                 $createBtn.prop('disabled', true).css('opacity', '0.4');
@@ -1615,6 +1672,34 @@
         }
 
         $(document).ready(function() {
+            // Auto-generate 8-digit alphanumeric username if empty
+            if (!$('#username').val()) {
+                $('#username').val(generateRandomUsername()).trigger('change');
+            }
+
+            // Auto-generate compliant password if empty
+            if (!$('#pass').val()) {
+                var rndPass = generateRandomPassword();
+                $('#pass').val(rndPass);
+                $('#confirm_pass').val(rndPass);
+                validate_password();
+            }
+
+            $('#btn-generate-username').on('click', function(e) {
+                e.preventDefault();
+                $('#username').val(generateRandomUsername()).trigger('change');
+            });
+
+            $('#btn-generate-password').on('click', function(e) {
+                e.preventDefault();
+                var rndPass = generateRandomPassword();
+                $('#pass').val(rndPass);
+                $('#confirm_pass').val(rndPass);
+                validate_password();
+            });
+
+            $('#pass').on('keyup change blur input', validate_password);
+
             $('#username').on('keyup change blur input', function() {
                 var username = $(this).val().trim();
                 var $alert = $('#username_alert');
@@ -1653,20 +1738,37 @@
         });
 
         function validate_password() {
-            var pass = document.getElementById('pass').value;
+            var pass = $('#pass').val() || '';
             var confirmInput = document.getElementById('confirm_pass');
-            var confirm_pass = confirmInput.value;
-            var feedback = $(confirmInput).siblings('.invalid-feedback-custom')[0];
+            var confirm_pass = confirmInput ? confirmInput.value : '';
+            var feedback = document.getElementById('confirm_pass_feedback') || ($(confirmInput).siblings('.invalid-feedback-custom')[0]);
+            var passRuleAlert = document.getElementById('pass_rule_alert');
 
-            if (confirm_pass === '') {
-                confirmInput.setCustomValidity("Please enter confirm password");
-                if (feedback) feedback.innerHTML = "Please enter confirm password";
-            } else if (pass !== confirm_pass) {
-                confirmInput.setCustomValidity("Passwords do not match");
-                if (feedback) feedback.innerHTML = "Passwords do not match";
-            } else {
-                confirmInput.setCustomValidity("");
-                if (feedback) feedback.innerHTML = "";
+            var hasUpper = /[A-Z]/.test(pass);
+            var hasNumber = /[0-9]/.test(pass);
+            var hasMinLen = pass.length >= 8;
+
+            if (passRuleAlert) {
+                if (!hasMinLen || !hasUpper || !hasNumber) {
+                    passRuleAlert.style.color = '#dc3545';
+                    passRuleAlert.innerHTML = '☒ Min 8 chars, 1 capital letter (A-Z) & 1 number (0-9) required';
+                } else {
+                    passRuleAlert.style.color = '#198754';
+                    passRuleAlert.innerHTML = '🗹 Password meets all requirements';
+                }
+            }
+
+            if (confirmInput) {
+                if (confirm_pass === '') {
+                    confirmInput.setCustomValidity("Please enter confirm password");
+                    if (feedback) feedback.innerHTML = "Please enter confirm password";
+                } else if (pass !== confirm_pass) {
+                    confirmInput.setCustomValidity("Passwords do not match");
+                    if (feedback) feedback.innerHTML = "Passwords do not match";
+                } else {
+                    confirmInput.setCustomValidity("");
+                    if (feedback) feedback.innerHTML = "";
+                }
             }
             updateSubmitButtonState();
         }
@@ -1724,12 +1826,7 @@
         }
 
         function wrong_ac_no_alert() {
-            if (document.getElementById('ac_no').value != "" &&
-                document.getElementById('ac_no1').value != "") {
-                alert("Your response is submitted");
-            } else {
-                alert("Please fill all the fields");
-            }
+            // Validation handled by form submit
         }
     </script>
     <script>
@@ -1764,7 +1861,7 @@
     <script>
         $(document).ready(function() {
             $(document).on('click', '.toggle-password', function() {
-                const input = $(this).siblings('input');
+                const input = $(this).closest('.position-relative').find('input');
                 const icon = $(this).find('i');
                 if (input.attr('type') === 'password') {
                     input.attr('type', 'text');

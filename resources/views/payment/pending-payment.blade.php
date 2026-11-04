@@ -240,7 +240,11 @@
             Pay Now
         </a>
 
-        <a href="{{ route('staffvendor-list') }}" class="btn btn-secondary">
+        @php
+            $isStaff = session()->get('log_type') === 'Staff' || (auth()->check() && (int) auth()->user()->status === 3);
+            $vendorListUrl = $isStaff ? route('staffvendor-list') : url('admin/vendor/list');
+        @endphp
+        <a href="{{ $vendorListUrl }}" class="btn btn-secondary">
             Go to Vendor List
         </a>
     </div>

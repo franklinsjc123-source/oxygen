@@ -153,6 +153,17 @@ class VendorcreateController extends Controller
             return redirect()->back()->withInput()->with('error', 'Username already exists!');
         }
 
+        $password = (string) $request->pass;
+        if (strlen($password) < 8 || !preg_match('/[A-Z]/', $password) || !preg_match('/[0-9]/', $password)) {
+            $flasher->addError('Password must be at least 8 characters long and contain at least 1 capital letter and 1 number.');
+            return redirect()->back()->withInput()->with('error', 'Password must be at least 8 characters long and contain at least 1 capital letter and 1 number.');
+        }
+
+        if ($request->pass !== $request->pass1) {
+            $flasher->addError('Password and Confirm Password do not match.');
+            return redirect()->back()->withInput()->with('error', 'Password and Confirm Password do not match.');
+        }
+
         $vendor = new vendorcreate();
         $statement = FacadesDB::select("SHOW TABLE STATUS LIKE 'vendor_details'");
         $stmt = FacadesDB::select("SHOW TABLE STATUS LIKE 'users'");
@@ -330,8 +341,80 @@ class VendorcreateController extends Controller
                     }
                 }
             } else {
-                return 'failde';
+                return 'failed';
             }
+
+            $package = \App\Models\vendor\packages::find($vendor->package_id);
+            $price = $package ? (float) $package->price : 0;
+
+            if ($price > 0) {
+                $keyId = config('services.razorpay.key');
+                $keySecret = config('services.razorpay.secret');
+
+                if ($keyId && $keySecret) {
+                    try {
+                        $api = new \Razorpay\Api\Api($keyId, $keySecret);
+                        $paymentLink = $api->paymentLink->create([
+                            'amount' => (int) ($price * 100),
+                            'currency' => 'INR',
+                            'accept_partial' => false,
+                            'description' => 'Registration payment for ' . $vendor->shop_name,
+                            'customer' => [
+                                'name' => $vendor->owner_name ?? 'Vendor Owner',
+                                'email' => $vendor->email ?? 'vendor@example.com',
+                                'contact' => $vendor->whatsapp_number ?: ($vendor->mobile_number1 ?: '')
+                            ],
+                            'notify' => [
+                                'sms' => false,
+                                'email' => false
+                            ],
+                            'reminder_enable' => true,
+                            'notes' => [
+                                'vendor_id' => $vendor->id,
+                                'package_id' => $package->id,
+                                'type' => 'first_time_payment'
+                            ],
+                            'callback_url' => url('/payment-callback'),
+                            'callback_method' => 'get'
+                        ]);
+
+                        $vendor->payment_status = 'pending';
+                        $vendor->payment_link_id = $paymentLink->id;
+                        $vendor->payment_link_url = $paymentLink->short_url;
+                        $vendor->save();
+
+                        $whatsappNumber = $vendor->whatsapp_number ?: $vendor->mobile_number1;
+                        $whatsappNumber = preg_replace('/[^0-9]/', '', $whatsappNumber);
+                        if (strlen($whatsappNumber) === 10) {
+                            $whatsappNumber = '91' . $whatsappNumber;
+                        }
+
+                        $message = "Dear " . $vendor->owner_name . ", please complete your payment of Rs. " . $price . " for your shop '" . $vendor->shop_name . "' using this link: " . $paymentLink->short_url;
+                        $whatsappLink = "https://api.whatsapp.com/send?phone=" . $whatsappNumber . "&text=" . urlencode($message);
+
+                        session()->flash('payment_link', $paymentLink->short_url);
+                        session()->flash('whatsapp_link', $whatsappLink);
+                        session()->flash('new_vendor_id', $vendor->id);
+
+                        $flasher->addSuccess('Vendor created! Payment link generated.');
+                        return redirect()->route('payment.pending');
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error('Razorpay link generation failed in admin vendor create: ' . $e->getMessage());
+                        $vendor->payment_status = 'paid';
+                        $vendor->save();
+                        \App\Helper\EmailHelper::sendSellerCredentials($vendor, $request->pass);
+                    }
+                } else {
+                    $vendor->payment_status = 'paid';
+                    $vendor->save();
+                    \App\Helper\EmailHelper::sendSellerCredentials($vendor, $request->pass);
+                }
+            } else {
+                $vendor->payment_status = 'paid';
+                $vendor->save();
+                \App\Helper\EmailHelper::sendSellerCredentials($vendor, $request->pass);
+            }
+
             $flasher->addSuccess('vendor Information has been saved successfully!');
             return redirect()->to(url('admin/vendor/list'));
         } catch (\Throwable $th) {

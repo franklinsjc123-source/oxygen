@@ -15,7 +15,8 @@ class PaymentCallbackController extends Controller
         $vendorId = session('new_vendor_id');
 
         if (!$paymentLink) {
-            return redirect()->route('staffvendor-list');
+            $isStaff = session()->get('log_type') === 'Staff' || (auth()->check() && (int) auth()->user()->status === 3);
+            return redirect($isStaff ? route('staffvendor-list') : url('admin/vendor/list'));
         }
 
         $vendor = DB::table('vendor_details')->where('id', $vendorId)->first();
@@ -114,6 +115,9 @@ class PaymentCallbackController extends Controller
                     ]);
 
                     DB::commit();
+
+                    // Send login credentials email to seller post successful payment
+                    \App\Helper\EmailHelper::sendSellerCredentials($vendor);
                 }
 
                 return view('payment.success-payment', [

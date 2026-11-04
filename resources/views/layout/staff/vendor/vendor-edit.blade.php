@@ -1667,12 +1667,7 @@
         }
 
         function wrong_ac_no_alert() {
-            if (document.getElementById('ac_no').value != "" &&
-                document.getElementById('ac_no1').value != "") {
-                alert("Your response is submitted");
-            } else {
-                alert("Please fill all the fields");
-            }
+            // Validation handled by form submit
         }
     </script>
     <script>

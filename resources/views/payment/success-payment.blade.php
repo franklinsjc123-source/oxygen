@@ -123,17 +123,27 @@
             </div>
             <h1>Payment Successful!</h1>
             <p>{{ $message }}</p>
+            @if(isset($vendor) && !empty($vendor->email))
+                <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 12px; padding: 14px; margin-bottom: 24px; font-size: 14px; color: #86efac;">
+                    <i class="fa-solid fa-envelope me-1"></i> Your login username & password have been sent to <strong>{{ $vendor->email }}</strong>.
+                </div>
+            @endif
+            <a href="{{ url('/seller/login') }}" class="btn btn-primary" style="margin-bottom: 12px;">
+                Go to Seller Login
+            </a>
+            <a href="/" class="btn" style="background: rgba(255, 255, 255, 0.05); color: var(--text-muted); border: 1px solid rgba(255, 255, 255, 0.1);">
+                Go to Homepage
+            </a>
         @else
             <div class="icon-container icon-danger">
                 <i class="fa-solid fa-circle-xmark"></i>
             </div>
             <h1>Payment Verification Failed</h1>
             <p>{{ $message }}</p>
+            <a href="/" class="btn btn-primary">
+                Go to Homepage
+            </a>
         @endif
-
-        <a href="/" class="btn btn-primary">
-            Go to Homepage
-        </a>
     </div>
 </body>
 </html>
