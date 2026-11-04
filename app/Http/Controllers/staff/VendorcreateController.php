@@ -104,9 +104,12 @@ class VendorcreateController extends Controller
                 $q->orWhere('staff_id', $staff_id);
             }
         })->get();
+        $zoneMap = \App\Models\Zonal::pluck('name', 'id');
 
-       // return view('layout.admin.vendor.list')->with("vendorlist");
-        return view('layout.staff.vendor.vendor-list')->with("vendorlist",$vendorlist);
+        return view('layout.staff.vendor.vendor-list', [
+            'vendorlist' => $vendorlist,
+            'zoneMap' => $zoneMap,
+        ]);
 
      }
     public function Ajaxpackage(Request $request)

@@ -73,11 +73,16 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @php
+                                            if (!isset($zoneMap)) {
+                                                $zoneMap = \App\Models\Zonal::pluck('name', 'id')->toArray();
+                                            }
+                                        @endphp
 
                                         @foreach ($vendorlist as $vendor_list)
                                             @php
                                                 $zoneLabel = $vendor_list->zone;
-                                                if (isset($zoneMap) && is_numeric($vendor_list->zone)) {
+                                                if (is_numeric($vendor_list->zone)) {
                                                     $zoneLabel = $zoneMap[(int) $vendor_list->zone] ?? $vendor_list->zone;
                                                 }
                                             @endphp
