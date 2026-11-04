@@ -190,7 +190,13 @@ class ProductsController extends Controller
                     $q->whereRaw('1=0'); // Force empty if mapping exists but is empty
                 }
             })
-            ->whereIn('created_byid', [1, $login_id])
+            ->where(function($ownerQ) use ($login_id) {
+                $ownerQ->where('created_by', 'Admin')
+                       ->orWhere(function($ownQ) use ($login_id) {
+                           $ownQ->where('created_by', 'Vendor')
+                                ->where('created_byid', $login_id);
+                       });
+            })
             ->where('status', 'Active')
             ->get();
 
@@ -777,7 +783,13 @@ public function store(Request $request, FlasherInterface $flasher)
                     $q->whereRaw('1=0');
                 }
             })
-            ->whereIn('created_byid', [1, $login_id])
+            ->where(function($ownerQ) use ($login_id) {
+                $ownerQ->where('created_by', 'Admin')
+                       ->orWhere(function($ownQ) use ($login_id) {
+                           $ownQ->where('created_by', 'Vendor')
+                                ->where('created_byid', $login_id);
+                       });
+            })
             ->where('status', 'Active')
             ->get();
 

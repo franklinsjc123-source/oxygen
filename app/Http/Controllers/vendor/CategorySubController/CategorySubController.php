@@ -65,8 +65,8 @@ class CategorySubController extends Controller
                     $adminAttrs = $adminMapping ? (json_decode($adminMapping->category_sub_attribute_ids, true) ?: []) : [];
                     $adminSpecs = $adminMapping ? (json_decode($adminMapping->category_sub_specification_ids, true) ?: []) : [];
                     
-                    $globalAttrIds = AttributeGroup::whereRaw("FIND_IN_SET(?, sub_category_ids)", [$viewId])->pluck('id')->toArray();
-                    $globalSpecIds = SpecificationGroup::whereRaw("FIND_IN_SET(?, sub_category_ids)", [$viewId])->pluck('id')->toArray();
+                    $globalAttrIds = AttributeGroup::where('created_by', 'Admin')->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$viewId])->pluck('id')->toArray();
+                    $globalSpecIds = SpecificationGroup::where('created_by', 'Admin')->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$viewId])->pluck('id')->toArray();
                     
                     $selectedAttributeIds = array_values(array_unique(array_merge($adminAttrs, $globalAttrIds, $defaultAttributeIds)));
                     $selectedSpecificationIds = array_values(array_unique(array_merge($adminSpecs, $globalSpecIds, $defaultSpecificationIds)));
@@ -88,11 +88,12 @@ class CategorySubController extends Controller
 
                 $attributegroup = AttributeGroup::where(function($q) use ($viewId, $login_id) {
                         $q->where(function($q1) use ($viewId, $login_id) {
-                            $q1->where('created_byid', $login_id)
+                            $q1->where('created_by', 'Vendor')
+                               ->where('created_byid', $login_id)
                                ->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$viewId]);
                         })
                         ->orWhere(function($q2) use ($viewId) {
-                            $q2->whereIn('created_byid', [1]) // Admin
+                            $q2->where('created_by', 'Admin')
                                ->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$viewId]);
                         });
                     })
@@ -101,7 +102,8 @@ class CategorySubController extends Controller
 
                 $specificationgroup = SpecificationGroup::where(function($q) use ($viewId, $login_id) {
                         $q->where(function($q1) use ($viewId, $login_id) {
-                            $q1->where('created_byid', $login_id)
+                            $q1->where('created_by', 'Vendor')
+                               ->where('created_byid', $login_id)
                                ->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$viewId]);
                         })
                         ->orWhere(function($q2) use ($viewId) {

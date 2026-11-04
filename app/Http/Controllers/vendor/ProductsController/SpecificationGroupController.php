@@ -24,15 +24,27 @@ class SpecificationGroupController extends Controller
         $vendorSubCategoryIds = array_values(array_filter(array_map('intval', array_map('trim', explode(',', (string) optional($vendorcreate)->sub_category_ids)))));
 
         $groups = SpecificationGroup::where(function ($q) use ($login_id, $vendorSubCategoryIds) {
-            $q->where('created_byid', $login_id);
+            // 1. Respective seller's own created specifications
+            $q->where(function ($ownQ) use ($login_id) {
+                $ownQ->where('created_by', 'Vendor')
+                     ->where('created_byid', $login_id);
+            });
 
-            if (!empty($vendorSubCategoryIds)) {
-                $q->orWhere(function ($subQ) use ($vendorSubCategoryIds) {
-                    foreach ($vendorSubCategoryIds as $subId) {
-                        $subQ->orWhereRaw("FIND_IN_SET(?, sub_category_ids)", [$subId]);
-                    }
-                });
-            }
+            // 2. OR Admin-created specifications only
+            $q->orWhere(function ($adminQ) use ($vendorSubCategoryIds, $login_id) {
+                $adminQ->where('created_by', 'Admin');
+
+                if (!empty($vendorSubCategoryIds)) {
+                    $adminQ->where(function ($subQ) use ($vendorSubCategoryIds, $login_id) {
+                        $subQ->whereNull('sub_category_ids')
+                             ->orWhere('sub_category_ids', '')
+                             ->orWhereRaw("FIND_IN_SET(?, vendor_ids)", [$login_id]);
+                        foreach ($vendorSubCategoryIds as $subId) {
+                            $subQ->orWhereRaw("FIND_IN_SET(?, sub_category_ids)", [$subId]);
+                        }
+                    });
+                }
+            });
         })->get();
 
         return view('layout.vendor.specification_groups.index', compact('groups'));
@@ -120,7 +132,7 @@ class SpecificationGroupController extends Controller
                 } else {
                     $adminMapping = DB::table('sub_category_mapping')->where('sub_category_id', $subId)->whereNull('vendor_id')->first();
                     $adminSpecs = $adminMapping ? (json_decode($adminMapping->category_sub_specification_ids, true) ?: []) : [];
-                    $globalSpecIds = SpecificationGroup::whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subId])->pluck('id')->toArray();
+                    $globalSpecIds = SpecificationGroup::where('created_by', 'Admin')->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subId])->pluck('id')->toArray();
                     
                     $defaultSpecificationIds = (!empty($sub->category_sub_specifications))
                         ? array_values(array_filter(array_map('intval', explode(',', $sub->category_sub_specifications))))
@@ -176,7 +188,7 @@ class SpecificationGroupController extends Controller
                     if (!is_array($attrs)) $attrs = [];
                     if (!is_array($specs)) $specs = [];
                     
-                    $globalSpecs = SpecificationGroup::whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subId])->pluck('id')->toArray();
+                    $globalSpecs = SpecificationGroup::where('created_by', 'Admin')->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subId])->pluck('id')->toArray();
                     $specs = array_unique(array_merge($specs, $globalSpecs));
                 } else {
                     $attrs = json_decode($mapping->category_sub_attribute_ids, true);

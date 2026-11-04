@@ -28,8 +28,28 @@ class SpecificationGroupExport implements FromCollection, WithHeadings, WithMapp
             ->select('specification_group.*', 'vendor_details.shop_name as vendor_name');
 
         if ($this->vendor_id) {
-            $query->where('specification_group.created_byid', $this->vendor_id)
-                  ->where('specification_group.created_by', 'Vendor');
+            $vendorcreate = \App\Models\vendor\vendorcreate::select('sub_category_ids')->where('id', $this->vendor_id)->first();
+            $vendorSubCategoryIds = array_values(array_filter(array_map('intval', array_map('trim', explode(',', (string) optional($vendorcreate)->sub_category_ids)))));
+
+            $query->where(function($q) use ($vendorSubCategoryIds) {
+                $q->where(function ($ownQ) {
+                    $ownQ->where('specification_group.created_by', 'Vendor')
+                         ->where('specification_group.created_byid', $this->vendor_id);
+                })
+                ->orWhere(function ($adminQ) use ($vendorSubCategoryIds) {
+                    $adminQ->where('specification_group.created_by', 'Admin');
+                    if (!empty($vendorSubCategoryIds)) {
+                        $adminQ->where(function ($subQ) use ($vendorSubCategoryIds) {
+                            $subQ->whereNull('specification_group.sub_category_ids')
+                                 ->orWhere('specification_group.sub_category_ids', '')
+                                 ->orWhereRaw("FIND_IN_SET(?, specification_group.vendor_ids)", [$this->vendor_id]);
+                            foreach ($vendorSubCategoryIds as $subId) {
+                                $subQ->orWhereRaw("FIND_IN_SET(?, specification_group.sub_category_ids)", [$subId]);
+                            }
+                        });
+                    }
+                });
+            });
         }
 
         return $query->orderBy('specification_group.id', 'desc')->get();

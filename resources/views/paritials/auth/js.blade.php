@@ -612,7 +612,24 @@ $(document).ready(function() {
 
     // Re-run when new variant added via "ADD MORE VARIANT" button
     $(document).on('click', '#add_m', function() {
-        setTimeout(syncVariantImages, 300);
+        setTimeout(function() {
+            let $firstCard = $('.variant-card').first();
+            let initialRetail = $firstCard.find('input[name="retail_price[]"]').val() || '';
+            let initialSelling = $firstCard.find('input[name="selling_price[]"]').val() || '';
+            let initialLowStock = $firstCard.find('input[name="low_stock_limit[]"]').val() || '';
+
+            let $lastCard = $('.variant-card').last();
+            if ($lastCard.length && $lastCard[0] !== $firstCard[0]) {
+                let $retail = $lastCard.find('input[name="retail_price[]"]');
+                let $selling = $lastCard.find('input[name="selling_price[]"]');
+                let $lowStock = $lastCard.find('input[name="low_stock_limit[]"]');
+
+                if (initialRetail && !$retail.val()) $retail.val(initialRetail);
+                if (initialSelling && !$selling.val()) $selling.val(initialSelling);
+                if (initialLowStock && !$lowStock.val()) $lowStock.val(initialLowStock);
+            }
+            syncVariantImages();
+        }, 150);
     });
 
     // ========================================================
@@ -709,10 +726,34 @@ $(document).ready(function() {
         }
         $sizeSelect.val('');
 
-        // 3. Clear input values (start with empty text boxes except price fields)
+        // 3. Clear input values (start with empty text boxes except price and stock limit fields)
         $newRow.find('input[name="quantity[]"]').val('');
-        $newRow.find('input[name="low_stock_limit[]"]').val('');
         $newRow.find('input[name="product_details_id[]"]').val('');
+
+        // Copy Low Stock Limit from initial row (or current row if initial is empty)
+        let $initialRow = $parentCard.find('.variant-fields-wrapper').first();
+        let initialLowStock = $initialRow.find('input[name="low_stock_limit[]"]').val();
+        if (initialLowStock === undefined || initialLowStock === '') {
+            initialLowStock = $currentRow.find('input[name="low_stock_limit[]"]').val() || '';
+        }
+        $newRow.find('input[name="low_stock_limit[]"]').val(initialLowStock);
+
+        // Ensure Retail Price and Selling Price are also populated from initial row
+        let initialRetail = $initialRow.find('input[name="retail_price[]"]').val();
+        if (initialRetail === undefined || initialRetail === '') {
+            initialRetail = $currentRow.find('input[name="retail_price[]"]').val() || '';
+        }
+        if (initialRetail) {
+            $newRow.find('input[name="retail_price[]"]').val(initialRetail);
+        }
+
+        let initialSelling = $initialRow.find('input[name="selling_price[]"]').val();
+        if (initialSelling === undefined || initialSelling === '') {
+            initialSelling = $currentRow.find('input[name="selling_price[]"]').val() || '';
+        }
+        if (initialSelling) {
+            $newRow.find('input[name="selling_price[]"]').val(initialSelling);
+        }
 
         // 4. Give unique IDs to avoid conflicts
         let uid = Date.now();

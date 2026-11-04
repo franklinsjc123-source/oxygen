@@ -27,15 +27,27 @@ class AttributeController extends Controller
         $vendorSubCategoryIds = array_values(array_filter(array_map('intval', array_map('trim', explode(',', (string) optional($vendorcreate)->sub_category_ids)))));
 
         $groups = \App\Models\Master\Attribute\AttributeGroup::where(function ($q) use ($login_id, $vendorSubCategoryIds) {
-            $q->where('created_byid', $login_id);
+            // 1. Respective seller's own created attributes
+            $q->where(function ($ownQ) use ($login_id) {
+                $ownQ->where('created_by', 'Vendor')
+                     ->where('created_byid', $login_id);
+            });
 
-            if (!empty($vendorSubCategoryIds)) {
-                $q->orWhere(function ($subQ) use ($vendorSubCategoryIds) {
-                    foreach ($vendorSubCategoryIds as $subId) {
-                        $subQ->orWhereRaw("FIND_IN_SET(?, sub_category_ids)", [$subId]);
-                    }
-                });
-            }
+            // 2. OR Admin-created attributes only
+            $q->orWhere(function ($adminQ) use ($vendorSubCategoryIds, $login_id) {
+                $adminQ->where('created_by', 'Admin');
+
+                if (!empty($vendorSubCategoryIds)) {
+                    $adminQ->where(function ($subQ) use ($vendorSubCategoryIds, $login_id) {
+                        $subQ->whereNull('sub_category_ids')
+                             ->orWhere('sub_category_ids', '')
+                             ->orWhereRaw("FIND_IN_SET(?, vendor_ids)", [$login_id]);
+                        foreach ($vendorSubCategoryIds as $subId) {
+                            $subQ->orWhereRaw("FIND_IN_SET(?, sub_category_ids)", [$subId]);
+                        }
+                    });
+                }
+            });
         })->get();
 
         return view('layout.vendor.products.attribute-listing')
