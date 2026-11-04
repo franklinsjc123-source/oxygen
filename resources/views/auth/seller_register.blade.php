@@ -311,18 +311,17 @@
                             </div>
                         </div>
 
-                        <!-- Row 4: GSTIN / UIN (Single Input) -->
+                        <!-- Row 4: GSTIN / UIN (Optional) -->
                         <div class="mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <label for="gstin_or_uin" class="seller-form-label mb-0">
-                                    GSTIN / UIN <span class="text-danger">*</span>
+                                    GSTIN / UIN
                                 </label>
                                 <a href="https://reg.gst.gov.in/registration/generateuid?utm_source=meesho&utm_medium=website&utm_campaign=header" target="_blank" rel="noopener noreferrer" class="btn btn-sm uin-link-btn" title="Generate UIN on GST Portal">
                                     <i class="fa fa-external-link"></i> Create UIN
                                 </a>
                             </div>
-                            <input type="text" class="seller-form-control form-control" id="gstin_or_uin" name="gstin_or_uin" value="{{ old('gstin_or_uin', old('gstin', old('uin'))) }}" placeholder="Please enter GSTIN or UIN" maxlength="50" required>
-                            <div class="invalid-feedback-custom" id="gstin_or_uin_feedback">Please enter GSTIN or UIN</div>
+                            <input type="text" class="seller-form-control form-control" id="gstin_or_uin" name="gstin_or_uin" value="{{ old('gstin_or_uin', old('gstin', old('uin'))) }}" placeholder="Please enter GSTIN or UIN" maxlength="50">
                         </div>
 
                         <!-- Row 4: Address -->
@@ -457,11 +456,6 @@
                         $('#pincode_feedback').hide();
                     }
                 });
-                $('#gstin_or_uin').on('input keyup', function() {
-                    if ($(this).val().trim()) {
-                        $('#gstin_or_uin_feedback').hide();
-                    }
-                });
                 $('#email').on('input keyup', function() {
                     var v = $(this).val().trim();
                     if (!v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) {
@@ -515,17 +509,7 @@
                         $('#pincode_feedback').hide();
                     }
 
-                    // 5. GSTIN / UIN (Required)
-                    var gstinOrUin = $('#gstin_or_uin').val().trim();
-                    if (!gstinOrUin) {
-                        $('#gstin_or_uin_feedback').show();
-                        isValid = false;
-                        if (!$firstInvalid) $firstInvalid = $('#gstin_or_uin');
-                    } else {
-                        $('#gstin_or_uin_feedback').hide();
-                    }
-
-                    // 6. Email (Optional)
+                    // 5. Email (Optional)
                     var email = $('#email').val().trim();
                     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
                         $('#email_feedback').show();

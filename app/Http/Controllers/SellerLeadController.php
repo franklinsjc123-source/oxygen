@@ -38,22 +38,13 @@ class SellerLeadController extends Controller
         ]);
 
         $rawTaxId = trim($request->input('gstin_or_uin') ?? $request->input('gstin') ?? $request->input('uin') ?? '');
-        if (empty($rawTaxId)) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Please enter GSTIN or UIN.',
-                    'errors'  => ['gstin_or_uin' => ['Please enter GSTIN or UIN.']]
-                ], 422);
-            }
-            return back()->withErrors(['gstin_or_uin' => 'Please enter GSTIN or UIN.'])->withInput();
+        $cleanTaxId = !empty($rawTaxId) ? strtoupper($rawTaxId) : null;
+        $isGstin = false;
+        if ($cleanTaxId) {
+            $isGstin = preg_match('/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/i', $cleanTaxId) || (strlen($cleanTaxId) === 15 && ctype_alnum($cleanTaxId) && is_numeric(substr($cleanTaxId, 0, 2)));
         }
 
         $pincodeValue = !empty($validated['pincode']) ? trim($validated['pincode']) : (!empty($validated['city']) ? trim($validated['city']) : null);
-
-        // Determine whether entered tax ID is standard GSTIN (15 chars) or UIN
-        $cleanTaxId = strtoupper($rawTaxId);
-        $isGstin = preg_match('/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/i', $cleanTaxId) || (strlen($cleanTaxId) === 15 && ctype_alnum($cleanTaxId) && is_numeric(substr($cleanTaxId, 0, 2)));
 
         $leadData = [
             'shop_name'         => trim($validated['shop_name']),
@@ -61,8 +52,8 @@ class SellerLeadController extends Controller
             'mobile_number'     => trim($validated['mobile_number']),
             'email'             => !empty($validated['email']) ? trim($validated['email']) : null,
             'business_category' => !empty($validated['business_category']) ? trim($validated['business_category']) : null,
-            'gstin'             => $isGstin ? $cleanTaxId : null,
-            'uin'               => !$isGstin ? $cleanTaxId : null,
+            'gstin'             => ($cleanTaxId && $isGstin) ? $cleanTaxId : null,
+            'uin'               => ($cleanTaxId && !$isGstin) ? $cleanTaxId : null,
             'address'           => !empty($validated['address']) ? trim($validated['address']) : null,
             'message'           => !empty($validated['message']) ? trim($validated['message']) : null,
             'status'            => 'Pending',

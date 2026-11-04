@@ -99,6 +99,7 @@
                                                                 data-email="{{ $lead->email ?? '-' }}"
                                                                 data-pincode="{{ $lead->pincode ?? $lead->city ?? '-' }}"
                                                                 data-category="{{ $lead->business_category ?? '-' }}"
+                                                                data-tax-id="{{ $lead->gstin ?? $lead->uin ?? '-' }}"
                                                                 data-gstin="{{ $lead->gstin ?? '-' }}"
                                                                 data-uin="{{ $lead->uin ?? '-' }}"
                                                                 data-address="{{ $lead->address ?? '-' }}"
@@ -204,9 +205,9 @@
                         </div>
                     </div>
 
-                    <!-- Row 3: Pincode, GSTIN, UIN -->
+                    <!-- Row 3: Pincode, GSTIN / UIN -->
                     <div class="row g-3 mb-3">
-                        <div class="col-md-4 col-12">
+                        <div class="col-md-6 col-12">
                             <div style="background: #ffffff; padding: 12px 16px; border-radius: 8px; border: 1px solid #e2e8f0; height: 100%;">
                                 <div style="font-size: 11px; font-weight: 700; color: #666666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
                                     <i class="fa fa-map-marker" style="color: #666666; margin-right: 5px;"></i> Pincode
@@ -214,20 +215,12 @@
                                 <div id="modal-pincode" style="font-size: 15px; font-weight: 600; color: #333333;">-</div>
                             </div>
                         </div>
-                        <div class="col-md-4 col-12">
+                        <div class="col-md-6 col-12">
                             <div style="background: #ffffff; padding: 12px 16px; border-radius: 8px; border: 1px solid #e2e8f0; height: 100%;">
                                 <div style="font-size: 11px; font-weight: 700; color: #666666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                                    <i class="fa fa-file-text-o" style="color: #666666; margin-right: 5px;"></i> GSTIN
+                                    <i class="fa fa-file-text-o" style="color: #666666; margin-right: 5px;"></i> GSTIN / UIN
                                 </div>
-                                <div id="modal-gstin" style="font-size: 13.5px; font-weight: 700; color: #0284c7; font-family: monospace; word-break: break-all;">-</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-12">
-                            <div style="background: #ffffff; padding: 12px 16px; border-radius: 8px; border: 1px solid #e2e8f0; height: 100%;">
-                                <div style="font-size: 11px; font-weight: 700; color: #666666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                                    <i class="fa fa-id-badge" style="color: #666666; margin-right: 5px;"></i> UIN
-                                </div>
-                                <div id="modal-uin" style="font-size: 13.5px; font-weight: 700; color: #6366f1; font-family: monospace; word-break: break-all;">-</div>
+                                <div id="modal-tax-id" style="font-size: 13.5px; font-weight: 700; color: #0284c7; font-family: monospace; word-break: break-all;">-</div>
                             </div>
                         </div>
                     </div>
@@ -286,8 +279,11 @@
             $('#modal-email').text($btn.data('email') || '-');
             $('#modal-pincode').text($btn.data('pincode') || $btn.data('city') || '-');
             $('#modal-category').text($btn.data('category') || '-');
-            $('#modal-gstin').text($btn.data('gstin') || '-');
-            $('#modal-uin').text($btn.data('uin') || '-');
+            var taxId = $btn.data('tax-id');
+            if (!taxId || taxId === '-') {
+                taxId = ($btn.data('gstin') && $btn.data('gstin') !== '-') ? $btn.data('gstin') : ($btn.data('uin') || '-');
+            }
+            $('#modal-tax-id').text(taxId || '-');
             $('#modal-address').text($btn.data('address') || '-');
             $('#modal-notes').text($btn.data('notes') || '-');
             $('#modal-created').text($btn.data('created') || '-');

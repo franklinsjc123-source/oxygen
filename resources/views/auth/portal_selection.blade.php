@@ -1,7 +1,7 @@
 @extends('layout.auth.master')
 @section('contents')
     @include('paritials.css.login-css')
-    <div class="page-wrapper" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #f0f2f5;">
+    <div class="page-wrapper" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: url('{{ asset('assets/images/banners/bg.png') }}') no-repeat center center fixed; background-size: cover;">
         <div class="container">
             <div class="text-center mb-5">
                 <img src="{{ asset('assets/images/dashboard/logo/newlogo.png') }}" alt="Logo" style="width: 150px; margin-bottom: 20px;">

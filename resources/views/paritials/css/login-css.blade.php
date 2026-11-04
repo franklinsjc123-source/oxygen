@@ -1,10 +1,17 @@
 <style>
 body {
+    background: url("{{ asset('assets/images/banners/bg.png') }}") no-repeat center center fixed !important;
+    background-size: cover !important;
     background-color: #f4f7f6;
+}
+
+.page-wrapper {
+    background: transparent !important;
 }
 
 /* Fix for mobile webview keyboard overlap issue where form gets pushed to the top and cut off */
 .authentication-box {
+    background: transparent !important;
     align-items: flex-start !important;
 }
 
@@ -15,6 +22,9 @@ body {
 
 /* Apply specific padding only for mobile views */
 @media (max-width: 767px) {
+    body {
+        background-attachment: scroll !important;
+    }
     .authentication-box .container {
         padding-top: 60px;
         padding-bottom: 30px;
