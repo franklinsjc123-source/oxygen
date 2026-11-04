@@ -58,11 +58,17 @@ class EnsurePanelSession
             }
         }
 
+        // Deactivate vendor/login and legacy URLs - force redirect to seller/login
+        if ($request->is('vendor/login') || $request->is('*/vendor/login') || $request->is('vendor') || $request->is('vendar/login') || $request->is('vendar')) {
+            return redirect('/seller/login', 301);
+        }
+        if ($request->is('vendor/register') || $request->is('*/vendor/register') || $request->is('vendar/register')) {
+            return redirect('/seller/register', 301);
+        }
+
         $isAdminAuthPage = $request->is('admin') || $request->is('admin/login') || $request->is('admin/register');
-        // Support correct vendor path, seller path, and legacy typo path.
-        $isVendorAuthPage = $request->is('vendor') || $request->is('vendor/login') || $request->is('vendor/register')
-            || $request->is('vendar') || $request->is('vendar/login') || $request->is('vendar/register')
-            || $request->is('seller') || $request->is('seller/login') || $request->is('seller/register');
+        // Only seller auth pages are allowed now
+        $isVendorAuthPage = $request->is('seller') || $request->is('seller/login') || $request->is('seller/register');
         $isStaffAuthPage = $request->is('staff') || $request->is('staff/login') || $request->is('staff/register');
 
         if ($isAdminAuthPage || $isVendorAuthPage || $isStaffAuthPage) {

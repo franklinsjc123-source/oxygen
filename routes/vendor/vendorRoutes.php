@@ -53,12 +53,31 @@ use App\Http\Controllers\vendor\Marketting\OxygenController;
 		|
 	*/
 
-Route::get('/register', [App\Http\Controllers\SellerLeadController::class, 'showRegisterForm'])->name('seller.register');
-Route::post('/register', [App\Http\Controllers\SellerLeadController::class, 'submitRegister'])->name('seller.register.submit');
+Route::get('/register', function (\Illuminate\Http\Request $request) {
+	if ($request->is('vendor*') || $request->is('vendar*')) {
+		return redirect('/seller/register', 301);
+	}
+	return app(\App\Http\Controllers\SellerLeadController::class)->showRegisterForm($request);
+})->name('seller.register');
+
+Route::post('/register', function (\Illuminate\Http\Request $request) {
+	if ($request->is('vendor*') || $request->is('vendar*')) {
+		return redirect('/seller/register', 301);
+	}
+	return app(\App\Http\Controllers\SellerLeadController::class)->submitRegister($request);
+})->name('seller.register.submit');
+
 Route::get('/', function () {
+	if (request()->is('vendor*') || request()->is('vendar*')) {
+		return redirect('/seller/login', 301);
+	}
 	return view('auth.vendorlogin');
 });
+
 Route::get('login', function () {
+	if (request()->is('vendor*') || request()->is('vendar*')) {
+		return redirect('/seller/login', 301);
+	}
 	if (auth()->check() && (int) auth()->user()->status === 2) {
 		return redirect()->route('vendordashboard', auth()->user()->login_id);
 	}
@@ -67,7 +86,12 @@ Route::get('login', function () {
 })->name('vendorerror');
 
 
-Route::post('login', [AuthController::class, 'vendorlogin'])->name('vendorlogin');
+Route::post('login', function (\Illuminate\Http\Request $request) {
+	if ($request->is('vendor*') || $request->is('vendar*')) {
+		return redirect('/seller/login', 301);
+	}
+	return app(AuthController::class)->vendorlogin($request);
+})->name('vendorlogin');
 
 Route::get('add_designation', [AdminController::class, 'designation']);
 
