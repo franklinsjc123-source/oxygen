@@ -54,8 +54,7 @@
     
                                     <thead>
                                     <tr>
-                                    <th data-field="rmdetails" data-sortable="true">RM DETAILS</th>
-                                    <th data-field="storedetails" data-sortable="true">STORE DETAILS</th>
+                                    <th data-field="storedetails" data-sortable="true">SHOP DETAILS</th>
                                    
                                     <th data-field="branch" data-sortable="true"> BRANCH</th>
                                    
@@ -74,8 +73,6 @@
                                     </thead>
                                     <tbody>
 									<tr>
-                                        <td>Rameshrajan
-										<br>emp.id:001</td>
                                     <td>
                                         <span>SKAP Garments<br>V.id:1020</span>   
                                         </td>

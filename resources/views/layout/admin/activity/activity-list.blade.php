@@ -55,7 +55,7 @@
                                     <thead>
                                     <tr>
                                     <th data-field="rmdetails" data-sortable="true">RM DETAILS</th>
-                                    <th data-field="storedetails" data-sortable="true">STORE DETAILS</th>
+                                    <th data-field="storedetails" data-sortable="true">SHOP DETAILS</th>
                                    
                                     <th data-field="branch" data-sortable="true"> BRANCH</th>
                                    

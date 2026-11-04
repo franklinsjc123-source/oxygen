@@ -66,8 +66,13 @@
                                     data-show-export="false" data-toolbar="#toolbar">
             <thead>
                                     <tr>
+                                    @php
+                                        $isStaff = request()->is('staff/*') || (session()->get('log_type') === 'Staff') || (session()->get('log_type') != 'Admin') || (auth()->check() && (int) auth()->user()->status === 3);
+                                    @endphp
+                                    @if(!$isStaff)
                                     <th data-field="rmdetails" data-sortable="true">RM DETAILS</th>
-                                    <th data-field="storedetails" data-sortable="true">STORE DETAILS</th>
+                                    @endif
+                                    <th data-field="storedetails" data-sortable="true">SHOP DETAILS</th>
                                    
                                     <th data-field="branch" data-sortable="true"> BRANCH</th>
                                    
@@ -88,8 +93,10 @@
                 @foreach($trackers as $tracker)
                 
                                    <tr>
+                                    @if(!$isStaff)
                                         <td>{{ $tracker->empname }}
 										<br>Emp.id:{{ $tracker->empid }}</td>
+                                    @endif
                                     <td>
                                         <span>{{ $tracker->shop_name }}<br>{{ $tracker->owner_name }}</span>   
                                         </td>
