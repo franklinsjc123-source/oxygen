@@ -1169,7 +1169,7 @@
                                     <li><a href="login.html">Sign In</a></li>
                                     <li><a href="#">Help</a></li>
                                     <li><a href="wishlist.html">My Wishlist</a></li>
-                                    <li><a href="#">Privacy Policy</a></li>
+                                    <li><a href="{{ url('/privacy-policy') }}" target="_blank">Privacy Policy</a></li>
                                 </ul>
                             </div>
                         </div>

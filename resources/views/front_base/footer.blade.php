@@ -1424,7 +1424,7 @@
                                    <div class="form-checkbox d-flex align-items-center justify-content-between mb-4">
                                         <div>
                                             <input type="checkbox" class="custom-checkbox" id="remember" name="remember" required>
-                                            <label for="remember" class="font-size-md mb-0">I agree to the <a href="#" class="text-primary font-size-md">Privacy Policy</a></label>
+                                            <label for="remember" class="font-size-md mb-0">I agree to the <a href="{{ url('/privacy-policy') }}" target="_blank" onclick="event.stopPropagation();" class="text-primary font-size-md">Privacy Policy</a></label>
                                             <div id="policy-error" class="text-danger" style="display:none; font-size: 8px; margin-top: 5px; font-weight: 500;">Please agree to the Privacy Policy to register.</div>
                                         </div>
                                     </div>

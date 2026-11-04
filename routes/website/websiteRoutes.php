@@ -345,7 +345,7 @@ Route::get('/delete_wishlist/{id}', [wishlistcontroller::class,'destroy']);
 
 Route::get('/privacy-policy', function () {
     return view('frontend.privacy-policy');
-});
+})->name('privacy.policy');
 
 Route::get('Informations/{id}', [HomeController::class, 'pageinfo']);
 
