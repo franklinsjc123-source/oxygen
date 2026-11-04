@@ -36,11 +36,29 @@ class VendorcreateController extends Controller
     private $GST_IMAGE_PATH = "assets/images/vendor/gst";
     private $OTHER_IMAGE_PATH = "assets/images/vendor/other";
 
-    private function sanitizeGstNumber(?string $gstNumber): string
+    private function sanitizeGstNumber(?string $gstNumber): ?string
     {
         $gstNumber = strtoupper(trim((string) $gstNumber));
         $gstNumber = preg_replace('/[^A-Z0-9]/', '', $gstNumber);
-        return substr($gstNumber, 0, 15);
+        return !empty($gstNumber) ? substr($gstNumber, 0, 15) : null;
+    }
+
+    private function ensureGstColumnCapacity()
+    {
+        try {
+            $col = FacadesDB::select("SHOW COLUMNS FROM vendor_details WHERE Field = 'gst_number'");
+            if (!empty($col)) {
+                $type = strtolower($col[0]->Type ?? '');
+                if (preg_match('/varchar\((\d+)\)/', $type, $matches)) {
+                    $length = (int) $matches[1];
+                    if ($length < 20) {
+                        FacadesDB::statement("ALTER TABLE `vendor_details` MODIFY `gst_number` VARCHAR(50) NULL");
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            // Ignore if alter is not permitted
+        }
     }
     /**
      * Display a listing of the resource.
@@ -281,9 +299,28 @@ class VendorcreateController extends Controller
             $vendor->store_time_friday = $request->store_time_friday;
             $vendor->store_time_saturday = $request->store_time_saturday;
 
-            // echo $vendor;
-            // exit();
-            $vedorregisterd = $vendor->save();
+            // Save vendor with self-healing column capacity check
+            $this->ensureGstColumnCapacity();
+            try {
+                $vedorregisterd = $vendor->save();
+            } catch (\PDOException $pdoEx) {
+                if ($pdoEx->getCode() == '22001' || str_contains($pdoEx->getMessage(), 'gst_number')) {
+                    try {
+                        FacadesDB::statement("ALTER TABLE `vendor_details` MODIFY `gst_number` VARCHAR(50) NULL");
+                        $vedorregisterd = $vendor->save();
+                    } catch (\Throwable $fallbackEx) {
+                        $col = FacadesDB::select("SHOW COLUMNS FROM vendor_details WHERE Field = 'gst_number'");
+                        $maxLen = 10;
+                        if (!empty($col) && preg_match('/varchar\((\d+)\)/', strtolower($col[0]->Type ?? ''), $m)) {
+                            $maxLen = (int) $m[1];
+                        }
+                        $vendor->gst_number = $vendor->gst_number ? substr($vendor->gst_number, 0, $maxLen) : null;
+                        $vedorregisterd = $vendor->save();
+                    }
+                } else {
+                    throw $pdoEx;
+                }
+            }
 
             // VENDOR REGISTER
             if ($vedorregisterd) {
@@ -418,9 +455,8 @@ class VendorcreateController extends Controller
             $flasher->addSuccess('vendor Information has been saved successfully!');
             return redirect()->to(url('admin/vendor/list'));
         } catch (\Throwable $th) {
-            //$flasher->addError('Something Error!!');
-            $flasher->addError('Something Error!! =>' . $th);
-            return redirect()->route('vendorcreate.index');
+            $flasher->addError('Something Error!! =>' . $th->getMessage());
+            return redirect()->back()->withInput();
         }
     }
 
@@ -665,9 +701,28 @@ class VendorcreateController extends Controller
             $vendor->store_time_friday = $request->store_time_friday;
             $vendor->store_time_saturday = $request->store_time_saturday;
 
-            // echo $vendor;
-            // exit();
-            $vedorregisterd = $vendor->save();
+            // Save vendor with self-healing column capacity check
+            $this->ensureGstColumnCapacity();
+            try {
+                $vedorregisterd = $vendor->save();
+            } catch (\PDOException $pdoEx) {
+                if ($pdoEx->getCode() == '22001' || str_contains($pdoEx->getMessage(), 'gst_number')) {
+                    try {
+                        FacadesDB::statement("ALTER TABLE `vendor_details` MODIFY `gst_number` VARCHAR(50) NULL");
+                        $vedorregisterd = $vendor->save();
+                    } catch (\Throwable $fallbackEx) {
+                        $col = FacadesDB::select("SHOW COLUMNS FROM vendor_details WHERE Field = 'gst_number'");
+                        $maxLen = 10;
+                        if (!empty($col) && preg_match('/varchar\((\d+)\)/', strtolower($col[0]->Type ?? ''), $m)) {
+                            $maxLen = (int) $m[1];
+                        }
+                        $vendor->gst_number = $vendor->gst_number ? substr($vendor->gst_number, 0, $maxLen) : null;
+                        $vedorregisterd = $vendor->save();
+                    }
+                } else {
+                    throw $pdoEx;
+                }
+            }
 
             if ($vedorregisterd) {
                 $user = User::where('login_id', $id)->first();
