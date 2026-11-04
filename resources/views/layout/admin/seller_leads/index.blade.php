@@ -60,7 +60,7 @@
                                                 <th data-field="shop_name" data-sortable="true">Shop Name</th>
                                                 <th data-field="owner_name" data-sortable="true">Owner Name</th>
                                                 <th data-field="mobile_number" data-sortable="true">Mobile Number</th>
-                                                <th data-field="city" data-sortable="true">City</th>
+                                                <th data-field="pincode" data-sortable="true">Pincode</th>
                                                 <th data-field="category" data-sortable="true">Category</th>
                                                 <th>Action</th>
                                             </tr>
@@ -80,7 +80,7 @@
                                                         {{ $lead->mobile_number }}
                                                     </td>
                                                     <td>
-                                                        {{ $lead->city ?? '-' }}
+                                                        {{ $lead->pincode ?? $lead->city ?? '-' }}
                                                     </td>
                                                     <td>
                                                         {{ $lead->business_category ?? '-' }}
@@ -97,7 +97,7 @@
                                                                 data-owner-name="{{ $lead->owner_name }}"
                                                                 data-mobile="{{ $lead->mobile_number }}"
                                                                 data-email="{{ $lead->email ?? '-' }}"
-                                                                data-city="{{ $lead->city ?? '-' }}"
+                                                                data-pincode="{{ $lead->pincode ?? $lead->city ?? '-' }}"
                                                                 data-category="{{ $lead->business_category ?? '-' }}"
                                                                 data-gstin="{{ $lead->gstin ?? '-' }}"
                                                                 data-uin="{{ $lead->uin ?? '-' }}"
@@ -204,14 +204,14 @@
                         </div>
                     </div>
 
-                    <!-- Row 3: City, GSTIN, UIN -->
+                    <!-- Row 3: Pincode, GSTIN, UIN -->
                     <div class="row g-3 mb-3">
                         <div class="col-md-4 col-12">
                             <div style="background: #ffffff; padding: 12px 16px; border-radius: 8px; border: 1px solid #e2e8f0; height: 100%;">
                                 <div style="font-size: 11px; font-weight: 700; color: #666666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                                    <i class="fa fa-map-marker" style="color: #666666; margin-right: 5px;"></i> City
+                                    <i class="fa fa-map-marker" style="color: #666666; margin-right: 5px;"></i> Pincode
                                 </div>
-                                <div id="modal-city" style="font-size: 15px; font-weight: 600; color: #333333;">-</div>
+                                <div id="modal-pincode" style="font-size: 15px; font-weight: 600; color: #333333;">-</div>
                             </div>
                         </div>
                         <div class="col-md-4 col-12">
@@ -284,7 +284,7 @@
             $('#modal-owner-name').text($btn.data('owner-name') || '-');
             $('#modal-mobile').text($btn.data('mobile') || '-');
             $('#modal-email').text($btn.data('email') || '-');
-            $('#modal-city').text($btn.data('city') || '-');
+            $('#modal-pincode').text($btn.data('pincode') || $btn.data('city') || '-');
             $('#modal-category').text($btn.data('category') || '-');
             $('#modal-gstin').text($btn.data('gstin') || '-');
             $('#modal-uin').text($btn.data('uin') || '-');

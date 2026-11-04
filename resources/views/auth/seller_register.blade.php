@@ -294,14 +294,14 @@
                             </div>
                         </div>
 
-                        <!-- Row 3: City & Business Category -->
+                        <!-- Row 3: Pincode & Business Category -->
                         <div class="row g-3 mb-3">
                             <div class="col-md-6 col-12">
-                                <label for="city" class="seller-form-label">
-                                    City <span class="text-danger">*</span>
+                                <label for="pincode" class="seller-form-label">
+                                    Pincode <span class="text-danger">*</span>
                                 </label>
-                                <input type="text" class="seller-form-control form-control" id="city" name="city" value="{{ old('city') }}" placeholder="Please enter city" required>
-                                <div class="invalid-feedback-custom" id="city_feedback">Please enter city</div>
+                                <input type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" class="seller-form-control form-control" id="pincode" name="pincode" value="{{ old('pincode') }}" placeholder="Please enter pincode" oninput="this.value = this.value.replace(/[^0-9]/g, '')" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)" required>
+                                <div class="invalid-feedback-custom" id="pincode_feedback">Please enter valid 6-digit pincode</div>
                             </div>
                             <div class="col-md-6 col-12">
                                 <label for="business_category" class="seller-form-label">
@@ -311,26 +311,18 @@
                             </div>
                         </div>
 
-                        <!-- Row 4: GSTIN & UIN -->
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6 col-12">
-                                <label for="gstin" class="seller-form-label">
-                                    GSTIN
+                        <!-- Row 4: GSTIN / UIN (Single Input) -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="gstin_or_uin" class="seller-form-label mb-0">
+                                    GSTIN / UIN <span class="text-danger">*</span>
                                 </label>
-                                <input type="text" class="seller-form-control form-control" id="gstin" name="gstin" value="{{ old('gstin') }}" placeholder="Please enter GSTIN" maxlength="50">
+                                <a href="https://reg.gst.gov.in/registration/generateuid?utm_source=meesho&utm_medium=website&utm_campaign=header" target="_blank" rel="noopener noreferrer" class="btn btn-sm uin-link-btn" title="Generate UIN on GST Portal">
+                                    <i class="fa fa-external-link"></i> Create UIN
+                                </a>
                             </div>
-                            <div class="col-md-6 col-12">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <label for="uin" class="seller-form-label mb-0">
-                                        UIN <span class="text-danger">*</span>
-                                    </label>
-                                    <a href="https://reg.gst.gov.in/registration/generateuid?utm_source=meesho&utm_medium=website&utm_campaign=header" target="_blank" rel="noopener noreferrer" class="btn btn-sm uin-link-btn" title="Generate UIN on GST Portal">
-                                        <i class="fa fa-external-link"></i> Create UIN
-                                    </a>
-                                </div>
-                                <input type="text" class="seller-form-control form-control" id="uin" name="uin" value="{{ old('uin') }}" placeholder="Please enter UIN" maxlength="50" required>
-                                <div class="invalid-feedback-custom" id="uin_feedback">Please enter UIN</div>
-                            </div>
+                            <input type="text" class="seller-form-control form-control" id="gstin_or_uin" name="gstin_or_uin" value="{{ old('gstin_or_uin', old('gstin', old('uin'))) }}" placeholder="Please enter GSTIN or UIN" maxlength="50" required>
+                            <div class="invalid-feedback-custom" id="gstin_or_uin_feedback">Please enter GSTIN or UIN</div>
                         </div>
 
                         <!-- Row 4: Address -->
@@ -456,14 +448,18 @@
                         $('#mobile_number_feedback').hide();
                     }
                 });
-                $('#city').on('input keyup', function() {
-                    if ($(this).val().trim()) {
-                        $('#city_feedback').hide();
+                $('#pincode').on('input keyup', function() {
+                    var v = $(this).val().replace(/[^0-9]/g, '');
+                    if ($(this).val() !== v) {
+                        $(this).val(v);
+                    }
+                    if (v && /^[0-9]{6}$/.test(v)) {
+                        $('#pincode_feedback').hide();
                     }
                 });
-                $('#uin').on('input keyup', function() {
+                $('#gstin_or_uin').on('input keyup', function() {
                     if ($(this).val().trim()) {
-                        $('#uin_feedback').hide();
+                        $('#gstin_or_uin_feedback').hide();
                     }
                 });
                 $('#email').on('input keyup', function() {
@@ -509,24 +505,24 @@
                         $('#mobile_number_feedback').hide();
                     }
 
-                    // 4. City
-                    var city = $('#city').val().trim();
-                    if (!city) {
-                        $('#city_feedback').show();
+                    // 4. Pincode
+                    var pincode = $('#pincode').val().trim();
+                    if (!pincode || !/^[0-9]{6}$/.test(pincode)) {
+                        $('#pincode_feedback').show();
                         isValid = false;
-                        if (!$firstInvalid) $firstInvalid = $('#city');
+                        if (!$firstInvalid) $firstInvalid = $('#pincode');
                     } else {
-                        $('#city_feedback').hide();
+                        $('#pincode_feedback').hide();
                     }
 
-                    // 5. UIN (Required)
-                    var uin = $('#uin').val().trim();
-                    if (!uin) {
-                        $('#uin_feedback').show();
+                    // 5. GSTIN / UIN (Required)
+                    var gstinOrUin = $('#gstin_or_uin').val().trim();
+                    if (!gstinOrUin) {
+                        $('#gstin_or_uin_feedback').show();
                         isValid = false;
-                        if (!$firstInvalid) $firstInvalid = $('#uin');
+                        if (!$firstInvalid) $firstInvalid = $('#gstin_or_uin');
                     } else {
-                        $('#uin_feedback').hide();
+                        $('#gstin_or_uin_feedback').hide();
                     }
 
                     // 6. Email (Optional)

@@ -17,6 +17,7 @@ class SellerLead extends Model
         'mobile_number',
         'email',
         'city',
+        'pincode',
         'business_category',
         'gstin',
         'uin',

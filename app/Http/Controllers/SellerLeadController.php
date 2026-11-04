@@ -27,27 +27,56 @@ class SellerLeadController extends Controller
             'owner_name'        => 'required|string|max:255',
             'mobile_number'     => 'required|string|min:10|max:15',
             'email'             => 'nullable|email|max:255',
+            'pincode'           => 'required|string|max:20',
             'city'              => 'nullable|string|max:100',
             'business_category' => 'nullable|string|max:100',
+            'gstin_or_uin'      => 'nullable|string|max:50',
             'gstin'             => 'nullable|string|max:50',
-            'uin'               => 'required|string|max:50',
+            'uin'               => 'nullable|string|max:50',
             'address'           => 'nullable|string|max:1000',
             'message'           => 'nullable|string|max:1000',
         ]);
 
-        SellerLead::create([
+        $rawTaxId = trim($request->input('gstin_or_uin') ?? $request->input('gstin') ?? $request->input('uin') ?? '');
+        if (empty($rawTaxId)) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Please enter GSTIN or UIN.',
+                    'errors'  => ['gstin_or_uin' => ['Please enter GSTIN or UIN.']]
+                ], 422);
+            }
+            return back()->withErrors(['gstin_or_uin' => 'Please enter GSTIN or UIN.'])->withInput();
+        }
+
+        $pincodeValue = !empty($validated['pincode']) ? trim($validated['pincode']) : (!empty($validated['city']) ? trim($validated['city']) : null);
+
+        // Determine whether entered tax ID is standard GSTIN (15 chars) or UIN
+        $cleanTaxId = strtoupper($rawTaxId);
+        $isGstin = preg_match('/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/i', $cleanTaxId) || (strlen($cleanTaxId) === 15 && ctype_alnum($cleanTaxId) && is_numeric(substr($cleanTaxId, 0, 2)));
+
+        $leadData = [
             'shop_name'         => trim($validated['shop_name']),
             'owner_name'        => trim($validated['owner_name']),
             'mobile_number'     => trim($validated['mobile_number']),
             'email'             => !empty($validated['email']) ? trim($validated['email']) : null,
-            'city'              => !empty($validated['city']) ? trim($validated['city']) : null,
             'business_category' => !empty($validated['business_category']) ? trim($validated['business_category']) : null,
-            'gstin'             => !empty($validated['gstin']) ? strtoupper(trim($validated['gstin'])) : null,
-            'uin'               => !empty($validated['uin']) ? strtoupper(trim($validated['uin'])) : null,
+            'gstin'             => $isGstin ? $cleanTaxId : null,
+            'uin'               => !$isGstin ? $cleanTaxId : null,
             'address'           => !empty($validated['address']) ? trim($validated['address']) : null,
             'message'           => !empty($validated['message']) ? trim($validated['message']) : null,
             'status'            => 'Pending',
-        ]);
+        ];
+
+        // If pincode column exists, save to it; also keep city filled for backwards compatibility
+        if (\Illuminate\Support\Facades\Schema::hasColumn('seller_leads', 'pincode')) {
+            $leadData['pincode'] = $pincodeValue;
+            $leadData['city'] = $pincodeValue;
+        } elseif (\Illuminate\Support\Facades\Schema::hasColumn('seller_leads', 'city')) {
+            $leadData['city'] = $pincodeValue;
+        }
+
+        SellerLead::create($leadData);
 
         $message = 'Request submitted successfully! Admin will contact you soon.';
 
@@ -75,8 +104,11 @@ class SellerLeadController extends Controller
                   ->orWhere('owner_name', 'like', "%{$kw}%")
                   ->orWhere('mobile_number', 'like', "%{$kw}%")
                   ->orWhere('email', 'like', "%{$kw}%")
-                  ->orWhere('city', 'like', "%{$kw}%")
-                  ->orWhere('business_category', 'like', "%{$kw}%")
+                  ->orWhere('city', 'like', "%{$kw}%");
+                if (\Illuminate\Support\Facades\Schema::hasColumn('seller_leads', 'pincode')) {
+                    $q->orWhere('pincode', 'like', "%{$kw}%");
+                }
+                $q->orWhere('business_category', 'like', "%{$kw}%")
                   ->orWhere('gstin', 'like', "%{$kw}%")
                   ->orWhere('uin', 'like', "%{$kw}%");
             });
