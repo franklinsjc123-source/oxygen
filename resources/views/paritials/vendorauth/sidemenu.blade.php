@@ -188,7 +188,7 @@
                         <a href="tel:{{ $staff->mobileno }}" class="rm-phone" title="{{ $staff->mobileno }}">
                             <i class="fa fa-phone"></i> {{ $staff->mobileno }}
                         </a>
-                        <a href="javascript:void(0)" class="rm-rate-link btn-open-rate-rm" title="Click to rate your experience with RM">
+                        <a href="javascript:void(0)" class="rm-rate-link btn-open-rate-rm" onclick="openRateRmModal()" title="Click to rate your experience with RM">
                             <i class="fa fa-star rm-star-icon" style="color: {{ $currentRmRating ? '#ffd700' : 'rgba(255,255,255,0.7)' }}; font-size: 11px;"></i>
                             <span class="rm-rate-text">{{ $currentRmRating ? $currentRmRating . '.0 ★ Rate RM' : 'Rate RM' }}</span>
                         </a>
@@ -358,6 +358,18 @@
             transform: translateY(-1px);
         }
 
+        #btnSubmitRmRate:hover {
+            background-color: #0f2430 !important;
+            border-color: #0f2430 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(24, 53, 67, 0.5) !important;
+        }
+
+        .btn-close-rate-rm:hover {
+            background-color: #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+
         /* Desktop specific styles */
         @media (min-width: 992px) {
             .rm-card-desktop {
@@ -400,7 +412,7 @@
                 <a href="tel:{{ $staff->mobileno }}" class="rm-phone" title="{{ $staff->mobileno }}">
                     <i class="fa fa-phone"></i> {{ $staff->mobileno }}
                 </a>
-                <a href="javascript:void(0)" class="rm-rate-link btn-open-rate-rm" title="Click to rate your experience with RM">
+                <a href="javascript:void(0)" class="rm-rate-link btn-open-rate-rm" onclick="openRateRmModal()" title="Click to rate your experience with RM">
                     <i class="fa fa-star rm-star-icon" style="color: {{ $currentRmRating ? '#ffd700' : 'rgba(255,255,255,0.7)' }}; font-size: 11px;"></i>
                     <span class="rm-rate-text">{{ $currentRmRating ? $currentRmRating . '.0 ★ Rate RM' : 'Rate RM' }}</span>
                 </a>
@@ -409,30 +421,30 @@
     </div>
 
     <!-- Rate RM Modal -->
-    <div class="modal fade" id="rateRmModal" tabindex="-1" aria-labelledby="rateRmModalLabel" aria-hidden="true" style="display: none; z-index: 1060;">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 440px; margin: 1.75rem auto;">
-            <div class="modal-content" style="border-radius: 18px; border: none; box-shadow: 0 20px 40px rgba(0,0,0,0.25); overflow: hidden; background: #ffffff;">
-                <div class="modal-header d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #ff7a59 0%, #ff5252 100%); color: #fff; padding: 16px 22px; border-bottom: none;">
-                    <h5 class="modal-title mb-0" id="rateRmModalLabel" style="font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; color: #fff;">
+    <div class="modal fade" id="rateRmModal" tabindex="-1" aria-labelledby="rateRmModalLabel" aria-hidden="true" style="display: none; z-index: 100000 !important;" onclick="if(event.target === this) closeRateRmModal()">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 440px; margin: 1.75rem auto; z-index: 100001 !important; position: relative;">
+            <div class="modal-content" style="border-radius: 18px; border: none; box-shadow: 0 20px 40px rgba(0,0,0,0.3); overflow: hidden; background: #ffffff;">
+                <div class="modal-header d-flex justify-content-between align-items-center" style="background: #183543; color: #ffffff; padding: 16px 22px; border-bottom: none;">
+                    <h5 class="modal-title mb-0" id="rateRmModalLabel" style="font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; color: #ffffff;">
                         <i class="fa fa-star" style="color: #ffd700;"></i> Rate Your RM
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: transparent; border: none; font-size: 1.2rem; color: #fff; opacity: 0.9; cursor: pointer;">
-                        <span aria-hidden="true" style="color: #fff; font-weight: bold;">&times;</span>
+                    <button type="button" class="btn-close-rate-rm" onclick="closeRateRmModal()" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close" style="background: rgba(255,255,255,0.18); border: none; font-size: 22px; line-height: 1; color: #ffffff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; outline: none; padding: 0;">
+                        <span aria-hidden="true" style="color: #fff; font-weight: bold; margin-top: -3px;">&times;</span>
                     </button>
                 </div>
                 <form id="formRateRm">
                     @csrf
-                    <input type="hidden" name="staff_id" value="{{ $vendorProfile->staff_id ?? '' }}">
+                    <input type="hidden" name="staff_id" value="{{ $staff->id ?? ($vendorProfile->staff_id ?? '') }}">
                     <input type="hidden" name="rating" id="rm_rating_input" value="{{ $currentRmRating ?? 5 }}">
 
                     <div class="modal-body" style="padding: 22px 24px;">
                         <!-- RM Profile Preview -->
                         <div class="d-flex align-items-center p-3 mb-3" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px;">
-                            <img src="{{ $staffImage }}" alt="RM" style="width: 48px; height: 48px; object-fit: cover; border-radius: 50%; border: 2px solid #ff7a59; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-right: 12px; flex-shrink: 0;">
+                            <img src="{{ $staffImage }}" alt="RM" style="width: 48px; height: 48px; object-fit: cover; border-radius: 50%; border: 2px solid #183543; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-right: 12px; flex-shrink: 0;">
                             <div style="min-width: 0; flex: 1;">
                                 <h6 style="margin: 0 0 2px; font-size: 0.98rem; font-weight: 700; color: #1e293b;">{{ $staff->fullname ?? $staff->username }}</h6>
                                 <span style="display: block; font-size: 0.82rem; color: #64748b; font-weight: 500;">Relationship Manager</span>
-                                <span style="font-size: 0.82rem; color: #ff5252; font-weight: 600;"><i class="fa fa-phone me-1"></i>{{ $staff->mobileno }}</span>
+                                <span style="font-size: 0.82rem; color: #183543; font-weight: 600;"><i class="fa fa-phone me-1"></i>{{ $staff->mobileno }}</span>
                             </div>
                         </div>
 
@@ -443,7 +455,7 @@
                             </label>
                             <div class="rm-interactive-stars d-flex justify-content-center align-items-center gap-2 mb-2" style="font-size: 32px; cursor: pointer; user-select: none;">
                                 @for($i = 1; $i <= 5; $i++)
-                                    <i class="fa fa-star rm-star-item" data-value="{{ $i }}" style="color: {{ ($currentRmRating ?? 5) >= $i ? '#f59e0b' : '#cbd5e1' }}; transition: transform 0.15s ease, color 0.15s ease;"></i>
+                                    <i class="fa fa-star rm-star-item" data-value="{{ $i }}" onclick="setRmRating({{ $i }})" style="color: {{ ($currentRmRating ?? 5) >= $i ? '#f59e0b' : '#cbd5e1' }}; transition: transform 0.15s ease, color 0.15s ease; padding: 4px; cursor: pointer;"></i>
                                 @endfor
                             </div>
                             <div id="rm_rating_label" style="font-size: 0.88rem; font-weight: 700; color: #f59e0b; min-height: 20px;">
@@ -466,8 +478,8 @@
                     </div>
 
                     <div class="modal-footer" style="border-top: 1px solid #f1f5f9; padding: 14px 22px; background: #fafafa; display: flex; justify-content: flex-end; gap: 10px;">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal" style="border-radius: 8px; font-weight: 600; padding: 8px 18px;">Cancel</button>
-                        <button type="submit" id="btnSubmitRmRate" class="btn text-white" style="background: linear-gradient(135deg, #ff7a59 0%, #ff5252 100%); border: none; border-radius: 8px; font-weight: 700; padding: 8px 22px; box-shadow: 0 4px 12px rgba(255, 122, 89, 0.35);">
+                        <button type="button" class="btn btn-close-rate-rm" onclick="closeRateRmModal()" data-bs-dismiss="modal" data-dismiss="modal" style="border-radius: 8px; font-weight: 600; padding: 8px 18px; cursor: pointer; background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1;">Cancel</button>
+                        <button type="submit" id="btnSubmitRmRate" class="btn text-white" style="background: #183543; border: 1px solid #183543; border-radius: 8px; font-weight: 700; padding: 8px 24px; box-shadow: 0 4px 12px rgba(24, 53, 67, 0.35); cursor: pointer; transition: all 0.2s;">
                             {{ $currentRmRating ? 'Update Rating' : 'Submit Rating' }}
                         </button>
                     </div>
@@ -478,6 +490,20 @@
 
     <script>
     (function() {
+        // Crucial: Move #rateRmModal out of .page-sidebar to <body> so that sidebar position:fixed / z-index:9 does NOT trap modal behind backdrop
+        function relocateModalToBody() {
+            var modalEl = document.getElementById('rateRmModal');
+            if (modalEl && modalEl.parentNode && modalEl.parentNode !== document.body) {
+                document.body.appendChild(modalEl);
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', relocateModalToBody);
+        } else {
+            relocateModalToBody();
+        }
+
         var starLabels = {
             1: '★ Poor',
             2: '★★ Fair',
@@ -486,21 +512,92 @@
             5: '★★★★★ Excellent'
         };
 
+        window.openRateRmModal = function() {
+            relocateModalToBody();
+            var modalEl = document.getElementById('rateRmModal');
+            if (!modalEl) return;
+
+            $('#rm_rate_alert').hide().empty();
+
+            if (window.bootstrap && window.bootstrap.Modal) {
+                try {
+                    if (typeof window.bootstrap.Modal.getOrCreateInstance === 'function') {
+                        window.bootstrap.Modal.getOrCreateInstance(modalEl).show();
+                        return;
+                    } else {
+                        new window.bootstrap.Modal(modalEl).show();
+                        return;
+                    }
+                } catch(e) {}
+            }
+            if (window.jQuery && typeof window.jQuery.fn.modal === 'function') {
+                try {
+                    $('#rateRmModal').modal('show');
+                    return;
+                } catch(e) {}
+            }
+
+            // Direct DOM fallback
+            modalEl.classList.add('show');
+            modalEl.style.display = 'block';
+            modalEl.removeAttribute('aria-hidden');
+            document.body.classList.add('modal-open');
+            if ($('.modal-backdrop').length === 0) {
+                $('<div class="modal-backdrop fade show" style="z-index: 99999;"></div>').appendTo('body');
+            }
+        };
+
+        window.closeRateRmModal = function() {
+            var modalEl = document.getElementById('rateRmModal');
+            if (modalEl) {
+                if (window.bootstrap && window.bootstrap.Modal) {
+                    try {
+                        var inst = window.bootstrap.Modal.getInstance(modalEl);
+                        if (inst) inst.hide();
+                    } catch(e) {}
+                }
+                if (window.jQuery && typeof window.jQuery.fn.modal === 'function') {
+                    try {
+                        $('#rateRmModal').modal('hide');
+                    } catch(e) {}
+                }
+                modalEl.classList.remove('show');
+                modalEl.style.display = 'none';
+                modalEl.setAttribute('aria-hidden', 'true');
+            }
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open').css({
+                'overflow': '',
+                'padding-right': ''
+            });
+        };
+
+        window.setRmRating = function(val) {
+            val = parseInt(val) || 5;
+            $('#rm_rating_input').val(val);
+            highlightStars(val);
+        };
+
         function highlightStars(val) {
             $('.rm-star-item').each(function() {
-                var starVal = parseInt($(this).data('value'));
+                var starVal = parseInt($(this).attr('data-value')) || 0;
                 if (starVal <= val) {
-                    $(this).css('color', '#f59e0b');
+                    $(this).css({ 'color': '#f59e0b', 'transform': 'scale(1)' });
                 } else {
-                    $(this).css('color', '#cbd5e1');
+                    $(this).css({ 'color': '#cbd5e1', 'transform': 'scale(1)' });
                 }
             });
             $('#rm_rating_label').text(starLabels[val] || (val + ' Stars'));
         }
 
         $(document).on('mouseenter', '.rm-star-item', function() {
-            var hoverVal = parseInt($(this).data('value'));
+            var hoverVal = parseInt($(this).attr('data-value')) || 5;
             highlightStars(hoverVal);
+            $(this).css('transform', 'scale(1.2)');
+        });
+
+        $(document).on('mouseleave', '.rm-star-item', function() {
+            $(this).css('transform', 'scale(1)');
         });
 
         $(document).on('mouseleave', '.rm-interactive-stars', function() {
@@ -508,28 +605,19 @@
             highlightStars(currentVal);
         });
 
-        $(document).on('click', '.rm-star-item', function() {
-            var clickVal = parseInt($(this).data('value'));
-            $('#rm_rating_input').val(clickVal);
-            highlightStars(clickVal);
-            $(this).css('transform', 'scale(1.25)');
-            setTimeout(function() {
-                $('.rm-star-item').css('transform', 'scale(1)');
-            }, 150);
-        });
-
         $(document).on('click', '.btn-open-rate-rm', function(e) {
             e.preventDefault();
-            var modalEl = document.getElementById('rateRmModal');
-            if (!modalEl) return;
-            if (window.bootstrap && window.bootstrap.Modal) {
-                if (typeof window.bootstrap.Modal.getOrCreateInstance === 'function') {
-                    window.bootstrap.Modal.getOrCreateInstance(modalEl).show();
-                } else {
-                    new window.bootstrap.Modal(modalEl).show();
-                }
-            } else if (window.jQuery && typeof window.jQuery.fn.modal === 'function') {
-                $('#rateRmModal').modal('show');
+            openRateRmModal();
+        });
+
+        $(document).on('click', '.btn-close-rate-rm, [data-bs-dismiss="modal"], [data-dismiss="modal"]', function(e) {
+            e.preventDefault();
+            closeRateRmModal();
+        });
+
+        $(document).on('keydown', function(e) {
+            if (e.key === 'Escape' && $('#rateRmModal').is(':visible')) {
+                closeRateRmModal();
             }
         });
 
@@ -546,33 +634,30 @@
                 url: "{{ route('vendor.rate.rm') }}",
                 type: "POST",
                 data: $(this).serialize(),
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') || '{{ csrf_token() }}'
+                },
                 dataType: "json",
                 success: function(res) {
                     $btn.prop('disabled', false).text('Update Rating');
                     if (res.success) {
-                        $alert.html('<div class="alert alert-success py-2 px-3 mb-0" style="font-size: 0.88rem;"><i class="fa fa-check-circle me-1"></i> ' + res.message + '</div>').fadeIn();
+                        $alert.html('<div class="alert alert-success py-2 px-3 mb-0" style="font-size: 0.88rem; background-color: #d1e7dd; color: #0f5132; border-color: #badbcc;"><i class="fa fa-check-circle me-1"></i> ' + res.message + '</div>').fadeIn();
 
                         var score = res.rating;
                         $('.rm-rate-text').text(score + '.0 ★ Rate RM');
                         $('.rm-star-icon').css('color', '#ffd700');
 
                         setTimeout(function() {
-                            var modalEl = document.getElementById('rateRmModal');
-                            if (window.bootstrap && window.bootstrap.Modal) {
-                                var inst = window.bootstrap.Modal.getInstance(modalEl);
-                                if (inst) inst.hide();
-                            } else if (window.jQuery && typeof window.jQuery.fn.modal === 'function') {
-                                $('#rateRmModal').modal('hide');
-                            }
+                            closeRateRmModal();
                         }, 1200);
                     } else {
-                        $alert.html('<div class="alert alert-danger py-2 px-3 mb-0" style="font-size: 0.88rem;">' + (res.message || 'Error saving rating.') + '</div>').fadeIn();
+                        $alert.html('<div class="alert alert-danger py-2 px-3 mb-0" style="font-size: 0.88rem; background-color: #f8d7da; color: #842029; border-color: #f5c2c7;">' + (res.message || 'Error saving rating.') + '</div>').fadeIn();
                     }
                 },
                 error: function(xhr) {
                     $btn.prop('disabled', false).text(origText);
                     var errMsg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Something went wrong. Please try again.';
-                    $alert.html('<div class="alert alert-danger py-2 px-3 mb-0" style="font-size: 0.88rem;">' + errMsg + '</div>').fadeIn();
+                    $alert.html('<div class="alert alert-danger py-2 px-3 mb-0" style="font-size: 0.88rem; background-color: #f8d7da; color: #842029; border-color: #f5c2c7;">' + errMsg + '</div>').fadeIn();
                 }
             });
         });
