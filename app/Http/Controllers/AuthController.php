@@ -436,4 +436,179 @@ class AuthController extends Controller
             'username' => $savedUsername
         ]);
     }
+
+    public function vendorSendForgotOtp(Request $request)
+    {
+        $identifier = trim($request->input('identifier', ''));
+        if (empty($identifier)) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Please enter your seller username, shop ID, or email address.'
+            ]);
+        }
+
+        // Try finding in User table first with status = 2
+        $user = \App\Models\User::where('status', 2)
+            ->where(function($q) use ($identifier) {
+                $q->where('username', $identifier)
+                  ->orWhere('email', $identifier)
+                  ->orWhere('login_id', $identifier);
+            })
+            ->first();
+
+        $vendor = null;
+        if ($user) {
+            $vendor = \App\Models\vendor\vendorcreate::where('id', $user->login_id)->first();
+        } else {
+            // Try finding in vendor_details
+            $vendor = \App\Models\vendor\vendorcreate::where('id', $identifier)
+                ->orWhere('shop_name', $identifier)
+                ->orWhere('email', $identifier)
+                ->orWhere('primary_email', $identifier)
+                ->orWhere('mobile', $identifier)
+                ->first();
+
+            if ($vendor) {
+                $user = \App\Models\User::where('status', 2)
+                    ->where(function($q) use ($vendor) {
+                        $q->where('login_id', $vendor->id)
+                          ->orWhere('username', $vendor->shop_name)
+                          ->orWhere('email', $vendor->email);
+                    })
+                    ->first();
+            }
+        }
+
+        if (!$user && !$vendor) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'No active seller account found matching that username, shop ID, or email.'
+            ]);
+        }
+
+        $email = !empty($user->email) ? $user->email : ($vendor->email ?? ($vendor->primary_email ?? null));
+        $sellerName = !empty($vendor->shop_name) ? $vendor->shop_name : ($user->name ?? 'Seller');
+        $loginId = !empty($user->login_id) ? $user->login_id : ($vendor->id ?? '');
+        $username = !empty($user->username) ? $user->username : ($vendor->shop_name ?? '');
+
+        if (empty($email)) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'No registered email address found for this seller account. Please contact Support/Admin.'
+            ]);
+        }
+
+        $otp = rand(100000, 999999);
+
+        session([
+            'vendor_forgot_otp' => $otp,
+            'vendor_forgot_email' => $email,
+            'vendor_forgot_login_id' => $loginId,
+            'vendor_forgot_username' => $username,
+            'vendor_forgot_expiry' => now()->addMinutes(10),
+            'vendor_forgot_verified' => false,
+        ]);
+
+        $maskedEmail = preg_replace('/(?<=.{2}).(?=.*@)/', '*', $email);
+
+        try {
+            \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\ForgotPasswordOtpMail($otp, $sellerName));
+            return response()->json([
+                'status' => 'success',
+                'msg' => "A 6-digit verification code has been sent to your registered email ({$maskedEmail}).",
+                'masked_email' => $maskedEmail
+            ]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Vendor forgot mail error: " . $e->getMessage());
+            \Illuminate\Support\Facades\Log::info("Vendor forgot OTP for {$email} is: {$otp}");
+            return response()->json([
+                'status' => 'success',
+                'msg' => "OTP generated. (Email server offline/unreachable. Dev OTP: {$otp})",
+                'masked_email' => $maskedEmail,
+                'dev_otp' => $otp
+            ]);
+        }
+    }
+
+    public function vendorVerifyForgotOtp(Request $request)
+    {
+        $otp = trim($request->input('otp', ''));
+        if (empty($otp)) {
+            return response()->json(['status' => 'error', 'msg' => 'Please enter the 6-digit OTP code.']);
+        }
+
+        $sessionOtp = session('vendor_forgot_otp');
+        $sessionExpiry = session('vendor_forgot_expiry');
+
+        if (!$sessionOtp || !$sessionExpiry) {
+            return response()->json(['status' => 'error', 'msg' => 'OTP session expired. Please request a new OTP.']);
+        }
+
+        if (now()->greaterThan($sessionExpiry)) {
+            session()->forget(['vendor_forgot_otp', 'vendor_forgot_email', 'vendor_forgot_login_id', 'vendor_forgot_username', 'vendor_forgot_expiry', 'vendor_forgot_verified']);
+            return response()->json(['status' => 'error', 'msg' => 'The OTP code has expired. Please request a new OTP.']);
+        }
+
+        if ((string) $otp !== (string) $sessionOtp) {
+            return response()->json(['status' => 'error', 'msg' => 'Invalid OTP code. Please check and try again.']);
+        }
+
+        session(['vendor_forgot_verified' => true]);
+        return response()->json(['status' => 'success', 'msg' => 'OTP verified successfully! Please enter your new password.']);
+    }
+
+    public function vendorResetPassword(Request $request)
+    {
+        if (!session('vendor_forgot_verified')) {
+            return response()->json(['status' => 'error', 'msg' => 'Session not verified. Please verify OTP first.']);
+        }
+
+        $newPassword = $request->input('new_password');
+        $confirmPassword = $request->input('confirm_password');
+
+        if (empty($newPassword) || empty($confirmPassword)) {
+            return response()->json(['status' => 'error', 'msg' => 'Please fill in both password fields.']);
+        }
+
+        if (strlen($newPassword) < 5) {
+            return response()->json(['status' => 'error', 'msg' => 'Password must be at least 5 characters long.']);
+        }
+
+        if ($newPassword !== $confirmPassword) {
+            return response()->json(['status' => 'error', 'msg' => 'Passwords do not match.']);
+        }
+
+        $loginId = session('vendor_forgot_login_id');
+        $username = session('vendor_forgot_username');
+        $email = session('vendor_forgot_email');
+
+        if (!empty($loginId) || !empty($username) || !empty($email)) {
+            // Update users table for status = 2
+            \App\Models\User::where('status', 2)
+                ->where(function($q) use ($loginId, $username, $email) {
+                    if ($loginId) $q->orWhere('login_id', $loginId);
+                    if ($username) $q->orWhere('username', $username);
+                    if ($email) $q->orWhere('email', $email);
+                })->update(['password' => Hash::make($newPassword)]);
+
+            // Update vendor_details if password column exists
+            if (\Illuminate\Support\Facades\Schema::hasColumn('vendor_details', 'password')) {
+                \App\Models\vendor\vendorcreate::where(function($q) use ($loginId, $email) {
+                    if ($loginId) $q->orWhere('id', $loginId);
+                    if ($email) $q->orWhere('email', $email)->orWhere('primary_email', $email);
+                })->update(['password' => $newPassword]);
+            }
+        }
+
+        $savedUsername = $username ?: $loginId;
+
+        // Clean up session
+        session()->forget(['vendor_forgot_otp', 'vendor_forgot_email', 'vendor_forgot_login_id', 'vendor_forgot_username', 'vendor_forgot_expiry', 'vendor_forgot_verified']);
+
+        return response()->json([
+            'status' => 'success',
+            'msg' => 'Your password has been reset successfully! You can now log in.',
+            'username' => $savedUsername
+        ]);
+    }
 }

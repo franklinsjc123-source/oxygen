@@ -93,6 +93,10 @@ Route::post('login', function (\Illuminate\Http\Request $request) {
 	return app(AuthController::class)->vendorlogin($request);
 })->name('vendorlogin');
 
+Route::post('forgot-password/send-otp', [AuthController::class, 'vendorSendForgotOtp'])->name('vendor.forgot.send_otp');
+Route::post('forgot-password/verify-otp', [AuthController::class, 'vendorVerifyForgotOtp'])->name('vendor.forgot.verify_otp');
+Route::post('forgot-password/reset', [AuthController::class, 'vendorResetPassword'])->name('vendor.forgot.reset');
+
 Route::get('add_designation', [AdminController::class, 'designation']);
 
 Route::get(
