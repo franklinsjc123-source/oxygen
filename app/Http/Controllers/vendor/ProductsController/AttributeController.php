@@ -60,14 +60,24 @@ class AttributeController extends Controller
 
     public function create()
     {
-        $CategoryMain = CategoryMain::where('status', 1)->select('id', 'category_main_name')->get();
-        $Category = Category::where('status', 1)->select('id', 'main_category_id', 'category_name')->get();
+        $login_id = session()->get('login_id');
+        $vendorcreate = \App\Models\vendor\vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
+        $subcategoryarray = array_values(array_filter(array_map('intval', array_map('trim', explode(',', (string) optional($vendorcreate)->sub_category_ids)))));
+
         $CategorySub = DB::table('category_sub as t1')
             ->join('category as t2', 't1.category_id', '=', 't2.id')
             ->join('category_main as t3', 't1.category_main_id', '=', 't3.id')
             ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
             ->where('t1.status', 1)
+            ->whereIn('t1.id', !empty($subcategoryarray) ? $subcategoryarray : [0])
             ->get();
+
+        $categoryIds = $CategorySub->pluck('category_id')->unique();
+        $Category = Category::whereIn('id', $categoryIds)->where('status', 1)->select('id', 'main_category_id', 'category_name')->get();
+
+        $mainCategoryIds = $Category->pluck('main_category_id')->unique();
+        $CategoryMain = CategoryMain::whereIn('id', $mainCategoryIds)->where('status', 1)->select('id', 'category_main_name')->get();
+
         return view('layout.vendor.products.attribute_groups_create', compact('CategoryMain', 'Category', 'CategorySub'));
     }
 
@@ -108,16 +118,24 @@ class AttributeController extends Controller
     {
         $login_id = session()->get('login_id');
         $group = \App\Models\Master\Attribute\AttributeGroup::findOrFail($id);
-        
-        $CategoryMain = CategoryMain::where('status', 1)->select('id', 'category_main_name')->get();
-        $Category = Category::where('status', 1)->select('id', 'main_category_id', 'category_name')->get();
+
+        $vendorcreate = \App\Models\vendor\vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
+        $subcategoryarray = array_values(array_filter(array_map('intval', array_map('trim', explode(',', (string) optional($vendorcreate)->sub_category_ids)))));
+
         $CategorySub = DB::table('category_sub as t1')
             ->join('category as t2', 't1.category_id', '=', 't2.id')
             ->join('category_main as t3', 't1.category_main_id', '=', 't3.id')
             ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
             ->where('t1.status', 1)
+            ->whereIn('t1.id', !empty($subcategoryarray) ? $subcategoryarray : [0])
             ->get();
-            
+
+        $categoryIds = $CategorySub->pluck('category_id')->unique();
+        $Category = Category::whereIn('id', $categoryIds)->where('status', 1)->select('id', 'main_category_id', 'category_name')->get();
+
+        $mainCategoryIds = $Category->pluck('main_category_id')->unique();
+        $CategoryMain = CategoryMain::whereIn('id', $mainCategoryIds)->where('status', 1)->select('id', 'category_main_name')->get();
+
         $vendorSelectedSubIds = [];
         if ($group->created_byid != $login_id) {
             foreach ($CategorySub as $sub) {
@@ -132,7 +150,7 @@ class AttributeController extends Controller
                     $adminMapping = DB::table('sub_category_mapping')->where('sub_category_id', $subId)->whereNull('vendor_id')->first();
                     $adminAttrs = $adminMapping ? (json_decode($adminMapping->category_sub_attribute_ids, true) ?: []) : [];
                     $globalAttrIds = \App\Models\Master\Attribute\AttributeGroup::whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subId])->pluck('id')->toArray();
-                    
+
                     // Since $sub is from raw join, the default attributes could be in category_sub_attributes column
                     $defaultAttributeIds = (!empty($sub->category_sub_attributes))
                         ? array_values(array_filter(array_map('intval', explode(',', $sub->category_sub_attributes))))
@@ -145,9 +163,12 @@ class AttributeController extends Controller
                 }
             }
         } else {
-            $vendorSelectedSubIds = array_filter(explode(',', $group->sub_category_ids ?? ''));
+            $vendorSelectedSubIds = array_values(array_intersect(
+                array_filter(explode(',', $group->sub_category_ids ?? '')),
+                array_map('strval', $subcategoryarray)
+            ));
         }
-        
+
         return view('layout.vendor.products.attribute_groups_edit', compact('group', 'CategoryMain', 'Category', 'CategorySub', 'vendorSelectedSubIds'));
     }
 
@@ -171,9 +192,13 @@ class AttributeController extends Controller
         $group = \App\Models\Master\Attribute\AttributeGroup::findOrFail($id);
 
         if ($group->created_byid != $login_id) {
-            $adminSubCategoryIds = array_filter(explode(',', (string) ($group->sub_category_ids ?? '')));
-            
-            foreach ($adminSubCategoryIds as $subId) {
+            $vendorcreate = \App\Models\vendor\vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
+            $vendorSubCategoryIds = array_values(array_filter(array_map('intval', array_map('trim', explode(',', (string) optional($vendorcreate)->sub_category_ids)))));
+
+            $adminSubCategoryIds = array_filter(array_map('intval', explode(',', (string) ($group->sub_category_ids ?? ''))));
+            $targetSubIds = array_values(array_intersect($adminSubCategoryIds, $vendorSubCategoryIds));
+
+            foreach ($targetSubIds as $subId) {
                 $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $subId)->where('vendor_id', $login_id)->first();
                 if (!$mapping) {
                     $adminMapping = DB::table('sub_category_mapping')->where('sub_category_id', $subId)->whereNull('vendor_id')->first();
@@ -181,7 +206,7 @@ class AttributeController extends Controller
                     $specs = $adminMapping ? json_decode($adminMapping->category_sub_specification_ids, true) : [];
                     if (!is_array($attrs)) $attrs = [];
                     if (!is_array($specs)) $specs = [];
-                    
+
                     $globalAttrs = \App\Models\Master\Attribute\AttributeGroup::whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subId])->pluck('id')->toArray();
                     $attrs = array_unique(array_merge($attrs, $globalAttrs));
                 } else {
@@ -190,9 +215,9 @@ class AttributeController extends Controller
                     $specs = json_decode($mapping->category_sub_specification_ids, true);
                     if (!is_array($specs)) $specs = [];
                 }
-                
+
                 $attrs = array_map('intval', $attrs);
-                
+
                 if (in_array($subId, $selectedSubCategoryIds)) {
                     if (!in_array($id, $attrs)) {
                         $attrs[] = $id;
@@ -200,7 +225,7 @@ class AttributeController extends Controller
                 } else {
                     $attrs = array_values(array_diff($attrs, [$id]));
                 }
-                
+
                 DB::table('sub_category_mapping')->updateOrInsert(
                     ['sub_category_id' => $subId, 'vendor_id' => $login_id],
                     [

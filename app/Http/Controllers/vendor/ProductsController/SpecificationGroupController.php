@@ -63,7 +63,7 @@ class SpecificationGroupController extends Controller
             ->join('category_main as t3', 't1.category_main_id', '=', 't3.id')
             ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
             ->where('t1.status', 1)
-            ->whereIn('t1.id', $subcategoryarray)
+            ->whereIn('t1.id', !empty($subcategoryarray) ? $subcategoryarray : [0])
             ->get();
 
         $categoryIds = $CategorySub->pluck('category_id')->unique();
@@ -112,14 +112,22 @@ class SpecificationGroupController extends Controller
             return redirect()->route('specification_groups.index')->with('error', 'Unauthorized access.');
         }
 
-        $CategoryMain = CategoryMain::where('status', 1)->select('id', 'category_main_name')->get();
-        $Category = Category::where('status', 1)->select('id', 'main_category_id', 'category_name')->get();
+        $vendorcreate = vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
+        $subcategoryarray = array_values(array_filter(array_map('intval', array_map('trim', explode(',', (string) optional($vendorcreate)->sub_category_ids)))));
+
         $CategorySub = DB::table('category_sub as t1')
             ->join('category as t2', 't1.category_id', '=', 't2.id')
             ->join('category_main as t3', 't1.category_main_id', '=', 't3.id')
             ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
             ->where('t1.status', 1)
+            ->whereIn('t1.id', !empty($subcategoryarray) ? $subcategoryarray : [0])
             ->get();
+
+        $categoryIds = $CategorySub->pluck('category_id')->unique();
+        $Category = Category::whereIn('id', $categoryIds)->where('status', 1)->select('id', 'main_category_id', 'category_name')->get();
+
+        $mainCategoryIds = $Category->pluck('main_category_id')->unique();
+        $CategoryMain = CategoryMain::whereIn('id', $mainCategoryIds)->where('status', 1)->select('id', 'category_main_name')->get();
 
         $vendorSelectedSubIds = [];
         if ($group->created_by === 'Admin') {
@@ -135,7 +143,7 @@ class SpecificationGroupController extends Controller
                     $adminMapping = DB::table('sub_category_mapping')->where('sub_category_id', $subId)->whereNull('vendor_id')->first();
                     $adminSpecs = $adminMapping ? (json_decode($adminMapping->category_sub_specification_ids, true) ?: []) : [];
                     $globalSpecIds = SpecificationGroup::where('created_by', 'Admin')->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subId])->pluck('id')->toArray();
-                    
+
                     $defaultSpecificationIds = (!empty($sub->category_sub_specifications))
                         ? array_values(array_filter(array_map('intval', explode(',', $sub->category_sub_specifications))))
                         : [];
@@ -147,7 +155,10 @@ class SpecificationGroupController extends Controller
                 }
             }
         } else {
-            $vendorSelectedSubIds = array_filter(explode(',', $group->sub_category_ids ?? ''));
+            $vendorSelectedSubIds = array_values(array_intersect(
+                array_filter(explode(',', $group->sub_category_ids ?? '')),
+                array_map('strval', $subcategoryarray)
+            ));
         }
 
         return view('layout.vendor.specification_groups.edit', compact('group', 'CategoryMain', 'Category', 'CategorySub', 'vendorSelectedSubIds'));
@@ -178,10 +189,14 @@ class SpecificationGroupController extends Controller
         }
         $selectedSubCategoryIds = array_values(array_unique(array_filter($selectedSubCategoryIds)));
 
+        $vendorcreate = vendorcreate::select('sub_category_ids')->where('id', $login_id)->first();
+        $vendorSubCategoryIds = array_values(array_filter(array_map('intval', array_map('trim', explode(',', (string) optional($vendorcreate)->sub_category_ids)))));
+
         if ($group->created_by === 'Admin') {
-            $adminSubCategoryIds = array_filter(explode(',', (string) ($group->sub_category_ids ?? '')));
-            
-            foreach ($adminSubCategoryIds as $subId) {
+            $adminSubCategoryIds = array_filter(array_map('intval', explode(',', (string) ($group->sub_category_ids ?? ''))));
+            $targetSubIds = array_values(array_intersect($adminSubCategoryIds, $vendorSubCategoryIds));
+
+            foreach ($targetSubIds as $subId) {
                 $mapping = DB::table('sub_category_mapping')->where('sub_category_id', $subId)->where('vendor_id', $login_id)->first();
                 if (!$mapping) {
                     $adminMapping = DB::table('sub_category_mapping')->where('sub_category_id', $subId)->whereNull('vendor_id')->first();
@@ -189,7 +204,7 @@ class SpecificationGroupController extends Controller
                     $specs = $adminMapping ? json_decode($adminMapping->category_sub_specification_ids, true) : [];
                     if (!is_array($attrs)) $attrs = [];
                     if (!is_array($specs)) $specs = [];
-                    
+
                     $globalSpecs = SpecificationGroup::where('created_by', 'Admin')->whereRaw("FIND_IN_SET(?, sub_category_ids)", [$subId])->pluck('id')->toArray();
                     $specs = array_unique(array_merge($specs, $globalSpecs));
                 } else {
@@ -198,9 +213,9 @@ class SpecificationGroupController extends Controller
                     $specs = json_decode($mapping->category_sub_specification_ids, true);
                     if (!is_array($specs)) $specs = [];
                 }
-                
+
                 $specs = array_map('intval', $specs);
-                
+
                 if (in_array($subId, $selectedSubCategoryIds)) {
                     if (!in_array($id, $specs)) {
                         $specs[] = $id;
@@ -208,7 +223,7 @@ class SpecificationGroupController extends Controller
                 } else {
                     $specs = array_values(array_diff($specs, [$id]));
                 }
-                
+
                 DB::table('sub_category_mapping')->updateOrInsert(
                     ['sub_category_id' => $subId, 'vendor_id' => $login_id],
                     [
@@ -222,6 +237,7 @@ class SpecificationGroupController extends Controller
             return redirect()->route('specification_groups.index')->with('success', 'Specification Category mapping updated specifically for your profile.');
         }
 
+        $selectedSubCategoryIds = array_values(array_intersect($selectedSubCategoryIds, $vendorSubCategoryIds));
         $validated['sub_category_ids'] = !empty($selectedSubCategoryIds) ? implode(',', $selectedSubCategoryIds) : '';
         $group->update($validated);
 
