@@ -29,19 +29,21 @@ class AttributeController extends Controller
         $groups = \App\Models\Master\Attribute\AttributeGroup::where(function ($q) use ($login_id, $vendorSubCategoryIds) {
             // 1. Respective seller's own created attributes
             $q->where(function ($ownQ) use ($login_id) {
-                $ownQ->where('created_by', 'Vendor')
+                $ownQ->whereIn('created_by', ['Vendor', 'vendor'])
                      ->where('created_byid', $login_id);
             });
 
             // 2. OR Admin-created attributes only
             $q->orWhere(function ($adminQ) use ($vendorSubCategoryIds, $login_id) {
-                $adminQ->where('created_by', 'Admin');
+                $adminQ->whereIn('created_by', ['Admin', 'admin']);
 
                 if (!empty($vendorSubCategoryIds)) {
                     $adminQ->where(function ($subQ) use ($vendorSubCategoryIds, $login_id) {
                         $subQ->whereNull('sub_category_ids')
-                             ->orWhere('sub_category_ids', '')
-                             ->orWhereRaw("FIND_IN_SET(?, vendor_ids)", [$login_id]);
+                             ->orWhere('sub_category_ids', '');
+                        if (\Illuminate\Support\Facades\Schema::hasColumn('attribute_group', 'vendor_ids')) {
+                            $subQ->orWhereRaw("FIND_IN_SET(?, vendor_ids)", [$login_id]);
+                        }
                         foreach ($vendorSubCategoryIds as $subId) {
                             $subQ->orWhereRaw("FIND_IN_SET(?, sub_category_ids)", [$subId]);
                         }
