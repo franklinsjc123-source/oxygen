@@ -56,7 +56,11 @@ class GeneralExportController extends Controller
 
     public function exportOffer()
     {
-        return Excel::download(new OfferExport, 'offers_report.xlsx');
+        $vendorId = null;
+        if (request()->is('vendor*') || request()->is('seller*') || (session()->has('login_id') && in_array(strtolower(session()->get('log_type') ?? session()->get('role') ?? ''), ['vendor', 'seller']))) {
+            $vendorId = session()->get('login_id');
+        }
+        return Excel::download(new OfferExport($vendorId), 'offers_report.xlsx');
     }
 
     public function exportDepartment()
