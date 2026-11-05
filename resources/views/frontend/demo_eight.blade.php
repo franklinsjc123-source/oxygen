@@ -84,18 +84,18 @@
         color: #ffffff !important;
     }
     .banner-shoes {
-        aspect-ratio: 1300 / 200 !important;
-        background-size: contain !important;
+        background-size: cover !important;
         background-position: center !important;
         background-repeat: no-repeat !important;
-        min-height: unset !important;
+        min-height: 180px !important;
         height: auto !important;
+        border-radius: 8px;
     }
     @media (max-width: 767px) {
         .banner-shoes {
-            aspect-ratio: 1300 / 450 !important;
-            background-size: 100% 100% !important;
-            min-height: unset !important;
+            background-size: cover !important;
+            background-position: center !important;
+            min-height: 140px !important;
             height: auto !important;
             padding: 10px 20px !important;
         }
@@ -179,8 +179,9 @@
             min-height: unset !important;
             height: auto !important;
             width: 100% !important;
-            object-fit: fill !important;
-            aspect-ratio: 330 / 160 !important;
+            object-fit: cover !important;
+            aspect-ratio: auto !important;
+            border-radius: 8px;
         }
     }
     @media (min-width: 768px) {
@@ -615,9 +616,8 @@
                           @endphp
                           <div class="swiper-slide banner banner-fixed category-banner br-sm" style="cursor: pointer; position: relative;" onclick="if('{{ $cUrl }}' !== 'javascript:void(0)') window.location.href='{{ $cUrl }}';">
                               <a href="{{ $cUrl }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block;" aria-label="{{ $item->title }}"></a>
-                              <figure>
-                                  <img src="{{ asset('assets/images/banners/category-banner/' . $item->image) }}" alt="Category Banner" width="447"
-                                      height="230" loading="lazy" decoding="async" />
+                              <figure style="margin: 0; overflow: hidden; border-radius: 8px;">
+                                  <img src="{{ asset('assets/images/banners/category-banner/' . $item->image) }}" alt="Category Banner" style="width: 100% !important; height: auto !important; min-height: 200px !important; object-fit: cover !important; display: block;" loading="lazy" decoding="async" />
                               </figure>
                               <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2" style="z-index: 2; pointer-events: none;">
                                    <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">{!! $item->sub_title !!}</h5>
@@ -847,15 +847,15 @@
      @if(isset($oxygen_adv) && count($oxygen_adv) > 0)
      <div class="container mt-1 mb-0" style="margin-bottom: 0px !important; margin-top: 5px !important;">
          <div class="row cols-1 cols-md-2 category-banner-2cols mb-1">
-             @foreach($oxygen_adv->take(2) as $key => $banner)
+             @foreach($oxygen_adv as $key => $banner)
              @php
                  $advLink = !empty($banner->link) ? (filter_var($banner->link, FILTER_VALIDATE_URL) ? $banner->link : url($banner->link)) : '#';
              @endphp
              <div class="banner banner-fixed mb-1" style="cursor: pointer; position: relative;" onclick="if('{{ $advLink }}' !== '#') window.location.href='{{ $advLink }}';">
                  <a href="{{ $advLink }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block;" aria-label="{{ $banner->title }}"></a>
                  <figure class="br-sm">
-                     <img src="{{ asset('assets/images/banners/advoxygen/' . $banner->image) }}" alt="{{ $banner->title }}" width="330"
-                          height="160" style="background-color: {{ $key == 0 ? '#384744' : '#e7e7e7' }}; object-fit: cover; width: 100% !important; height: auto !important;" loading="lazy" decoding="async" />
+                     <img src="{{ asset('assets/images/banners/advoxygen/' . $banner->image) }}" alt="{{ $banner->title }}"
+                          style="object-fit: cover; width: 100% !important; height: auto !important; display: block;" loading="lazy" decoding="async" />
                  </figure>
                  <div class="banner-content y-50" style="z-index: 2; pointer-events: none;">
                      <h5 class="banner-subtitle text-uppercase {{ $key == 0 ? 'text-white' : '' }} font-weight-bold">{{ $banner->title }}</h5>
@@ -1424,20 +1424,27 @@
 
      <!-- Advertisement Banner (After LITTLE ONES, BIG STYLE) -->
      <div class="container mt-4 mb-3">
-          @if(isset($paidAddSlip))
-              @php
-                  $paidLink = !empty($paidAddSlip->link) ? (filter_var($paidAddSlip->link, FILTER_VALIDATE_URL) ? $paidAddSlip->link : url($paidAddSlip->link)) : '#';
-              @endphp
-              <div class="banner banner-shoes br-sm mb-2" style="background-image: url({{ asset('assets/images/banners/adv-baner/' . $paidAddSlip->image) }}); background-color: #36332C; cursor: pointer; position: relative;" onclick="if('{{ $paidLink }}' !== '#') window.location.href='{{ $paidLink }}';">
-                  <a href="{{ $paidLink }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block;" aria-label="Paid Advertisement Banner"></a>
-                  <div class="banner-content d-block d-lg-flex align-items-center" style="position: relative; z-index: 2; pointer-events: none;">
-                      <div class="content-left mr-auto mb-6 mb-lg-0 align-items-center">
-                          <h3 class="banner-title font-weight-normal text-white mb-0 ls-25">
-                              {!! $paidAddSlip->title !!}<br><strong>{!! $paidAddSlip->sub_title !!}</strong>
-                          </h3>
+          @php
+              $advBannersToDisplay = (isset($paidAdvBanners) && $paidAdvBanners->isNotEmpty())
+                  ? $paidAdvBanners
+                  : (isset($paidAddSlip) ? collect([$paidAddSlip]) : collect());
+          @endphp
+          @if($advBannersToDisplay->isNotEmpty())
+              @foreach($advBannersToDisplay as $paidAddSlip)
+                  @php
+                      $paidLink = !empty($paidAddSlip->link) ? (filter_var($paidAddSlip->link, FILTER_VALIDATE_URL) ? $paidAddSlip->link : url($paidAddSlip->link)) : '#';
+                  @endphp
+                  <div class="banner banner-shoes br-sm mb-3" style="background-image: url('{{ asset('assets/images/banners/adv-baner/' . $paidAddSlip->image) }}'); background-size: cover; background-position: center; cursor: pointer; position: relative;" onclick="if('{{ $paidLink }}' !== '#') window.location.href='{{ $paidLink }}';">
+                      <a href="{{ $paidLink }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block;" aria-label="Paid Advertisement Banner"></a>
+                      <div class="banner-content d-block d-lg-flex align-items-center" style="position: relative; z-index: 2; pointer-events: none;">
+                          <div class="content-left mr-auto mb-6 mb-lg-0 align-items-center">
+                              <h3 class="banner-title font-weight-normal text-white mb-0 ls-25">
+                                  {!! $paidAddSlip->title !!}<br><strong>{!! $paidAddSlip->sub_title !!}</strong>
+                              </h3>
+                          </div>
                       </div>
                   </div>
-              </div>
+              @endforeach
           @else
               <div class="banner banner-shoes br-sm mb-2" style="background-image: url(<?php echo asset('frontend') ?>/images/demos/demo8/banner/3.jpg);
                              background-color: #36332C;">

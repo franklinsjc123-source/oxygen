@@ -1422,7 +1422,8 @@ class FrontendController extends Controller
         }
 
         $oxygen_adv = oxygen_adv::where('status', 1)->orderBy('sort', 'asc')->get();
-        $paidAddSlip = \App\Models\Banners\paid_adv::where('status', 1)->latest()->first();
+        $paidAdvBanners = \App\Models\Banners\paid_adv::where('status', 1)->orderBy('sort', 'asc')->get();
+        $paidAddSlip = $paidAdvBanners->first();
 
         return view('frontend/demo_eight', compact(
             'mainslider',
@@ -1436,7 +1437,8 @@ class FrontendController extends Controller
             'auctionProducts',
             'sliderOffers',
             'oxygen_adv',
-            'paidAddSlip'
+            'paidAddSlip',
+            'paidAdvBanners'
         ));
     }
 
