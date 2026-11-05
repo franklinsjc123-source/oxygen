@@ -959,19 +959,18 @@ class ProductsController extends Controller
                         
                        $ischanged= true;
                         $products_spec = ProductSpecs::where('products_id',$id)->delete();
-                            foreach ($request->spec_id as $key => $value)  {  
+                        foreach ($request->spec_id as $key => $value)  {  
+                            $val = $request->specify_value[$value] ?? null;
+                            if ($val === null || trim((string)$val) === '' || str_starts_with(trim((string)$val), '--')) {
+                                continue;
+                            }
                             $products_spec = new ProductSpecs();
-            
                             $products_spec->products_id = $id;
                             $products_spec->spec_id = $value;
                             $products_spec->category_sub_id = $request->category_sub;
-                        
-                            $products_spec->specify_attribute = $request->specify_attribute[$value] ?? null;
-                            
-                            $products_spec->specify_value = $request->specify_value[$value] ?? null;
-                            
+                            $products_spec->specify_attribute = (string)($request->specify_attribute[$value] ?? '');
+                            $products_spec->specify_value = (string)$val;
                             $products_spec->save();
-                        
                         }
                     }
                

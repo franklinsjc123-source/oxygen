@@ -37,8 +37,10 @@ class SpecificationGroupController extends Controller
                 if (!empty($vendorSubCategoryIds)) {
                     $adminQ->where(function ($subQ) use ($vendorSubCategoryIds, $login_id) {
                         $subQ->whereNull('sub_category_ids')
-                             ->orWhere('sub_category_ids', '')
-                             ->orWhereRaw("FIND_IN_SET(?, vendor_ids)", [$login_id]);
+                             ->orWhere('sub_category_ids', '');
+                        if (\Illuminate\Support\Facades\Schema::hasColumn('specification_group', 'vendor_ids')) {
+                            $subQ->orWhereRaw("FIND_IN_SET(?, vendor_ids)", [$login_id]);
+                        }
                         foreach ($vendorSubCategoryIds as $subId) {
                             $subQ->orWhereRaw("FIND_IN_SET(?, sub_category_ids)", [$subId]);
                         }

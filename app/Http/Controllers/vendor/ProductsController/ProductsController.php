@@ -1145,12 +1145,17 @@ public function store(Request $request, FlasherInterface $flasher)
 
                 ProductSpecs::where('products_id', $id)->delete();
                 foreach ($specIds as $valIdx) {
+                    $val = $specifyValues[$valIdx] ?? null;
+                    if ($val === null || trim((string)$val) === '' || str_starts_with(trim((string)$val), '--')) {
+                        continue; // Skip specifications that are unselected or empty
+                    }
+
                     $spec = new ProductSpecs();
                     $spec->products_id = $id;
                     $spec->category_sub_id = $request->input('category_sub');
                     $spec->spec_id = $valIdx;
-                    $spec->specify_attribute = $specifyAttributes[$valIdx] ?? null;
-                    $spec->specify_value = $specifyValues[$valIdx] ?? null;
+                    $spec->specify_attribute = (string)($specifyAttributes[$valIdx] ?? '');
+                    $spec->specify_value = (string)$val;
                     $spec->save();
                 }
             }
