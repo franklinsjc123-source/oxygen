@@ -1,6 +1,7 @@
 @php
     $vendorProfile = null;
     $staff = null;
+    $currentRmRating = null;
     $staffImage = asset('assets/images/dashboard/man.jpeg');
     if (session()->get('login_id')) {
         $vendorProfile = App\Models\vendor\vendorcreate::select('shop_name','owner_name','profile_image','staff_id')
@@ -10,6 +11,15 @@
             $staff = App\Models\Staffcreates::find($vendorProfile->staff_id);
             if ($staff && isset($staff->profileimage) && $staff->profileimage != '-' && file_exists(public_path('assets/images/staffcreate/' . $staff->profileimage))) {
                 $staffImage = asset('assets/images/staffcreate/' . $staff->profileimage);
+            }
+            if (\Illuminate\Support\Facades\Schema::hasTable('rm_ratings')) {
+                $existingRating = \Illuminate\Support\Facades\DB::table('rm_ratings')
+                    ->where('staff_id', $vendorProfile->staff_id)
+                    ->where('vendor_id', session()->get('login_id'))
+                    ->first();
+                if ($existingRating) {
+                    $currentRmRating = (int) $existingRating->rating;
+                }
             }
         }
     }
@@ -194,6 +204,30 @@
     font-size: 10px;
     color: rgba(255, 255, 255, 0.9);
 }
+
+.rm-rate-link {
+    margin: 4px 0 0 0;
+    font-size: 11px;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 2px 8px;
+    border-radius: 10px;
+    width: fit-content;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.rm-rate-link:hover {
+    background: rgba(0, 0, 0, 0.35);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.6);
+}
 </style>
 
 <div class="admin-mmenu-wrap" id="admMobileMenu">
@@ -266,6 +300,10 @@
                         <h6 class="rm-name" title="RM: {{ $staff->fullname ?? $staff->username }}">{{ $staff->fullname ?? $staff->username }}</h6>
                         <a href="tel:{{ $staff->mobileno }}" class="rm-phone" title="{{ $staff->mobileno }}">
                             <i class="fa fa-phone"></i> {{ $staff->mobileno }}
+                        </a>
+                        <a href="javascript:void(0)" class="rm-rate-link btn-open-rate-rm" onclick="if(typeof window.closeAdminMobileMenu==='function'){window.closeAdminMobileMenu();} openRateRmModal();" title="Click to rate your experience with RM">
+                            <i class="fa fa-star rm-star-icon" style="color: {{ $currentRmRating ? '#ffd700' : 'rgba(255,255,255,0.7)' }}; font-size: 11px;"></i>
+                            <span class="rm-rate-text">{{ $currentRmRating ? $currentRmRating . '.0 ★ Rate RM' : 'Rate RM' }}</span>
                         </a>
                     </div>
                 </div>
