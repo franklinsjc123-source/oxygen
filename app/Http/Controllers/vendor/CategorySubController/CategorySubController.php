@@ -310,6 +310,7 @@ class CategorySubController extends Controller
 
     public function get_category_sub_data()
     {
-        return Excel::download(new CategorySubExport, 'subcategory_report.xlsx');
+        $login_id = session()->get('login_id');
+        return Excel::download(new CategorySubExport($login_id), 'subcategory_report.xlsx');
     }
 }
