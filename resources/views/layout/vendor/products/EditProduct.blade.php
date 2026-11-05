@@ -296,7 +296,10 @@
 
                                     <!-- Product Description -->
                                     <div class="form-group mt-3">
-                                        <label class="form-label fw-bold text-dark">Product Description <span class="text-danger">*</span></label>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <label class="form-label fw-bold text-dark mb-0">Product Description <span class="text-danger">*</span></label>
+                                            <button type="button" class="btn btn-sm text-white" id="btn-generate-desc" style="background-color: #183543 !important; border-color: #183543 !important; color: #ffffff !important;"><i class="fa fa-magic"></i> Generate Description</button>
+                                        </div>
                                         <textarea id="description" class="form-control ckeditor" required rows="5" name="description">{{ $product->description }}</textarea>
                                         <div class="invalid-feedback-custom">Please enter product description</div>
                                     </div>
@@ -883,6 +886,129 @@
                     }
                 }
             }, true);
+
+            $('#btn-generate-desc').click(function() {
+                var productName = $('input[name="product_name"]').val() ? $('input[name="product_name"]').val().trim() : '';
+
+                // Gather categories & attributes
+                var mainCat = $('#main_category option:selected').text().trim();
+                if (mainCat.indexOf('--') === 0 || mainCat === '' || mainCat.indexOf('Select') === 0) mainCat = '';
+                
+                var cat = $('#category option:selected').text().trim();
+                if (cat.indexOf('--') === 0 || cat === '' || cat.indexOf('Select') === 0) cat = '';
+                
+                var subCat = $('#sub_category option:selected').text().trim();
+                if (subCat.indexOf('--') === 0 || subCat === '' || subCat.indexOf('Select') === 0) subCat = '';
+                
+                var attribute = $('#selected_attribute_summary option:selected').text().trim();
+                if (attribute.indexOf('--') === 0 || attribute === '' || attribute.indexOf('Select') === 0) attribute = '';
+
+                var displayName = productName || subCat || (cat ? cat + " Item" : "Premium Product");
+                var catChain = [mainCat, cat, subCat].filter(Boolean).join(" &rsaquo; ");
+
+                // Colors & Sizes from variants
+                var colorsList = [];
+                $('select[name="attrcolor[]"], .attrcolor').each(function() {
+                    var c = $(this).find('option:selected').text().trim() || $(this).val();
+                    if (c && c !== 'Color' && c !== 'Multicolor' && c.indexOf('--') !== 0 && c.indexOf('Select') !== 0 && colorsList.indexOf(c) === -1) {
+                        colorsList.push(c);
+                    }
+                });
+
+                var sizesList = [];
+                $('select[name="attrsize[]"], .attrsize').each(function() {
+                    var s = $(this).find('option:selected').text().trim() || $(this).val();
+                    if (s && s !== 'Size' && s.indexOf('--') !== 0 && s.indexOf('Select') !== 0 && sizesList.indexOf(s) === -1) {
+                        sizesList.push(s);
+                    }
+                });
+
+                // Specifications
+                var specs = [];
+                $('select[name^="specify_value"]').each(function() {
+                    var val = $(this).val();
+                    if (val && val !== '' && val.indexOf('--') !== 0 && val.indexOf('Select') !== 0) {
+                        var groupName = $(this).closest('td').prev('td').text().trim();
+                        if (!groupName) {
+                            groupName = $(this).siblings('input[name^="specify_attribute"]').val();
+                        }
+                        if (!groupName) {
+                            groupName = $(this).closest('tr').find('input[name^="specify_attribute"]').val();
+                        }
+                        if (groupName) {
+                            groupName = groupName.replace(/:$/, '').trim();
+                            var exists = specs.some(function(s) { return s.name.toLowerCase() === groupName.toLowerCase(); });
+                            if (!exists) {
+                                specs.push({ name: groupName, value: val });
+                            }
+                        }
+                    }
+                });
+
+                // Offers & Collection
+                var collection = $('#collection option:selected').text().trim();
+                if (collection === 'Select Here' || collection.indexOf('--') === 0 || collection.indexOf('Select') === 0) collection = '';
+                
+                var offer = $('#offtype option:selected').text().trim();
+                if (offer === 'Select' || offer.indexOf('--') === 0 || offer.indexOf('Select') === 0) offer = '';
+
+                // Check if at least some context exists
+                if (!productName && !catChain && colorsList.length === 0 && sizesList.length === 0 && specs.length === 0) {
+                    alert("Please select category or enter product details to generate the description.");
+                    return;
+                }
+
+                // Construct HTML description with only 3 sections:
+                // 1. Product details (existing intro paragraphs)
+                // 2. Key Features & Highlights (generated using specification details)
+                // 3. Care & Handling instructions
+                var html = '';
+                html += '<p>The <strong>' + displayName + '</strong> is thoughtfully designed to bring together timeless elegance, superior craftsmanship, and day-to-day comfort.</p>';
+
+                if (catChain) {
+                    html += '<p>Proudly featured under our distinguished <strong>' + catChain + '</strong> collection' + (collection ? ' as part of the exclusive <em>' + collection + '</em> range' : '') + ', this product represents a harmonious blend of contemporary aesthetics and dependable durability. Created to satisfy discerning standards, it effortlessly elevates your style and fits seamlessly into your lifestyle.</p>';
+                }
+
+                if (offer) {
+                    html += '<p><em><strong>Special Offer:</strong> Take advantage of our exclusive promotion &mdash; ' + offer + ' &mdash; available for a limited time!</em></p>';
+                }
+
+                html += '<h4>Key Features &amp; Highlights</h4>';
+                html += '<ul>';
+
+                if (specs.length > 0) {
+                    specs.forEach(function(sp) {
+                        html += '<li><strong>' + sp.name + ':</strong> ' + sp.value + '</li>';
+                    });
+                } else {
+                    html += '<li><strong>Superior Craftsmanship:</strong> Meticulously constructed using premium grade materials, ensuring an exquisite finish, luxurious touch, and exceptional longevity.</li>';
+                    html += '<li><strong>Tailored Comfort:</strong> Ergonomically engineered to provide a flattering, relaxed fit that guarantees all-day ease and unrestricted movement.</li>';
+                    html += '<li><strong>Versatile Appeal:</strong> Styled with contemporary sophistication, effortlessly adapting to formal events, casual outings, or everyday routines.</li>';
+                }
+
+                if (colorsList.length > 0) {
+                    html += '<li><strong>Available Colors:</strong> ' + colorsList.join(', ') + '</li>';
+                }
+                if (sizesList.length > 0) {
+                    html += '<li><strong>Available Sizing:</strong> Offered in standard sizes: ' + sizesList.join(', ') + ' for your ideal fit.</li>';
+                }
+                if (attribute) {
+                    html += '<li><strong>Design Attribute:</strong> Specially developed under ' + attribute + ' design standards.</li>';
+                }
+                html += '</ul>';
+
+                html += '<h4>Care &amp; Handling Instructions</h4>';
+                html += '<ul>';
+                html += '<li>Handle with gentle care and follow standard cleaning practices to preserve fabric vibrancy and texture.</li>';
+                html += '<li>Store in a clean, dry environment away from prolonged direct sunlight and moisture.</li>';
+                html += '<li>Avoid harsh bleaches, strong chemicals, or aggressive scrubbing to maintain prime condition.</li>';
+                html += '</ul>';
+
+                if (typeof CKEDITOR !== 'undefined' && CKEDITOR.instances.description) {
+                    CKEDITOR.instances.description.setData(html);
+                }
+                $('#description').val(html);
+            });
         });
     </script>
 @endsection

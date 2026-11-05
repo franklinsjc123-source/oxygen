@@ -1402,37 +1402,41 @@
             var specs = [];
             $('select[name^="specify_value"]').each(function() {
                 var val = $(this).val();
-                if (val && val !== '') {
+                if (val && val !== '' && val.indexOf('--') !== 0 && val.indexOf('Select') !== 0) {
                     var groupName = $(this).closest('td').prev('td').text().trim();
+                    if (!groupName) {
+                        groupName = $(this).siblings('input[name^="specify_attribute"]').val();
+                    }
                     if (!groupName) {
                         groupName = $(this).closest('tr').find('input[name^="specify_attribute"]').val();
                     }
                     if (groupName) {
-                        specs.push({ name: groupName, value: val });
+                        groupName = groupName.replace(/:$/, '').trim();
+                        var exists = specs.some(function(s) { return s.name.toLowerCase() === groupName.toLowerCase(); });
+                        if (!exists) {
+                            specs.push({ name: groupName, value: val });
+                        }
                     }
                 }
             });
 
-            // Shipping
-            var weight = $('input[name="weight"]').val() ? $('input[name="weight"]').val().trim() : '';
-            var length = $('input[name="length"]').val() ? $('input[name="length"]').val().trim() : '';
-            var width = $('input[name="width"]').val() ? $('input[name="width"]').val().trim() : '';
-            var height = $('input[name="height"]').val() ? $('input[name="height"]').val().trim() : '';
-
             // Offers & Collection
             var collection = $('#collection option:selected').text().trim();
-            if (collection === 'Select Here' || collection.indexOf('--') === 0) collection = '';
+            if (collection === 'Select Here' || collection.indexOf('--') === 0 || collection.indexOf('Select') === 0) collection = '';
             
             var offer = $('#offtype option:selected').text().trim();
-            if (offer === 'Select' || offer.indexOf('--') === 0) offer = '';
+            if (offer === 'Select' || offer.indexOf('--') === 0 || offer.indexOf('Select') === 0) offer = '';
 
             // Check if at least some context exists
-            if (!productName && !catChain && colorsList.length === 0 && sizesList.length === 0 && !sku) {
+            if (!productName && !catChain && colorsList.length === 0 && sizesList.length === 0 && specs.length === 0 && !sku) {
                 alert("Please select category or enter product details to generate the description.");
                 return;
             }
 
-            // Construct HTML description with rich elaboration & polite mannerisms
+            // Construct HTML description with only 3 sections:
+            // 1. Product details (existing intro paragraphs)
+            // 2. Key Features & Highlights (generated using specification details)
+            // 3. Care & Handling instructions
             var html = '';
             html += '<p>The <strong>' + displayName + '</strong> is thoughtfully designed to bring together timeless elegance, superior craftsmanship, and day-to-day comfort.</p>';
 
@@ -1446,64 +1450,27 @@
 
             html += '<h4>Key Features &amp; Highlights</h4>';
             html += '<ul>';
-            html += '<li><strong>Superior Craftsmanship:</strong> Meticulously constructed using premium grade materials, ensuring an exquisite finish, luxurious touch, and exceptional longevity.</li>';
-            html += '<li><strong>Tailored Comfort:</strong> Ergonomically engineered to provide a flattering, relaxed fit that guarantees all-day ease and unrestricted movement.</li>';
-            html += '<li><strong>Versatile Appeal:</strong> Styled with contemporary sophistication, effortlessly adapting to formal events, casual outings, or everyday routines.</li>';
-
-            if (colorsList.length > 0) {
-                html += '<li><strong>Vibrant Colors:</strong> Available in appealing shade' + (colorsList.length > 1 ? 's: ' : ': ') + '<strong>' + colorsList.join(', ') + '</strong>.</li>';
-            }
-            if (sizesList.length > 0) {
-                html += '<li><strong>Available Sizing:</strong> Offered in standard sizes: <strong>' + sizesList.join(', ') + '</strong> for your ideal fit.</li>';
-            }
-            if (attribute) {
-                html += '<li><strong>Design Attribute:</strong> Specially developed under <strong>' + attribute + '</strong> design standards.</li>';
-            }
-            html += '</ul>';
 
             if (specs.length > 0) {
-                html += '<h4>Product Specifications</h4>';
-                html += '<ul>';
                 specs.forEach(function(sp) {
                     html += '<li><strong>' + sp.name + ':</strong> ' + sp.value + '</li>';
                 });
-                html += '</ul>';
+            } else {
+                html += '<li><strong>Superior Craftsmanship:</strong> Meticulously constructed using premium grade materials, ensuring an exquisite finish, luxurious touch, and exceptional longevity.</li>';
+                html += '<li><strong>Tailored Comfort:</strong> Ergonomically engineered to provide a flattering, relaxed fit that guarantees all-day ease and unrestricted movement.</li>';
+                html += '<li><strong>Versatile Appeal:</strong> Styled with contemporary sophistication, effortlessly adapting to formal events, casual outings, or everyday routines.</li>';
             }
 
-            var hasShipping = weight || (length && width && height);
-            var hasPolicy = returnReplace;
-            var hasSku = sku;
-            var hasPricing = minPrice !== null;
-
-            if (hasSku || hasShipping || hasPolicy || hasPricing) {
-                html += '<h4>Product Details &amp; Assurance</h4>';
-                html += '<ul>';
-                if (hasSku) {
-                    html += '<li><strong>Product SKU / Code:</strong> ' + sku + '</li>';
-                }
-                if (hasPricing) {
-                    var priceText = '₹' + minPrice;
-                    if (maxPrice !== null && maxPrice !== minPrice) {
-                        priceText += ' - ₹' + maxPrice;
-                    }
-                    if (mrpVal && mrpVal > minPrice) {
-                        priceText += ' (MRP: ₹' + mrpVal + ')';
-                    }
-                    html += '<li><strong>Pricing:</strong> ' + priceText + '</li>';
-                }
-                if (hasShipping) {
-                    var shipParts = [];
-                    if (weight) shipParts.push('Net Weight: ' + weight + ' g');
-                    if (length && width && height) shipParts.push('Dimensions: ' + length + ' &times; ' + width + ' &times; ' + height + ' cm');
-                    html += '<li><strong>Packaging &amp; Dimensions:</strong> ' + shipParts.join(' | ') + '</li>';
-                }
-                if (hasPolicy) {
-                    var policyDesc = returnReplace;
-                    if (rDays) policyDesc += ' within ' + rDays + ' days of delivery';
-                    html += '<li><strong>Customer Satisfaction Policy:</strong> Easy ' + policyDesc + ' guaranteed for your complete peace of mind.</li>';
-                }
-                html += '</ul>';
+            if (colorsList.length > 0) {
+                html += '<li><strong>Available Colors:</strong> ' + colorsList.join(', ') + '</li>';
             }
+            if (sizesList.length > 0) {
+                html += '<li><strong>Available Sizing:</strong> Offered in standard sizes: ' + sizesList.join(', ') + ' for your ideal fit.</li>';
+            }
+            if (attribute) {
+                html += '<li><strong>Design Attribute:</strong> Specially developed under ' + attribute + ' design standards.</li>';
+            }
+            html += '</ul>';
 
             html += '<h4>Care &amp; Handling Instructions</h4>';
             html += '<ul>';
@@ -1511,28 +1478,6 @@
             html += '<li>Store in a clean, dry environment away from prolonged direct sunlight and moisture.</li>';
             html += '<li>Avoid harsh bleaches, strong chemicals, or aggressive scrubbing to maintain prime condition.</li>';
             html += '</ul>';
-
-            html += '<p><em>Thank you for shopping with us! Your satisfaction is our highest priority, and we are committed to delivering excellence with every purchase. Should you have any questions or require assistance, our customer care team is always delighted to assist you.</em></p>';
-
-            var plainText = html
-                .replace(/<h4>/g, '\n\n')
-                .replace(/<\/h4>/g, ':\n')
-                .replace(/<ul>/g, '')
-                .replace(/<\/ul>/g, '\n')
-                .replace(/<li><strong>/g, '• ')
-                .replace(/<\/strong>/g, '')
-                .replace(/<li>/g, '• ')
-                .replace(/<\/li>/g, '\n')
-                .replace(/<p>/g, '')
-                .replace(/<\/p>/g, '\n\n')
-                .replace(/<strong>|<\/strong>|<em>|<\/em>/g, '')
-                .replace(/&rsaquo;/g, '>')
-                .replace(/&gt;/g, '>')
-                .replace(/&times;/g, 'x')
-                .replace(/&mdash;/g, '-')
-                .replace(/&amp;/g, '&')
-                .replace(/\n{3,}/g, '\n\n')
-                .trim();
 
             if (typeof CKEDITOR !== 'undefined' && CKEDITOR.instances.description) {
                 CKEDITOR.instances.description.setData(html);
