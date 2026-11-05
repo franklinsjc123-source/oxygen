@@ -61,7 +61,8 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
     <meta name="author" content="D-THEMES">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="<?= asset('frontend') ?>/images/favicon.png">
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon/cust_fevicon.png') }}">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('assets/images/favicon/cust_fevicon.png') }}">
 
     <!-- Default CSS -->
     <link rel="stylesheet" type="text/css" href="<?= asset('frontend') ?>/css/style.min.css">

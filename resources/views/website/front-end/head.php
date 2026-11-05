@@ -7,8 +7,8 @@
     <meta name="description" content="multikart">
     <meta name="keywords" content="multikart">
     <meta name="author" content="multikart">
-    <link rel="icon" href="../assets/images/favicon/25.png" type="image/x-icon">
-    <link rel="shortcut icon" href="../assets/images/favicon/25.png" type="image/x-icon">
+    <link rel="icon" href="/assets/images/favicon/cust_fevicon.png" type="image/png">
+    <link rel="shortcut icon" href="/assets/images/favicon/cust_fevicon.png" type="image/png">
     <title>Oxegen Ecommerce</title>
 
     <!--Google font-->

@@ -1,6 +1,6 @@
 
- <link rel="icon" href="{{ asset('frontend_assets/images/favicon/25.png') }}" type="image/x-icon">
-    <link rel="shortcut icon" href="{{ asset('frontend_assets/images/favicon/25.png')}}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('assets/images/favicon/cust_fevicon.png') }}" type="image/png">
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon/cust_fevicon.png') }}" type="image/png">
     <title>Oxegen Ecommerce</title>
 
     <!--Google font-->

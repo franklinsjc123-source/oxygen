@@ -20,7 +20,7 @@
     <meta name="author" content="D-THEMES">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="assets/images/icons/favicon.png">
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon/cust_fevicon.png') }}">
 
     <!-- WebFont.js -->
     <script>

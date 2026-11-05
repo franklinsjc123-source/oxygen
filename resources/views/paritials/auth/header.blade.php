@@ -8,8 +8,8 @@
     <meta name="description" content="">
     <meta name="keywords" content="">
     <meta name="author" content="pixelstrap">
-    <link rel="icon" href="{{ asset('assets/images/dashboard/logo/fav.png') }}" type="image/x-icon">
-    <link rel="shortcut icon" href="{{ asset('assets/images/dashboard/logo/fav.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('assets/images/favicon/admin_fevicon.png') }}" type="image/png">
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon/admin_fevicon.png') }}" type="image/png">
     <title>Trymenow</title>
 
     
