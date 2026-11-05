@@ -30,12 +30,12 @@
             <div class="container">
                 <div class="row">
 
-                    <div class="col-md-5 m-auto p-0">
-                        <div class="card" style="border-radius: 20px; overflow: hidden; border: none; box-shadow: 0 15px 35px rgba(0,0,0,0.3);">
-                            <div class="card-body auth-card-body" style="background: #ffffff; padding: 30px 40px; color: #333;">
-                                <div class="logo-wrapper text-center mb-3">
+                    <div class="col-12 m-auto p-0" style="max-width: 410px;">
+                        <div class="card" style="border-radius: 18px; overflow: hidden; border: none; box-shadow: 0 15px 35px rgba(0,0,0,0.3);">
+                            <div class="card-body auth-card-body" style="background: #ffffff; padding: 25px 32px; color: #333;">
+                                <div class="logo-wrapper text-center mb-2">
                                     <a href="/">
-                                        <img src="{{ asset('assets/images/dashboard/logo/newlogo.png') }}" alt="Logo" style="width: 175px; max-width: 100%; height: auto;">
+                                        <img src="{{ asset('assets/images/dashboard/logo/newlogo.png') }}" alt="Logo" style="width: 145px; max-width: 100%; height: auto;">
                                     </a>
                                 </div>
 
@@ -45,40 +45,40 @@
                                 @endif
                                 <form action="{{ route('vendorlogin') }}" method="post" id="vendorLoginForm">
                                     @csrf
-                                    <div class="form-group mb-3">
-                                        <label for="username" style="font-weight: 500; opacity: 0.9; margin-bottom: 5px; display: block; font-size: 1.2rem; color: #555;">Username</label>
-                                        <input type="text" class="form-control" id="username" name="username" value="{{ request()->cookie('remember_vendor_username') ?? Cookie::get('remember_vendor_username') ?? old('username') }}" placeholder="Enter your username" required style="border-radius: 10px; padding: 12px 15px; border: 1px solid #ddd; background: #f9f9f9; color: #333; font-size: 1.2rem;">
+                                    <div class="form-group mb-2">
+                                        <label for="username" style="font-weight: 500; opacity: 0.9; margin-bottom: 4px; display: block; font-size: 0.95rem; color: #555;">Username</label>
+                                        <input type="text" class="form-control" id="username" name="username" value="{{ request()->cookie('remember_vendor_username') ?? Cookie::get('remember_vendor_username') ?? old('username') }}" placeholder="Enter your username" required style="border-radius: 8px; padding: 9px 13px; border: 1px solid #ddd; background: #f9f9f9; color: #333; font-size: 0.95rem;">
                                     </div>
 
-                                    <div class="form-group mb-3 position-relative">
-                                        <label for="pwd" style="font-weight: 500; opacity: 0.9; margin-bottom: 5px; display: block; font-size: 1.2rem; color: #555;">Password</label>
+                                    <div class="form-group mb-2 position-relative">
+                                        <label for="pwd" style="font-weight: 500; opacity: 0.9; margin-bottom: 4px; display: block; font-size: 0.95rem; color: #555;">Password</label>
                                         <div style="position: relative;">
-                                            <input type="password" class="form-control" id="pwd" name="password" value="{{ request()->cookie('remember_vendor_password') ?? Cookie::get('remember_vendor_password') ?? '' }}" placeholder="Enter your password" required style="border-radius: 10px; padding: 12px 45px 12px 15px; border: 1px solid #ddd; background: #f9f9f9; color: #333; font-size: 1.2rem;">
-                                            <i class="fa fa-eye-slash" id="togglePassword" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888;"></i>
+                                            <input type="password" class="form-control" id="pwd" name="password" value="{{ request()->cookie('remember_vendor_password') ?? Cookie::get('remember_vendor_password') ?? '' }}" placeholder="Enter your password" required style="border-radius: 8px; padding: 9px 40px 9px 13px; border: 1px solid #ddd; background: #f9f9f9; color: #333; font-size: 0.95rem;">
+                                            <i class="fa fa-eye-slash" id="togglePassword" style="position: absolute; right: 13px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888; font-size: 0.95rem;"></i>
                                         </div>
                                     </div>
 
-                                    <div class="form-terms d-flex justify-content-between align-items-center mb-3">
+                                    <div class="form-terms d-flex justify-content-between align-items-center mb-3" style="margin-top: 10px;">
                                         <div class="form-check">
                                             <input type="checkbox" class="form-check-input" id="remember" name="remember" value="1" {{ (request()->hasCookie('remember_vendor_check') || Cookie::has('remember_vendor_check') || request()->hasCookie('remember_vendor_username') || Cookie::has('remember_vendor_username') || old('remember')) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="remember" style="font-size: 1.15rem; opacity: 0.9; color: #555;"> Remember me</label>
+                                            <label class="form-check-label" for="remember" style="font-size: 0.92rem; opacity: 0.9; color: #555;"> Remember me</label>
                                         </div>
-                                        <a href="javascript:void(0)" id="openForgotModal" style="color: #ff5e57; font-size: 0.95rem; text-decoration: none; font-weight: 600;">Forgot password?</a>
+                                        <a href="javascript:void(0)" id="openForgotModal" style="color: #ff5e57; font-size: 0.88rem; text-decoration: none; font-weight: 600;">Forgot password?</a>
                                     </div>
 
-                                    <div class="form-button text-center mt-3">
-                                        <button type="submit" name="submit" class="btn w-100" style="background: linear-gradient(90deg, #ffa801 0%, #ff5e57 100%); color: #fff; font-weight: 700; border-radius: 12px; padding: 12px; border: none; box-shadow: 0 4px 15px rgba(255, 168, 1, 0.3); text-transform: uppercase;">Login</button>
+                                    <div class="form-button text-center mt-2">
+                                        <button type="submit" name="submit" class="btn w-100" style="background: linear-gradient(90deg, #ffa801 0%, #ff5e57 100%); color: #fff; font-weight: 700; border-radius: 10px; padding: 10px; border: none; box-shadow: 0 4px 15px rgba(255, 168, 1, 0.3); text-transform: uppercase; font-size: 0.95rem; letter-spacing: 0.5px;">Login</button>
                                     </div>
 
                                 </form>
 
                                 <!-- New User / Become a Seller Box -->
-                                <div class="become-seller-wrapper mt-4 pt-3 text-center" style="border-top: 1px solid #f1f5f9;">
-                                    <div class="become-seller-box-inner" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px 16px;">
-                                        <div style="font-size: 0.9rem; color: #475569; font-weight: 600; margin-bottom: 9px; letter-spacing: 0.2px;">
+                                <div class="become-seller-wrapper mt-3 pt-2 text-center" style="border-top: 1px solid #f1f5f9; margin-top: 14px;">
+                                    <div class="become-seller-box-inner" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 14px;">
+                                        <div style="font-size: 0.84rem; color: #475569; font-weight: 600; margin-bottom: 6px; letter-spacing: 0.2px;">
                                             New to TrymeNow?
                                         </div>
-                                        <a href="{{ url('seller/register') }}" class="btn w-100 become-seller-btn" style="background: #1e293b; color: #ffffff; font-weight: 600; border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; text-align: center; text-transform: none !important; letter-spacing: 0 !important; white-space: normal !important; box-shadow: 0 4px 12px rgba(30, 41, 59, 0.15); text-decoration: none;">
+                                        <a href="{{ url('seller/register') }}" class="btn w-100 become-seller-btn" style="background: #1e293b; color: #ffffff; font-weight: 600; border-radius: 8px; padding: 8px 10px; font-size: 0.85rem; border: none; display: flex; align-items: center; justify-content: center; text-align: center; text-transform: none !important; letter-spacing: 0 !important; white-space: normal !important; box-shadow: 0 4px 12px rgba(30, 41, 59, 0.15); text-decoration: none;">
                                             Click here to become a seller
                                         </a>
                                     </div>
@@ -93,27 +93,27 @@
     </div>
     <!-- Vendor Forgot Password Modal -->
     <div class="modal fade" id="vendorForgotModal" tabindex="-1" aria-labelledby="vendorForgotModalLabel" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 440px; margin: 1.75rem auto;">
-            <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 20px 40px rgba(0,0,0,0.3); overflow: hidden; background: #fff;">
-                <div class="modal-header d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #ffa801, #ff5e57); color: #fff; padding: 20px 25px; border-bottom: none;">
-                    <h5 class="modal-title mb-0" id="vendorForgotModalLabel" style="font-weight: 700; font-size: 1.25rem; display: flex; align-items: center; gap: 10px; color: #fff;">
-                        <i class="fa fa-key" style="font-size: 1.1rem;"></i> Reset Seller Password
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 410px; margin: 1.75rem auto;">
+            <div class="modal-content" style="border-radius: 18px; border: none; box-shadow: 0 20px 40px rgba(0,0,0,0.3); overflow: hidden; background: #fff;">
+                <div class="modal-header d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #ffa801, #ff5e57); color: #fff; padding: 18px 22px; border-bottom: none;">
+                    <h5 class="modal-title mb-0" id="vendorForgotModalLabel" style="font-weight: 700; font-size: 1.15rem; display: flex; align-items: center; gap: 10px; color: #fff;">
+                        <i class="fa fa-key" style="font-size: 1.05rem;"></i> Reset Seller Password
                     </h5>
                     <button type="button" class="close-forgot-modal" aria-label="Close" style="opacity: 0.85; background: none; border: none; font-size: 1.75rem; color: #fff; line-height: 1; cursor: pointer; padding: 0;">&times;</button>
                 </div>
-                <div class="modal-body" style="padding: 25px 30px; background: #ffffff;">
+                <div class="modal-body" style="padding: 22px 25px; background: #ffffff;">
                     <div id="forgotAlert" style="display: none; padding: 12px 15px; border-radius: 10px; margin-bottom: 20px; font-size: 0.95rem; line-height: 1.4;"></div>
 
                     <!-- STEP 1: Enter Identifier -->
                     <div id="forgotStep1">
                         <p style="color: #666; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5;">
-                            Enter your seller <strong>Username</strong>, <strong>Shop ID</strong>, or registered <strong>Email</strong> to receive a password reset verification code.
+                            Enter your registered <strong>Email</strong> to receive a password reset verification code.
                         </p>
                         <div class="form-group mb-4">
-                            <label for="forgotIdentifier" style="font-weight: 600; color: #333; margin-bottom: 6px; display: block; font-size: 1rem;">Username / Shop ID / Email</label>
+                            <label for="forgotIdentifier" style="font-weight: 600; color: #333; margin-bottom: 6px; display: block; font-size: 1rem;">Email</label>
                             <div style="position: relative;">
-                                <input type="text" id="forgotIdentifier" class="form-control" placeholder="e.g. Seller600 or seller@email.com" style="border-radius: 10px; padding: 12px 15px 12px 42px; border: 1px solid #ddd; background: #f9f9f9; font-size: 1.05rem; color: #333;">
-                                <i class="fa fa-user" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888;"></i>
+                                <input type="email" id="forgotIdentifier" class="form-control" placeholder="e.g. seller@email.com" style="border-radius: 10px; padding: 12px 15px 12px 42px; border: 1px solid #ddd; background: #f9f9f9; font-size: 1.05rem; color: #333;">
+                                <i class="fa fa-envelope" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888;"></i>
                             </div>
                         </div>
                         <button type="button" id="btnSendOtp" class="btn w-100" style="background: linear-gradient(90deg, #ffa801 0%, #ff5e57 100%); color: #fff; font-weight: 700; border-radius: 12px; padding: 12px; border: none; font-size: 1rem; box-shadow: 0 4px 15px rgba(255, 168, 1, 0.3);">
@@ -140,7 +140,7 @@
                             <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true" style="width: 1rem; height: 1rem; border-width: 0.15em;"></span>
                         </button>
                         <div class="text-center">
-                            <a href="javascript:void(0)" class="btnBackToStep1" style="color: #888; font-size: 0.9rem; text-decoration: none;"><i class="fa fa-arrow-left"></i> Change Username / Email</a>
+                            <a href="javascript:void(0)" class="btnBackToStep1" style="color: #888; font-size: 0.9rem; text-decoration: none;"><i class="fa fa-arrow-left"></i> Change Email</a>
                         </div>
                     </div>
 
@@ -287,9 +287,11 @@
             }
 
             function openModal() {
-                var currentUsername = $('#username').val() ? $('#username').val().trim() : '';
-                if (currentUsername) {
-                    $('#forgotIdentifier').val(currentUsername);
+                var currentVal = $('#username').val() ? $('#username').val().trim() : '';
+                if (currentVal && currentVal.indexOf('@') !== -1) {
+                    $('#forgotIdentifier').val(currentVal);
+                } else {
+                    $('#forgotIdentifier').val('');
                 }
                 showStep(1);
                 $modal.css({'display': 'block', 'z-index': 1050}).addClass('show');
@@ -342,7 +344,7 @@
                 var $btn = $(this);
                 var identifier = $('#forgotIdentifier').val() ? $('#forgotIdentifier').val().trim() : '';
                 if (!identifier) {
-                    showAlert('Please enter your seller username, shop ID, or email.', true);
+                    showAlert('Please enter your registered email address.', true);
                     $('#forgotIdentifier').focus();
                     return;
                 }
@@ -379,7 +381,13 @@
                     },
                     error: function(xhr) {
                         setBtnLoading($btn, false);
-                        showAlert('Error sending verification code. Please try again.', true);
+                        var errMsg = 'Error sending verification code. Please try again.';
+                        if (xhr.responseJSON && xhr.responseJSON.msg) {
+                            errMsg = xhr.responseJSON.msg;
+                        } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errMsg = xhr.responseJSON.message;
+                        }
+                        showAlert(errMsg, true);
                     }
                 });
             });

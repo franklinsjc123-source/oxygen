@@ -443,15 +443,15 @@ class AuthController extends Controller
         if (empty($identifier)) {
             return response()->json([
                 'status' => 'error',
-                'msg' => 'Please enter your seller username, shop ID, or email address.'
+                'msg' => 'Please enter your registered email address.'
             ]);
         }
 
         // Try finding in User table first with status = 2
         $user = \App\Models\User::where('status', 2)
             ->where(function($q) use ($identifier) {
-                $q->where('username', $identifier)
-                  ->orWhere('email', $identifier)
+                $q->where('email', $identifier)
+                  ->orWhere('username', $identifier)
                   ->orWhere('login_id', $identifier);
             })
             ->first();
@@ -461,19 +461,17 @@ class AuthController extends Controller
             $vendor = \App\Models\vendor\vendorcreate::where('id', $user->login_id)->first();
         } else {
             // Try finding in vendor_details
-            $vendor = \App\Models\vendor\vendorcreate::where('id', $identifier)
+            $vendor = \App\Models\vendor\vendorcreate::where('email', $identifier)
                 ->orWhere('shop_name', $identifier)
-                ->orWhere('email', $identifier)
-                ->orWhere('primary_email', $identifier)
-                ->orWhere('mobile', $identifier)
+                ->orWhere('id', $identifier)
                 ->first();
 
             if ($vendor) {
                 $user = \App\Models\User::where('status', 2)
                     ->where(function($q) use ($vendor) {
                         $q->where('login_id', $vendor->id)
-                          ->orWhere('username', $vendor->shop_name)
-                          ->orWhere('email', $vendor->email);
+                          ->orWhere('email', $vendor->email)
+                          ->orWhere('username', $vendor->shop_name);
                     })
                     ->first();
             }
@@ -482,11 +480,11 @@ class AuthController extends Controller
         if (!$user && !$vendor) {
             return response()->json([
                 'status' => 'error',
-                'msg' => 'No active seller account found matching that username, shop ID, or email.'
+                'msg' => 'No active seller account found matching this email address.'
             ]);
         }
 
-        $email = !empty($user->email) ? $user->email : ($vendor->email ?? ($vendor->primary_email ?? null));
+        $email = !empty($user->email) ? $user->email : ($vendor->email ?? null);
         $sellerName = !empty($vendor->shop_name) ? $vendor->shop_name : ($user->name ?? 'Seller');
         $loginId = !empty($user->login_id) ? $user->login_id : ($vendor->id ?? '');
         $username = !empty($user->username) ? $user->username : ($vendor->shop_name ?? '');
@@ -591,12 +589,19 @@ class AuthController extends Controller
                     if ($email) $q->orWhere('email', $email);
                 })->update(['password' => Hash::make($newPassword)]);
 
-            // Update vendor_details if password column exists
+            // Update vendor_details if password or pass1 column exists
+            $vendorUpdate = [];
             if (\Illuminate\Support\Facades\Schema::hasColumn('vendor_details', 'password')) {
+                $vendorUpdate['password'] = $newPassword;
+            }
+            if (\Illuminate\Support\Facades\Schema::hasColumn('vendor_details', 'pass1')) {
+                $vendorUpdate['pass1'] = $newPassword;
+            }
+            if (!empty($vendorUpdate)) {
                 \App\Models\vendor\vendorcreate::where(function($q) use ($loginId, $email) {
                     if ($loginId) $q->orWhere('id', $loginId);
-                    if ($email) $q->orWhere('email', $email)->orWhere('primary_email', $email);
-                })->update(['password' => $newPassword]);
+                    if ($email) $q->orWhere('email', $email);
+                })->update($vendorUpdate);
             }
         }
 
