@@ -166,4 +166,57 @@ class SettingController extends Controller
 
         return redirect()->back()->with('success', 'Profile and login details updated successfully.');
     }
+
+    public function rateRm(Request $request)
+    {
+        $loginId = Session::get('login_id');
+        if (!$loginId) {
+            return response()->json(['success' => false, 'message' => 'Please login to rate.'], 401);
+        }
+
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'review' => 'nullable|string|max:1000',
+            'staff_id' => 'required|integer'
+        ]);
+
+        $vendor = DB::table('vendor_details')->where('id', $loginId)->first();
+        if (!$vendor || !$vendor->staff_id) {
+            return response()->json(['success' => false, 'message' => 'No Relationship Manager assigned to your account.'], 400);
+        }
+
+        if (!\Illuminate\Support\Facades\Schema::hasTable('rm_ratings')) {
+            \Illuminate\Support\Facades\Schema::create('rm_ratings', function ($table) {
+                $table->id();
+                $table->unsignedBigInteger('staff_id');
+                $table->unsignedBigInteger('vendor_id');
+                $table->unsignedTinyInteger('rating')->default(5);
+                $table->text('review')->nullable();
+                $table->timestamps();
+                $table->unique(['staff_id', 'vendor_id'], 'unique_staff_vendor');
+                $table->index('staff_id');
+                $table->index('vendor_id');
+            });
+        }
+
+        DB::table('rm_ratings')->updateOrInsert(
+            [
+                'staff_id' => $vendor->staff_id,
+                'vendor_id' => $loginId
+            ],
+            [
+                'rating' => (int) $request->rating,
+                'review' => $request->review,
+                'updated_at' => now(),
+                'created_at' => now(),
+            ]
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Thank you! Your RM rating has been saved successfully.',
+            'rating' => (int) $request->rating,
+            'review' => $request->review
+        ]);
+    }
 }

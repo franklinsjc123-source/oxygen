@@ -879,9 +879,21 @@ class DashboardController extends Controller
             ]);
         }
 
+        $staffAvgRating = 5.0;
+        $staffRatingCount = 0;
+        if (isset($staffDetails) && isset($staffDetails->id) && \Illuminate\Support\Facades\Schema::hasTable('rm_ratings')) {
+            $staffRatingStats = DB::table('rm_ratings')->where('staff_id', $staffDetails->id)->selectRaw('AVG(rating) as avg_rating, COUNT(*) as count')->first();
+            if ($staffRatingStats && $staffRatingStats->count > 0) {
+                $staffAvgRating = round($staffRatingStats->avg_rating, 1);
+                $staffRatingCount = (int) $staffRatingStats->count;
+            }
+        }
+
         return view('layout.admin.dashboard.dashboard')->with([
             'vendorid' => 0, // Admin overall
             'staffDetails' => $staffDetails,
+            'staffAvgRating' => $staffAvgRating,
+            'staffRatingCount' => $staffRatingCount,
             'vendorCount' => $vendorCount,
             'productCount' => $productCount,
             'orderCount' => $orderCount,
@@ -2978,11 +2990,19 @@ class DashboardController extends Controller
             ->get();
         $staffId = $staffDbId;
 
+        $staffRatingStats = \Illuminate\Support\Facades\Schema::hasTable('rm_ratings')
+            ? DB::table('rm_ratings')->where('staff_id', $staffDbId)->selectRaw('AVG(rating) as avg_rating, COUNT(*) as count')->first()
+            : null;
+        $staffAvgRating = ($staffRatingStats && $staffRatingStats->count > 0) ? round($staffRatingStats->avg_rating, 1) : 5.0;
+        $staffRatingCount = $staffRatingStats ? (int) $staffRatingStats->count : 0;
+
         return view('layout.staff.dashboard.dashboard')->with([
             'subStaffList' => $subStaffList,
             'selectedStaffId' => $staffId,
             'vendorid' => $id,
             'staffDetails' => $staffDetails,
+            'staffAvgRating' => $staffAvgRating,
+            'staffRatingCount' => $staffRatingCount,
             'vendorCount' => $vendorCount,
             'productCount' => $productCount,
             'orderCount' => $orderCount,

@@ -2,6 +2,8 @@
     $vendorProfile = null;
     $staffName = '';
     $staff = null;
+    $currentRmRating = null;
+    $currentRmReview = '';
     if (session()->get('login_id')) {
         $vendorProfile = App\Models\vendor\vendorcreate::select('shop_name', 'owner_name', 'profile_image', 'staff_id')
             ->where('id', session()->get('login_id'))
@@ -11,6 +13,16 @@
             $staff = App\Models\Staffcreates::find($vendorProfile->staff_id);
             if ($staff) {
                 $staffName = 'RM: ' . ($staff->fullname ?? $staff->username);
+                if (\Illuminate\Support\Facades\Schema::hasTable('rm_ratings')) {
+                    $existingRating = \Illuminate\Support\Facades\DB::table('rm_ratings')
+                        ->where('staff_id', $vendorProfile->staff_id)
+                        ->where('vendor_id', session()->get('login_id'))
+                        ->first();
+                    if ($existingRating) {
+                        $currentRmRating = (int) $existingRating->rating;
+                        $currentRmReview = $existingRating->review ?? '';
+                    }
+                }
             }
         }
     }
@@ -176,6 +188,10 @@
                         <a href="tel:{{ $staff->mobileno }}" class="rm-phone" title="{{ $staff->mobileno }}">
                             <i class="fa fa-phone"></i> {{ $staff->mobileno }}
                         </a>
+                        <a href="javascript:void(0)" class="rm-rate-link btn-open-rate-rm" title="Click to rate your experience with RM">
+                            <i class="fa fa-star rm-star-icon" style="color: {{ $currentRmRating ? '#ffd700' : 'rgba(255,255,255,0.7)' }}; font-size: 11px;"></i>
+                            <span class="rm-rate-text">{{ $currentRmRating ? $currentRmRating . '.0 ★ Rate RM' : 'Rate RM' }}</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -184,13 +200,13 @@
     @if(isset($staff) && $staff)
     <style>
         .sidebar-menu {
-            padding-bottom: 110px !important;
+            padding-bottom: 135px !important;
         }
 
         .rm-card {
             background: linear-gradient(135deg, #ff7a59 0%, #ff5252 100%);
             border-radius: 12px;
-            padding: 10px 12px;
+            padding: 9px 12px;
             margin: 0;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             box-shadow: 0 4px 15px rgba(255, 122, 89, 0.25);
@@ -317,6 +333,31 @@
             color: rgba(255, 255, 255, 0.9);
         }
 
+        .rm-rate-link {
+            margin: 4px 0 0 0;
+            font-size: 11px;
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            width: fit-content;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .rm-rate-link:hover {
+            background: rgba(0, 0, 0, 0.35);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-1px);
+        }
+
         /* Desktop specific styles */
         @media (min-width: 992px) {
             .rm-card-desktop {
@@ -359,8 +400,183 @@
                 <a href="tel:{{ $staff->mobileno }}" class="rm-phone" title="{{ $staff->mobileno }}">
                     <i class="fa fa-phone"></i> {{ $staff->mobileno }}
                 </a>
+                <a href="javascript:void(0)" class="rm-rate-link btn-open-rate-rm" title="Click to rate your experience with RM">
+                    <i class="fa fa-star rm-star-icon" style="color: {{ $currentRmRating ? '#ffd700' : 'rgba(255,255,255,0.7)' }}; font-size: 11px;"></i>
+                    <span class="rm-rate-text">{{ $currentRmRating ? $currentRmRating . '.0 ★ Rate RM' : 'Rate RM' }}</span>
+                </a>
             </div>
         </div>
     </div>
+
+    <!-- Rate RM Modal -->
+    <div class="modal fade" id="rateRmModal" tabindex="-1" aria-labelledby="rateRmModalLabel" aria-hidden="true" style="display: none; z-index: 1060;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 440px; margin: 1.75rem auto;">
+            <div class="modal-content" style="border-radius: 18px; border: none; box-shadow: 0 20px 40px rgba(0,0,0,0.25); overflow: hidden; background: #ffffff;">
+                <div class="modal-header d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #ff7a59 0%, #ff5252 100%); color: #fff; padding: 16px 22px; border-bottom: none;">
+                    <h5 class="modal-title mb-0" id="rateRmModalLabel" style="font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; color: #fff;">
+                        <i class="fa fa-star" style="color: #ffd700;"></i> Rate Your RM
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background: transparent; border: none; font-size: 1.2rem; color: #fff; opacity: 0.9; cursor: pointer;">
+                        <span aria-hidden="true" style="color: #fff; font-weight: bold;">&times;</span>
+                    </button>
+                </div>
+                <form id="formRateRm">
+                    @csrf
+                    <input type="hidden" name="staff_id" value="{{ $vendorProfile->staff_id ?? '' }}">
+                    <input type="hidden" name="rating" id="rm_rating_input" value="{{ $currentRmRating ?? 5 }}">
+
+                    <div class="modal-body" style="padding: 22px 24px;">
+                        <!-- RM Profile Preview -->
+                        <div class="d-flex align-items-center p-3 mb-3" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px;">
+                            <img src="{{ $staffImage }}" alt="RM" style="width: 48px; height: 48px; object-fit: cover; border-radius: 50%; border: 2px solid #ff7a59; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-right: 12px; flex-shrink: 0;">
+                            <div style="min-width: 0; flex: 1;">
+                                <h6 style="margin: 0 0 2px; font-size: 0.98rem; font-weight: 700; color: #1e293b;">{{ $staff->fullname ?? $staff->username }}</h6>
+                                <span style="display: block; font-size: 0.82rem; color: #64748b; font-weight: 500;">Relationship Manager</span>
+                                <span style="font-size: 0.82rem; color: #ff5252; font-weight: 600;"><i class="fa fa-phone me-1"></i>{{ $staff->mobileno }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Star Rating Section -->
+                        <div class="text-center my-3">
+                            <label style="font-weight: 600; font-size: 0.95rem; color: #334155; margin-bottom: 8px; display: block;">
+                                How was your experience?
+                            </label>
+                            <div class="rm-interactive-stars d-flex justify-content-center align-items-center gap-2 mb-2" style="font-size: 32px; cursor: pointer; user-select: none;">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <i class="fa fa-star rm-star-item" data-value="{{ $i }}" style="color: {{ ($currentRmRating ?? 5) >= $i ? '#f59e0b' : '#cbd5e1' }}; transition: transform 0.15s ease, color 0.15s ease;"></i>
+                                @endfor
+                            </div>
+                            <div id="rm_rating_label" style="font-size: 0.88rem; font-weight: 700; color: #f59e0b; min-height: 20px;">
+                                @php
+                                    $labels = [1 => '★ Poor', 2 => '★★ Fair', 3 => '★★★ Good', 4 => '★★★★ Very Good', 5 => '★★★★★ Excellent'];
+                                @endphp
+                                {{ $labels[$currentRmRating ?? 5] ?? '★★★★★ Excellent' }}
+                            </div>
+                        </div>
+
+                        <!-- Feedback Textarea -->
+                        <div class="form-group mb-2 mt-3">
+                            <label for="rm_review_input" style="font-weight: 600; font-size: 0.88rem; color: #475569; margin-bottom: 6px; display: block;">
+                                Feedback / Comments <span style="font-weight: 400; color: #94a3b8;">(Optional)</span>
+                            </label>
+                            <textarea class="form-control" id="rm_review_input" name="review" rows="3" placeholder="Share your feedback or suggestions regarding your RM support..." style="border-radius: 10px; border: 1px solid #cbd5e1; font-size: 0.9rem; padding: 10px 12px; resize: none; background: #fff; color: #333;">{{ $currentRmReview }}</textarea>
+                        </div>
+
+                        <div id="rm_rate_alert" class="mt-2" style="display: none;"></div>
+                    </div>
+
+                    <div class="modal-footer" style="border-top: 1px solid #f1f5f9; padding: 14px 22px; background: #fafafa; display: flex; justify-content: flex-end; gap: 10px;">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal" style="border-radius: 8px; font-weight: 600; padding: 8px 18px;">Cancel</button>
+                        <button type="submit" id="btnSubmitRmRate" class="btn text-white" style="background: linear-gradient(135deg, #ff7a59 0%, #ff5252 100%); border: none; border-radius: 8px; font-weight: 700; padding: 8px 22px; box-shadow: 0 4px 12px rgba(255, 122, 89, 0.35);">
+                            {{ $currentRmRating ? 'Update Rating' : 'Submit Rating' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        var starLabels = {
+            1: '★ Poor',
+            2: '★★ Fair',
+            3: '★★★ Good',
+            4: '★★★★ Very Good',
+            5: '★★★★★ Excellent'
+        };
+
+        function highlightStars(val) {
+            $('.rm-star-item').each(function() {
+                var starVal = parseInt($(this).data('value'));
+                if (starVal <= val) {
+                    $(this).css('color', '#f59e0b');
+                } else {
+                    $(this).css('color', '#cbd5e1');
+                }
+            });
+            $('#rm_rating_label').text(starLabels[val] || (val + ' Stars'));
+        }
+
+        $(document).on('mouseenter', '.rm-star-item', function() {
+            var hoverVal = parseInt($(this).data('value'));
+            highlightStars(hoverVal);
+        });
+
+        $(document).on('mouseleave', '.rm-interactive-stars', function() {
+            var currentVal = parseInt($('#rm_rating_input').val()) || 5;
+            highlightStars(currentVal);
+        });
+
+        $(document).on('click', '.rm-star-item', function() {
+            var clickVal = parseInt($(this).data('value'));
+            $('#rm_rating_input').val(clickVal);
+            highlightStars(clickVal);
+            $(this).css('transform', 'scale(1.25)');
+            setTimeout(function() {
+                $('.rm-star-item').css('transform', 'scale(1)');
+            }, 150);
+        });
+
+        $(document).on('click', '.btn-open-rate-rm', function(e) {
+            e.preventDefault();
+            var modalEl = document.getElementById('rateRmModal');
+            if (!modalEl) return;
+            if (window.bootstrap && window.bootstrap.Modal) {
+                if (typeof window.bootstrap.Modal.getOrCreateInstance === 'function') {
+                    window.bootstrap.Modal.getOrCreateInstance(modalEl).show();
+                } else {
+                    new window.bootstrap.Modal(modalEl).show();
+                }
+            } else if (window.jQuery && typeof window.jQuery.fn.modal === 'function') {
+                $('#rateRmModal').modal('show');
+            }
+        });
+
+        $(document).on('submit', '#formRateRm', function(e) {
+            e.preventDefault();
+            var $btn = $('#btnSubmitRmRate');
+            var $alert = $('#rm_rate_alert');
+            var origText = $btn.text();
+
+            $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin me-1"></i> Saving...');
+            $alert.hide().empty();
+
+            $.ajax({
+                url: "{{ route('vendor.rate.rm') }}",
+                type: "POST",
+                data: $(this).serialize(),
+                dataType: "json",
+                success: function(res) {
+                    $btn.prop('disabled', false).text('Update Rating');
+                    if (res.success) {
+                        $alert.html('<div class="alert alert-success py-2 px-3 mb-0" style="font-size: 0.88rem;"><i class="fa fa-check-circle me-1"></i> ' + res.message + '</div>').fadeIn();
+
+                        var score = res.rating;
+                        $('.rm-rate-text').text(score + '.0 ★ Rate RM');
+                        $('.rm-star-icon').css('color', '#ffd700');
+
+                        setTimeout(function() {
+                            var modalEl = document.getElementById('rateRmModal');
+                            if (window.bootstrap && window.bootstrap.Modal) {
+                                var inst = window.bootstrap.Modal.getInstance(modalEl);
+                                if (inst) inst.hide();
+                            } else if (window.jQuery && typeof window.jQuery.fn.modal === 'function') {
+                                $('#rateRmModal').modal('hide');
+                            }
+                        }, 1200);
+                    } else {
+                        $alert.html('<div class="alert alert-danger py-2 px-3 mb-0" style="font-size: 0.88rem;">' + (res.message || 'Error saving rating.') + '</div>').fadeIn();
+                    }
+                },
+                error: function(xhr) {
+                    $btn.prop('disabled', false).text(origText);
+                    var errMsg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Something went wrong. Please try again.';
+                    $alert.html('<div class="alert alert-danger py-2 px-3 mb-0" style="font-size: 0.88rem;">' + errMsg + '</div>').fadeIn();
+                }
+            });
+        });
+    })();
+    </script>
     @endif
 </div>

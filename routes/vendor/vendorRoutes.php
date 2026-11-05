@@ -399,6 +399,7 @@ Route::get('activity/list', [ActivityController::class, 'list']);
 
 Route::get('profile', [SettingController::class, 'profile'])->name('vendor.profile');
 Route::post('profile/update', [SettingController::class, 'updateVendorProfile'])->name('vendor.profile.update');
+Route::post('rate-rm', [SettingController::class, 'rateRm'])->name('vendor.rate.rm');
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
 

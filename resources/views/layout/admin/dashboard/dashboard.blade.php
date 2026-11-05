@@ -764,10 +764,20 @@
                             </div>
                             <div class="employee-meta-item">
                                 <span class="employee-meta-label">Rating</span>
-                                <div class="employee-rating-stars">
-                                    @for($i = 0; $i < 5; $i++)
-                                        <i class="fa fa-star"></i>
+                                <div class="employee-rating-stars" title="{{ number_format($staffAvgRating ?? 5.0, 1) }} / 5.0 ({{ $staffRatingCount ?? 0 }} seller ratings)">
+                                    @php
+                                        $currentScore = $staffAvgRating ?? 5.0;
+                                    @endphp
+                                    @for($i = 1; $i <= 5; $i++)
+                                        @if($i <= floor($currentScore))
+                                            <i class="fa fa-star" style="color: #f1c40f;"></i>
+                                        @elseif(($currentScore - floor($currentScore)) >= 0.3 && $i == ceil($currentScore))
+                                            <i class="fa fa-star-half-o" style="color: #f1c40f;"></i>
+                                        @else
+                                            <i class="fa fa-star-o" style="color: #cbd5e1;"></i>
+                                        @endif
                                     @endfor
+                                    <span style="font-size: 12px; font-weight: 700; color: #475569; margin-left: 5px;">{{ number_format($currentScore, 1) }}</span>
                                 </div>
                             </div>
                             <div class="employee-meta-item">
