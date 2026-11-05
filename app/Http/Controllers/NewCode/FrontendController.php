@@ -1186,9 +1186,7 @@ class FrontendController extends Controller
 
     public function home()
     {
-        $mainslider = \Illuminate\Support\Facades\Cache::remember('home_mainslider', 600, function() {
-            return mainslider::where('status', 1)->get();
-        });
+        $mainslider = mainslider::where('status', 1)->orderBy('sort', 'asc')->get();
 
         $topRatedProducts = $this->getSpecificProduct('', 6);
         $offerProducts = array_slice($this->getOfferProductsHome(), 0, 6);

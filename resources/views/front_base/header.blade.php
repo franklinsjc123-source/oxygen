@@ -27,8 +27,12 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
     <?php if (isset($mainslider) && count($mainslider) > 0 && !empty($mainslider[0]->image)): 
         $firstImg = $mainslider[0]->image;
         $firstImgBase = pathinfo($firstImg, PATHINFO_FILENAME);
-        $mobileImg = $firstImgBase . '_mobile.webp';
-        $desktopImg = $firstImgBase . '.webp';
+        $mobileImg = file_exists(public_path('assets/images/banners/mainslider/' . $firstImgBase . '_mobile.webp'))
+            ? $firstImgBase . '_mobile.webp'
+            : $firstImg;
+        $desktopImg = file_exists(public_path('assets/images/banners/mainslider/' . $firstImgBase . '.webp'))
+            ? $firstImgBase . '.webp'
+            : $firstImg;
     ?>
     <!-- Preload LCP Hero Banner Image Responsively -->
     <link rel="preload" as="image" href="<?= asset('assets/images/banners/mainslider/' . $mobileImg) ?>" media="(max-width: 767px)" fetchpriority="high">
