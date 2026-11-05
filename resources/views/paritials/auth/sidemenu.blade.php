@@ -163,6 +163,7 @@
             </li>
         @endforeach
 
+        {{--
         @php
             $pendingLeadsCount = \Illuminate\Support\Facades\Schema::hasTable('seller_leads')
                 ? \DB::table('seller_leads')->where('status', 'Pending')->count()
@@ -175,6 +176,7 @@
                 <span style="font-size: 12px; font-weight: 600;">Seller Requests</span>@if($pendingLeadsCount > 0)<span class="badge badge-primary" style="background-color: #ff8084 !important; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 5px; border-radius: 4px; line-height: 1; margin-left: 5px; flex-shrink: 0; display: inline-block;">{{ $pendingLeadsCount }}</span>@endif
             </a>
         </li>
+        --}}
 		@else
 		
         <li><a class="sidebar-header" href="{{ url('admin/dashboard') }}"><i data-feather="home"></i><span>Dashboard</span></a></li>

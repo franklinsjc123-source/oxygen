@@ -201,6 +201,7 @@
                     @endif
                 @endforeach
             @endif
+            {{--
             @if (session()->get('log_type') != 'Staff')
                 @php
                     $pendingLeadsCountTop = \Illuminate\Support\Facades\Schema::hasTable('seller_leads')
@@ -214,6 +215,7 @@
                     </a>
                 </li>
             @endif
+            --}}
             @if (session()->get('log_type') == 'Staff')
                 <li><a href="{{ url('staff/logout') }}"><i data-feather="log-in"></i> <span class="text-label">Logout</span></a></li>
             @else
