@@ -470,12 +470,10 @@
             return sprintf('%s rows per page', pageNumber);
         },
         formatShowingRows: function (pageFrom, pageTo, totalRows, totalPages) {
-            var currentPage = (this && this.options && this.options.pageNumber) ? this.options.pageNumber : 1;
-            var pages = totalPages || (this && (this.options.totalPages || this.totalPages)) || 1;
             if (!totalRows || totalRows === 0) {
-                return 'Showing 0 of 0 pages';
+                return 'Showing 0 to 0 of 0 rows';
             }
-            return sprintf('Showing %s of %s pages', currentPage, pages);
+            return sprintf('Showing %s to %s of %s rows', pageFrom, pageTo, totalRows);
         },
          formatDetailPagination: function (totalRows) {
             return sprintf('Showing %s rows', totalRows);

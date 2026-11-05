@@ -101,7 +101,23 @@
     
     <!-- data table JS
 		============================================ -->
-    <script src="{{asset('assets/js/data-table/bootstrap-table.js')}}"></script>
+    <script src="{{asset('assets/js/data-table/bootstrap-table.js')}}?v={{ file_exists(public_path('assets/js/data-table/bootstrap-table.js')) ? filemtime(public_path('assets/js/data-table/bootstrap-table.js')) : '1.2' }}"></script>
+    <script>
+        if (window.jQuery && $.fn && $.fn.bootstrapTable) {
+            if ($.fn.bootstrapTable.locales && $.fn.bootstrapTable.locales['en-US']) {
+                $.fn.bootstrapTable.locales['en-US'].formatShowingRows = function (pageFrom, pageTo, totalRows) {
+                    if (!totalRows || totalRows === 0) return 'Showing 0 to 0 of 0 rows';
+                    return 'Showing ' + pageFrom + ' to ' + pageTo + ' of ' + totalRows + ' rows';
+                };
+                $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['en-US']);
+            } else if ($.fn.bootstrapTable.defaults) {
+                $.fn.bootstrapTable.defaults.formatShowingRows = function (pageFrom, pageTo, totalRows) {
+                    if (!totalRows || totalRows === 0) return 'Showing 0 to 0 of 0 rows';
+                    return 'Showing ' + pageFrom + ' to ' + pageTo + ' of ' + totalRows + ' rows';
+                };
+            }
+        }
+    </script>
     <script src="{{asset('assets/js/data-table/tableExport.js')}}?v={{ file_exists(public_path('assets/js/data-table/tableExport.js')) ? filemtime(public_path('assets/js/data-table/tableExport.js')) : '1.1' }}"></script>
     <script src="{{asset('assets/js/data-table/data-table-active.js')}}"></script>
     <script src="{{asset('assets/js/data-table/bootstrap-table-editable.js')}}"></script>

@@ -866,7 +866,7 @@
                                             <td class="spec-value-col" style="width: 30%;">
                                                 <input type="hidden" name="spec_id[]" value="{{ $spec->id }}">
                                                 <select class='form-control text-secondary' name='specify_value[{{ $spec->id}}]'>
-                                                    <option selected value='' hidden> --Select {{ $spec->specification_group_name}}--</option>
+                                                    <option selected value=''> --Select {{ $spec->specification_group_name}}--</option>
                                                     @foreach( $spec_val as $spval )
                                                     <option value='{{ $spval }}'> {{ $spval }}</option>
                                                     @endforeach

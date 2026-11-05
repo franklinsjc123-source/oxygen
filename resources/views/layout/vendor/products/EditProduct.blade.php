@@ -364,7 +364,7 @@
                                                          <td style="width: 30%;">
                                                              <input type="hidden" name="spec_id[]" value="{{ $spec->id }}">
                                                              <select class="form-control text-secondary" name="specify_value[{{ $spec->id }}]" id="specify_value_{{ $spec->id }}">
-                                                                 <option value="" hidden {{ $selectedValue === '' ? 'selected' : '' }}>-- Select {{ $spec->specification_group_name }} --</option>
+                                                                 <option value="" {{ $selectedValue === '' ? 'selected' : '' }}>-- Select {{ $spec->specification_group_name }} --</option>
                                                                  @foreach ($specValues as $specify_val)
                                                                      <option value="{{ $specify_val }}" {{ $specify_val == $selectedValue ? 'selected' : '' }}>{{ $specify_val }}</option>
                                                                  @endforeach
@@ -527,7 +527,7 @@
                                 <td style="width: 30%;">
                                     <input type="hidden" name="spec_id[]" value="${spec.id}">
                                     <select class='form-control text-secondary' name='specify_value[${spec.id}]'>
-                                        <option selected value='' hidden> --Select ${spec.name}--</option>
+                                        <option selected value=''> --Select ${spec.name}--</option>
                                         ${options}
                                     </select>
                                     <input type="hidden" name="specify_attribute[${spec.id}]" value="${spec.name}">
