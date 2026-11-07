@@ -106,6 +106,74 @@
             }
         }
 
+        /* Quantity selector: [-] [ 1 ] [+] */
+        .product-qty-form .input-group {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            position: relative !important;
+            border: 1px solid #d0d0d0 !important;
+            border-radius: 4px !important;
+            height: 44px !important;
+            max-width: 125px !important;
+            padding: 0 6px !important;
+            background: #fff !important;
+            overflow: hidden !important;
+        }
+        .product-qty-form .input-group button {
+            position: static !important;
+            top: auto !important;
+            right: auto !important;
+            bottom: auto !important;
+            left: auto !important;
+            transform: none !important;
+            margin: 0 !important;
+            flex: 0 0 28px !important;
+            width: 28px !important;
+            height: 28px !important;
+            border-radius: 50% !important;
+            background-color: #eeeeee !important;
+            color: #555555 !important;
+            font-size: 11px !important;
+            border: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 0 !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+            line-height: 1 !important;
+        }
+        .product-qty-form .input-group button:hover {
+            background-color: #0088dd !important;
+            color: #ffffff !important;
+        }
+        .product-qty-form .input-group button + button {
+            margin-right: 0 !important;
+        }
+        .product-qty-form .input-group .form-control.qty-input {
+            flex: 1 1 auto !important;
+            border: none !important;
+            text-align: center !important;
+            font-size: 15px !important;
+            font-weight: 600 !important;
+            color: #333333 !important;
+            padding: 0 4px !important;
+            margin: 0 !important;
+            height: 100% !important;
+            min-height: auto !important;
+            max-width: none !important;
+            background: transparent !important;
+            outline: none !important;
+            box-shadow: none !important;
+            -moz-appearance: textfield !important;
+        }
+        .product-qty-form .input-group .form-control.qty-input::-webkit-outer-spin-button,
+        .product-qty-form .input-group .form-control.qty-input::-webkit-inner-spin-button {
+            -webkit-appearance: none !important;
+            margin: 0 !important;
+        }
+
         #btn-add-to-cart,
         #btn-add-to-cart:hover,
         #btn-add-to-cart:focus,
@@ -990,10 +1058,10 @@
                                         <div class="row">
                                              <div class="col-md-3 product-qty-form">
                                              <div class="input-group">
+                                                <button type="button" class="qty-minus w-icon-minus" aria-label="Decrease quantity"></button>
                                                 <input class="form-control qty-input" id="quantity" type="number" min="1"
                                                     max="100" step="1" value="1">
                                                 <button type="button" class="qty-plus w-icon-plus" aria-label="Increase quantity"></button>
-                                                <button type="button" class="qty-minus w-icon-minus" aria-label="Decrease quantity"></button>
                                              </div>
                                          </div>
                                          <div class="col-md-3" id="cart-action-container">
