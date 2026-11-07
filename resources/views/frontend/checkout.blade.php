@@ -551,9 +551,17 @@
      </tr>
      @endforeach
 
+     @php
+         $subtotalWithTax = isset($checkoutSummary['items_total'])
+             ? (float) $checkoutSummary['items_total']
+             : (((float) ($checkoutSummary['subtotal'] ?? 0)) + ((float) ($checkoutSummary['tax_total'] ?? 0)));
+         if ($subtotalWithTax <= 0 && isset($total)) {
+             $subtotalWithTax = (float) $total;
+         }
+     @endphp
      <tr class="cart-subtotal bb-no">
      <td><b>Subtotal</b></td>
-     <td class="product-total"><b style="white-space: nowrap;"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($checkoutSummary['subtotal'] ?? $total, 2) }}</b>
+     <td class="product-total"><b style="white-space: nowrap;"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($subtotalWithTax, 2) }}</b>
      </td>
      </tr>
      @if (($checkoutSummary['discount_total'] ?? 0) > 0)
@@ -563,11 +571,6 @@
      </td>
      </tr>
      @endif
-     <tr class="cart-subtotal bb-no">
-     <td><b>Tax</b></td>
-     <td class="product-total"><b style="white-space: nowrap;"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($checkoutSummary['tax_total'] ?? 0, 2) }}</b>
-     </td>
-     </tr>
      <tr class="cart-subtotal bb-no">
      <td><b>Delivery Charge</b></td>
      <td class="product-total"><b style="white-space: nowrap;"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($checkoutSummary['delivery_charge'] ?? 0, 2) }}</b>
