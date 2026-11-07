@@ -99,14 +99,13 @@
                             </div>
 
                             <div class="datatable-dashv1-list custom-datatable-overright">
-                                <table class="table" id="table" data-click-to-select="true" data-sort-name="id"
+                                <table class="table" id="table" data-click-to-select="true" data-sort-name="collection"
                                     data-sort-order="asc" data-mobile-responsive="true" data-toggle="table"
                                     data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true"
                                     data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true"
                                     data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">
                                     <thead>
                                         <tr>
-                                            <th data-field="id" data-sortable="true">Id</th>
                                             <th data-field="image" data-sortable="true">Image</th>
                                             <th data-field="collection" data-sortable="true">Product Collection</th>
 
@@ -118,7 +117,6 @@
                                     <tbody>
                                         @foreach ($productcollection as $productcollection)
                                             <tr>
-                                                <td>#{{ $loop->iteration }}</td>
                                                 <td>
                                                     <div class="d-flex">
                                                         <img src="{{ asset('assets/images/productcollection') . '/' . $productcollection->image }}"

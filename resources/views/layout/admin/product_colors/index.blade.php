@@ -50,13 +50,12 @@
 								<a href="{{ route('product_colors.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Color</a>
 							</div>
 							
-							<table class="table" id="table"  data-click-to-select="true"  data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-columns="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
+							<table class="table" id="table"  data-click-to-select="true"  data-sort-name="color_name" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-columns="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
                          data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">
 
                         
 								<thead>
 									<tr>
-										<th>ID</th>
 										<th>Color Name</th>
 										<th>Color Code</th>
 										<th>Status</th>
@@ -66,7 +65,6 @@
 								<tbody>
 									@foreach ($colors as $color)
 									<tr>
-										<td>{{ $color->id }}</td>
 										<td>{{ $color->color_name }}</td>
 										<td ><button type="button" style="background-color: {{ $color->color_code }};">{{ $color->color_code }}</button></td>
 										<td>
