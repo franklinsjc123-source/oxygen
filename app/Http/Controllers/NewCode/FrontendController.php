@@ -38,6 +38,7 @@ use Carbon\Carbon;
 use NumberFormatter;
 use App\Mail\OrderMail;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 // use Illuminate\Support\Str;
 
 class FrontendController extends Controller
@@ -3093,42 +3094,49 @@ class FrontendController extends Controller
                 $customer = Ecom_Customer_info::where('customer_id', $sessionCustomerId)->first();
             }
 
-            if (!$customer) {
-                $customer = Ecom_Customer_info::where('customer_mobileno', $request->billing_phone)
-                    ->orWhere('customer_email', $request->billing_email)
-                    ->first();
+            if (!$customer && $request->filled('billing_phone')) {
+                $customer = Ecom_Customer_info::where('customer_mobileno', $request->billing_phone)->first();
+            }
+
+            if (!$customer && $request->filled('billing_email')) {
+                $customer = Ecom_Customer_info::where('customer_email', $request->billing_email)->first();
+            }
+
+            $resolvedEmail = trim((string) (
+                $request->input('billing_email')
+                ?: ($request->input('email')
+                ?: ($request->input('customer_email')
+                ?: ($customer->customer_email ?? '')))
+            ));
+
+            $customerPayload = [
+                'customer_firstname' => $request->billing_first_name ?: ($customer->customer_firstname ?? 'Customer'),
+                'customer_lastname' => $request->billing_last_name ?: ($customer->customer_lastname ?? ''),
+                'customer_mobileno' => $request->billing_phone ?: ($customer->customer_mobileno ?? ''),
+                'customer_address' => $request->billing_address ?: ($customer->customer_address ?? ''),
+                'customer_address1' => $request->input('street-address-2', $request->billing_address) ?: ($customer->customer_address1 ?? ''),
+                'customer_city' => $request->billing_city ?: ($customer->customer_city ?? ''),
+                'customer_state' => $request->billing_state ?: ($customer->customer_state ?? ''),
+                'customer_pincode' => $request->billing_postcode ?: ($customer->customer_pincode ?? ''),
+            ];
+
+            if (!empty($resolvedEmail)) {
+                $customerPayload['customer_email'] = $resolvedEmail;
             }
 
             if (!$customer) {
                 $customerCode = 'OXY-C' . str_pad(((int) Ecom_Customer_info::max('id')) + 1, 5, '0', STR_PAD_LEFT);
                 $isNewCustomer = true;
+                $customerPayload['customer_id'] = $customerCode;
+                $customerPayload['customer_password'] = base64_encode(base64_encode('welcome@123'));
+                $customerPayload['customer_type'] = 'Customer';
+                if (empty($customerPayload['customer_email'])) {
+                    $customerPayload['customer_email'] = $resolvedEmail;
+                }
 
-                $customer = Ecom_Customer_info::create([
-                    'customer_id' => $customerCode,
-                    'customer_firstname' => $request->billing_first_name,
-                    'customer_lastname' => $request->billing_last_name,
-                    'customer_email' => $request->billing_email,
-                    'customer_mobileno' => $request->billing_phone,
-                    'customer_password' => base64_encode(base64_encode('welcome@123')),
-                    'customer_address' => $request->billing_address,
-                    'customer_address1' => $request->billing_address,
-                    'customer_city' => $request->billing_city,
-                    'customer_state' => $request->billing_state,
-                    'customer_pincode' => $request->billing_postcode,
-                    'customer_type' => 'Customer',
-                ]);
+                $customer = Ecom_Customer_info::create($customerPayload);
             } else {
-                $customer->update([
-                    'customer_firstname' => $request->billing_first_name,
-                    'customer_lastname' => $request->billing_last_name,
-                    'customer_email' => $request->billing_email,
-                    'customer_mobileno' => $request->billing_phone,
-                    'customer_address' => $request->billing_address,
-                    'customer_address1' => $request->billing_address,
-                    'customer_city' => $request->billing_city,
-                    'customer_state' => $request->billing_state,
-                    'customer_pincode' => $request->billing_postcode,
-                ]);
+                $customer->update($customerPayload);
             }
 
             $customerCode = $customer->customer_id;
@@ -3282,16 +3290,16 @@ class FrontendController extends Controller
             $legacyOrder->order_id = $orderId;
             $legacyOrder->delivery_type = 'Normal';
             $legacyOrder->customer_id = $customerCode;
-            $legacyOrder->customer_firstname = $request->billing_first_name;
-            $legacyOrder->customer_lastname = $request->billing_last_name;
+            $legacyOrder->customer_firstname = $request->billing_first_name ?: ($customer->customer_firstname ?? 'Customer');
+            $legacyOrder->customer_lastname = $request->billing_last_name ?: ($customer->customer_lastname ?? '');
             $legacyOrder->customer_company_name = $request->input('billing_company', '');
-            $legacyOrder->customer_email = $request->billing_email;
-            $legacyOrder->customer_mobileno = $request->billing_phone;
-            $legacyOrder->customer_address = $request->billing_address;
-            $legacyOrder->customer_address1 = $request->input('street-address-2', '');
-            $legacyOrder->customer_city = $request->billing_city;
-            $legacyOrder->customer_state = $request->billing_state;
-            $legacyOrder->customer_pincode = $request->billing_postcode;
+            $legacyOrder->customer_email = !empty($resolvedEmail) ? $resolvedEmail : ($customer->customer_email ?? null);
+            $legacyOrder->customer_mobileno = $request->billing_phone ?: ($customer->customer_mobileno ?? '');
+            $legacyOrder->customer_address = $request->billing_address ?: ($customer->customer_address ?? '');
+            $legacyOrder->customer_address1 = $request->input('street-address-2', $request->billing_address) ?: ($customer->customer_address1 ?? '');
+            $legacyOrder->customer_city = $request->billing_city ?: ($customer->customer_city ?? '');
+            $legacyOrder->customer_state = $request->billing_state ?: ($customer->customer_state ?? '');
+            $legacyOrder->customer_pincode = $request->billing_postcode ?: ($customer->customer_pincode ?? '');
             $legacyOrder->payment_type = $request->payment_method ?? 'Cash On Delivery';
             $legacyOrder->discount_amount = (float) ($checkoutSummary['discount_total'] ?? 0);
             $legacyOrder->shipping_charge = (float) ($checkoutSummary['delivery_charge'] ?? 0);
@@ -3384,7 +3392,8 @@ class FrontendController extends Controller
             $cart->clear();
 
             // Send order confirmation email
-            $this->sendOrderConfirmationEmail($orderId, $request->billing_email);
+            $recipientEmail = !empty($resolvedEmail) ? $resolvedEmail : ($customer->customer_email ?? ($legacyOrder->customer_email ?? null));
+            $this->sendOrderConfirmationEmail($orderId, $recipientEmail);
 
             $message = 'Order placed successfully! Order ID: ' . $orderId;
             if ($isNewCustomer) {
@@ -3648,10 +3657,13 @@ class FrontendController extends Controller
                 $customer = Ecom_Customer_info::where('customer_id', $customerId)->first();
             }
 
-            $email = $customerEmail ?: ($legacyOrder->customer_email ?? ($customer->customer_email ?? null));
-            if (!$email) {
+            $email = trim((string) ($customerEmail ?: ($legacyOrder->customer_email ?? ($customer->customer_email ?? ''))));
+            if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                Log::warning("Order confirmation email skipped for order {$orderId}: invalid or empty email '{$email}'");
                 return false;
             }
+
+            Log::info("Attempting to send order confirmation email for order {$orderId} to {$email}");
 
             $orderProducts = Ecom_Order_product::where('order_id', $orderId)->get();
             $productList = [];
@@ -3665,6 +3677,22 @@ class FrontendController extends Controller
                 ];
             }
 
+            if (empty($productList) && $order && !empty($order->invoice_ids)) {
+                $invoiceIds = array_filter(array_map('trim', explode(',', $order->invoice_ids)));
+                if (!empty($invoiceIds)) {
+                    $invoices = DB::table('ecom_invoice')->whereIn('invoice_id', $invoiceIds)->get();
+                    foreach ($invoices as $inv) {
+                        $productList[] = [
+                            'name' => 'Order Item (' . $inv->invoice_id . ')',
+                            'size' => '',
+                            'qty' => (int) ($inv->line_qty ?? 1),
+                            'price' => (float) ($inv->line_subtotal ?? $inv->total_amount),
+                            'total' => (float) ($inv->total_amount ?? 0),
+                        ];
+                    }
+                }
+            }
+
             $orderDate = $order ? $order->created_at : ($legacyOrder ? $legacyOrder->order_date : now());
             $customerName = trim((string) (($legacyOrder->customer_firstname ?? $customer->customer_firstname ?? '') . ' ' . ($legacyOrder->customer_lastname ?? $customer->customer_lastname ?? '')));
             if ($customerName === '') {
@@ -3673,7 +3701,7 @@ class FrontendController extends Controller
 
             $orderData = [
                 'order_id' => $orderId,
-                'order_date' => $orderDate,
+                'order_date' => $orderDate ?: now(),
                 'customer_name' => $customerName,
                 'mobile' => $legacyOrder->customer_mobileno ?? ($customer->customer_mobileno ?? ''),
                 'address' => $legacyOrder->customer_address ?? ($customer->customer_address ?? ''),
@@ -3691,9 +3719,10 @@ class FrontendController extends Controller
             ];
 
             Mail::to($email)->send(new OrderMail($orderData));
+            Log::info("Order confirmation email successfully sent for order {$orderId} to {$email}");
             return true;
         } catch (\Throwable $e) {
-            \Log::error('Order confirmation email failed for order ' . $orderId . ': ' . $e->getMessage());
+            Log::error('Order confirmation email failed for order ' . $orderId . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString());
             return false;
         }
     }

@@ -27,6 +27,7 @@ use App\Models\wishlist;
 use App\Models\Payment;
 
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 use DB;
 
 class CartController extends Controller
@@ -637,24 +638,26 @@ class CartController extends Controller
 		Session::put('order_id', $order_id);
 
 		// Send order confirmation email to customer
-		if (!empty($customerEmail)) {
+		$cleanedEmail = trim((string) $customerEmail);
+		if (!empty($cleanedEmail) && filter_var($cleanedEmail, FILTER_VALIDATE_EMAIL)) {
 			try {
+				Log::info("CartController: Sending order confirmation email for order {$order_id} to {$cleanedEmail}");
 				$orderProducts = Ecom_Order_product::where('order_id', $order_id)->get();
 				$productList = [];
 				foreach ($orderProducts as $op) {
 					$productList[] = [
-						'name' => $op->product_name,
-						'size' => $op->product_size,
-						'qty' => $op->product_quantity,
-						'price' => $op->product_price,
-						'total' => $op->total_price,
+						'name' => (string) ($op->product_name ?? 'Product'),
+						'size' => (string) ($op->product_size ?? ''),
+						'qty' => (int) ($op->product_quantity ?? 1),
+						'price' => (float) ($op->product_price ?? 0),
+						'total' => (float) ($op->total_price ?? 0),
 					];
 				}
 
 				$orderData = [
 					'order_id' => $order_id,
-					'order_date' => $order->order_date,
-					'customer_name' => trim($customerFirstname . ' ' . $customerLastname),
+					'order_date' => $order->order_date ?: now(),
+					'customer_name' => trim($customerFirstname . ' ' . $customerLastname) ?: 'Customer',
 					'mobile' => $customerMobile,
 					'address' => $customerAddress,
 					'address1' => $customerAddress1,
@@ -662,18 +665,21 @@ class CartController extends Controller
 					'state' => $customerState,
 					'pincode' => $customerPincode,
 					'payment_type' => $paymentType,
-					'total_amount' => $totalAmount,
-					'discount_amount' => $discountAmount,
-					'shipping_charge' => $shippingCharge,
-					'gst_charge' => $gstCharge,
-					'grand_total' => $grandTotal,
+					'total_amount' => (float) $totalAmount,
+					'discount_amount' => (float) $discountAmount,
+					'shipping_charge' => (float) $shippingCharge,
+					'gst_charge' => (float) $gstCharge,
+					'grand_total' => (float) $grandTotal,
 					'products' => $productList,
 				];
 
-				\Mail::to($customerEmail)->send(new \App\Mail\OrderMail($orderData));
-			} catch (\Exception $e) {
-				\Log::error('Order confirmation email failed for order ' . $order_id . ': ' . $e->getMessage());
+				\Mail::to($cleanedEmail)->send(new \App\Mail\OrderMail($orderData));
+				Log::info("CartController: Order confirmation email sent successfully for order {$order_id} to {$cleanedEmail}");
+			} catch (\Throwable $e) {
+				Log::error('Order confirmation email failed for order ' . $order_id . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString());
 			}
+		} else {
+			Log::warning("CartController: Order confirmation email skipped for order {$order_id}: invalid or empty email '{$cleanedEmail}'");
 		}
 
 		return redirect()->route('order_success', ['orders_id' => $order_id]);

@@ -25,7 +25,11 @@ class OrderMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Order Confirmation - ' . $this->orderData['order_id'])
+        $fromAddress = config('mail.from.address') ?: 'info@tryneww.com';
+        $fromName = config('mail.from.name') ?: 'Trymenow';
+
+        return $this->from($fromAddress, $fromName)
+            ->subject('Order Confirmation - ' . ($this->orderData['order_id'] ?? ''))
             ->view('emails.order-confirmation');
     }
 }

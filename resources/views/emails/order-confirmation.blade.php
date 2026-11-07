@@ -45,12 +45,13 @@
                                             </tr>
                                             <tr>
                                                 <td style="color: #777; font-size: 14px;">Order Date</td>
-                                                <td style="color: #333; font-size: 14px;">{{ \Carbon\Carbon::parse($orderData['order_date'])->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
+                                                <td style="color: #333; font-size: 14px;">{{ \Carbon\Carbon::parse($orderData['order_date'] ?? now())->timezone('Asia/Kolkata')->format('d-m-Y h:i:s A') }}</td>
                                             </tr>
                                             <tr>
                                                 <td style="color: #777; font-size: 14px;">Payment Method</td>
                                                 <td style="color: #333; font-size: 14px;">
-                                                    @if(stripos($orderData['payment_type'], 'cash') !== false || $orderData['payment_type'] == 'cashondelivery' || $orderData['payment_type'] == 'COD')
+                                                    @php $pm = strtolower((string)($orderData['payment_type'] ?? '')); @endphp
+                                                    @if(str_contains($pm, 'cash') || $pm === 'cashondelivery' || $pm === 'cod')
                                                         Cash on Delivery
                                                     @else
                                                         Online Payment
@@ -81,17 +82,17 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($orderData['products'] as $product)
+                                                @foreach(($orderData['products'] ?? []) as $product)
                                                 <tr>
                                                     <td style="color: #333; font-size: 14px; border-bottom: 1px solid #f0f0f0;">
-                                                        {{ $product['name'] }}
-                                                        @if($product['size'])
+                                                        {{ $product['name'] ?? 'Item' }}
+                                                        @if(!empty($product['size']))
                                                             <br><span style="color: #999; font-size: 12px;">Size: {{ $product['size'] }}</span>
                                                         @endif
                                                     </td>
-                                                    <td style="text-align: center; color: #333; font-size: 14px; border-bottom: 1px solid #f0f0f0;">{{ $product['qty'] }}</td>
-                                                    <td style="text-align: right; color: #333; font-size: 14px; border-bottom: 1px solid #f0f0f0;">₹{{ number_format($product['price'], 2) }}</td>
-                                                    <td style="text-align: right; color: #333; font-size: 14px; border-bottom: 1px solid #f0f0f0;">₹{{ number_format($product['total'], 2) }}</td>
+                                                    <td style="text-align: center; color: #333; font-size: 14px; border-bottom: 1px solid #f0f0f0;">{{ $product['qty'] ?? 1 }}</td>
+                                                    <td style="text-align: right; color: #333; font-size: 14px; border-bottom: 1px solid #f0f0f0;">₹{{ number_format((float)($product['price'] ?? 0), 2) }}</td>
+                                                    <td style="text-align: right; color: #333; font-size: 14px; border-bottom: 1px solid #f0f0f0;">₹{{ number_format((float)($product['total'] ?? 0), 2) }}</td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -108,29 +109,29 @@
                                         <table width="100%" cellpadding="8" cellspacing="0" style="border: 1px solid #e9ecef; border-radius: 8px; overflow: hidden;">
                                             <tr>
                                                 <td style="color: #777; font-size: 14px;">Subtotal</td>
-                                                <td style="text-align: right; color: #333; font-size: 14px;">₹{{ number_format($orderData['total_amount'], 2) }}</td>
+                                                <td style="text-align: right; color: #333; font-size: 14px;">₹{{ number_format((float)($orderData['total_amount'] ?? 0), 2) }}</td>
                                             </tr>
-                                            @if($orderData['discount_amount'] > 0)
+                                            @if(!empty($orderData['discount_amount']) && (float)$orderData['discount_amount'] > 0)
                                             <tr>
                                                 <td style="color: #27ae60; font-size: 14px;">Discount</td>
-                                                <td style="text-align: right; color: #27ae60; font-size: 14px;">-₹{{ number_format($orderData['discount_amount'], 2) }}</td>
+                                                <td style="text-align: right; color: #27ae60; font-size: 14px;">-₹{{ number_format((float)$orderData['discount_amount'], 2) }}</td>
                                             </tr>
                                             @endif
-                                            @if($orderData['shipping_charge'] > 0)
+                                            @if(!empty($orderData['shipping_charge']) && (float)$orderData['shipping_charge'] > 0)
                                             <tr>
                                                 <td style="color: #777; font-size: 14px;">Shipping</td>
-                                                <td style="text-align: right; color: #333; font-size: 14px;">₹{{ number_format($orderData['shipping_charge'], 2) }}</td>
+                                                <td style="text-align: right; color: #333; font-size: 14px;">₹{{ number_format((float)$orderData['shipping_charge'], 2) }}</td>
                                             </tr>
                                             @endif
-                                            @if($orderData['gst_charge'] > 0)
+                                            @if(!empty($orderData['gst_charge']) && (float)$orderData['gst_charge'] > 0)
                                             <tr>
                                                 <td style="color: #777; font-size: 14px;">GST</td>
-                                                <td style="text-align: right; color: #333; font-size: 14px;">₹{{ number_format($orderData['gst_charge'], 2) }}</td>
+                                                <td style="text-align: right; color: #333; font-size: 14px;">₹{{ number_format((float)$orderData['gst_charge'], 2) }}</td>
                                             </tr>
                                             @endif
                                             <tr style="border-top: 2px solid #333;">
                                                 <td style="color: #333; font-size: 16px; font-weight: 700; padding-top: 12px;">Grand Total</td>
-                                                <td style="text-align: right; color: #27ae60; font-size: 18px; font-weight: 700; padding-top: 12px;">₹{{ number_format($orderData['grand_total'], 2) }}</td>
+                                                <td style="text-align: right; color: #27ae60; font-size: 18px; font-weight: 700; padding-top: 12px;">₹{{ number_format((float)($orderData['grand_total'] ?? 0), 2) }}</td>
                                             </tr>
                                         </table>
                                     </td>
@@ -146,13 +147,15 @@
                                 </tr>
                                 <tr>
                                     <td style="padding: 20px; color: #555; font-size: 14px; line-height: 1.8;">
-                                        {{ $orderData['customer_name'] }}<br>
-                                        {{ $orderData['address'] }}<br>
-                                        @if($orderData['address1'])
+                                        {{ $orderData['customer_name'] ?? 'Customer' }}<br>
+                                        {{ $orderData['address'] ?? '' }}<br>
+                                        @if(!empty($orderData['address1']))
                                             {{ $orderData['address1'] }}<br>
                                         @endif
-                                        {{ $orderData['city'] }}, {{ $orderData['state'] }} - {{ $orderData['pincode'] }}<br>
-                                        📞 {{ $orderData['mobile'] }}
+                                        {{ $orderData['city'] ?? '' }}{{ !empty($orderData['state']) ? ', ' . $orderData['state'] : '' }}{{ !empty($orderData['pincode']) ? ' - ' . $orderData['pincode'] : '' }}<br>
+                                        @if(!empty($orderData['mobile']))
+                                            📞 {{ $orderData['mobile'] }}
+                                        @endif
                                     </td>
                                 </tr>
                             </table>
