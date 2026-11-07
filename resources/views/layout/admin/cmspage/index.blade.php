@@ -52,13 +52,12 @@
                             <div class="datatable-dashv1-list custom-datatable-overright">
 								
 								
-								<table class="table" id="table"  data-click-to-select="true"  data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-columns="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
+								<table class="table" id="table"  data-click-to-select="true"  data-sort-name="page_name" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-columns="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
 								data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">
 									
 									<thead>
 										<tr>
-											<th>ID</th>
-											<th>Page Name</th>
+											<th data-field="page_name" data-sortable="true">Page Name</th>
 											<th>Page Title</th>               
 											<th>Status</th>
 											<th>Actions</th>
@@ -68,7 +67,6 @@
 										
 										@foreach ($pages as $page)
 										<tr>
-											<td>{{ $page->id }}</td>
 											<td>{{ $page->page_name }}</td>
 											<td>{{ $page->page_title }}</td>
 											<td>

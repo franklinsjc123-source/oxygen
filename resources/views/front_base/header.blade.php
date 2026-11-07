@@ -472,6 +472,11 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
         }
 
         /* Side cart: make items scroll and keep actions visible at bottom */
+        .cart-dropdown.cart-offcanvas.opened,
+        body.cart-opened .cart-dropdown.cart-offcanvas {
+            z-index: 99999999 !important;
+        }
+
         .cart-dropdown.cart-offcanvas .dropdown-box,
         .cart-dropdown.cart-offcanvas .dropdown-box.sideCart {
             display: flex;
@@ -481,21 +486,54 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
             width: 350px;
             padding: 0;
             background: #fff;
-            z-index: 100010 !important;
+            z-index: 99999999 !important;
         }
 
         .cart-dropdown.cart-offcanvas .cart-overlay {
-            z-index: 100005 !important;
+            z-index: 99999990 !important;
         }
 
-        .sidebar-overlay,
-        .right-sidebar .sidebar-overlay {
-            z-index: 100005 !important;
+        /* Mobile sidebar offcanvas drawer z-index (only active on mobile when sidebar active) */
+        @media (max-width: 991px) {
+            body.sidebar-active .sidebar-overlay,
+            body.right-sidebar-active .right-sidebar .sidebar-overlay {
+                z-index: 100005 !important;
+            }
+
+            body.sidebar-active .sidebar-content,
+            body.right-sidebar-active .right-sidebar .sidebar-content {
+                z-index: 100010 !important;
+            }
         }
 
-        .sidebar-content,
-        .right-sidebar .sidebar-content {
-            z-index: 100010 !important;
+        /* On desktop, sidebars are static in-page columns and must never overlap offcanvas drawers */
+        @media (min-width: 992px) {
+            .sidebar-content,
+            .right-sidebar .sidebar-content,
+            .product-sidebar .sidebar-content,
+            .sidebar-fixed .sidebar-content,
+            .sticky-sidebar-wrapper .sticky-sidebar,
+            .sticky-sidebar-wrapper {
+                z-index: 2 !important;
+            }
+        }
+
+        /* When side cart is opened, lower all sidebars and sticky elements below cart overlay */
+        body.cart-opened .sidebar,
+        body.cart-opened .right-sidebar,
+        body.cart-opened .product-sidebar,
+        body.cart-opened .sidebar-content,
+        body.cart-opened .sticky-sidebar,
+        body.cart-opened .sticky-sidebar-wrapper,
+        body.cart-opened .sidebar-overlay,
+        body:has(.cart-dropdown.opened) .sidebar,
+        body:has(.cart-dropdown.opened) .right-sidebar,
+        body:has(.cart-dropdown.opened) .product-sidebar,
+        body:has(.cart-dropdown.opened) .sidebar-content,
+        body:has(.cart-dropdown.opened) .sticky-sidebar,
+        body:has(.cart-dropdown.opened) .sticky-sidebar-wrapper,
+        body:has(.cart-dropdown.opened) .sidebar-overlay {
+            z-index: 1 !important;
         }
 
         /* Hide desktop sticky header when any drawer, sidebar, or cart is active */
@@ -1216,8 +1254,13 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
             // Automatically track cart opened states on body to toggle header visibility
             $(document).on('click', '.cart-toggle, [onclick*="showSideCart"]', function() {
                 $('body').addClass('cart-opened');
+                $('body').removeClass('sidebar-active right-sidebar-active');
             });
-            $(document).on('click', '.cart-offcanvas .cart-overlay, .cart-offcanvas .cart-header, .cart-offcanvas .cart-close, .cart-offcanvas .btn-close', function() {
+            $(document).on('click', '.cart-offcanvas .cart-overlay, .cart-offcanvas .cart-header, .cart-offcanvas .cart-close, .cart-offcanvas .btn-close', function(e) {
+                if ($(this).hasClass('btn-close') || $(this).hasClass('cart-overlay') || $(this).hasClass('cart-close')) {
+                    e.preventDefault();
+                }
+                $('.cart-dropdown').removeClass('opened');
                 $('body').removeClass('cart-opened');
             });
 

@@ -284,6 +284,23 @@
             padding: 20px !important;
         }
 
+        @media (min-width: 992px) {
+            .product-sidebar,
+            .product-sidebar .sidebar-content,
+            .product-sidebar .sticky-sidebar {
+                z-index: 2 !important;
+            }
+        }
+
+        body.cart-opened .product-sidebar,
+        body.cart-opened .product-sidebar .sidebar-content,
+        body.cart-opened .product-sidebar .sticky-sidebar,
+        body:has(.cart-dropdown.opened) .product-sidebar,
+        body:has(.cart-dropdown.opened) .product-sidebar .sidebar-content,
+        body:has(.cart-dropdown.opened) .product-sidebar .sticky-sidebar {
+            z-index: 1 !important;
+        }
+
         .product-sidebar-mobile-header {
             display: flex;
             align-items: center;
