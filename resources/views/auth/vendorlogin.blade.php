@@ -30,12 +30,12 @@
             <div class="container">
                 <div class="row">
 
-                    <div class="col-12 m-auto p-0" style="max-width: 410px;">
+                    <div class="col-12 m-auto p-0" style="max-width: 345px;">
                         <div class="card" style="border-radius: 18px; overflow: hidden; border: none; box-shadow: 0 15px 35px rgba(0,0,0,0.3);">
-                            <div class="card-body auth-card-body" style="background: #ffffff; padding: 25px 32px; color: #333;">
+                            <div class="card-body auth-card-body" style="background: #ffffff; padding: 24px 24px; color: #333;">
                                 <div class="logo-wrapper text-center mb-2">
                                     <a href="/">
-                                        <img src="{{ asset('assets/images/dashboard/logo/newlogo.png') }}" alt="Logo" style="width: 145px; max-width: 100%; height: auto;">
+                                        <img src="{{ asset('assets/images/dashboard/logo/newlogo.png') }}" alt="Logo" style="width: 135px; max-width: 100%; height: auto;">
                                     </a>
                                 </div>
 
@@ -93,7 +93,7 @@
     </div>
     <!-- Vendor Forgot Password Modal -->
     <div class="modal fade" id="vendorForgotModal" tabindex="-1" aria-labelledby="vendorForgotModalLabel" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 410px; margin: 1.75rem auto;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 345px; margin: 1.75rem auto;">
             <div class="modal-content" style="border-radius: 18px; border: none; box-shadow: 0 20px 40px rgba(0,0,0,0.3); overflow: hidden; background: #fff;">
                 <div class="modal-header d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #ffa801, #ff5e57); color: #fff; padding: 18px 22px; border-bottom: none;">
                     <h5 class="modal-title mb-0" id="vendorForgotModalLabel" style="font-weight: 700; font-size: 1.15rem; display: flex; align-items: center; gap: 10px; color: #fff;">
