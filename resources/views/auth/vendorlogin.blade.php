@@ -30,12 +30,12 @@
             <div class="container">
                 <div class="row">
 
-                    <div class="col-12 m-auto p-0" style="max-width: 440px;">
+                    <div class="col-md-5 col-sm-8 col-11 m-auto p-0" style="max-width: 380px;">
                         <div class="card" style="border-radius: 20px; overflow: hidden; border: none; box-shadow: 0 15px 35px rgba(0,0,0,0.3);">
-                            <div class="card-body auth-card-body" style="background: #ffffff; padding: 28px 36px; color: #333;">
+                            <div class="card-body auth-card-body" style="background: #ffffff; padding: 28px 30px; color: #333;">
                                 <div class="logo-wrapper text-center mb-3">
                                     <a href="/">
-                                        <img src="{{ asset('assets/images/dashboard/logo/newlogo.png') }}" alt="Logo" style="width: 165px; max-width: 100%; height: auto;">
+                                        <img src="{{ asset('assets/images/dashboard/logo/newlogo.png') }}" alt="Logo" style="width: 145px; max-width: 100%; height: auto;">
                                     </a>
                                 </div>
 
@@ -46,39 +46,39 @@
                                 <form action="{{ route('vendorlogin') }}" method="post" id="vendorLoginForm">
                                     @csrf
                                     <div class="form-group mb-3">
-                                        <label for="username" style="font-weight: 500; opacity: 0.9; margin-bottom: 5px; display: block; font-size: 1.2rem; color: #555;">Username</label>
-                                        <input type="text" class="form-control" id="username" name="username" value="{{ request()->cookie('remember_vendor_username') ?? Cookie::get('remember_vendor_username') ?? old('username') }}" placeholder="Enter your username" required style="border-radius: 10px; padding: 12px 15px; border: 1px solid #ddd; background: #f9f9f9; color: #333; font-size: 1.15rem;">
+                                        <label for="username" style="font-weight: 600; opacity: 0.9; margin-bottom: 5px; display: block; font-size: 1.05rem; color: #444;">Username</label>
+                                        <input type="text" class="form-control" id="username" name="username" value="{{ request()->cookie('remember_vendor_username') ?? Cookie::get('remember_vendor_username') ?? old('username') }}" placeholder="Enter your username" required style="border-radius: 9px; padding: 11px 14px; border: 1px solid #ddd; background: #f9f9f9; color: #333; font-size: 1.05rem;">
                                     </div>
 
                                     <div class="form-group mb-3 position-relative">
-                                        <label for="pwd" style="font-weight: 500; opacity: 0.9; margin-bottom: 5px; display: block; font-size: 1.2rem; color: #555;">Password</label>
+                                        <label for="pwd" style="font-weight: 600; opacity: 0.9; margin-bottom: 5px; display: block; font-size: 1.05rem; color: #444;">Password</label>
                                         <div style="position: relative;">
-                                            <input type="password" class="form-control" id="pwd" name="password" value="{{ request()->cookie('remember_vendor_password') ?? Cookie::get('remember_vendor_password') ?? '' }}" placeholder="Enter your password" required style="border-radius: 10px; padding: 12px 45px 12px 15px; border: 1px solid #ddd; background: #f9f9f9; color: #333; font-size: 1.15rem;">
-                                            <i class="fa fa-eye-slash" id="togglePassword" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888; font-size: 1.1rem;"></i>
+                                            <input type="password" class="form-control" id="pwd" name="password" value="{{ request()->cookie('remember_vendor_password') ?? Cookie::get('remember_vendor_password') ?? '' }}" placeholder="Enter your password" required style="border-radius: 9px; padding: 11px 42px 11px 14px; border: 1px solid #ddd; background: #f9f9f9; color: #333; font-size: 1.05rem;">
+                                            <i class="fa fa-eye-slash" id="togglePassword" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888; font-size: 1.05rem;"></i>
                                         </div>
                                     </div>
 
-                                    <div class="form-terms d-flex justify-content-between align-items-center mb-3" style="margin-top: 10px;">
+                                    <div class="form-terms d-flex justify-content-between align-items-center mb-3" style="margin-top: 12px;">
                                         <div class="form-check">
                                             <input type="checkbox" class="form-check-input" id="remember" name="remember" value="1" {{ (request()->hasCookie('remember_vendor_check') || Cookie::has('remember_vendor_check') || request()->hasCookie('remember_vendor_username') || Cookie::has('remember_vendor_username') || old('remember')) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="remember" style="font-size: 1.15rem; opacity: 0.9; color: #555;"> Remember me</label>
+                                            <label class="form-check-label" for="remember" style="font-size: 0.98rem; opacity: 0.9; color: #555;"> Remember me</label>
                                         </div>
-                                        <a href="javascript:void(0)" id="openForgotModal" style="color: #ff5e57; font-size: 1.05rem; text-decoration: none; font-weight: 600;">Forgot password?</a>
+                                        <a href="javascript:void(0)" id="openForgotModal" style="color: #ff5e57; font-size: 0.95rem; text-decoration: none; font-weight: 600;">Forgot password?</a>
                                     </div>
 
                                     <div class="form-button text-center mt-3">
-                                        <button type="submit" name="submit" class="btn w-100" style="background: linear-gradient(90deg, #ffa801 0%, #ff5e57 100%); color: #fff; font-weight: 700; border-radius: 12px; padding: 12px; border: none; box-shadow: 0 4px 15px rgba(255, 168, 1, 0.3); text-transform: uppercase; font-size: 1.05rem; letter-spacing: 0.5px;">Login</button>
+                                        <button type="submit" name="submit" class="btn w-100" style="background: linear-gradient(90deg, #ffa801 0%, #ff5e57 100%); color: #fff; font-weight: 700; border-radius: 10px; padding: 11px; border: none; box-shadow: 0 4px 15px rgba(255, 168, 1, 0.3); text-transform: uppercase; font-size: 1.02rem; letter-spacing: 0.5px;">Login</button>
                                     </div>
 
                                 </form>
 
                                 <!-- New User / Become a Seller Box -->
                                 <div class="become-seller-wrapper mt-3 pt-2 text-center" style="border-top: 1px solid #f1f5f9; margin-top: 16px;">
-                                    <div class="become-seller-box-inner" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 14px;">
-                                        <div style="font-size: 0.95rem; color: #475569; font-weight: 600; margin-bottom: 8px; letter-spacing: 0.2px;">
+                                    <div class="become-seller-box-inner" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 11px 14px;">
+                                        <div style="font-size: 0.9rem; color: #475569; font-weight: 600; margin-bottom: 6px; letter-spacing: 0.2px;">
                                             New to TrymeNow?
                                         </div>
-                                        <a href="{{ url('seller/register') }}" class="btn w-100 become-seller-btn" style="background: #1e293b; color: #ffffff; font-weight: 600; border-radius: 10px; padding: 10px 12px; font-size: 0.95rem; border: none; display: flex; align-items: center; justify-content: center; text-align: center; text-transform: none !important; letter-spacing: 0 !important; white-space: normal !important; box-shadow: 0 4px 12px rgba(30, 41, 59, 0.15); text-decoration: none;">
+                                        <a href="{{ url('seller/register') }}" class="btn w-100 become-seller-btn" style="background: #1e293b; color: #ffffff; font-weight: 600; border-radius: 8px; padding: 10px 12px; font-size: 0.9rem; border: none; display: flex; align-items: center; justify-content: center; text-align: center; text-transform: none !important; letter-spacing: 0 !important; white-space: normal !important; box-shadow: 0 4px 12px rgba(30, 41, 59, 0.15); text-decoration: none;">
                                             Click here to become a seller
                                         </a>
                                     </div>
@@ -93,7 +93,7 @@
     </div>
     <!-- Vendor Forgot Password Modal -->
     <div class="modal fade" id="vendorForgotModal" tabindex="-1" aria-labelledby="vendorForgotModalLabel" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 440px; margin: 1.75rem auto;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 380px; margin: 1.75rem auto;">
             <div class="modal-content" style="border-radius: 18px; border: none; box-shadow: 0 20px 40px rgba(0,0,0,0.3); overflow: hidden; background: #fff;">
                 <div class="modal-header d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #ffa801, #ff5e57); color: #fff; padding: 18px 22px; border-bottom: none;">
                     <h5 class="modal-title mb-0" id="vendorForgotModalLabel" style="font-weight: 700; font-size: 1.15rem; display: flex; align-items: center; gap: 10px; color: #fff;">
