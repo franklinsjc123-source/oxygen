@@ -185,7 +185,7 @@
                                     </div>
                                 </div>
                                 {{-- End gdt --}}
-                                    <table class="table" id="table" data-click-to-select="true" data-sort-name="id"
+                                    <table class="table" id="table" data-click-to-select="true" data-sort-name="name"
                                         data-sort-order="asc" data-mobile-responsive="true" data-toggle="table"
                                         data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-columns="true"
                                         data-show-refresh="false" data-key-events="true" data-resizable="true"
@@ -194,7 +194,6 @@
 
                                         <thead>
                                             <tr>
-                                                <th data-field="id" data-sortable="true">ID</th>
                                                 <th data-field="name" data-sortable="true">GST</th>
                                                 <th data-field="value" data-sortable="true">GST Value</th>
                                                 <th data-field="description" data-sortable="true">Description</th>
@@ -206,7 +205,6 @@
                                         <tbody>
                                             @foreach ($gst as $gst)
                                                 <tr>
-                                                    <td>{{ str_pad($loop->iteration, 3, '0', STR_PAD_LEFT) }}</td>
 
 
                                                     <td>{{ $gst->gst_name }}</td>

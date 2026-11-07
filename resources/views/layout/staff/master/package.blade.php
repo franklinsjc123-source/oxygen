@@ -245,14 +245,13 @@
 							<div class="datatable-dashv1-list custom-datatable-overright">
 								
 								
-								<table class="table" id="table"  data-click-to-select="true" data-show-columns="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="100" data-search="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
+								<table class="table" id="table"  data-click-to-select="true" data-show-columns="true" data-sort-name="name" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="100" data-search="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
 								data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">
 									
                                
                                     <thead>
 										<tr>
-											<th>SNO</th>
-											<th>Name</th>
+											<th data-field="name" data-sortable="true">Name</th>
 											{{-- <th>Image</th> --}}
 											
                                             <th>Price</th>
@@ -271,7 +270,6 @@
                                     <tbody>
 										@foreach ($package as $package)
 										<tr>
-											<td>#{{ $loop->iteration }}</td>
 											<td>{{ $package->name }}</td>
 											{{-- <td>
 												<div class="d-flex">

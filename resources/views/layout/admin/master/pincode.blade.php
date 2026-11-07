@@ -279,15 +279,13 @@
 
                                 <div class="datatable-dashv1-list custom-datatable-overright">
                                     <table class="table" id="table" data-click-to-select="true"
-                                        data-show-columns="true" data-sort-name="id" data-sort-order="asc"
+                                        data-show-columns="true" data-sort-name="zone" data-sort-order="asc"
                                         data-mobile-responsive="true" data-toggle="table" data-sort="true"
                                         data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false"
                                         data-key-events="true" data-resizable="true" data-cookie="true"
                                         data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">
                                         <thead>
                                             <tr>
-                                                <th data-field="id" data-sortable="true">SNO</th>
-
                                                <!-- <th data-field="route" data-sortable="true">Route</th>-->
                                                 <th data-field="zone" data-sortable="true">Zone</th>
                                                 <th data-field="pincode" data-sortable="true">Pincode</th>
@@ -302,8 +300,6 @@
                                         @if($pincode)
                                             @foreach ($pincode as $pin)
                                                 <tr>
-                                                    
-                                                    <td>{{ str_pad($loop->iteration, 3, '0', STR_PAD_LEFT) }}</td>
                                                     {{-- <td>{{ $pin->zonal_id }}</td> 
                                                     <td>{{ $pin->routename }}</td>--}}
                                                     <td>{{ $pin->zonalname }}</td>

@@ -101,12 +101,11 @@
 								
 								<!-- Table of Cities -->
 								<div class="mt-4">
-									<table class="table" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true"
+									<table class="table" id="table" data-click-to-select="true" data-sort-name="city_name" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true"
 									data-show-export="false" data-toolbar="#toolbar">
 										<thead>
 											<tr>
-												<th>ID</th>
-												<th>City Name</th>
+												<th data-field="city_name" data-sortable="true">City Name</th>
 												<th>State</th>
 												<th>Status</th>
 												<th>Actions</th>
@@ -115,7 +114,6 @@
 										<tbody>
 											@foreach($cities as $city)
 											<tr>
-												<td>{{ $city->id }}</td>
 												<td>{{ $city->city_name }}</td>
 												<td>{{ $city->state->state_name }}</td>
 												<td>

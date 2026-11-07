@@ -121,7 +121,7 @@
 
 
                                     <table class="table" id="table" data-click-to-select="true"
-                                        data-show-columns="true" data-sort-name="id" data-sort-order="asc"
+                                        data-show-columns="true" data-sort-name="image" data-sort-order="asc"
                                         data-mobile-responsive="true" data-toggle="table" data-sort="true"
                                         data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false"
                                         data-key-events="true" data-resizable="true" data-cookie="true"
@@ -129,7 +129,6 @@
 
                                         <thead>
                                             <tr>
-                                                <th data-field="id" data-sortable="true">Route ID</th>
                                                 <th data-field="image" data-sortable="true">Zonal</th>
                                                 <th data-field="category" data-sortable="true">Route</th>
 
@@ -147,7 +146,6 @@
                                             
                                             
                                                 <tr>
-                                                    <td>{{ $rrr->id }}</td>
                                                     	<td>
                                                             
                                                             <?php
