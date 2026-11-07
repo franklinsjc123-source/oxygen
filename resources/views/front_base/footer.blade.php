@@ -1059,6 +1059,32 @@
    </style>
    <div id="centerToast" class="center-toast" aria-live="polite"></div>
 
+   <!-- Order Placed Successfully Modal Popup -->
+   <div id="orderSuccessModal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.65); z-index: 9999999; align-items: center; justify-content: center; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);">
+       <div style="background: #ffffff; border-radius: 20px; max-width: 440px; width: 90%; padding: 36px 26px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative; animation: orderModalPop 0.25s ease-out;">
+           <div style="width: 76px; height: 76px; background: #ecfdf5; border: 2px solid #a7f3d0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; color: #10b981;">
+               <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                   <polyline points="20 6 9 17 4 12"></polyline>
+               </svg>
+           </div>
+           <h3 style="font-size: 1.45rem; font-weight: 700; color: #1e293b; margin-bottom: 12px; font-family: inherit;">
+               Order Placed Successfully!
+           </h3>
+           <p id="orderSuccessModalMsg" style="font-size: 0.98rem; color: #64748b; line-height: 1.6; margin-bottom: 24px;">
+               Your order has been placed successfully!
+           </p>
+           <button type="button" id="orderSuccessModalOkBtn" style="background: linear-gradient(90deg, #ffa801 0%, #ff5e57 100%); color: #ffffff; font-weight: 700; border-radius: 12px; padding: 12px 42px; border: none; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 168, 1, 0.35); min-width: 140px; transition: transform 0.15s ease, box-shadow 0.15s ease;" onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 20px rgba(255, 168, 1, 0.45)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 15px rgba(255, 168, 1, 0.35)';">
+               OK
+           </button>
+       </div>
+   </div>
+   <style>
+       @keyframes orderModalPop {
+           0% { opacity: 0; transform: scale(0.88); }
+           100% { opacity: 1; transform: scale(1); }
+       }
+   </style>
+
    <!-- Start of Quick View -->
     <style>
         /* Premium Login Modal UI Redesign */
@@ -1537,6 +1563,41 @@
                toast.classList.remove('show');
            }, 2200);
        };
+
+       window.showOrderSuccessPopup = function(message, orderId) {
+           var modal = document.getElementById('orderSuccessModal');
+           if (!modal) return;
+           var msgEl = document.getElementById('orderSuccessModalMsg');
+           if (msgEl) {
+               var displayMsg = message || 'Your order has been placed successfully!';
+               if (orderId && !displayMsg.includes(orderId)) {
+                   displayMsg = 'Your order has been placed successfully!<br><span style="font-weight: 600; color: #334155;">Order ID: ' + orderId + '</span>';
+               } else if (displayMsg.includes('Order ID:')) {
+                   displayMsg = displayMsg.replace(/(Order ID:\s*[^\s<]+)/i, '<br><span style="font-weight: 600; color: #334155;">$1</span>');
+               }
+               msgEl.innerHTML = displayMsg;
+           }
+           modal.style.display = 'flex';
+           document.body.style.overflow = 'hidden';
+       };
+
+       window.closeOrderSuccessPopup = function() {
+           var modal = document.getElementById('orderSuccessModal');
+           if (modal) {
+               modal.style.display = 'none';
+               document.body.style.overflow = '';
+           }
+       };
+
+       $(document).on('click', '#orderSuccessModalOkBtn', function() {
+           window.closeOrderSuccessPopup();
+       });
+
+       $(document).on('click', '#orderSuccessModal', function(e) {
+           if (e.target === this) {
+               window.closeOrderSuccessPopup();
+           }
+       });
 
        window.syncCartCount = function(count) {
            const safeCount = Math.max(0, parseInt(count || 0, 10) || 0);
@@ -2058,7 +2119,9 @@
            });
            <?php endif; ?>
 
-           @if(session('success'))
+           @if(session('order_placed_success') || (session('success') && (str_contains(session('success'), 'Order placed') || str_contains(session('success'), 'Order ID'))))
+           window.showOrderSuccessPopup(@json(session('order_placed_message') ?? session('success')), @json(session('order_placed_id') ?? ''));
+           @elseif(session('success'))
            window.showCenterMessage(@json(session('success')), 'success');
            @endif
            @if(session('error'))

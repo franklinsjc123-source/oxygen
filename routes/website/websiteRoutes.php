@@ -130,6 +130,7 @@ Route::post('/review/vote', [FrontendController::class, 'vote'])->name('review.v
 Route::get('/checkoutPage', [FrontendController::class, 'checkoutPage'])->name('checkoutPage');
 Route::post('/checkout/store', [FrontendController::class, 'checkout_store'])->name('checkout_store');
 Route::get('/invoice-pdf/{id}', [FrontendController::class, 'downloadInvoice'])->name('invoice-pdf');
+Route::get('/order/{id}/resend-email', [FrontendController::class, 'resendOrderEmail'])->name('order.resend-email');
 
 Route::post('/rating/store',[FrontendController::class,'storeRating'])->name('rating.store');
 

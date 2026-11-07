@@ -407,7 +407,7 @@
                                
                                 <li  style="cursor:pointer;" class="nav-item">
                                     <a class="nav-link" data-target="#newCollection"
-                                    href="javascript:void(0)">New Collection</a>
+                                    href="javascript:void(0)">New Arrivals</a>
                                 </li>
                                 <li  style="cursor:pointer;" class="nav-item">
                                     <a class="nav-link" data-target="#featuredProducts"
@@ -417,31 +417,45 @@
 
                             <div id="productTabContents">
                             <div  id="allProducts" class="product-wrapper row cols-md-5 cols-sm-2 cols-2 tabContent active">
-                                @foreach ($products as $product)
+                                @forelse ($products as $product)
                                     @include('frontend/product-card', ['product' => $product, 'showStockCount' => true])
-                                @endforeach
+                                @empty
+                                    <div class="col-12 text-center py-5">
+                                        <p class="text-muted">No products found.</p>
+                                    </div>
+                                @endforelse
                             </div>
 
                             <div  id="offers" class="product-wrapper row cols-md-5 cols-sm-2 cols-2 tabContent d-none">
-                                @if(count($offerList) > 0)
-                                    @foreach($offerList as $product)
-                                        @include('frontend/product-card', ['product' => $product, 'showStockCount' => true])
-                                    @endforeach
-                                @endif
+                                @forelse ($offerList as $product)
+                                    @include('frontend/product-card', ['product' => $product, 'showStockCount' => true])
+                                @empty
+                                    <div class="col-12 text-center py-5">
+                                        <p class="text-muted">No offers found.</p>
+                                    </div>
+                                @endforelse
                             </div>
 
                            
 
                             <div  id="newCollection" class="product-wrapper row cols-md-5 cols-sm-2 cols-2 tabContent d-none">
-                                @foreach ($newCollection as $product)
+                                @forelse ($newCollection as $product)
                                     @include('frontend/product-card', ['product' => $product, 'showStockCount' => true])
-                                @endforeach
+                                @empty
+                                    <div class="col-12 text-center py-5">
+                                        <p class="text-muted">No new arrivals found.</p>
+                                    </div>
+                                @endforelse
                             </div>
 
                             <div  id="featuredProducts" class="product-wrapper row cols-md-5 cols-sm-2 cols-2 tabContent d-none">
-                                @foreach ($featuredProducts as $product)
+                                @forelse ($featuredProducts as $product)
                                     @include('frontend/product-card', ['product' => $product, 'showStockCount' => true])
-                                @endforeach
+                                @empty
+                                    <div class="col-12 text-center py-5">
+                                        <p class="text-muted">No featured products found.</p>
+                                    </div>
+                                @endforelse
                             </div>
                             </div>
                             

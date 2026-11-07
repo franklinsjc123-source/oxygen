@@ -318,7 +318,7 @@
                                     <a class="nav-link" data-target="#topCollection" href="#">Top Collection</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-target="#newCollection" href="#">New Collection</a>
+                                    <a class="nav-link" data-target="#newCollection" href="#">New Arrivals</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-target="#featuredProducts" href="#">Featured Products</a>

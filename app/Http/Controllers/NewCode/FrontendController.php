@@ -36,6 +36,8 @@ use App\Models\Banners\oxygen_adv;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use NumberFormatter;
+use App\Mail\OrderMail;
+use Illuminate\Support\Facades\Mail;
 // use Illuminate\Support\Str;
 
 class FrontendController extends Controller
@@ -448,6 +450,8 @@ class FrontendController extends Controller
                 'o.offer_logo', 'o.type', 'o.discount_type', 'products.offers'
             )
             ->get();
+        $oneMonthAgo = Carbon::now()->subDays(30);
+
         $featuredProducts = DB::table('products')
             ->leftJoin('products_details', 'products.id', '=', 'products_details.products_id')
             ->leftJoin('category_sub', 'products.category_sub', '=', 'category_sub.id')
@@ -469,7 +473,11 @@ class FrontendController extends Controller
             )
             ->where('products.vendor_id', $id)
             ->where('products.status', 1)
-            ->where('products.collection', '4')
+            ->where(function ($query) use ($oneMonthAgo) {
+                $query->where('products.created_at', '<', $oneMonthAgo)
+                    ->orWhereNull('products.created_at')
+                    ->orWhere('products.collection', '4');
+            })
             ->groupBy(
                 'products.id',
                 'products.slug',
@@ -478,6 +486,7 @@ class FrontendController extends Controller
                 'category_sub.category_sub_name',
                 'o.offer_logo', 'o.type', 'o.discount_type', 'products.offers'
             )
+            ->orderBy('products.id', 'desc')
             ->get();
 
         $collectionProducts = DB::table('products')
@@ -500,8 +509,11 @@ class FrontendController extends Controller
                 DB::raw('MIN(products_details.low_stock_limit) as low_stock_limit')
             )
             ->where('products.vendor_id', $id)
-            ->where('products.collection', '5')
             ->where('products.status', 1)
+            ->where(function ($query) use ($oneMonthAgo) {
+                $query->where('products.created_at', '>=', $oneMonthAgo)
+                    ->orWhere('products.collection', '5');
+            })
             ->groupBy(
                 'products.id',
                 'products.slug',
@@ -510,6 +522,7 @@ class FrontendController extends Controller
                 'category_sub.category_sub_name',
                 'o.offer_logo', 'o.type', 'o.discount_type', 'products.offers'
             )
+            ->orderBy('products.id', 'desc')
             ->get();
 
         $offerList = $this->getProductByVendorOffers($id, $offer_id = '');
@@ -3370,12 +3383,19 @@ class FrontendController extends Controller
             [$cart, $cookie] = $this->cartSession($request);
             $cart->clear();
 
+            // Send order confirmation email
+            $this->sendOrderConfirmationEmail($orderId, $request->billing_email);
+
             $message = 'Order placed successfully! Order ID: ' . $orderId;
             if ($isNewCustomer) {
                 $message .= ' Account created. Default password: welcome@123';
             }
 
-            $response = redirect()->to(route('myAccount') . '#account-orders')->with('success', $message);
+            $response = redirect()->to(route('myAccount') . '#account-orders')
+                ->with('success', $message)
+                ->with('order_placed_success', true)
+                ->with('order_placed_id', $orderId)
+                ->with('order_placed_message', $message);
             return $this->attachCartCookies($response, $cookie, $cart);
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -3415,7 +3435,9 @@ class FrontendController extends Controller
         }
 
         $newOrder = DB::table('ecom_order')
-            ->where('id', $id)
+            ->where(function($q) use ($id) {
+                $q->where('id', $id)->orWhere('order_id', $id);
+            })
             ->where('customer_id', $customerId)
             ->first();
 
@@ -3545,9 +3567,15 @@ class FrontendController extends Controller
             return $pdf->download('invoice-' . $newOrder->order_id . '.pdf');
         }
 
-        $order = Ecom_Orders::where('id', $id)
+        $order = Ecom_Orders::where(function($q) use ($id) {
+                $q->where('id', $id)->orWhere('order_id', $id);
+            })
             ->where('customer_id', $customerId)
-            ->firstOrFail();
+            ->first();
+
+        if (!$order) {
+            return redirect()->back()->with('error', 'Invoice not found.');
+        }
 
         $customer = Ecom_Customer_info::where('customer_id', $order->customer_id)->first();
         $items = Ecom_Order_product::where('order_id', $order->order_id)->get();
@@ -3606,6 +3634,105 @@ class FrontendController extends Controller
 
         $pdf = Pdf::loadView('frontend.invoice', $data);
         return $pdf->download('invoice-' . $order->order_id . '.pdf');
+    }
+
+    public function sendOrderConfirmationEmail($orderId, $customerEmail = null)
+    {
+        try {
+            $order = DB::table('ecom_order')->where('order_id', $orderId)->first();
+            $legacyOrder = Ecom_Orders::where('order_id', $orderId)->first();
+            $customer = null;
+
+            $customerId = $order->customer_id ?? ($legacyOrder->customer_id ?? null);
+            if ($customerId) {
+                $customer = Ecom_Customer_info::where('customer_id', $customerId)->first();
+            }
+
+            $email = $customerEmail ?: ($legacyOrder->customer_email ?? ($customer->customer_email ?? null));
+            if (!$email) {
+                return false;
+            }
+
+            $orderProducts = Ecom_Order_product::where('order_id', $orderId)->get();
+            $productList = [];
+            foreach ($orderProducts as $item) {
+                $productList[] = [
+                    'name' => (string) ($item->product_name ?? 'Product'),
+                    'size' => (string) ($item->product_size ?? ''),
+                    'qty' => (int) ($item->product_quantity ?? 1),
+                    'price' => (float) ($item->product_price ?? 0),
+                    'total' => (float) ($item->total_price ?? 0),
+                ];
+            }
+
+            $orderDate = $order ? $order->created_at : ($legacyOrder ? $legacyOrder->order_date : now());
+            $customerName = trim((string) (($legacyOrder->customer_firstname ?? $customer->customer_firstname ?? '') . ' ' . ($legacyOrder->customer_lastname ?? $customer->customer_lastname ?? '')));
+            if ($customerName === '') {
+                $customerName = 'Customer';
+            }
+
+            $orderData = [
+                'order_id' => $orderId,
+                'order_date' => $orderDate,
+                'customer_name' => $customerName,
+                'mobile' => $legacyOrder->customer_mobileno ?? ($customer->customer_mobileno ?? ''),
+                'address' => $legacyOrder->customer_address ?? ($customer->customer_address ?? ''),
+                'address1' => $legacyOrder->customer_address1 ?? ($customer->customer_address1 ?? ''),
+                'city' => $legacyOrder->customer_city ?? ($customer->customer_city ?? ''),
+                'state' => $legacyOrder->customer_state ?? ($customer->customer_state ?? ''),
+                'pincode' => $legacyOrder->customer_pincode ?? ($customer->customer_pincode ?? ''),
+                'payment_type' => $order->payment_type ?? ($legacyOrder->payment_type ?? 'Cash On Delivery'),
+                'total_amount' => (float) ($order->sub_total ?? ($legacyOrder->total_amount ?? 0)),
+                'discount_amount' => (float) ($order->total_discount ?? ($legacyOrder->discount_amount ?? 0)),
+                'shipping_charge' => (float) ($order->delivery_charge ?? ($legacyOrder->shipping_charge ?? 0)),
+                'gst_charge' => (float) ($order->tax_amount ?? ($legacyOrder->gst_charge ?? 0)),
+                'grand_total' => (float) ($order->total_amount ?? ($legacyOrder->grand_total ?? 0)),
+                'products' => $productList,
+            ];
+
+            Mail::to($email)->send(new OrderMail($orderData));
+            return true;
+        } catch (\Throwable $e) {
+            \Log::error('Order confirmation email failed for order ' . $orderId . ': ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function resendOrderEmail($id)
+    {
+        $customerId = Session::get('customer_id');
+        if (!$customerId) {
+            return redirect('/home');
+        }
+
+        $order = DB::table('ecom_order')
+            ->where(function($q) use ($id) {
+                $q->where('id', $id)->orWhere('order_id', $id);
+            })
+            ->where('customer_id', $customerId)
+            ->first();
+
+        if (!$order) {
+            $legacyOrder = Ecom_Orders::where(function($q) use ($id) {
+                $q->where('id', $id)->orWhere('order_id', $id);
+            })
+            ->where('customer_id', $customerId)
+            ->first();
+            $orderId = $legacyOrder ? $legacyOrder->order_id : null;
+        } else {
+            $orderId = $order->order_id;
+        }
+
+        if (!$orderId) {
+            return redirect()->back()->with('error', 'Order not found.');
+        }
+
+        $sent = $this->sendOrderConfirmationEmail($orderId);
+        if ($sent) {
+            return redirect()->back()->with('success', 'Confirmation email sent successfully for order #' . $orderId . '!');
+        } else {
+            return redirect()->back()->with('error', 'Unable to send email. Please check server mail settings.');
+        }
     }
 
     public function cancelInvoice(Request $request, string $invoiceId)

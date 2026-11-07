@@ -374,7 +374,7 @@
         <!-- Start of PageContent -->
         <div class="page-content pt-2">
             <div class="container">
-                @if (session('success'))
+                @if (session('success') && !str_contains(session('success'), 'Order placed') && !str_contains(session('success'), 'Order ID'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-bottom: 20px; padding: 15px; border-radius: 4px; background-color: #d4edda; border-color: #c3e6cb; color: #155724; position: relative;">
                         {{ session('success') }}
                     </div>
@@ -505,6 +505,9 @@
                                                          <a href="javascript:void(0)" class="btn btn-outline btn-default btn-block btn-sm btn-rounded">
                                                              View Details
                                                          </a>
+                                                         <a href="{{ url('invoice-pdf/'.$order->id) }}" class="btn btn-dark btn-block btn-sm btn-rounded mt-1" target="_blank">
+                                                             Download Invoice
+                                                         </a>
                                                      </td>
                                                  </tr>
                                                  <tr id="order-details-{{ $order->id }}" class="order-details-row">
@@ -518,7 +521,14 @@
                                                                          <b>Qty:</b> {{ $invoice->line_qty ?? 1 }} |
                                                                          <b>Tax:</b> <span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($invoice->tax_amount ?? 0, 2) }}
                                                                      </div>
-                                                                     <div class="text-right"><b>Amount:</b> <span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($invoice->line_amount, 2) }}</div>
+                                                                     <div class="text-right">
+                                                                         <b>Amount:</b> <span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($invoice->line_amount, 2) }}
+                                                                         <div class="mt-1">
+                                                                             <a href="{{ url('invoice-pdf/'.$order->id) }}" class="btn btn-outline btn-dark btn-sm btn-rounded" target="_blank" style="padding: 2px 10px; font-size: 11px;">
+                                                                                 Download Invoice
+                                                                             </a>
+                                                                         </div>
+                                                                     </div>
                                                                  </div>
                                                                  @if(isset($invoice->products) && count($invoice->products) > 0)
                                                                      @foreach($invoice->products as $product)
@@ -587,13 +597,14 @@
                                                                  </div>
                                                              </div>
                                                          @endforeach
-                                                         @if(strtolower($order->order_status) === 'delivered')
-                                                         <div class="text-right">
+                                                         <div class="d-flex justify-content-end align-items-center gap-2 mt-3 pt-2" style="border-top: 1px dashed #e2e8f0;">
+                                                             <a href="{{ route('order.resend-email', $order->id) }}" class="btn btn-outline btn-default btn-rounded btn-sm mr-2" title="Resend order confirmation email">
+                                                                 <i class="fa fa-envelope mr-1"></i> Resend Email
+                                                             </a>
                                                              <a href="{{ url('invoice-pdf/'.$order->id) }}" class="btn btn-dark btn-rounded btn-sm" target="_blank">
-                                                                 Download Invoice
+                                                                 <i class="fa fa-file-pdf mr-1"></i> Download Invoice
                                                              </a>
                                                          </div>
-                                                         @endif
                                                      </td>
                                                  </tr>
                                              @endforeach
