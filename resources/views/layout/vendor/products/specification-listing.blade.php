@@ -47,7 +47,7 @@
                                 <button type="button" class="btn mb-4 btn-primary" data-bs-toggle="modal"
                                     data-original-title="test" data-bs-target="#exampleModal">Add Specification</button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
                                 <br>
-                                <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id"
+                                <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="list"
                                     data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true"
                                     data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false"
                                     data-key-events="true" data-show-columns="true" data-resizable="true" data-cookie="true"
@@ -55,7 +55,6 @@
 
                                     <thead>
                                         <tr>
-                                            <th data-field="id" data-sortable="true">Id</th>
                                             <!--<th data-field="title" data-sortable="true">Sub Category</th>-->
 
                                             <th data-field="list" data-sortable="true">Specification Name</th>
@@ -69,7 +68,6 @@
                                     <tbody>
                                         @foreach ($specification as $specification)
                                             <tr>
-                                                <td>{{ str_pad($loop->iteration, 4, '0', STR_PAD_LEFT); }}</td>
                                                 <!--<td>{{ $specification->category_sub_name }}</td>-->
                                                 <td>{{ $specification->name }}</td>
 

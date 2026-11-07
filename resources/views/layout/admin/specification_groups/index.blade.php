@@ -100,12 +100,11 @@
                             <div class="datatable-dashv1-list custom-datatable-overright">
 
                             
-                    <table class="table" id="table"  data-click-to-select="true"  data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-columns="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
+                    <table class="table" id="table"  data-click-to-select="true"  data-sort-name="name" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-columns="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
                          data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">
 
                          <thead>
             <tr>
-                <th>ID</th>
                 <th>Name</th>
                 <th>Reference Name</th>
                
@@ -125,7 +124,6 @@
             $spc++; 
             @endphp
                 <tr>
-                    <td>{{str_pad($loop->iteration, 4, '0', STR_PAD_LEFT);  }}</td>
                     <td>{{ $group->specification_group_name }}</td>
                     <td>{{ $group->specification_group_refname }}</td>
                     <td>
