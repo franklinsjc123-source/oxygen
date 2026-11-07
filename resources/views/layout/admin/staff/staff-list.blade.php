@@ -53,12 +53,11 @@
 
                             
                             
-<table class="table" id="table"  data-click-to-select="true"  data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
+<table class="table" id="table"  data-click-to-select="true"  data-sort-name="empdetails" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
      data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">
     
                                     <thead>
                                     <tr>
-                                        <th data-field="id"> ID</th>
                                         <th data-field="image"> Photo</th>
                                         <th data-field="empdetails" data-sortable="true"> Employee Details</th>
                                         <th data-field="contactdetail" data-sortable="true"> User Details</th>
@@ -73,7 +72,6 @@
                                         @foreach($staff as $stf)
 
                                     <tr>
-                                        <td>{{ str_pad($loop->iteration,4,'0',STR_PAD_LEFT); }}</td>
                                         
                                         <td><div class="d-flex">
                                             <img src="{{ asset('assets/images/staffcreate') . '/' . $stf->profileimage }}"

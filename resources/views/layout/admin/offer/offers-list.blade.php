@@ -85,12 +85,11 @@
                             <div class="datatable-dashv1-list custom-datatable-overright">
 
                             
-<table class="table" id="table"  data-click-to-select="true"  data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-columns="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
+<table class="table" id="table"  data-click-to-select="true"  data-sort-name="shop_name" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-columns="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
      data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">
     
 <thead>
  <tr>
-   <th data-field="id" data-sortable="true" class="id-column" data-width="150px">Id</th> 
    <th data-field="shop_name" data-sortable="true">Shop Name</th> 
    
    <th data-field="title" data-sortable="true">Offer Title</th>
@@ -173,7 +172,6 @@
                                                 
                                                 
                                                 
-                                                <td class="id-column">{{ $zzone.'-'. str_pad($attribute->created_by_id, 4, '0', STR_PAD_LEFT).'-'.str_pad($loop->iteration, 4, '0', STR_PAD_LEFT);  }}</td>
                                                 <td>{{ $shop_name }}</td>
 
                                                 <td>{{ $attribute->title }}</td>

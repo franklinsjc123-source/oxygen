@@ -210,11 +210,10 @@
 
 
 							<div class="datatable-dashv1-list custom-datatable-overright">                            
-                            	<table class="table" id="table"  data-click-to-select="true" data-show-columns="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="100" data-search="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
+                            	<table class="table" id="table"  data-click-to-select="true" data-show-columns="true" data-sort-name="budget" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="100" data-search="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
                                          data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">                                        
                                     <thead>
                                      <tr>
-                                        <th data-field="id" data-sortable="true">Id</th> 
                                         <th data-field="budget" data-sortable="true">Budget</th>
                                         <th data-field="impressions" data-sortable="true">Add Impressions</th>
                                         <th data-field="clicks" data-sortable="true">Clicks</th>
@@ -226,7 +225,6 @@
                                     <tbody>
 										@foreach ($oxygen as $item)
 									<tr>
-										<td>{{$loop->iteration}}</td>
 										<td>
 											<div class="d-flex">
 												{{$item->amount}}

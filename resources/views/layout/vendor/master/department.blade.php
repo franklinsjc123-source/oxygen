@@ -104,7 +104,7 @@
                                 <div class="datatable-dashv1-list custom-datatable-overright">
 
 
-                                    <table class="table" id="table" data-click-to-select="true" data-sort-name="id"
+                                    <table class="table" id="table" data-click-to-select="true" data-sort-name="department"
                                         data-sort-order="asc" data-mobile-responsive="true" data-toggle="table"
                                         data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false"
                                         data-show-columns="true" data-key-events="true" data-resizable="true"
@@ -113,8 +113,6 @@
 
                                         <thead>
                                             <tr>
-                                                <th data-field="id" data-sortable="true">Id</th>
-
                                                 <th data-field="department" data-sortable="true">Department</th>
 
 
@@ -128,7 +126,6 @@
 
                                             @foreach ($departments as $department)
                                                 <tr>
-                                                    <td>{{ $department->id }}</td>
                                                     <td>{{ $department->name }}</td>
                                                     <td>
                                                         <label class="switch">

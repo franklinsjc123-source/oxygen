@@ -119,10 +119,9 @@
                             </div>
 
                             <div class="datatable-dashv1-list custom-datatable-overright">
-                                <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-show-columns="true" data-sort-order="desc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">
+                                <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="date" data-show-columns="true" data-sort-order="desc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">
                                     <thead>
                                         <tr>
-                                            <th data-field="id" data-sortable="true">ID</th>
                                             <th data-field="date" data-sortable="true">DATE</th>
                                             <th data-field="customer" data-sortable="true">CUSTOMER INFO</th>
                                             <th data-field="invoice" data-sortable="true">INVOICE ID</th>
@@ -136,7 +135,6 @@
                                     <tbody>
                                         @forelse($returns as $item)
                                             <tr>
-                                                <td>{{ $item->id }}</td>
                                                 <td>{{ Carbon\Carbon::parse($item->created_at)->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}</td>
                                                 <td>
                                                     <strong>{{ $item->customer_firstname }} {{ $item->customer_lastname }}</strong><br>
@@ -192,7 +190,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="9" class="text-center">No return/replacement requests found.</td>
+                                                <td colspan="8" class="text-center">No return/replacement requests found.</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
