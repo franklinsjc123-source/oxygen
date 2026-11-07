@@ -1867,7 +1867,24 @@ class FrontendController extends Controller
         $lowestRatingList = Rating::where('ratings.products_id', $mainProductId)->where('ratings.status', 1)
             ->orderBy('star_rating')->limit(5)->get();
 
-        return view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'colorImageMap', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts', 'offerProducts', 'vendorProducts2', 'relatedProducts', 'percent', 'reviewCount', 'canRate', 'myRating', 'ratings', 'avg', 'mostHelpfulPositive', 'mostHelpfulNegative', 'highestRatingList', 'lowestRatingList', 'offerDetails'));
+        [$cart, $cartCookie] = $this->cartSession(request());
+        $inCartKeys = [];
+        $targetProductId = (int) ($prouctsList['id'] ?? $mainProductId);
+        foreach ($cart->getContent() as $item) {
+            $itemProductId = (int) ($item->attributes['product_id'] ?? 0);
+            if ($itemProductId === $targetProductId) {
+                $inCartKeys[] = [
+                    'id' => $targetProductId,
+                    'size' => (string) ($item->attributes['size'] ?? ''),
+                    'color' => (string) ($item->attributes['color'] ?? '')
+                ];
+            }
+        }
+        $isProductInCart = !empty($inCartKeys);
+
+        $view = view('frontend/product', compact('id', 'getProduct', 'vendor_details', 'prouctsList', 'imageList', 'colorImageMap', 'getSpecificProduct', 'ProductSpecs', 'vendorProducts', 'offerProducts', 'vendorProducts2', 'relatedProducts', 'percent', 'reviewCount', 'canRate', 'myRating', 'ratings', 'avg', 'mostHelpfulPositive', 'mostHelpfulNegative', 'highestRatingList', 'lowestRatingList', 'offerDetails', 'isProductInCart', 'inCartKeys'));
+
+        return $cartCookie ? response($view)->withCookie($cartCookie) : $view;
     }
 
     public function quickView($id)

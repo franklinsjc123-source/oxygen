@@ -106,6 +106,14 @@
             }
         }
 
+        #btn-add-to-cart,
+        #btn-add-to-cart:hover,
+        #btn-add-to-cart:focus,
+        #btn-add-to-cart:active {
+            color: #ffffff !important;
+            text-decoration: none !important;
+        }
+
         /* Ensure product main images have a consistent height and cover the area nicely */
         .product-single .product-image > img {
             height: 450px !important;
@@ -992,13 +1000,18 @@
                                                 <button type="button" class="qty-minus w-icon-minus" aria-label="Decrease quantity"></button>
                                              </div>
                                          </div>
-                                         <div class="col-md-3">
-                                             <button class="btn btn-primary " onclick="addCart('<?= $prouctsList['id'] ?>')">
-                                             <i class="w-icon-cart"></i>
-                                             <span>Add to Cart</span>
-                                         </button>
-
-                                          
+                                         <div class="col-md-3" id="cart-action-container">
+                                             @if(!empty($isProductInCart))
+                                                 <a href="{{ route('shopping-cart') }}" class="btn btn-primary" id="btn-add-to-cart">
+                                                     <i class="w-icon-cart"></i>
+                                                     <span>View Cart</span>
+                                                 </a>
+                                             @else
+                                                 <button class="btn btn-primary" id="btn-add-to-cart" onclick="addCart('<?= $prouctsList['id'] ?>')">
+                                                     <i class="w-icon-cart"></i>
+                                                     <span>Add to Cart</span>
+                                                 </button>
+                                             @endif
                                          </div>
                                          <div id="product_error" class="mt-3"></div>
                                         </div>
@@ -2208,6 +2221,51 @@
       });
 
           const productVariants = @json($prouctsList['variants'] ?? []);
+     var inCartVariants = @json($inCartKeys ?? []);
+     var currentProductId = <?= (int) ($prouctsList['id'] ?? 0) ?>;
+
+     function checkCartButtonState() {
+         var size = String($('#product-size').val() || '').trim();
+         var color = String($('#product-color').val() || '').trim();
+
+         var matched = false;
+         if (Array.isArray(inCartVariants) && inCartVariants.length > 0) {
+             for (var i = 0; i < inCartVariants.length; i++) {
+                 var item = inCartVariants[i];
+                 if (Number(item.id) === currentProductId) {
+                     var matchSize = !item.size || !size || (item.size.toLowerCase() === size.toLowerCase());
+                     var matchColor = !item.color || !color || (item.color.toLowerCase() === color.toLowerCase());
+                     if (matchSize && matchColor) {
+                         matched = true;
+                         break;
+                     }
+                 }
+             }
+         }
+
+         updateCartButtonUI(matched);
+     }
+
+     function updateCartButtonUI(inCart) {
+         var $container = $('#cart-action-container');
+         if (!$container.length) return;
+
+         if (inCart) {
+             $container.html(
+                 '<a href="{{ route('shopping-cart') }}" class="btn btn-primary" id="btn-add-to-cart">' +
+                 '<i class="w-icon-cart"></i>' +
+                 '<span>View Cart</span>' +
+                 '</a>'
+             );
+         } else {
+             $container.html(
+                 '<button class="btn btn-primary" id="btn-add-to-cart" onclick="addCart(\'' + currentProductId + '\')">' +
+                 '<i class="w-icon-cart"></i>' +
+                 '<span>Add to Cart</span>' +
+                 '</button>'
+             );
+         }
+     }
      const colorImageMap = @json($colorImageMap ?? []);
      const detailImageBase = '{{ asset("assets/images/products/detail") }}/';
      const mainImageBase = '{{ asset("assets/images/products") }}/';
@@ -2284,6 +2342,7 @@
              selling_amount: $el.data('selling'),
              retail_amount: $el.data('retail')
          });
+         checkCartButtonState();
      }
 
      function renderSizesForColor(colorName, colorImage, commonProduct) {
@@ -2438,6 +2497,7 @@
          
          renderSizesForColor(colorName, colorImage, commonProduct);
          updateGalleryForColor(commonProduct);
+         checkCartButtonState();
      }
 
      $(document).on('click', '.product-color-option', function(e) {
@@ -2459,6 +2519,7 @@
              initImageZoom();
              refreshZoomGallery();
          }
+         checkCartButtonState();
      });
 
      function enforceQuantityLimit(showMessageOnExceed) {
@@ -2621,6 +2682,18 @@
                  window.showCenterMessage(data.message, 'success');
              } else {
                  $.notify(data.message, "success");
+             }
+
+             // Once product added, change "Add to cart" to "View cart"
+             inCartVariants.push({
+                 id: Number(id),
+                 size: String(size || ''),
+                 color: String(color || '')
+             });
+             updateCartButtonUI(true);
+
+             if (typeof showSideCart === 'function') {
+                 showSideCart();
              }
 
              @if(isset($offerDetails) && strcasecmp($offerDetails->type, 'Buy X Get Y Free') == 0)
