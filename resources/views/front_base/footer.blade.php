@@ -1381,17 +1381,25 @@
                                        <label>Mobile Number *</label>
                                        <input type="text" class="form-control" name="username"
                                            id="login_username" placeholder="Enter your mobile number" 
+                                           value="{{ request()->cookie('remember_customer_username') ?? Cookie::get('remember_customer_username') ?? '' }}"
                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="10">
                                    </div>
                                    <div class="form-group mb-0 position-relative">
                                        <label>Password *</label>
                                        <input type="password" class="form-control" name="password"
-                                           id="login_password" placeholder="Enter your password">
+                                           id="login_password" placeholder="Enter your password"
+                                           value="{{ request()->cookie('remember_customer_password') ?? Cookie::get('remember_customer_password') ?? '' }}">
 
                                        <i class="fa-solid fa-eye toggle-password" onclick="togglePassword()"></i>
                                    </div>
-                                   <div class="form-checkbox d-flex align-items-center justify-content-end mt-4">
-                                       <a href="javascript:void(0)" onclick="showForgotPasswordPanel()">Lost your password?</a>
+                                   <div class="form-checkbox d-flex align-items-center justify-content-between mt-3 mb-3">
+                                       <div class="d-flex align-items-center m-0" style="gap: 8px;">
+                                           <input type="checkbox" id="remember_customer" name="remember" value="1"
+                                               {{ (request()->hasCookie('remember_customer_check') || Cookie::has('remember_customer_check') || request()->hasCookie('remember_customer_username') || Cookie::has('remember_customer_username')) ? 'checked' : '' }}
+                                               style="cursor: pointer; width: 17px; height: 17px; accent-color: #0088dd; margin: 0;">
+                                           <label for="remember_customer" style="cursor: pointer; font-size: 0.95rem; color: #555; user-select: none; margin: 0; font-weight: 500;">Remember me</label>
+                                       </div>
+                                       <a href="javascript:void(0)" onclick="showForgotPasswordPanel()" style="font-size: 0.95rem; color: #0088dd; font-weight: 500;">Lost your password?</a>
                                    </div>
 
                                    <button type="button" class="btn btn-success" onclick="cuslogin()"
@@ -1774,11 +1782,24 @@
             });
 
             var storedMobile = prefillMobile || sessionStorage.getItem('prefill_login_mobile');
-            if (storedMobile) {
-                setTimeout(function() {
+            var savedUser = localStorage.getItem('oxy_remember_customer_user') || @json(request()->cookie('remember_customer_username') ?? Cookie::get('remember_customer_username') ?? '');
+            var savedPass = localStorage.getItem('oxy_remember_customer_pass') || @json(request()->cookie('remember_customer_password') ?? Cookie::get('remember_customer_password') ?? '');
+            var savedCheck = localStorage.getItem('oxy_remember_customer_check') || @json((request()->hasCookie('remember_customer_check') || Cookie::has('remember_customer_check') || request()->hasCookie('remember_customer_username') || Cookie::has('remember_customer_username')) ? '1' : '');
+
+            setTimeout(function() {
+                if (savedCheck === '1') {
+                    $('#remember_customer').prop('checked', true);
+                    if (!$('#login_username').val() && savedUser) {
+                        $('#login_username').val(savedUser);
+                    }
+                    if (!$('#login_password').val() && savedPass) {
+                        $('#login_password').val(savedPass);
+                    }
+                }
+                if (storedMobile) {
                     $('#login_username').val(storedMobile);
-                }, 80);
-            }
+                }
+            }, 80);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -2154,6 +2175,7 @@
         function cuslogin() {
             var username = $('#login_username').val();
             var password = $('#login_password').val();
+            var remember = $('#remember_customer').is(':checked') ? 1 : 0;
             var url = '<?= url('Cuslogin') ?>';
             
             clearFieldError('login_username');
@@ -2180,13 +2202,23 @@
                     data: {
                         "_token": "{{ csrf_token() }}",
                         "username": username,
-                        "password": password
+                        "password": password,
+                        "remember": remember
                     },
 
                     dataType: "json",
                     success: function(data) {
                         console.log(data);
                         if (data.msg == 'Success') {
+                            if (remember) {
+                                localStorage.setItem('oxy_remember_customer_user', username);
+                                localStorage.setItem('oxy_remember_customer_pass', password);
+                                localStorage.setItem('oxy_remember_customer_check', '1');
+                            } else {
+                                localStorage.removeItem('oxy_remember_customer_user');
+                                localStorage.removeItem('oxy_remember_customer_pass');
+                                localStorage.removeItem('oxy_remember_customer_check');
+                            }
                             var redirectUrl = sessionStorage.getItem('post_login_redirect') || "{{ route('home') }}";
                             sessionStorage.removeItem('post_login_redirect');
                             sessionStorage.removeItem('prefill_login_mobile');

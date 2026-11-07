@@ -12,6 +12,7 @@ use App\Models\PinCode\PinCode;
 use Image;
 use Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Cookie;
 use DB;
 
 class CustomerController extends Controller
@@ -157,7 +158,28 @@ class CustomerController extends Controller
                 $customer->update(['customer_pincode' => $sessionPincode]);
             }
 
-            return response()->json(['msg' => 'Success'], 200);
+            $remember = $request->boolean('remember') || $request->input('remember') === '1' || $request->input('remember') === 'true';
+            $response = response()->json(['msg' => 'Success'], 200);
+
+            if ($remember) {
+                Cookie::queue('remember_customer_username', $request->username, 60 * 24 * 30);
+                Cookie::queue('remember_customer_password', $request->password, 60 * 24 * 30);
+                Cookie::queue('remember_customer_check', '1', 60 * 24 * 30);
+
+                $response = $response->withCookie(cookie()->make('remember_customer_username', $request->username, 60 * 24 * 30))
+                                     ->withCookie(cookie()->make('remember_customer_password', $request->password, 60 * 24 * 30))
+                                     ->withCookie(cookie()->make('remember_customer_check', '1', 60 * 24 * 30));
+            } else {
+                Cookie::queue(Cookie::forget('remember_customer_username'));
+                Cookie::queue(Cookie::forget('remember_customer_password'));
+                Cookie::queue(Cookie::forget('remember_customer_check'));
+
+                $response = $response->withoutCookie('remember_customer_username')
+                                     ->withoutCookie('remember_customer_password')
+                                     ->withoutCookie('remember_customer_check');
+            }
+
+            return $response;
         }
     }
     public function checkEmailExists(Request $request)
