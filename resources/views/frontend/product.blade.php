@@ -945,10 +945,6 @@
                                     <a>({{ $reviewCount }} Reviews)</a>
                                 </div>
 
-                                 <div class="product-short-desc">
-                                    {!! html_entity_decode($prouctsList['description'] ?? '', ENT_QUOTES, 'UTF-8') !!}
-                                 </div>
-
                                  <hr class="product-divider">
                                  <input type="hidden" id="product-size" value="" />
                                  <input type="hidden" id="product-color" value="" />
