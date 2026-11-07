@@ -573,7 +573,15 @@
      @endif
      <tr class="cart-subtotal bb-no">
      <td><b>Delivery Charge</b></td>
-     <td class="product-total"><b style="white-space: nowrap;"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($checkoutSummary['delivery_charge'] ?? 0, 2) }}</b>
+     <td class="product-total">
+         @if (($checkoutSummary['delivery_charge'] ?? 0) > 0)
+             <b style="white-space: nowrap;"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($checkoutSummary['delivery_charge'], 2) }}</b>
+         @else
+             <span style="display: inline-flex; align-items: center; white-space: nowrap;">
+                 <span style="font-family: Arial, sans-serif; text-decoration: line-through; text-decoration-thickness: 1.8px; color: #64748b; font-size: 1.15rem; font-weight: 600; margin-right: 8px;">₹40.00</span>
+                 <b style="color: #10b981; font-size: 1.15rem; font-weight: 700;">Free</b>
+             </span>
+         @endif
      </td>
      </tr>
      <tr class="cart-subtotal bb-no">
