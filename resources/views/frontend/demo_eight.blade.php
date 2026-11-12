@@ -856,23 +856,36 @@
      </div>
 
      <!-- Category Banner 2Cols (Advertisements moved before Mens Products) -->
-     @if(isset($oxygen_adv) && count($oxygen_adv) > 0)
+     @php
+         $validOxygenAdv = (isset($oxygen_adv) && count($oxygen_adv) > 0)
+             ? collect($oxygen_adv)->filter(function($b) {
+                 return !empty($b->image) && file_exists(public_path('assets/images/banners/advoxygen/' . $b->image));
+             })
+             : collect();
+     @endphp
+     @if($validOxygenAdv->isNotEmpty())
      <div class="container mt-1 mb-0" style="margin-bottom: 0px !important; margin-top: 5px !important;">
-         <div class="row cols-1 cols-md-2 category-banner-2cols mb-1">
-             @foreach($oxygen_adv as $key => $banner)
+         <div class="row cols-1 {{ $validOxygenAdv->count() > 1 ? 'cols-md-2' : 'cols-md-1 justify-content-center' }} category-banner-2cols mb-1">
+             @foreach($validOxygenAdv as $key => $banner)
              @php
                  $advLink = !empty($banner->link) ? (filter_var($banner->link, FILTER_VALIDATE_URL) ? $banner->link : url($banner->link)) : '#';
              @endphp
-             <div class="banner banner-fixed mb-1" style="cursor: pointer; position: relative;" onclick="if('{{ $advLink }}' !== '#') window.location.href='{{ $advLink }}';">
+             <div class="banner banner-fixed mb-1 {{ $validOxygenAdv->count() == 1 ? 'col-md-6 m-auto' : '' }}" style="cursor: pointer; position: relative;" onclick="if('{{ $advLink }}' !== '#') window.location.href='{{ $advLink }}';">
                  <a href="{{ $advLink }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block;" aria-label="{{ $banner->title }}"></a>
-                 <figure class="br-sm">
-                     <img src="{{ asset('assets/images/banners/advoxygen/' . $banner->image) }}" alt="{{ $banner->title }}"
-                          style="object-fit: cover; width: 100% !important; height: auto !important; display: block;" loading="lazy" decoding="async" />
+                 <figure class="br-sm" style="margin: 0; overflow: hidden; border-radius: 8px; width: 100%; aspect-ratio: 600 / 300; background-color: #f4f4f4;">
+                     <img src="{{ asset('assets/images/banners/advoxygen/' . $banner->image) }}" alt="{{ $banner->title ?: 'Oxygen Advertisement' }}"
+                          style="object-fit: cover !important; width: 100% !important; height: 100% !important; display: block;" loading="lazy" decoding="async" />
                  </figure>
+                 @if(!empty($banner->title) || !empty($banner->sub_title))
                  <div class="banner-content y-50" style="z-index: 2; pointer-events: none;">
-                     <h5 class="banner-subtitle text-uppercase {{ $key == 0 ? 'text-white' : '' }} font-weight-bold">{{ $banner->title }}</h5>
-                     <h3 class="banner-title text-capitalize {{ $key == 0 ? 'text-white' : '' }}">{!! nl2br(e($banner->sub_title)) !!}</h3>
+                     @if(!empty($banner->title))
+                     <h5 class="banner-subtitle text-uppercase font-weight-bold text-white">{{ $banner->title }}</h5>
+                     @endif
+                     @if(!empty($banner->sub_title))
+                     <h3 class="banner-title text-capitalize text-white">{!! nl2br(e($banner->sub_title)) !!}</h3>
+                     @endif
                  </div>
+                 @endif
              </div>
              @endforeach
          </div>
