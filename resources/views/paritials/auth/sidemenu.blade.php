@@ -154,9 +154,7 @@
                                 : 0;
                         @endphp
                         <li class="{{ $isRequestsActive ? 'active' : '' }}">
-                            <a href="{{ route('admin.seller_leads.index') }}" class="{{ $isRequestsActive ? 'active' : '' }}" style="display: flex; align-items: center; white-space: nowrap;">
-                                <i class="fa fa-circle" style="margin-right: 6px;"></i>Seller Requests @if($pendingLeadsCount > 0)<span class="badge badge-primary" style="background-color: #ff8084 !important; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 5px; border-radius: 4px; line-height: 1; margin-left: 5px;">{{ $pendingLeadsCount }}</span>@endif
-                            </a>
+                            <a href="{{ route('admin.seller_leads.index') }}" class="{{ $isRequestsActive ? 'active' : '' }}"><i class="fa fa-circle"></i>Seller Requests @if($pendingLeadsCount > 0)<span class="badge badge-primary" style="background-color: #ff8084 !important; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 5px; border-radius: 4px; line-height: 1; margin-left: 5px; vertical-align: middle; display: inline-block;">{{ $pendingLeadsCount }}</span>@endif</a>
                         </li>
                     @endif
                 </ul>
