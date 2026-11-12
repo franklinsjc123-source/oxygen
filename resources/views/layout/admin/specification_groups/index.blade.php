@@ -1,5 +1,8 @@
 @extends('layout.auth.master')
 @section('contents')
+@php
+    $isStaffUser = (request()->is('staff/*') || (session()->get('log_type') == 'Staff'));
+@endphp
 
     @include('paritials.css.product.attribute-css')
 
@@ -13,7 +16,11 @@
 <div class="page-body-wrapper">
 	
 	<!-- Page Sidebar Start-->
-	@include('paritials.auth.sidemenu');
+	@if($isStaffUser)
+		@include('paritials.staffauth.sidemenu');
+	@else
+		@include('paritials.auth.sidemenu');
+	@endif
 	<!-- Page Sidebar Ends-->
 	
 	<!-- Right sidebar Start-->
@@ -28,7 +35,7 @@
                     <div class="row">
                         <div class="col-12">
                         <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
-                            <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="{{ $isStaffUser ? url('staff/dashboard/' . session()->get('login_id')) : url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
                                 <li class="breadcrumb-item active">List Specification  </li>
                         </ol>
                     </div>
@@ -46,8 +53,8 @@
                             <div class="card-body">
                                 
                                 <div id="toolbar" class="d-flex align-items-center">
-                                    <a href="{{ route('specification_groups.admin.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a>
-                                    <a href="{{ route('specification_groups.admin.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Specification </a>
+                                    <a href="{{ $isStaffUser ? route('staff.specification_groups.export') : route('specification_groups.admin.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a>
+                                    <a href="{{ $isStaffUser ? route('staff.specification_groups.create') : route('specification_groups.admin.create') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Specification </a>
                                 </div> 
                          
 
@@ -128,7 +135,7 @@
                             <input type="hidden" id="attributes_val{{ $group->id }}" value="{{ $val}}">
                             <button type="button" class="edit_attribute btn btn-secondary" data-bs-toggle="modal" data-original-title="Edit" value="{{$group->id}}" id="edit_attribute" style="margin: 0;"> 
                             <i class="fa fa-plus"></i> Specifications </button>
-                            <a href="{{ route('specification_groups.admin.edit', $group->id) }}" class="btn btn-warning btn-sm" title="Edit" style="margin: 0;"><i class="fa fa-edit"></i></a>
+                            <a href="{{ $isStaffUser ? route('staff.specification_groups.edit', $group->id) : route('specification_groups.admin.edit', $group->id) }}" class="btn btn-warning btn-sm" title="Edit" style="margin: 0;"><i class="fa fa-edit"></i></a>
                              @if (session()->get('log_type') == 'Admin')
                             {{-- <form action="{{ route('specification_groups.admin.destroy', $group->id) }}" onsubmit="return confirm('Are you sure, you want to delete it?')"method="POST" style="display:inline; margin: 0;">
                                 @csrf
@@ -165,7 +172,7 @@
                     </div>
 
                     <div class="modal-body">
-                        <form class="" method="post"   action="{{ url('admin/update_specification') }}"             
+                        <form class="" method="post"   action="{{ $isStaffUser ? route('staff.update_specification') : url('admin/update_specification') }}"             
                         enctype="multipart/form-data">
                         @csrf
                        
@@ -306,7 +313,7 @@
                     var nextStatus = $(this).is(':checked') ? 'Active' : 'De-Active';
 
                     $.ajax({
-                        url: "{{ route('specification_groups.status') }}",
+                        url: "{{ $isStaffUser ? route('staff.specification_groups.status') : route('specification_groups.status') }}",
                         type: "POST",
                         data: {
                             "_token": "{{ csrf_token() }}",

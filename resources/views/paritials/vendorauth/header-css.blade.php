@@ -149,6 +149,15 @@ background-color: transparent;
     margin-bottom: 0 !important;
 }
 
+/* Remove empty space above breadcrumbs globally */
+.page-wrapper .page-body-wrapper .page-header {
+    margin-top: 0 !important;
+    margin-bottom: 12px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    border-bottom: none !important;
+}
+
 /* ── Bootstrap Table Toolbar: Desktop & Mobile ── */
 @media (min-width: 768px) {
     .fixed-table-toolbar {

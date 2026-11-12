@@ -90,7 +90,7 @@
                     <div class="col-sm-12">
 
                         <div class="card">
-                            <!--<div class="mt-3">
+                            <div id="toolbar" class="d-flex align-items-center">
                                 <a href="{{ route('vendorproducts.crud.index', $vendorid) }}">
                                     <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add
                                         Product
@@ -103,7 +103,7 @@
                                 <button class="btn border-warning text-warning delete">Delete</button>
                                 <button class="btn border-success text-success act">Active</button>
                                 <button class="btn border-danger text-danger deactive">De-Active</button>
-                            </div>-->
+                            </div>
 
                             <div class="datatable-dashv1-list custom-datatable-overright">
                                 <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id"

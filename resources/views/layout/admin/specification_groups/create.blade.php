@@ -1,8 +1,8 @@
 @extends('layout.auth.master')
 @section('contents')
-
-
-
+@php
+    $isStaffUser = (request()->is('staff/*') || (session()->get('log_type') == 'Staff'));
+@endphp
 
 <!-- page-wrapper Start-->
 @include('paritials.auth.topmenu');
@@ -12,7 +12,11 @@
 <div class="page-body-wrapper">
 	
 	<!-- Page Sidebar Start-->
-	@include('paritials.auth.sidemenu');
+	@if($isStaffUser)
+		@include('paritials.staffauth.sidemenu');
+	@else
+		@include('paritials.auth.sidemenu');
+	@endif
 	<!-- Page Sidebar Ends-->
 	
 	<!-- Right sidebar Start-->
@@ -27,7 +31,7 @@
 				<div class="row">
 					<div class="col-12">
                         <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
-                            <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="{{ $isStaffUser ? url('staff/dashboard/' . session()->get('login_id')) : url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
 
 							<li class="breadcrumb-item active">Add Specification </li>
                         </ol>
@@ -46,7 +50,7 @@
 				<div class="card-body">
 				
 				
-				<form action="{{ route('specification_groups.admin.store') }}" method="POST">
+				<form action="{{ $isStaffUser ? route('staff.specification_groups.store') : route('specification_groups.admin.store') }}" method="POST">
         @csrf
         <div class="mb-3">
             <label for="specification_group_name" class="form-label">Group Name</label>
@@ -118,6 +122,7 @@
         </div>
        
         <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="{{ $isStaffUser ? route('staff.specification_groups.index') : route('specification_groups.admin.index') }}" class="btn btn-secondary">Close</a>
     </form>
 					
 					

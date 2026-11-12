@@ -152,13 +152,25 @@ use Illuminate\Support\Facades\Route;
                                     $finalRoute = route('staffauction/list');
                                 } elseif ($submenu->link == 'auction/live') {
                                     $finalRoute = route('staffauction/live');
+                                } elseif ($submenu->link == 'attribute_groups.index' || $submenu->link == 'attribute_groups' || str_contains($submenu->link, 'attribute_group') || strtolower(trim($submenu->title)) == 'attributes') {
+                                    $finalRoute = route('staff.attribute_groups.index');
+                                } elseif ($submenu->link == 'specification_groups.admin.index' || $submenu->link == 'specification_groups' || str_contains($submenu->link, 'specification_group') || strtolower(trim($submenu->title)) == 'specification') {
+                                    $finalRoute = route('staff.specification_groups.index');
                                 } elseif (Route::has($submenu->link)) {
                                     $finalRoute = route($submenu->link);
                                 }
                             @endphp
                         <li><a href="{{ $finalRoute }}"><i class="fa fa-circle"></i>{{ str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $submenu->title) }}</a></li>
                         @else
-                        <li><a href="{{ url('staff/' . ltrim($submenu->link, '/')) }}"><i class="fa fa-circle"></i>{{ str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $submenu->title) }}</a></li>
+                            @php
+                                $finalUrl = url('staff/' . ltrim($submenu->link, '/'));
+                                if (str_contains($submenu->link, 'attribute_group') || strtolower(trim($submenu->title)) == 'attributes') {
+                                    $finalUrl = route('staff.attribute_groups.index');
+                                } elseif (str_contains($submenu->link, 'specification_group') || strtolower(trim($submenu->title)) == 'specification') {
+                                    $finalUrl = route('staff.specification_groups.index');
+                                }
+                            @endphp
+                        <li><a href="{{ $finalUrl }}"><i class="fa fa-circle"></i>{{ str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $submenu->title) }}</a></li>
                         @endif
                     @endif
                     @endforeach

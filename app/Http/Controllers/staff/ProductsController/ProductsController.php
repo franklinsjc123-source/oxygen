@@ -1663,4 +1663,4 @@ class ProductsController extends Controller
             return response()->download(public_path('Bulk_Upload1.xlsx'), 'sample_upload.xlsx');
         }
     }
-}rs\staff\ProductsController;
+}

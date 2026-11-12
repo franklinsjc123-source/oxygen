@@ -48,8 +48,11 @@
                         <div class="card">
 
                             <div class="card-body">
-                                <a href="{{ route('staffvendorcreate.index') }}" class="btn  btn-primary"><i class="fa fa-plus"></i> Add
-                                    Seller</a> <a href="{{ route('staffvendor.export') }}" class="btn btn-success ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a>
+                                <div id="toolbar" class="d-flex align-items-center">
+                                    <a href="{{ route('staffvendor.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a>
+                                    <a href="{{ route('staffvendorcreate.index') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add
+                                        Seller</a>
+                                </div>
 
 
 

@@ -38,6 +38,8 @@ use App\Http\Controllers\staff\ProductsController\CollectionController;
 use App\Http\Controllers\staff\ProductsController\ProductCollectionController;
 use App\Http\Controllers\staff\ProductsController\AttributeController;
 use App\Http\Controllers\staff\ProductsController\SpecificationController;
+use App\Http\Controllers\ProductsController\AttributeGroupController;
+use App\Http\Controllers\ProductsController\SpecificationGroupController;
 use App\Http\Controllers\staff\MasterController;
 use App\Http\Controllers\PinCodeController1\PinCodeController1;
 //Marketting
@@ -141,6 +143,18 @@ Route::post('category_sub/update/{id}', [CategorySubController::class, 'update']
 Route::post('category_sub/changestatus', [CategorySubController::class, 'changestatus'])->name('staffcategory.sub.changestatus');
 
 Route::post('subcategory/update/{id}', [CategorySubController::class, 'update'])->name('staffsubcategory_update');
+
+// Attribute Groups
+Route::get('attribute_groups_export', [AttributeGroupController::class, 'export'])->name('staff.attribute_groups.export');
+Route::resource('attribute_groups', AttributeGroupController::class, ['names' => 'staff.attribute_groups']);
+Route::post('attribute_groups/status', [AttributeGroupController::class, 'statusUpdate'])->name('staff.attribute_groups.status');
+Route::post('update_attributevalues', [AttributeGroupController::class, 'update_attributes'])->name('staff.update_attributevalues');
+
+// Specification Groups
+Route::get('specification_groups_export', [SpecificationGroupController::class, 'export'])->name('staff.specification_groups.export');
+Route::resource('specification_groups', SpecificationGroupController::class, ['names' => 'staff.specification_groups']);
+Route::post('specification_groups/status', [SpecificationGroupController::class, 'statusUpdate'])->name('staff.specification_groups.status');
+Route::post('update_specification', [SpecificationGroupController::class, 'update_specification'])->name('staff.update_specification');
 
 
 

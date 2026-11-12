@@ -27,7 +27,8 @@ class SpecificationGroupController extends Controller
             ->select('specification_group.*', 'vendor_details.shop_name as vendor_name')
             ->orderBy('specification_group.id', 'desc')
             ->get();
-        return view('layout.admin.specification_groups.index', compact('groups'));
+        $isStaff = request()->is('staff/*') || (session()->get('log_type') == 'Staff');
+        return view('layout.admin.specification_groups.index', compact('groups', 'isStaff'));
     }
 
     public function create()
@@ -41,12 +42,14 @@ class SpecificationGroupController extends Controller
             ->where('t1.status', 1)
             ->get();
         $Vendors = Vendor::select('id', 'shop_name')->get();
-        return view('layout.admin.specification_groups.create', compact('CategoryMain', 'Category', 'CategorySub', 'Vendors'));
+        $isStaff = request()->is('staff/*') || (session()->get('log_type') == 'Staff');
+        return view('layout.admin.specification_groups.create', compact('CategoryMain', 'Category', 'CategorySub', 'Vendors', 'isStaff'));
     }
 
     public function store(Request $request)
     {
         $login_id = session()->get('login_id');
+        $isStaff = request()->is('staff/*') || (session()->get('log_type') == 'Staff');
         $validated = $request->validate([
             'specification_group_name' => 'required|string|max:255',
             'specification_group_refname' => 'required|string|max:255',
@@ -71,13 +74,14 @@ class SpecificationGroupController extends Controller
             'sub_category_ids' => !empty($selectedSubCategoryIds) ? implode(',', $selectedSubCategoryIds) : '',
             'vendor_ids' => $request->has('vendor_ids') ? implode(',', $request->vendor_ids) : '',
             'status' => $validated['status'] ?? 1,
-            'created_by' => "Admin",
+            'created_by' => $isStaff ? "Staff" : "Admin",
             'created_byid' => $login_id,
         ];
 
         SpecificationGroup::create($data);
 
-        return redirect()->route('specification_groups.admin.index')->with('success', 'Specification  created successfully.');
+        $redirectRoute = $isStaff ? 'staff.specification_groups.index' : 'specification_groups.admin.index';
+        return redirect()->route($redirectRoute)->with('success', 'Specification  created successfully.');
     }
 
     public function edit($id)
@@ -92,12 +96,14 @@ class SpecificationGroupController extends Controller
             ->where('t1.status', 1)
             ->get();
         $Vendors = Vendor::select('id', 'shop_name')->get();
-        return view('layout.admin.specification_groups.edit', compact('group', 'CategoryMain', 'Category', 'CategorySub', 'Vendors'));
+        $isStaff = request()->is('staff/*') || (session()->get('log_type') == 'Staff');
+        return view('layout.admin.specification_groups.edit', compact('group', 'CategoryMain', 'Category', 'CategorySub', 'Vendors', 'isStaff'));
     }
 
     public function update(Request $request, $id)
     {
         $login_id = session()->get('login_id');
+        $isStaff = request()->is('staff/*') || (session()->get('log_type') == 'Staff');
         $validated = $request->validate([
             'specification_group_name' => 'required|string|max:255',
             'specification_group_refname' => 'required|string|max:255',
@@ -122,7 +128,7 @@ class SpecificationGroupController extends Controller
             'sub_category_ids' => !empty($selectedSubCategoryIds) ? implode(',', $selectedSubCategoryIds) : '',
             'vendor_ids' => $request->has('vendor_ids') ? implode(',', $request->vendor_ids) : '',
             'status' => $validated['status'] ?? 1,
-            'created_by' => "Admin",
+            'created_by' => $isStaff ? "Staff" : "Admin",
             'created_byid' => $login_id,
         ];
         $group->update($data);
@@ -156,29 +162,34 @@ class SpecificationGroupController extends Controller
             }
         }
 
-        return redirect()->route('specification_groups.admin.index')->with('success', 'Specification  updated successfully.');
+        $redirectRoute = $isStaff ? 'staff.specification_groups.index' : 'specification_groups.admin.index';
+        return redirect()->route($redirectRoute)->with('success', 'Specification  updated successfully.');
     }
     public function update_specification(Request $request)
     {
         $id=  $request->id;
         $login_id = session()->get('login_id');
+        $isStaff = request()->is('staff/*') || (session()->get('log_type') == 'Staff');
         $values = is_array($request->value) ? array_values(array_filter(array_map('trim', $request->value), function($val) {
             return $val !== '';
         })) : [];
         $validated['specification_values'] = json_encode($values);
-        $validated['created_by'] = "Admin";
+        $validated['created_by'] = $isStaff ? "Staff" : "Admin";
         $validated['created_byid'] = $login_id;
         $group = SpecificationGroup::findOrFail($id);
         $group->update( $validated);
 
-        return redirect()->route('specification_groups.admin.index')->with('success', 'Specification updated successfully.');
+        $redirectRoute = $isStaff ? 'staff.specification_groups.index' : 'specification_groups.admin.index';
+        return redirect()->route($redirectRoute)->with('success', 'Specification updated successfully.');
     }
     public function destroy($id)
     {
         $group = SpecificationGroup::findOrFail($id);
         $group->delete();
 
-        return redirect()->route('specification_groups.admin.index')->with('success', 'Specification  deleted successfully.');
+        $isStaff = request()->is('staff/*') || (session()->get('log_type') == 'Staff');
+        $redirectRoute = $isStaff ? 'staff.specification_groups.index' : 'specification_groups.admin.index';
+        return redirect()->route($redirectRoute)->with('success', 'Specification  deleted successfully.');
     }
 
     public function statusUpdate(Request $request)

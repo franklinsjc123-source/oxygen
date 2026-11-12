@@ -20,7 +20,8 @@ class AttributeGroupController extends Controller
     public function index()
     {
         $groups = AttributeGroup::all();
-        return view('layout.admin.attribute_groups.index', compact('groups'));
+        $isStaff = request()->is('staff/*') || (session()->get('log_type') == 'Staff');
+        return view('layout.admin.attribute_groups.index', compact('groups', 'isStaff'));
     }
 
     public function create()
@@ -33,12 +34,14 @@ class AttributeGroupController extends Controller
             ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
             ->where('t1.status', 1)
             ->get();
-        return view('layout.admin.attribute_groups.create', compact('CategoryMain', 'Category', 'CategorySub'));
+        $isStaff = request()->is('staff/*') || (session()->get('log_type') == 'Staff');
+        return view('layout.admin.attribute_groups.create', compact('CategoryMain', 'Category', 'CategorySub', 'isStaff'));
     }
 
     public function store(Request $request)
     {
         $login_id = session()->get('login_id');
+        $isStaff = request()->is('staff/*') || (session()->get('log_type') == 'Staff');
         $validated = $request->validate([
             'attribute_group_name' => 'required|string|max:255',
             'attribute_group_refname' => 'required|string|max:255',
@@ -61,13 +64,14 @@ class AttributeGroupController extends Controller
             'attribute_values' => "",
             'sub_category_ids' => !empty($selectedSubCategoryIds) ? implode(',', $selectedSubCategoryIds) : '',
             'status' => $validated['status'] ?? 1,
-            'created_by' => "Admin",
+            'created_by' => $isStaff ? "Staff" : "Admin",
             'created_byid' => $login_id,
         ];
 
         AttributeGroup::create($data);
 
-        return redirect()->route('attribute_groups.index')->with('success', 'Attribute Group created successfully.');
+        $redirectRoute = $isStaff ? 'staff.attribute_groups.index' : 'attribute_groups.index';
+        return redirect()->route($redirectRoute)->with('success', 'Attribute Group created successfully.');
     }
 
     public function edit($id)
@@ -81,7 +85,8 @@ class AttributeGroupController extends Controller
             ->select('t1.id', 't1.category_main_id', 't1.category_id', 't1.category_sub_name', 't2.category_name', 't3.category_main_name')
             ->where('t1.status', 1)
             ->get();
-        return view('layout.admin.attribute_groups.edit', compact('group', 'CategoryMain', 'Category', 'CategorySub'));
+        $isStaff = request()->is('staff/*') || (session()->get('log_type') == 'Staff');
+        return view('layout.admin.attribute_groups.edit', compact('group', 'CategoryMain', 'Category', 'CategorySub', 'isStaff'));
     }
 
     public function update(Request $request, $id)
@@ -103,13 +108,14 @@ class AttributeGroupController extends Controller
         }
         $selectedSubCategoryIds = array_values(array_unique(array_filter($selectedSubCategoryIds)));
 
+        $isStaff = request()->is('staff/*') || (session()->get('log_type') == 'Staff');
         $group = AttributeGroup::findOrFail($id);
         $data = [
             'attribute_group_name' => $validated['attribute_group_name'],
             'attribute_group_refname' => $validated['attribute_group_refname'],
             'sub_category_ids' => !empty($selectedSubCategoryIds) ? implode(',', $selectedSubCategoryIds) : '',
             'status' => $validated['status'] ?? 1,
-            'created_by' => "Admin",
+            'created_by' => $isStaff ? "Staff" : "Admin",
             'created_byid' => $login_id,
         ];
         $group->update($data);
@@ -145,29 +151,34 @@ class AttributeGroupController extends Controller
             }
         }
 
-        return redirect()->route('attribute_groups.index')->with('success', 'Attribute Group updated successfully.');
+        $redirectRoute = $isStaff ? 'staff.attribute_groups.index' : 'attribute_groups.index';
+        return redirect()->route($redirectRoute)->with('success', 'Attribute Group updated successfully.');
     }
     public function update_attributes(Request $request)
     {
         $id=  $request->id;
         $login_id = session()->get('login_id');
+        $isStaff = request()->is('staff/*') || (session()->get('log_type') == 'Staff');
         $values = is_array($request->value) ? array_values(array_filter(array_map('trim', $request->value), function($val) {
             return $val !== '';
         })) : [];
         $validated['attribute_values'] = json_encode($values);
-        $validated['created_by'] = "Admin";
+        $validated['created_by'] = $isStaff ? "Staff" : "Admin";
         $validated['created_byid'] = $login_id;
         $group = AttributeGroup::findOrFail($id);
         $group->update( $validated);
 
-        return redirect()->route('attribute_groups.index')->with('success', 'Attributes updated successfully.');
+        $redirectRoute = $isStaff ? 'staff.attribute_groups.index' : 'attribute_groups.index';
+        return redirect()->route($redirectRoute)->with('success', 'Attributes updated successfully.');
     }
     public function destroy($id)
     {
         $group = AttributeGroup::findOrFail($id);
         $group->delete();
 
-        return redirect()->route('attribute_groups.index')->with('success', 'Attribute Group deleted successfully.');
+        $isStaff = request()->is('staff/*') || (session()->get('log_type') == 'Staff');
+        $redirectRoute = $isStaff ? 'staff.attribute_groups.index' : 'attribute_groups.index';
+        return redirect()->route($redirectRoute)->with('success', 'Attribute Group deleted successfully.');
     }
     
     public function statusUpdate(Request $request)

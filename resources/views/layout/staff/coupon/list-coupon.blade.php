@@ -43,7 +43,10 @@
                            
                             <div class="card-body">
                                 
-                          <a href="{{ route('staffcoupon.index') }}" class="btn mb-4 btn-primary"><i class="fa fa-plus"></i> Add Coupon </a> <a href="{{ route('staffcoupon.export') }}" class="btn mb-4 btn-success ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a>
+                                <div id="toolbar" class="d-flex align-items-center">
+                                    <a href="{{ route('staffcoupon.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a>
+                                    <a href="{{ route('staffcoupon.index') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Coupon </a>
+                                </div>
 
 
                             <div class="datatable-dashv1-list custom-datatable-overright">
