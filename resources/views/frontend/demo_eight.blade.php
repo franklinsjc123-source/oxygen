@@ -25,9 +25,9 @@
     .intro-slide {
         position: relative !important;
         overflow: hidden !important;
-        background-size: 100% 100% !important;
+        background-size: cover !important;
         background-repeat: no-repeat !important;
-        background-position: center !important;
+        background-position: center center !important;
     }
     .product-price-home{
 
