@@ -22,11 +22,11 @@
 
             <!-- Container-fluid starts-->
             <div class="container-fluid">
-                <div class="page-header">
+                <div class="page-header" style="margin-top: 45px !important; padding-top: 15px !important;">
                     <div class="row">
                         <div class="col-12">
                         <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
-                            <li class="breadcrumb-item"><a href="{{ url('dashboard') }}"><i data-feather="home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="{{ url('staff/dashboard/' . session()->get('login_id')) }}"><i data-feather="home"></i></a></li>
                                 <li class="breadcrumb-item active">List Offers</li>
                         </ol>
                     </div>

@@ -114,6 +114,23 @@
 }
 
 @media (min-width: 768px) {
+    .fixed-table-toolbar {
+        display: flex !important;
+        align-items: center !important;
+        flex-wrap: nowrap !important;
+    }
+    .fixed-table-toolbar .search {
+        flex: 1 1 auto !important;
+        min-width: 200px !important;
+        margin: 5px 0 !important;
+    }
+    .fixed-table-toolbar .search input.form-control {
+        height: 38px !important;
+        font-size: 13px !important;
+    }
+    .fixed-table-toolbar .columns {
+        margin: 5px 12px 5px 0 !important;
+    }
     .fixed-table-toolbar .bs-bars #toolbar,
     .fixed-table-toolbar .bs-bars .pincode-toolbar,
     #toolbar.pincode-toolbar {
@@ -133,8 +150,30 @@
     #toolbar.pincode-toolbar a {
         width: auto !important;
         flex: 0 0 auto !important;
+        height: 38px !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        padding: 6px 14px !important;
+        display: inline-flex !important;
+        align-items: center !important;
         margin: 0 !important;
+        white-space: nowrap !important;
     }
+}
+
+/* Ensure datatable and its wrappers take full 100% width of card */
+.datatable-dashv1-list,
+.custom-datatable-overright,
+.bootstrap-table,
+.fixed-table-container,
+.fixed-table-toolbar,
+.fixed-table-pagination,
+.fixed-table-container table,
+table#table {
+    width: 100% !important;
+    max-width: 100% !important;
+    float: none !important;
+    clear: both !important;
 }
 
 /* Modern Import Modal Styles */</style>
@@ -150,7 +189,7 @@
 
                                     <div id="successmessage">
                                     </div>
-                                <div class="btn-popup pull-right">
+
                                     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
                                         aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -166,21 +205,14 @@
                                                         {{-- onsubmit="return confirm('Are you sure, you want to Save it?') --}}
                                                         <div class="form">
                                                             <div class="form-group">
-                                                                <select class="custom-select w-100 form-control"
-                                                                    required="true" name="route_id" id="route_id">
-                                                                    <option value="">--Select Route-- </option>
-                                                                    @foreach($rdata as $d){
-                                                                        <option value="{{$d->id}}">{{$d->name}}</option>
-                                                                    }
-                                                                    @endforeach 
-                                                                    {{-- {!! $data->routeList !!} --}}
-                                                                </select>
-                                                            </div>
-                                                            <div class="form-group">
+                                                                <label for="validationCustom02"
+                                                                    class="mb-1">Zone</label>
                                                                 <select class="custom-select w-100 form-control"
                                                                     required="true" id="zone_id" name="zonal_id">
                                                                     <option value="">--Select Zone--</option>
-                                                                    
+                                                                     @foreach($zone as $z)
+                                                                        <option value="{{$z->id}}">{{$z->name}}</option>
+                                                                    @endforeach 
                                                                 </select>
                                                             </div>
 
@@ -188,6 +220,7 @@
                                                                 <label for="validationCustom02"
                                                                     class="mb-1">Pincode</label>
                                                                 <input class="form-control" id="pincode" name="pincode" required="" type="text">
+                                                                <small id="pincode_err" class="text-danger fw-bold d-block mt-1"></small>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label for="validationCustom01" class="mb-1">Area</label>
@@ -215,7 +248,7 @@
                                                         </div>
 
                                                         <div class="modal-footer">
-                                                            <button class="btn btn-primary" class="submit"
+                                                            <button class="btn btn-primary" id="add_pincode_btn" class="submit"
                                                                 type="submit">Save</button>
                                                             <button class="btn btn-secondary" type="button"
                                                                 data-bs-dismiss="modal">Close</button>
@@ -262,14 +295,14 @@
 
                                 <div class="datatable-dashv1-list custom-datatable-overright">
                                     <table class="table" id="table" data-click-to-select="true"
-                                        data-show-columns="true" data-sort-name="route" data-sort-order="asc"
+                                        data-show-columns="true" data-sort-name="zone" data-sort-order="asc"
                                         data-mobile-responsive="true" data-toggle="table" data-sort="true"
                                         data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false"
                                         data-key-events="true" data-resizable="true" data-cookie="true"
                                         data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">
                                         <thead>
                                             <tr>
-                                                <th data-field="route" data-sortable="true">Route</th>
+                                               <!-- <th data-field="route" data-sortable="true">Route</th>-->
                                                 <th data-field="zone" data-sortable="true">Zone</th>
                                                 <th data-field="pincode" data-sortable="true">Pincode</th>
                                                 <th data-field="area" data-sortable="true">Area</th>
@@ -284,8 +317,8 @@
                                             @foreach ($pincode as $pin)
                                                 <tr>
                                                     
-                                                    {{-- <td>{{ $pin->zonal_id }}</td> --}}
-                                                    <td>{{ $pin->routename }}</td>
+                                                    {{-- <td>{{ $pin->zonal_id }}</td> 
+                                                    <td>{{ $pin->routename }}</td>--}}
                                                     <td>{{ $pin->zonalname }}</td>
                                                     {{-- <td>{{ $pin->route_id }}</td> --}}
                                                     {{-- <td>{{ $pin->pincode }}</td> --}}
@@ -296,17 +329,7 @@
                                                     
                                                     <td>
                                                         <label class="switch">
-                                                           {{-- $status = $pin->status --}}
-                                                            @if($pin->status  == 1){
-                                                            <input type="checkbox"
-                                                                onclick="return confirm('you want to Change it?  Please Click Edit Button')"
-                                                                checked id="togBtn">
-                                                            }@else{
-                                                                <input type="checkbox"
-                                                                onclick="return confirm('you want to Change it?  Please Click Edit Button')" 
-                                                                 id="togBtn">
-                                                            }
-                                                            @endif
+                                                            <input type="checkbox" class="toggle-status" data-id="{{ $pin->id }}" {{ $pin->status == 1 ? 'checked' : '' }}>
                                                             <div class="slider round">
                                                                 <!--ADDED HTML -->
                                                                 <span class="on">Active</span>
@@ -424,87 +447,76 @@
                                             </tr> --}}
                                         </tbody>
                                     </table>
-                                    <div class="btn-popup pull-right">
-                                        <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog"
-                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title f-w-600" id="exampleModalLabel">Update Pincode</h5>
-                                                        <button class="btn-close" type="button" data-bs-dismiss="modal"
-                                                            aria-label="Close"><span aria-hidden="true">×</span></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        {{-- <form class="" method="post" action="{{ route('pincode1.update', $pin->id) }}" enctype="multipart/form-data">
-                                                            @csrf
-                                                            @method('PUT') --}}
 
-                                                           
-                                                            <div class="form">
-                                                                <div class="form-group">
-                                                                    <select class="custom-select w-100 form-control"
-                                                                        required="true" name="editroute_id" id="editroute_id">
-                                                                        <option value="">--Select Route-- </option>
-                                                                        @foreach($rdata as $d){
-                                                                            <option value="{{$d->id}}">{{$d->name}}</option>
-                                                                        }
-                                                                        @endforeach 
-                                                                      
-                                                                    </select>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <select class="custom-select w-100 form-control"
-                                                                        required="true" id="editzone_id" name="editzone_id">
-                                                                        <option value="">--Select Zone--</option>
-                                                                         @foreach($zone as $zo){
-                                                                            <option value="{{$zo->id}}" hidden>{{$zo->name}}</option>
-                                                                        }
-                                                                        @endforeach  
-                                                                    </select>
-                                                                </div>
-
-                                                                <div class="form-group">
-                                                                    <input type="hidden" id=pincodee_id name=pincodee_id>
-
-                                                                    <label for="validationCustom02"
-                                                                        class="mb-1">Pincode</label>
-                                                                    <input class="form-control" id="editpincode" name="editpincode" required=""  type="text">
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label for="validationCustom01" class="mb-1">Area</label>
-                                                                    <input class="form-control" id="editarea" name="editarea" required=""
-                                                                        type="text">
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label for="validationCustom02" class="mb-1">Postal Region
-                                                                        :</label>
-                                                                    <input class="form-control" require="" id="editpost_regin" name="editpost_regin" type="text">
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label for="validationCustom01"
-                                                                        class="mb-1">Status</label>
-                                                                    <select class="custom-select w-100 form-control"
-                                                                        required="" id="editstatus" name="editstatus">
-
-
-                                                                        <option value="1">Active</option>
-                                                                        <option value="0">Inactive</option>
-
-                                                                    </select>
-
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="modal-footer">
-                                                                <button class="btn btn-primary" type="submit" id="update_pincode">Update</button>
-                                                                <button class="btn btn-secondary" type="button"
-                                                                    data-bs-dismiss="modal">Close</button>
-                                                            </div>
-
-                                                        {{-- </form> --}}
-                                                    </div>
-                                                    
+                                    <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog"
+                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title f-w-600" id="exampleModalLabel">Update Pincode</h5>
+                                                    <button class="btn-close" type="button" data-bs-dismiss="modal"
+                                                        aria-label="Close"><span aria-hidden="true">×</span></button>
                                                 </div>
+                                                <div class="modal-body">
+                                                    {{-- <form class="" method="post" action="{{ route('pincode1.update', $pin->id) }}" enctype="multipart/form-data">
+                                                        @csrf
+                                                        @method('PUT') --}}
+
+                                                       
+                                                        <div class="form">
+                                                            <div class="form-group">
+                                                                <label for="validationCustom02" class="mb-1">Zone</label>
+                                                                <select class="custom-select w-100 form-control"
+                                                                    required="true" id="editzone_id" name="editzone_id">
+                                                                    <option value="">--Select Zone--</option>
+                                                                    @foreach($zone as $zo)
+                                                                        <option value="{{$zo->id}}">{{$zo->name}}</option>
+                                                                    @endforeach  
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <input type="hidden" id="pincodee_id" name="pincodee_id">
+
+                                                                <label for="validationCustom02"
+                                                                    class="mb-1">Pincode</label>
+                                                                <input class="form-control" id="editpincode" name="editpincode" required=""  type="text">
+                                                                <small id="editpincode_err" class="text-danger fw-bold d-block mt-1"></small>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="validationCustom01" class="mb-1">Area</label>
+                                                                <input class="form-control" id="editarea" name="editarea" required=""
+                                                                    type="text">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="validationCustom02" class="mb-1">Postal Region
+                                                                    :</label>
+                                                                <input class="form-control" require="" id="editpost_regin" name="editpost_regin" type="text">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="validationCustom01"
+                                                                    class="mb-1">Status</label>
+                                                                <select class="custom-select w-100 form-control"
+                                                                    required="" id="editstatus" name="editstatus">
+
+
+                                                                    <option value="1">Active</option>
+                                                                    <option value="0">Inactive</option>
+
+                                                                </select>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="modal-footer">
+                                                            <button class="btn btn-primary" type="submit" id="update_pincode">Update</button>
+                                                            <button class="btn btn-secondary" type="button"
+                                                                data-bs-dismiss="modal">Close</button>
+                                                        </div>
+
+                                                    {{-- </form> --}}
+                                                </div>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -520,271 +532,170 @@
     </div>
 @endsection
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+.swal2-popup {
+    font-size: 1.6rem !important;
+}
+</style>
 <script>
+$(document).ready(function() {
+    // Status Toggle
+    $(document).on('change', '.toggle-status', function() {
+        var status = $(this).prop('checked') ? 1 : 0;
+        var id = $(this).data('id');
+        var checkbox = $(this);
 
-            // function makeArray(value) {
-            // return editroute.map(function(a) {
-            //     return {[value]: a[value]};
-            // });
-            // }
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "{{ route('staffpincode1.changestatus') }}",
+            data: {'status': status, 'id': id, '_token': '{{ csrf_token() }}'},
+            success: function(data) {
+                // Instantly changed
+            },
+            error: function() {
+                checkbox.prop('checked', !status);
+                Swal.fire('Error!', 'Something went wrong.', 'error');
+            }
+        });
+    });
 
-
-
-
-    $(document).on('click','.edit_pincode', function(e){
-        var editroute1='';
-        var htmlPlan='';
-    e.preventDefault();
-    var pin_id = $(this).val();
-    //    console.log(pin_id);
-    $('#exampleModal1').modal('show');
-    $.ajax({
-        //   data: $('').serialize(),
-          url: "{{ url('staff/pincode1') }}/"+pin_id+"/edit",          
-          type: "get",
-          dataType: 'json',
-          success: function (response) {
-              // console.log(response);
-            // alert('test');
-                if(response.status == 404)
-                {
-                // alert('test');
-                $('successmessage').html('');
-                $('successmessage').addClass('alert alert-danger');
-                $('successmessage').text(response.message);
+    // Delete Confirmation
+    $(document).on('submit', 'form', function(e) {
+        if($(this).find('input[name="_method"][value="DELETE"]').length > 0) {
+            e.preventDefault();
+            var form = this;
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to delete this pincode! This cannot be undone.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
                 }
-                else{
-                    $('#editroute_id').val(response.pincodee.route_id);
+            });
+        }
+    });
+
+    // Edit Pincode
+    $(document).on('click', '.edit_pincode', function(e){
+        e.preventDefault();
+        var pin_id = $(this).val();
+        $('#exampleModal1').modal('show');
+        $.ajax({
+            url: "{{ url('staff/pincode1') }}/"+pin_id+"/edit",          
+            type: "get",
+            dataType: 'json',
+            success: function (response) {
+                if(response.status == 404) {
+                    $('#successmessage').html('').addClass('alert alert-danger').text(response.message);
+                } else {
                     $('#editzone_id').val(response.pincodee.zonal_id);
                     $('#editpincode').val(response.pincodee.name);
                     $('#editarea').val(response.pincodee.area);
                     $('#editpost_regin').val(response.pincodee.post_region);
                     $('#editstatus').val(response.pincodee.status);
                     $('#pincodee_id').val(pin_id);
-                    
-                    var editroute_id = response.pincodee.route_id;
-                    //alert(editroute_id);
-                    var editzone_id = response.pincodee.zonal_id;
-                    //alert(editzone_id);
-                    
-                    var editzonal = JSON.stringify(response.editzonal);
-                    var editzonal1 = JSON.parse(editzonal);
-                   // console.log(editzonal1['0'].id);
-                   //console.log(editzonal1['1'].name);
-
-                //     for (var i = 0; i < editroute.length; i++) {
-                //             console.log(editroute[i]['id']);
-                //         }
-                //    // var myarray= JSON.parse(editroute);
-                        // alert(editroute['7']);
-                        // alert(editroute.length);
-
-                    // var labels = makeArray('editroute');
-
-
-                    // alert(labels);
-
-                    //alert(editroute);
-                    //var editzonal = response.editzonal;
-                     //alert(editzonal);
-
-                    // for(let x = 0;x < editzonal1.length;x++){
-                    //    //console.log(editzonal1[x].id)
-                    //     if(editzone_id == editzonal1[x].id){
-                    //         htmlPlan += `<option value="`+editzonal1[x].id+`" selected>`+editzonal1[x].name+`</option>`;
-                    //     }
-                    //     else{
-                    //         htmlPlan += `<option value="`+editzonal1[x].id+`">`+editzonal1[x].name+`</option>`;
-                    //     }
-                    // }
-                    // $("#editzone_id").html(htmlPlan);
-
-
                 }
-     
-                
-         
             }
-        
-      });
-
+        });
     });
-   
-    </script>
-    {{-- update --}}
-    <script>
-     $(document).on('click','#update_pincode', function(e){
-       //alert('test');
 
-         e.preventDefault(e);
-    var updateid = $('#pincodee_id').val();
-    // alert(updatepin_id);
+    // Update Pincode
+    $(document).on('click', '#update_pincode', function(e){
+        e.preventDefault();
+        var updateid = $('#pincodee_id').val();
+        var zonal_id = $('#editzone_id').val();
+        var name = $('#editpincode').val();
+        var area = $('#editarea').val();
+        var post_region = $('#editpost_regin').val();
+        var status = $('#editstatus').val();
 
-
-    var route_id = $('#editroute_id').val();
-    var zonal_id = $('#editzone_id').val();
-    var name = $('#editpincode').val();
-    var  area = $('#editarea').val();
-    var post_region = $('#editpost_regin').val();
-    var  status = $('#editstatus').val();
-    
-
-    // alert(route_id);
-    // alert(zone_id);
-    // alert(name);
-    // alert(area);
-    // alert(post_region);
-    // alert(status);
-    var url ="{{route('staffpincode1.update', ":updateid")}}";
-    url = url.replace(":updateid", updateid);
-    $.ajax({
-        //   data: $('').serialize(),
-            //  url: "{{ url('admin/pincode1/update') }}/"+updatepin_id,
-            
-
-
-            url:url,
-          
-          type: "PUT",
-          data: {_token : `{{csrf_token()}}`,
-           route_id:route_id,zonal_id:zonal_id,name:name,area:area,post_region:post_region,status:status},
-         dataType: 'html',
-          success: function (response) {
-               //console.log(response);
-
-               $('#exampleModal1').modal('hide');
-               location.reload();
-            //    $('#table').text(response.html);
-            // // alert('test');
-            //     if(response.status == 404)
-            //     {
-            //     // alert('test');
-            //     $('successmessage').html('');
-            //     $('successmessage').addClass('alert alert-danger');
-            //     $('successmessage').text(response.message);
-            //     }
-            //     else{
-            //         $('#editroute_id').val(response.pincodee.route_id);
-            //         $('#editzone_id').val(response.pincodee.zonal_id);
-            //         $('#editpincode').val(response.pincodee.name);
-            //         $('#editarea').val(response.pincodee.area);
-            //         $('#editpost_regin').val(response.pincodee.post_region);
-            //         $('#editstatus').val(response.pincodee.status);
-            //         $('#pincodee_id').val(pin_id);
-
-            //     }
-     
-                
-         
+        var url = "{{route('staffpincode1.update', ':updateid')}}";
+        url = url.replace(':updateid', updateid);
+        $.ajax({
+            url: url,
+            type: "PUT",
+            data: {
+                _token: `{{csrf_token()}}`,
+                zonal_id: zonal_id,
+                name: name,
+                area: area,
+                post_region: post_region,
+                status: status
+            },
+            dataType: 'json',
+            success: function (response) {
+                if (response.status == 200) {
+                    $('#exampleModal1').modal('hide');
+                    location.reload();
+                } else {
+                    Swal.fire('Error!', response.message || 'Pincode already exists!', 'error');
+                }
+            },
+            error: function (xhr) {
+                var msg = 'Something went wrong.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    msg = xhr.responseJSON.message;
+                }
+                Swal.fire('Error!', msg, 'error');
             }
-        
-      });
-    
-
+        });
     });
-        </script>
-    <script>
-        function getAjaxValue(url, method, callback) {
-            $.ajax({
-                url: url,
-                type: method,
-                data: {
-                    "_token": "{{ csrf_token() }}"
-                },
-                dataType: "json",
-                success: callback
-            });
+
+    // Real-time duplicate check
+    $('#pincode').on('input blur', function() {
+        var val = $(this).val().trim();
+        if (!val) {
+            $('#pincode_err').text('');
+            $('#add_pincode_btn').prop('disabled', false);
+            return;
         }
-
-        $(function() {
-            var validation_option = getValidationOptions({
-                rules: {
-                    name: {
-                        required: true,
-                        remote: {
-                            url: "{{ route('checkZonalnamePost') }}",
-                            type: "post",
-                            data: {
-                                name: function() {
-                                    return $("#name").val();
-                                },
-                            },
-                            dataFilter: function(data) {
-                                var json = JSON.parse(data);
-                                if (json != "true") {
-                                    $('#name').addClass("is-invalid");
-                                    return "\" " + json + " \"";
-                                } else {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                },
-                messages: {
-                    Name: {
-                        required: "Required  zonal name"
-                    }
-                }
-            });
-
-            $('#form').validate(validation_option);
-
-            $('#btnSave').click(function(event) {
-                event.preventDefault();
-                save(null);
-            });
-
-            function save(callBack) {
-                if ($('#form').valid()) {
-                    var disabled = $('#form').find(':input:disabled').removeAttr('disabled');
-                    var formData = $('#form').serializeFormJSON();
-                    disabled.attr('disabled', 'disabled');
-                    var url = "{{ route('saveZonals') }}";
-                    var successCallBack = function successCallBack(data) {
-                        $('#zone_id').val(data);
-                    }
-                    ajaxPost(formData, url, successCallBack, null);
+        $.ajax({
+            type: 'POST',
+            url: "{{ route('staffpincode1.checkduplicate') }}",
+            data: { pincode: val, _token: '{{ csrf_token() }}' },
+            success: function(res) {
+                if (res.exists) {
+                    $('#pincode_err').text(res.message);
+                    $('#add_pincode_btn').prop('disabled', true);
+                } else {
+                    $('#pincode_err').text('');
+                    $('#add_pincode_btn').prop('disabled', false);
                 }
             }
         });
+    });
 
-
-        $('#route_id').change(function() {
-            let route_id = $(this).val();
-            let url = '{{ route('getZonal') }}?route_id=' + route_id;
-            let method = 'GET';
-
-            getAjaxValue(url, method, function(data) {
-                $('#zone_id').empty();
-
-                $.each(data, function(key, zone) {
-                    $('#zone_id').append(
-                        `<option value="${zone.id}" selected>${zone.name}</option>`
-                    );
-                });
-            })
+    $('#editpincode').on('input blur', function() {
+        var val = $(this).val().trim();
+        var id = $('#pincodee_id').val();
+        if (!val) {
+            $('#editpincode_err').text('');
+            $('#update_pincode').prop('disabled', false);
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: "{{ route('staffpincode1.checkduplicate') }}",
+            data: { pincode: val, id: id, _token: '{{ csrf_token() }}' },
+            success: function(res) {
+                if (res.exists) {
+                    $('#editpincode_err').text(res.message);
+                    $('#update_pincode').prop('disabled', true);
+                } else {
+                    $('#editpincode_err').text('');
+                    $('#update_pincode').prop('disabled', false);
+                }
+            }
         });
-        $('#editroute_id').change(function() {
-            let route_id = $(this).val();
-            // alert(route_id);
-            let url = '{{ route('getZonal') }}?route_id=' + route_id;
-            // alert(url);
-            let method = 'GET';
-
-            getAjaxValue(url, method, function(data) {
-                
-                $('#editzone_id').empty();
-
-                $.each(data, function(key, zone) {
-                    
-                    $('#editzone_id').append(
-                        `<option value="${zone.id}" selected>${zone.name}</option>`
-                    );
-                });
-            });
-        });
-
-    </script>
+    });
+});
+</script>
 @endpush
 

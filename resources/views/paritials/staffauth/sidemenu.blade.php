@@ -156,6 +156,14 @@ use Illuminate\Support\Facades\Route;
                                     $finalRoute = route('staff.attribute_groups.index');
                                 } elseif ($submenu->link == 'specification_groups.admin.index' || $submenu->link == 'specification_groups' || str_contains($submenu->link, 'specification_group') || strtolower(trim($submenu->title)) == 'specification') {
                                     $finalRoute = route('staff.specification_groups.index');
+                                } elseif ($submenu->link == 'pincode1' || $submenu->link == 'pincode' || $submenu->link == 'admin/pincode1' || str_contains($submenu->link, 'pincode') || strtolower(trim($submenu->title)) == 'pincode') {
+                                    $finalRoute = route('staffpincode1.index');
+                                } elseif ($submenu->link == 'aroute' || $submenu->link == 'route' || $submenu->link == 'admin/route' || strtolower(trim($submenu->title)) == 'route') {
+                                    $finalRoute = route('staffroute');
+                                } elseif ($submenu->link == 'states.index' || $submenu->link == 'states' || $submenu->link == 'admin/states' || str_contains($submenu->link, 'state') || strtolower(trim($submenu->title)) == 'states') {
+                                    $finalRoute = route('staffstates.index');
+                                } elseif ($submenu->link == 'cities.index' || $submenu->link == 'cities' || $submenu->link == 'admin/cities' || str_contains($submenu->link, 'cit') || strtolower(trim($submenu->title)) == 'city' || strtolower(trim($submenu->title)) == 'cities') {
+                                    $finalRoute = route('staffcities.index');
                                 } elseif (Route::has($submenu->link)) {
                                     $finalRoute = route($submenu->link);
                                 }
@@ -163,11 +171,27 @@ use Illuminate\Support\Facades\Route;
                         <li><a href="{{ $finalRoute }}"><i class="fa fa-circle"></i>{{ str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $submenu->title) }}</a></li>
                         @else
                             @php
-                                $finalUrl = url('staff/' . ltrim($submenu->link, '/'));
-                                if (str_contains($submenu->link, 'attribute_group') || strtolower(trim($submenu->title)) == 'attributes') {
+                                $cleanLink = ltrim($submenu->link, '/');
+                                if (str_starts_with($cleanLink, 'admin/')) {
+                                    $cleanLink = substr($cleanLink, 6);
+                                } elseif (str_starts_with($cleanLink, 'staff/')) {
+                                    $cleanLink = substr($cleanLink, 6);
+                                }
+
+                                if (str_contains($submenu->link, 'pincode') || strtolower(trim($submenu->title)) == 'pincode') {
+                                    $finalUrl = route('staffpincode1.index');
+                                } elseif (str_contains($submenu->link, 'attribute_group') || strtolower(trim($submenu->title)) == 'attributes') {
                                     $finalUrl = route('staff.attribute_groups.index');
                                 } elseif (str_contains($submenu->link, 'specification_group') || strtolower(trim($submenu->title)) == 'specification') {
                                     $finalUrl = route('staff.specification_groups.index');
+                                } elseif ($cleanLink == 'route' || $cleanLink == 'aroute' || strtolower(trim($submenu->title)) == 'route') {
+                                    $finalUrl = route('staffroute');
+                                } elseif (str_contains($cleanLink, 'state') || strtolower(trim($submenu->title)) == 'states') {
+                                    $finalUrl = route('staffstates.index');
+                                } elseif (str_contains($cleanLink, 'cit') || strtolower(trim($submenu->title)) == 'city' || strtolower(trim($submenu->title)) == 'cities') {
+                                    $finalUrl = route('staffcities.index');
+                                } else {
+                                    $finalUrl = url('staff/' . $cleanLink);
                                 }
                             @endphp
                         <li><a href="{{ $finalUrl }}"><i class="fa fa-circle"></i>{{ str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $submenu->title) }}</a></li>

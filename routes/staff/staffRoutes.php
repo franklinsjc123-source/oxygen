@@ -256,7 +256,10 @@ Route::get('activity/create', [\App\Http\Controllers\ActivityTrackerController::
 Route::get('activity/list', [\App\Http\Controllers\ActivityTrackerController::class, 'index'])->name('staffactivitylist');
 
 //Master
-
+Route::redirect('admin/pincode1', url('staff/pincode1'));
+Route::post('pincode1/changestatus', [PinCodeController1::class, 'changestatus'])->name('staffpincode1.changestatus');
+Route::post('pincode1/checkduplicate', [PinCodeController1::class, 'checkduplicate'])->name('staffpincode1.checkduplicate');
+Route::post('importpincode', [PinCodeController1::class, 'importpincode'])->name('staffimportpincode');
 Route::resource('pincode1', PinCodeController1::class, ['names' => 'staffpincode1']);
 Route::get('sample-pincode-download', [PinCodeController1::class, 'sampleDownload'])->name('staff.pincode.sample.download');
 
@@ -289,7 +292,9 @@ Route::get('pincode', [MasterController::class, 'pincode']);
 Route::post('/savePincodes', [MasterController::class, 'savePincodes'])->name('savePincodes');
 Route::post('/checkPincodenamePost', [MasterController::class, 'checkPincodenamePost'])->name('checkPincodenamePost');
  
+Route::redirect('admin/route', url('staff/route'));
 Route::get('route', [MasterController::class, 'route'])->name('staffroute');
+Route::get('route', [MasterController::class, 'route'])->name('staffaroute');
 Route::get('route_delete/{$id}', [MasterController::class, 'route_delete'])->name('staffroute_delete');
 
 
@@ -337,6 +342,14 @@ Route::get('package_export', [GeneralExportController::class, 'exportPackage'])-
 Route::get('activity_export', [GeneralExportController::class, 'exportActivity'])->name('staffactivity.export');
 Route::get('state_export', [GeneralExportController::class, 'exportState'])->name('staffstate.export');
 Route::get('city_export', [GeneralExportController::class, 'exportCity'])->name('staffcity.export');
+
+Route::redirect('admin/states', url('staff/states'));
+Route::post('states/changestatus', [\App\Http\Controllers\StateController::class, 'changestatus'])->name('staffstates.changestatus');
+Route::resource('states', \App\Http\Controllers\StateController::class, ['names' => 'staffstates']);
+
+Route::redirect('admin/cities', url('staff/cities'));
+Route::post('cities/changestatus', [\App\Http\Controllers\CityController::class, 'changestatus'])->name('staffcities.changestatus');
+Route::resource('cities', \App\Http\Controllers\CityController::class, ['names' => 'staffcities']);
 Route::get('attribute_export', [GeneralExportController::class, 'exportAttribute'])->name('staffattribute.export');
 Route::get('specification_export', [GeneralExportController::class, 'exportSpecification'])->name('staffspecification.export');
 
@@ -352,6 +365,10 @@ Route::post('activity_trackers/status/{id}', [\App\Http\Controllers\ActivityTrac
 Route::get('activity/edit/{id}', [\App\Http\Controllers\ActivityTrackerController::class, 'activityedit'])->name('staffactivity.edit');
 Route::resource('activity_trackers', \App\Http\Controllers\ActivityTrackerController::class, ['names' => 'staffactivity_trackers']);
 Route::get('activity/employee/', [\App\Http\Controllers\ActivityTrackerController::class, 'employeeactivity'])->name('staffactivity.employee');
+
+Route::any('admin/{any}', function ($any) {
+    return redirect('staff/' . $any);
+})->where('any', '.*');
 
 
 

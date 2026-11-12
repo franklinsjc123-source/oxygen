@@ -57,7 +57,8 @@ class CityController extends Controller {
     // Delete a city
     public function destroy(City $city) {
         $city->delete();
-        return redirect()->route('cities.index')->with('success', 'City Deleted  successfully');
+        $redirect = (request()->is('staff/*') || (session()->get('log_type') == 'Staff')) ? 'staffcities.index' : 'cities.index';
+        return redirect()->route($redirect)->with('success', 'City Deleted successfully');
 		//return response()->json(['message' => 'City deleted successfully!']);
     }
     public function changestatus(Request $request) {

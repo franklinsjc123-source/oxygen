@@ -68,7 +68,8 @@ class StateController extends Controller
     {
         $state->delete();
         
-		 return redirect()->route('states.index')->with('success', 'State Deleted  successfully');
+        $redirect = (request()->is('staff/*') || (session()->get('log_type') == 'Staff')) ? 'staffstates.index' : 'states.index';
+        return redirect()->route($redirect)->with('success', 'State Deleted successfully');
     }
     public function changestatus(Request $request)
     {

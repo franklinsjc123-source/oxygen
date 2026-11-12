@@ -39,6 +39,22 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="card">
+<style>
+/* Ensure datatable and its wrappers take full 100% width of card */
+.datatable-dashv1-list,
+.custom-datatable-overright,
+.bootstrap-table,
+.fixed-table-container,
+.fixed-table-toolbar,
+.fixed-table-pagination,
+.fixed-table-container table,
+table#table {
+    width: 100% !important;
+    max-width: 100% !important;
+    float: none !important;
+    clear: both !important;
+}
+</style>
 
                             <div class="card-body">
                                 <div id="toolbar" class="d-flex align-items-center">
@@ -48,9 +64,8 @@
                                         Gst</button>
                                 </div>
 
-                                <div class="btn-popup pull-right">
-                                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
-                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -113,6 +128,8 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                <div class="datatable-dashv1-list custom-datatable-overright">
                                     <table class="table" id="table" data-click-to-select="true" data-sort-name="name"
                                         data-sort-order="asc" data-mobile-responsive="true" data-toggle="table"
                                         data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-columns="true"
@@ -179,13 +196,14 @@
 
                                 </tbody>
                                 </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Container-fluid Ends-->
+            <!-- Container-fluid Ends-->
 
+        </div>
     </div>
 @endsection
 

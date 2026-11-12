@@ -40,6 +40,22 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="card">
+<style>
+/* Ensure datatable and its wrappers take full 100% width of card */
+.datatable-dashv1-list,
+.custom-datatable-overright,
+.bootstrap-table,
+.fixed-table-container,
+.fixed-table-toolbar,
+.fixed-table-pagination,
+.fixed-table-container table,
+table#table {
+    width: 100% !important;
+    max-width: 100% !important;
+    float: none !important;
+    clear: both !important;
+}
+</style>
 
                             <div class="card-body">
                                 <div id="toolbar" class="d-flex align-items-center">
@@ -49,7 +65,7 @@
                                         Route</button>
                                 </div>
 
-                                <div class="btn-popup pull-right">
+                                <div class="btn-popup">
 
                                     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
                                         data-backdrop="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -88,11 +104,11 @@
                                                                 <label for="validationCustom01"
                                                                     class="mb-1">Status</label>
                                                                 <select class="custom-select w-100 form-control"
-                                                                    required="">
+                                                                    required="" id="status" name="status">
 
 
-                                                                    <option value="Active">Active</option>
-                                                                    <option value="Inactive">Inactive</option>
+                                                                    <option value="1">Active</option>
+                                                                    <option value="0">Inactive</option>
 
                                                                 </select>
                                                                 <input type="hidden" name="routeId" value="-1" />
@@ -137,156 +153,97 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <!--@dd($data->routeList);-->
-                                            <!--@if(count($data->routeList) != null)-->
-                                            <!--@foreach ($data->routeList as $route)-->
-                                            
                                             @foreach ($data->routeList as $rrr)
-                                            
-                                            
                                                 <tr>
-                                                    	<td>
-                                                            
-                                                            <?php
-                                                            
-                                                           // dd($route->zonal_id);
-                                                            $rna = App\Models\Zonal::where('id',$rrr->zonal_id)->get();
-                                                             
-                                                            ?>
-                                                             {{ $rna[0]->name }}
-                                                            
-                                                            </td>
-                                                    <td>{{ $rrr->name }}</td>
-												
                                                     <td>
-
+                                                        {{ optional(App\Models\Zonal::find($rrr->zonal_id))->name ?? 'N/A' }}
+                                                    </td>
+                                                    <td>{{ $rrr->name }}</td>
+                                                    <td>
                                                         <label class="switch">
-                                                            @if($rrr->status  == 1){
+                                                            @if($rrr->status == 1)
                                                                 <input type="checkbox"
                                                                     onclick="return confirm('you want to Change it?  Please Click Edit Button')"
                                                                     checked id="togBtn">
-                                                                }@else{
-                                                                    <input type="checkbox"
+                                                            @else
+                                                                <input type="checkbox"
                                                                     onclick="return confirm('you want to Change it?  Please Click Edit Button')" 
-                                                                     id="togBtn">
-                                                                }
-                                                                @endif
-                                                           
+                                                                    id="togBtn">
+                                                            @endif
                                                             <div class="slider round">                                                              
-                                                                    <span class="off">Inactive </span>
-                                                               
-                                                                    <span class="on">Active</span>
-                                                         
-                                                                <!--ADDED HTML -->
-
-
-                                                                <!--END-->
+                                                                <span class="off">Inactive </span>
+                                                                <span class="on">Active</span>
                                                             </div>
                                                         </label>
-                                                        
                                                     </td>
-
-                                                    <td><span> 
-                                                        
-                                                        
-                                                        <button type="button" class="edit_route btn btn-secondary mx-1" value="{{$rrr->id}}">
-                                                            <i class="fa fa-pencil"></i></button>
-
-                                                                </span>
-                                                                
-                                                                
-                                                                    <form
-                                                                    action="{{ route('staffroutedelete', $rrr->id) }}"
-                                                                    method="post">
-                                                                    @method('POST')
-                                                                    @csrf
-                                                                    <button type="submit" class="btn btn-warning mx-1" value="{{$rrr->id}}"
-                                                                        onclick="return confirm('Are you sure, you want to delete it?')"><i
-                                                                            class="fa fa-trash"></i>
-                                                                    </button>
-                                                                </form>
-
-                                                                </td>
+                                                    <td>
+                                                        <span class="d-flex align-items-center"> 
+                                                            <button type="button" class="edit_route btn btn-secondary mx-1" value="{{$rrr->id}}">
+                                                                <i class="fa fa-pencil"></i>
+                                                            </button>
+                                                            <form action="{{ route('staffroutedelete', $rrr->id) }}" method="post" class="d-inline m-0">
+                                                                @method('POST')
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-warning mx-1" value="{{$rrr->id}}"
+                                                                    onclick="return confirm('Are you sure, you want to delete it?')"><i
+                                                                        class="fa fa-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                        </span>
+                                                    </td>
                                                 </tr>
-
-
-                                                <div class="btn-popup pull-right">
-
-                                                    <div class="modal fade" id="edit{{$rrr->id}}" tabindex="-1" role="dialog"
-                                                        data-backdrop="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title f-w-600" id="exampleModalLabel">Route</h5>
-                                                                    <button class="btn-close" type="button" data-bs-dismiss="modal"
-                                                                        aria-label="Close"><span aria-hidden="true">×</span></button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                              <form class="" id="form" method="post">
-                                                                        <div class="form">
-                                                                            <input type="hidden" id="editzonal_id" name="editzonal_id">
-                                                                            <input type="hidden" id="editid" name="editid">
-                                             <div class="form-group">
-                                                                                <label for="validationCustom01" class="mb-1">Select Zonal
-                                                                                    :</label>
-                                                                                <select class="custom-select w-100 form-control"
-                                                                                    name="editzonal_name" id="editzonal_name" required="">
-                                                                                    <option value="">--Select--</option>
-                                                                                   
-                                                                                    {!! $data->zonaList !!}
-                                    
-                                                                                </select>
-                                    
-                                                                            </div>
-                                    
-                                                                            <div class="form-group">
-                                                                                <label for="validationCustom01" class="mb-1">Route Name
-                                                                                    :</label>
-                                                                                <input class="form-control"  type="text"
-                                                                                    name="editname" id="editname" required="true" value="{{$rrr->name}}">
-                                                                            </div>
-                                    
-                                                                            <div class="form-group">
-                                                                                <label for="validationCustom01"
-                                                                                    class="mb-1">Status</label>
-                                                                                <select class="custom-select w-100 form-control"
-                                                                                    required="" name="editstatus" id="editstatus">
-                                    
-                                    
-                                                                                    <option value="1">Active</option>
-                                                                                    <option value="0">Inactive</option>
-                                    
-                                                                                </select>
-                                                                                <input type="hidden" name="routeId" value="-1" />
-                                                                                <input type="hidden" name="createdBy"
-                                                                                    value="{{ session()->get('userId') }}">
-                                                                            </div>
-                                                                        </div>
-                                    
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button class="btn btn-primary" id="update_route"
-                                                        type="submit" >Update</button>
-                                                    <button class="btn btn-secondary" type="button"
-                                                        data-bs-dismiss="modal">Close</button>
-                                                                </div>
-                                    
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>      
-                                          
                                             @endforeach
-                                            
                                         </tbody>
                                     </table>
                                 </div>
 
+                                <div class="modal fade" id="editroute" tabindex="-1" role="dialog"
+                                    data-backdrop="false" aria-labelledby="editRouteModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title f-w-600" id="editRouteModalLabel">Route</h5>
+                                                <button class="btn-close" type="button" data-bs-dismiss="modal"
+                                                    aria-label="Close"><span aria-hidden="true">×</span></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form class="" id="editform" method="post">
+                                                    <div class="form">
+                                                        <input type="hidden" id="editzonal_id" name="editzonal_id">
+                                                        <input type="hidden" id="editid" name="editid">
+                                                        <div class="form-group">
+                                                            <label for="editzonal_name" class="mb-1">Select Zonal :</label>
+                                                            <select class="custom-select w-100 form-control"
+                                                                name="editzonal_name" id="editzonal_name" required="">
+                                                                <option value="">--Select--</option>
+                                                                {!! $data->zonaList !!}
+                                                            </select>
+                                                        </div>
 
+                                                        <div class="form-group">
+                                                            <label for="editname" class="mb-1">Route Name :</label>
+                                                            <input class="form-control" type="text"
+                                                                name="editname" id="editname" required="true">
+                                                        </div>
 
-
-
+                                                        <div class="form-group">
+                                                            <label for="editstatus" class="mb-1">Status</label>
+                                                            <select class="custom-select w-100 form-control"
+                                                                required="" name="editstatus" id="editstatus">
+                                                                <option value="1">Active</option>
+                                                                <option value="0">Inactive</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-primary" id="update_route" type="submit">Update</button>
+                                                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
 
                             </div>
                         </div>
@@ -357,79 +314,52 @@
             });
         </script>
         <script>
-                $(document).on('click','.edit_route', function(e){
-                    var editroute1='';
-                    var htmlPlan='';
+            $(document).on('click','.edit_route', function(e){
                 e.preventDefault();
                 var id = $(this).val();
-                //    console.log(pin_id);
-                $('#edit' + id).modal('show');
+                $('#editroute').modal('show');
                 $.ajax({
-                    //   data: $('').serialize(),  {{ url('admin/pincode1') }}/"+pin_id+"/edit"
                     url: "{{ url('staff/editroute') }}/"+id+"/edit",          
                     type: "get",
                     dataType: 'json',
                     success: function (response) {
-                         console.log(response);
-                        // alert('test');
-                            if(response.status == 404)
-                            {
-                            // alert('test');
-                            $('successmessage').html('');
-                            $('successmessage').addClass('alert alert-danger');
-                            $('successmessage').text(response.message);
-                            }
-                            else{
-                                $('#editid').val(response.editroute.id);
-                                $('#editzonal_id').val(response.editroute.zonal_id);
-                                $('#editname').val(response.editroute.name);
-                                $('#editstatus').val(response.editroute.status);
-                            }  
-                        }
-                    
+                        if(response.status == 404) {
+                            $('successmessage').html('').addClass('alert alert-danger').text(response.message);
+                        } else if(response.editroute) {
+                            $('#editid').val(response.editroute.id);
+                            $('#editzonal_id').val(response.editroute.zonal_id);
+                            $('#editzonal_name').val(response.editroute.zonal_id);
+                            $('#editname').val(response.editroute.name);
+                            $('#editstatus').val(response.editroute.status);
+                        }  
+                    }
                 });
+            });
 
+            $(document).on('click','#update_route', function(e){
+                e.preventDefault();
+                var id = $('#editid').val();
+                var zonal_id = $('#editzonal_name').val() || $('#editzonal_id').val();
+                var name = $('#editname').val();
+                var status = $('#editstatus').val();
+
+                var url = '{{ route("staffroute_update", ":id") }}'.replace(':id', id );
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {
+                        _token : `{{csrf_token()}}`,
+                        zonal_id: zonal_id, 
+                        name: name,
+                        status: status
+                    },
+                    dataType: 'html',
+                    success: function (response) {
+                        $('#editroute').modal('hide');
+                        location.reload();   
+                    }
                 });
-
-
-
-    $(document).on('click','#update_route', function(e){
-       
-
-    e.preventDefault(e);
-    var id = $('#editid').val();
-    var zonalid = $('#editzonal_id').val();
-    var name = $('#editname').val();
-    var status = $('#editstatus').val();
-    var zonal_id = $('#editzonal_name').val();
-
-    var url = '{{ route("staffroute_update", ":id") }}';
-    url = url.replace(':id', id );
-   
-    $.ajax({
-             url: url,
-          
-          type: "POST",
-          data: {_token : `{{csrf_token()}}`,
-            zonalid:zonalid, 
-            name:name,
-            zonal_id:zonal_id,
-            status:status
-        },
-         dataType: 'html',
-          success: function (response) {
-               console.log(response);
-
-               $('#edit'+ id).modal('hide');
-               location.reload();   
-                
-         
-            }
-        
-      });
-    
-
-    });
+            });
         </script>
     @endpush
-

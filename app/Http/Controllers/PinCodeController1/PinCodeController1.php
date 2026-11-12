@@ -200,9 +200,9 @@ class PinCodeController1 extends Controller
         $flasher->addSuccess('Pincode has been Uploaded successfully!');
         return redirect()->back();
         } catch (\Throwable $th) {
-            //$flasher->addError('Something Error!!');
-            $flasher->addError('Something Error!! =>' . $th);
-            return redirect()->route('pincode1.index');
+            $redirectRoute = (request()->is('staff/*') || (session()->get('log_type') == 'Staff')) ? 'staffpincode1.index' : 'pincode1.index';
+            $flasher->addError('Something Error!! =>' . $th->getMessage());
+            return redirect()->route($redirectRoute);
         }
     }
     public function changestatus(Request $request)

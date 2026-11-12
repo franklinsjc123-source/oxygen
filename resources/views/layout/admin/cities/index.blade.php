@@ -11,7 +11,13 @@
 <div class="page-body-wrapper">
 	
 	<!-- Page Sidebar Start-->
-	@include('paritials.auth.sidemenu');
+	@if(request()->is('staff/*') || (session()->get('log_type') == 'Staff'))
+		@include('paritials.staffauth.sidemenu')
+	@elseif(request()->is('vendor/*') || (session()->get('log_type') == 'Vendor'))
+		@include('paritials.vendorauth.sidemenu')
+	@else
+		@include('paritials.auth.sidemenu')
+	@endif
 	<!-- Page Sidebar Ends-->
 	
 	<!-- Right sidebar Start-->
@@ -26,7 +32,7 @@
 				<div class="row">
 					<div class="col-12">
                         <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
-                            <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="{{ (request()->is('staff/*') || (session()->get('log_type') == 'Staff')) ? route('staffdashboard', session()->get('login_id')) : ((request()->is('vendor/*') || (session()->get('log_type') == 'Vendor')) ? route('vendordashboard', session()->get('login_id')) : url('admin/dashboard')) }}"><i data-feather="home"></i></a></li>
 							
 							<li class="breadcrumb-item active">Cities</li>
                         </ol>
@@ -42,6 +48,34 @@
 				
 				<div class="col-xl-12">
 					<div class="card tab2-card">
+@if(request()->is('staff/*') || (session()->get('log_type') == 'Staff'))
+<style>
+.page-wrapper .page-body-wrapper .page-body,
+.page-wrapper .page-body-wrapper .page-sidebar ~ .page-body,
+.page-wrapper .page-body-wrapper .page-sidebar.open ~ .page-body {
+    margin-top: 60px !important;
+    padding-top: 16px !important;
+}
+.page-wrapper .page-body-wrapper .page-header {
+    margin-top: 0 !important;
+    margin-bottom: 12px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    border-bottom: none !important;
+}
+</style>
+@endif
+<style>
+.bootstrap-table,
+.fixed-table-container,
+.fixed-table-toolbar,
+.fixed-table-pagination,
+.fixed-table-container table,
+table#table {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+</style>
 						<div class="card-body">
 							
 							<div class="tab-content" id="top-tabContent">
@@ -137,7 +171,7 @@
 													</button>
 													
 													<!-- Delete Form -->
-													<form action="{{ route('cities.destroy', $city->id) }}" method="POST" class="d-inline delete-form">
+													<form action="{{ route(request()->is('staff/*') ? 'staffcities.destroy' : 'cities.destroy', $city->id) }}" method="POST" class="d-inline delete-form">
 														@csrf
 														@method('DELETE')
 														<button type="submit" class="btn btn-warning mx-1 btn-sm"><i class="fa fa-trash"></i></button>
@@ -205,7 +239,8 @@
 			
 			var cityId = $('#city_id').val();
 			var method = cityId ? 'PUT' : 'POST';
-			var url = cityId ? "{{ url('admin/cities') }}/" + cityId : "{{ route('cities.store') }}";
+			var isStaff = {{ request()->is('staff/*') ? 'true' : 'false' }};
+			var url = cityId ? (isStaff ? "{{ url('staff/cities') }}/" + cityId : "{{ url('admin/cities') }}/" + cityId) : (isStaff ? "{{ route('staffcities.store') }}" : "{{ route('cities.store') }}");
 			
 			
 			$.ajax({
@@ -248,7 +283,7 @@ $(document).ready(function() {
         $.ajax({
             type: "POST",
             dataType: "json",
-            url: "{{ route('cities.changestatus') }}",
+            url: "{{ route(request()->is('staff/*') ? 'staffcities.changestatus' : 'cities.changestatus') }}",
             data: {'status': status, 'id': id, '_token': '{{ csrf_token() }}'},
             success: function(data) {
                 // Instantly changed
