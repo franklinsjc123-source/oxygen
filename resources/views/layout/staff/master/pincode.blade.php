@@ -148,8 +148,7 @@
                                         data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus me-1"></i> Add Pincode</button>
                                     <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
                                         data-original-title="test" data-bs-target="#exampleModalImport"><i class="fa fa-plus me-1"></i> Import Pincode</button>
-                                    <a href="{{ route('staffpincode.export') }}" class="btn btn-success px-2" style="background-color: #28a745; border-color: #28a745; color: #fff;" data-toggle="tooltip" data-placement="top" title="Report" data-original-title="Report"><i
-                                        class="fa fa-list me-1"></i> Download Report</a>
+                                    <a href="{{ route('staffpincode.export') }}" class="btn btn-success px-2" style="background-color: #28a745; border-color: #28a745; color: #fff;" data-toggle="tooltip" data-placement="top" title="Export Excel" data-original-title="Export Excel"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a>
                                 </div>
 
                                     <div id="successmessage">

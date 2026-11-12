@@ -97,7 +97,7 @@
                     width: auto !important;
                 }
 
-                /* Secondary Toolbar: Download Report & Import Products in same row */
+                /* Secondary Toolbar: Export Excel & Import Products in same row */
                 #secondary-toolbar {
                     margin-bottom: 15px !important;
                 }
@@ -203,7 +203,7 @@
                                 <div id="toolbar" class="mt-2 mb-2">
                                     <div class="d-flex flex-wrap gap-2">
                                         <a href="{{ route('product.export') }}" class="btn btn-success btn-sm" style="background-color: #28a745; border-color: #28a745; color: #fff;">
-                                            <i class="fa fa-download me-1"></i> Download Report
+                                            <i class="fa fa-file-excel-o me-1"></i> Export Excel
                                         </a>
                                         <a href="{{ route('products.crud.index') }}">
                                             <button type="button" class="btn btn-primary btn-sm">

@@ -53,7 +53,7 @@
 
                                     <div id="toolbar" class="d-flex align-items-center">
                                         <a href="{{ route(request()->is('staff/*') ? 'staffactivity.export' : 'activity.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;">
-                                            <i class="fa fa-download me-1"></i> Download Report
+                                            <i class="fa fa-file-excel-o me-1"></i> Export Excel
                                         </a>
                                         <a href="{{ route(request()->is('staff/*') ? 'staffactivity_trackers.create' : 'activity_trackers.create') }}">
                                             <button type="button" class="btn btn-primary">

@@ -46,7 +46,7 @@
 
                             <div class="card-body">
                                 <a href="{{ route('vendorcreate.index') }}" class="btn  btn-primary"><i class="fa fa-plus"></i> Add
-                                    Seller</a> <a href="{{ route('vendorvendor.export') }}" class="btn btn-success ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-download me-1"></i> Download Report</a>
+                                    Seller</a> <a href="{{ route('vendorvendor.export') }}" class="btn btn-success ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a>
 
 
 

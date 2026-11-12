@@ -48,7 +48,7 @@
                         <div class="card">
 
                                 <div id="toolbar" class="d-flex align-items-center">
-                                    <a href="{{ route('vendor.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-download me-1"></i> Download Report</a>
+                                    <a href="{{ route('vendor.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a>
                                     <a href="{{ route('vendorcreate.index') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Add
                                         Seller</a>
                                 </div>

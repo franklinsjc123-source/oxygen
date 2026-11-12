@@ -48,7 +48,7 @@
 								
 								<div id="toolbar" class="d-flex align-items-center">
 									<a href="{{ route(request()->is('staff/*') ? 'staffstate.export' : 'state.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;">
-										<i class="fa fa-download me-1"></i> Download Report
+										<i class="fa fa-file-excel-o me-1"></i> Export Excel
 									</a>
 									<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#stateModal">
 										<i class="fa fa-plus me-1"></i> Add State

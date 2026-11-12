@@ -48,7 +48,7 @@
                             @endif
 
                             <div id="toolbar" class="d-flex align-items-center mb-3">
-                                <a href="{{ route('vendorcategory.sub.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-download me-1"></i> Download Report</a>
+                                <a href="{{ route('vendorcategory.sub.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a>
                             </div>
 
                             <div class="datatable-dashv1-list custom-datatable-overright">

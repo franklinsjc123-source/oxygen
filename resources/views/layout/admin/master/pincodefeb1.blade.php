@@ -49,8 +49,7 @@
      <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                     data-original-title="test" data-bs-target="#exampleModalImport"><i class="fa fa-plus"></i> Import 
                                     Pincode</button>
-                                     <a href="{{ route('pincode.export') }}" class="btn btn-success px-2 " data-toggle="tooltip" data-placement="top" title="Report" data-original-title="Report"><i
-                                            class="fa fa-list"></i> Download Report</a>  
+                                     <a href="{{ route('pincode.export') }}" class="btn btn-success px-2 " data-toggle="tooltip" data-placement="top" title="Export Excel" data-original-title="Export Excel"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a>  
                                     <div id="successmessage">
                                     </div>
                                 <div class="btn-popup pull-right">
