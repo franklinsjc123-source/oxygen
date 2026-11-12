@@ -85,17 +85,20 @@
     }
     .banner-shoes {
         background-size: cover !important;
-        background-position: center !important;
+        background-position: center center !important;
         background-repeat: no-repeat !important;
-        min-height: 180px !important;
-        height: auto !important;
+        width: 100% !important;
+        aspect-ratio: 1300 / 200 !important;
+        min-height: 150px !important;
         border-radius: 8px;
+        overflow: hidden !important;
     }
     @media (max-width: 767px) {
         .banner-shoes {
             background-size: cover !important;
-            background-position: center !important;
-            min-height: 140px !important;
+            background-position: center center !important;
+            aspect-ratio: auto !important;
+            min-height: 110px !important;
             height: auto !important;
             padding: 10px 20px !important;
         }
@@ -607,7 +610,10 @@
                 }">
              <div class="swiper-wrapper row cols-lg-3 cols-sm-2 cols-1">
                  @php
-                     $dbCategoryBanners = \App\Models\Banners\CategoryBanner::where('status', 1)->orderBy('sort', 'asc')->get();
+                     $allCategoryBanners = \App\Models\Banners\CategoryBanner::where('status', 1)->orderBy('sort', 'asc')->get();
+                     $dbCategoryBanners = $allCategoryBanners->filter(function($item) {
+                         return !empty($item->image) && file_exists(public_path('assets/images/banners/category-banner/' . $item->image));
+                     });
                  @endphp
                  @if($dbCategoryBanners->isNotEmpty())
                      @foreach($dbCategoryBanners as $index => $item)
@@ -616,20 +622,26 @@
                           @endphp
                           <div class="swiper-slide banner banner-fixed category-banner br-sm" style="cursor: pointer; position: relative;" onclick="if('{{ $cUrl }}' !== 'javascript:void(0)') window.location.href='{{ $cUrl }}';">
                               <a href="{{ $cUrl }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block;" aria-label="{{ $item->title }}"></a>
-                              <figure style="margin: 0; overflow: hidden; border-radius: 8px;">
-                                  <img src="{{ asset('assets/images/banners/category-banner/' . $item->image) }}" alt="Category Banner" style="width: 100% !important; height: auto !important; min-height: 200px !important; object-fit: cover !important; display: block;" loading="lazy" decoding="async" />
+                              <figure style="margin: 0; overflow: hidden; border-radius: 8px; width: 100%; aspect-ratio: 447 / 230; background-color: #f4f4f4;">
+                                  <img src="{{ asset('assets/images/banners/category-banner/' . $item->image) }}" alt="{{ $item->title ?: 'Category Banner' }}" style="width: 100% !important; height: 100% !important; object-fit: cover !important; display: block;" loading="lazy" decoding="async" />
                               </figure>
+                              @if(!empty($item->title) || !empty($item->sub_title))
                               <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2" style="z-index: 2; pointer-events: none;">
+                                   @if(!empty($item->sub_title))
                                    <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">{!! $item->sub_title !!}</h5>
+                                   @endif
+                                   @if(!empty($item->title))
                                    <h3 class="banner-title text-white text-uppercase ls-25 mb-0">{{ $item->title }}</h3>
+                                   @endif
                                </div>
+                              @endif
                           </div>
                      @endforeach
                  @else
                      <div class="swiper-slide banner banner-fixed category-banner br-sm">
-                         <figure>
+                         <figure style="margin: 0; overflow: hidden; border-radius: 8px; width: 100%; aspect-ratio: 447 / 230;">
                              <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/1-1.jpg" alt="Category Banner" width="447"
-                                 height="230" style="background-color: #cfd1cf;" loading="lazy" decoding="async" />
+                                 height="230" style="width: 100% !important; height: 100% !important; object-fit: cover !important; background-color: #cfd1cf; display: block;" loading="lazy" decoding="async" />
                          </figure>
                          <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2">
                              <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">Starting at <span class="text-secondary">₹29.00</span></h5>
@@ -638,9 +650,9 @@
                      </div>
                      <!-- End of Category Banner -->
                      <div class="swiper-slide banner banner-fixed category-banner br-sm">
-                         <figure>
-                             <img style="cursor:pointer" src="<?php echo asset('frontend') ?>/images/demos/demo8/category/1-2.jpg" alt="Category Banner" width="447"
-                                 height="230" style="background-color: #0088dd" loading="lazy" decoding="async" />
+                         <figure style="margin: 0; overflow: hidden; border-radius: 8px; width: 100%; aspect-ratio: 447 / 230;">
+                             <img style="cursor:pointer; width: 100% !important; height: 100% !important; object-fit: cover !important; background-color: #0088dd; display: block;" src="<?php echo asset('frontend') ?>/images/demos/demo8/category/1-2.jpg" alt="Category Banner" width="447"
+                                 height="230" loading="lazy" decoding="async" />
                          </figure>
                          <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2">
                              <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">Get 30% Off Your Entire Order!</h5>
@@ -649,9 +661,9 @@
                      </div>
                      <!-- End of Category Banner -->
                      <div class="swiper-slide banner banner-fixed category-banner br-sm">
-                         <figure>
+                         <figure style="margin: 0; overflow: hidden; border-radius: 8px; width: 100%; aspect-ratio: 447 / 230;">
                              <img src="<?php echo asset('frontend') ?>/images/demos/demo8/category/1-3.jpg" alt="Category Banner" width="447"
-                                 height="230" style="background-color: #e0dddd;" loading="lazy" decoding="async" />
+                                 height="230" style="width: 100% !important; height: 100% !important; object-fit: cover !important; background-color: #e0dddd; display: block;" loading="lazy" decoding="async" />
                          </figure>
                          <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2">
                              <h5 class="banner-subtitle text-primary text-capitalize ls-25 font-weight-bold">From Only <span class="text-secondary">₹29.00</span></h5>
@@ -1425,9 +1437,12 @@
      <!-- Advertisement Banner (After LITTLE ONES, BIG STYLE) -->
      <div class="container mt-4 mb-3">
           @php
-              $advBannersToDisplay = (isset($paidAdvBanners) && $paidAdvBanners->isNotEmpty())
+              $rawAdvBanners = (isset($paidAdvBanners) && $paidAdvBanners->isNotEmpty())
                   ? $paidAdvBanners
-                  : (isset($paidAddSlip) ? collect([$paidAddSlip]) : collect());
+                  : (isset($paidAddSlip) && $paidAddSlip ? collect([$paidAddSlip]) : collect());
+              $advBannersToDisplay = $rawAdvBanners->filter(function($b) {
+                  return !empty($b->image) && file_exists(public_path('assets/images/banners/adv-baner/' . $b->image));
+              });
           @endphp
           @if($advBannersToDisplay->isNotEmpty())
               @foreach($advBannersToDisplay as $paidAddSlip)
@@ -1436,13 +1451,17 @@
                   @endphp
                   <div class="banner banner-shoes br-sm mb-3" style="background-image: url('{{ asset('assets/images/banners/adv-baner/' . $paidAddSlip->image) }}'); background-size: cover; background-position: center; cursor: pointer; position: relative;" onclick="if('{{ $paidLink }}' !== '#') window.location.href='{{ $paidLink }}';">
                       <a href="{{ $paidLink }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block;" aria-label="Paid Advertisement Banner"></a>
+                      @if(!empty($paidAddSlip->title) || !empty($paidAddSlip->sub_title))
                       <div class="banner-content d-block d-lg-flex align-items-center" style="position: relative; z-index: 2; pointer-events: none;">
                           <div class="content-left mr-auto mb-6 mb-lg-0 align-items-center">
                               <h3 class="banner-title font-weight-normal text-white mb-0 ls-25">
-                                  {!! $paidAddSlip->title !!}<br><strong>{!! $paidAddSlip->sub_title !!}</strong>
+                                  @if(!empty($paidAddSlip->title)){!! $paidAddSlip->title !!}@endif
+                                  @if(!empty($paidAddSlip->title) && !empty($paidAddSlip->sub_title))<br>@endif
+                                  @if(!empty($paidAddSlip->sub_title))<strong>{!! $paidAddSlip->sub_title !!}</strong>@endif
                               </h3>
                           </div>
                       </div>
+                      @endif
                   </div>
               @endforeach
           @else
