@@ -121,55 +121,145 @@ background-color: transparent;
         display: flex !important;
         align-items: center !important;
         flex-wrap: nowrap !important;
+        margin-bottom: 15px !important;
+        width: 100% !important;
     }
     .fixed-table-toolbar .search {
         order: 1 !important;
         margin-right: 0 !important;
         margin-left: 0 !important;
-        margin-top: 5px !important;
-        margin-bottom: 5px !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        flex: 0 0 auto !important;
+        float: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
     }
-    .fixed-table-toolbar .search .form-control {
+    .fixed-table-toolbar .search .form-control,
+    .fixed-table-toolbar .search input {
+        height: 38px !important;
+        min-height: 38px !important;
+        max-height: 38px !important;
+        line-height: 1.5 !important;
+        font-size: 13px !important;
         border-top-right-radius: 0 !important;
         border-bottom-right-radius: 0 !important;
+        box-sizing: border-box !important;
+        padding: 6px 12px !important;
+        margin: 0 !important;
+        vertical-align: middle !important;
     }
     .fixed-table-toolbar .columns {
         order: 2 !important;
         margin-left: 0 !important;
         margin-right: 15px !important;
-        margin-top: 5px !important;
-        margin-bottom: 5px !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        float: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        flex: 0 0 auto !important;
     }
     .fixed-table-toolbar .columns > .btn,
     .fixed-table-toolbar .columns > .btn-group > .btn,
     .fixed-table-toolbar .columns button {
+        height: 38px !important;
+        min-height: 38px !important;
+        max-height: 38px !important;
         border-top-left-radius: 0 !important;
         border-bottom-left-radius: 0 !important;
         border-left: 0 !important;
+        margin: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+        padding: 6px 12px !important;
+        font-size: 13px !important;
+        line-height: 1.5 !important;
+        vertical-align: middle !important;
     }
     .fixed-table-toolbar .bs-bars {
         order: 3 !important;
         margin-left: 0 !important;
         margin-right: 0 !important;
-        margin-top: 5px !important;
-        margin-bottom: 5px !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        float: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        flex: 0 0 auto !important;
     }
-    .fixed-table-toolbar .bs-bars > div {
-        display: flex !important;
+    .fixed-table-toolbar .bs-bars > div,
+    .fixed-table-toolbar .bs-bars #toolbar,
+    .fixed-table-toolbar .bs-bars .pincode-toolbar,
+    .fixed-table-toolbar #toolbar {
+        display: inline-flex !important;
         align-items: center !important;
         gap: 8px !important;
+        flex-wrap: nowrap !important;
+        margin: 0 !important;
     }
     .fixed-table-toolbar .bs-bars .btn,
     .fixed-table-toolbar .bs-bars a.btn,
     .fixed-table-toolbar .bs-bars a > .btn,
-    .fixed-table-toolbar .bs-bars button {
+    .fixed-table-toolbar .bs-bars button,
+    .fixed-table-toolbar #toolbar .btn,
+    .fixed-table-toolbar #toolbar a.btn,
+    .fixed-table-toolbar #toolbar a > .btn,
+    .fixed-table-toolbar #toolbar button {
+        height: 38px !important;
+        min-height: 38px !important;
+        max-height: 38px !important;
         flex: 0 0 auto !important;
         width: auto !important;
         padding: 6px 14px !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        line-height: 1.5 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+        vertical-align: middle !important;
+        margin: 0 !important;
+        text-transform: uppercase !important;
+        border-radius: 5px !important;
     }
-    .fixed-table-toolbar .bs-bars a {
+    .fixed-table-toolbar .bs-bars .btn i,
+    .fixed-table-toolbar .bs-bars a.btn i,
+    .fixed-table-toolbar .bs-bars button i,
+    .fixed-table-toolbar #toolbar .btn i,
+    .fixed-table-toolbar #toolbar a.btn i,
+    .fixed-table-toolbar #toolbar button i {
+        margin-right: 4px !important;
+        vertical-align: middle !important;
+        display: inline-block !important;
+    }
+    .fixed-table-toolbar .bs-bars a,
+    .fixed-table-toolbar #toolbar a {
         flex: 0 0 auto !important;
         width: auto !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        text-decoration: none !important;
+        margin: 0 !important;
+    }
+    .fixed-table-toolbar .bs-bars .btn-success,
+    .fixed-table-toolbar .bs-bars .btn-export-excel,
+    .fixed-table-toolbar #toolbar .btn-success,
+    .fixed-table-toolbar #toolbar .btn-export-excel {
+        background-color: #81ba00 !important;
+        border-color: #81ba00 !important;
+        color: #fff !important;
+    }
+    .fixed-table-toolbar .bs-bars .btn-success:hover,
+    .fixed-table-toolbar .bs-bars .btn-export-excel:hover,
+    .fixed-table-toolbar #toolbar .btn-success:hover,
+    .fixed-table-toolbar #toolbar .btn-export-excel:hover {
+        background-color: #5e8700 !important;
+        border-color: #5e8700 !important;
+        color: #fff !important;
     }
 }
 

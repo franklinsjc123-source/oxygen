@@ -67,37 +67,7 @@
 
                 /*.btn-primary:hover, .btn-primary:focus { background-color: #0486b9; }*/
                 
-                .fixed-table-toolbar {
-                    display: flex !important;
-                    flex-wrap: wrap;
-                    align-items: center;
-                    margin-bottom: 15px !important;
-                }
-                .fixed-table-toolbar .search {
-                    order: 1;
-                    flex: 1;
-                    margin-bottom: 0 !important;
-                    float: none !important;
-                }
-                .fixed-table-toolbar .search input {
-                    width: 100% !important;
-                    max-width: 100% !important;
-                }
-                .fixed-table-toolbar .columns {
-                    order: 2;
-                    margin-left: 10px;
-                    margin-bottom: 0 !important;
-                    float: none !important;
-                }
-                .fixed-table-toolbar .bs-bars {
-                    order: 3;
-                    margin-left: 15px;
-                    margin-top: 0 !important;
-                    float: none !important;
-                    width: auto !important;
-                }
-
-                /* Secondary Toolbar: Download Report & Import Products in same row */
+                /* Secondary Toolbar: Export Excel & Import Products in same row */
                 #secondary-toolbar {
                     margin-bottom: 15px !important;
                 }
@@ -199,17 +169,13 @@
                     <div class="col-sm-12">
 
                         <div class="card">
-                                <div id="toolbar" class="mt-2 mb-2 ms-3">
-                                    <div class="d-flex flex-wrap gap-2">
-                                        <a href="{{ route('vendorproduct.export') }}" class="btn btn-success btn-sm" style="background-color: #28a745; border-color: #28a745; color: #fff;">
-                                            <i class="fa fa-file-excel-o me-1"></i> Export Excel
-                                        </a>
-                                        <a href="{{ route('vendorproducts.crud.index') }}">
-                                            <button type="button" class="btn btn-primary btn-sm">
-                                                <i class="fa fa-plus me-1"></i> Add Product
-                                            </button>
-                                        </a>
-                                    </div>
+                                <div id="toolbar" class="d-flex align-items-center">
+                                    <a href="{{ route('vendorproduct.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;">
+                                        <i class="fa fa-file-excel-o me-1"></i> Export Excel
+                                    </a>
+                                    <a href="{{ route('vendorproducts.crud.index') }}" class="btn btn-primary">
+                                        <i class="fa fa-plus me-1"></i> Add Product
+                                    </a>
                                 </div>
                                 
                                 <div id="secondary-toolbar" class="d-flex flex-wrap gap-2 mb-3 mt-3 ms-3">

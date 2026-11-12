@@ -67,7 +67,7 @@
                             <div class="card-body">
                                 <div id="toolbar" class="d-flex align-items-center">
                                     <a href="{{ route('category_sub.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a>
-                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                         data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus"></i> Add
                                         sub Category</button>
                                 </div>
