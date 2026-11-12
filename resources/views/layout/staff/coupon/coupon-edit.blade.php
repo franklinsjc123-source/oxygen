@@ -4,9 +4,7 @@
 @include('paritials.js.coupon.coupon-create-js')
 @include('paritials.css.coupon.coupon-css')
 
-    @include('paritials.auth.header')
-
-<!-- page-wrapper Start-->
+    <!-- page-wrapper Start-->
 @include('paritials.staffauth.topmenu');
 <!-- Page Header Ends -->
 

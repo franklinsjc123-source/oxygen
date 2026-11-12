@@ -65,7 +65,7 @@
 
 @include('paritials.css.auction.auction')?>
 
-    @include('paritials.auth.header')?>
+    
 
 <!-- page-wrapper Start-->
 @include('paritials.auth.topmenu');

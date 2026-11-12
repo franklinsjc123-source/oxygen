@@ -438,15 +438,6 @@
         margin-bottom: 0 !important;
     }
 
-    /* Remove empty space above breadcrumbs globally */
-    .page-wrapper .page-body-wrapper .page-header {
-        margin-top: 0 !important;
-        margin-bottom: 12px !important;
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-        border-bottom: none !important;
-    }
-
     /* Toolbar flex ordering: Search input -> Column filter toggle (joined edges) -> Action buttons (Export & Add with gap) */
     @media (min-width: 768px) {
         .fixed-table-toolbar {

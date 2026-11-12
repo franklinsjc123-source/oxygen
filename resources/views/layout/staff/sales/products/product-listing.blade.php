@@ -4,8 +4,6 @@
     @include('paritials.js.product.product-list-js')
     @include('paritials.css.display-css')
 
-    @include('paritials.auth.header')
-
     <!-- page-wrapper Start-->
     @include('paritials.auth.topmenu');
     <!-- Page Header Ends -->

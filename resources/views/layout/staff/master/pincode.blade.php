@@ -1,7 +1,5 @@
 @extends('layout.auth.master')
 @section('contents')
-    @include('paritials.auth.header')
-
     <!-- page-wrapper Start-->
     @include('paritials.auth.topmenu')
     <!-- Page Header Ends -->

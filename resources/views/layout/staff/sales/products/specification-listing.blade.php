@@ -2,8 +2,6 @@
 @section('contents')
     @include('paritials.js.product.attribute-js')
     @include('paritials.css.product.attribute-css')
-    @include('paritials.auth.header')
-
     <!-- page-wrapper Start-->
     @include('paritials.auth.topmenu');
     <!-- Page Header Ends -->

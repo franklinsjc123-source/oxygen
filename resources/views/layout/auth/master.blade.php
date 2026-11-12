@@ -81,15 +81,6 @@
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap1.css') }}">
 
     <style>
-        /* Remove space above the breadcrumb across all logins */
-        .page-wrapper .page-body-wrapper .page-header {
-            margin-top: 0 !important;
-            margin-bottom: 12px !important;
-            padding-top: 0 !important;
-            padding-bottom: 0 !important;
-            border-bottom: none !important;
-        }
-
         /* Fix breadcrumb spacing globally */
         .page-header .breadcrumb {
             display: flex !important;

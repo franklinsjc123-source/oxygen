@@ -2,7 +2,7 @@
 @section('contents')
 @include('paritials.css.activity.activity-css')?>
 @include('paritials.js.activity.activity-add-js')?>
-    @include('paritials.auth.header')?>
+    
 
 <!-- page-wrapper Start-->
 @include('paritials.auth.topmenu');

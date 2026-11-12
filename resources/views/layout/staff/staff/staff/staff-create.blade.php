@@ -2,7 +2,7 @@
 @section('contents')
 
 @include('paritials.js.staff.staff-create-js')
-    @include('paritials.auth.header')?>
+    
 
 <!-- page-wrapper Start-->
 @include('paritials.auth.topmenu');
