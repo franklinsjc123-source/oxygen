@@ -868,7 +868,7 @@ function getquantity(id, productName) {
 </style>
 
 <!-- Import Products Modal -->
-<div class="modal fade" id="importProductModal" tabindex="-1" aria-labelledby="importProductModalLabel" aria-hidden="true">
+<div class="modal fade" id="importProductModal" tabindex="-1" aria-labelledby="importProductModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <form action="{{ route('product.import') }}" method="POST" enctype="multipart/form-data">

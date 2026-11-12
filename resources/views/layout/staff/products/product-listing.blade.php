@@ -141,13 +141,27 @@
                         gap: 8px !important;
                     }
                 }
+                @media (min-width: 992px) {
+                    .page-wrapper .page-body-wrapper .page-header {
+                        margin: 45px 0 10px 0 !important;
+                        padding: 0 !important;
+                        border-bottom: none !important;
+                    }
+                }
+                @media (max-width: 991px) {
+                    .page-wrapper .page-body-wrapper .page-header {
+                        margin: 30px 0 10px 0 !important;
+                        padding: 0 !important;
+                        border-bottom: none !important;
+                    }
+                }
             </style>
 
         <div class="page-body">
 
             <!-- Container-fluid starts-->
             <div class="container-fluid fcolor">
-                <div class="page-header m-0">
+                <div class="page-header">
                     <div class="row">
                         <div class="col-12">
                         <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
@@ -892,10 +906,8 @@ function getquantity(id, productName) {
 </script>
 --}}
 
-@endsection
-
 <!-- Import Products Modal -->
-<div class="modal fade" id="importProductModal" tabindex="-1" aria-labelledby="importProductModalLabel" aria-hidden="true">
+<div class="modal fade" id="importProductModal" tabindex="-1" aria-labelledby="importProductModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <form action="{{ route('staffproduct.import') }}" method="POST" enctype="multipart/form-data">
@@ -925,3 +937,5 @@ function getquantity(id, productName) {
         </div>
     </div>
 </div>
+
+@endsection
