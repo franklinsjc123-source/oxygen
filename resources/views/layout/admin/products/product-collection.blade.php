@@ -45,8 +45,7 @@
                                         <span class="d-none d-sm-inline">Product </span>Collection</button>
                                 </div>
 
-                                <div class="btn-popup pull-right">
-                                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
                                         data-backdrop="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                             <div class="modal-content">
@@ -95,10 +94,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                                 {{-- Edit modal --}}
-                                <div class="btn-popup pull-right">
-                                    <div class="modal fade" id="editexampleModal" tabindex="-1" role="dialog"
+                                <div class="modal fade" id="editexampleModal" tabindex="-1" role="dialog"
                                         data-backdrop="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                             <div class="modal-content">
@@ -149,10 +146,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                                 {{-- End --}}
 
-                                <div class="datatable-dashv1-list custom-datatable-overright mt-3">
+                                <div class="datatable-dashv1-list custom-datatable-overright">
                                 <table class="table" id="table" data-click-to-select="true" data-sort-name="collection"
                                     data-sort-order="asc" data-mobile-responsive="true" data-toggle="table"
                                     data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true"

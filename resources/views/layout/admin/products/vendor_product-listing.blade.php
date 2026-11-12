@@ -90,7 +90,7 @@
                     <div class="col-sm-12">
 
                         <div class="card">
-                            <div class="mt-3" id="toolbar">
+                            <div id="toolbar" class="d-flex align-items-center">
                                 <a href="{{ route('vendorproducts.crud.index', $vendorid) }}">
                                     <button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add
                                         Product

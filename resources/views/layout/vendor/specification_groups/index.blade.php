@@ -45,11 +45,9 @@
                            
                             <div class="card-body">
                                 
-                                <div id="toolbar" class="mt-2">
-                                    <div class="d-inline-block">
-                                        <a href="{{ route('vendor.specification_groups.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a> 
-                                        <a href="{{route('specification_groups.create')}}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Specification</a>
-                                    </div>
+                                <div id="toolbar" class="d-flex align-items-center">
+                                    <a href="{{ route('vendor.specification_groups.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a> 
+                                    <a href="{{route('specification_groups.create')}}" class="btn btn-primary"><i class="fa fa-plus"></i> Add Specification</a>
                                 </div>
                          
 

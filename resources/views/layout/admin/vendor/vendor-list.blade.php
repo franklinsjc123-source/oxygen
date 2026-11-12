@@ -46,6 +46,7 @@
                     <div class="col-sm-12">
 
                         <div class="card">
+                            <div class="card-body">
 
                                 <div id="toolbar" class="d-flex align-items-center">
                                     <a href="{{ route('vendor.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a>
@@ -53,7 +54,7 @@
                                         Seller</a>
                                 </div>
 
-
+                                <div class="datatable-dashv1-list custom-datatable-overright">
 
                                 <table class="table" id="table" data-click-to-select="true" data-sort-name="id"
                                     data-sort-order="asc" data-mobile-responsive="true" data-toggle="table"

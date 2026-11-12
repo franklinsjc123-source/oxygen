@@ -80,10 +80,8 @@
                                 </div>
                             @endif
 
-                            <div id="toolbar" class="mt-2">
-                                <div class="d-inline-block">
-                                    <button type="button" class="btn btn-success btn-export-excel me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
-                                </div>
+                            <div id="toolbar" class="d-flex align-items-center">
+                                <button type="button" class="btn btn-success btn-export-excel me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
                             </div>
 
                             <div class="datatable-dashv1-list custom-datatable-overright">

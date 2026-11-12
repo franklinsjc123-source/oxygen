@@ -143,6 +143,12 @@ background-color: transparent;
     color: #333 !important;
 }
 
+.card-body > .btn-popup,
+.card-body > .btn-popup.pull-right,
+.btn-popup {
+    margin-bottom: 0 !important;
+}
+
 /* ── Bootstrap Table Toolbar: Desktop & Mobile ── */
 @media (min-width: 768px) {
     .fixed-table-toolbar {
@@ -158,16 +164,15 @@ background-color: transparent;
         margin-left: 0 !important;
         margin-top: 0 !important;
         margin-bottom: 0 !important;
-        flex: 0 0 auto !important;
+        flex: 1 1 auto !important;
         float: none !important;
-        display: inline-flex !important;
-        align-items: center !important;
     }
     .fixed-table-toolbar .search .form-control,
     .fixed-table-toolbar .search input {
         height: 38px !important;
         min-height: 38px !important;
         max-height: 38px !important;
+        width: 100% !important;
         line-height: 1.5 !important;
         font-size: 13px !important;
         border-top-right-radius: 0 !important;

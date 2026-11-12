@@ -65,9 +65,6 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="card">
-                        <div class="card-header">
-                            <h5>Return & Replacement Requests List</h5>
-                        </div>
                         <div class="card-body">
                             @if(session('success'))
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
