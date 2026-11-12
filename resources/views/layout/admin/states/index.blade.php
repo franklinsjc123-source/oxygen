@@ -28,7 +28,7 @@
 		
 		<!-- Container-fluid starts-->
 		<div class="container-fluid">
-			<div class="page-header">
+			<div class="page-header" style="margin-top: 55px !important; margin-bottom: 12px !important; padding: 0 !important; border-bottom: none !important;">
 				<div class="row">
 					<div class="col-12">
                         <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
@@ -48,15 +48,6 @@
 				
 				<div class="col-xl-12">
 					<div class="card tab2-card">
-@if(request()->is('staff/*') || (session()->get('log_type') == 'Staff'))
-<style>
-.page-wrapper .page-body-wrapper .page-header {
-    margin: 15px 0 10px !important;
-    padding: 0 !important;
-    border-bottom: none !important;
-}
-</style>
-@endif
 <style>
 .bootstrap-table,
 .fixed-table-container,
