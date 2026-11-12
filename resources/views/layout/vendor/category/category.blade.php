@@ -20,14 +20,14 @@
         <style>
             @media (min-width: 992px) {
                 .page-wrapper .page-body-wrapper .page-header {
-                    margin: 45px 0 10px 0 !important;
+                    margin: 20px 0 10px 0 !important;
                     padding: 0 !important;
                     border-bottom: none !important;
                 }
             }
             @media (max-width: 991px) {
                 .page-wrapper .page-body-wrapper .page-header {
-                    margin: 30px 0 10px 0 !important;
+                    margin: 15px 0 10px 0 !important;
                     padding: 0 !important;
                     border-bottom: none !important;
                 }
