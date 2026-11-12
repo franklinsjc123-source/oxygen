@@ -18,11 +18,28 @@
 
 <!-- Right sidebar Ends-->
 
-        <div class="page-body" style="margin-top: 60px !important;">
+    <style>
+        @media (min-width: 992px) {
+            .page-wrapper .page-body-wrapper .page-header {
+                margin: 25px 0 10px 0 !important;
+                padding: 0 !important;
+                border-bottom: none !important;
+            }
+        }
+        @media (max-width: 991px) {
+            .page-wrapper .page-body-wrapper .page-header {
+                margin: 15px 0 10px 0 !important;
+                padding: 0 !important;
+                border-bottom: none !important;
+            }
+        }
+    </style>
+
+        <div class="page-body">
 
             <!-- Container-fluid starts-->
             <div class="container-fluid">
-                <div class="page-header" style="margin-top: 15px !important; margin-bottom: 15px !important;">
+                <div class="page-header">
                     <div class="row">
                         <div class="col-12">
                         <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
