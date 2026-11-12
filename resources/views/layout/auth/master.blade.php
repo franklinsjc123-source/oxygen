@@ -80,6 +80,18 @@
   ============================================ -->
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap1.css') }}">
 
+    @if(request()->is('staff/*') || request()->is('*/staff/*') || (session()->get('log_type') == 'Staff'))
+    <style>
+        /* In Staff portal: ensure breadcrumb is always cleanly visible below top navbar without excessive space */
+        .page-wrapper .page-body-wrapper .page-header {
+            padding-top: 22px !important;
+            padding-bottom: 10px !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+        }
+    </style>
+    @endif
+
     <style>
         /* Fix breadcrumb spacing globally */
         .page-header .breadcrumb {
