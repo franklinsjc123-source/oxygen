@@ -47,11 +47,26 @@ class FaceBookController extends Controller
             }
         }
 
+        // Auto-pause expired packages
+        face_book::where('vendor_id', $vendor_id)
+            ->where('is_subscribed', 1)
+            ->where('status', 1)
+            ->whereNotNull('expires_at')
+            ->where('expires_at', '<', now())
+            ->update(['status' => 0]);
+
         $fb = face_book::where("vendor_id", $vendor_id)->get();
+        $vendorDetails = \Illuminate\Support\Facades\DB::table('vendor_details')
+            ->where('id', $vendor_id)
+            ->orWhere('vendor_id', $vendor_id)
+            ->first();
+        $razorpayKey = config('services.razorpay.key');
 
         return view('layout.vendor.marketing.facebook')
         ->with([
-            'fb' => $fb
+            'fb' => $fb,
+            'vendorDetails' => $vendorDetails,
+            'razorpayKey' => $razorpayKey
         ]);
     }
 
@@ -196,6 +211,9 @@ class FaceBookController extends Controller
         if (!$fb->is_subscribed && $request->status == 1) {
             return response()->json(['error' => 'Please buy / subscribe to this package first to activate it.'], 400);
         }
+        if ($fb->expires_at && \Carbon\Carbon::parse($fb->expires_at)->isPast() && $request->status == 1) {
+            return response()->json(['error' => 'This package has expired. Please renew the package to reactivate campaign.'], 400);
+        }
         $fb->status = $request->status;
         $fb->save();
         return response()->json(['success' => 'Status changed successfully.']);
@@ -209,16 +227,66 @@ class FaceBookController extends Controller
             return response()->json(['status' => 404, 'message' => 'Package not found!'], 404);
         }
 
+        $razorpayPaymentId = $request->input('razorpay_payment_id');
+        if (empty($razorpayPaymentId)) {
+            return response()->json(['status' => 400, 'message' => 'Online payment verification is required to activate this package.'], 400);
+        }
+
         $durationDays = (int) $fb->duration > 0 ? (int) $fb->duration : 30;
+        $isRenew = ($fb->is_subscribed == 1);
+        $isExpired = ($fb->expires_at && \Carbon\Carbon::parse($fb->expires_at)->isPast());
+
+        if ($isRenew && !$isExpired && $fb->expires_at) {
+            $newExpiresAt = \Carbon\Carbon::parse($fb->expires_at)->addDays($durationDays);
+            $msg = "Payment verified! Facebook Advertisement Package extended for another {$durationDays} days.";
+        } else {
+            $newExpiresAt = now()->addDays($durationDays);
+            $msg = ($isRenew && $isExpired)
+                ? "Payment verified! Facebook Advertisement Package renewed and reactivated for {$durationDays} days."
+                : "Payment verified! Facebook Advertisement Package subscribed and activated successfully!";
+        }
+
         $fb->is_subscribed = 1;
         $fb->status = 1;
         $fb->subscribed_at = now();
-        $fb->expires_at = now()->addDays($durationDays);
+        $fb->expires_at = $newExpiresAt;
+        $fb->razorpay_payment_id = $razorpayPaymentId;
+        $fb->razorpay_order_id = $request->input('razorpay_order_id', '');
+        $fb->razorpay_signature = $request->input('razorpay_signature', '');
+        $fb->payment_status = 'Paid';
+        $fb->paid_amount = (float) $fb->amount;
         $fb->save();
+
+        // Record transaction in central payments table
+        try {
+            \Illuminate\Support\Facades\DB::table('payments')->insert([
+                'order_id' => 'FB-AD-' . $vendor_id . '-' . time(),
+                'razorpay_payment_id' => $razorpayPaymentId,
+                'razorpay_order_id' => $request->input('razorpay_order_id', ''),
+                'razorpay_signature' => $request->input('razorpay_signature', ''),
+                'amount' => (float) $fb->amount,
+                'status' => 'Captured',
+                'payment_data' => json_encode([
+                    'vendor_id' => $vendor_id,
+                    'package_id' => $fb->id,
+                    'platform' => 'Facebook',
+                    'amount' => $fb->amount,
+                    'impressions' => $fb->impressions,
+                    'clicks' => $fb->clicks,
+                    'duration' => $fb->duration,
+                    'type' => 'ad_package'
+                ]),
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning("Could not record ad payment to payments table: " . $e->getMessage());
+        }
 
         return response()->json([
             'status' => 200,
-            'message' => 'Facebook Advertisement Package subscribed and activated successfully!',
+            'message' => $msg,
+            'payment_id' => $razorpayPaymentId,
             'subscribed_at' => $fb->subscribed_at ? $fb->subscribed_at->format('Y-m-d H:i') : null,
             'expires_at' => $fb->expires_at ? $fb->expires_at->format('Y-m-d H:i') : null
         ]);

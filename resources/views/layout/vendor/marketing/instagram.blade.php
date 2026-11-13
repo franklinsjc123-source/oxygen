@@ -62,7 +62,20 @@
             height: 4px;
             background: #10b981;
         }
-        .ad-pkg-card:not(.is-active)::before {
+        .ad-pkg-card.is-expired {
+            border-color: #fca5a5;
+            box-shadow: 0 4px 16px rgba(239, 68, 68, 0.12);
+        }
+        .ad-pkg-card.is-expired::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #ef4444;
+        }
+        .ad-pkg-card:not(.is-active):not(.is-expired)::before {
             content: '';
             position: absolute;
             top: 0;
@@ -151,9 +164,18 @@
 				@forelse ($instagrame as $item)
 					@php
 						$isSubscribed = (!empty($item->is_subscribed) && $item->is_subscribed == 1);
+						$isExpired = false;
+						$remainingDays = 0;
+						if ($isSubscribed && !empty($item->expires_at)) {
+							$expiry = \Carbon\Carbon::parse($item->expires_at);
+							$isExpired = $expiry->isPast();
+							if (!$isExpired) {
+								$remainingDays = max(0, (int) now()->diffInDays($expiry, false));
+							}
+						}
 					@endphp
 					<div class="col-xxl-3 col-xl-4 col-lg-4 col-md-6 col-12 package-col" style="max-width: 380px;" data-budget="{{ $item->amount }}" data-duration="{{ $item->duration }}" data-impressions="{{ $item->impressions }}">
-						<div class="ad-pkg-card p-3 p-md-4 {{ $isSubscribed ? 'is-active' : '' }}">
+						<div class="ad-pkg-card p-3 p-md-4 {{ $isSubscribed ? ($isExpired ? 'is-expired' : 'is-active') : '' }}">
 							
 							<!-- Top Header: Platform & Status -->
 							<div class="d-flex align-items-center justify-content-between mb-3">
@@ -161,9 +183,15 @@
 									<i class="fa fa-instagram me-1"></i> Instagram Ad
 								</span>
 								@if($isSubscribed)
-									<span class="badge bg-success text-white px-2 py-1" style="font-size: 11.5px; border-radius: 5px;">
-										<i class="fa fa-check-circle me-1"></i> Subscribed
-									</span>
+									@if($isExpired)
+										<span class="badge bg-danger text-white px-2 py-1" style="font-size: 11.5px; border-radius: 5px;">
+											<i class="fa fa-exclamation-circle me-1"></i> Plan Expired
+										</span>
+									@else
+										<span class="badge bg-success text-white px-2 py-1" style="font-size: 11.5px; border-radius: 5px;">
+											<i class="fa fa-check-circle me-1"></i> Subscribed
+										</span>
+									@endif
 								@else
 									<span class="badge bg-light text-secondary border px-2 py-1" style="font-size: 11.5px; border-radius: 5px;">
 										<i class="fa fa-circle-o me-1"></i> Available
@@ -217,38 +245,69 @@
 							<!-- Action Section -->
 							<div class="mt-3 pt-3 border-top">
 								@if($isSubscribed)
-									<div class="p-2 mb-2 rounded" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
-										<div class="d-flex justify-content-between align-items-center">
-											<div>
-												<small class="d-block text-muted" style="font-size: 10.5px;">CAMPAIGN STATUS</small>
-												<strong class="{{ $item->status == 1 ? 'text-success' : 'text-danger' }}" style="font-size: 12px;">
-													{{ $item->status == 1 ? '● Active & Running' : '○ Inactive / Paused' }}
+									@if($isExpired)
+										<!-- EXPIRED STATE: Prominent Renewal Required -->
+										<div class="p-2 mb-2 rounded" style="background: #fef2f2; border: 1px solid #fecaca; color: #991b1b;">
+											<div class="d-flex justify-content-between align-items-center mb-1">
+												<strong style="font-size: 11.5px;">
+													<i class="fa fa-clock-o text-danger me-1"></i> Expired on {{ \Carbon\Carbon::parse($item->expires_at)->format('d M Y') }}
 												</strong>
+												<span class="badge bg-danger text-white" style="font-size: 10px;">Paused</span>
 											</div>
-											<label class="switch mb-0" title="Toggle active/pause">
-												<input type="checkbox" {{ $item->status == 1 ? 'checked' : '' }} class="status-toggle" data-id="{{ $item->id }}">
-												<div class="slider round">
-													<span class="on">Active</span>
-													<span class="off">Inactive</span>
-												</div>
-											</label>
+											<div style="font-size: 11px; color: #7f1d1d; line-height: 1.3;">
+												Plan validity has ended. Renew now to reactivate ad reach & impressions.
+											</div>
 										</div>
-										<div class="text-muted mt-1 small" style="font-size: 11px;">
-											Valid: <strong>{{ $item->expires_at ? \Carbon\Carbon::parse($item->expires_at)->format('d M Y') : 'Active' }}</strong>
-										</div>
-									</div>
 
-									<button type="button" class="btn btn-outline-success w-100 fw-bold py-2 btn-subscribe-pkg" 
-										style="border-radius: 8px; font-size: 13px;"
-										data-id="{{ $item->id }}" 
-										data-amount="{{ $item->amount }}" 
-										data-impressions="{{ $item->impressions }}" 
-										data-clicks="{{ $item->clicks }}" 
-										data-duration="{{ $item->duration }}" 
-										data-platform="Instagram">
-										<i class="fa fa-refresh me-1"></i> Renew / Extend Plan
-									</button>
+										<button type="button" class="btn w-100 text-white fw-bold py-2 btn-subscribe-pkg" 
+											style="background: linear-gradient(135deg, #ea580c, #c2410c); border: none; border-radius: 8px; font-size: 13.5px; box-shadow: 0 4px 10px rgba(194, 65, 12, 0.25);"
+											data-id="{{ $item->id }}" 
+											data-amount="{{ $item->amount }}" 
+											data-impressions="{{ $item->impressions }}" 
+											data-clicks="{{ $item->clicks }}" 
+											data-duration="{{ $item->duration }}" 
+											data-action="renew"
+											data-platform="Instagram">
+											<i class="fa fa-refresh me-1"></i> Renew Package (RM {{ $item->amount }})
+										</button>
+									@else
+										<!-- ACTIVE SUBSCRIBED STATE -->
+										<div class="p-2 mb-2 rounded" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+											<div class="d-flex justify-content-between align-items-center">
+												<div>
+													<small class="d-block text-muted" style="font-size: 10.5px;">CAMPAIGN STATUS</small>
+													<strong class="{{ $item->status == 1 ? 'text-success' : 'text-danger' }}" style="font-size: 12px;">
+														{{ $item->status == 1 ? '● Active & Running' : '○ Inactive / Paused' }}
+													</strong>
+												</div>
+												<label class="switch mb-0" title="Toggle active/pause">
+													<input type="checkbox" {{ $item->status == 1 ? 'checked' : '' }} class="status-toggle" data-id="{{ $item->id }}">
+													<div class="slider round">
+														<span class="on">Active</span>
+														<span class="off">Inactive</span>
+													</div>
+												</label>
+											</div>
+											<div class="text-muted mt-1 small d-flex justify-content-between align-items-center" style="font-size: 11px;">
+												<span>Valid until: <strong>{{ \Carbon\Carbon::parse($item->expires_at)->format('d M Y') }}</strong></span>
+												<span class="badge bg-success-subtle text-success border border-success-subtle">{{ $remainingDays }} days left</span>
+											</div>
+										</div>
+
+										<button type="button" class="btn btn-outline-success w-100 fw-bold py-2 btn-subscribe-pkg" 
+											style="border-radius: 8px; font-size: 13px;"
+											data-id="{{ $item->id }}" 
+											data-amount="{{ $item->amount }}" 
+											data-impressions="{{ $item->impressions }}" 
+											data-clicks="{{ $item->clicks }}" 
+											data-duration="{{ $item->duration }}" 
+											data-action="extend"
+											data-platform="Instagram">
+											<i class="fa fa-calendar-plus-o me-1"></i> Extend Package (+{{ $item->duration }}d)
+										</button>
+									@endif
 								@else
+									<!-- AVAILABLE STATE -->
 									<div class="d-flex align-items-center justify-content-between text-muted mb-2 px-1" style="font-size: 12px;">
 										<span><i class="fa fa-lock text-secondary me-1"></i> Campaign Inactive</span>
 										<span class="text-muted">Instant activation</span>
@@ -261,6 +320,7 @@
 										data-impressions="{{ $item->impressions }}" 
 										data-clicks="{{ $item->clicks }}" 
 										data-duration="{{ $item->duration }}" 
+										data-action="buy"
 										data-platform="Instagram">
 										<i class="fa fa-shopping-cart me-1"></i> Buy & Activate Package
 									</button>
@@ -288,12 +348,18 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
     .swal2-popup {
         font-size: 1.4rem !important;
     }
 </style>
 <script>
+    const razorpayKey = "{{ $razorpayKey ?? config('services.razorpay.key') }}";
+    const vendorName = "{{ $vendorDetails->shop_name ?? ($vendorDetails->owner_name ?? 'Oxygen Store') }}";
+    const vendorEmail = "{{ $vendorDetails->email ?? '' }}";
+    const vendorPhone = "{{ $vendorDetails->mobile_number1 ?? '' }}";
+
     // Live Search Filter for Packages
     document.getElementById('packageSearch')?.addEventListener('input', function(e) {
         const query = e.target.value.toLowerCase().trim();
@@ -313,7 +379,7 @@
         });
     });
 
-    // Buy / Subscribe to Instagram Advertisement Package
+    // Buy / Renew / Extend Instagram Advertisement Package with Razorpay
     $(document).on('click', '.btn-subscribe-pkg', function(e) {
         e.preventDefault();
         const btn = $(this);
@@ -322,59 +388,144 @@
         const impressions = btn.data('impressions');
         const clicks = btn.data('clicks');
         const duration = btn.data('duration');
+        const action = btn.data('action') || 'buy';
         const platform = btn.data('platform') || 'Instagram';
         const token = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '{{ csrf_token() }}';
 
+        let titleText = 'Subscribe to ' + platform + ' Package';
+        let subText = 'Subscribe to this package to run advertising campaigns on ' + platform + ' for your shop.';
+        let confirmBtnText = '<i class="fa fa-credit-card me-1"></i> Proceed to Pay Online (RM ' + amount + ')';
+        let confirmBtnColor = '#183543';
+
+        if (action === 'renew') {
+            titleText = 'Renew ' + platform + ' Package';
+            subText = 'Your previous plan has expired. Renewing will immediately reactivate your campaign for another ' + duration + ' days.';
+            confirmBtnText = '<i class="fa fa-refresh me-1"></i> Pay & Renew Online (RM ' + amount + ')';
+            confirmBtnColor = '#ea580c';
+        } else if (action === 'extend') {
+            titleText = 'Extend ' + platform + ' Package';
+            subText = 'Extend your active campaign by adding ' + duration + ' more days to your current validity.';
+            confirmBtnText = '<i class="fa fa-calendar-plus-o me-1"></i> Pay & Extend Online (RM ' + amount + ')';
+            confirmBtnColor = '#10b981';
+        }
+
         Swal.fire({
-            title: '<strong>Subscribe to ' + platform + ' Package</strong>',
-            icon: 'info',
+            title: '<strong>' + titleText + '</strong>',
+            icon: action === 'renew' ? 'warning' : 'info',
             html: `
                 <div style="text-align: left; font-size: 13.5px; color: #334155;">
-                    <p class="text-muted mb-3">Subscribe to this package to run advertising campaigns on ${platform} for your shop.</p>
+                    <p class="text-muted mb-3">${subText}</p>
                     <div style="background: #f8fafc; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0;">
                         <div class="d-flex justify-content-between py-1 border-bottom"><span>Package Budget:</span> <strong style="color: #183543; font-size: 15px;">RM ${amount}</strong></div>
                         <div class="d-flex justify-content-between py-1 border-bottom"><span>Estimated Impressions:</span> <strong>${impressions}</strong></div>
                         <div class="d-flex justify-content-between py-1 border-bottom"><span>Estimated Clicks:</span> <strong>${clicks}</strong></div>
                         <div class="d-flex justify-content-between py-1"><span>Campaign Duration:</span> <strong>${duration} Days</strong></div>
                     </div>
+                    <div class="mt-3 text-center text-muted" style="font-size: 11.5px;">
+                        <i class="fa fa-lock text-success me-1"></i> Secure Online Payment powered by <strong>Razorpay</strong> (Cards, UPI, NetBanking)
+                    </div>
                 </div>
             `,
             showCancelButton: true,
-            confirmButtonText: '<i class="fa fa-check me-1"></i> Confirm & Activate',
+            confirmButtonText: confirmBtnText,
             cancelButtonText: 'Cancel',
-            confirmButtonColor: '#183543',
+            confirmButtonColor: confirmBtnColor,
             cancelButtonColor: '#6c757d'
         }).then((result) => {
             if (result.isConfirmed) {
-                $.ajax({
-                    url: "{{ route('vendorinstagram.subscribe') }}",
-                    type: "POST",
-                    data: {
-                        _token: token,
-                        id: id
+                // Open Razorpay Checkout Modal
+                const amountInPaise = Math.round(parseFloat(amount) * 100);
+
+                const rzpOptions = {
+                    key: razorpayKey,
+                    amount: amountInPaise,
+                    currency: "INR",
+                    name: vendorName,
+                    description: platform + " Ad Package (RM " + amount + " - " + duration + " Days)",
+                    webview_intent: /iPhone|iPad|iPod|Android/i.test(navigator.userAgent),
+                    handler: function (response) {
+                        // Payment successful - send to backend for verification & plan activation
+                        Swal.fire({
+                            title: 'Verifying Payment...',
+                            html: 'Please wait while we activate your advertisement package.',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        $.ajax({
+                            url: "{{ route('vendorinstagram.subscribe') }}",
+                            type: "POST",
+                            data: {
+                                _token: token,
+                                id: id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_order_id: response.razorpay_order_id || '',
+                                razorpay_signature: response.razorpay_signature || ''
+                            },
+                            dataType: "json",
+                            success: function(res) {
+                                if (res.status == 200) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Payment Successful!',
+                                        html: '<p class="mb-2">' + res.message + '</p><div class="p-2 bg-light rounded text-muted small">Payment ID: <strong class="text-dark">' + response.razorpay_payment_id + '</strong></div>',
+                                        confirmButtonText: 'Great, Continue',
+                                        confirmButtonColor: '#183543'
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    Swal.fire('Error', res.message || 'Payment received but failed to activate.', 'error');
+                                }
+                            },
+                            error: function(err) {
+                                console.error('Subscription error:', err);
+                                Swal.fire({
+                                    title: 'Activation Error',
+                                    html: 'Payment was captured (Payment ID: <strong>' + response.razorpay_payment_id + '</strong>), but package activation failed. Please contact support.',
+                                    icon: 'warning',
+                                    confirmButtonColor: '#183543'
+                                });
+                            }
+                        });
                     },
-                    dataType: "json",
-                    success: function(res) {
-                        if (res.status == 200) {
+                    prefill: {
+                        name: "{{ $vendorDetails->owner_name ?? '' }}",
+                        email: vendorEmail,
+                        contact: vendorPhone
+                    },
+                    theme: {
+                        color: "#183543"
+                    },
+                    modal: {
+                        ondismiss: function() {
                             Swal.fire({
-                                icon: 'success',
-                                title: 'Subscribed Successfully!',
-                                text: res.message,
-                                timer: 2000,
-                                showConfirmButton: false
+                                title: 'Payment Cancelled',
+                                text: 'You cancelled the payment. No charges were made.',
+                                icon: 'info',
+                                confirmButtonColor: '#183543'
                             });
-                            setTimeout(function() {
-                                window.location.reload();
-                            }, 1500);
-                        } else {
-                            Swal.fire('Error', res.message || 'Could not subscribe.', 'error');
                         }
-                    },
-                    error: function(err) {
-                        console.error('Subscription error:', err);
-                        Swal.fire('Error', 'An error occurred while subscribing.', 'error');
                     }
-                });
+                };
+
+                try {
+                    const rzp = new Razorpay(rzpOptions);
+                    rzp.on('payment.failed', function (resp) {
+                        Swal.fire({
+                            title: 'Payment Failed',
+                            html: 'Reason: ' + (resp.error.description || 'Transaction failed') + '<br><small class="text-muted">Code: ' + (resp.error.code || '') + '</small>',
+                            icon: 'error',
+                            confirmButtonColor: '#183543'
+                        });
+                    });
+                    rzp.open();
+                } catch (e) {
+                    console.error('Razorpay load error:', e);
+                    Swal.fire('Payment Gateway Error', 'Could not open Razorpay checkout. Please check internet connection or API keys.', 'error');
+                }
             }
         });
     });

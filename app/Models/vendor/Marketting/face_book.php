@@ -23,6 +23,11 @@ class face_book extends Model
         "is_subscribed",
         "subscribed_at",
         "expires_at",
+        "razorpay_payment_id",
+        "razorpay_order_id",
+        "razorpay_signature",
+        "payment_status",
+        "paid_amount",
         "image",
         "text"        
     ];

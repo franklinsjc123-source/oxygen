@@ -48,10 +48,26 @@ class InstaController extends Controller
             }
         }
 
+        // Auto-pause expired packages
+        insta::where('vendor_id', $vendor_id)
+            ->where('is_subscribed', 1)
+            ->where('status', 1)
+            ->whereNotNull('expires_at')
+            ->where('expires_at', '<', now())
+            ->update(['status' => 0]);
+
         $instagrame = insta::where("vendor_id", $vendor_id)->get();
+        $vendorDetails = \Illuminate\Support\Facades\DB::table('vendor_details')
+            ->where('id', $vendor_id)
+            ->orWhere('vendor_id', $vendor_id)
+            ->first();
+        $razorpayKey = config('services.razorpay.key');
+
         return view('layout.vendor.marketing.instagram')
         ->with([
-            'instagrame' => $instagrame
+            'instagrame' => $instagrame,
+            'vendorDetails' => $vendorDetails,
+            'razorpayKey' => $razorpayKey
         ]);
     }
 
@@ -196,6 +212,9 @@ class InstaController extends Controller
         if (!$instagrame->is_subscribed && $request->status == 1) {
             return response()->json(['error' => 'Please buy / subscribe to this package first to activate it.'], 400);
         }
+        if ($instagrame->expires_at && \Carbon\Carbon::parse($instagrame->expires_at)->isPast() && $request->status == 1) {
+            return response()->json(['error' => 'This package has expired. Please renew the package to reactivate campaign.'], 400);
+        }
         $instagrame->status = $request->status;
         $instagrame->save();
         return response()->json(['success' => 'Status changed successfully.']);
@@ -209,16 +228,66 @@ class InstaController extends Controller
             return response()->json(['status' => 404, 'message' => 'Package not found!'], 404);
         }
 
+        $razorpayPaymentId = $request->input('razorpay_payment_id');
+        if (empty($razorpayPaymentId)) {
+            return response()->json(['status' => 400, 'message' => 'Online payment verification is required to activate this package.'], 400);
+        }
+
         $durationDays = (int) $insta->duration > 0 ? (int) $insta->duration : 30;
+        $isRenew = ($insta->is_subscribed == 1);
+        $isExpired = ($insta->expires_at && \Carbon\Carbon::parse($insta->expires_at)->isPast());
+
+        if ($isRenew && !$isExpired && $insta->expires_at) {
+            $newExpiresAt = \Carbon\Carbon::parse($insta->expires_at)->addDays($durationDays);
+            $msg = "Payment verified! Instagram Advertisement Package extended for another {$durationDays} days.";
+        } else {
+            $newExpiresAt = now()->addDays($durationDays);
+            $msg = ($isRenew && $isExpired)
+                ? "Payment verified! Instagram Advertisement Package renewed and reactivated for {$durationDays} days."
+                : "Payment verified! Instagram Advertisement Package subscribed and activated successfully!";
+        }
+
         $insta->is_subscribed = 1;
         $insta->status = 1;
         $insta->subscribed_at = now();
-        $insta->expires_at = now()->addDays($durationDays);
+        $insta->expires_at = $newExpiresAt;
+        $insta->razorpay_payment_id = $razorpayPaymentId;
+        $insta->razorpay_order_id = $request->input('razorpay_order_id', '');
+        $insta->razorpay_signature = $request->input('razorpay_signature', '');
+        $insta->payment_status = 'Paid';
+        $insta->paid_amount = (float) $insta->amount;
         $insta->save();
+
+        // Record transaction in central payments table
+        try {
+            \Illuminate\Support\Facades\DB::table('payments')->insert([
+                'order_id' => 'INSTA-AD-' . $vendor_id . '-' . time(),
+                'razorpay_payment_id' => $razorpayPaymentId,
+                'razorpay_order_id' => $request->input('razorpay_order_id', ''),
+                'razorpay_signature' => $request->input('razorpay_signature', ''),
+                'amount' => (float) $insta->amount,
+                'status' => 'Captured',
+                'payment_data' => json_encode([
+                    'vendor_id' => $vendor_id,
+                    'package_id' => $insta->id,
+                    'platform' => 'Instagram',
+                    'amount' => $insta->amount,
+                    'impressions' => $insta->impressions,
+                    'clicks' => $insta->clicks,
+                    'duration' => $insta->duration,
+                    'type' => 'ad_package'
+                ]),
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning("Could not record ad payment to payments table: " . $e->getMessage());
+        }
 
         return response()->json([
             'status' => 200,
-            'message' => 'Instagram Advertisement Package subscribed and activated successfully!',
+            'message' => $msg,
+            'payment_id' => $razorpayPaymentId,
             'subscribed_at' => $insta->subscribed_at ? $insta->subscribed_at->format('Y-m-d H:i') : null,
             'expires_at' => $insta->expires_at ? $insta->expires_at->format('Y-m-d H:i') : null
         ]);
