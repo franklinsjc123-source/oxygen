@@ -22,7 +22,34 @@ class WhAppController extends Controller
      */
     public function index()
     {
-        $vendor_id = session()->get('login_id'); 
+        $vendor_id = session()->get('login_id') ?? (auth()->check() ? auth()->user()->login_id : 1); 
+
+        // Master templates uploaded by admin
+        $masterTemplates = masterwhapp::where('status', 1)->get();
+
+        // Existing templates customized by this vendor
+        $vendorTemplates = wh_app::where("vendor_id", $vendor_id)->get();
+
+        // Automatically sync any active admin templates to this seller if not yet present
+        foreach ($masterTemplates as $master) {
+            $exists = $vendorTemplates->first(function ($v) use ($master) {
+                return $v->image === $master->image;
+            });
+
+            if (!$exists) {
+                $newWh = new wh_app();
+                $newWh->vendor_id  = $vendor_id;
+                $newWh->title      = ($master->title && $master->title !== '-') ? $master->title : '-';
+                $newWh->sub_title  = ($master->sub_title && $master->sub_title !== '-') ? $master->sub_title : '-';
+                $newWh->line1      = ($master->line1 && $master->line1 !== '-') ? $master->line1 : '-';
+                $newWh->line2      = ($master->line2 && $master->line2 !== '-') ? $master->line2 : '-';
+                $newWh->ph_no      = ($master->ph_no && $master->ph_no !== '-') ? $master->ph_no : '-';
+                $newWh->image      = $master->image;
+                $newWh->status     = 1;
+                $newWh->save();
+            }
+        }
+
         $whapp = wh_app::where("vendor_id", $vendor_id)->get();
         return view('layout.vendor.marketing.whatsapp')
         ->with([
@@ -118,23 +145,18 @@ class WhAppController extends Controller
     {
         $wh = wh_app::find($id);
 
-        //return ($ox);
-        
         if($wh)
         {
             return response()->json([
-
-                'status'=>200,
-                'whapp'=>$wh
-               
+                'status' => 200,
+                'whapp'  => $wh
             ]);
         }
         else
         {
             return response()->json([
-
-                'status'=>404,
-                'message'=>'oxygen not found',
+                'status'  => 404,
+                'message' => 'Template not found',
             ]);
         }
     }
@@ -151,16 +173,18 @@ class WhAppController extends Controller
         $main_image_path = "assets/images/Marketting/Wh_app_template";   
 
         try {
-
             $whid = $request->edit_id;
-
             $wh = wh_app::find($whid);
+
+            if (!$wh) {
+                $flasher->addError('Template not found!');
+                return redirect()->route('vendorwhatsapp.index');
+            }
 
             if($request->file('editimage'))
             {   
                 $file = $request->file('editimage');
                 $image = time().'.'.$file->getClientOriginalExtension();
-                //$image = $file->getClientOriginalExtension();
                 
                 $img = Image::make($file->getRealPath());
                 
@@ -168,36 +192,37 @@ class WhAppController extends Controller
                     $constraint->aspectRatio();
                     $constraint->upsize();
                 })->save($main_image_path.'/'.$image, 90);
-                $wh->image =  $image;
-    
-                $dltimage = wh_app::find($whid);
-                // print_r($image);exit();
-                 $dltfile = $this->main_image_path . "/" . $dltimage->image;             
-                 if (file_exists($dltfile)) unlink($dltfile);
-    
+
+                // Only delete old image if it is NOT an admin master template image
+                $isMasterImage = masterwhapp::where('image', $wh->image)->exists();
+                if (!$isMasterImage) {
+                    $dltfile = $this->main_image_path . "/" . $wh->image;             
+                    if (file_exists($dltfile)) @unlink($dltfile);
+                }
+
+                $wh->image = $image;
             }
             else
             {
-                $wh->image = $request->oldimage;
+                if ($request->oldimage) {
+                    $wh->image = $request->oldimage;
+                }
             }
 
-            $wh->vendor_id    =     session()->get('login_id') ?? 1;
-            $wh->title       =     $request->edittitle ?? ($wh->title ?? '-');
-            $wh->sub_title   =     $request->editsub_title ?? ($wh->sub_title ?? '-');
-            $wh->line1       =     $request->editline1 ?? ($wh->line1 ?? '-');
-            $wh->line2       =     $request->editline2 ?? ($wh->line2 ?? '-');
-            $wh->ph_no       =     $request->editph_no ?? ($wh->ph_no ?? '-');
-            // $wh->image       =      $image    ;
-            $wh->status      =     $request->editstatus ?? ($wh->status ?? 1);
-
+            $wh->vendor_id  = session()->get('login_id') ?? 1;
+            $wh->title      = $request->edittitle ?? ($wh->title ?? '-');
+            $wh->sub_title  = $request->editsub_title ?? ($wh->sub_title ?? '-');
+            $wh->line1      = $request->editline1 ?? ($wh->line1 ?? '-');
+            $wh->line2      = $request->editline2 ?? ($wh->line2 ?? '-');
+            $wh->ph_no      = $request->editph_no ?? ($wh->ph_no ?? '-');
+            $wh->status     = $request->editstatus ?? ($wh->status ?? 1);
 
             $wh->save();
 
             $flasher->addSuccess('Template Information has been Updated successfully!');
             return redirect()->route('vendorwhatsapp.index');
         } catch (\Throwable $th) {
-            //$flasher->addError('Something Error!!');
-            $flasher->addError('Something Error!! =>' . $th);
+            $flasher->addError('Something Error!! =>' . $th->getMessage());
             return redirect()->route('vendorwhatsapp.index');
         }
     }
@@ -211,13 +236,16 @@ class WhAppController extends Controller
     public function destroy(wh_app $wh_app, $id, FlasherInterface $flasher)
     {
         try {
-            $image = wh_app::find($id);
-           // print_r($image);exit();
-            $file = $this->main_image_path . "/" . $image->image;
-            
-            if (file_exists($file)) unlink($file);
-            //dd($file);
-            wh_app::where("id", $id)->delete();
+            $item = wh_app::find($id);
+            if ($item) {
+                // Only unlink if the image is NOT an admin master template image
+                $isMasterImage = masterwhapp::where('image', $item->image)->exists();
+                if (!$isMasterImage) {
+                    $file = $this->main_image_path . "/" . $item->image;
+                    if (file_exists($file)) @unlink($file);
+                }
+                $item->delete();
+            }
 
             $flasher->addsuccess('Template Removed!');
             return redirect()->route('vendorwhatsapp.index');

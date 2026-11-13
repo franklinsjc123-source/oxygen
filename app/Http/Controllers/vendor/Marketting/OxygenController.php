@@ -19,7 +19,28 @@ class OxygenController extends Controller
      */
     public function index()
     {
-        $vendor_id = session()->get('login_id'); 
+        $vendor_id = session()->get('login_id') ?? (auth()->check() ? auth()->user()->login_id : 1); 
+
+        // Master budgets from admin
+        $masterBudgets = masteroxy::where('status', 1)->get();
+        $vendorBudgets = oxygen::where("vendor_id", $vendor_id)->get();
+
+        foreach ($masterBudgets as $master) {
+            $exists = $vendorBudgets->firstWhere('amount', $master->amount);
+            if (!$exists) {
+                $newOxy = new oxygen();
+                $newOxy->vendor_id   = $vendor_id;
+                $newOxy->amount      = $master->amount;
+                $newOxy->impressions = $master->impressions;
+                $newOxy->clicks      = $master->clicks;
+                $newOxy->duration    = $master->duration;
+                $newOxy->status      = $master->status ?? 1;
+                $newOxy->image       = $master->image ?? '-';
+                $newOxy->text        = $master->text ?? '-';
+                $newOxy->save();
+            }
+        }
+
         $oxygen = oxygen::where("vendor_id", $vendor_id)->get();
         return view('layout.vendor.marketing.oxygen')
         ->with([

@@ -18,7 +18,28 @@ class FaceBookController extends Controller
      */
     public function index()
     {
-        $vendor_id = session()->get('login_id');        
+        $vendor_id = session()->get('login_id') ?? (auth()->check() ? auth()->user()->login_id : 1);        
+
+        // Master budgets from admin
+        $masterBudgets = masterfb::where('status', 1)->get();
+        $vendorBudgets = face_book::where("vendor_id", $vendor_id)->get();
+
+        foreach ($masterBudgets as $master) {
+            $exists = $vendorBudgets->firstWhere('amount', $master->amount);
+            if (!$exists) {
+                $newFb = new face_book();
+                $newFb->vendor_id   = $vendor_id;
+                $newFb->amount      = $master->amount;
+                $newFb->impressions = $master->impressions;
+                $newFb->clicks      = $master->clicks;
+                $newFb->duration    = $master->duration;
+                $newFb->status      = $master->status ?? 1;
+                $newFb->image       = $master->image ?? '-';
+                $newFb->text        = $master->text ?? '-';
+                $newFb->save();
+            }
+        }
+
         $fb = face_book::where("vendor_id", $vendor_id)->get();
 
         return view('layout.vendor.marketing.facebook')

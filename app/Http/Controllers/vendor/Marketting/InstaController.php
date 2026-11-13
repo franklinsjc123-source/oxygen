@@ -19,7 +19,28 @@ class InstaController extends Controller
      */
     public function index()
     {
-        $vendor_id = session()->get('login_id');        
+        $vendor_id = session()->get('login_id') ?? (auth()->check() ? auth()->user()->login_id : 1);        
+
+        // Master budgets from admin
+        $masterBudgets = masterinsta::where('status', 1)->get();
+        $vendorBudgets = insta::where("vendor_id", $vendor_id)->get();
+
+        foreach ($masterBudgets as $master) {
+            $exists = $vendorBudgets->firstWhere('amount', $master->amount);
+            if (!$exists) {
+                $newInsta = new insta();
+                $newInsta->vendor_id   = $vendor_id;
+                $newInsta->amount      = $master->amount;
+                $newInsta->impressions = $master->impressions;
+                $newInsta->clicks      = $master->clicks;
+                $newInsta->duration    = $master->duration;
+                $newInsta->status      = $master->status ?? 1;
+                $newInsta->image       = $master->image ?? '-';
+                $newInsta->text        = $master->text ?? '-';
+                $newInsta->save();
+            }
+        }
+
         $instagrame = insta::where("vendor_id", $vendor_id)->get();
         return view('layout.vendor.marketing.instagram')
         ->with([
