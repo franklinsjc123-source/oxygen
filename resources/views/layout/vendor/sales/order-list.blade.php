@@ -162,7 +162,7 @@
                                         <div class="datatable-dashv1-list custom-datatable-overright" >
                                             <div id="toolbar-vendor-new" class="d-flex align-items-center gap-2">
                                                 <button type="button" class="btn border border-success text-success accept" onclick="edit()">Accept</button> 
-                                                <a href="{{ route('vendororder.export') }}" class="btn btn-success" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</a>
+                                                <a href="{{ route('vendororder.export') }}" class="btn btn-success" style="background-color: #28a745; border-color: #28a745; color: #fff;">Export Excel</a>
                                             </div>
 
                                             <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-vendor-new" >
@@ -258,7 +258,7 @@
 
                                                         <!-- Modal footer -->
                                                         <div class="modal-footer">
-                                                            <button type="submit" class="btn btn-primary">SUBMIT</button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+                                                            <button type="submit" class="btn btn-primary">SUBMIT</button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;">Export Excel</button>
                                                             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                                                         </div>
                                                     {{-- </form>	 --}}

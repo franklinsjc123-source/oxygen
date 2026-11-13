@@ -43,7 +43,7 @@
                             <div class="card-body">
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                     data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus"></i> Add
-                                    Zonal</button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
+                                    Zonal</button> <button type="button" class="btn btn-success btn-export-excel ms-2" style="background-color: #28a745; border-color: #28a745; color: #fff;">Export Excel</button>
 
                                 <div class="btn-popup pull-right">
 
@@ -252,7 +252,7 @@
                 data: null,
                 buttons: [{
                     extend: "excelHtml5",
-                    text: '<i class="fas fa-file-excel m-0"></i>',
+                    text: 'Export Excel',
                     orientation: 'potrait',
                     className: 'btn-crc buttons-excel mr-3',
                     exportOptions: {

@@ -185,7 +185,7 @@
                         <div class="card">
                                 <div id="toolbar" class="d-flex align-items-center">
                                     <a href="{{ route('vendorproduct.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;">
-                                        <i class="fa fa-file-excel-o me-1"></i> Export Excel
+                                        Export Excel
                                     </a>
                                     <a href="{{ route('vendorproducts.crud.index') }}" class="btn btn-primary">
                                         <i class="fa fa-plus me-1"></i> Add Product

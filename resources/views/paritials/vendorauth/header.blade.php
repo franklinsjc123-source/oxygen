@@ -83,6 +83,22 @@
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap1.css') }}">
 
     <style>
+        /* Remove icon from Export Excel buttons in Seller login */
+        .btn-export-excel i,
+        .btn-export-excel svg,
+        a.btn-success i,
+        button.btn-success i,
+        a.btn-success svg,
+        button.btn-success svg,
+        .buttons-excel i,
+        .buttons-excel svg,
+        .fixed-table-toolbar .btn-success i,
+        .fixed-table-toolbar .btn-export-excel i,
+        #toolbar .btn-success i,
+        #toolbar .btn-export-excel i {
+            display: none !important;
+        }
+
         body {
             font-family: Century Glothic;
         }
