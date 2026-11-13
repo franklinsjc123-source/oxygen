@@ -49,6 +49,20 @@
                     <div class="col-sm-12">
                         <div class="card">                           
                             <div class="card-body">
+@if(isset($sellerRequests) && $sellerRequests->isNotEmpty())
+							 <div class="alert alert-success d-flex align-items-center justify-content-between p-3 mb-3 rounded-3" style="border: 1px solid #bbf7d0; background: #f0fdf4;">
+							    <div class="d-flex align-items-center gap-2">
+							        <i class="fa fa-th-large text-success fa-lg"></i>
+							        <div>
+							            <strong class="text-dark">{{ $sellerRequests->count() }} Seller Trymenow Adv Submission(s)</strong>
+							            <div class="small text-muted">Sellers have submitted and paid for Home Page Trymenow Adv placements.</div>
+							        </div>
+							    </div>
+							    <a href="{{ route('oxygen.index') }}" class="btn btn-sm btn-success text-white fw-bold px-3 py-2 rounded-2" style="white-space: nowrap;">
+							        <i class="fa fa-external-link me-1"></i> Review & Publish ({{ $sellerRequests->where('approval_status', 'Pending')->count() }} Pending)
+							    </a>
+							 </div>
+@endif
 							 <div id="toolbar" class="d-flex align-items-center">
 								<button type="button" class="btn btn-success btn-export-excel me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;"><i class="fa fa-file-excel-o me-1"></i> Export Excel</button>
 								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"><i class="fa fa-plus"></i> Add Banner</button>

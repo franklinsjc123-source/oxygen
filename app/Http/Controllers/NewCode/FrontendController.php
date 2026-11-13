@@ -1448,6 +1448,14 @@ class FrontendController extends Controller
             ->whereNotNull('banner_image')
             ->get();
 
+        $vendorAdvBanners = $vendorPromoBanners->filter(function($b) {
+            return $b->banner_type === 'adv_banner';
+        });
+
+        $vendorCategoryBanners = $vendorPromoBanners->filter(function($b) {
+            return $b->banner_type !== 'adv_banner';
+        });
+
         return view('frontend/demo_eight', compact(
             'mainslider',
             'topRatedProducts',
@@ -1462,7 +1470,9 @@ class FrontendController extends Controller
             'oxygen_adv',
             'paidAddSlip',
             'paidAdvBanners',
-            'vendorPromoBanners'
+            'vendorPromoBanners',
+            'vendorAdvBanners',
+            'vendorCategoryBanners'
         ));
     }
 

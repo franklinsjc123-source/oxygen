@@ -857,11 +857,13 @@
 
      <!-- Trymenow Promo / Advertisement Banners -->
      @php
-         $validVendorPromos = (isset($vendorPromoBanners) && count($vendorPromoBanners) > 0)
-             ? collect($vendorPromoBanners)->filter(function($b) {
-                 return !empty($b->banner_image) && file_exists(public_path('assets/images/banners/advoxygen/' . $b->banner_image));
-             })
-             : collect();
+         $vendorCategoryList = (isset($vendorCategoryBanners) && count($vendorCategoryBanners) > 0)
+             ? $vendorCategoryBanners
+             : ((isset($vendorPromoBanners) && count($vendorPromoBanners) > 0) ? $vendorPromoBanners->where('banner_type', '!=', 'adv_banner') : collect());
+
+         $validVendorPromos = $vendorCategoryList->filter(function($b) {
+             return !empty($b->banner_image) && file_exists(public_path('assets/images/banners/advoxygen/' . $b->banner_image));
+         });
 
          $validOxygenAdv = (isset($oxygen_adv) && count($oxygen_adv) > 0)
              ? collect($oxygen_adv)->filter(function($b) {
@@ -1467,19 +1469,37 @@
      <!-- Advertisement Banner (After LITTLE ONES, BIG STYLE) -->
      <div class="container mt-4 mb-3">
           @php
+              $vendorAdvList = (isset($vendorAdvBanners) && count($vendorAdvBanners) > 0)
+                  ? $vendorAdvBanners->filter(function($b) {
+                      return !empty($b->banner_image) && (file_exists(public_path('assets/images/banners/adv-baner/' . $b->banner_image)) || file_exists(public_path('assets/images/banners/advoxygen/' . $b->banner_image)));
+                  })
+                  : collect();
+
               $rawAdvBanners = (isset($paidAdvBanners) && $paidAdvBanners->isNotEmpty())
                   ? $paidAdvBanners
                   : (isset($paidAddSlip) && $paidAddSlip ? collect([$paidAddSlip]) : collect());
               $advBannersToDisplay = $rawAdvBanners->filter(function($b) {
                   return !empty($b->image) && file_exists(public_path('assets/images/banners/adv-baner/' . $b->image));
               });
+
+              if ($vendorAdvList->isNotEmpty()) {
+                  $displayAdvBanners = $vendorAdvList;
+                  $isVendorAdv = true;
+              } else {
+                  $displayAdvBanners = $advBannersToDisplay;
+                  $isVendorAdv = false;
+              }
           @endphp
-          @if($advBannersToDisplay->isNotEmpty())
-              @foreach($advBannersToDisplay as $paidAddSlip)
+          @if($displayAdvBanners->isNotEmpty())
+              @foreach($displayAdvBanners as $paidAddSlip)
                   @php
+                      $advImg = $isVendorAdv ? $paidAddSlip->banner_image : $paidAddSlip->image;
+                      $imgPath = file_exists(public_path('assets/images/banners/adv-baner/' . $advImg))
+                          ? asset('assets/images/banners/adv-baner/' . $advImg)
+                          : asset('assets/images/banners/advoxygen/' . $advImg);
                       $paidLink = !empty($paidAddSlip->link) ? (filter_var($paidAddSlip->link, FILTER_VALIDATE_URL) ? $paidAddSlip->link : url($paidAddSlip->link)) : '#';
                   @endphp
-                  <div class="banner banner-shoes br-sm mb-3" style="background-image: url('{{ asset('assets/images/banners/adv-baner/' . $paidAddSlip->image) }}'); background-size: cover; background-position: center; cursor: pointer; position: relative;" onclick="if('{{ $paidLink }}' !== '#') window.location.href='{{ $paidLink }}';">
+                  <div class="banner banner-shoes br-sm mb-3" style="background-image: url('{{ $imgPath }}'); background-size: cover; background-position: center; cursor: pointer; position: relative;" onclick="if('{{ $paidLink }}' !== '#') window.location.href='{{ $paidLink }}';">
                       <a href="{{ $paidLink }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block;" aria-label="Paid Advertisement Banner"></a>
                       @if(!empty($paidAddSlip->title) || !empty($paidAddSlip->sub_title))
                       <div class="banner-content d-block d-lg-flex align-items-center" style="position: relative; z-index: 2; pointer-events: none;">

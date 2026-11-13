@@ -185,6 +185,34 @@ class OxygenController extends Controller
         $vendorPromo->admin_notes = $request->input('admin_notes', 'Approved by Admin');
         $vendorPromo->save();
 
+        try {
+            if ($vendorPromo->banner_type === 'adv_banner') {
+                // Publish into paid_advs table
+                $adv = new \App\Models\Banners\paid_adv();
+                $adv->admin_id = 1;
+                $adv->title = $vendorPromo->title ?? '';
+                $adv->sub_title = $vendorPromo->sub_title ?? '';
+                $adv->image = $vendorPromo->banner_image;
+                $adv->link = $vendorPromo->link ?? '';
+                $adv->sort = 1;
+                $adv->status = 1;
+                $adv->save();
+            } else {
+                // Publish into oxygen_advs table
+                $oxy = new \App\Models\Banners\oxygen_adv();
+                $oxy->admin_id = 1;
+                $oxy->title = $vendorPromo->title ?? '';
+                $oxy->sub_title = $vendorPromo->sub_title ?? '';
+                $oxy->image = $vendorPromo->banner_image;
+                $oxy->link = $vendorPromo->link ?? '';
+                $oxy->sort = 1;
+                $oxy->status = 1;
+                $oxy->save();
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning("Could not sync with banner tables: " . $e->getMessage());
+        }
+
         return response()->json([
             'status' => 200,
             'message' => 'Seller banner advertisement has been approved and published to the Home Page!',

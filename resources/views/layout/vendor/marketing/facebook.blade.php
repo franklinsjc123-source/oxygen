@@ -350,8 +350,55 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
-    .swal2-popup {
-        font-size: 1.4rem !important;
+    .neat-checkout-modal {
+        border-radius: 20px !important;
+        box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.25) !important;
+        padding: 24px 26px !important;
+        border: 1px solid #e2e8f0 !important;
+        background: #ffffff !important;
+        max-width: 480px !important;
+        width: 94% !important;
+    }
+    .neat-checkout-modal .swal2-html-container {
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+    }
+    .neat-checkout-modal .swal2-actions {
+        margin-top: 18px !important;
+        gap: 12px !important;
+        width: 100% !important;
+        display: flex !important;
+    }
+    .neat-checkout-confirm-btn {
+        flex: 1 !important;
+        border-radius: 10px !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        padding: 12px 20px !important;
+        border: none !important;
+        box-shadow: 0 4px 14px rgba(24, 53, 67, 0.22) !important;
+        transition: all 0.2s ease !important;
+        cursor: pointer !important;
+    }
+    .neat-checkout-confirm-btn:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 6px 18px rgba(24, 53, 67, 0.3) !important;
+    }
+    .neat-checkout-cancel-btn {
+        border-radius: 10px !important;
+        font-size: 13.5px !important;
+        font-weight: 500 !important;
+        padding: 12px 18px !important;
+        background: #f1f5f9 !important;
+        color: #475569 !important;
+        border: 1px solid #cbd5e1 !important;
+        transition: all 0.2s ease !important;
+        cursor: pointer !important;
+    }
+    .neat-checkout-cancel-btn:hover {
+        background: #e2e8f0 !important;
+        color: #1e293b !important;
     }
 </style>
 <script>
@@ -393,36 +440,75 @@
         const token = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '{{ csrf_token() }}';
 
         let titleText = 'Subscribe to ' + platform + ' Package';
-        let subText = 'Subscribe to this package to run advertising campaigns on ' + platform + ' for your shop.';
+        let subText = 'Activate sponsored ad reach on ' + platform + ' for your shop.';
         let confirmBtnText = '<i class="fa fa-credit-card me-1"></i> Proceed to Pay Online (RM ' + amount + ')';
         let confirmBtnColor = '#183543';
 
         if (action === 'renew') {
             titleText = 'Renew ' + platform + ' Package';
-            subText = 'Your previous plan has expired. Renewing will immediately reactivate your campaign for another ' + duration + ' days.';
+            subText = 'Plan expired. Renew now to reactivate ad impressions for ' + duration + ' days.';
             confirmBtnText = '<i class="fa fa-refresh me-1"></i> Pay & Renew Online (RM ' + amount + ')';
             confirmBtnColor = '#ea580c';
         } else if (action === 'extend') {
             titleText = 'Extend ' + platform + ' Package';
-            subText = 'Extend your active campaign by adding ' + duration + ' more days to your current validity.';
+            subText = 'Add ' + duration + ' more days to extend your active campaign validity.';
             confirmBtnText = '<i class="fa fa-calendar-plus-o me-1"></i> Pay & Extend Online (RM ' + amount + ')';
             confirmBtnColor = '#10b981';
         }
 
         Swal.fire({
-            title: '<strong>' + titleText + '</strong>',
-            icon: action === 'renew' ? 'warning' : 'info',
             html: `
-                <div style="text-align: left; font-size: 13.5px; color: #334155;">
-                    <p class="text-muted mb-3">${subText}</p>
-                    <div style="background: #f8fafc; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0;">
-                        <div class="d-flex justify-content-between py-1 border-bottom"><span>Package Budget:</span> <strong style="color: #183543; font-size: 15px;">RM ${amount}</strong></div>
-                        <div class="d-flex justify-content-between py-1 border-bottom"><span>Estimated Impressions:</span> <strong>${impressions}</strong></div>
-                        <div class="d-flex justify-content-between py-1 border-bottom"><span>Estimated Clicks:</span> <strong>${clicks}</strong></div>
-                        <div class="d-flex justify-content-between py-1"><span>Campaign Duration:</span> <strong>${duration} Days</strong></div>
+                <div style="text-align: left; font-family: inherit;">
+                    <!-- Modal Header with Brand Icon -->
+                    <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #f1f5f9;">
+                        <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(24, 119, 242, 0.12); display: flex; align-items: center; justify-content: center; color: #1877f2; font-size: 24px; flex-shrink: 0;">
+                            <i class="fa fa-facebook"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 17px; font-weight: 700; color: #0f172a; line-height: 1.25;">${titleText}</div>
+                            <div style="font-size: 12.5px; color: #64748b; margin-top: 3px; line-height: 1.4;">${subText}</div>
+                        </div>
                     </div>
-                    <div class="mt-3 text-center text-muted" style="font-size: 11.5px;">
-                        <i class="fa fa-lock text-success me-1"></i> Secure Online Payment powered by <strong>Razorpay</strong> (Cards, UPI, NetBanking)
+
+                    <!-- Pricing Summary Card -->
+                    <div style="background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 16px; margin-bottom: 16px;">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px dashed #cbd5e1;">
+                            <div>
+                                <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748b; letter-spacing: 0.5px;">Total Payable</span>
+                                <div style="font-size: 11px; color: #94a3b8;">Includes all taxes & delivery reach</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <span style="font-size: 24px; font-weight: 800; color: #183543; letter-spacing: -0.5px;">RM ${amount}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 3 Feature Metrics -->
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center;">
+                            <div style="background: #ffffff; border-radius: 8px; padding: 9px 4px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                                <div style="font-size: 10.5px; color: #64748b; text-transform: uppercase; font-weight: 600; letter-spacing: 0.4px;">
+                                    <i class="fa fa-calendar-o text-primary" style="margin-right: 2px;"></i> Duration
+                                </div>
+                                <div style="font-size: 13.5px; font-weight: 700; color: #0f172a; margin-top: 3px;">${duration} Days</div>
+                            </div>
+                            <div style="background: #ffffff; border-radius: 8px; padding: 9px 4px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                                <div style="font-size: 10.5px; color: #64748b; text-transform: uppercase; font-weight: 600; letter-spacing: 0.4px;">
+                                    <i class="fa fa-eye text-info" style="margin-right: 2px;"></i> Impressions
+                                </div>
+                                <div style="font-size: 13.5px; font-weight: 700; color: #0f172a; margin-top: 3px;">${impressions}</div>
+                            </div>
+                            <div style="background: #ffffff; border-radius: 8px; padding: 9px 4px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                                <div style="font-size: 10.5px; color: #64748b; text-transform: uppercase; font-weight: 600; letter-spacing: 0.4px;">
+                                    <i class="fa fa-mouse-pointer text-success" style="margin-right: 2px;"></i> Est. Clicks
+                                </div>
+                                <div style="font-size: 13.5px; font-weight: 700; color: #0f172a; margin-top: 3px;">${clicks}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Trust Bar -->
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 11.5px; color: #334155; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; padding: 9px 12px;">
+                        <i class="fa fa-lock text-success" style="font-size: 14px;"></i>
+                        <span>Encrypted 256-bit instant checkout powered by <strong>Razorpay</strong></span>
                     </div>
                 </div>
             `,
@@ -430,7 +516,12 @@
             confirmButtonText: confirmBtnText,
             cancelButtonText: 'Cancel',
             confirmButtonColor: confirmBtnColor,
-            cancelButtonColor: '#6c757d'
+            customClass: {
+                popup: 'neat-checkout-modal',
+                confirmButton: 'neat-checkout-confirm-btn',
+                cancelButton: 'neat-checkout-cancel-btn'
+            },
+            buttonsStyling: false
         }).then((result) => {
             if (result.isConfirmed) {
                 // Open Razorpay Checkout Modal

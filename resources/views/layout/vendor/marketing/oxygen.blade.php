@@ -247,7 +247,7 @@
 									<span class="text-muted ms-1" style="font-size: 13px;">/ {{ $item->duration }} Days</span>
 								</div>
 								<div class="text-muted mt-1" style="font-size: 12px;">
-									Placement: <strong>Home Page Category Promo</strong>
+									Placement: <strong>Home Page (Trymenow / Adv Banner)</strong>
 								</div>
 							</div>
 
@@ -451,12 +451,20 @@
 
     <!-- Modal for Uploading Banner & Razorpay Checkout -->
     <div class="modal fade" id="adBannerModal" tabindex="-1" aria-labelledby="adBannerModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 14px; border: none; box-shadow: 0 15px 35px rgba(0,0,0,0.2);">
-                <div class="modal-header text-white" style="background: #183543; border-top-left-radius: 14px; border-top-right-radius: 14px;">
-                    <h5 class="modal-title fw-bold" id="adBannerModalLabel" style="font-size: 16px;">
-                        <i class="fa fa-picture-o me-2"></i> Home Page Banner Advertisement
-                    </h5>
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 520px;">
+            <div class="modal-content" style="border-radius: 18px; border: none; box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.3); overflow: hidden;">
+                <div class="modal-header px-4 py-3 text-white" style="background: #183543; border: none;">
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 34px; height: 34px; border-radius: 8px; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                            <i class="fa fa-picture-o text-white"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold mb-0 text-white" id="adBannerModalLabel" style="font-size: 15px; letter-spacing: -0.2px;">
+                                Home Page Advertisement Banner
+                            </h5>
+                            <small class="text-white-50" style="font-size: 11px;">Upload banner and activate campaign via Razorpay</small>
+                        </div>
+                    </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="adBannerForm" enctype="multipart/form-data">
@@ -464,65 +472,89 @@
                     <input type="hidden" id="modal_package_id" name="id">
                     <input type="hidden" id="modal_action" name="action">
                     
-                    <div class="modal-body p-4">
+                    <div class="modal-body p-4" style="background: #ffffff;">
                         <!-- Package Price Summary Callout -->
-                        <div class="p-3 mb-3 rounded d-flex justify-content-between align-items-center" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+                        <div class="p-3 mb-3 rounded-3 d-flex justify-content-between align-items-center" style="background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #e2e8f0;">
                             <div>
-                                <small class="text-muted d-block" style="font-size: 11px;">PACKAGE COST & DURATION</small>
-                                <span class="fw-bold" style="color: #183543; font-size: 18px;" id="modal_display_price">RM 0.00</span>
-                                <span class="text-muted small" id="modal_display_duration">/ 0 Days</span>
+                                <small class="text-muted d-block fw-bold text-uppercase" style="font-size: 10.5px; letter-spacing: 0.5px;">Payable Amount</small>
+                                <span class="fw-bold" style="color: #183543; font-size: 22px; letter-spacing: -0.5px;" id="modal_display_price">RM 0.00</span>
+                                <span class="text-muted small fw-medium" id="modal_display_duration">/ 0 Days</span>
                             </div>
-                            <span class="badge" style="background: #183543; color: #fff; font-size: 11px;">
-                                <i class="fa fa-television me-1"></i> Home Page Banner
+                            <span class="badge px-3 py-2 rounded-pill" style="background: #183543; color: #fff; font-size: 11px; font-weight: 600;">
+                                <i class="fa fa-television me-1"></i> Home Page Slot
                             </span>
+                        </div>
+
+                        <!-- Banner Placement Selection -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 12.5px;">
+                                Select Banner Placement Position <span class="text-danger">*</span>
+                            </label>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label class="banner-slot-card p-2 rounded-3 border d-block cursor-pointer text-center" id="slotCardTrymenow" style="border: 2px solid #183543 !important; background: #f0fdf4; cursor: pointer; transition: all 0.2s;">
+                                        <input type="radio" name="banner_type" value="trymenow_adv" checked class="d-none slot-radio-input" onchange="updateSlotSelection(this)">
+                                        <div class="fw-bold text-dark" style="font-size: 12.5px;"><i class="fa fa-th-large text-success me-1"></i> Trymenow Adv</div>
+                                        <div class="text-muted" style="font-size: 10.5px;">Category Promo (600 × 300)</div>
+                                    </label>
+                                </div>
+                                <div class="col-6">
+                                    <label class="banner-slot-card p-2 rounded-3 border d-block cursor-pointer text-center" id="slotCardAdv" style="border: 1px solid #cbd5e1; background: #ffffff; cursor: pointer; transition: all 0.2s;">
+                                        <input type="radio" name="banner_type" value="adv_banner" class="d-none slot-radio-input" onchange="updateSlotSelection(this)">
+                                        <div class="fw-bold text-dark" style="font-size: 12.5px;"><i class="fa fa-television text-primary me-1"></i> Adv Banner</div>
+                                        <div class="text-muted" style="font-size: 10.5px;">Middle Hero (1200 × 300)</div>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Banner Image Upload -->
                         <div class="mb-3">
-                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 13px;">
+                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 12.5px;">
                                 Advertisement Banner Image <span class="text-danger">*</span>
                             </label>
-                            <input type="file" class="form-control" id="banner_image_input" name="banner_image" accept="image/*" required>
-                            <div class="form-text" style="font-size: 11.5px;">Recommended size: <strong>600 × 300 px</strong> or <strong>1200 × 600 px</strong> (JPG, PNG, WebP).</div>
+                            <input type="file" class="form-control" id="banner_image_input" name="banner_image" accept="image/*" required style="border-radius: 8px; font-size: 12.5px;">
+                            <div class="form-text" style="font-size: 11px; color: #64748b;">Supported formats: JPG, PNG, WebP (Max 2MB).</div>
                             
                             <!-- Image Preview Box -->
-                            <div id="imagePreviewBox" class="mt-2 text-center p-2 border rounded" style="display: none; background: #fafafa;">
-                                <img id="imagePreview" src="" alt="Preview" style="max-height: 120px; max-width: 100%; border-radius: 6px;">
+                            <div id="imagePreviewBox" class="mt-2 text-center p-2 border rounded-3" style="display: none; background: #fafafa;">
+                                <img id="imagePreview" src="" alt="Preview" style="max-height: 110px; max-width: 100%; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.08);">
                             </div>
                         </div>
 
                         <!-- Banner Title (Optional) -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 13px;">
+                        <div class="mb-2">
+                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 12.5px;">
                                 Banner Headline / Title <small class="text-muted fw-normal">(Optional)</small>
                             </label>
-                            <input type="text" class="form-control" id="modal_title" name="title" placeholder="e.g. MEGA SUMMER SALE 50% OFF">
+                            <input type="text" class="form-control" id="modal_title" name="title" placeholder="e.g. MEGA SUMMER SALE 50% OFF" style="border-radius: 8px; font-size: 12.5px;">
                         </div>
 
                         <!-- Subtitle (Optional) -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 13px;">
+                        <div class="mb-2">
+                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 12.5px;">
                                 Subtitle / Promo Tagline <small class="text-muted fw-normal">(Optional)</small>
                             </label>
-                            <input type="text" class="form-control" id="modal_subtitle" name="sub_title" placeholder="e.g. Exclusive on our store this week">
+                            <input type="text" class="form-control" id="modal_subtitle" name="sub_title" placeholder="e.g. Exclusive on our store this week" style="border-radius: 8px; font-size: 12.5px;">
                         </div>
 
                         <!-- Destination URL / Link -->
                         <div class="mb-3">
-                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 13px;">
-                                Target Link <small class="text-muted fw-normal">(Where users go when clicking)</small>
+                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 12.5px;">
+                                Target Link <small class="text-muted fw-normal">(Defaults to your shop page)</small>
                             </label>
-                            <input type="text" class="form-control" id="modal_link" name="link" placeholder="e.g. https://yoursite.com/shops/myshop">
+                            <input type="text" class="form-control" id="modal_link" name="link" placeholder="e.g. {{ url('/shops/' . ($vendorDetails->slug ?? '')) }}" style="border-radius: 8px; font-size: 12.5px;">
                         </div>
 
-                        <div class="alert alert-info py-2 px-3 mb-0" style="font-size: 11.5px; border-radius: 8px;">
-                            <i class="fa fa-info-circle me-1"></i> Once payment is verified, your request goes directly to the Admin panel. Admin reviews and approves it, after which your banner automatically appears on the Home Page!
+                        <div class="p-2 rounded-3 mb-0 d-flex align-items-center gap-2" style="background: #f0fdf4; border: 1px solid #bbf7d0; font-size: 11px; color: #166534;">
+                            <i class="fa fa-shield text-success" style="font-size: 13px;"></i>
+                            <div>Request submitted to Admin upon payment. Once accepted, it publishes automatically!</div>
                         </div>
                     </div>
 
-                    <div class="modal-footer bg-light px-4 py-3" style="border-bottom-left-radius: 14px; border-bottom-right-radius: 14px;">
-                        <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" id="btnProceedPayment" class="btn text-white fw-bold px-4" style="background: #183543;">
+                    <div class="modal-footer px-4 py-3 d-flex justify-content-between align-items-center" style="background: #f8fafc; border-top: 1px solid #eef2f6;">
+                        <button type="button" class="btn btn-outline-secondary px-3 py-2 rounded-3" data-bs-dismiss="modal" style="font-size: 13px;">Cancel</button>
+                        <button type="submit" id="btnProceedPayment" class="btn text-white fw-bold px-4 py-2 rounded-3" style="background: #183543; font-size: 13.5px; box-shadow: 0 4px 12px rgba(24,53,67,0.2);">
                             <i class="fa fa-credit-card me-1"></i> Proceed to Pay Online
                         </button>
                     </div>
@@ -537,10 +569,66 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
-    .swal2-popup {
-        font-size: 1.4rem !important;
+    .neat-checkout-modal {
+        border-radius: 20px !important;
+        box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.25) !important;
+        padding: 24px 26px !important;
+        border: 1px solid #e2e8f0 !important;
+        background: #ffffff !important;
+        max-width: 480px !important;
+        width: 94% !important;
+    }
+    .neat-checkout-modal .swal2-html-container {
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+    }
+    .neat-checkout-modal .swal2-actions {
+        margin-top: 18px !important;
+        gap: 12px !important;
+        width: 100% !important;
+        display: flex !important;
+    }
+    .neat-checkout-confirm-btn {
+        flex: 1 !important;
+        border-radius: 10px !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        padding: 12px 20px !important;
+        border: none !important;
+        box-shadow: 0 4px 14px rgba(24, 53, 67, 0.22) !important;
+        transition: all 0.2s ease !important;
+        cursor: pointer !important;
+    }
+    .neat-checkout-cancel-btn {
+        border-radius: 10px !important;
+        font-size: 13.5px !important;
+        font-weight: 500 !important;
+        padding: 12px 18px !important;
+        background: #f1f5f9 !important;
+        color: #475569 !important;
+        border: 1px solid #cbd5e1 !important;
+        transition: all 0.2s ease !important;
+        cursor: pointer !important;
     }
 </style>
+<script>
+    function updateSlotSelection(radio) {
+        const cardTry = document.getElementById('slotCardTrymenow');
+        const cardAdv = document.getElementById('slotCardAdv');
+        if (radio.value === 'trymenow_adv') {
+            cardTry.style.border = '2px solid #183543';
+            cardTry.style.background = '#f0fdf4';
+            cardAdv.style.border = '1px solid #cbd5e1';
+            cardAdv.style.background = '#ffffff';
+        } else {
+            cardAdv.style.border = '2px solid #183543';
+            cardAdv.style.background = '#eff6ff';
+            cardTry.style.border = '1px solid #cbd5e1';
+            cardTry.style.background = '#ffffff';
+        }
+    }
+</script>
 <script>
     const razorpayKey = "{{ $razorpayKey ?? config('services.razorpay.key') }}";
     const vendorName = "{{ $vendorDetails->shop_name ?? ($vendorDetails->owner_name ?? 'Trymenow Vendor') }}";

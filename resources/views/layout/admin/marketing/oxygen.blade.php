@@ -135,6 +135,11 @@
                                                             @endif
                                                         </td>
                                                         <td>
+                                                            @if($req->banner_type === 'adv_banner')
+                                                                <span class="badge bg-primary text-white mb-1" style="font-size: 10.5px;"><i class="fa fa-television me-1"></i> Adv Banner</span>
+                                                            @else
+                                                                <span class="badge bg-success text-white mb-1" style="font-size: 10.5px;"><i class="fa fa-th-large me-1"></i> Trymenow Adv</span>
+                                                            @endif
                                                             <strong class="d-block text-dark" style="font-size: 13px;">
                                                                 {{ $req->title ?: 'Home Page Banner' }}
                                                             </strong>

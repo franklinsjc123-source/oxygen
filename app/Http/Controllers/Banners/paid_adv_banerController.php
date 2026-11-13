@@ -37,9 +37,15 @@ class paid_adv_banerController extends Controller
         $date    = "$dat";
 
         $adbanner =  paid_adv::all();
+        $sellerRequests = \App\Models\vendor\Marketting\oxygen::where('is_subscribed', 1)
+            ->where('banner_type', 'adv_banner')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return view('layout.admin.banner.advbanner')
         ->with([
              'adbanner' => $adbanner,
+             'sellerRequests' => $sellerRequests,
              "date" => $date,
              "time"  => $time
         ]);

@@ -93,12 +93,17 @@ class OxygenController extends Controller
             $ext = $file->getClientOriginalExtension();
             $imageName = 'vendor_banner_' . $vendor_id . '_' . time() . '.' . $ext;
             
-            // Save to public/assets/images/banners/advoxygen
-            $destPath = public_path('assets/images/banners/advoxygen');
-            if (!file_exists($destPath)) {
-                mkdir($destPath, 0755, true);
+            $destOxy = public_path('assets/images/banners/advoxygen');
+            $destAdv = public_path('assets/images/banners/adv-baner');
+            if (!file_exists($destOxy)) {
+                mkdir($destOxy, 0755, true);
             }
-            $file->move($destPath, $imageName);
+            if (!file_exists($destAdv)) {
+                mkdir($destAdv, 0755, true);
+            }
+
+            $file->move($destOxy, $imageName);
+            @copy($destOxy . '/' . $imageName, $destAdv . '/' . $imageName);
         }
 
         if (empty($imageName)) {
@@ -107,6 +112,12 @@ class OxygenController extends Controller
 
         $durationDays = (int) $ox->duration > 0 ? (int) $ox->duration : 30;
 
+        $bannerType = $request->input('banner_type', 'trymenow_adv');
+        if (!in_array($bannerType, ['trymenow_adv', 'adv_banner'])) {
+            $bannerType = 'trymenow_adv';
+        }
+
+        $ox->banner_type = $bannerType;
         $ox->title = $request->input('title', $ox->title);
         $ox->sub_title = $request->input('sub_title', $ox->sub_title);
         $ox->link = $request->input('link', $ox->link);
