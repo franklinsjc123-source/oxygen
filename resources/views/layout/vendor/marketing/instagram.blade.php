@@ -75,63 +75,52 @@
 													@csrf
 													<div class="row fw-bold">
 														<div class="col-sm-12">
-															<div class="form-group row">
-																<label for="validationCustom0" class="col-xl-3 col-md-4">Budget</label>
-																<div class="col-md-7">
-																	<div class="form-group">
-																		<label for="validationCustom01" class="mb-1">Select Budget :</label>
-																		<input class="form-control" id="amount" name="amount" type="number" required="" >
-																		{{-- <select class="custom-select w-100 form-control"  required="">
-																			<option value="1000">₹ 1000</option>
-																			<option value="5000">₹ 3000</option>
-																			<option value="5000">₹ 5000</option>
-																			<option value="1000">₹ 10000</option>
-																			<option value="15000">₹15000</option>
-																			<option value="15000">₹20000</option>
-																		</select> --}}
-																	</div>
+															<div class="form-group row mb-3">
+																<div class="col-md-12">
+																	<label for="amount" class="mb-1">Budget :</label>
+																	<input class="form-control" id="amount" name="amount" type="number" min="0" placeholder="Enter budget amount" required>
 																</div>
 															</div>
 
-															<div class="form-group row">
-																<label for="validationCustom1" class="col-xl-3 col-md-4">Add Impressions</label>
-																<div class="col-md-7">
-																	<input class="form-control" id="impressions" name="impressions" type="number" required="" >
-																</div>											
-															</div>
-										
-															<div class="form-group row ">
-																<label for="validationCustom1" class="col-xl-3 col-md-4">Clicks</label>
-																<div class="col-md-7">										
-																	<input class="form-control" id="clicks" name="clicks" type="number" required="" >
-																</div>											
+															<div class="form-group row mb-3">
+																<div class="col-md-12">
+																	<label for="impressions" class="mb-1">Add Impressions :</label>
+																	<input class="form-control" id="impressions" name="impressions" type="number" min="0" placeholder="Enter impressions count" required>
+																</div>
 															</div>
 
-															<div class="form-group row ">
-																<label for="validationCustom1" class="col-xl-3 col-md-4">Duration</label>
-																<div class="col-md-7">										
-																	<input class="form-control" id="duration" name="duration" type="number" required="" >
+															<div class="form-group row mb-3">
+																<div class="col-md-12">
+																	<label for="clicks" class="mb-1">Clicks :</label>
+																	<input class="form-control" id="clicks" name="clicks" type="number" min="0" placeholder="Enter clicks count" required>
 																</div>
-															</div>	
-									
-															<div class="form-group row">
-																<label class="col-xl-3 col-md-4">Status</label>
-																<div class="col-md-7">
-																	<select class="custom-select w-100 form-control" required="" id="status" name="status" onchange="discount()" >
+															</div>
+
+															<div class="form-group row mb-3">
+																<div class="col-md-12">
+																	<label for="duration" class="mb-1">Duration (Days) :</label>
+																	<input class="form-control" id="duration" name="duration" type="number" min="0" placeholder="Enter duration in days" required>
+																</div>
+															</div>
+
+															<div class="form-group row mb-3">
+																<div class="col-md-12">
+																	<label for="status" class="mb-1">Status :</label>
+																	<select class="custom-select w-100 form-control" required id="status" name="status">
 																		<option value="">--Select--</option>
-																		<option value="1" >Active</option>
-																		<option value="0" >Inactive</option>
+																		<option value="1" selected>Active</option>
+																		<option value="0">Inactive</option>
 																	</select>
 																</div>
-															</div>	
-									
+															</div>
+
 															<div class="form-group row mt-4">
 																<div class="col-12 d-flex justify-content-end gap-2 text-end" style="justify-content: flex-end !important; text-align: right;">
 																	<button class="btn btn-primary" type="submit">Save</button>
 																	<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
 																</div>
 															</div>
-														</div>	
+														</div>
 													</div>
 												</form>
 											</div>
@@ -156,64 +145,54 @@
 													@method('PUT')
 													<div class="row fw-bold">
 														<div class="col-sm-12">
-															<div class="form-group row">
-																<label for="validationCustom0" class="col-xl-3 col-md-4">Budget</label>
-																<div class="col-md-7">
-																	<div class="form-group">
-																		<input type="hidden" id="edit_id" name="edit_id">
-																		<label for="validationCustom01" class="mb-1">Select Budget :</label>
-																		<input class="form-control" id="editamount" name="editamount" type="number" required="" >
-																		{{-- <select class="custom-select w-100 form-control"  required="">
-																			<option value="1000">₹ 1000</option>
-																			<option value="5000">₹ 3000</option>
-																			<option value="5000">₹ 5000</option>
-																			<option value="1000">₹ 10000</option>
-																			<option value="15000">₹15000</option>
-																			<option value="15000">₹20000</option>
-																		</select> --}}
-																	</div>
+															<input type="hidden" id="edit_id" name="edit_id">
+
+															<div class="form-group row mb-3">
+																<div class="col-md-12">
+																	<label for="editamount" class="mb-1">Budget :</label>
+																	<input class="form-control" id="editamount" name="editamount" type="number" min="0" placeholder="Enter budget amount" required>
 																</div>
 															</div>
 
-															<div class="form-group row">
-																<label for="validationCustom1" class="col-xl-3 col-md-4">Add Impressions</label>
-																<div class="col-md-7">
-																	<input class="form-control" id="editimpressions" name="editimpressions" type="number" required="" >
-																</div>											
-															</div>
-										
-															<div class="form-group row ">
-																<label for="validationCustom1" class="col-xl-3 col-md-4">Clicks</label>
-																<div class="col-md-7">										
-																	<input class="form-control" id="editclicks" name="editclicks" type="number" required="" >
-																</div>											
+															<div class="form-group row mb-3">
+																<div class="col-md-12">
+																	<label for="editimpressions" class="mb-1">Add Impressions :</label>
+																	<input class="form-control" id="editimpressions" name="editimpressions" type="number" min="0" placeholder="Enter impressions count" required>
+																</div>
 															</div>
 
-															<div class="form-group row ">
-																<label for="validationCustom1" class="col-xl-3 col-md-4">Duration</label>
-																<div class="col-md-7">										
-																	<input class="form-control" id="editduration" name="editduration" type="number" required="" >
+															<div class="form-group row mb-3">
+																<div class="col-md-12">
+																	<label for="editclicks" class="mb-1">Clicks :</label>
+																	<input class="form-control" id="editclicks" name="editclicks" type="number" min="0" placeholder="Enter clicks count" required>
 																</div>
-															</div>	
-									
-															<div class="form-group row">
-																<label class="col-xl-3 col-md-4">Status</label>
-																<div class="col-md-7">
-																	<select class="custom-select w-100 form-control" required="" id="editstatus" name="editstatus" onchange="discount()" >
+															</div>
+
+															<div class="form-group row mb-3">
+																<div class="col-md-12">
+																	<label for="editduration" class="mb-1">Duration (Days) :</label>
+																	<input class="form-control" id="editduration" name="editduration" type="number" min="0" placeholder="Enter duration in days" required>
+																</div>
+															</div>
+
+															<div class="form-group row mb-3">
+																<div class="col-md-12">
+																	<label for="editstatus" class="mb-1">Status :</label>
+																	<select class="custom-select w-100 form-control" required id="editstatus" name="editstatus">
 																		<option value="">--Select--</option>
-																		<option value="1" >Active</option>
-																		<option value="0" >Inactive</option>
+																		<option value="1">Active</option>
+																		<option value="0">Inactive</option>
 																	</select>
 																</div>
-															</div>	
-									
+															</div>
+
 															<div class="form-group row mt-4">
 																<div class="col-12 d-flex justify-content-end gap-2 text-end" style="justify-content: flex-end !important; text-align: right;">
 																	<button class="btn btn-primary" type="submit">Save</button>
 																	<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
 																</div>
 															</div>
-														</div>	
+														</div>
 													</div>
 												</form>
 											</div>

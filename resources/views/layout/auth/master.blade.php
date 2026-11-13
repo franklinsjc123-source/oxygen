@@ -161,6 +161,16 @@
                 padding-bottom: 70px;
             }
         }
+
+        /* Remove spinner arrows from number inputs */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none !important;
+            margin: 0 !important;
+        }
+        input[type=number] {
+            -moz-appearance: textfield !important;
+        }
     </style>
 
     @include('paritials.auth.header-css')
@@ -256,6 +266,20 @@
         }
     });
     
+    // Global handler to disallow negative numbers, minus sign, and 'e' in number inputs
+    $(document).on('keydown', 'input[type="number"]', function(e) {
+        if (e.key === '-' || e.key === 'e' || e.key === 'E' || e.key === '+') {
+            e.preventDefault();
+        }
+    });
+    $(document).on('input paste', 'input[type="number"]', function() {
+        var el = this;
+        setTimeout(function() {
+            if (el.value && parseFloat(el.value) < 0) {
+                el.value = Math.abs(el.value);
+            }
+        }, 1);
+    });
 </script>
 
 </body>
