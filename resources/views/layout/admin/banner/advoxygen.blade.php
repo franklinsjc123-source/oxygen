@@ -26,7 +26,7 @@
                         <div class="col-12">
                         <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
                             <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}"><i data-feather="home"></i></a></li>
-                                <li class="breadcrumb-item active">Oxygen Adv</li>
+                                <li class="breadcrumb-item active">Trymenow Adv</li>
                         </ol>
                     </div>
                 </div>
@@ -58,7 +58,7 @@
                                         <div class="modal-dialog modal-dialog-centered" style="max-width: 550px;" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title f-w-600" id="exampleModalLabel">Oxygen Adv</h5>
+                                                    <h5 class="modal-title f-w-600" id="exampleModalLabel">Trymenow Adv</h5>
                                                     <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                                                 </div>
                                              

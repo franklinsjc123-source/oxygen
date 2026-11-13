@@ -342,6 +342,7 @@ Route::post('instagram/changestatus', [InstaController::class, 'changestatus'])-
 Route::post('instagram/subscribe', [InstaController::class, 'subscribe'])->name('vendorinstagram.subscribe');
 Route::resource('oxygen',  OxygenController::class, ['names' => 'vendoroxygen']);
 Route::post('oxygen/changestatus', [OxygenController::class, 'changestatus'])->name('vendoroxygen.changestatus');
+Route::post('oxygen/subscribe', [OxygenController::class, 'subscribe'])->name('vendoroxygen.subscribe');
 
 
 // Route::get('marketing/facebook', [MarketingController::class, 'facebook']);

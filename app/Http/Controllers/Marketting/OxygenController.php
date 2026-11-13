@@ -18,9 +18,14 @@ class OxygenController extends Controller
     public function index()
     {
         $oxygen = oxygen::all();
+        $sellerRequests = \App\Models\vendor\Marketting\oxygen::where('is_subscribed', 1)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return view('layout.admin.marketing.oxygen')
         ->with([
-            'oxygen' => $oxygen
+            'oxygen' => $oxygen,
+            'sellerRequests' => $sellerRequests
         ]);
     }
 
@@ -163,5 +168,45 @@ class OxygenController extends Controller
         $ox->save();
 
         return response()->json(['success' => 'Status changed successfully.']);
+    }
+
+    public function approve(Request $request)
+    {
+        $vendorPromo = \App\Models\vendor\Marketting\oxygen::find($request->id);
+        if (!$vendorPromo) {
+            return response()->json(['status' => 404, 'message' => 'Request not found!'], 404);
+        }
+
+        $durationDays = (int) $vendorPromo->duration > 0 ? (int) $vendorPromo->duration : 30;
+        $vendorPromo->approval_status = 'Approved';
+        $vendorPromo->status = 1; // Published and live on home page!
+        $vendorPromo->approved_at = now();
+        $vendorPromo->expires_at = now()->addDays($durationDays);
+        $vendorPromo->admin_notes = $request->input('admin_notes', 'Approved by Admin');
+        $vendorPromo->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Seller banner advertisement has been approved and published to the Home Page!',
+            'expires_at' => $vendorPromo->expires_at->format('d M Y')
+        ]);
+    }
+
+    public function reject(Request $request)
+    {
+        $vendorPromo = \App\Models\vendor\Marketting\oxygen::find($request->id);
+        if (!$vendorPromo) {
+            return response()->json(['status' => 404, 'message' => 'Request not found!'], 404);
+        }
+
+        $vendorPromo->approval_status = 'Rejected';
+        $vendorPromo->status = 0; // Not live
+        $vendorPromo->admin_notes = $request->input('admin_notes', 'Rejected by Admin');
+        $vendorPromo->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Seller banner advertisement has been rejected.'
+        ]);
     }
 }

@@ -1439,6 +1439,15 @@ class FrontendController extends Controller
         $paidAdvBanners = \App\Models\Banners\paid_adv::where('status', 1)->orderBy('sort', 'asc')->get();
         $paidAddSlip = $paidAdvBanners->first();
 
+        // Approved active vendor Trymenow Promo banners
+        $vendorPromoBanners = \App\Models\vendor\Marketting\oxygen::where('is_subscribed', 1)
+            ->where('approval_status', 'Approved')
+            ->where('status', 1)
+            ->whereNotNull('expires_at')
+            ->where('expires_at', '>=', now())
+            ->whereNotNull('banner_image')
+            ->get();
+
         return view('frontend/demo_eight', compact(
             'mainslider',
             'topRatedProducts',
@@ -1452,7 +1461,8 @@ class FrontendController extends Controller
             'sliderOffers',
             'oxygen_adv',
             'paidAddSlip',
-            'paidAdvBanners'
+            'paidAdvBanners',
+            'vendorPromoBanners'
         ));
     }
 

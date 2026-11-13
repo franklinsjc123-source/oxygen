@@ -855,27 +855,44 @@
          </div>
      </div>
 
-     <!-- Category Banner 2Cols (Advertisements moved before Mens Products) -->
+     <!-- Trymenow Promo / Advertisement Banners -->
      @php
+         $validVendorPromos = (isset($vendorPromoBanners) && count($vendorPromoBanners) > 0)
+             ? collect($vendorPromoBanners)->filter(function($b) {
+                 return !empty($b->banner_image) && file_exists(public_path('assets/images/banners/advoxygen/' . $b->banner_image));
+             })
+             : collect();
+
          $validOxygenAdv = (isset($oxygen_adv) && count($oxygen_adv) > 0)
              ? collect($oxygen_adv)->filter(function($b) {
                  return !empty($b->image) && file_exists(public_path('assets/images/banners/advoxygen/' . $b->image));
              })
              : collect();
+
+         // Prioritize active, admin-approved seller paid banners, with fallback to master oxygen banners
+         $displayBanners = $validVendorPromos->isNotEmpty() ? $validVendorPromos : $validOxygenAdv;
+         $isVendorSource = $validVendorPromos->isNotEmpty();
      @endphp
-     @if($validOxygenAdv->isNotEmpty())
+     @if($displayBanners->isNotEmpty())
      <div class="container mt-1 mb-0" style="margin-bottom: 0px !important; margin-top: 5px !important;">
-         <div class="row cols-1 {{ $validOxygenAdv->count() > 1 ? 'cols-md-2' : 'cols-md-1 justify-content-center' }} category-banner-2cols mb-1">
-             @foreach($validOxygenAdv as $key => $banner)
+         <div class="row cols-1 {{ $displayBanners->count() > 1 ? 'cols-md-2' : 'cols-md-1 justify-content-center' }} category-banner-2cols mb-1">
+             @foreach($displayBanners as $key => $banner)
              @php
-                 $advLink = !empty($banner->link) ? (filter_var($banner->link, FILTER_VALIDATE_URL) ? $banner->link : url($banner->link)) : '#';
+                 $bannerImg = $isVendorSource ? $banner->banner_image : $banner->image;
+                 $defaultVendorLink = ($isVendorSource && !empty($banner->vendor_detail->slug)) ? url('/shops/' . $banner->vendor_detail->slug) : '#';
+                 $advLink = !empty($banner->link) ? (filter_var($banner->link, FILTER_VALIDATE_URL) ? $banner->link : url($banner->link)) : $defaultVendorLink;
              @endphp
-             <div class="banner banner-fixed mb-1 {{ $validOxygenAdv->count() == 1 ? 'col-md-6 m-auto' : '' }}" style="cursor: pointer; position: relative;" onclick="if('{{ $advLink }}' !== '#') window.location.href='{{ $advLink }}';">
-                 <a href="{{ $advLink }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block;" aria-label="{{ $banner->title }}"></a>
+             <div class="banner banner-fixed mb-1 {{ $displayBanners->count() == 1 ? 'col-md-6 m-auto' : '' }}" style="cursor: pointer; position: relative;" onclick="if('{{ $advLink }}' !== '#') window.location.href='{{ $advLink }}';">
+                 <a href="{{ $advLink }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block;" aria-label="{{ $banner->title ?: 'Advertisement Banner' }}"></a>
                  <figure class="br-sm" style="margin: 0; overflow: hidden; border-radius: 8px; width: 100%; aspect-ratio: 600 / 300; background-color: #f4f4f4;">
-                     <img src="{{ asset('assets/images/banners/advoxygen/' . $banner->image) }}" alt="{{ $banner->title ?: 'Oxygen Advertisement' }}"
+                     <img src="{{ asset('assets/images/banners/advoxygen/' . $bannerImg) }}" alt="{{ $banner->title ?: 'Trymenow Advertisement' }}"
                           style="object-fit: cover !important; width: 100% !important; height: 100% !important; display: block;" loading="lazy" decoding="async" />
                  </figure>
+                 @if($isVendorSource)
+                 <span class="badge" style="position: absolute; top: 8px; right: 8px; z-index: 3; background: rgba(24, 53, 67, 0.85); color: #fff; font-size: 10.5px; border-radius: 4px; padding: 3px 7px;">
+                     <i class="fa fa-bullhorn me-1"></i> Sponsored
+                 </span>
+                 @endif
                  @if(!empty($banner->title) || !empty($banner->sub_title))
                  <div class="banner-content y-50" style="z-index: 2; pointer-events: none;">
                      @if(!empty($banner->title))

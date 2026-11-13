@@ -318,6 +318,8 @@ Route::resource('facebook',  FaceBookController::class,['names' => 'facebook']);
 Route::post('instagram/changestatus', [InstaController::class, 'changestatus'])->name('instagram.changestatus');
 Route::resource('instagram',  InstaController::class,['names' => 'instagram']);
 Route::post('oxygen/changestatus', [OxygenController::class, 'changestatus'])->name('oxygen.changestatus');
+Route::post('oxygen/approve', [OxygenController::class, 'approve'])->name('oxygen.approve');
+Route::post('oxygen/reject', [OxygenController::class, 'reject'])->name('oxygen.reject');
 Route::resource('oxygen',  OxygenController::class,['names' => 'oxygen']);
 
 
