@@ -69,11 +69,10 @@
 							<div class="modal fade" id="posterStudioModal" tabindex="-1" role="dialog" aria-labelledby="posterStudioModalLabel" aria-hidden="true">
 								<div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width: 880px; width: 95%;">
 									<div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
-										<div class="modal-header text-white py-2 px-3 d-flex justify-content-between align-items-center" style="background-color: #212529 !important;">
+										<div class="modal-header text-white py-2 px-3 d-flex justify-content-between align-items-center" style="background-color: #183543 !important;">
 											<div class="d-flex align-items-center gap-2">
 												<i class="fa fa-paint-brush text-warning fa-lg"></i>
 												<h5 class="modal-title text-white fw-bold mb-0" id="posterStudioModalLabel" style="font-size: 16px;">Poster Studio</h5>
-												<span class="badge bg-warning text-dark font-weight-bold ms-2" style="font-size: 10px;">Canva Style</span>
 											</div>
 											<!-- Close Button -->
 											<button type="button" class="btn btn-sm text-white fw-bold px-3 py-1 shadow-sm close-studio-modal-btn" data-dismiss="modal" data-bs-dismiss="modal" style="background-color: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 20px; font-size: 12px; line-height: 1.4; letter-spacing: 0.5px;">
@@ -105,7 +104,6 @@
 															<h6 class="fw-bold mb-0 text-dark" style="font-size: 13.5px;">
 																<i class="fa fa-sliders me-1 text-primary"></i> Customize Poster
 															</h6>
-															<span class="badge bg-light text-muted border" style="font-size: 9.5px;">Canva Controls</span>
 														</div>
 														<input type="hidden" id="studio_item_id">
 
@@ -276,7 +274,7 @@
 
 														<!-- Action Buttons (Always Visible at Bottom) -->
 														<div class="pt-2 border-top mt-auto">
-															<button type="button" class="btn btn-lg w-100 fw-bold shadow-sm" id="btn_download_poster" style="background-color: #212529 !important; border-color: #212529 !important; color: #ffffff !important; padding: 10px 16px; font-size: 13.5px; border-radius: 8px;">
+															<button type="button" class="btn btn-lg w-100 fw-bold shadow-sm" id="btn_download_poster" style="background-color: #183543 !important; border-color: #183543 !important; color: #ffffff !important; padding: 10px 16px; font-size: 13.5px; border-radius: 8px;">
 																<i class="fa fa-download me-2"></i> DOWNLOAD POSTER (PNG)
 															</button>
 
@@ -412,13 +410,13 @@
         transition: all 0.15s ease-in-out !important;
     }
     .studio-tab-btn.active {
-        background: #212529 !important;
+        background: #183543 !important;
         color: #ffffff !important;
-        box-shadow: 0 2px 6px rgba(33, 37, 41, 0.35) !important;
+        box-shadow: 0 2px 6px rgba(24, 53, 67, 0.35) !important;
     }
     #btn_download_poster:hover {
-        background-color: #343a40 !important;
-        border-color: #343a40 !important;
+        background-color: #24495c !important;
+        border-color: #24495c !important;
         color: #ffffff !important;
     }
     .studio-tab-pane {
@@ -461,8 +459,8 @@
     #posterStudioModal .studio-input:focus,
     #posterStudioModal input.form-control:focus,
     #posterStudioModal select.form-select:focus {
-        border-color: #2563eb !important;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+        border-color: #183543 !important;
+        box-shadow: 0 0 0 3px rgba(24, 53, 67, 0.15) !important;
         outline: none !important;
     }
     #posterStudioModal .studio-input-group {
