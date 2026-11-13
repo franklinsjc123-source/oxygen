@@ -336,8 +336,10 @@ Route::resource('whatsapp',  WhAppController::class, ['names' => 'vendorwhatsapp
 Route::post('whatsapp/changestatus', [WhAppController::class, 'changestatus'])->name('vendorwhatsapp.changestatus');
 Route::resource('facebook',  FaceBookController::class, ['names' => 'vendorfacebook']);
 Route::post('facebook/changestatus', [FaceBookController::class, 'changestatus'])->name('vendorfacebook.changestatus');
+Route::post('facebook/subscribe', [FaceBookController::class, 'subscribe'])->name('vendorfacebook.subscribe');
 Route::resource('instagram',  InstaController::class, ['names' => 'vendorinstagram']);
 Route::post('instagram/changestatus', [InstaController::class, 'changestatus'])->name('vendorinstagram.changestatus');
+Route::post('instagram/subscribe', [InstaController::class, 'subscribe'])->name('vendorinstagram.subscribe');
 Route::resource('oxygen',  OxygenController::class, ['names' => 'vendoroxygen']);
 Route::post('oxygen/changestatus', [OxygenController::class, 'changestatus'])->name('vendoroxygen.changestatus');
 

@@ -25,18 +25,25 @@ class FaceBookController extends Controller
         $vendorBudgets = face_book::where("vendor_id", $vendor_id)->get();
 
         foreach ($masterBudgets as $master) {
-            $exists = $vendorBudgets->firstWhere('amount', $master->amount);
+            $exists = $vendorBudgets->first(function($item) use ($master) {
+                return ($item->package_id && $item->package_id == $master->id) || ($item->amount == $master->amount && $item->duration == $master->duration);
+            });
             if (!$exists) {
                 $newFb = new face_book();
-                $newFb->vendor_id   = $vendor_id;
-                $newFb->amount      = $master->amount;
-                $newFb->impressions = $master->impressions;
-                $newFb->clicks      = $master->clicks;
-                $newFb->duration    = $master->duration;
-                $newFb->status      = $master->status ?? 1;
-                $newFb->image       = $master->image ?? '-';
-                $newFb->text        = $master->text ?? '-';
+                $newFb->vendor_id     = $vendor_id;
+                $newFb->package_id    = $master->id;
+                $newFb->amount        = $master->amount;
+                $newFb->impressions   = $master->impressions;
+                $newFb->clicks        = $master->clicks;
+                $newFb->duration      = $master->duration;
+                $newFb->status        = 0;
+                $newFb->is_subscribed = 0;
+                $newFb->image         = $master->image ?? '-';
+                $newFb->text          = $master->text ?? '-';
                 $newFb->save();
+            } else if (!$exists->package_id) {
+                $exists->package_id = $master->id;
+                $exists->save();
             }
         }
 
@@ -181,9 +188,39 @@ class FaceBookController extends Controller
 
     public function changestatus(Request $request)
     {
-        $fb = face_book::find($request->id);
+        $vendor_id = session()->get('login_id') ?? (auth()->check() ? auth()->user()->login_id : 1);
+        $fb = face_book::where('id', $request->id)->where('vendor_id', $vendor_id)->first();
+        if (!$fb) {
+            return response()->json(['error' => 'Not found'], 404);
+        }
+        if (!$fb->is_subscribed && $request->status == 1) {
+            return response()->json(['error' => 'Please buy / subscribe to this package first to activate it.'], 400);
+        }
         $fb->status = $request->status;
         $fb->save();
         return response()->json(['success' => 'Status changed successfully.']);
+    }
+
+    public function subscribe(Request $request)
+    {
+        $vendor_id = session()->get('login_id') ?? (auth()->check() ? auth()->user()->login_id : 1);
+        $fb = face_book::where('id', $request->id)->where('vendor_id', $vendor_id)->first();
+        if (!$fb) {
+            return response()->json(['status' => 404, 'message' => 'Package not found!'], 404);
+        }
+
+        $durationDays = (int) $fb->duration > 0 ? (int) $fb->duration : 30;
+        $fb->is_subscribed = 1;
+        $fb->status = 1;
+        $fb->subscribed_at = now();
+        $fb->expires_at = now()->addDays($durationDays);
+        $fb->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Facebook Advertisement Package subscribed and activated successfully!',
+            'subscribed_at' => $fb->subscribed_at ? $fb->subscribed_at->format('Y-m-d H:i') : null,
+            'expires_at' => $fb->expires_at ? $fb->expires_at->format('Y-m-d H:i') : null
+        ]);
     }
 }

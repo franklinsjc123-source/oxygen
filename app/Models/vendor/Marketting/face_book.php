@@ -14,12 +14,21 @@ class face_book extends Model
 
     protected $fillable = [
         "vendor_id",
+        "package_id",
 		"amount",
         "impressions",
         "clicks",
         "duration",
         "status",
+        "is_subscribed",
+        "subscribed_at",
+        "expires_at",
         "image",
         "text"        
+    ];
+
+    protected $dates = [
+        'subscribed_at',
+        'expires_at'
     ];
 }

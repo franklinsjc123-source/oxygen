@@ -14,28 +14,97 @@
 	@include('paritials.vendorauth.sidemenu');
 	<!-- Page Sidebar Ends-->
 	
-	<!-- Right sidebar Start-->
-	
-	<!-- Right sidebar Ends-->
-	
     <style>
         @media (min-width: 992px) {
             .page-wrapper .page-body-wrapper .page-header {
-                margin: 20px 0 10px 0 !important;
+                margin: 18px 0 10px 0 !important;
                 padding: 0 !important;
                 border-bottom: none !important;
             }
         }
         @media (max-width: 991px) {
             .page-wrapper .page-body-wrapper .page-header {
-                margin: 15px 0 10px 0 !important;
+                margin: 12px 0 10px 0 !important;
                 padding: 0 !important;
                 border-bottom: none !important;
             }
         }
+
+        /* Balanced Package Card Styling */
+        .ad-pkg-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #ffffff;
+            transition: all 0.22s ease-in-out;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            max-width: 380px;
+            width: 100%;
+        }
+        .ad-pkg-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 22px rgba(24, 53, 67, 0.12);
+            border-color: #cbd5e1;
+        }
+        .ad-pkg-card.is-active {
+            border-color: #10b981;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15);
+        }
+        .ad-pkg-card.is-active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #10b981;
+        }
+        .ad-pkg-card:not(.is-active)::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #183543;
+        }
+        .pkg-badge-fb {
+            background: rgba(24, 119, 242, 0.1);
+            color: #1877f2;
+            font-weight: 600;
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+        .stat-metric-cell {
+            background: #f8fafc;
+            border: 1px solid #eef2f6;
+            border-radius: 9px;
+            padding: 10px 6px;
+            text-align: center;
+            transition: background 0.2s;
+        }
+        .stat-metric-cell:hover {
+            background: #f1f5f9;
+        }
+        .search-pkg-input {
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 7px 14px;
+            font-size: 13px;
+            width: 240px;
+            outline: none;
+        }
+        .search-pkg-input:focus {
+            border-color: #183543;
+            box-shadow: 0 0 0 3px rgba(24, 53, 67, 0.1);
+        }
     </style>
 
-        <div class="page-body">		
+    <div class="page-body">		
 		<!-- Container-fluid starts-->
 		<div class="container-fluid">
 			<div class="page-header">
@@ -43,7 +112,8 @@
 					<div class="col-12">
                         <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
                             <li class="breadcrumb-item"><a href="{{ route('vendordashboard', session()->get('login_id') ?? (auth()->check() ? auth()->user()->login_id : 1)) }}"><i data-feather="home"></i></a></li>
-							<li class="breadcrumb-item active">Facebook Campaign</li>
+							<li class="breadcrumb-item">Marketing</li>
+							<li class="breadcrumb-item active">Facebook Advertisement Packages</li>
                         </ol>
                     </div>
                 </div>
@@ -53,218 +123,163 @@
 		
 		<!-- Container-fluid starts-->
 		<div class="container-fluid">
-			<div class="row">
-				<div class="col-sm-12">
-					<div class="card">						
-						<div class="card-body">							
-							<div id="toolbar" class="d-flex align-items-center gap-2">
-								<button type="button" class="btn btn-success btn-export-excel" style="background-color: #73b400; border-color: #73b400; color: #fff;">EXPORT EXCEL</button>
+			
+			<!-- Header Banner -->
+			<div class="card mb-3" style="border-radius: 12px; border: 1px solid #e2e8f0; background: #ffffff;">
+				<div class="card-body p-3 px-4">
+					<div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+						<div class="d-flex align-items-center gap-3">
+							<div style="width: 44px; height: 44px; border-radius: 10px; background: rgba(24, 119, 242, 0.1); display: flex; align-items: center; justify-content: center; font-size: 22px; color: #1877f2; flex-shrink: 0;">
+								<i class="fa fa-facebook-official"></i>
 							</div>
-
-							<div class="btn-popup pull-right">
-								<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-									<div class="modal-dialog modal-dialog-centered" role="document">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title f-w-600" id="exampleModalLabel">ADD Facebook Budget</h5>
-												<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-											</div>
-											<div class="modal-body">
-												<form class="" action="{{route('vendorfacebook.store')}}" method="post">
-													@csrf
-													<div class="row fw-bold">
-														<div class="col-sm-12">
-															<div class="form-group row mb-3">
-																<div class="col-md-12">
-																	<label for="amount" class="mb-1">Budget :</label>
-																	<input class="form-control" id="amount" name="amount" type="number" min="0" placeholder="Enter budget amount" required>
-																</div>
-															</div>
-
-															<div class="form-group row mb-3">
-																<div class="col-md-12">
-																	<label for="impressions" class="mb-1">Add Impressions :</label>
-																	<input class="form-control" id="impressions" name="impressions" type="number" min="0" placeholder="Enter impressions count" required>
-																</div>
-															</div>
-
-															<div class="form-group row mb-3">
-																<div class="col-md-12">
-																	<label for="clicks" class="mb-1">Clicks :</label>
-																	<input class="form-control" id="clicks" name="clicks" type="number" min="0" placeholder="Enter clicks count" required>
-																</div>
-															</div>
-
-															<div class="form-group row mb-3">
-																<div class="col-md-12">
-																	<label for="duration" class="mb-1">Duration (Days) :</label>
-																	<input class="form-control" id="duration" name="duration" type="number" min="0" placeholder="Enter duration in days" required>
-																</div>
-															</div>
-
-															<div class="form-group row mb-3">
-																<div class="col-md-12">
-																	<label for="status" class="mb-1">Status :</label>
-																	<select class="custom-select w-100 form-control" required id="status" name="status">
-																		<option value="">--Select--</option>
-																		<option value="1" selected>Active</option>
-																		<option value="0">Inactive</option>
-																	</select>
-																</div>
-															</div>
-
-															<div class="form-group row mt-4">
-																<div class="col-12 d-flex justify-content-end gap-2 text-end" style="justify-content: flex-end !important; text-align: right;">
-																	<button class="btn btn-primary" type="submit">Save</button>
-																	<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
-																</div>
-															</div>
-														</div>
-													</div>
-												</form>
-											</div>
-										</div>
-									</div>							
-								</div>
+							<div>
+								<h6 class="mb-0 fw-bold" style="color: #183543; font-size: 15px;">Facebook Advertisement Packages</h6>
+								<small class="text-muted" style="font-size: 12px;">
+									Choose a sponsored plan to boost products and gain buyer reach on Facebook.
+								</small>
 							</div>
-
-							{{-- EIDT MODEL --}}
-
-							<div class="btn-popup pull-right">
-								<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-									<div class="modal-dialog modal-dialog-centered" role="document">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title f-w-600" id="exampleModalLabel">Edit Facebook Budget</h5>
-												<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-											</div>
-											<div class="modal-body">
-												<form class="" action="{{route('vendorfacebook.update', 1)}}" method="post">
-													@csrf
-													@method('PUT')
-													<div class="row fw-bold">
-														<div class="col-sm-12">
-															<input type="hidden" id="edit_id" name="edit_id">
-
-															<div class="form-group row mb-3">
-																<div class="col-md-12">
-																	<label for="editamount" class="mb-1">Budget :</label>
-																	<input class="form-control" id="editamount" name="editamount" type="number" min="0" placeholder="Enter budget amount" required>
-																</div>
-															</div>
-
-															<div class="form-group row mb-3">
-																<div class="col-md-12">
-																	<label for="editimpressions" class="mb-1">Add Impressions :</label>
-																	<input class="form-control" id="editimpressions" name="editimpressions" type="number" min="0" placeholder="Enter impressions count" required>
-																</div>
-															</div>
-
-															<div class="form-group row mb-3">
-																<div class="col-md-12">
-																	<label for="editclicks" class="mb-1">Clicks :</label>
-																	<input class="form-control" id="editclicks" name="editclicks" type="number" min="0" placeholder="Enter clicks count" required>
-																</div>
-															</div>
-
-															<div class="form-group row mb-3">
-																<div class="col-md-12">
-																	<label for="editduration" class="mb-1">Duration (Days) :</label>
-																	<input class="form-control" id="editduration" name="editduration" type="number" min="0" placeholder="Enter duration in days" required>
-																</div>
-															</div>
-
-															<div class="form-group row mb-3">
-																<div class="col-md-12">
-																	<label for="editstatus" class="mb-1">Status :</label>
-																	<select class="custom-select w-100 form-control" required id="editstatus" name="editstatus">
-																		<option value="">--Select--</option>
-																		<option value="1">Active</option>
-																		<option value="0">Inactive</option>
-																	</select>
-																</div>
-															</div>
-
-															<div class="form-group row mt-4">
-																<div class="col-12 d-flex justify-content-end gap-2 text-end" style="justify-content: flex-end !important; text-align: right;">
-																	<button class="btn btn-primary" type="submit">Save</button>
-																	<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
-																</div>
-															</div>
-														</div>
-													</div>
-												</form>
-											</div>
-										</div>
-									</div>							
-								</div>
-							</div>
-							
-
-
-
-							<div class="row">
-								<div class="datatable-dashv1-list custom-datatable-overright">                            
-									<table class="table" id="table"  data-click-to-select="true" data-show-columns="true" data-sort-name="budget" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="100" data-search="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
-											 data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">                                        
-                                    <thead>
-                                     <tr>
-                                        <th data-field="budget" data-sortable="true">Budget</th>
-                                        <th data-field="impressions" data-sortable="true">Add Impressions</th>
-                                        <th data-field="clicks" data-sortable="true">Clicks</th>
-                                        <th data-field="duration" data-sortable="true">Duration</th>
-                                        <th data-field="status" data-sortable="true">Status</th>
-									    <th>Action</th>
-                                     </tr>
-                                    </thead>
-                                    <tbody>
-										@foreach ($fb as $item)
-									<tr>
-										<td>
-											<div class="d-flex">
-												{{$item->amount}}
-											</div>
-										</td>
-											
-										<td>{{$item->impressions}}</td>
-										<td>{{$item->clicks}}</td>
-										<td>{{$item->duration}}</td>
-										<td>
-											<label class="switch">
-												 @if($item->status == 1)
-												 <input type="checkbox" checked id="togBtn_{{$item->id}}" class="status-toggle" data-id="{{$item->id}}">
-												 @else
-												 <input type="checkbox" id="togBtn_{{$item->id}}" class="status-toggle" data-id="{{$item->id}}">
-												 @endif
-												 <div class="slider round">
-													 <span class="on">Active</span>
-													 <span class="off">Inactive </span>                                                                
-												 </div>
-											 </label>										
-                            			</td>
-										<td><span class="d-flex">
-											<button type="button" value="{{$item->id}}" class="edit_facebook btn btn-secondary mx-1"> 
-												<i class="fa fa-pencil"></i></button> 
-											{{-- <a href="#" class="badge badge-secondary px-2"  data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"data-original-title="Edit"><i class="fa fa-pencil"></i> </a> --}}
-											<form action="{{ route('vendorfacebook.destroy', $item->id) }}" method="post" class="delete-form">
-												@method('DELETE')
-												@csrf
-												<button type="button" class="btn btn-warning mx-1 delete-btn">
-													<i class="fa fa-trash"></i>
-												</button>
-											</form>
-											{{-- <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td> --}}
-									</tr>
-										@endforeach
-                                    </tbody>
-                            	</table>
-							</div> 
 						</div>
-						</div>								
+						<div>
+							<input type="text" id="packageSearch" class="search-pkg-input" placeholder="Search budget, days...">
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+
+			<!-- Packages Grid (Medium-Sized Cards) -->
+			<div class="row g-3" id="packagesGrid">
+				@forelse ($fb as $item)
+					@php
+						$isSubscribed = (!empty($item->is_subscribed) && $item->is_subscribed == 1);
+					@endphp
+					<div class="col-xxl-3 col-xl-4 col-lg-4 col-md-6 col-12 package-col" style="max-width: 380px;" data-budget="{{ $item->amount }}" data-duration="{{ $item->duration }}" data-impressions="{{ $item->impressions }}">
+						<div class="ad-pkg-card p-3 p-md-4 {{ $isSubscribed ? 'is-active' : '' }}">
+							
+							<!-- Top Header: Platform & Status -->
+							<div class="d-flex align-items-center justify-content-between mb-3">
+								<span class="pkg-badge-fb">
+									<i class="fa fa-facebook-official me-1"></i> Facebook Ad
+								</span>
+								@if($isSubscribed)
+									<span class="badge bg-success text-white px-2 py-1" style="font-size: 11.5px; border-radius: 5px;">
+										<i class="fa fa-check-circle me-1"></i> Subscribed
+									</span>
+								@else
+									<span class="badge bg-light text-secondary border px-2 py-1" style="font-size: 11.5px; border-radius: 5px;">
+										<i class="fa fa-circle-o me-1"></i> Available
+									</span>
+								@endif
+							</div>
+
+							<!-- Price Display -->
+							<div class="mb-3">
+								<div class="d-flex align-items-baseline gap-1">
+									<span class="text-muted fw-bold" style="font-size: 15px;">RM</span>
+									<span class="fw-bold" style="font-size: 28px; color: #183543; line-height: 1;">{{ $item->amount }}</span>
+									<span class="text-muted ms-1" style="font-size: 13px;">/ {{ $item->duration }} Days</span>
+								</div>
+								<div class="text-muted mt-1" style="font-size: 12px;">
+									Daily Cost: <strong>RM {{ $item->duration > 0 ? number_format($item->amount / $item->duration, 2) : $item->amount }}</strong>
+								</div>
+							</div>
+
+							<!-- 3-Column Metrics Row -->
+							<div class="row g-2 my-2">
+								<div class="col-4">
+									<div class="stat-metric-cell">
+										<i class="fa fa-eye text-primary d-block mb-1" style="font-size: 14px;"></i>
+										<span class="d-block fw-bold text-dark" style="font-size: 14px; line-height: 1.2;">
+											{{ is_numeric($item->impressions) ? number_format((int)$item->impressions) : $item->impressions }}
+										</span>
+										<span class="text-muted" style="font-size: 10.5px;">Impressions</span>
+									</div>
+								</div>
+								<div class="col-4">
+									<div class="stat-metric-cell">
+										<i class="fa fa-mouse-pointer text-info d-block mb-1" style="font-size: 14px;"></i>
+										<span class="d-block fw-bold text-dark" style="font-size: 14px; line-height: 1.2;">
+											{{ is_numeric($item->clicks) ? number_format((int)$item->clicks) : $item->clicks }}
+										</span>
+										<span class="text-muted" style="font-size: 10.5px;">Clicks</span>
+									</div>
+								</div>
+								<div class="col-4">
+									<div class="stat-metric-cell">
+										<i class="fa fa-calendar text-warning d-block mb-1" style="font-size: 14px;"></i>
+										<span class="d-block fw-bold text-dark" style="font-size: 14px; line-height: 1.2;">
+											{{ $item->duration }} Days
+										</span>
+										<span class="text-muted" style="font-size: 10.5px;">Duration</span>
+									</div>
+								</div>
+							</div>
+
+							<!-- Action Section -->
+							<div class="mt-3 pt-3 border-top">
+								@if($isSubscribed)
+									<div class="p-2 mb-2 rounded" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+										<div class="d-flex justify-content-between align-items-center">
+											<div>
+												<small class="d-block text-muted" style="font-size: 10.5px;">CAMPAIGN STATUS</small>
+												<strong class="{{ $item->status == 1 ? 'text-success' : 'text-danger' }}" style="font-size: 12px;">
+													{{ $item->status == 1 ? '● Active & Running' : '○ Inactive / Paused' }}
+												</strong>
+											</div>
+											<label class="switch mb-0" title="Toggle active/pause">
+												<input type="checkbox" {{ $item->status == 1 ? 'checked' : '' }} class="status-toggle" data-id="{{ $item->id }}">
+												<div class="slider round">
+													<span class="on">Active</span>
+													<span class="off">Inactive</span>
+												</div>
+											</label>
+										</div>
+										<div class="text-muted mt-1 small" style="font-size: 11px;">
+											Valid: <strong>{{ $item->expires_at ? \Carbon\Carbon::parse($item->expires_at)->format('d M Y') : 'Active' }}</strong>
+										</div>
+									</div>
+
+									<button type="button" class="btn btn-outline-success w-100 fw-bold py-2 btn-subscribe-pkg" 
+										style="border-radius: 8px; font-size: 13px;"
+										data-id="{{ $item->id }}" 
+										data-amount="{{ $item->amount }}" 
+										data-impressions="{{ $item->impressions }}" 
+										data-clicks="{{ $item->clicks }}" 
+										data-duration="{{ $item->duration }}" 
+										data-platform="Facebook">
+										<i class="fa fa-refresh me-1"></i> Renew / Extend Plan
+									</button>
+								@else
+									<div class="d-flex align-items-center justify-content-between text-muted mb-2 px-1" style="font-size: 12px;">
+										<span><i class="fa fa-lock text-secondary me-1"></i> Campaign Inactive</span>
+										<span class="text-muted">Instant activation</span>
+									</div>
+
+									<button type="button" class="btn w-100 text-white fw-bold py-2 btn-subscribe-pkg" 
+										style="background-color: #183543; border-color: #183543; border-radius: 8px; font-size: 13.5px; box-shadow: 0 4px 10px rgba(24, 53, 67, 0.18);"
+										data-id="{{ $item->id }}" 
+										data-amount="{{ $item->amount }}" 
+										data-impressions="{{ $item->impressions }}" 
+										data-clicks="{{ $item->clicks }}" 
+										data-duration="{{ $item->duration }}" 
+										data-platform="Facebook">
+										<i class="fa fa-shopping-cart me-1"></i> Buy & Activate Package
+									</button>
+								@endif
+							</div>
+
+						</div>
+					</div>
+				@empty
+					<div class="col-12">
+						<div class="card p-4 text-center" style="border-radius: 12px; border: 1px dashed #cbd5e1; max-width: 500px;">
+							<div style="font-size: 40px; color: #94a3b8;"><i class="fa fa-bullhorn"></i></div>
+							<h6 class="mt-2 fw-bold text-dark">No Advertisement Packages Available</h6>
+							<p class="text-muted small mb-0">Packages created by the admin will appear here for you to subscribe and promote products.</p>
+						</div>
+					</div>
+				@endforelse
+			</div>
+
 		</div>
 		<!-- Container-fluid Ends-->		
 	</div>
@@ -275,79 +290,93 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
     .swal2-popup {
-        font-size: 1.6rem !important;
+        font-size: 1.4rem !important;
     }
 </style>
 <script>
-    $(document).on('click', '.edit_facebook', function(e){
-
-        e.preventDefault();
-
-        //alert('cate_id');
-        var ad_id = $(this).val();
-        $('#exampleModal1').modal('show');
-		console.log(ad_id);
-        var url = "{{route('vendorfacebook.edit', ":ad_id")}}";
-        url = url.replace(":ad_id", ad_id);
-
-            $.ajax({
-            
-             url:url,       
-             type: "get",
-             _token: "csrf",
-             dataType: 'json',
-             success: function (response) {
-                  console.log(response);
-                //alert(response);
-               if(response.status == 404)
-               {
-               //  alert('test');
-               $('successmessage').html('');
-               $('successmessage').addClass('alert alert-danger');
-               $('successmessage').text(response.message);
-               }
-
-                else{
-                   // alert(response);
-
-                $('#edit_id').val(response.fb.id);
-                $('#editamount').val(response.fb.amount);
-                $('#editimpressions').val(response.fb.impressions);
-                $('#editclicks').val(response.fb.clicks);
-                $('#editduration').val(response.fb.duration);
-                $('#editstatus').val(response.fb.status);  
-                }
-            }
-
-            //alert('dfhdgfjftg');
-            // error: function (response){
-
-            // }
-
-        });
+    // Live Search Filter for Packages
+    document.getElementById('packageSearch')?.addEventListener('input', function(e) {
+        const query = e.target.value.toLowerCase().trim();
+        const cards = document.querySelectorAll('.package-col');
         
+        cards.forEach(card => {
+            const budget = (card.getAttribute('data-budget') || '').toLowerCase();
+            const duration = (card.getAttribute('data-duration') || '').toLowerCase();
+            const impressions = (card.getAttribute('data-impressions') || '').toLowerCase();
+            const text = card.innerText.toLowerCase();
+
+            if (text.includes(query) || budget.includes(query) || duration.includes(query) || impressions.includes(query)) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
     });
 
-    // Use event delegation for delete buttons because bootstrap-table recreates DOM elements
-    document.body.addEventListener('click', function(e) {
-        if (e.target.closest('.delete-btn')) {
-            e.preventDefault();
-            const button = e.target.closest('.delete-btn');
-            const form = button.closest('.delete-form');
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            });
-        }
+    // Buy / Subscribe to Facebook Advertisement Package
+    $(document).on('click', '.btn-subscribe-pkg', function(e) {
+        e.preventDefault();
+        const btn = $(this);
+        const id = btn.data('id');
+        const amount = btn.data('amount');
+        const impressions = btn.data('impressions');
+        const clicks = btn.data('clicks');
+        const duration = btn.data('duration');
+        const platform = btn.data('platform') || 'Facebook';
+        const token = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '{{ csrf_token() }}';
+
+        Swal.fire({
+            title: '<strong>Subscribe to ' + platform + ' Package</strong>',
+            icon: 'info',
+            html: `
+                <div style="text-align: left; font-size: 13.5px; color: #334155;">
+                    <p class="text-muted mb-3">Subscribe to this package to run advertising campaigns on ${platform} for your shop.</p>
+                    <div style="background: #f8fafc; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0;">
+                        <div class="d-flex justify-content-between py-1 border-bottom"><span>Package Budget:</span> <strong style="color: #183543; font-size: 15px;">RM ${amount}</strong></div>
+                        <div class="d-flex justify-content-between py-1 border-bottom"><span>Estimated Impressions:</span> <strong>${impressions}</strong></div>
+                        <div class="d-flex justify-content-between py-1 border-bottom"><span>Estimated Clicks:</span> <strong>${clicks}</strong></div>
+                        <div class="d-flex justify-content-between py-1"><span>Campaign Duration:</span> <strong>${duration} Days</strong></div>
+                    </div>
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: '<i class="fa fa-check me-1"></i> Confirm & Activate',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#183543',
+            cancelButtonColor: '#6c757d'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('vendorfacebook.subscribe') }}",
+                    type: "POST",
+                    data: {
+                        _token: token,
+                        id: id
+                    },
+                    dataType: "json",
+                    success: function(res) {
+                        if (res.status == 200) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Subscribed Successfully!',
+                                text: res.message,
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 1500);
+                        } else {
+                            Swal.fire('Error', res.message || 'Could not subscribe.', 'error');
+                        }
+                    },
+                    error: function(err) {
+                        console.error('Subscription error:', err);
+                        Swal.fire('Error', 'An error occurred while subscribing.', 'error');
+                    }
+                });
+            }
+        });
     });
 
     // Use event delegation for status toggle
@@ -370,11 +399,27 @@
             })
             .then(response => response.json())
             .then(data => {
-                // Silently succeed
+                if (data.error) {
+                    Swal.fire('Notice', data.error, 'warning');
+                    e.target.checked = !status;
+                } else {
+                    const container = e.target.closest('.ad-pkg-card');
+                    if (container) {
+                        const statusText = container.querySelector('strong.text-success, strong.text-danger');
+                        if (statusText) {
+                            if (status == 1) {
+                                statusText.className = 'text-success';
+                                statusText.textContent = '● Active & Running';
+                            } else {
+                                statusText.className = 'text-danger';
+                                statusText.textContent = '○ Inactive / Paused';
+                            }
+                        }
+                    }
+                }
             })
             .catch(error => {
                 console.error('Error updating status:', error);
-                // Revert toggle if failed
                 e.target.checked = !status;
             });
         }
