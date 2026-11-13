@@ -128,12 +128,10 @@
 																</div>
 															</div>	
 									
-															<div class="form-group row ">
-																<div class="text-center">
-																	<div class="col-xl-8 col-md-8">
-																		<button class="btn btn-primary" type="submit">Save</button>
-                                        							    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
-																	</div>
+															<div class="form-group row mt-4">
+																<div class="col-12 d-flex justify-content-end gap-2 text-end" style="justify-content: flex-end !important; text-align: right;">
+																	<button class="btn btn-primary" type="submit">Save</button>
+																	<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
 																</div>
 															</div>
 														</div>	
@@ -216,12 +214,10 @@
 																</div>
 															</div>	
 									
-															<div class="form-group row ">
-																<div class="text-center">
-																	<div class="col-xl-8 col-md-8">
-																		<button class="btn btn-primary" type="submit">Save</button>
-                                        							    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
-																	</div>
+															<div class="form-group row mt-4">
+																<div class="col-12 d-flex justify-content-end gap-2 text-end" style="justify-content: flex-end !important; text-align: right;">
+																	<button class="btn btn-primary" type="submit">Save</button>
+																	<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
 																</div>
 															</div>
 														</div>	

@@ -277,7 +277,7 @@
                     <li><a href="{{ route('vendorwhatsapp.index') }}">Whatsapp</a></li>
                     <li><a href="{{ route('vendorfacebook.index') }}">Facebook</a></li>
                     <li><a href="{{ route('vendorinstagram.index') }}">Instagram</a></li>
-                    <li><a href="{{ route('vendoroxygen.index') }}">Oxygen Promo</a></li>
+                    <li><a href="{{ route('vendoroxygen.index') }}">Trymenow Promo</a></li>
                 </ul>
             </li>
             <li class="has-sub">

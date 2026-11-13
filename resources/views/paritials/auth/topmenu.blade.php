@@ -104,7 +104,7 @@
                                 @if($sm->title == 'Vendor Product List' || $sm->link == 'vendor_products.crud.listing' || $sm->title == 'Seller Product List')
                                     @continue
                                 @endif
-                                <li><a href="{{ $sm->type=='route' ? route($sm->link) : url($sm->link) }}">{{ str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $sm->title) }}</a></li>
+                                <li><a href="{{ $sm->type=='route' ? route($sm->link) : url($sm->link) }}">{{ str_ireplace(['Vendors', 'Vendor', 'Oxygen Promo'], ['Sellers', 'Seller', 'Trymenow Promo'], $sm->title) }}</a></li>
                             @endforeach
                         </ul>
                     </li>
@@ -187,9 +187,9 @@
                                                     $finalRoute = route($sm->link);
                                                 }
                                             @endphp
-                                            <li><a href="{{ $finalRoute }}">{{ str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $sm->title) }}</a></li>
+                                            <li><a href="{{ $finalRoute }}">{{ str_ireplace(['Vendors', 'Vendor', 'Oxygen Promo'], ['Sellers', 'Seller', 'Trymenow Promo'], $sm->title) }}</a></li>
                                         @else
-                                            <li><a href="{{ url($sm->link) }}">{{ str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $sm->title) }}</a></li>
+                                            <li><a href="{{ url($sm->link) }}">{{ str_ireplace(['Vendors', 'Vendor', 'Oxygen Promo'], ['Sellers', 'Seller', 'Trymenow Promo'], $sm->title) }}</a></li>
                                         @endif
                                     @endif
                                 @endforeach

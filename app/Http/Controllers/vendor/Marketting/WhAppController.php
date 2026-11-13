@@ -77,14 +77,14 @@ class WhAppController extends Controller
         //     $wh->image ="-";
         // }
 
-            $wh->vendor_id    =     session()->get('login_id');
-            $wh->title       =     $request->title     ;
-            $wh->sub_title   =     $request->sub_title ;
-            $wh->line1       =     $request->line1     ;
-            $wh->line2       =     $request->line2     ;
-            $wh->ph_no       =     $request->ph_no     ;
-            $wh->image       =      $image    ;
-            $wh->status      =     $request->status;
+            $wh->vendor_id    =     session()->get('login_id') ?? 1;
+            $wh->title       =     $request->title ?? '-';
+            $wh->sub_title   =     $request->sub_title ?? '-';
+            $wh->line1       =     $request->line1 ?? '-';
+            $wh->line2       =     $request->line2 ?? '-';
+            $wh->ph_no       =     $request->ph_no ?? '-';
+            $wh->image       =     $image;
+            $wh->status      =     $request->status ?? 1;
 
 
             $wh->save();
@@ -183,14 +183,14 @@ class WhAppController extends Controller
                 $wh->image = $request->oldimage;
             }
 
-            $wh->vendor_id    =     session()->get('login_id');
-            $wh->title       =     $request->edittitle     ;
-            $wh->sub_title   =     $request->editsub_title ;
-            $wh->line1       =     $request->editline1     ;
-            $wh->line2       =     $request->editline2     ;
-            $wh->ph_no       =     $request->editph_no     ;
+            $wh->vendor_id    =     session()->get('login_id') ?? 1;
+            $wh->title       =     $request->edittitle ?? ($wh->title ?? '-');
+            $wh->sub_title   =     $request->editsub_title ?? ($wh->sub_title ?? '-');
+            $wh->line1       =     $request->editline1 ?? ($wh->line1 ?? '-');
+            $wh->line2       =     $request->editline2 ?? ($wh->line2 ?? '-');
+            $wh->ph_no       =     $request->editph_no ?? ($wh->ph_no ?? '-');
             // $wh->image       =      $image    ;
-            $wh->status      =     $request->editstatus;
+            $wh->status      =     $request->editstatus ?? ($wh->status ?? 1);
 
 
             $wh->save();

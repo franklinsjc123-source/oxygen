@@ -168,7 +168,7 @@ use Illuminate\Support\Facades\Route;
                                     $finalRoute = route($submenu->link);
                                 }
                             @endphp
-                        <li><a href="{{ $finalRoute }}"><i class="fa fa-circle"></i>{{ str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $submenu->title) }}</a></li>
+                        <li><a href="{{ $finalRoute }}"><i class="fa fa-circle"></i>{{ str_ireplace(['Vendors', 'Vendor', 'Oxygen Promo'], ['Sellers', 'Seller', 'Trymenow Promo'], $submenu->title) }}</a></li>
                         @else
                             @php
                                 $cleanLink = ltrim($submenu->link, '/');
@@ -194,7 +194,7 @@ use Illuminate\Support\Facades\Route;
                                     $finalUrl = url('staff/' . $cleanLink);
                                 }
                             @endphp
-                        <li><a href="{{ $finalUrl }}"><i class="fa fa-circle"></i>{{ str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $submenu->title) }}</a></li>
+                        <li><a href="{{ $finalUrl }}"><i class="fa fa-circle"></i>{{ str_ireplace(['Vendors', 'Vendor', 'Oxygen Promo'], ['Sellers', 'Seller', 'Trymenow Promo'], $submenu->title) }}</a></li>
                         @endif
                     @endif
                     @endforeach

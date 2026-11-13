@@ -137,7 +137,7 @@
                             @continue
                         @endif
                         @php
-                            $smDisplayTitle = str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $submenu->title);
+                            $smDisplayTitle = str_ireplace(['Vendors', 'Vendor', 'Oxygen Promo'], ['Sellers', 'Seller', 'Trymenow Promo'], $submenu->title);
                         @endphp
 						@if($submenu->type=='route')
                         <li><a href="{{ route($submenu->link) }}"><i class="fa fa-circle"></i>{{$smDisplayTitle}}</a></li>
@@ -296,7 +296,7 @@
                             } else {
                                 $routeUrl = url($submenu->link);
                             }
-                            $smDisplayTitle = str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $submenu->title);
+                            $smDisplayTitle = str_ireplace(['Vendors', 'Vendor', 'Oxygen Promo'], ['Sellers', 'Seller', 'Trymenow Promo'], $submenu->title);
                         @endphp
                         <li><a href="{{ $routeUrl }}"><i class="fa fa-circle"></i>{{$smDisplayTitle}}</a></li>
                     @endif

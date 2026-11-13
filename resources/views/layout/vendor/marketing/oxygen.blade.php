@@ -43,7 +43,7 @@
 					<div class="col-12">
                         <ol class="breadcrumb" style="float: left !important; margin-bottom: 0; padding-left: 0;">
                             <li class="breadcrumb-item"><a href="{{ route('vendordashboard', session()->get('login_id') ?? (auth()->check() ? auth()->user()->login_id : 1)) }}"><i data-feather="home"></i></a></li>
-							<li class="breadcrumb-item active">Oxygen Campaign</li>
+							<li class="breadcrumb-item active">Trymenow Promo</li>
                         </ol>
                     </div>
                 </div>
@@ -67,7 +67,7 @@
 									<div class="modal-dialog modal-dialog-centered" role="document">
 										<div class="modal-content">
 											<div class="modal-header">
-												<h5 class="modal-title f-w-600" id="exampleModalLabel">ADD Oxygen Budget</h5>
+												<h5 class="modal-title f-w-600" id="exampleModalLabel">ADD Trymenow Promo</h5>
 												<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 											</div>
 											<div class="modal-body">
@@ -125,12 +125,10 @@
 																</div>
 															</div>	
 									
-															<div class="form-group row ">
-																<div class="text-center">
-																	<div class="col-xl-8 col-md-8">
-																		<button class="btn btn-primary" type="submit">Save</button>
-                                        							    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
-																	</div>
+															<div class="form-group row mt-4">
+																<div class="col-12 d-flex justify-content-end gap-2 text-end" style="justify-content: flex-end !important; text-align: right;">
+																	<button class="btn btn-primary" type="submit">Save</button>
+																	<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
 																</div>
 															</div>
 														</div>	
@@ -149,7 +147,7 @@
 									<div class="modal-dialog modal-dialog-centered" role="document">
 										<div class="modal-content">
 											<div class="modal-header">
-												<h5 class="modal-title f-w-600" id="exampleModalLabel">Edit Oxygen Budget</h5>
+												<h5 class="modal-title f-w-600" id="exampleModalLabel">Edit Trymenow Promo</h5>
 												<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 											</div>
 											<div class="modal-body">
@@ -209,12 +207,10 @@
 																</div>
 															</div>	
 									
-															<div class="form-group row ">
-																<div class="text-center">
-																	<div class="col-xl-8 col-md-8">
-																		<button class="btn btn-primary" type="submit">Save</button>
-                                        							    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
-																	</div>
+															<div class="form-group row mt-4">
+																<div class="col-12 d-flex justify-content-end gap-2 text-end" style="justify-content: flex-end !important; text-align: right;">
+																	<button class="btn btn-primary" type="submit">Save</button>
+																	<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
 																</div>
 															</div>
 														</div>	

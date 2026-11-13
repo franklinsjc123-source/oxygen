@@ -134,7 +134,7 @@
                     <li><a href="{{ route('vendorwhatsapp.index') }}"><i class="fa fa-circle"></i>Whatsapp</a></li>
                     <li><a href="{{ route('vendorfacebook.index') }}"><i class="fa fa-circle"></i>Facebook</a></li>
                     <li><a href="{{ route('vendorinstagram.index')}}"><i class="fa fa-circle"></i>Instagram</a></li>
-                    <li><a href="{{ route('vendoroxygen.index') }}"><i class="fa fa-circle"></i>Oxygen Promo</a></li>
+                    <li><a href="{{ route('vendoroxygen.index') }}"><i class="fa fa-circle"></i>Trymenow Promo</a></li>
                 </ul>
             </li>
            

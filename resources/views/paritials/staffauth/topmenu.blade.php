@@ -133,9 +133,9 @@
                                                 $finalRoute = route($sm->link);
                                             }
                                         @endphp
-                                        <li><a href="{{ $finalRoute }}">{{ str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $sm->title) }}</a></li>
+                                        <li><a href="{{ $finalRoute }}">{{ str_ireplace(['Vendors', 'Vendor', 'Oxygen Promo'], ['Sellers', 'Seller', 'Trymenow Promo'], $sm->title) }}</a></li>
                                     @else
-                                        <li><a href="{{ url($sm->link) }}">{{ str_ireplace(['Vendors', 'Vendor'], ['Sellers', 'Seller'], $sm->title) }}</a></li>
+                                        <li><a href="{{ url($sm->link) }}">{{ str_ireplace(['Vendors', 'Vendor', 'Oxygen Promo'], ['Sellers', 'Seller', 'Trymenow Promo'], $sm->title) }}</a></li>
                                     @endif
                                 @endif
                             @endforeach

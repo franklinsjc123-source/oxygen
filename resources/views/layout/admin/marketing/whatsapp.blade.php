@@ -49,76 +49,38 @@
 									<div class="modal-dialog modal-dialog-centered" role="document">
 										<div class="modal-content">
 											<div class="modal-header">
-												<h5 class="modal-title f-w-600" id="exampleModalLabel">ADD Whatsapp Budget</h5>
-												<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+												<h5 class="modal-title f-w-600" id="exampleModalLabel">ADD Whatsapp Template</h5>
+												<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 											</div>
 											<div class="modal-body">
 												<form class="" action="{{route('whatsapp.store')}}" method="post" onsubmit="return confirm('Are you sure, you want to Save it?')" enctype="multipart/form-data">
 													@csrf
 													<div class="row fw-bold">
 														<div class="col-sm-12">
-															<div class="form-group row">
-																<div class="col-md-12">																	
-																	<label for="validationCustom1" class="mb-1">Title :</label>
-																	<input class="form-control" id="title" name="title" type="text" required >																															
-																</div>				
-															</div>
-
-															<div class="form-group row">																
+															<div class="form-group row mb-3">
 																<div class="col-md-12">
-																	<label for="validationCustom1" class="col-xl-3 col-md-4">Sub title :</label>
-																	<input class="form-control" id="sub_title" name="sub_title" type="text" required="" >
-																</div>											
-															</div>
-										
-															<div class="form-group row ">
-																<div class="col-md-12">	
-																	<label for="validationCustom1" class="col-xl-3 col-md-4">Line 1 :</label>									
-																	<input class="form-control" id="line1" name="line1" type="text" required="" >
-																</div>											
-															</div>
-
-															<div class="form-group row ">
-																<div class="col-md-12">		
-																<label for="validationCustom1" class="col-xl-3 col-md-4">Line 2 :</label>							
-																	<input class="form-control" id="line2" name="line2" type="text" required="" >
+																	<label for="image" class="mb-1">Template :</label>
+																	<input class="form-control" id="image" name="image" type="file" accept="image/*" required>
 																</div>
 															</div>
 
-															<div class="form-group row ">
-																<div class="col-md-12">	
-																<label for="validationCustom1" class="col-xl-3 col-md-4">Mobile :</label>
-																	<input class="form-control" id="ph_no" name="ph_no" type="number" required="" >
-																</div>
-															</div>
-
-															<div class="form-group row ">
+															<div class="form-group row mb-3">
 																<div class="col-md-12">
-																<label for="validationCustom1" class="col-xl-3 col-md-4">Background Image :</label>
-																	<input class="form-control" id="image" name="image" type="file"  accept="image/*" required="" >
-																</div>
-															</div>	
-									
-															<div class="form-group row">																
-																<div class="col-md-12">
-																	<label class="col-xl-3 col-md-4">Status</label>
-																	<select class="custom-select w-100 form-control" required="" id="status" name="status" onchange="discount()" >
-																		<option value="">--Select--</option>
-																		<option value="1" >Active</option>
-																		<option value="0" >Inactive</option>
+																	<label for="status" class="mb-1">Status :</label>
+																	<select class="custom-select w-100 form-control" required id="status" name="status">
+																		<option value="1" selected>Active</option>
+																		<option value="0">Inactive</option>
 																	</select>
 																</div>
-															</div>	
-									
-															<div class="form-group row ">
-																<div class="text-center">
-																	<div class="col-xl-8 col-md-8">
-																		<button class="btn btn-primary" type="submit">Save</button>
-                                        							    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
-																	</div>
+															</div>
+
+															<div class="form-group row mt-4">
+																<div class="col-12 d-flex justify-content-end gap-2 text-end" style="justify-content: flex-end !important; text-align: right;">
+																	<button class="btn btn-primary" type="submit">Save</button>
+																	<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
 																</div>
 															</div>
-														</div>	
+														</div>
 													</div>
 												</form>
 											</div>
@@ -134,8 +96,8 @@
 									<div class="modal-dialog modal-dialog-centered" role="document">
 										<div class="modal-content">
 											<div class="modal-header">
-												<h5 class="modal-title f-w-600" id="exampleModalLabel">Edit Whatsapp Budget</h5>
-												<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+												<h5 class="modal-title f-w-600" id="exampleModalLabel">Edit Whatsapp Template</h5>
+												<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 											</div>
 											<div class="modal-body">
 												<form class="" action="{{route('whatsapp.update', 1)}}" method="post" onsubmit="return confirm('Are you sure, you want to Save it?')" enctype="multipart/form-data">
@@ -144,69 +106,33 @@
 													<div class="row fw-bold">
 														<div class="col-sm-12">
 															<input type="hidden" id="edit_id" name="edit_id">
-															<div class="form-group row">
-																<div class="col-md-12">																	
-																	<label for="validationCustom1" class="mb-1">Title :</label>
-																	<input class="form-control" id="edittitle" name="edittitle" type="text" required >																															
-																</div>				
-															</div>
+															<input class="form-control" id="oldimage" name="oldimage" type="hidden">
 
-															<div class="form-group row">																
+															<div class="form-group row mb-3">
 																<div class="col-md-12">
-																	<label for="validationCustom1" class="col-xl-3 col-md-4">Sub title :</label>
-																	<input class="form-control" id="editsub_title" name="editsub_title" type="text" required="" >
-																</div>											
-															</div>
-										
-															<div class="form-group row ">
-																<div class="col-md-12">	
-																	<label for="validationCustom1" class="col-xl-3 col-md-4">Line 1 :</label>									
-																	<input class="form-control" id="editline1" name="editline1" type="text" required="" >
-																</div>											
-															</div>
-
-															<div class="form-group row ">
-																<div class="col-md-12">		
-																<label for="validationCustom1" class="col-xl-3 col-md-4">Line 2 :</label>							
-																	<input class="form-control" id="editline2" name="editline2" type="text" required="" >
+																	<label for="editimage" class="mb-1">Template :</label>
+																	<input class="form-control" id="editimage" name="editimage" type="file" accept="image/*">
+																	<div id="current_template_preview" class="mt-2"></div>
 																</div>
 															</div>
 
-															<div class="form-group row ">
-																<div class="col-md-12">	
-																<label for="validationCustom1" class="col-xl-3 col-md-4">Mobile :</label>
-																	<input class="form-control" id="editph_no" name="editph_no" type="number" required="" >
-																</div>
-															</div>
-
-															<div class="form-group row ">
+															<div class="form-group row mb-3">
 																<div class="col-md-12">
-																<label for="validationCustom1" class="col-xl-3 col-md-4">Background Image :</label>
-																	<input class="form-control" id="editimage" name="editimage" type="file"  accept="image/*" >
-																	<input class="form-control" id="oldimage" name="oldimage" type="hidden"  >
-																</div>
-															</div>	
-									
-															<div class="form-group row">																
-																<div class="col-md-12">
-																	<label class="col-xl-3 col-md-4">Status</label>
-																	<select class="custom-select w-100 form-control" required="" id="editstatus" name="editstatus" onchange="discount()" >
-																		<option value="">--Select--</option>
-																		<option value="1" >Active</option>
-																		<option value="0" >Inactive</option>
+																	<label for="editstatus" class="mb-1">Status :</label>
+																	<select class="custom-select w-100 form-control" required id="editstatus" name="editstatus">
+																		<option value="1">Active</option>
+																		<option value="0">Inactive</option>
 																	</select>
 																</div>
-															</div>	
-									
-															<div class="form-group row ">
-																<div class="text-center">
-																	<div class="col-xl-8 col-md-8">
-																		<button class="btn btn-primary" type="submit">Save</button>
-                                        							    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
-																	</div>
+															</div>
+
+															<div class="form-group row mt-4">
+																<div class="col-12 d-flex justify-content-end gap-2 text-end" style="justify-content: flex-end !important; text-align: right;">
+																	<button class="btn btn-primary" type="submit">Save</button>
+																	<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
 																</div>
 															</div>
-														</div>	
+														</div>
 													</div>
 												</form>
 											</div>
@@ -220,16 +146,11 @@
 
 							<div class="row">
 								<div class="datatable-dashv1-list custom-datatable-overright">                            
-									<table class="table" id="table"  data-click-to-select="true" data-show-columns="true" data-sort-name="title" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="100" data-search="true"  data-show-refresh="false" data-key-events="true"  data-resizable="true" data-cookie="true"
+									<table class="table" id="table" data-click-to-select="true" data-show-columns="true" data-sort-name="status" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true"
 											 data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar">                                        
                                     <thead>
                                      <tr>
-										<th data-field="image" data-sortable="true">Image</th> 
-                                        <th data-field="title" data-sortable="true">Title</th>
-                                        <th data-field="sub_title" data-sortable="true">Sub Title</th>
-                                        <th data-field="line1" data-sortable="true">Line 1</th>
-                                        <th data-field="line2" data-sortable="true">Line 2</th>
-                                        <th data-field="mobile" data-sortable="true">Mobile</th>
+										<th data-field="image" data-sortable="false">Template</th> 
 										<th data-field="status" data-sortable="true">Status</th>										
 									    <th>Action</th>
                                      </tr>
@@ -238,51 +159,34 @@
 										@foreach ($whapp as $item)
 									<tr>
 										<td>
-											{{-- <div class="d-flex">
-												<img src="{{asset('assets/images/banners/adv-baner') . '/' .$item->image}}" alt="" class="img-fluid img-30 me-2 blur-up lazyloaded">
-											</div> --}}
-											<div class="d-flex">
-											<img src="{{asset('assets/images//Marketting/Wh_app_template'). '/' .$item->image}}" alt="" class="img-fluid img-40 me-2 blur-up lazyloaded"> 
+											<div class="d-flex align-items-center">
+												<img src="{{asset('assets/images//Marketting/Wh_app_template'). '/' .$item->image}}" alt="Template" class="img-fluid rounded border" style="max-height: 55px; max-width: 90px; object-fit: contain;"> 
 											</div>
 										</td>
-										<td>
-											<div class="d-flex">
-												{{$item->title}}
-											</div>
-										</td>
-											
-										<td>{{$item->sub_title}}</td>
-										<td>{{$item->line1}}</td>
-										<td>{{$item->line2}}</td>
-										<td>{{$item->mobile}}</td>
 										<td>
 											<label class="switch">
-												{{-- $status = $pin->status --}}
 												 <input type="checkbox" class="toggle-status" data-id="{{ $item->id }}" {{ $item->status == 1 ? 'checked' : '' }}>
 												 <div class="slider round">
-													 <!--ADDED HTML -->
 													 <span class="on">Active</span>
 													 <span class="off">Inactive </span>                                                                
-													 <!--END-->
 												 </div>
 											 </label>										
                             			</td>
 										<td><span class="d-flex">
-											<button type="button" value="{{$item->id}}" class="edit_facebook btn btn-secondary mx-1"> 
+											<button type="button" value="{{$item->id}}" class="edit_facebook btn btn-secondary mx-1" title="Edit"> 
 												<i class="fa fa-pencil"></i></button> 
-											{{-- <a href="#" class="badge badge-secondary px-2"  data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal"data-original-title="Edit"><i class="fa fa-pencil"></i> </a> --}}
 												@if (session()->get('log_type') == 'Admin')
 													<form
 											action="{{ route('whatsapp.destroy', $item->id) }}"
 											method="post">
 											@method('DELETE')
 											@csrf
-											<button type="submit" class="btn btn-warning mx-1"><i
+											<button type="submit" class="btn btn-warning mx-1" title="Delete"><i
 													class="fa fa-trash"></i>
 											</button>
 										</form>
 										@endif
-											{{-- <a href="#" onclick="return confirm('Are you sure, you want to delete it?')" class="badge badge-warning px-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash"></i></a></span></td> --}}
+											</span></td>
 									</tr>
 										@endforeach
                                     </tbody>
@@ -354,55 +258,34 @@ $(document).ready(function() {
 </script>
 <script>
     $(document).on('click', '.edit_facebook', function(e){
-
         e.preventDefault();
 
-        //alert('cate_id');
         var ad_id = $(this).val();
         $('#exampleModal1').modal('show');
-		console.log(ad_id);
         var url = "{{route('whatsapp.edit', ":ad_id")}}";
         url = url.replace(":ad_id", ad_id);
 
-            $.ajax({
-            
-             url:url,       
-             type: "get",
-             _token: "csrf",
-             dataType: 'json',
-             success: function (response) {
-                  console.log(response);
-                //alert(response);
-               if(response.status == 404)
-               {
-               //  alert('test');
-               $('successmessage').html('');
-               $('successmessage').addClass('alert alert-danger');
-               $('successmessage').text(response.message);
-               }
-
-                else{
-                   // alert(response);
-
-                $('#edit_id').val(response.whapp.id);
-                $('#edittitle    ').val(response.whapp.title);
-                $('#editsub_title').val(response.whapp.sub_title);
-                $('#editline1    ').val(response.whapp.line1);
-                $('#editline2    ').val(response.whapp.line2);
-				$('#editph_no    ').val(response.whapp.ph_no);
-				$('#oldimage    ').val(response.whapp.image);
-                $('#editstatus   ').val(response.whapp.status);  
+        $.ajax({
+            url: url,       
+            type: "get",
+            _token: "csrf",
+            dataType: 'json',
+            success: function (response) {
+                if(response.status == 404) {
+                    Swal.fire('Error!', response.message, 'error');
+                } else {
+                    $('#edit_id').val(response.whapp.id);
+                    $('#oldimage').val(response.whapp.image);
+                    $('#editstatus').val(response.whapp.status);
+                    if(response.whapp.image) {
+                        var imgUrl = "{{ asset('assets/images//Marketting/Wh_app_template') }}/" + response.whapp.image;
+                        $('#current_template_preview').html('<div class="d-flex align-items-center mt-2 gap-2"><img src="' + imgUrl + '" class="img-fluid rounded border" style="max-height: 80px;" alt="Current Template"><span class="text-muted small">Current Template</span></div>');
+                    } else {
+                        $('#current_template_preview').html('');
+                    }
                 }
             }
-
-            //alert('dfhdgfjftg');
-            // error: function (response){
-
-            // }
-
         });
-        
     });
-
 </script>
 @endpush
