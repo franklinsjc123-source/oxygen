@@ -60,11 +60,10 @@ class WhAppController extends Controller
             
             $img = Image::make($file->getRealPath());
             
-            $img->resize(500, 500, function ($constraint) {
-                
+            $img->resize(1920, 1920, function ($constraint) {
                 $constraint->aspectRatio();
-                
-            })->save($main_image_path.'/'.$image);
+                $constraint->upsize();
+            })->save($main_image_path.'/'.$image, 90);
            
             
             
@@ -163,11 +162,10 @@ class WhAppController extends Controller
                 
                 $img = Image::make($file->getRealPath());
                 
-                $img->resize(500, 500, function ($constraint) {
-                    
+                $img->resize(1920, 1920, function ($constraint) {
                     $constraint->aspectRatio();
-                    
-                })->save($main_image_path.'/'.$image);
+                    $constraint->upsize();
+                })->save($main_image_path.'/'.$image, 90);
                 $wh->image =  $image;
     
                 $dltimage = wh_app::find($whid);

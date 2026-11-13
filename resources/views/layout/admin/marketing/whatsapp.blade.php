@@ -53,14 +53,32 @@
 												<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 											</div>
 											<div class="modal-body">
-												<form class="" action="{{route('whatsapp.store')}}" method="post" onsubmit="return confirm('Are you sure, you want to Save it?')" enctype="multipart/form-data">
+												<form class="" action="{{route('whatsapp.store')}}" method="post"  enctype="multipart/form-data">
 													@csrf
 													<div class="row fw-bold">
 														<div class="col-sm-12">
 															<div class="form-group row mb-3">
 																<div class="col-md-12">
-																	<label for="image" class="mb-1">Template :</label>
+																	<label for="orientation" class="mb-1">Poster Size / Orientation :</label>
+																	<select class="custom-select w-100 form-control" id="orientation" name="sub_title">
+																		<option value="Portrait (1080x1920)">Portrait (1080 &times; 1920 px)</option>
+																		<option value="Landscape (1920x1080)">Landscape (1920 &times; 1080 px)</option>
+																	</select>
+																</div>
+															</div>
+
+															<div class="form-group row mb-3">
+																<div class="col-md-12">
+																	<div class="d-flex justify-content-between align-items-center mb-1">
+																		<label for="image" class="mb-0">Template :</label>
+																		<span class="badge bg-light text-dark border font-weight-normal" style="font-size: 11px; font-weight: normal;">
+																			Portrait: 1080&times;1920 px | Landscape: 1920&times;1080 px
+																		</span>
+																	</div>
 																	<input class="form-control" id="image" name="image" type="file" accept="image/*" required>
+																	<small id="image_size_hint" class="text-muted d-block mt-1">
+																		<i class="fa fa-info-circle me-1"></i> Recommended size: <strong>Portrait 1080&times;1920 px</strong> or <strong>Landscape 1920&times;1080 px</strong>
+																	</small>
 																</div>
 															</div>
 
@@ -100,7 +118,7 @@
 												<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 											</div>
 											<div class="modal-body">
-												<form class="" action="{{route('whatsapp.update', 1)}}" method="post" onsubmit="return confirm('Are you sure, you want to Save it?')" enctype="multipart/form-data">
+												<form class="" action="{{route('whatsapp.update', 1)}}" method="post"  enctype="multipart/form-data">
 													@csrf
 													@method('PUT')
 													<div class="row fw-bold">
@@ -110,8 +128,26 @@
 
 															<div class="form-group row mb-3">
 																<div class="col-md-12">
-																	<label for="editimage" class="mb-1">Template :</label>
+																	<label for="editorientation" class="mb-1">Poster Size / Orientation :</label>
+																	<select class="custom-select w-100 form-control" id="editorientation" name="editsub_title">
+																		<option value="Portrait (1080x1920)">Portrait (1080 &times; 1920 px)</option>
+																		<option value="Landscape (1920x1080)">Landscape (1920 &times; 1080 px)</option>
+																	</select>
+																</div>
+															</div>
+
+															<div class="form-group row mb-3">
+																<div class="col-md-12">
+																	<div class="d-flex justify-content-between align-items-center mb-1">
+																		<label for="editimage" class="mb-0">Template :</label>
+																		<span class="badge bg-light text-dark border font-weight-normal" style="font-size: 11px; font-weight: normal;">
+																			Portrait: 1080&times;1920 px | Landscape: 1920&times;1080 px
+																		</span>
+																	</div>
 																	<input class="form-control" id="editimage" name="editimage" type="file" accept="image/*">
+																	<small id="edit_image_size_hint" class="text-muted d-block mt-1">
+																		<i class="fa fa-info-circle me-1"></i> Recommended size: <strong>Portrait 1080&times;1920 px</strong> or <strong>Landscape 1920&times;1080 px</strong>
+																	</small>
 																	<div id="current_template_preview" class="mt-2"></div>
 																</div>
 															</div>
@@ -151,6 +187,7 @@
                                     <thead>
                                      <tr>
 										<th data-field="image" data-sortable="false">Template</th> 
+										<th data-field="orientation" data-sortable="true">Poster Size / Orientation</th> 
 										<th data-field="status" data-sortable="true">Status</th>										
 									    <th>Action</th>
                                      </tr>
@@ -160,8 +197,16 @@
 									<tr>
 										<td>
 											<div class="d-flex align-items-center">
-												<img src="{{asset('assets/images//Marketting/Wh_app_template'). '/' .$item->image}}" alt="Template" class="img-fluid rounded border" style="max-height: 55px; max-width: 90px; object-fit: contain;"> 
+												<img src="{{asset('assets/images//Marketting/Wh_app_template'). '/' .$item->image}}" alt="Template" class="img-fluid rounded border" style="max-height: 60px; max-width: 90px; object-fit: contain;"> 
 											</div>
+										</td>
+										<td>
+											@php
+												$isLand = (stripos($item->sub_title, 'Landscape') !== false);
+												$badgeClass = $isLand ? 'bg-primary' : 'bg-success';
+												$dispOrientation = !empty($item->sub_title) && $item->sub_title != '-' ? $item->sub_title : 'Portrait (1080x1920)';
+											@endphp
+											<span class="badge {{ $badgeClass }} text-white" style="font-size: 11px; padding: 4px 8px;">{{ $dispOrientation }}</span>
 										</td>
 										<td>
 											<label class="switch">
@@ -277,6 +322,7 @@ $(document).ready(function() {
                     $('#edit_id').val(response.whapp.id);
                     $('#oldimage').val(response.whapp.image);
                     $('#editstatus').val(response.whapp.status);
+                    $('#editorientation').val(response.whapp.sub_title && response.whapp.sub_title !== '-' ? response.whapp.sub_title : 'Portrait (1080x1920)');
                     if(response.whapp.image) {
                         var imgUrl = "{{ asset('assets/images//Marketting/Wh_app_template') }}/" + response.whapp.image;
                         $('#current_template_preview').html('<div class="d-flex align-items-center mt-2 gap-2"><img src="' + imgUrl + '" class="img-fluid rounded border" style="max-height: 80px;" alt="Current Template"><span class="text-muted small">Current Template</span></div>');
@@ -286,6 +332,39 @@ $(document).ready(function() {
                 }
             }
         });
+    });
+
+    // Auto-detect image dimensions on upload
+    $('#image').on('change', function(e) {
+        if (this.files && this.files[0]) {
+            var file = this.files[0];
+            var img = new Image();
+            img.onload = function() {
+                var w = this.width;
+                var h = this.height;
+                var orient = (h >= w) ? 'Portrait' : 'Landscape';
+                var recVal = (h >= w) ? 'Portrait (1080x1920)' : 'Landscape (1920x1080)';
+                $('#orientation').val(recVal);
+                $('#image_size_hint').html('<span class="text-success fw-bold"><i class="fa fa-check-circle me-1"></i> Uploaded: ' + orient + ' (' + w + ' &times; ' + h + ' px)</span> <span class="text-muted">(Standard: ' + (orient === 'Portrait' ? '1080&times;1920 px' : '1920&times;1080 px') + ')</span>');
+            };
+            img.src = URL.createObjectURL(file);
+        }
+    });
+
+    $('#editimage').on('change', function(e) {
+        if (this.files && this.files[0]) {
+            var file = this.files[0];
+            var img = new Image();
+            img.onload = function() {
+                var w = this.width;
+                var h = this.height;
+                var orient = (h >= w) ? 'Portrait' : 'Landscape';
+                var recVal = (h >= w) ? 'Portrait (1080x1920)' : 'Landscape (1920x1080)';
+                $('#editorientation').val(recVal);
+                $('#edit_image_size_hint').html('<span class="text-success fw-bold"><i class="fa fa-check-circle me-1"></i> Uploaded: ' + orient + ' (' + w + ' &times; ' + h + ' px)</span> <span class="text-muted">(Standard: ' + (orient === 'Portrait' ? '1080&times;1920 px' : '1920&times;1080 px') + ')</span>');
+            };
+            img.src = URL.createObjectURL(file);
+        }
     });
 </script>
 @endpush

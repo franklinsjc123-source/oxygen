@@ -54,7 +54,7 @@
 												<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 											</div>
 											<div class="modal-body">
-												<form class="" action="{{route('staffwhatsapp.store')}}" method="post" onsubmit="return confirm('Are you sure, you want to Save it?')" enctype="multipart/form-data">
+												<form class="" action="{{route('staffwhatsapp.store')}}" method="post"  enctype="multipart/form-data">
 													@csrf
 													<div class="row fw-bold">
 														<div class="col-sm-12">
@@ -137,7 +137,7 @@
 												<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 											</div>
 											<div class="modal-body">
-												<form class="" action="{{route('staffwhatsapp.update', 1)}}" method="post" onsubmit="return confirm('Are you sure, you want to Save it?')" enctype="multipart/form-data">
+												<form class="" action="{{route('staffwhatsapp.update', 1)}}" method="post"  enctype="multipart/form-data">
 													@csrf
 													@method('PUT')
 													<div class="row fw-bold">

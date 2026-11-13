@@ -54,7 +54,7 @@
 												<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 											</div>
 											<div class="modal-body">
-												<form class="" action="{{route('oxygen.store')}}" method="post" onsubmit="return confirm('Are you sure, you want to Save it?')">
+												<form class="" action="{{route('oxygen.store')}}" method="post" >
 													@csrf
 													<div class="row fw-bold">
 														<div class="col-sm-12">
@@ -134,7 +134,7 @@
 												<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
 											</div>
 											<div class="modal-body">
-												<form class="" action="{{route('oxygen.update', 1)}}" method="post" onsubmit="return confirm('Are you sure, you want to Save it?')">
+												<form class="" action="{{route('oxygen.update', 1)}}" method="post" >
 													@csrf
 													@method('PUT')
 													<div class="row fw-bold">
