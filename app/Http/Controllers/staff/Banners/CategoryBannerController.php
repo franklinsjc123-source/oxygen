@@ -59,17 +59,20 @@ class CategoryBannerController extends Controller
             $image = time().'.'.$file->getClientOriginalExtension();
             
             $img = Image::make($file->getRealPath());
-            $img->resize(447, 230, function ($constraint) {
+            
+            // Keep full high-definition quality (up to 1200px width) without crushing resolution
+            $img->resize(1200, null, function ($constraint) {
                 $constraint->aspectRatio();
-            })->save($this->main_image_path.'/'.$image);
+                $constraint->upSize();
+            })->save($this->main_image_path.'/'.$image, 100);
 
-            $banner->admin_id = session()->get('login_id');
-            $banner->title = strip_tags($request->title);
-            $banner->sub_title = strip_tags($request->sub_title);
+            $banner->admin_id = session()->get('login_id') ?? 1;
+            $banner->title = strip_tags($request->title ?? '');
+            $banner->sub_title = strip_tags($request->sub_title ?? '');
             $banner->image = $image;
-            $banner->link = $request->link;
-            $banner->sort = $request->sort;
-            $banner->status = $request->status;
+            $banner->link = $request->link ?? '';
+            $banner->sort = $request->sort ?? 1;
+            $banner->status = $request->status ?? 1;
 
             $banner->save();
 
@@ -126,9 +129,12 @@ class CategoryBannerController extends Controller
                 $image = time().'.'.$file->getClientOriginalExtension();
                 
                 $img = Image::make($file->getRealPath());
-                $img->resize(447, 230, function ($constraint) {
+                
+                // Keep full high-definition quality (up to 1200px width) without crushing resolution
+                $img->resize(1200, null, function ($constraint) {
                     $constraint->aspectRatio();
-                })->save($this->main_image_path.'/'.$image);
+                    $constraint->upSize();
+                })->save($this->main_image_path.'/'.$image, 100);
                 
                 $banner->image = $image;
 
@@ -140,12 +146,12 @@ class CategoryBannerController extends Controller
                 $banner->image = $request->editoldImage;
             }
 
-            $banner->admin_id = session()->get('login_id');
-            $banner->title = strip_tags($request->edittitle);
-            $banner->sub_title = strip_tags($request->editsub_title);
-            $banner->link = $request->editlink;
-            $banner->sort = $request->editsort;
-            $banner->status = $request->editstatus;
+            $banner->admin_id = session()->get('login_id') ?? 1;
+            $banner->title = strip_tags($request->edittitle ?? '');
+            $banner->sub_title = strip_tags($request->editsub_title ?? '');
+            $banner->link = $request->editlink ?? '';
+            $banner->sort = $request->editsort ?? 1;
+            $banner->status = $request->editstatus ?? 1;
 
             $banner->save();
 

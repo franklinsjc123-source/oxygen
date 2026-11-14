@@ -92,6 +92,8 @@
         min-height: 150px !important;
         border-radius: 8px;
         overflow: hidden !important;
+        image-rendering: -webkit-optimize-contrast !important;
+        image-rendering: high-quality !important;
     }
     @media (max-width: 767px) {
         .banner-shoes {
@@ -622,8 +624,8 @@
                           @endphp
                           <div class="swiper-slide banner banner-fixed category-banner br-sm" style="cursor: pointer; position: relative;" onclick="if('{{ $cUrl }}' !== 'javascript:void(0)') window.location.href='{{ $cUrl }}';">
                               <a href="{{ $cUrl }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block;" aria-label="{{ $item->title }}"></a>
-                              <figure style="margin: 0; overflow: hidden; border-radius: 8px; width: 100%; aspect-ratio: 447 / 230; background-color: #f4f4f4;">
-                                  <img src="{{ asset('assets/images/banners/category-banner/' . $item->image) }}" alt="{{ $item->title ?: 'Category Banner' }}" style="width: 100% !important; height: 100% !important; object-fit: cover !important; display: block;" loading="lazy" decoding="async" />
+                              <figure style="margin: 0; overflow: hidden; border-radius: 8px; width: 100%; background-color: transparent;">
+                                  <img src="{{ asset('assets/images/banners/category-banner/' . $item->image) }}" alt="{{ $item->title ?: 'Category Banner' }}" style="width: 100% !important; height: auto !important; display: block; border-radius: 8px; image-rendering: -webkit-optimize-contrast; image-rendering: high-quality; transform: translateZ(0); -webkit-backface-visibility: hidden;" />
                               </figure>
                               @if(!empty($item->title) || !empty($item->sub_title))
                               <div class="banner-content text-center x-50 y-50 w-100 pl-2 pr-2" style="z-index: 2; pointer-events: none;">
@@ -886,9 +888,9 @@
              @endphp
              <div class="banner banner-fixed mb-1 {{ $displayBanners->count() == 1 ? 'col-md-6 m-auto' : '' }}" style="cursor: pointer; position: relative;" onclick="if('{{ $advLink }}' !== '#') window.location.href='{{ $advLink }}';">
                  <a href="{{ $advLink }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block;" aria-label="{{ $banner->title ?: 'Advertisement Banner' }}"></a>
-                 <figure class="br-sm" style="margin: 0; overflow: hidden; border-radius: 8px; width: 100%; aspect-ratio: 600 / 300; background-color: #f4f4f4;">
+                 <figure class="br-sm" style="margin: 0; overflow: hidden; border-radius: 8px; width: 100%; background-color: transparent;">
                      <img src="{{ asset('assets/images/banners/advoxygen/' . $bannerImg) }}" alt="{{ $banner->title ?: 'Trymenow Advertisement' }}"
-                          style="object-fit: cover !important; width: 100% !important; height: 100% !important; display: block;" loading="lazy" decoding="async" />
+                          style="width: 100% !important; height: auto !important; display: block; border-radius: 8px; image-rendering: -webkit-optimize-contrast; image-rendering: high-quality; transform: translateZ(0); -webkit-backface-visibility: hidden;" />
                  </figure>
                  @if($isVendorSource)
                  <span class="badge" style="position: absolute; top: 8px; right: 8px; z-index: 3; background: rgba(24, 53, 67, 0.85); color: #fff; font-size: 10.5px; border-radius: 4px; padding: 3px 7px;">

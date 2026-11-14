@@ -96,13 +96,13 @@ class oxygen_advController extends Controller
             $file = $request->file('mainImage');
             $image = time().'.'.$file->getClientOriginalExtension();
             
-            $img = Image::make($file->getRealPath());
-            
-            // Keep high-definition quality without downscaling to low resolution
-            $img->resize(1600, null, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upSize();
-            })->save($main_image_path.'/'.$image, 100);
+            $destPath = public_path($main_image_path);
+            if (!file_exists($destPath)) {
+                mkdir($destPath, 0755, true);
+            }
+
+            // Save original uploaded image file directly with 100% pixel-perfect quality (zero loss)
+            $file->move($destPath, $image);
 
             $adbanner->admin_id    =     session()->get('login_id') ?? 1;
             $adbanner->title       =     strip_tags($request->title ?? '');
@@ -202,21 +202,18 @@ class oxygen_advController extends Controller
         {   
             $file = $request->file('editmainImage');
             $image = time().'.'.$file->getClientOriginalExtension();
-            //$image = $file->getClientOriginalExtension();
             
-            $img = Image::make($file->getRealPath());
-            
-            // Keep high-definition quality without downscaling to low resolution
-            $img->resize(1600, null, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upSize();
-            })->save($main_image_path.'/'.$image, 100);
-            $adbanner->image =  $image;
+            $destPath = public_path($main_image_path);
+            if (!file_exists($destPath)) {
+                mkdir($destPath, 0755, true);
+            }
 
-            $dltimage = oxygen_adv::find($id);
-            // print_r($image);exit();
-             $dltfile = $this->main_image_path . "/" . $dltimage->image;             
-             if (file_exists($dltfile)) unlink($dltfile);
+            // Save original uploaded image file directly with 100% pixel-perfect quality (zero loss)
+            $file->move($destPath, $image);
+            $adbanner->image = $image;
+
+            $dltfile = $this->main_image_path . "/" . $request->editoldImage;
+            if (file_exists($dltfile)) unlink($dltfile);
 
         }
         else

@@ -58,18 +58,21 @@ class CategoryBannerController extends Controller
             $file = $request->file('mainImage');
             $image = time().'.'.$file->getClientOriginalExtension();
             
-            $img = Image::make($file->getRealPath());
-            $img->resize(447, 230, function ($constraint) {
-                $constraint->aspectRatio();
-            })->save($this->main_image_path.'/'.$image);
+            $destPath = public_path($this->main_image_path);
+            if (!file_exists($destPath)) {
+                mkdir($destPath, 0755, true);
+            }
 
-            $banner->admin_id = session()->get('login_id');
-            $banner->title = strip_tags($request->title);
-            $banner->sub_title = strip_tags($request->sub_title);
+            // Save original uploaded image file directly with 100% pixel-perfect quality (zero loss)
+            $file->move($destPath, $image);
+
+            $banner->admin_id = session()->get('login_id') ?? 1;
+            $banner->title = strip_tags($request->title ?? '');
+            $banner->sub_title = strip_tags($request->sub_title ?? '');
             $banner->image = $image;
-            $banner->link = $request->link;
-            $banner->sort = $request->sort;
-            $banner->status = $request->status;
+            $banner->link = $request->link ?? '';
+            $banner->sort = $request->sort ?? 1;
+            $banner->status = $request->status ?? 1;
 
             $banner->save();
 
@@ -125,11 +128,13 @@ class CategoryBannerController extends Controller
                 $file = $request->file('editmainImage');
                 $image = time().'.'.$file->getClientOriginalExtension();
                 
-                $img = Image::make($file->getRealPath());
-                $img->resize(447, 230, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->save($this->main_image_path.'/'.$image);
-                
+                $destPath = public_path($this->main_image_path);
+                if (!file_exists($destPath)) {
+                    mkdir($destPath, 0755, true);
+                }
+
+                // Save original uploaded image file directly with 100% pixel-perfect quality (zero loss)
+                $file->move($destPath, $image);
                 $banner->image = $image;
 
                 $dltfile = $this->main_image_path . "/" . $request->editoldImage;
@@ -140,12 +145,12 @@ class CategoryBannerController extends Controller
                 $banner->image = $request->editoldImage;
             }
 
-            $banner->admin_id = session()->get('login_id');
-            $banner->title = strip_tags($request->edittitle);
-            $banner->sub_title = strip_tags($request->editsub_title);
-            $banner->link = $request->editlink;
-            $banner->sort = $request->editsort;
-            $banner->status = $request->editstatus;
+            $banner->admin_id = session()->get('login_id') ?? 1;
+            $banner->title = strip_tags($request->edittitle ?? '');
+            $banner->sub_title = strip_tags($request->editsub_title ?? '');
+            $banner->link = $request->editlink ?? '';
+            $banner->sort = $request->editsort ?? 1;
+            $banner->status = $request->editstatus ?? 1;
 
             $banner->save();
 

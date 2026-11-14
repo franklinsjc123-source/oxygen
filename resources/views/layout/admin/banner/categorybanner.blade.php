@@ -90,7 +90,8 @@
                                                                 <input class="form-control" type="text" name="sub_title" id="sub_title">
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="mainImage" class="mb-1"> Image (447x230 or 894x460 HD) :</label>
+                                                                <label for="mainImage" class="mb-1"> Image (Recommended: 894x460 px or 1200x618 px HD) <span class="text-danger">*</span> :</label>
+                                                                <small class="text-muted d-block mb-1" style="font-size: 11px;">Aspect ratio ~1.94:1 (e.g. 894×460 or 1200×618 for crisp, blur-free Retina/4K display)</small>
                                                                 <input class="form-control" required="" name="mainImage" id="mainImage" type="file" accept="image/*">
                                                             </div>
                                                              <div class="form-group">
@@ -152,7 +153,8 @@
                                                                 <input class="form-control" type="text" name="editsub_title" id="editsub_title">
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="editmainImage" class="mb-1"> Image (447x230 or 894x460 HD) :</label>
+                                                                <label for="editmainImage" class="mb-1"> Image (Recommended: 894x460 px or 1200x618 px HD) :</label>
+                                                                <small class="text-muted d-block mb-1" style="font-size: 11px;">Aspect ratio ~1.94:1 (e.g. 894×460 or 1200×618 for crisp, blur-free Retina/4K display)</small>
                                                                 <input class="form-control"  name="editmainImage" id="editmainImage" type="file" accept="image/*">
                                                                 <input class="form-control"  name="editoldImage" id="editoldImage" type="hidden">
                                                             </div>
