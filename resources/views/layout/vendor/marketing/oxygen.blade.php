@@ -514,7 +514,7 @@
                                 Advertisement Banner Image <span class="text-danger">*</span>
                             </label>
                             <input type="file" class="form-control" id="banner_image_input" name="banner_image" accept="image/*" required style="border-radius: 8px; font-size: 12.5px;">
-                            <div class="form-text" style="font-size: 11px; color: #64748b;">Supported formats: JPG, PNG, WebP (Max 2MB).</div>
+                            <div class="form-text" style="font-size: 11px; color: #64748b;">Recommended: <strong>1200 × 600 px</strong> (Trymenow Adv) or <strong>1920 × 480 px</strong> (Adv Banner) for razor-sharp HD display.</div>
                             
                             <!-- Image Preview Box -->
                             <div id="imagePreviewBox" class="mt-2 text-center p-2 border rounded-3" style="display: none; background: #fafafa;">

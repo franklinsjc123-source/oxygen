@@ -89,7 +89,8 @@
                                                                 <input class="form-control" type="text" name="sub_title" id="sub_title" placeholder="e.g. Flat 30% Off This Weekend">
                                                             </div>
                                                             <div class="form-group">
-                                                                 <label for="validationCustom02" class="mb-1"> Image (660x320 or 600x300 HD) <span class="text-danger">*</span> :</label>
+                                                                 <label for="validationCustom02" class="mb-1"> Image (Recommended: 1200x600 px or 600x300 px HD) <span class="text-danger">*</span> :</label>
+                                                                 <small class="text-muted d-block mb-1" style="font-size: 11px;">Aspect ratio 2:1 (e.g. 1200×600 for razor-sharp Retina/4K display, JPG/PNG/WebP)</small>
                                                                  <input class="form-control" required name="mainImage" id="mainImage" type="file" accept="image/*">
                                                                  <div class="invalid-feedback d-none" id="mainImageError">Please select a banner image.</div>
                                                             </div>
@@ -168,7 +169,8 @@
                                                                 <input class="form-control" type="text" name="editsub_title" id="editsub_title">
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="validationCustom02" class="mb-1"> Image (660x320 or 600x300 HD) :</label>
+                                                                <label for="validationCustom02" class="mb-1"> Image (Recommended: 1200x600 px or 600x300 px HD) :</label>
+                                                                <small class="text-muted d-block mb-1" style="font-size: 11px;">Aspect ratio 2:1 (e.g. 1200×600 for razor-sharp Retina/4K display)</small>
                                                                 <input class="form-control"  name="editmainImage" id="editmainImage" type="file" accept="image/*">
                                                                 <input class="form-control"  name="editoldImage" id="editoldImage" type="hidden" accept="image/*">
                                                             </div>

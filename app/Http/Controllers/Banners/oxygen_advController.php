@@ -98,9 +98,11 @@ class oxygen_advController extends Controller
             
             $img = Image::make($file->getRealPath());
             
-            $img->resize(612, 180, function ($constraint) {
+            // Keep high-definition quality without downscaling to low resolution
+            $img->resize(1600, null, function ($constraint) {
                 $constraint->aspectRatio();
-            })->save($main_image_path.'/'.$image);
+                $constraint->upSize();
+            })->save($main_image_path.'/'.$image, 100);
 
             $adbanner->admin_id    =     session()->get('login_id') ?? 1;
             $adbanner->title       =     strip_tags($request->title ?? '');
@@ -204,11 +206,11 @@ class oxygen_advController extends Controller
             
             $img = Image::make($file->getRealPath());
             
-            $img->resize(612, 180, function ($constraint) {
-                
+            // Keep high-definition quality without downscaling to low resolution
+            $img->resize(1600, null, function ($constraint) {
                 $constraint->aspectRatio();
-                
-            })->save($main_image_path.'/'.$image);
+                $constraint->upSize();
+            })->save($main_image_path.'/'.$image, 100);
             $adbanner->image =  $image;
 
             $dltimage = oxygen_adv::find($id);

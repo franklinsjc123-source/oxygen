@@ -90,7 +90,8 @@
                                                                 <input class="form-control" type="text" name="sub_title" id="sub_title" placeholder="e.g. For Men's Sneakers">
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="validationCustom02" class="mb-1"> Image (1300x200 or 1920x300 HD) <span class="text-danger">*</span> :</label>
+                                                                <label for="validationCustom02" class="mb-1"> Image (Recommended: 1920x480 px or 1400x350 px HD) <span class="text-danger">*</span> :</label>
+                                                                <small class="text-muted d-block mb-1" style="font-size: 11px;">Aspect ratio 4:1 (e.g. 1920×480 for full-width crisp desktop display)</small>
                                                                 <input class="form-control" required name="mainImage" id="mainImage" type="file" accept="image/*">
                                                                 <div class="invalid-feedback d-none" id="advMainImageError">Please select a banner image.</div>
                                                             </div>
