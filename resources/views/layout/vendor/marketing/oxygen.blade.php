@@ -693,7 +693,7 @@
         $('#modal_display_duration').text('/ ' + duration + ' Days');
         $('#modal_title').val(title);
         $('#modal_subtitle').val(subtitle);
-        $('#modal_link').val(link);
+        $('#modal_link').val(link || "{{ url('/shops/' . ($vendorDetails->slug ?? '')) }}");
 
         $('#banner_image_input').val('');
         $('#imagePreviewBox').hide();
@@ -723,6 +723,13 @@
             Swal.fire('Banner Required', 'Please select an advertisement banner image to proceed.', 'warning');
             return;
         }
+
+        let linkVal = $('#modal_link').val().trim();
+        if (!linkVal) {
+            linkVal = "{{ url('/shops/' . ($vendorDetails->slug ?? '')) }}";
+            $('#modal_link').val(linkVal);
+        }
+        formData.set('link', linkVal);
 
         // Hide upload modal before showing Razorpay
         const adModalEl = document.getElementById('adBannerModal');

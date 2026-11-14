@@ -193,7 +193,7 @@ class OxygenController extends Controller
                 $adv->title = $vendorPromo->title ?? '';
                 $adv->sub_title = $vendorPromo->sub_title ?? '';
                 $adv->image = $vendorPromo->banner_image;
-                $adv->link = $vendorPromo->link ?? '';
+                $adv->link = !empty($vendorPromo->link) ? $vendorPromo->link : url('/');
                 $adv->sort = 1;
                 $adv->status = 1;
                 $adv->save();
@@ -204,7 +204,7 @@ class OxygenController extends Controller
                 $oxy->title = $vendorPromo->title ?? '';
                 $oxy->sub_title = $vendorPromo->sub_title ?? '';
                 $oxy->image = $vendorPromo->banner_image;
-                $oxy->link = $vendorPromo->link ?? '';
+                $oxy->link = !empty($vendorPromo->link) ? $vendorPromo->link : url('/');
                 $oxy->sort = 1;
                 $oxy->status = 1;
                 $oxy->save();

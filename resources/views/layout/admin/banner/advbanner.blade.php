@@ -78,30 +78,30 @@
                                                 </div>
                                              
                                                 <div class="modal-body">												
-                                                    <form class="" action="{{route('advbanner.store')}}" method="post" enctype="multipart/form-data" >
+                                                    <form class="" id="addAdvBannerForm" action="{{route('advbanner.store')}}" method="post" enctype="multipart/form-data" >
                                                         @csrf
                                                         <div class="form">
                                                             <div class="form-group">
                                                                 <label for="validationCustom01" class="mb-1"> Title :</label>
-                                                                
-                                                                <input class="form-control" type="text" name="title" id="title">
+                                                                <input class="form-control" type="text" name="title" id="title" placeholder="e.g. Summer Season's Sale">
                                                             </div>
 															 <div class="form-group">
                                                                 <label for="validationCustom01" class="mb-1">Sub Title :</label>
-                                                                
-                                                                <input class="form-control" type="text" name="sub_title" id="sub_title">
+                                                                <input class="form-control" type="text" name="sub_title" id="sub_title" placeholder="e.g. For Men's Sneakers">
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="validationCustom02" class="mb-1"> Image (1300x200 or 1920x300 HD) :</label>
+                                                                <label for="validationCustom02" class="mb-1"> Image (1300x200 or 1920x300 HD) <span class="text-danger">*</span> :</label>
                                                                 <input class="form-control" required name="mainImage" id="mainImage" type="file" accept="image/*">
+                                                                <div class="invalid-feedback d-none" id="advMainImageError">Please select a banner image.</div>
                                                             </div>
                                                              <div class="form-group">
-                                                                <label for="validationCustom01" class="mb-1">Link :</label>
-                                                                <input class="form-control" id="link" name="link" type="text">
+                                                                <label for="validationCustom01" class="mb-1">Link <span class="text-danger">*</span> :</label>
+                                                                <input class="form-control" id="link" name="link" type="text" placeholder="e.g. https://example.com/shop or /shops/slug" required>
+                                                                <div class="invalid-feedback d-none" id="advLinkError">Please provide a valid destination link URL.</div>
                                                             </div>
                                                              <div class="form-group">
                                                                 <label for="validationCustom01" class="mb-1">Sort :</label>
-                                                                <input class="form-control" id="sort" name="sort" type="number">
+                                                                <input class="form-control" id="sort" name="sort" type="number" value="1">
                                                             </div>                                                            
                                                             <div class="col-md-12">
 							                    			<div class="" id="dates">
@@ -176,8 +176,9 @@
                                                                 <input class="form-control"  name="editoldImage" id="editoldImage" type="hidden" accept="image/*">
                                                             </div>
                                                              <div class="form-group">
-                                                                <label for="validationCustom01" class="mb-1">Link :</label>
-                                                                <input class="form-control" id="editlink" name="editlink" type="text">
+                                                                <label for="validationCustom01" class="mb-1">Link <span class="text-danger">*</span> :</label>
+                                                                <input class="form-control" id="editlink" name="editlink" type="text" placeholder="e.g. https://example.com/shop or /shops/slug" required>
+                                                                <div class="invalid-feedback d-none" id="editAdvLinkError">Please provide a valid destination link URL.</div>
                                                             </div>
                                                              <div class="form-group">
                                                                 <label for="validationCustom01" class="mb-1">Sort :</label>
@@ -471,6 +472,100 @@ $(document).ready(function() {
 //         });
   
 //       });
+</script>
+<script>
+    // Frontend validation for Add Banner form
+    $('#addAdvBannerForm').on('submit', function(e) {
+        let valid = true;
+        const linkInput = $('#link');
+        const imgInput = $('#mainImage');
+        const linkVal = linkInput.val() ? linkInput.val().trim() : '';
+
+        // Validate Link
+        if (!linkVal) {
+            valid = false;
+            linkInput.addClass('is-invalid');
+            $('#advLinkError').removeClass('d-none').addClass('d-block');
+        } else {
+            linkInput.removeClass('is-invalid');
+            $('#advLinkError').addClass('d-none').removeClass('d-block');
+        }
+
+        // Validate Image
+        if (!imgInput[0].files || !imgInput[0].files.length) {
+            valid = false;
+            imgInput.addClass('is-invalid');
+            $('#advMainImageError').removeClass('d-none').addClass('d-block');
+        } else {
+            imgInput.removeClass('is-invalid');
+            $('#advMainImageError').addClass('d-none').removeClass('d-block');
+        }
+
+        if (!valid) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Required Information Missing',
+                    text: 'Please provide both the Banner Image and Link URL before saving.',
+                    confirmButtonColor: '#183543'
+                });
+            } else {
+                alert('Please provide both the Banner Image and Link URL.');
+            }
+            return false;
+        }
+    });
+
+    // Real-time input clearing
+    $('#link').on('input', function() {
+        if ($(this).val().trim()) {
+            $(this).removeClass('is-invalid');
+            $('#advLinkError').addClass('d-none').removeClass('d-block');
+        }
+    });
+
+    $('#mainImage').on('change', function() {
+        if (this.files && this.files.length) {
+            $(this).removeClass('is-invalid');
+            $('#advMainImageError').addClass('d-none').removeClass('d-block');
+        }
+    });
+
+    // Frontend validation for Edit Banner form
+    $('#exampleModal1 form').on('submit', function(e) {
+        const linkInput = $('#editlink');
+        const linkVal = linkInput.val() ? linkInput.val().trim() : '';
+
+        if (!linkVal) {
+            e.preventDefault();
+            e.stopPropagation();
+            linkInput.addClass('is-invalid');
+            $('#editAdvLinkError').removeClass('d-none').addClass('d-block');
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Link URL Required',
+                    text: 'Please enter a target Link URL.',
+                    confirmButtonColor: '#183543'
+                });
+            } else {
+                alert('Please enter a target Link URL.');
+            }
+            return false;
+        } else {
+            linkInput.removeClass('is-invalid');
+            $('#editAdvLinkError').addClass('d-none').removeClass('d-block');
+        }
+    });
+
+    $('#editlink').on('input', function() {
+        if ($(this).val().trim()) {
+            $(this).removeClass('is-invalid');
+            $('#editAdvLinkError').addClass('d-none').removeClass('d-block');
+        }
+    });
 </script>
 <script src="https://cdn.ckeditor.com/4.9.2/standard/ckeditor.js"></script>
     <script>

@@ -84,6 +84,7 @@ class oxygen_advController extends Controller
         
         $request->validate([
             'mainImage' => 'required|image',
+            'link' => 'required',
         ]);
 
         $main_image_path = "assets/images/banners/advoxygen";   
@@ -92,38 +93,22 @@ class oxygen_advController extends Controller
 
             $adbanner = new oxygen_adv();
 
-           // if($request->file('mainImage'))
-       // {   
             $file = $request->file('mainImage');
             $image = time().'.'.$file->getClientOriginalExtension();
-            //$image = $file->getClientOriginalExtension();
             
             $img = Image::make($file->getRealPath());
             
             $img->resize(612, 180, function ($constraint) {
-                
                 $constraint->aspectRatio();
-                
             })->save($main_image_path.'/'.$image);
-           
-            
-            
-            //$adbanner->image =  $image;
-        // }
-        // else
-        // {
-        //     $adbanner->image ="-";
-        // }
 
-            $adbanner->admin_id    =     session()->get('login_id');
-            $adbanner->title       =     strip_tags($request->title);
-            $adbanner->sub_title   =     strip_tags($request->sub_title);
-            $adbanner->image       =     $image    ;
-            $adbanner->link        =     $request->link      ;
-            $adbanner->sort        =     $request->sort      ;
-            $adbanner->status      =     $request->status;
-            
-
+            $adbanner->admin_id    =     session()->get('login_id') ?? 1;
+            $adbanner->title       =     strip_tags($request->title ?? '');
+            $adbanner->sub_title   =     strip_tags($request->sub_title ?? '');
+            $adbanner->image       =     $image;
+            $adbanner->link        =     $request->link ?? '';
+            $adbanner->sort        =     $request->sort ?? 1;
+            $adbanner->status      =     $request->status ?? 1;
 
             $adbanner->save();
 
@@ -200,6 +185,7 @@ class oxygen_advController extends Controller
 
         $request->validate([
             'editmainImage' => 'nullable|image',
+            'editlink' => 'required',
         ]);
 
         $main_image_path = "assets/images/banners/advoxygen";
@@ -236,13 +222,12 @@ class oxygen_advController extends Controller
             $adbanner->image = $request->editoldImage;
         }
 
-            $adbanner->admin_id    =     session()->get('login_id');
-            $adbanner->title       =     strip_tags($request->edittitle);
-            $adbanner->sub_title   =     strip_tags($request->editsub_title);
-            //$adbanner->image       =     $image    ;
-            $adbanner->link        =     $request->editlink      ;
-            $adbanner->sort        =     $request->editsort      ;
-            $adbanner->status      =     $request->editstatus    ;
+            $adbanner->admin_id    =     session()->get('login_id') ?? 1;
+            $adbanner->title       =     strip_tags($request->edittitle ?? '');
+            $adbanner->sub_title   =     strip_tags($request->editsub_title ?? '');
+            $adbanner->link        =     $request->editlink ?? '';
+            $adbanner->sort        =     $request->editsort ?? 1;
+            $adbanner->status      =     $request->editstatus ?? 1;
 
 
             $adbanner->save();

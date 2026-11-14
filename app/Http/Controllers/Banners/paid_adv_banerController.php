@@ -86,6 +86,7 @@ class paid_adv_banerController extends Controller
         
         $request->validate([
             'mainImage' => 'required|image',
+            'link' => 'required',
         ]);
 
         $main_image_path = "assets/images/banners/adv-baner";   
@@ -201,6 +202,7 @@ class paid_adv_banerController extends Controller
 
         $request->validate([
             'editmainImage' => 'nullable|image',
+            'editlink' => 'required',
         ]);
 
         $main_image_path = "assets/images/banners/adv-baner";
