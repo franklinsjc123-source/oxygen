@@ -84,18 +84,21 @@
                         display: flex !important;
                         flex-direction: row !important;
                         flex-wrap: nowrap !important;
+                        justify-content: flex-end !important;
+                        align-items: center !important;
                         gap: 6px !important;
                         width: 100% !important;
                     }
                     #secondary-toolbar .secondary-toolbar-row1 > a,
                     #secondary-toolbar .secondary-toolbar-row1 > button {
-                        flex: 1 1 auto !important;
+                        flex: 0 0 auto !important;
                         min-width: 0 !important;
                         width: auto !important;
+                        max-width: max-content !important;
                         white-space: nowrap !important;
                         font-size: 11.5px !important;
                         font-weight: 600 !important;
-                        padding: 4px 6px !important;
+                        padding: 6px 14px !important;
                         height: 36px !important;
                         min-height: 36px !important;
                         display: inline-flex !important;
@@ -103,6 +106,7 @@
                         justify-content: center !important;
                         box-sizing: border-box !important;
                         text-align: center !important;
+                        margin-left: auto !important;
                     }
                     #secondary-toolbar .secondary-toolbar-row2 {
                         display: flex !important;

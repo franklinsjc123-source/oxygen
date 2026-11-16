@@ -150,21 +150,21 @@
 
         /* Active State */
         .seller-mobile-footer .seller-footer-item.active {
-            color: #ff5252 !important;
+            color: #183543 !important;
         }
 
         .seller-mobile-footer .seller-footer-item.active .seller-footer-icon-wrap {
-            background: rgba(255, 82, 82, 0.12) !important;
+            background: rgba(24, 53, 67, 0.12) !important;
             transform: translateY(-2px) !important;
         }
 
         .seller-mobile-footer .seller-footer-item.active .seller-footer-icon {
-            color: #ff5252 !important;
+            color: #183543 !important;
             transform: scale(1.08) !important;
         }
 
         .seller-mobile-footer .seller-footer-item.active .seller-footer-text {
-            color: #ff5252 !important;
+            color: #183543 !important;
             font-weight: 700 !important;
         }
 

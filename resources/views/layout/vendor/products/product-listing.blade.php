@@ -84,18 +84,21 @@
                         display: flex !important;
                         flex-direction: row !important;
                         flex-wrap: nowrap !important;
+                        justify-content: flex-end !important;
+                        align-items: center !important;
                         gap: 6px !important;
                         width: 100% !important;
                     }
                     #secondary-toolbar .secondary-toolbar-row1 > a,
                     #secondary-toolbar .secondary-toolbar-row1 > button {
-                        flex: 1 1 auto !important;
+                        flex: 0 0 auto !important;
                         min-width: 0 !important;
                         width: auto !important;
+                        max-width: max-content !important;
                         white-space: nowrap !important;
                         font-size: 11.5px !important;
                         font-weight: 600 !important;
-                        padding: 4px 6px !important;
+                        padding: 6px 14px !important;
                         height: 36px !important;
                         min-height: 36px !important;
                         display: inline-flex !important;
@@ -103,6 +106,7 @@
                         justify-content: center !important;
                         box-sizing: border-box !important;
                         text-align: center !important;
+                        margin-left: auto !important;
                     }
                     #secondary-toolbar .secondary-toolbar-row2 {
                         display: flex !important;
@@ -183,7 +187,8 @@
                     <div class="col-sm-12">
 
                         <div class="card">
-                                <div id="toolbar" class="d-flex align-items-center">
+                            <div class="card-body">
+                                <div id="toolbar" class="d-flex align-items-center mb-3">
                                     <a href="{{ route('vendorproduct.export') }}" class="btn btn-success me-2" style="background-color: #28a745; border-color: #28a745; color: #fff;">
                                         Export Excel
                                     </a>
@@ -192,7 +197,7 @@
                                     </a>
                                 </div>
                                 
-                                <div id="secondary-toolbar" class="d-flex flex-wrap gap-2 mb-3 mt-3 ms-3">
+                                <div id="secondary-toolbar" class="d-flex flex-wrap gap-2 mb-3">
                                     <div class="secondary-toolbar-row1">
                                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#importProductModal">
                                             <i class="fa fa-upload me-1"></i> Import Products
@@ -429,6 +434,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
 
               
