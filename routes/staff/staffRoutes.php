@@ -366,6 +366,13 @@ Route::get('activity/edit/{id}', [\App\Http\Controllers\ActivityTrackerControlle
 Route::resource('activity_trackers', \App\Http\Controllers\ActivityTrackerController::class, ['names' => 'staffactivity_trackers']);
 Route::get('activity/employee/', [\App\Http\Controllers\ActivityTrackerController::class, 'employeeactivity'])->name('staffactivity.employee');
 
+// Seller requests for staff
+Route::get('seller-requests', [\App\Http\Controllers\SellerLeadController::class, 'adminIndex'])->name('staff.seller_leads.index');
+Route::post('seller-requests/{id}/status', [\App\Http\Controllers\SellerLeadController::class, 'adminUpdateStatus'])->name('staff.seller_leads.update_status');
+
+// Profile for staff
+Route::get('profile', [SettingController::class, 'profile'])->name('staff.profile');
+
 Route::any('admin/{any}', function ($any) {
     return redirect('staff/' . $any);
 })->where('any', '.*');

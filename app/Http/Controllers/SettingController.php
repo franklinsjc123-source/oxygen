@@ -43,6 +43,10 @@ class SettingController extends Controller
 
             return view('layout.vendor.setting.profile', $viewBag);
         }
+
+        if (request()->is('*staff*') && view()->exists('layout.staff.setting.profile')) {
+            return view('layout.staff.setting.profile', $viewBag);
+        }
         
         return view('layout.admin.setting.profile', $viewBag);
     }

@@ -182,9 +182,11 @@
 
     @yield('contents')
 
-
-
-
+    @if(request()->is('*seller*') || request()->is('*vendor*'))
+        @include('paritials.vendorauth.mobile-footer')
+    @elseif(request()->is('*admin*') || request()->is('*staff*'))
+        @include('paritials.auth.mobile-footer')
+    @endif
 @include('paritials.auth.footer-js')
 @include('paritials.auth.js')
 

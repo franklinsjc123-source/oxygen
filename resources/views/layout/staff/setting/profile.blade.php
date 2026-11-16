@@ -2,14 +2,14 @@
 @section('contents')
     @include('paritials.js.profile.profile-js')
     <!-- page-wrapper Start-->
-@include('paritials.auth.topmenu');
+@include('paritials.staffauth.topmenu')
 <!-- Page Header Ends -->
 
 <!-- Page Body Start-->
 <div class="page-body-wrapper">
 	
 	<!-- Page Sidebar Start-->
-	@include('paritials.vendorauth.sidemenu');
+	@include('paritials.staffauth.sidemenu')
 	<!-- Page Sidebar Ends-->
 	
 	<!-- Right sidebar Start-->
