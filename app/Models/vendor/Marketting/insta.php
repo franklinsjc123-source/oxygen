@@ -15,13 +15,20 @@ class insta extends Model
     protected $fillable = [
         "vendor_id",
         "package_id",
+        "title",
+        "sub_title",
+        "poster_image",
+        "link",
 		"amount",
         "impressions",
         "clicks",
         "duration",        
         "status",
         "is_subscribed",
+        "approval_status",
+        "admin_notes",
         "subscribed_at",
+        "approved_at",
         "expires_at",
         "razorpay_payment_id",
         "razorpay_order_id",
@@ -34,6 +41,15 @@ class insta extends Model
 
     protected $dates = [
         'subscribed_at',
+        'approved_at',
         'expires_at'
     ];
+
+    public function getVendorDetailAttribute()
+    {
+        return \Illuminate\Support\Facades\DB::table('vendor_details')
+            ->where('id', $this->vendor_id)
+            ->orWhere('vendor_id', $this->vendor_id)
+            ->first();
+    }
 }

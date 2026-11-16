@@ -17,9 +17,14 @@ class FaceBookController extends Controller
     public function index()
     {
         $fb = face_book::all();
+        $sellerRequests = \App\Models\vendor\Marketting\face_book::where('is_subscribed', 1)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return view('layout.admin.marketing.facebook')
         ->with([
-            'fb' => $fb
+            'fb' => $fb,
+            'sellerRequests' => $sellerRequests
         ]);
     }
 
@@ -160,5 +165,45 @@ class FaceBookController extends Controller
         $fb->save();
 
         return response()->json(['success' => 'Status changed successfully.']);
+    }
+
+    public function approve(Request $request)
+    {
+        $vendorFb = \App\Models\vendor\Marketting\face_book::find($request->id);
+        if (!$vendorFb) {
+            return response()->json(['status' => 404, 'message' => 'Request not found!'], 404);
+        }
+
+        $durationDays = (int) $vendorFb->duration > 0 ? (int) $vendorFb->duration : 30;
+        $vendorFb->approval_status = 'Approved';
+        $vendorFb->status = 1;
+        $vendorFb->approved_at = now();
+        $vendorFb->expires_at = now()->addDays($durationDays);
+        $vendorFb->admin_notes = $request->input('admin_notes', 'Approved by Admin');
+        $vendorFb->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Seller Facebook advertisement poster has been approved and activated!',
+            'expires_at' => $vendorFb->expires_at->format('d M Y')
+        ]);
+    }
+
+    public function reject(Request $request)
+    {
+        $vendorFb = \App\Models\vendor\Marketting\face_book::find($request->id);
+        if (!$vendorFb) {
+            return response()->json(['status' => 404, 'message' => 'Request not found!'], 404);
+        }
+
+        $vendorFb->approval_status = 'Rejected';
+        $vendorFb->status = 0;
+        $vendorFb->admin_notes = $request->input('admin_notes', 'Rejected by Admin');
+        $vendorFb->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Seller Facebook advertisement poster has been rejected.'
+        ]);
     }
 }

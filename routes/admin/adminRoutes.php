@@ -314,8 +314,12 @@ Route::controller(PinCodeController1::class)->group(function(){
 Route::post('whatsapp/changestatus', [WhAppController::class, 'changestatus'])->name('whatsapp.changestatus');
 Route::resource('whatsapp',  WhAppController::class,['names' => 'whatsapp']);
 Route::post('facebook/changestatus', [FaceBookController::class, 'changestatus'])->name('facebook.changestatus');
+Route::post('facebook/approve', [FaceBookController::class, 'approve'])->name('facebook.approve');
+Route::post('facebook/reject', [FaceBookController::class, 'reject'])->name('facebook.reject');
 Route::resource('facebook',  FaceBookController::class,['names' => 'facebook']);
 Route::post('instagram/changestatus', [InstaController::class, 'changestatus'])->name('instagram.changestatus');
+Route::post('instagram/approve', [InstaController::class, 'approve'])->name('instagram.approve');
+Route::post('instagram/reject', [InstaController::class, 'reject'])->name('instagram.reject');
 Route::resource('instagram',  InstaController::class,['names' => 'instagram']);
 Route::post('oxygen/changestatus', [OxygenController::class, 'changestatus'])->name('oxygen.changestatus');
 Route::post('oxygen/approve', [OxygenController::class, 'approve'])->name('oxygen.approve');

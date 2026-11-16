@@ -38,6 +38,7 @@ class FaceBookController extends Controller
                 $newFb->duration      = $master->duration;
                 $newFb->status        = 0;
                 $newFb->is_subscribed = 0;
+                $newFb->approval_status = 'Pending';
                 $newFb->image         = $master->image ?? '-';
                 $newFb->text          = $master->text ?? '-';
                 $newFb->save();
@@ -211,6 +212,9 @@ class FaceBookController extends Controller
         if (!$fb->is_subscribed && $request->status == 1) {
             return response()->json(['error' => 'Please buy / subscribe to this package first to activate it.'], 400);
         }
+        if ($fb->approval_status !== 'Approved') {
+            return response()->json(['error' => 'Your Facebook ad is currently ' . ($fb->approval_status ?? 'Pending') . ' and awaiting Admin review.'], 400);
+        }
         if ($fb->expires_at && \Carbon\Carbon::parse($fb->expires_at)->isPast() && $request->status == 1) {
             return response()->json(['error' => 'This package has expired. Please renew the package to reactivate campaign.'], 400);
         }
@@ -232,24 +236,35 @@ class FaceBookController extends Controller
             return response()->json(['status' => 400, 'message' => 'Online payment verification is required to activate this package.'], 400);
         }
 
-        $durationDays = (int) $fb->duration > 0 ? (int) $fb->duration : 30;
-        $isRenew = ($fb->is_subscribed == 1);
-        $isExpired = ($fb->expires_at && \Carbon\Carbon::parse($fb->expires_at)->isPast());
-
-        if ($isRenew && !$isExpired && $fb->expires_at) {
-            $newExpiresAt = \Carbon\Carbon::parse($fb->expires_at)->addDays($durationDays);
-            $msg = "Payment verified! Facebook Advertisement Package extended for another {$durationDays} days.";
-        } else {
-            $newExpiresAt = now()->addDays($durationDays);
-            $msg = ($isRenew && $isExpired)
-                ? "Payment verified! Facebook Advertisement Package renewed and reactivated for {$durationDays} days."
-                : "Payment verified! Facebook Advertisement Package subscribed and activated successfully!";
+        // Handle Poster Image upload
+        $imageName = $fb->poster_image ?? ($fb->image && $fb->image !== '-' ? $fb->image : null);
+        if ($request->hasFile('poster_image')) {
+            $file = $request->file('poster_image');
+            $ext = $file->getClientOriginalExtension();
+            $imageName = 'fb_poster_' . $vendor_id . '_' . time() . '.' . $ext;
+            
+            $dest = public_path('assets/images/Marketting/facebook');
+            if (!file_exists($dest)) {
+                mkdir($dest, 0755, true);
+            }
+            $file->move($dest, $imageName);
         }
 
+        if (empty($imageName) && $request->input('action') !== 'update') {
+            return response()->json(['status' => 400, 'message' => 'Please upload an advertisement poster image.'], 400);
+        }
+
+        $fb->title = $request->input('title', $fb->title);
+        $fb->sub_title = $request->input('sub_title', $fb->sub_title);
+        $fb->link = $request->input('link', $fb->link);
+        if (!empty($imageName)) {
+            $fb->poster_image = $imageName;
+            $fb->image = $imageName;
+        }
         $fb->is_subscribed = 1;
-        $fb->status = 1;
+        $fb->approval_status = 'Pending'; // Awaiting admin approval
+        $fb->status = 0; // Not live until admin approves
         $fb->subscribed_at = now();
-        $fb->expires_at = $newExpiresAt;
         $fb->razorpay_payment_id = $razorpayPaymentId;
         $fb->razorpay_order_id = $request->input('razorpay_order_id', '');
         $fb->razorpay_signature = $request->input('razorpay_signature', '');
@@ -269,12 +284,13 @@ class FaceBookController extends Controller
                 'payment_data' => json_encode([
                     'vendor_id' => $vendor_id,
                     'package_id' => $fb->id,
-                    'platform' => 'Facebook',
+                    'platform' => 'Facebook Poster Ad',
+                    'poster_image' => $imageName,
                     'amount' => $fb->amount,
                     'impressions' => $fb->impressions,
                     'clicks' => $fb->clicks,
                     'duration' => $fb->duration,
-                    'type' => 'ad_package'
+                    'type' => 'facebook_ad'
                 ]),
                 'created_at' => now(),
                 'updated_at' => now()
@@ -285,10 +301,9 @@ class FaceBookController extends Controller
 
         return response()->json([
             'status' => 200,
-            'message' => $msg,
+            'message' => 'Payment verified! Your Facebook advertisement poster has been submitted to Admin for approval. Once accepted by Admin, it will be published.',
             'payment_id' => $razorpayPaymentId,
-            'subscribed_at' => $fb->subscribed_at ? $fb->subscribed_at->format('Y-m-d H:i') : null,
-            'expires_at' => $fb->expires_at ? $fb->expires_at->format('Y-m-d H:i') : null
+            'approval_status' => 'Pending'
         ]);
     }
 }

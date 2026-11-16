@@ -20,9 +20,14 @@ class InstaController extends Controller
     public function index()
     {
         $instagrame = insta::all();
+        $sellerRequests = \App\Models\vendor\Marketting\insta::where('is_subscribed', 1)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return view('layout.admin.marketing.instagram')
         ->with([
-            'instagrame' => $instagrame
+            'instagrame' => $instagrame,
+            'sellerRequests' => $sellerRequests
         ]);
     }
 
@@ -163,5 +168,45 @@ class InstaController extends Controller
         $instagrame->save();
 
         return response()->json(['success' => 'Status changed successfully.']);
+    }
+
+    public function approve(Request $request)
+    {
+        $vendorInsta = \App\Models\vendor\Marketting\insta::find($request->id);
+        if (!$vendorInsta) {
+            return response()->json(['status' => 404, 'message' => 'Request not found!'], 404);
+        }
+
+        $durationDays = (int) $vendorInsta->duration > 0 ? (int) $vendorInsta->duration : 30;
+        $vendorInsta->approval_status = 'Approved';
+        $vendorInsta->status = 1;
+        $vendorInsta->approved_at = now();
+        $vendorInsta->expires_at = now()->addDays($durationDays);
+        $vendorInsta->admin_notes = $request->input('admin_notes', 'Approved by Admin');
+        $vendorInsta->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Seller Instagram advertisement poster has been approved and activated!',
+            'expires_at' => $vendorInsta->expires_at->format('d M Y')
+        ]);
+    }
+
+    public function reject(Request $request)
+    {
+        $vendorInsta = \App\Models\vendor\Marketting\insta::find($request->id);
+        if (!$vendorInsta) {
+            return response()->json(['status' => 404, 'message' => 'Request not found!'], 404);
+        }
+
+        $vendorInsta->approval_status = 'Rejected';
+        $vendorInsta->status = 0;
+        $vendorInsta->admin_notes = $request->input('admin_notes', 'Rejected by Admin');
+        $vendorInsta->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Seller Instagram advertisement poster has been rejected.'
+        ]);
     }
 }

@@ -62,6 +62,19 @@
             height: 4px;
             background: #10b981;
         }
+        .ad-pkg-card.is-pending {
+            border-color: #f59e0b;
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.15);
+        }
+        .ad-pkg-card.is-pending::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #f59e0b;
+        }
         .ad-pkg-card.is-expired {
             border-color: #fca5a5;
             box-shadow: 0 4px 16px rgba(239, 68, 68, 0.12);
@@ -75,7 +88,7 @@
             height: 4px;
             background: #ef4444;
         }
-        .ad-pkg-card:not(.is-active):not(.is-expired)::before {
+        .ad-pkg-card:not(.is-active):not(.is-pending):not(.is-expired)::before {
             content: '';
             position: absolute;
             top: 0;
@@ -115,6 +128,13 @@
             border-color: #183543;
             box-shadow: 0 0 0 3px rgba(24, 53, 67, 0.1);
         }
+        .banner-preview-thumb {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
     </style>
 
     <div class="page-body">		
@@ -148,7 +168,7 @@
 							<div>
 								<h6 class="mb-0 fw-bold" style="color: #183543; font-size: 15px;">Instagram Advertisement Packages</h6>
 								<small class="text-muted" style="font-size: 12px;">
-									Choose a sponsored plan to boost products and gain buyer reach on Instagram.
+									Upload your poster creative and choose a sponsored plan to boost products and gain buyer reach on Instagram.
 								</small>
 							</div>
 						</div>
@@ -166,16 +186,26 @@
 						$isSubscribed = (!empty($item->is_subscribed) && $item->is_subscribed == 1);
 						$isExpired = false;
 						$remainingDays = 0;
-						if ($isSubscribed && !empty($item->expires_at)) {
-							$expiry = \Carbon\Carbon::parse($item->expires_at);
-							$isExpired = $expiry->isPast();
-							if (!$isExpired) {
-								$remainingDays = max(0, (int) now()->diffInDays($expiry, false));
-							}
-						}
+                        $cardClass = '';
+						if ($isSubscribed) {
+                            if (!empty($item->expires_at)) {
+                                $expiry = \Carbon\Carbon::parse($item->expires_at);
+                                $isExpired = $expiry->isPast();
+                                if (!$isExpired) {
+                                    $remainingDays = max(0, (int) now()->diffInDays($expiry, false));
+                                }
+                            }
+                            if ($item->approval_status === 'Approved') {
+                                $cardClass = $isExpired ? 'is-expired' : 'is-active';
+                            } elseif ($item->approval_status === 'Pending') {
+                                $cardClass = 'is-pending';
+                            } elseif ($isExpired) {
+                                $cardClass = 'is-expired';
+                            }
+                        }
 					@endphp
 					<div class="col-xxl-3 col-xl-4 col-lg-4 col-md-6 col-12 package-col" style="max-width: 380px;" data-budget="{{ $item->amount }}" data-duration="{{ $item->duration }}" data-impressions="{{ $item->impressions }}">
-						<div class="ad-pkg-card p-3 p-md-4 {{ $isSubscribed ? ($isExpired ? 'is-expired' : 'is-active') : '' }}">
+						<div class="ad-pkg-card p-3 p-md-4 {{ $cardClass }}">
 							
 							<!-- Top Header: Platform & Status -->
 							<div class="d-flex align-items-center justify-content-between mb-3">
@@ -183,17 +213,27 @@
 									<i class="fa fa-instagram me-1"></i> Instagram Ad
 								</span>
 								@if($isSubscribed)
-									@if($isExpired)
-										<span class="badge bg-danger text-white px-2 py-1" style="font-size: 11.5px; border-radius: 5px;">
-											<i class="fa fa-exclamation-circle me-1"></i> Plan Expired
-										</span>
-									@else
-										<span class="badge bg-success text-white px-2 py-1" style="font-size: 11.5px; border-radius: 5px;">
-											<i class="fa fa-check-circle me-1"></i> Subscribed
-										</span>
-									@endif
+                                    @if($item->approval_status === 'Approved')
+                                        @if($isExpired)
+                                            <span class="badge bg-danger text-white px-2 py-1" style="font-size: 11px; border-radius: 5px;">
+                                                <i class="fa fa-exclamation-circle me-1"></i> Plan Expired
+                                            </span>
+                                        @else
+                                            <span class="badge bg-success text-white px-2 py-1" style="font-size: 11px; border-radius: 5px;">
+                                                <i class="fa fa-check-circle me-1"></i> Live on Instagram
+                                            </span>
+                                        @endif
+                                    @elseif($item->approval_status === 'Pending')
+                                        <span class="badge bg-warning text-dark px-2 py-1" style="font-size: 11px; border-radius: 5px;">
+                                            <i class="fa fa-hourglass-half me-1"></i> Pending Approval
+                                        </span>
+                                    @elseif($item->approval_status === 'Rejected')
+                                        <span class="badge bg-danger text-white px-2 py-1" style="font-size: 11px; border-radius: 5px;">
+                                            <i class="fa fa-times-circle me-1"></i> Rejected
+                                        </span>
+                                    @endif
 								@else
-									<span class="badge bg-light text-secondary border px-2 py-1" style="font-size: 11.5px; border-radius: 5px;">
+									<span class="badge bg-light text-secondary border px-2 py-1" style="font-size: 11px; border-radius: 5px;">
 										<i class="fa fa-circle-o me-1"></i> Available
 									</span>
 								@endif
@@ -242,87 +282,155 @@
 								</div>
 							</div>
 
+                            <!-- Poster Thumbnail Preview if uploaded -->
+                            @php
+                                $posterFile = $item->poster_image ?? ($item->image && $item->image !== '-' ? $item->image : null);
+                            @endphp
+                            @if($isSubscribed && !empty($posterFile))
+                            <div class="my-2 p-2 bg-light rounded border">
+                                <small class="text-muted d-block mb-1" style="font-size: 11px;">
+                                    <i class="fa fa-picture-o me-1 text-danger"></i> Uploaded Ad Poster:
+                                </small>
+                                <img src="{{ asset('assets/images/Marketting/instagram/' . $posterFile) }}" alt="Instagram Ad Poster" class="banner-preview-thumb">
+                                @if(!empty($item->title))
+                                    <small class="d-block text-truncate fw-bold text-dark mt-1" style="font-size: 11.5px;">{{ $item->title }}</small>
+                                @endif
+                            </div>
+                            @endif
+
 							<!-- Action Section -->
 							<div class="mt-3 pt-3 border-top">
 								@if($isSubscribed)
-									@if($isExpired)
-										<!-- EXPIRED STATE: Prominent Renewal Required -->
-										<div class="p-2 mb-2 rounded" style="background: #fef2f2; border: 1px solid #fecaca; color: #991b1b;">
-											<div class="d-flex justify-content-between align-items-center mb-1">
-												<strong style="font-size: 11.5px;">
-													<i class="fa fa-clock-o text-danger me-1"></i> Expired on {{ \Carbon\Carbon::parse($item->expires_at)->format('d M Y') }}
-												</strong>
-												<span class="badge bg-danger text-white" style="font-size: 10px;">Paused</span>
-											</div>
-											<div style="font-size: 11px; color: #7f1d1d; line-height: 1.3;">
-												Plan validity has ended. Renew now to reactivate ad reach & impressions.
-											</div>
-										</div>
+                                    @if($item->approval_status === 'Approved')
+                                        @if($isExpired)
+                                            <!-- EXPIRED STATE -->
+                                            <div class="p-2 mb-2 rounded" style="background: #fef2f2; border: 1px solid #fecaca; color: #991b1b;">
+                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                    <strong style="font-size: 11.5px;">
+                                                        <i class="fa fa-clock-o text-danger me-1"></i> Expired on {{ \Carbon\Carbon::parse($item->expires_at)->format('d M Y') }}
+                                                    </strong>
+                                                    <span class="badge bg-danger text-white" style="font-size: 10px;">Ended</span>
+                                                </div>
+                                                <div style="font-size: 11px; color: #7f1d1d; line-height: 1.3;">
+                                                    Validity ended. Renew now to resubmit ad poster for Instagram reach.
+                                                </div>
+                                            </div>
 
-										<button type="button" class="btn w-100 text-white fw-bold py-2 btn-subscribe-pkg" 
-											style="background: linear-gradient(135deg, #ea580c, #c2410c); border: none; border-radius: 8px; font-size: 13.5px; box-shadow: 0 4px 10px rgba(194, 65, 12, 0.25);"
-											data-id="{{ $item->id }}" 
-											data-amount="{{ $item->amount }}" 
-											data-impressions="{{ $item->impressions }}" 
-											data-clicks="{{ $item->clicks }}" 
-											data-duration="{{ $item->duration }}" 
-											data-action="renew"
-											data-platform="Instagram">
-											<i class="fa fa-refresh me-1"></i> Renew Package (RM {{ $item->amount }})
-										</button>
-									@else
-										<!-- ACTIVE SUBSCRIBED STATE -->
-										<div class="p-2 mb-2 rounded" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
-											<div class="d-flex justify-content-between align-items-center">
-												<div>
-													<small class="d-block text-muted" style="font-size: 10.5px;">CAMPAIGN STATUS</small>
-													<strong class="{{ $item->status == 1 ? 'text-success' : 'text-danger' }}" style="font-size: 12px;">
-														{{ $item->status == 1 ? '● Active & Running' : '○ Inactive / Paused' }}
-													</strong>
-												</div>
-												<label class="switch mb-0" title="Toggle active/pause">
-													<input type="checkbox" {{ $item->status == 1 ? 'checked' : '' }} class="status-toggle" data-id="{{ $item->id }}">
-													<div class="slider round">
-														<span class="on">Active</span>
-														<span class="off">Inactive</span>
-													</div>
-												</label>
-											</div>
-											<div class="text-muted mt-1 small d-flex justify-content-between align-items-center" style="font-size: 11px;">
-												<span>Valid until: <strong>{{ \Carbon\Carbon::parse($item->expires_at)->format('d M Y') }}</strong></span>
-												<span class="badge bg-success-subtle text-success border border-success-subtle">{{ $remainingDays }} days left</span>
-											</div>
-										</div>
+                                            <button type="button" class="btn w-100 text-white fw-bold py-2 btn-open-ad-modal" 
+                                                style="background: linear-gradient(135deg, #ea580c, #c2410c); border: none; border-radius: 8px; font-size: 13.5px;"
+                                                data-id="{{ $item->id }}" 
+                                                data-amount="{{ $item->amount }}" 
+                                                data-duration="{{ $item->duration }}" 
+                                                data-title="{{ $item->title ?? '' }}"
+                                                data-subtitle="{{ $item->sub_title ?? '' }}"
+                                                data-link="{{ $item->link ?? '' }}"
+                                                data-action="renew">
+                                                <i class="fa fa-refresh me-1"></i> Renew Package (RM {{ $item->amount }})
+                                            </button>
+                                        @else
+                                            <!-- APPROVED & LIVE STATE -->
+                                            <div class="p-2 mb-2 rounded" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <small class="d-block text-muted" style="font-size: 10.5px;">INSTAGRAM CAMPAIGN</small>
+                                                        <strong class="{{ $item->status == 1 ? 'text-success' : 'text-danger' }}" style="font-size: 12px;">
+                                                            {{ $item->status == 1 ? '● Active & Running' : '○ Paused by You' }}
+                                                        </strong>
+                                                    </div>
+                                                    <label class="switch mb-0" title="Toggle active/pause">
+                                                        <input type="checkbox" {{ $item->status == 1 ? 'checked' : '' }} class="status-toggle" data-id="{{ $item->id }}">
+                                                        <div class="slider round">
+                                                            <span class="on">Active</span>
+                                                            <span class="off">Inactive</span>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                                <div class="text-muted mt-1 small d-flex justify-content-between align-items-center" style="font-size: 11px;">
+                                                    <span>Valid until: <strong>{{ \Carbon\Carbon::parse($item->expires_at)->format('d M Y') }}</strong></span>
+                                                    <span class="badge bg-success text-white">{{ $remainingDays }}d left</span>
+                                                </div>
+                                            </div>
 
-										<button type="button" class="btn btn-outline-success w-100 fw-bold py-2 btn-subscribe-pkg" 
-											style="border-radius: 8px; font-size: 13px;"
-											data-id="{{ $item->id }}" 
-											data-amount="{{ $item->amount }}" 
-											data-impressions="{{ $item->impressions }}" 
-											data-clicks="{{ $item->clicks }}" 
-											data-duration="{{ $item->duration }}" 
-											data-action="extend"
-											data-platform="Instagram">
-											<i class="fa fa-calendar-plus-o me-1"></i> Extend Package (+{{ $item->duration }}d)
-										</button>
-									@endif
+                                            <button type="button" class="btn btn-outline-success w-100 fw-bold py-2 btn-open-ad-modal" 
+                                                style="border-radius: 8px; font-size: 13px;"
+                                                data-id="{{ $item->id }}" 
+                                                data-amount="{{ $item->amount }}" 
+                                                data-duration="{{ $item->duration }}" 
+                                                data-title="{{ $item->title ?? '' }}"
+                                                data-subtitle="{{ $item->sub_title ?? '' }}"
+                                                data-link="{{ $item->link ?? '' }}"
+                                                data-action="extend">
+                                                <i class="fa fa-calendar-plus-o me-1"></i> Extend / Update Poster
+                                            </button>
+                                        @endif
+                                    @elseif($item->approval_status === 'Pending')
+                                        <!-- PENDING APPROVAL STATE -->
+                                        <div class="p-2 mb-2 rounded" style="background: #fffbeb; border: 1px solid #fde68a;">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <strong style="color: #b45309; font-size: 11.5px;">
+                                                    <i class="fa fa-hourglass-half me-1"></i> Awaiting Admin Review
+                                                </strong>
+                                                <span class="badge bg-warning text-dark" style="font-size: 10px;">Pending</span>
+                                            </div>
+                                            <div style="font-size: 11px; color: #92400e; line-height: 1.3;">
+                                                Payment of <strong>RM {{ $item->amount }}</strong> verified. Once Admin reviews your poster creative, it will be activated on Instagram.
+                                            </div>
+                                        </div>
+
+                                        <button type="button" class="btn btn-outline-secondary w-100 fw-bold py-2 btn-open-ad-modal" 
+                                            style="border-radius: 8px; font-size: 12.5px;"
+                                            data-id="{{ $item->id }}" 
+                                            data-amount="{{ $item->amount }}" 
+                                            data-duration="{{ $item->duration }}" 
+                                            data-title="{{ $item->title ?? '' }}"
+                                            data-subtitle="{{ $item->sub_title ?? '' }}"
+                                            data-link="{{ $item->link ?? '' }}"
+                                            data-action="update">
+                                            <i class="fa fa-pencil me-1"></i> Update Poster Details
+                                        </button>
+                                    @elseif($item->approval_status === 'Rejected')
+                                        <!-- REJECTED STATE -->
+                                        <div class="p-2 mb-2 rounded" style="background: #fef2f2; border: 1px solid #fecaca; color: #991b1b;">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <strong style="font-size: 11.5px;">
+                                                    <i class="fa fa-times-circle text-danger me-1"></i> Poster Rejected
+                                                </strong>
+                                                <span class="badge bg-danger text-white" style="font-size: 10px;">Rejected</span>
+                                            </div>
+                                            <div style="font-size: 11px; color: #7f1d1d; line-height: 1.3;">
+                                                {{ $item->admin_notes ?: 'Your poster creative was not accepted. Please re-upload a compliant poster image.' }}
+                                            </div>
+                                        </div>
+
+                                        <button type="button" class="btn btn-warning w-100 fw-bold py-2 btn-open-ad-modal" 
+                                            style="border-radius: 8px; font-size: 13px;"
+                                            data-id="{{ $item->id }}" 
+                                            data-amount="{{ $item->amount }}" 
+                                            data-duration="{{ $item->duration }}" 
+                                            data-title="{{ $item->title ?? '' }}"
+                                            data-subtitle="{{ $item->sub_title ?? '' }}"
+                                            data-link="{{ $item->link ?? '' }}"
+                                            data-action="reupload">
+                                            <i class="fa fa-upload me-1"></i> Re-upload & Resubmit
+                                        </button>
+                                    @endif
 								@else
 									<!-- AVAILABLE STATE -->
 									<div class="d-flex align-items-center justify-content-between text-muted mb-2 px-1" style="font-size: 12px;">
-										<span><i class="fa fa-lock text-secondary me-1"></i> Campaign Inactive</span>
+										<span><i class="fa fa-check-circle text-success me-1"></i> Slot Available</span>
 										<span class="text-muted">Instant activation</span>
 									</div>
 
-									<button type="button" class="btn w-100 text-white fw-bold py-2 btn-subscribe-pkg" 
+									<button type="button" class="btn w-100 text-white fw-bold py-2 btn-open-ad-modal" 
 										style="background-color: #183543; border-color: #183543; border-radius: 8px; font-size: 13.5px; box-shadow: 0 4px 10px rgba(24, 53, 67, 0.18);"
 										data-id="{{ $item->id }}" 
 										data-amount="{{ $item->amount }}" 
-										data-impressions="{{ $item->impressions }}" 
-										data-clicks="{{ $item->clicks }}" 
 										data-duration="{{ $item->duration }}" 
-										data-action="buy"
-										data-platform="Instagram">
-										<i class="fa fa-shopping-cart me-1"></i> Buy & Activate Package
+										data-title=""
+										data-subtitle=""
+										data-link="{{ !empty($vendorDetails->slug) ? url('/shops/' . $vendorDetails->slug) : '' }}"
+										data-action="buy">
+										<i class="fa fa-upload me-1"></i> Buy & Upload Poster
 									</button>
 								@endif
 							</div>
@@ -332,7 +440,7 @@
 				@empty
 					<div class="col-12">
 						<div class="card p-4 text-center" style="border-radius: 12px; border: 1px dashed #cbd5e1; max-width: 500px;">
-							<div style="font-size: 40px; color: #94a3b8;"><i class="fa fa-bullhorn"></i></div>
+							<div style="font-size: 40px; color: #94a3b8;"><i class="fa fa-instagram"></i></div>
 							<h6 class="mt-2 fw-bold text-dark">No Advertisement Packages Available</h6>
 							<p class="text-muted small mb-0">Packages created by the admin will appear here for you to subscribe and promote products.</p>
 						</div>
@@ -343,69 +451,111 @@
 		</div>
 		<!-- Container-fluid Ends-->		
 	</div>
+
+    <!-- Modal for Uploading Instagram Ad Poster & Razorpay Checkout -->
+    <div class="modal fade" id="adPosterModal" tabindex="-1" aria-labelledby="adPosterModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 520px;">
+            <div class="modal-content" style="border-radius: 18px; border: none; box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.3); overflow: hidden;">
+                <div class="modal-header px-4 py-3 text-white" style="background: #183543; border: none;">
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 34px; height: 34px; border-radius: 8px; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                            <i class="fa fa-instagram text-white"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold mb-0 text-white" id="adPosterModalLabel" style="font-size: 15px; letter-spacing: -0.2px;">
+                                Instagram Advertisement Poster
+                            </h5>
+                            <small class="text-white-50" style="font-size: 11px;">Upload poster creative and activate campaign via Razorpay</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="adPosterForm" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" id="modal_package_id" name="id">
+                    <input type="hidden" id="modal_action" name="action">
+                    
+                    <div class="modal-body p-4" style="background: #ffffff;">
+                        <!-- Package Price Summary Callout -->
+                        <div class="p-3 mb-3 rounded-3 d-flex justify-content-between align-items-center" style="background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #e2e8f0;">
+                            <div>
+                                <small class="text-muted d-block fw-bold text-uppercase" style="font-size: 10.5px; letter-spacing: 0.5px;">Payable Amount</small>
+                                <span class="fw-bold" style="color: #183543; font-size: 22px; letter-spacing: -0.5px;" id="modal_display_price">RM 0.00</span>
+                                <span class="text-muted small fw-medium" id="modal_display_duration">/ 0 Days</span>
+                            </div>
+                            <span class="badge px-3 py-2 rounded-pill" style="background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: #fff; font-size: 11px; font-weight: 600;">
+                                <i class="fa fa-instagram me-1"></i> Instagram Ad Slot
+                            </span>
+                        </div>
+
+                        <!-- Poster Image Upload -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 12.5px;">
+                                Advertisement Poster Creative <span class="text-danger">*</span>
+                            </label>
+                            <input type="file" class="form-control" id="poster_image_input" name="poster_image" accept="image/*" required style="border-radius: 8px; font-size: 12.5px;">
+                            <div class="form-text" style="font-size: 11px; color: #64748b;">Recommended: <strong>1080 × 1080 px</strong> (Square) or <strong>1080 × 1350 px</strong> (Portrait 4:5) for top Instagram engagement.</div>
+                            
+                            <!-- Image Preview Box -->
+                            <div id="imagePreviewBox" class="mt-2 text-center p-2 border rounded-3" style="display: none; background: #fafafa;">
+                                <img id="imagePreview" src="" alt="Preview" style="max-height: 130px; max-width: 100%; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.08);">
+                            </div>
+                        </div>
+
+                        <!-- Poster Title (Optional) -->
+                        <div class="mb-2">
+                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 12.5px;">
+                                Poster Headline / Title <small class="text-muted fw-normal">(Optional)</small>
+                            </label>
+                            <input type="text" class="form-control" id="modal_title" name="title" placeholder="e.g. MEGA SUMMER SALE 50% OFF" style="border-radius: 8px; font-size: 12.5px;">
+                        </div>
+
+                        <!-- Subtitle (Optional) -->
+                        <div class="mb-2">
+                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 12.5px;">
+                                Subtitle / Promo Tagline <small class="text-muted fw-normal">(Optional)</small>
+                            </label>
+                            <input type="text" class="form-control" id="modal_subtitle" name="sub_title" placeholder="e.g. Exclusive on our store this week" style="border-radius: 8px; font-size: 12.5px;">
+                        </div>
+
+                        <!-- Destination URL / Link -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 12.5px;">
+                                Target Link <small class="text-muted fw-normal">(Defaults to your shop page)</small>
+                            </label>
+                            <input type="text" class="form-control" id="modal_link" name="link" placeholder="e.g. {{ url('/shops/' . ($vendorDetails->slug ?? '')) }}" style="border-radius: 8px; font-size: 12.5px;">
+                        </div>
+
+                        <div class="p-2 rounded-3 mb-0 d-flex align-items-center gap-2" style="background: #f0fdf4; border: 1px solid #bbf7d0; font-size: 11px; color: #166534;">
+                            <i class="fa fa-shield text-success" style="font-size: 13px;"></i>
+                            <div>Request submitted to Admin upon payment. Once accepted, it publishes automatically!</div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer px-4 py-3 d-flex justify-content-between align-items-center" style="background: #f8fafc; border-top: 1px solid #eef2f6;">
+                        <button type="button" class="btn btn-outline-secondary px-3 py-2 rounded-3" data-bs-dismiss="modal" style="font-size: 13px;">Cancel</button>
+                        <button type="submit" id="btnProceedPayment" class="btn text-white fw-bold px-4 py-2 rounded-3" style="background: #183543; font-size: 13.5px; box-shadow: 0 4px 12px rgba(24,53,67,0.2);">
+                            <i class="fa fa-credit-card me-1"></i> Proceed to Pay Online
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<style>
-    .neat-checkout-modal {
-        border-radius: 20px !important;
-        box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.25) !important;
-        padding: 24px 26px !important;
-        border: 1px solid #e2e8f0 !important;
-        background: #ffffff !important;
-        max-width: 480px !important;
-        width: 94% !important;
-    }
-    .neat-checkout-modal .swal2-html-container {
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow: visible !important;
-    }
-    .neat-checkout-modal .swal2-actions {
-        margin-top: 18px !important;
-        gap: 12px !important;
-        width: 100% !important;
-        display: flex !important;
-    }
-    .neat-checkout-confirm-btn {
-        flex: 1 !important;
-        border-radius: 10px !important;
-        font-size: 14px !important;
-        font-weight: 600 !important;
-        padding: 12px 20px !important;
-        border: none !important;
-        box-shadow: 0 4px 14px rgba(24, 53, 67, 0.22) !important;
-        transition: all 0.2s ease !important;
-        cursor: pointer !important;
-    }
-    .neat-checkout-confirm-btn:hover {
-        transform: translateY(-1px) !important;
-        box-shadow: 0 6px 18px rgba(24, 53, 67, 0.3) !important;
-    }
-    .neat-checkout-cancel-btn {
-        border-radius: 10px !important;
-        font-size: 13.5px !important;
-        font-weight: 500 !important;
-        padding: 12px 18px !important;
-        background: #f1f5f9 !important;
-        color: #475569 !important;
-        border: 1px solid #cbd5e1 !important;
-        transition: all 0.2s ease !important;
-        cursor: pointer !important;
-    }
-    .neat-checkout-cancel-btn:hover {
-        background: #e2e8f0 !important;
-        color: #1e293b !important;
-    }
-</style>
 <script>
     const razorpayKey = "{{ $razorpayKey ?? config('services.razorpay.key') }}";
     const vendorName = "{{ $vendorDetails->shop_name ?? ($vendorDetails->owner_name ?? 'Oxygen Store') }}";
     const vendorEmail = "{{ $vendorDetails->email ?? '' }}";
     const vendorPhone = "{{ $vendorDetails->mobile_number1 ?? '' }}";
+
+    let currentPkgAmount = 0;
+    let currentPkgDuration = 0;
 
     // Live Search Filter for Packages
     document.getElementById('packageSearch')?.addEventListener('input', function(e) {
@@ -426,202 +576,185 @@
         });
     });
 
-    // Buy / Renew / Extend Instagram Advertisement Package with Razorpay
-    $(document).on('click', '.btn-subscribe-pkg', function(e) {
+    // Poster Image Preview handler
+    document.getElementById('poster_image_input')?.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                document.getElementById('imagePreview').src = evt.target.result;
+                document.getElementById('imagePreviewBox').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            document.getElementById('imagePreviewBox').style.display = 'none';
+        }
+    });
+
+    // Open Modal when clicking "Buy & Upload Poster", "Renew", or "Update"
+    $(document).on('click', '.btn-open-ad-modal', function(e) {
         e.preventDefault();
         const btn = $(this);
         const id = btn.data('id');
         const amount = btn.data('amount');
-        const impressions = btn.data('impressions');
-        const clicks = btn.data('clicks');
         const duration = btn.data('duration');
         const action = btn.data('action') || 'buy';
-        const platform = btn.data('platform') || 'Instagram';
-        const token = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '{{ csrf_token() }}';
+        const title = btn.data('title') || '';
+        const subtitle = btn.data('subtitle') || '';
+        const link = btn.data('link') || '';
 
-        let titleText = 'Subscribe to ' + platform + ' Package';
-        let subText = 'Activate sponsored ad reach on ' + platform + ' for your shop.';
-        let confirmBtnText = '<i class="fa fa-credit-card me-1"></i> Proceed to Pay Online (RM ' + amount + ')';
-        let confirmBtnColor = '#183543';
+        currentPkgAmount = amount;
+        currentPkgDuration = duration;
+
+        $('#modal_package_id').val(id);
+        $('#modal_action').val(action);
+        $('#modal_display_price').text('RM ' + amount);
+        $('#modal_display_duration').text('/ ' + duration + ' Days');
+        $('#modal_title').val(title);
+        $('#modal_subtitle').val(subtitle);
+        $('#modal_link').val(link || "{{ url('/shops/' . ($vendorDetails->slug ?? '')) }}");
+
+        $('#poster_image_input').val('');
+        $('#imagePreviewBox').hide();
 
         if (action === 'renew') {
-            titleText = 'Renew ' + platform + ' Package';
-            subText = 'Plan expired. Renew now to reactivate ad impressions for ' + duration + ' days.';
-            confirmBtnText = '<i class="fa fa-refresh me-1"></i> Pay & Renew Online (RM ' + amount + ')';
-            confirmBtnColor = '#ea580c';
+            $('#btnProceedPayment').html('<i class="fa fa-refresh me-1"></i> Pay & Renew Online (RM ' + amount + ')');
         } else if (action === 'extend') {
-            titleText = 'Extend ' + platform + ' Package';
-            subText = 'Add ' + duration + ' more days to extend your active campaign validity.';
-            confirmBtnText = '<i class="fa fa-calendar-plus-o me-1"></i> Pay & Extend Online (RM ' + amount + ')';
-            confirmBtnColor = '#10b981';
+            $('#btnProceedPayment').html('<i class="fa fa-calendar-plus-o me-1"></i> Pay & Extend Online (RM ' + amount + ')');
+        } else {
+            $('#btnProceedPayment').html('<i class="fa fa-credit-card me-1"></i> Proceed to Pay Online (RM ' + amount + ')');
         }
 
-        Swal.fire({
-            html: `
-                <div style="text-align: left; font-family: inherit;">
-                    <!-- Modal Header with Brand Icon -->
-                    <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #f1f5f9;">
-                        <div style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 24px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(220, 39, 67, 0.25);">
-                            <i class="fa fa-instagram"></i>
-                        </div>
-                        <div>
-                            <div style="font-size: 17px; font-weight: 700; color: #0f172a; line-height: 1.25;">${titleText}</div>
-                            <div style="font-size: 12.5px; color: #64748b; margin-top: 3px; line-height: 1.4;">${subText}</div>
-                        </div>
-                    </div>
-
-                    <!-- Pricing Summary Card -->
-                    <div style="background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 16px; margin-bottom: 16px;">
-                        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px dashed #cbd5e1;">
-                            <div>
-                                <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748b; letter-spacing: 0.5px;">Total Payable</span>
-                                <div style="font-size: 11px; color: #94a3b8;">Includes all taxes & delivery reach</div>
-                            </div>
-                            <div style="text-align: right;">
-                                <span style="font-size: 24px; font-weight: 800; color: #183543; letter-spacing: -0.5px;">RM ${amount}</span>
-                            </div>
-                        </div>
-                        
-                        <!-- 3 Feature Metrics -->
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center;">
-                            <div style="background: #ffffff; border-radius: 8px; padding: 9px 4px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
-                                <div style="font-size: 10.5px; color: #64748b; text-transform: uppercase; font-weight: 600; letter-spacing: 0.4px;">
-                                    <i class="fa fa-calendar-o text-primary" style="margin-right: 2px;"></i> Duration
-                                </div>
-                                <div style="font-size: 13.5px; font-weight: 700; color: #0f172a; margin-top: 3px;">${duration} Days</div>
-                            </div>
-                            <div style="background: #ffffff; border-radius: 8px; padding: 9px 4px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
-                                <div style="font-size: 10.5px; color: #64748b; text-transform: uppercase; font-weight: 600; letter-spacing: 0.4px;">
-                                    <i class="fa fa-eye text-info" style="margin-right: 2px;"></i> Impressions
-                                </div>
-                                <div style="font-size: 13.5px; font-weight: 700; color: #0f172a; margin-top: 3px;">${impressions}</div>
-                            </div>
-                            <div style="background: #ffffff; border-radius: 8px; padding: 9px 4px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
-                                <div style="font-size: 10.5px; color: #64748b; text-transform: uppercase; font-weight: 600; letter-spacing: 0.4px;">
-                                    <i class="fa fa-mouse-pointer text-success" style="margin-right: 2px;"></i> Est. Clicks
-                                </div>
-                                <div style="font-size: 13.5px; font-weight: 700; color: #0f172a; margin-top: 3px;">${clicks}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Security Trust Bar -->
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 11.5px; color: #334155; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; padding: 9px 12px;">
-                        <i class="fa fa-lock text-success" style="font-size: 14px;"></i>
-                        <span>Encrypted 256-bit instant checkout powered by <strong>Razorpay</strong></span>
-                    </div>
-                </div>
-            `,
-            showCancelButton: true,
-            confirmButtonText: confirmBtnText,
-            cancelButtonText: 'Cancel',
-            confirmButtonColor: confirmBtnColor,
-            customClass: {
-                popup: 'neat-checkout-modal',
-                confirmButton: 'neat-checkout-confirm-btn',
-                cancelButton: 'neat-checkout-cancel-btn'
-            },
-            buttonsStyling: false
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Open Razorpay Checkout Modal
-                const amountInPaise = Math.round(parseFloat(amount) * 100);
-
-                const rzpOptions = {
-                    key: razorpayKey,
-                    amount: amountInPaise,
-                    currency: "INR",
-                    name: vendorName,
-                    description: platform + " Ad Package (RM " + amount + " - " + duration + " Days)",
-                    webview_intent: /iPhone|iPad|iPod|Android/i.test(navigator.userAgent),
-                    handler: function (response) {
-                        // Payment successful - send to backend for verification & plan activation
-                        Swal.fire({
-                            title: 'Verifying Payment...',
-                            html: 'Please wait while we activate your advertisement package.',
-                            allowOutsideClick: false,
-                            didOpen: () => {
-                                Swal.showLoading();
-                            }
-                        });
-
-                        $.ajax({
-                            url: "{{ route('vendorinstagram.subscribe') }}",
-                            type: "POST",
-                            data: {
-                                _token: token,
-                                id: id,
-                                razorpay_payment_id: response.razorpay_payment_id,
-                                razorpay_order_id: response.razorpay_order_id || '',
-                                razorpay_signature: response.razorpay_signature || ''
-                            },
-                            dataType: "json",
-                            success: function(res) {
-                                if (res.status == 200) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Payment Successful!',
-                                        html: '<p class="mb-2">' + res.message + '</p><div class="p-2 bg-light rounded text-muted small">Payment ID: <strong class="text-dark">' + response.razorpay_payment_id + '</strong></div>',
-                                        confirmButtonText: 'Great, Continue',
-                                        confirmButtonColor: '#183543'
-                                    }).then(() => {
-                                        window.location.reload();
-                                    });
-                                } else {
-                                    Swal.fire('Error', res.message || 'Payment received but failed to activate.', 'error');
-                                }
-                            },
-                            error: function(err) {
-                                console.error('Subscription error:', err);
-                                Swal.fire({
-                                    title: 'Activation Error',
-                                    html: 'Payment was captured (Payment ID: <strong>' + response.razorpay_payment_id + '</strong>), but package activation failed. Please contact support.',
-                                    icon: 'warning',
-                                    confirmButtonColor: '#183543'
-                                });
-                            }
-                        });
-                    },
-                    prefill: {
-                        name: "{{ $vendorDetails->owner_name ?? '' }}",
-                        email: vendorEmail,
-                        contact: vendorPhone
-                    },
-                    theme: {
-                        color: "#183543"
-                    },
-                    modal: {
-                        ondismiss: function() {
-                            Swal.fire({
-                                title: 'Payment Cancelled',
-                                text: 'You cancelled the payment. No charges were made.',
-                                icon: 'info',
-                                confirmButtonColor: '#183543'
-                            });
-                        }
-                    }
-                };
-
-                try {
-                    const rzp = new Razorpay(rzpOptions);
-                    rzp.on('payment.failed', function (resp) {
-                        Swal.fire({
-                            title: 'Payment Failed',
-                            html: 'Reason: ' + (resp.error.description || 'Transaction failed') + '<br><small class="text-muted">Code: ' + (resp.error.code || '') + '</small>',
-                            icon: 'error',
-                            confirmButtonColor: '#183543'
-                        });
-                    });
-                    rzp.open();
-                } catch (e) {
-                    console.error('Razorpay load error:', e);
-                    Swal.fire('Payment Gateway Error', 'Could not open Razorpay checkout. Please check internet connection or API keys.', 'error');
-                }
-            }
-        });
+        const modal = new bootstrap.Modal(document.getElementById('adPosterModal'));
+        modal.show();
     });
 
-    // Use event delegation for status toggle
+    // Handle Form Submit: Validate & Trigger Razorpay Checkout
+    $('#adPosterForm').on('submit', function(e) {
+        e.preventDefault();
+
+        const form = document.getElementById('adPosterForm');
+        const formData = new FormData(form);
+        const posterFile = document.getElementById('poster_image_input').files[0];
+        const action = $('#modal_action').val();
+
+        if (!posterFile && action !== 'update') {
+            Swal.fire('Poster Required', 'Please select an advertisement poster creative to proceed.', 'warning');
+            return;
+        }
+
+        let linkVal = $('#modal_link').val().trim();
+        if (!linkVal) {
+            linkVal = "{{ url('/shops/' . ($vendorDetails->slug ?? '')) }}";
+            $('#modal_link').val(linkVal);
+        }
+        formData.set('link', linkVal);
+
+        // Hide upload modal before showing Razorpay
+        const adModalEl = document.getElementById('adPosterModal');
+        const modalInstance = bootstrap.Modal.getInstance(adModalEl);
+        if (modalInstance) modalInstance.hide();
+
+        const amountInPaise = Math.round(parseFloat(currentPkgAmount) * 100);
+
+        const rzpOptions = {
+            key: razorpayKey,
+            amount: amountInPaise,
+            currency: "INR",
+            name: vendorName,
+            description: "Instagram Ad Poster (RM " + currentPkgAmount + " - " + currentPkgDuration + " Days)",
+            webview_intent: /iPhone|iPad|iPod|Android/i.test(navigator.userAgent),
+            handler: function (response) {
+                // Payment verified! Append Razorpay payment tokens to formData
+                formData.append('razorpay_payment_id', response.razorpay_payment_id);
+                formData.append('razorpay_order_id', response.razorpay_order_id || '');
+                formData.append('razorpay_signature', response.razorpay_signature || '');
+
+                Swal.fire({
+                    title: 'Submitting Poster Request...',
+                    html: 'Verifying payment and transferring your poster creative to Admin for approval.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                $.ajax({
+                    url: "{{ route('vendorinstagram.subscribe') }}",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: "json",
+                    success: function(res) {
+                        if (res.status == 200) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Request Submitted to Admin!',
+                                html: `
+                                    <p class="mb-2">${res.message}</p>
+                                    <div class="p-2 bg-light rounded text-muted small">
+                                        Payment ID: <strong class="text-dark">${response.razorpay_payment_id}</strong>
+                                    </div>
+                                `,
+                                confirmButtonText: 'Understood, Continue',
+                                confirmButtonColor: '#183543'
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire('Error', res.message || 'Payment received but failed to process poster.', 'error');
+                        }
+                    },
+                    error: function(err) {
+                        console.error('Submission error:', err);
+                        Swal.fire({
+                            title: 'Submission Notice',
+                            html: 'Payment was captured (ID: <strong>' + response.razorpay_payment_id + '</strong>), but poster upload failed. Please contact support.',
+                            icon: 'warning',
+                            confirmButtonColor: '#183543'
+                        });
+                    }
+                });
+            },
+            prefill: {
+                name: "{{ $vendorDetails->owner_name ?? '' }}",
+                email: vendorEmail,
+                contact: vendorPhone
+            },
+            theme: {
+                color: "#183543"
+            },
+            modal: {
+                ondismiss: function() {
+                    Swal.fire({
+                        title: 'Payment Cancelled',
+                        text: 'You cancelled the payment. No charges were made.',
+                        icon: 'info',
+                        confirmButtonColor: '#183543'
+                    });
+                }
+            }
+        };
+
+        try {
+            const rzp = new Razorpay(rzpOptions);
+            rzp.on('payment.failed', function (resp) {
+                Swal.fire({
+                    title: 'Payment Failed',
+                    html: 'Reason: ' + (resp.error.description || 'Transaction failed') + '<br><small class="text-muted">Code: ' + (resp.error.code || '') + '</small>',
+                    icon: 'error',
+                    confirmButtonColor: '#183543'
+                });
+            });
+            rzp.open();
+        } catch (err) {
+            console.error('Razorpay load error:', err);
+            Swal.fire('Payment Gateway Error', 'Could not open Razorpay checkout.', 'error');
+        }
+    });
+
+    // Toggle status (Active / Inactive) for approved poster
     document.body.addEventListener('change', function(e) {
         if (e.target.classList.contains('status-toggle')) {
             const status = e.target.checked ? 1 : 0;
@@ -654,7 +787,7 @@
                                 statusText.textContent = '● Active & Running';
                             } else {
                                 statusText.className = 'text-danger';
-                                statusText.textContent = '○ Inactive / Paused';
+                                statusText.textContent = '○ Paused by You';
                             }
                         }
                     }

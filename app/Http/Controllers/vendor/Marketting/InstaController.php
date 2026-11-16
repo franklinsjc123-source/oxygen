@@ -39,6 +39,7 @@ class InstaController extends Controller
                 $newInsta->duration      = $master->duration;
                 $newInsta->status        = 0;
                 $newInsta->is_subscribed = 0;
+                $newInsta->approval_status = 'Pending';
                 $newInsta->image         = $master->image ?? '-';
                 $newInsta->text          = $master->text ?? '-';
                 $newInsta->save();
@@ -212,6 +213,9 @@ class InstaController extends Controller
         if (!$instagrame->is_subscribed && $request->status == 1) {
             return response()->json(['error' => 'Please buy / subscribe to this package first to activate it.'], 400);
         }
+        if ($instagrame->approval_status !== 'Approved') {
+            return response()->json(['error' => 'Your Instagram ad is currently ' . ($instagrame->approval_status ?? 'Pending') . ' and awaiting Admin review.'], 400);
+        }
         if ($instagrame->expires_at && \Carbon\Carbon::parse($instagrame->expires_at)->isPast() && $request->status == 1) {
             return response()->json(['error' => 'This package has expired. Please renew the package to reactivate campaign.'], 400);
         }
@@ -233,24 +237,35 @@ class InstaController extends Controller
             return response()->json(['status' => 400, 'message' => 'Online payment verification is required to activate this package.'], 400);
         }
 
-        $durationDays = (int) $insta->duration > 0 ? (int) $insta->duration : 30;
-        $isRenew = ($insta->is_subscribed == 1);
-        $isExpired = ($insta->expires_at && \Carbon\Carbon::parse($insta->expires_at)->isPast());
-
-        if ($isRenew && !$isExpired && $insta->expires_at) {
-            $newExpiresAt = \Carbon\Carbon::parse($insta->expires_at)->addDays($durationDays);
-            $msg = "Payment verified! Instagram Advertisement Package extended for another {$durationDays} days.";
-        } else {
-            $newExpiresAt = now()->addDays($durationDays);
-            $msg = ($isRenew && $isExpired)
-                ? "Payment verified! Instagram Advertisement Package renewed and reactivated for {$durationDays} days."
-                : "Payment verified! Instagram Advertisement Package subscribed and activated successfully!";
+        // Handle Poster Image upload
+        $imageName = $insta->poster_image ?? ($insta->image && $insta->image !== '-' ? $insta->image : null);
+        if ($request->hasFile('poster_image')) {
+            $file = $request->file('poster_image');
+            $ext = $file->getClientOriginalExtension();
+            $imageName = 'insta_poster_' . $vendor_id . '_' . time() . '.' . $ext;
+            
+            $dest = public_path('assets/images/Marketting/instagram');
+            if (!file_exists($dest)) {
+                mkdir($dest, 0755, true);
+            }
+            $file->move($dest, $imageName);
         }
 
+        if (empty($imageName) && $request->input('action') !== 'update') {
+            return response()->json(['status' => 400, 'message' => 'Please upload an advertisement poster image.'], 400);
+        }
+
+        $insta->title = $request->input('title', $insta->title);
+        $insta->sub_title = $request->input('sub_title', $insta->sub_title);
+        $insta->link = $request->input('link', $insta->link);
+        if (!empty($imageName)) {
+            $insta->poster_image = $imageName;
+            $insta->image = $imageName;
+        }
         $insta->is_subscribed = 1;
-        $insta->status = 1;
+        $insta->approval_status = 'Pending'; // Awaiting admin approval
+        $insta->status = 0; // Not live until admin approves
         $insta->subscribed_at = now();
-        $insta->expires_at = $newExpiresAt;
         $insta->razorpay_payment_id = $razorpayPaymentId;
         $insta->razorpay_order_id = $request->input('razorpay_order_id', '');
         $insta->razorpay_signature = $request->input('razorpay_signature', '');
@@ -270,12 +285,13 @@ class InstaController extends Controller
                 'payment_data' => json_encode([
                     'vendor_id' => $vendor_id,
                     'package_id' => $insta->id,
-                    'platform' => 'Instagram',
+                    'platform' => 'Instagram Poster Ad',
+                    'poster_image' => $imageName,
                     'amount' => $insta->amount,
                     'impressions' => $insta->impressions,
                     'clicks' => $insta->clicks,
                     'duration' => $insta->duration,
-                    'type' => 'ad_package'
+                    'type' => 'instagram_ad'
                 ]),
                 'created_at' => now(),
                 'updated_at' => now()
@@ -286,10 +302,9 @@ class InstaController extends Controller
 
         return response()->json([
             'status' => 200,
-            'message' => $msg,
+            'message' => 'Payment verified! Your Instagram advertisement poster has been submitted to Admin for approval. Once accepted by Admin, it will be published.',
             'payment_id' => $razorpayPaymentId,
-            'subscribed_at' => $insta->subscribed_at ? $insta->subscribed_at->format('Y-m-d H:i') : null,
-            'expires_at' => $insta->expires_at ? $insta->expires_at->format('Y-m-d H:i') : null
+            'approval_status' => 'Pending'
         ]);
     }
 }
