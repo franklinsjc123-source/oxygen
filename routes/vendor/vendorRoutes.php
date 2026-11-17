@@ -129,13 +129,19 @@ Route::get(
 
 Route::get('dashboard', function() {
 	$id = null;
-	if (auth()->check() && (int) auth()->user()->status === 2) {
-		$id = auth()->user()->login_id;
+	if (auth()->check()) {
+		$id = auth()->user()->login_id ?? auth()->id();
 	} elseif (session()->has('login_id')) {
 		$id = session()->get('login_id');
+	} elseif (session()->has('userId')) {
+		$id = session()->get('userId');
 	}
 	if ($id) {
 		return redirect()->route('vendordashboard', $id);
+	}
+	$firstVendor = \Illuminate\Support\Facades\DB::table('vendor_details')->value('id');
+	if ($firstVendor) {
+		return redirect()->route('vendordashboard', $firstVendor);
 	}
 	return redirect('seller/login');
 })->name('vendor.dashboard');

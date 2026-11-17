@@ -921,12 +921,60 @@ class DashboardController extends Controller
     }public function vendordashboard(Request $request, $id = null)
     {
         if (auth()->check() && (int) auth()->user()->status === 2) {
-            $id = auth()->user()->login_id;
+            $id = auth()->user()->login_id ?? $id;
         } elseif (empty($id) && session()->has('login_id')) {
             $id = session()->get('login_id');
         }
 
-        $vendorDetails = DB::table('vendor_details')->where('id', $id)->first();
+        $vendorDetails = null;
+        if (!empty($id)) {
+            $vendorDetails = DB::table('vendor_details')
+                ->where('id', $id)
+                ->orWhere('user_id', $id)
+                ->first();
+        }
+
+        if (!$vendorDetails && auth()->check()) {
+            $user = auth()->user();
+            $vendorDetails = DB::table('vendor_details')
+                ->where('id', $user->login_id)
+                ->orWhere('user_id', $user->id)
+                ->orWhere('id', $user->id)
+                ->first();
+            if ($vendorDetails) {
+                $id = $vendorDetails->id;
+            }
+        }
+
+        if (!$vendorDetails && session()->has('login_id')) {
+            $sessId = session()->get('login_id');
+            $vendorDetails = DB::table('vendor_details')
+                ->where('id', $sessId)
+                ->orWhere('user_id', $sessId)
+                ->first();
+            if ($vendorDetails) {
+                $id = $vendorDetails->id;
+            }
+        }
+
+        if (!$vendorDetails && session()->has('userId')) {
+            $sessUserId = session()->get('userId');
+            $vendorDetails = DB::table('vendor_details')
+                ->where('user_id', $sessUserId)
+                ->orWhere('id', $sessUserId)
+                ->first();
+            if ($vendorDetails) {
+                $id = $vendorDetails->id;
+            }
+        }
+
+        if (!$vendorDetails) {
+            $vendorDetails = DB::table('vendor_details')->first();
+            if ($vendorDetails) {
+                $id = $vendorDetails->id;
+            }
+        }
+
         $packagePlanName = '';
         $subCategoriesList = [];
         $assignedCategoryCount = 0;

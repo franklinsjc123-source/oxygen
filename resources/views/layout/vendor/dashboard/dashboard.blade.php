@@ -691,7 +691,7 @@
                         
                         <div class="shop-profile-status-badge">
                             @php
-                                $isExpired = !empty($vendorDetails->expired_date) && strtotime(date('Y-m-d', strtotime($vendorDetails->expired_date))) < strtotime(date('Y-m-d'));
+                                $isExpired = (!empty($vendorDetails) && !empty($vendorDetails->expired_date)) && strtotime(date('Y-m-d', strtotime($vendorDetails->expired_date))) < strtotime(date('Y-m-d'));
                                 $isActive = !$isExpired && (int)($vendorDetails->status ?? 1) === 1;
                                 $btnBgColor = $isActive ? 'rgba(46, 204, 113, 0.25)' : 'rgba(231, 76, 60, 0.25)';
                                 $btnColor = $isActive ? '#2ecc71' : '#e74c3c';
@@ -772,7 +772,7 @@
                                         <strong style="font-size: 14px; color: #183543; margin-left: 4px;">{{ $packagePlanName }}</strong>
                                     </div>
                                     <div style="font-size: 13px; color: #23495c; font-weight: 500; border-left: 1px solid #b3d1df; padding-left: 12px;">
-                                        Expires: {{ $vendorDetails->expired_date ? date('d M Y', strtotime($vendorDetails->expired_date)) : '31st Dec 2023' }}
+                                        Expires: {{ (!empty($vendorDetails) && !empty($vendorDetails->expired_date)) ? date('d M Y', strtotime($vendorDetails->expired_date)) : '31st Dec 2023' }}
                                     </div>
                                 </div>
                                 <a href="javascript:void(0)" onclick="openRenewalModal()" style="background-color: #183543; color: #ffffff; padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; text-decoration: none; transition: all 0.2s; box-shadow: 0 2px 4px rgba(24, 53, 67, 0.15);" onmouseover="this.style.backgroundColor='#23495c';" onmouseout="this.style.backgroundColor='#183543';">

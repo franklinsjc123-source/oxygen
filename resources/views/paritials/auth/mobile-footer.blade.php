@@ -5,6 +5,11 @@
 
     $isStaff = request()->is('*staff*');
     $isLoggedIn = session()->has('login_id') || session()->has('userId') || auth()->check();
+    $isAuthPage = request()->is('*login*') || request()->is('*register*') || request()->is('*forgot*') || request()->is('*reset*') || request()->is('*portal-selection*');
+
+    if (!$isLoggedIn || $isAuthPage) {
+        return;
+    }
 
     // 1. Home URL
     if ($isStaff) {

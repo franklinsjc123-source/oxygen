@@ -182,10 +182,17 @@
 
     @yield('contents')
 
-    @if(request()->is('*seller*') || request()->is('*vendor*'))
-        @include('paritials.vendorauth.mobile-footer')
-    @elseif(request()->is('*admin*') || request()->is('*staff*'))
-        @include('paritials.auth.mobile-footer')
+    @php
+        $isUserLoggedIn = auth()->check() || session()->has('login_id') || session()->has('userId');
+        $isAuthPage = request()->is('*login*') || request()->is('*register*') || request()->is('*forgot*') || request()->is('*reset*') || request()->is('*portal-selection*');
+    @endphp
+
+    @if($isUserLoggedIn && !$isAuthPage)
+        @if(request()->is('*seller*') || request()->is('*vendor*'))
+            @include('paritials.vendorauth.mobile-footer')
+        @elseif(request()->is('*admin*') || request()->is('*staff*'))
+            @include('paritials.auth.mobile-footer')
+        @endif
     @endif
 @include('paritials.auth.footer-js')
 @include('paritials.auth.js')

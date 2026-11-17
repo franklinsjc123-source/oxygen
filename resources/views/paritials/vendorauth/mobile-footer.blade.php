@@ -1,10 +1,18 @@
 @php
     $sellerId = session()->get('login_id') ?? (auth()->check() ? auth()->user()->login_id : null);
-    if (!$sellerId && auth()->check() && (int)auth()->user()->status === 2) {
+    if (!$sellerId && auth()->check()) {
         $sellerId = auth()->user()->login_id ?? auth()->id();
     }
-    $homeUrl = $sellerId ? route('vendordashboard', $sellerId) : url('seller/login');
-    $isLoggedIn = !empty($sellerId);
+    if (!$sellerId && session()->has('userId')) {
+        $sellerId = session()->get('userId');
+    }
+    $homeUrl = $sellerId ? route('vendordashboard', $sellerId) : url('seller/dashboard');
+    $isLoggedIn = !empty($sellerId) || auth()->check();
+    $isAuthPage = request()->is('*login*') || request()->is('*register*') || request()->is('*forgot*') || request()->is('*reset*') || request()->is('*portal-selection*');
+
+    if (!$isLoggedIn || $isAuthPage) {
+        return;
+    }
 
     $isHome = request()->is('*dashboard*') || (request()->is('seller') && !request()->is('seller/*')) || (request()->is('vendor') && !request()->is('vendor/*'));
     $isProducts = (request()->is('*product*') || request()->is('*vendorproduct*')) && !request()->is('*order*');
