@@ -9,7 +9,13 @@
     <meta name="keywords" content="">
     <meta name="author" content="pixelstrap">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    @if(request()->is('*seller*') || request()->is('*vendor*'))
+    @php
+        $isSellerPortal = request()->is('seller', 'seller/*', 'vendor', 'vendor/*');
+        $isAdminPortal = request()->is('admin', 'admin/*');
+        $isStaffPortal = request()->is('staff', 'staff/*');
+        $portalUserStatus = auth()->check() ? (int) auth()->user()->status : (int) session()->get('status');
+    @endphp
+    @if($isSellerPortal || ($portalUserStatus === 2 && !$isAdminPortal && !$isStaffPortal))
     <link rel="icon" href="{{ asset('assets/images/favicon/sell_fevicon.png') }}" type="image/png">
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon/sell_fevicon.png') }}" type="image/png">
     @else
@@ -184,14 +190,24 @@
 
     @php
         $isUserLoggedIn = auth()->check() || session()->has('login_id') || session()->has('userId');
-        $isAuthPage = request()->is('*login*') || request()->is('*register*') || request()->is('*forgot*') || request()->is('*reset*') || request()->is('*portal-selection*');
+        $isAuthPage = request()->is('login', '*/login', 'register', '*/register', 'forgot*', '*/forgot*', 'reset*', '*/reset*', 'portal-selection', '*/portal-selection');
+        $portalUserStatus = auth()->check() ? (int) auth()->user()->status : (int) session()->get('status');
+        $isAdminPath = request()->is('admin', 'admin/*');
+        $isStaffPath = request()->is('staff', 'staff/*');
+        $isSellerPath = request()->is('seller', 'seller/*', 'vendor', 'vendor/*');
     @endphp
 
     @if($isUserLoggedIn && !$isAuthPage)
-        @if(request()->is('*seller*') || request()->is('*vendor*'))
-            @include('paritials.vendorauth.mobile-footer')
-        @elseif(request()->is('*admin*') || request()->is('*staff*'))
+        {{-- Priority 1: Exact URL prefix matching (Admin & Staff MUST take precedence over substring matches) --}}
+        @if($isAdminPath || $isStaffPath)
             @include('paritials.auth.mobile-footer')
+        @elseif($isSellerPath)
+            @include('paritials.vendorauth.mobile-footer')
+        {{-- Priority 2: User role fallback if route prefix is neutral --}}
+        @elseif($portalUserStatus === 1 || $portalUserStatus === 3)
+            @include('paritials.auth.mobile-footer')
+        @elseif($portalUserStatus === 2)
+            @include('paritials.vendorauth.mobile-footer')
         @endif
     @endif
 @include('paritials.auth.footer-js')

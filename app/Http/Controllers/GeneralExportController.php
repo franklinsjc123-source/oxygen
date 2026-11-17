@@ -122,7 +122,7 @@ class GeneralExportController extends Controller
     public function exportSubCategory()
     {
         $login_id = session()->get('login_id');
-        $vendor_id = (session()->has('vendor_id') || session()->get('role') == 'vendor' || (session()->has('login_id') && (request()->is('*seller*') || request()->is('*vendor*')))) ? $login_id : null;
+        $vendor_id = (session()->has('vendor_id') || session()->get('role') == 'vendor' || (session()->has('login_id') && (request()->is('seller', 'seller/*', 'vendor', 'vendor/*')))) ? $login_id : null;
         return Excel::download(new CategorySubExport($vendor_id), 'subcategory_report.xlsx');
     }
 }

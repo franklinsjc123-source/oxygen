@@ -1,14 +1,23 @@
 @php
+    // Strict Portal Isolation: NEVER render Seller footer on Admin or Staff pages or for Admin/Staff accounts
+    $isAdminRoute = request()->is('admin', 'admin/*');
+    $isStaffRoute = request()->is('staff', 'staff/*');
+    $portalUserStatus = auth()->check() ? (int) auth()->user()->status : (int) session()->get('status');
+
+    if ($isAdminRoute || $isStaffRoute || $portalUserStatus === 1 || $portalUserStatus === 3) {
+        return;
+    }
+
     $sellerId = session()->get('login_id') ?? (auth()->check() ? auth()->user()->login_id : null);
-    if (!$sellerId && auth()->check()) {
+    if (!$sellerId && auth()->check() && (int)auth()->user()->status === 2) {
         $sellerId = auth()->user()->login_id ?? auth()->id();
     }
-    if (!$sellerId && session()->has('userId')) {
+    if (!$sellerId && session()->has('userId') && (int)session()->get('status') === 2) {
         $sellerId = session()->get('userId');
     }
     $homeUrl = $sellerId ? route('vendordashboard', $sellerId) : url('seller/dashboard');
-    $isLoggedIn = !empty($sellerId) || auth()->check();
-    $isAuthPage = request()->is('*login*') || request()->is('*register*') || request()->is('*forgot*') || request()->is('*reset*') || request()->is('*portal-selection*');
+    $isLoggedIn = !empty($sellerId) || (auth()->check() && (int)auth()->user()->status === 2);
+    $isAuthPage = request()->is('login', '*/login', 'register', '*/register', 'forgot*', '*/forgot*', 'reset*', '*/reset*', 'portal-selection', '*/portal-selection');
 
     if (!$isLoggedIn || $isAuthPage) {
         return;

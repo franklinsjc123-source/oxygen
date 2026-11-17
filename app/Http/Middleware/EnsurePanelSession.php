@@ -87,6 +87,30 @@ class EnsurePanelSession
             return redirect('/');
         }
 
+        // Cross-Portal Access Isolation:
+        // Ensure authenticated users cannot access or bleed into unauthorized portals
+        $authUser = auth()->user();
+        $userStatus = (int) ($authUser->status ?? session()->get('status'));
+
+        // Admin (status = 1): Strictly restricted to Admin portal
+        if ($userStatus === 1) {
+            if ($request->is('seller', 'seller/*', 'vendor', 'vendor/*', 'staff', 'staff/*')) {
+                return redirect()->route('admindashboard', $authUser->admin_id ?? null);
+            }
+        }
+        // Seller (status = 2): Strictly restricted to Seller portal
+        elseif ($userStatus === 2) {
+            if ($request->is('admin', 'admin/*', 'staff', 'staff/*')) {
+                return redirect()->route('vendordashboard', $authUser->login_id ?? session()->get('login_id'));
+            }
+        }
+        // Staff (status = 3): Strictly restricted to Staff portal
+        elseif ($userStatus === 3) {
+            if ($request->is('admin', 'admin/*', 'seller', 'seller/*', 'vendor', 'vendor/*')) {
+                return redirect()->route('staffdashboard', $authUser->login_id ?? session()->get('login_id'));
+            }
+        }
+
         return $next($request);
     }
 }

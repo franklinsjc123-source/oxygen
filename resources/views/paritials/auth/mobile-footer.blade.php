@@ -3,9 +3,17 @@
     use Illuminate\Support\Facades\Schema;
     use Illuminate\Support\Facades\DB;
 
-    $isStaff = request()->is('*staff*');
+    // Strict Portal Isolation: NEVER render Admin/Staff footer on Seller pages or for Seller accounts
+    $isSellerRoute = request()->is('seller', 'seller/*', 'vendor', 'vendor/*');
+    $portalUserStatus = auth()->check() ? (int) auth()->user()->status : (int) session()->get('status');
+
+    if ($isSellerRoute || $portalUserStatus === 2) {
+        return;
+    }
+
+    $isStaff = request()->is('staff', 'staff/*') || (auth()->check() && (int)auth()->user()->status === 3);
     $isLoggedIn = session()->has('login_id') || session()->has('userId') || auth()->check();
-    $isAuthPage = request()->is('*login*') || request()->is('*register*') || request()->is('*forgot*') || request()->is('*reset*') || request()->is('*portal-selection*');
+    $isAuthPage = request()->is('login', '*/login', 'register', '*/register', 'forgot*', '*/forgot*', 'reset*', '*/reset*', 'portal-selection', '*/portal-selection');
 
     if (!$isLoggedIn || $isAuthPage) {
         return;
