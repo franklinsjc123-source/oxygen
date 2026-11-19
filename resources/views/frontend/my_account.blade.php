@@ -689,6 +689,7 @@
                                         data-state="{{ $address->customer_state }}"
                                         data-pincode="{{ $address->customer_pincode }}"
                                         data-email="{{ $address->customer_email }}"
+                                        data-default="{{ $address->is_default ? '1' : '0' }}"
                                         style="cursor:pointer;">
 
                                          <div class="default-checkbox">
@@ -1043,6 +1044,12 @@
         var pane = document.querySelector(target);
         if (!pane) return;
 
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, null, target);
+        } else {
+            window.location.hash = target;
+        }
+
         if (window.bootstrap && bootstrap.Tab) {
             var toggle = document.querySelector('[data-bs-toggle="tab"][href="' + target + '"]');
             if (toggle) {
@@ -1111,7 +1118,10 @@
         .then(data => {
             if (data.success) {
                 Swal.fire("Success!", "Default address updated", "success")
-                    .then(() => location.reload());
+                    .then(() => {
+                        window.location.hash = '#account-addresses';
+                        window.location.reload();
+                    });
             }
         });
     }
@@ -1144,7 +1154,11 @@
 
         // update title
         document.getElementById('address-title').innerText = 'Edit Shipping Address';
-        document.getElementById('deleteBtn').classList.remove('d-none');
+        if (card.dataset.default === '1') {
+            document.getElementById('deleteBtn').classList.add('d-none');
+        } else {
+            document.getElementById('deleteBtn').classList.remove('d-none');
+        }
     }
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -1306,6 +1320,17 @@
             return;
         }
 
+        const activeCard = document.querySelector('.address-card.active');
+        if (activeCard && activeCard.dataset.default === '1') {
+            Swal.fire({
+                title: "Cannot Delete!",
+                text: "Default address cannot be deleted. Please set another address as default first.",
+                icon: "warning",
+                button: "OK"
+            });
+            return;
+        }
+
         if (!confirm('Are you sure you want to delete this address?')) {
             return;
         }
@@ -1320,13 +1345,23 @@
         })
         .then(res => res.json())
         .then(data => {
+            if (!data.success) {
+                Swal.fire({
+                    title: "Cannot Delete!",
+                    text: data.message || "Default address cannot be deleted. Please set another address as default first.",
+                    icon: "warning",
+                    button: "OK"
+                });
+                return;
+            }
             Swal.fire({
                 title: "Success!",
                 text: "Address deleted successfully",
                 icon: "success",
                 button: "OK",
             }).then(() => {
-                location.reload(); // ✅ reload AFTER OK click
+                window.location.hash = '#account-addresses';
+                window.location.reload();
             });
         });
     });

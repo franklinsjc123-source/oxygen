@@ -315,7 +315,7 @@ class FrontendController extends Controller
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json(['success' => true, 'message' => 'Address updated successfully']);
             }
-            return redirect()->back()->with('success', 'Address updated  successfully');
+            return redirect('/myAccount#account-addresses')->with('success', 'Address updated successfully');
         } else {
             // ADD NEW
             $newAddr = Ecom_Customer_Shipping::create([
@@ -333,13 +333,29 @@ class FrontendController extends Controller
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json(['success' => true, 'message' => 'Address saved successfully', 'address' => $newAddr]);
             }
-            return redirect()->back()->with('success', 'Address saved successfully');
+            return redirect('/myAccount#account-addresses')->with('success', 'Address saved successfully');
         }
     }
 
     public function deleteShippingAddress(Request $request)
     {
-        Ecom_Customer_Shipping::where('id', $request->address_id)->delete();
+        $customerId = Session::get('customer_id');
+        $address = Ecom_Customer_Shipping::where('id', $request->address_id)
+            ->where('customer_id', $customerId)
+            ->first();
+
+        if (!$address) {
+            return response()->json(['success' => false, 'message' => 'Address not found.']);
+        }
+
+        if ($address->is_default) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Default address cannot be deleted. Please set another address as default first.'
+            ]);
+        }
+
+        $address->delete();
 
         return response()->json(['success' => true]);
     }
