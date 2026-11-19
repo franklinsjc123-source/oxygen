@@ -307,23 +307,32 @@ class FrontendController extends Controller
                     'customer_mobileno' => $request->customer_mobileno,
                     'customer_email' => $request->customer_email,
                     'customer_address' => $request->customer_address,
+                    'customer_city' => $request->customer_city ?? null,
                     'customer_state' => $request->customer_state,
                     'customer_pincode' => $request->customer_pincode,
                 ]);
 
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Address updated successfully']);
+            }
             return redirect()->back()->with('success', 'Address updated  successfully');
         } else {
             // ADD NEW
-            Ecom_Customer_Shipping::create([
+            $newAddr = Ecom_Customer_Shipping::create([
                 'customer_id' => $customerId,
                 'customer_firstname' => $request->customer_firstname,
                 'customer_mobileno' => $request->customer_mobileno,
                 'customer_email' => $request->customer_email,
                 'customer_address' => $request->customer_address,
+                'customer_city' => $request->customer_city ?? null,
                 'customer_state' => $request->customer_state,
                 'customer_pincode' => $request->customer_pincode,
+                'is_default' => Ecom_Customer_Shipping::where('customer_id', $customerId)->count() === 0 ? 1 : 0,
             ]);
 
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'Address saved successfully', 'address' => $newAddr]);
+            }
             return redirect()->back()->with('success', 'Address saved successfully');
         }
     }
@@ -2944,12 +2953,17 @@ class FrontendController extends Controller
         $checkoutSummary = $this->buildCheckoutSummary($records, true);
 
         $customer = null;
+        $shipping_addresses = collect();
         $customer_id = Session::get('customer_id');
         if ($customer_id) {
             $customer = Ecom_Customer_info::where('customer_id', $customer_id)->first();
+            $shipping_addresses = Ecom_Customer_Shipping::where('customer_id', $customer_id)
+                ->orderBy('is_default', 'desc')
+                ->orderBy('id', 'desc')
+                ->get();
         }
 
-        $response = response()->view('frontend.checkout', compact('count', 'records', 'total', 'customer', 'checkoutSummary'));
+        $response = response()->view('frontend.checkout', compact('count', 'records', 'total', 'customer', 'checkoutSummary', 'shipping_addresses'));
         return $this->attachCartCookies($response, $cookie, $cart);
     }
 

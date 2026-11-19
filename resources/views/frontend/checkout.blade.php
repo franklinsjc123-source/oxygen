@@ -404,49 +404,60 @@
      @endif
      @php
          $hasCustomer = session()->has('customer_id');
-         $hasAddress =
-             !empty($customer->customer_address ?? '') ||
-             !empty($customer->customer_mobileno ?? '') ||
-             !empty($customer->customer_email ?? '') ||
-             !empty($customer->customer_city ?? '') ||
-             !empty($customer->customer_state ?? '') ||
-             !empty($customer->customer_pincode ?? '');
-         $deliveryActionText = $hasCustomer && $hasAddress ? 'Change' : 'Add';
+         $shipping_addresses = $shipping_addresses ?? collect();
+         $defaultSavedAddress = $shipping_addresses->firstWhere('is_default', 1) ?? $shipping_addresses->first();
+
+         $initFirstName = $defaultSavedAddress->customer_firstname ?? ($customer->customer_firstname ?? '');
+         $initLastName = $customer->customer_lastname ?? '';
+         $initPhone = $defaultSavedAddress->customer_mobileno ?? ($customer->customer_mobileno ?? '');
+         $initEmail = $defaultSavedAddress->customer_email ?? ($customer->customer_email ?? '');
+         $initAddress = $defaultSavedAddress->customer_address ?? ($customer->customer_address ?? '');
+         $initCity = $defaultSavedAddress->customer_city ?? ($customer->customer_city ?? '');
+         $initState = $defaultSavedAddress->customer_state ?? (!empty($customer->customer_state) ? $customer->customer_state : 'Tamil Nadu');
+         $initPincode = $defaultSavedAddress->customer_pincode ?? ($customer->customer_pincode ?? '');
+         $initCountry = 'India';
+
+         $hasAddress = !empty($initAddress) && !empty($initPhone) && !empty($initPincode);
+         $deliveryActionText = $shipping_addresses->count() > 1 ? 'Change' : ($hasAddress ? 'Change' : 'Add');
      @endphp
      <form class="form checkout-form" action="{{ route('checkout_store') }}" method="post">
      @csrf
      <div class="row mb-9">
      <div class="col-lg-8 pr-lg-4 mb-4">
-     <div class="card mb-4" id="delivery-address">
-     <div class="card-header d-flex align-items-center justify-content-between">
-     <h4 class="mb-0">Delivery Address</h4>
-     <a href="javascript:void(0)" class="text-primary"
-     id="change-delivery-address">{{ $deliveryActionText }}</a>
+     <div class="card mb-4" id="delivery-address" style="border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.04);">
+     <div class="card-header d-flex align-items-center justify-content-between" style="background: #ffffff; border-bottom: 1px solid #f1f5f9; padding: 14px 20px;">
+     <h4 class="mb-0 font-weight-bold" style="font-size: 1.15rem; color: #0f172a;">
+         <i class="fas fa-map-marker-alt text-primary mr-2"></i> Delivery Address
+     </h4>
+     <a href="javascript:void(0)" class="btn btn-outline-primary btn-sm font-weight-bold"
+     id="change-delivery-address" style="border-radius: 6px; padding: 5px 14px;">
+         <i class="fas fa-exchange-alt mr-1"></i> {{ $deliveryActionText }}
+     </a>
      </div>
-     <div class="card-body">
-     <div class="mb-2 text-muted">Deliver to:</div>
-     <div id="delivery-summary" class="mb-3"></div>
+     <div class="card-body" style="padding: 16px 20px;">
+     <div class="mb-2 text-muted small text-uppercase font-weight-bold" style="letter-spacing: 0.5px;">Deliver to:</div>
+     <div id="delivery-summary" class="mb-2"></div>
 
      <input type="hidden" name="billing_first_name" id="billing_first_name"
-     value="{{ $customer->customer_firstname ?? '' }}">
+     value="{{ $initFirstName }}">
      <input type="hidden" name="billing_last_name" id="billing_last_name"
-     value="{{ $customer->customer_lastname ?? '' }}">
+     value="{{ $initLastName }}">
      <input type="hidden" name="billing_country" id="billing_country"
-     value="{{ $customer->customer_country ?? 'India' }}">
+     value="{{ $initCountry }}">
      <input type="hidden" name="billing_address" id="billing_address"
-     value="{{ $customer->customer_address ?? '' }}">
+     value="{{ $initAddress }}">
      <input type="hidden" name="street-address-2" id="billing_address_2"
-     value="{{ $customer->customer_address1 ?? '' }}">
+     value="">
      <input type="hidden" name="billing_city" id="billing_city"
-     value="{{ $customer->customer_city ?? '' }}">
+     value="{{ $initCity }}">
      <input type="hidden" name="billing_postcode" id="billing_postcode"
-     value="{{ $customer->customer_pincode ?? '' }}">
+     value="{{ $initPincode }}">
      <input type="hidden" name="billing_state" id="billing_state"
-     value="{{ $customer->customer_state ?? '' }}">
+     value="{{ $initState }}">
      <input type="hidden" name="billing_phone" id="billing_phone"
-     value="{{ $customer->customer_mobileno ?? '' }}">
+     value="{{ $initPhone }}">
      <input type="hidden" name="billing_email" id="billing_email"
-     value="{{ $customer->customer_email ?? '' }}">
+     value="{{ $initEmail }}">
      </div>
      </div>
 
@@ -662,105 +673,186 @@
      </div>
      </form>
 
-     <div id="deliveryModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"
-     style="display:none;">
-     <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-     <div class="modal-content">
-     <div class="modal-header d-flex align-items-center justify-content-between">
-     <h5 class="modal-title mb-0">Delivery Address</h5>
-     <button type="button" class="close m-0" aria-label="Close" id="close-delivery-modal">
-     <span aria-hidden="true">&times;</span>
+     <div id="deliveryModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="display:none;">
+     <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 620px; width: 95%;">
+     <div class="modal-content" style="border-radius: 16px; border: none; overflow: hidden; box-shadow: 0 20px 45px rgba(0,0,0,0.18);">
+     
+     <div class="modal-header d-flex align-items-center justify-content-between" style="padding: 16px 24px; border-bottom: 1px solid #f1f5f9; background: #ffffff;">
+     <h5 class="modal-title mb-0 font-weight-bold" id="deliveryModalTitle" style="color: #0f172a; font-size: 1.25rem;">
+         {{ $shipping_addresses->count() > 0 ? 'Select Delivery Address' : 'Add Delivery Address' }}
+     </h5>
+     <button type="button" class="close m-0" aria-label="Close" id="close-delivery-modal" style="font-size: 1.6rem; color: #94a3b8; background: transparent; border: none;">
+         <span aria-hidden="true">&times;</span>
      </button>
      </div>
-     <div class="modal-body">
-     <div class="row gutter-sm">
-     <div class="col-sm-6">
-     <div class="form-group">
-     <label>First name *</label>
-     <input type="text" class="form-control form-control-md"
-     id="modal_billing_first_name"
-     value="{{ $customer->customer_firstname ?? '' }}" required>
-     </div>
-     </div>
-     <div class="col-sm-6">
-     <div class="form-group">
-     <label>Last name *</label>
-     <input type="text" class="form-control form-control-md"
-     id="modal_billing_last_name"
-     value="{{ $customer->customer_lastname ?? '' }}" required>
-     </div>
-     </div>
+
+     <div class="modal-body" style="padding: 20px 24px; max-height: 72vh; overflow-y: auto; background: #fafbfc;">
+     
+     {{-- 1. SAVED ADDRESSES VIEW --}}
+     <div id="saved-addresses-view" style="{{ $shipping_addresses->count() > 0 ? '' : 'display: none;' }}">
+         <div class="d-flex justify-content-between align-items-center mb-3">
+             <span style="font-size: 0.85rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">
+                 Saved Addresses ({{ $shipping_addresses->count() }})
+             </span>
+             <button type="button" class="btn btn-primary btn-sm font-weight-bold" id="btn-show-add-address" style="border-radius: 6px; padding: 6px 14px; font-size: 0.82rem;">
+                 <i class="fas fa-plus mr-1"></i> Add New Address
+             </button>
+         </div>
+
+         <div class="saved-address-list">
+             @foreach($shipping_addresses as $addr)
+             @php
+                 $isThisSelected = ($defaultSavedAddress && $defaultSavedAddress->id == $addr->id);
+             @endphp
+             <div class="saved-address-card {{ $isThisSelected ? 'selected' : '' }}"
+                  id="addr-card-{{ $addr->id }}"
+                  data-id="{{ $addr->id }}"
+                  data-name="{{ $addr->customer_firstname }}"
+                  data-phone="{{ $addr->customer_mobileno }}"
+                  data-email="{{ $addr->customer_email }}"
+                  data-address="{{ $addr->customer_address }}"
+                  data-city="{{ $addr->customer_city ?? '' }}"
+                  data-state="{{ $addr->customer_state ?: 'Tamil Nadu' }}"
+                  data-pincode="{{ $addr->customer_pincode }}"
+                  data-country="India">
+                 <div class="d-flex align-items-start">
+                     <div class="addr-radio-wrap mr-3 pt-1">
+                         <input type="radio" name="selected_saved_address" value="{{ $addr->id }}" {{ $isThisSelected ? 'checked' : '' }} style="width: 18px; height: 18px; cursor: pointer; accent-color: #0088dd;">
+                     </div>
+                     <div class="addr-info flex-grow-1">
+                         <div class="d-flex align-items-center flex-wrap mb-1">
+                             <span class="addr-name font-weight-bold mr-2" style="font-size: 0.98rem; color: #0f172a;">{{ $addr->customer_firstname }}</span>
+                             <span class="addr-phone text-muted mr-2" style="font-size: 0.88rem; font-weight: 500;">{{ $addr->customer_mobileno }}</span>
+                             @if($addr->is_default)
+                                 <span class="badge badge-success text-white" style="font-size: 10px; padding: 2px 7px; border-radius: 4px; background: #10b981; font-weight: 600;">DEFAULT</span>
+                             @endif
+                         </div>
+                         <div class="addr-fulltext mb-1" style="color: #475569; font-size: 0.88rem; line-height: 1.45;">
+                             {{ $addr->customer_address }}@if($addr->customer_city), {{ $addr->customer_city }}@endif, {{ $addr->customer_state ?: 'Tamil Nadu' }} - <strong style="color: #1e293b;">{{ $addr->customer_pincode }}</strong>
+                         </div>
+                         @if($addr->customer_email)
+                             <div class="addr-email small text-muted mb-2">
+                                 <i class="far fa-envelope mr-1"></i> {{ $addr->customer_email }}
+                             </div>
+                         @endif
+                         <div class="addr-action-box mt-2">
+                             <button type="button" class="btn btn-primary btn-sm btn-deliver-here" style="font-weight: 700; border-radius: 6px; padding: 6px 16px; font-size: 0.8rem; letter-spacing: 0.3px;">
+                                 DELIVER TO THIS ADDRESS
+                             </button>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             @endforeach
+         </div>
      </div>
 
-     <div class="row gutter-sm">
-     <div class="col-md-6">
-     <div class="form-group">
-     <label>Country / Region *</label>
-     <div class="select-box">
-     <select id="modal_billing_country" class="form-control form-control-md">
-     <option value="India" {{ ($customer->customer_country ?? 'India') == 'India' ? 'selected' : '' }}>India</option>
-     </select>
+     {{-- 2. ADD NEW ADDRESS FORM VIEW --}}
+     <div id="add-address-view" style="{{ $shipping_addresses->count() > 0 ? 'display: none;' : '' }}">
+         <div class="d-flex justify-content-between align-items-center mb-3">
+             <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">
+                 Add New Delivery Address
+             </span>
+             @if($shipping_addresses->count() > 0)
+             <button type="button" class="btn btn-link btn-sm text-primary p-0" id="btn-back-to-saved" style="font-weight: 600; text-decoration: none;">
+                 <i class="fas fa-arrow-left mr-1"></i> Back to Saved Addresses
+             </button>
+             @endif
+         </div>
+
+         <div class="row gutter-sm">
+         <div class="col-sm-6">
+         <div class="form-group">
+         <label>First name *</label>
+         <input type="text" class="form-control form-control-md"
+         id="modal_billing_first_name"
+         value="" required>
+         </div>
+         </div>
+         <div class="col-sm-6">
+         <div class="form-group">
+         <label>Last name</label>
+         <input type="text" class="form-control form-control-md"
+         id="modal_billing_last_name"
+         value="">
+         </div>
+         </div>
+         </div>
+
+         <div class="row gutter-sm">
+         <div class="col-md-6">
+         <div class="form-group">
+         <label>Country / Region *</label>
+         <div class="select-box">
+         <select id="modal_billing_country" class="form-control form-control-md">
+         <option value="India" selected>India</option>
+         </select>
+         </div>
+         </div>
+         </div>
+         <div class="col-md-6">
+         <div class="form-group">
+         <label>Street address *</label>
+         <input type="text" placeholder="House number and street name" class="form-control form-control-md" id="modal_billing_address" value="" required>
+         <input type="hidden" id="modal_billing_address_2" value="">
+         </div>
+         </div>
+         </div>
+
+         <div class="row gutter-sm">
+         <div class="col-md-4">
+         <div class="form-group">
+         <label>Town / City *</label>
+         <input type="text" class="form-control form-control-md"
+         id="modal_billing_city" value="" required>
+         </div>
+         </div>
+         <div class="col-md-4">
+         <div class="form-group">
+         <label>State *</label>
+         <input type="text" class="form-control form-control-md"
+         id="modal_billing_state" value="Tamil Nadu" required>
+         </div>
+         </div>
+         <div class="col-md-4">
+         <div class="form-group">
+         <label>ZIP *</label>
+         <input type="text" class="form-control form-control-md"
+         id="modal_billing_postcode" value="" required>
+         </div>
+         </div>
+         </div>
+
+         <div class="row gutter-sm">
+         <div class="col-md-6">
+         <div class="form-group mb-3">
+         <label>Phone *</label>
+         <input type="text" class="form-control form-control-md"
+         id="modal_billing_phone" value="" required>
+         </div>
+         </div>
+         <div class="col-md-6">
+         <div class="form-group mb-3">
+         <label>Email address *</label>
+         <input type="email" class="form-control form-control-md" id="modal_billing_email"
+         value="" required>
+         </div>
+         </div>
+         </div>
+
+         <div class="mt-2 text-right">
+             <button type="button" class="btn btn-primary" id="save-delivery-address" style="border-radius: 6px; font-weight: 600; padding: 10px 24px;">
+                 Save & Deliver Here
+             </button>
+         </div>
      </div>
+
      </div>
+
+     <div class="modal-footer" style="padding: 12px 24px; border-top: 1px solid #f1f5f9; background: #ffffff;">
+     <button type="button" class="btn btn-outline-secondary" id="cancel-delivery-modal" style="border-radius: 6px; font-weight: 600;">Close</button>
      </div>
-     <div class="col-md-6">
-     <div class="form-group">
-     <label>Street address *</label>
-     <input type="text" placeholder="House number and street name" class="form-control form-control-md" id="modal_billing_address" value="{{ $customer->customer_address ?? '' }}" required>
-     <input type="hidden" id="modal_billing_address_2" value="{{ $customer->customer_address1 ?? '' }}">
-     </div>
-     </div>
-     </div>
-     <div class="row gutter-sm">
-     <div class="col-md-4">
-     <div class="form-group">
-     <label>Town / City *</label>
-     <input type="text" class="form-control form-control-md"
-     id="modal_billing_city" value="{{ $customer->customer_city ?? '' }}"
-     required>
-     </div>
-     </div>
-     <div class="col-md-4">
-     <div class="form-group">
-     <label>State *</label>
-     <input type="text" class="form-control form-control-md"
-     id="modal_billing_state" value="{{ $customer->customer_state ?? '' }}"
-     required>
-     </div>
-     </div>
-     <div class="col-md-4">
-     <div class="form-group">
-     <label>ZIP *</label>
-     <input type="text" class="form-control form-control-md"
-     id="modal_billing_postcode"
-     value="{{ $customer->customer_pincode ?? '' }}" required>
-     </div>
-     </div>
-     </div>
-     <div class="row gutter-sm">
-     <div class="col-md-6">
-     <div class="form-group mb-0">
-     <label>Phone *</label>
-     <input type="text" class="form-control form-control-md"
-     id="modal_billing_phone"
-     value="{{ $customer->customer_mobileno ?? '' }}" required>
-     </div>
-     </div>
-     <div class="col-md-6">
-     <div class="form-group mb-0">
-     <label>Email address *</label>
-     <input type="email" class="form-control form-control-md" id="modal_billing_email"
-     value="{{ $customer->customer_email ?? '' }}" required>
-     </div>
-     </div>
-     </div>
-     </div>
-     <div class="modal-footer">
-     <button type="button" class="btn btn-outline-secondary"
-     id="cancel-delivery-modal">Cancel</button>
-     <button type="button" class="btn btn-dark" id="save-delivery-address">Save
-     Address</button>
-     </div>
+
      </div>
      </div>
      </div>
@@ -862,14 +954,15 @@
          margin-bottom: 20px;
      }
 
-     #deliveryModal .form-group label {
+     #deliveryModal .form-group label,
+     #deliveryModal label {
          font-weight: 600;
-         font-size: 0.9rem;
-         color: #64748b;
+         font-size: 0.85rem;
+         color: #2b3445 !important;
          margin-bottom: 8px;
          display: block;
          text-transform: uppercase;
-         letter-spacing: 0.7px;
+         letter-spacing: 0.5px;
      }
 
      #deliveryModal .form-control {
@@ -877,7 +970,8 @@
          border-radius: 8px;
          padding: 12px 14px;
          font-size: 0.95rem;
-         color: #334155;
+         color: #1e293b;
+         font-weight: 500;
          transition: all 0.2s ease;
          background-color: #ffffff;
      }
@@ -895,10 +989,55 @@
          height: 46px !important;
      }
 
+     /* Saved Address Cards - Flipkart / Modern E-commerce UI */
+     .saved-address-card {
+         border: 1.5px solid #e2e8f0;
+         border-radius: 12px;
+         padding: 16px 18px;
+         margin-bottom: 12px;
+         cursor: pointer;
+         background: #ffffff;
+         transition: all 0.2s ease;
+         position: relative;
+     }
+     .saved-address-card:hover {
+         border-color: #93c5fd;
+         background: #f8fafc;
+     }
+     .saved-address-card.selected {
+         border-color: #0088dd;
+         background: #f0f9ff;
+         box-shadow: 0 4px 14px rgba(0, 136, 221, 0.12);
+     }
+     .saved-address-card .btn-deliver-here {
+         display: none;
+     }
+     .saved-address-card.selected .btn-deliver-here {
+         display: inline-block;
+     }
+     .saved-address-card input[type="radio"] {
+         width: 18px;
+         height: 18px;
+         cursor: pointer;
+         accent-color: #0088dd;
+     }
+     .saved-address-list {
+         max-height: 52vh;
+         overflow-y: auto;
+         padding-right: 4px;
+     }
+     .saved-address-list::-webkit-scrollbar {
+         width: 6px;
+     }
+     .saved-address-list::-webkit-scrollbar-thumb {
+         background: #cbd5e1;
+         border-radius: 4px;
+     }
+
      /* Action Buttons */
      #deliveryModal .modal-footer .btn {
          border-radius: 8px;
-         padding: 12px 28px;
+         padding: 10px 24px;
          font-size: 0.95rem;
          font-weight: 600;
          transition: all 0.2s;
@@ -917,30 +1056,24 @@
          color: #0f172a;
          border-color: #cbd5e1;
      }
-
-     #deliveryModal .modal-footer .btn-dark {
-         background: linear-gradient(135deg, #0088dd 0%, #006bb3 100%);
-         border: none;
-         color: #ffffff;
-         box-shadow: 0 4px 12px rgba(0, 136, 221, 0.3);
-     }
-
-     #deliveryModal .modal-footer .btn-dark:hover {
-         transform: translateY(-2px);
-         box-shadow: 0 6px 16px rgba(0, 136, 221, 0.4);
-     }
      </style>
 
      <script>
          (function() {
              var changeBtn = document.getElementById('change-delivery-address');
              var modal = document.getElementById('deliveryModal');
-             var saveBtn = document.getElementById('save-delivery-address');
+             var modalTitle = document.getElementById('deliveryModalTitle');
              var closeBtn = document.getElementById('close-delivery-modal');
              var cancelBtn = document.getElementById('cancel-delivery-modal');
              var summary = document.getElementById('delivery-summary');
              var form = document.querySelector('.checkout-form');
-             var placeOrderBtn = form ? form.querySelector('button[type="submit"]') : null;
+             var backdrop = document.getElementById('deliveryModalBackdrop');
+
+             var savedView = document.getElementById('saved-addresses-view');
+             var addView = document.getElementById('add-address-view');
+             var btnShowAdd = document.getElementById('btn-show-add-address');
+             var btnBackToSaved = document.getElementById('btn-back-to-saved');
+             var saveBtn = document.getElementById('save-delivery-address');
 
              var isLoggedIn = {{ session()->has('customer_id') ? 'true' : 'false' }};
              var storageKey = 'oxy_delivery_address';
@@ -974,63 +1107,99 @@
              function hasAddress() {
                  return !!(
                      fields.firstName.value &&
-                     fields.lastName.value &&
                      fields.address.value &&
-                     fields.city.value &&
                      fields.postcode.value &&
-                     fields.state.value &&
-                     fields.phone.value &&
-                     fields.email.value
+                     fields.phone.value
                  );
-             }
-
-             function syncToModal() {
-                 modalFields.firstName.value = fields.firstName.value || '';
-                 modalFields.lastName.value = fields.lastName.value || '';
-                 modalFields.country.value = fields.country.value || 'India';
-                 modalFields.address.value = fields.address.value || '';
-                 modalFields.address2.value = fields.address2.value || '';
-                 modalFields.city.value = fields.city.value || '';
-                 modalFields.postcode.value = fields.postcode.value || '';
-                 modalFields.state.value = fields.state.value || '';
-                 modalFields.phone.value = fields.phone.value || '';
-                 modalFields.email.value = fields.email.value || '';
              }
 
              function renderSummary() {
                  if (!summary) return;
                  if (!hasAddress()) {
-                     summary.innerHTML = '<span class="text-muted">No delivery address added.</span>';
+                     summary.innerHTML = '<span class="text-muted">No delivery address selected. Click Add / Change to choose an address.</span>';
                      return;
                  }
 
-                 var name = (fields.firstName.value + ' ' + fields.lastName.value).trim();
+                 var name = (fields.firstName.value + (fields.lastName.value ? ' ' + fields.lastName.value : '')).trim();
                  var addressLine = fields.address.value;
-                 var address2 = fields.address2.value ? ', ' + fields.address2.value : '';
-                 var cityLine = fields.city.value + ', ' + fields.state.value + ' ' + fields.postcode.value;
-                 var phoneLine = 'Phone: ' + fields.phone.value;
-                 var emailLine = 'Email: ' + fields.email.value;
+                 var address2 = (fields.address2 && fields.address2.value) ? ', ' + fields.address2.value : '';
+                 var cityLine = (fields.city.value ? fields.city.value + ', ' : '') + fields.state.value + ' - ' + fields.postcode.value;
+                 var phoneLine = fields.phone.value;
+                 var emailLine = fields.email.value ? fields.email.value : '';
 
                  summary.innerHTML =
-                     '<div class="font-weight-bold">' + name + '</div>' +
-                     '<div>' + addressLine + address2 + '</div>' +
-                     '<div>' + cityLine + '</div>' +
-                     '<div>' + (fields.country.value || '') + '</div>' +
-                     '<div class="small text-muted">' + phoneLine + '</div>' +
-                     '<div class="small text-muted">' + emailLine + '</div>';
+                     '<div class="d-flex align-items-center mb-1">' +
+                         '<strong style="font-size: 1.05rem; color: #0f172a;" class="mr-2">' + name + '</strong>' +
+                         '<span class="badge badge-light text-dark font-weight-bold" style="border: 1px solid #cbd5e1; font-size: 0.8rem; padding: 3px 8px; border-radius: 4px;">' + phoneLine + '</span>' +
+                     '</div>' +
+                     '<div style="color: #475569; font-size: 0.92rem; line-height: 1.45;">' + addressLine + address2 + '</div>' +
+                     '<div style="color: #475569; font-size: 0.92rem; font-weight: 500;">' + cityLine + '</div>' +
+                     '<div style="color: #64748b; font-size: 0.88rem;">' + (fields.country.value || 'India') + '</div>' +
+                     (emailLine ? '<div class="small text-muted mt-1"><i class="far fa-envelope mr-1"></i> ' + emailLine + '</div>' : '');
              }
 
-             function syncFromModal() {
-                 fields.firstName.value = modalFields.firstName.value.trim();
-                 fields.lastName.value = modalFields.lastName.value.trim();
-                 fields.country.value = modalFields.country.value;
-                 fields.address.value = modalFields.address.value.trim();
-                 fields.address2.value = modalFields.address2.value.trim();
-                 fields.city.value = modalFields.city.value.trim();
-                 fields.postcode.value = modalFields.postcode.value.trim();
-                 fields.state.value = modalFields.state.value.trim();
-                 fields.phone.value = modalFields.phone.value.trim();
-                 fields.email.value = modalFields.email.value.trim();
+             function selectSavedCard(cardEl) {
+                 if (!cardEl) return;
+                 document.querySelectorAll('.saved-address-card').forEach(function(c) {
+                     c.classList.remove('selected');
+                     var r = c.querySelector('input[type="radio"]');
+                     if (r) r.checked = false;
+                 });
+                 cardEl.classList.add('selected');
+                 var radio = cardEl.querySelector('input[type="radio"]');
+                 if (radio) radio.checked = true;
+             }
+
+             function applyAddressData(data) {
+                 fields.firstName.value = data.name || '';
+                 fields.lastName.value = '';
+                 fields.phone.value = data.phone || '';
+                 fields.email.value = data.email || '';
+                 fields.address.value = data.address || '';
+                 fields.city.value = data.city || '';
+                 fields.state.value = data.state || 'Tamil Nadu';
+                 fields.postcode.value = data.pincode || '';
+                 fields.country.value = data.country || 'India';
+
+                 renderSummary();
+                 persistToStorage();
+                 closeModal();
+             }
+
+             // Click listeners on saved address cards
+             document.querySelectorAll('.saved-address-card').forEach(function(card) {
+                 card.addEventListener('click', function(e) {
+                     selectSavedCard(this);
+                     // If clicked "DELIVER TO THIS ADDRESS" button or double-clicked, apply immediately
+                     if (e.target.closest('.btn-deliver-here')) {
+                         e.stopPropagation();
+                         applyAddressData(this.dataset);
+                     }
+                 });
+             });
+
+             if (btnShowAdd) {
+                 btnShowAdd.addEventListener('click', function() {
+                     if (savedView) savedView.style.display = 'none';
+                     if (addView) addView.style.display = 'block';
+                     if (modalTitle) modalTitle.textContent = 'Add New Delivery Address';
+                     if (modalFields.firstName) modalFields.firstName.value = '';
+                     if (modalFields.lastName) modalFields.lastName.value = '';
+                     if (modalFields.address) modalFields.address.value = '';
+                     if (modalFields.city) modalFields.city.value = '';
+                     if (modalFields.state) modalFields.state.value = 'Tamil Nadu';
+                     if (modalFields.postcode) modalFields.postcode.value = '';
+                     if (modalFields.phone) modalFields.phone.value = '';
+                     if (modalFields.email) modalFields.email.value = '';
+                 });
+             }
+
+             if (btnBackToSaved) {
+                 btnBackToSaved.addEventListener('click', function() {
+                     if (addView) addView.style.display = 'none';
+                     if (savedView) savedView.style.display = 'block';
+                     if (modalTitle) modalTitle.textContent = 'Select Delivery Address';
+                 });
              }
 
              function persistToStorage() {
@@ -1048,9 +1217,7 @@
                  };
                  try {
                      localStorage.setItem(storageKey, JSON.stringify(payload));
-                 } catch (e) {
-                     // Ignore storage failures (privacy mode).
-                 }
+                 } catch (e) {}
              }
 
              function hydrateFromStorage() {
@@ -1065,46 +1232,31 @@
                      fields.address2.value = data.address2 || fields.address2.value;
                      fields.city.value = data.city || fields.city.value;
                      fields.postcode.value = data.postcode || fields.postcode.value;
-                     fields.state.value = data.state || fields.state.value;
+                     fields.state.value = data.state || fields.state.value || 'Tamil Nadu';
                      fields.phone.value = data.phone || fields.phone.value;
                      fields.email.value = data.email || fields.email.value;
-                 } catch (e) {
-                     // Ignore parse errors.
-                 }
-             }
-
-             function saveAddressToApi() {
-                 if (!isLoggedIn) return;
-                 var formData = new FormData();
-                 formData.append('customer_firstname', fields.firstName.value);
-                 formData.append('customer_mobileno', fields.phone.value);
-                 formData.append('customer_email', fields.email.value);
-                 formData.append('customer_address', fields.address.value);
-                 formData.append('customer_state', fields.state.value);
-                 formData.append('customer_pincode', fields.postcode.value);
-
-                 fetch("{{ route('save-shipping-address') }}", {
-                     method: 'POST',
-                     headers: {
-                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                     },
-                     body: formData
-                 }).catch(function() {
-                     // Silent fail; checkout will still save on place order.
-                 });
+                 } catch (e) {}
              }
 
              function openModal() {
                  if (!modal) return;
-                 if (!backdrop && modal) {
-                     backdrop = document.getElementById('deliveryModalBackdrop');
+                 if (!backdrop) backdrop = document.getElementById('deliveryModalBackdrop');
+                 
+                 // Show saved addresses view if cards exist, else add view
+                 var hasCards = document.querySelectorAll('.saved-address-card').length > 0;
+                 if (hasCards) {
+                     if (savedView) savedView.style.display = 'block';
+                     if (addView) addView.style.display = 'none';
+                     if (modalTitle) modalTitle.textContent = 'Select Delivery Address';
+                 } else {
+                     if (savedView) savedView.style.display = 'none';
+                     if (addView) addView.style.display = 'block';
+                     if (modalTitle) modalTitle.textContent = 'Add Delivery Address';
                  }
+
                  modal.style.display = 'block';
                  if (backdrop) backdrop.style.display = 'block';
-                 
-                 // Force reflow allowing the display change to register before the class addition
                  void modal.offsetWidth;
-                 
                  modal.classList.add('show');
                  document.body.classList.add('modal-open');
              }
@@ -1117,8 +1269,6 @@
                  document.body.classList.remove('modal-open');
              }
 
-             var backdrop = document.getElementById('deliveryModalBackdrop');
-
              if (changeBtn) {
                  changeBtn.addEventListener('click', function() {
                      if (!isLoggedIn) {
@@ -1127,49 +1277,71 @@
                          }
                          return;
                      }
-                     syncToModal();
                      openModal();
                  });
              }
 
              if (closeBtn) closeBtn.addEventListener('click', closeModal);
-             if (cancelBtn) cancelBtn.addEventListener('click', function() {
-                 syncToModal();
-                 closeModal();
-             });
+             if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
              if (backdrop) backdrop.addEventListener('click', closeModal);
 
-            if (saveBtn) {
-                saveBtn.addEventListener('click', function() {
-                    var requiredModalFields = [
-                        modalFields.firstName,
-                        modalFields.lastName,
-                        modalFields.address,
-                        modalFields.city,
-                        modalFields.postcode,
-                        modalFields.state,
-                        modalFields.phone,
-                        modalFields.email
-                    ];
+             // Save new address from modal form
+             if (saveBtn) {
+                 saveBtn.addEventListener('click', function() {
+                     var requiredModalFields = [
+                         modalFields.firstName,
+                         modalFields.address,
+                         modalFields.city,
+                         modalFields.postcode,
+                         modalFields.state,
+                         modalFields.phone,
+                         modalFields.email
+                     ];
 
-                    var invalid = false;
-                    requiredModalFields.forEach(function(field) {
-                        if (field && !field.checkValidity()) {
-                            field.reportValidity();
-                            invalid = true;
-                        }
-                    });
+                     var invalid = false;
+                     requiredModalFields.forEach(function(field) {
+                         if (field && !field.checkValidity()) {
+                             field.reportValidity();
+                             invalid = true;
+                         }
+                     });
 
-                    if (invalid) {
-                        return;
-                    }
+                     if (invalid) return;
 
-                    syncFromModal();
-                    persistToStorage();
-                    renderSummary();
-                    saveAddressToApi();
-                    closeModal();
-                });
+                     var newAddressData = {
+                         name: modalFields.firstName.value.trim() + (modalFields.lastName.value.trim() ? ' ' + modalFields.lastName.value.trim() : ''),
+                         phone: modalFields.phone.value.trim(),
+                         email: modalFields.email.value.trim(),
+                         address: modalFields.address.value.trim(),
+                         city: modalFields.city.value.trim(),
+                         state: modalFields.state.value.trim() || 'Tamil Nadu',
+                         pincode: modalFields.postcode.value.trim(),
+                         country: modalFields.country.value || 'India'
+                     };
+
+                     applyAddressData(newAddressData);
+
+                     // Save to backend API asynchronously
+                     if (isLoggedIn) {
+                         var formData = new FormData();
+                         formData.append('customer_firstname', newAddressData.name);
+                         formData.append('customer_mobileno', newAddressData.phone);
+                         formData.append('customer_email', newAddressData.email);
+                         formData.append('customer_address', newAddressData.address);
+                         formData.append('customer_city', newAddressData.city);
+                         formData.append('customer_state', newAddressData.state);
+                         formData.append('customer_pincode', newAddressData.pincode);
+
+                         fetch("{{ route('save-shipping-address') }}", {
+                             method: 'POST',
+                             headers: {
+                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                 'Accept': 'application/json'
+                             },
+                             body: formData
+                         }).catch(function() {});
+                     }
+                 });
              }
 
              if (form) {
@@ -1243,6 +1415,12 @@
                  });
              } else if (!hasAddress()) {
                  hydrateFromStorage();
+             }
+             if (!fields.state.value) {
+                 fields.state.value = 'Tamil Nadu';
+             }
+             if (!modalFields.state.value) {
+                 modalFields.state.value = 'Tamil Nadu';
              }
              renderSummary();
          })();
