@@ -294,6 +294,8 @@ class FrontendController extends Controller
     {
         $customerId = Session::get('customer_id');
 
+        $mobileno = $request->customer_mobileno ? substr(preg_replace('/\D/', '', $request->customer_mobileno), 0, 10) : null;
+
         if ($customerId && $request->customer_pincode) {
             Ecom_Customer_info::where('customer_id', $customerId)
                 ->update(['customer_pincode' => $request->customer_pincode]);
@@ -304,7 +306,7 @@ class FrontendController extends Controller
             Ecom_Customer_Shipping::where('id', $request->address_id)
                 ->update([
                     'customer_firstname' => $request->customer_firstname,
-                    'customer_mobileno' => $request->customer_mobileno,
+                    'customer_mobileno' => $mobileno,
                     'customer_email' => $request->customer_email,
                     'customer_address' => $request->customer_address,
                     'customer_city' => $request->customer_city ?? null,
@@ -321,7 +323,7 @@ class FrontendController extends Controller
             $newAddr = Ecom_Customer_Shipping::create([
                 'customer_id' => $customerId,
                 'customer_firstname' => $request->customer_firstname,
-                'customer_mobileno' => $request->customer_mobileno,
+                'customer_mobileno' => $mobileno,
                 'customer_email' => $request->customer_email,
                 'customer_address' => $request->customer_address,
                 'customer_city' => $request->customer_city ?? null,
@@ -3100,13 +3102,13 @@ class FrontendController extends Controller
     {
         $request->validate([
             'billing_first_name' => 'required',
-            'billing_last_name' => 'required',
+            'billing_last_name' => 'nullable',
             'billing_phone' => 'required',
             'billing_email' => 'required|email',
             'billing_address' => 'required',
-            'billing_city' => 'required',
+            'billing_city' => 'nullable',
             'billing_state' => 'required',
-            'billing_country' => 'required',
+            'billing_country' => 'nullable',
             'billing_postcode' => 'required',
         ]);
 
@@ -3165,8 +3167,8 @@ class FrontendController extends Controller
                 'customer_mobileno' => $request->billing_phone ?: ($customer->customer_mobileno ?? ''),
                 'customer_address' => $request->billing_address ?: ($customer->customer_address ?? ''),
                 'customer_address1' => $request->input('street-address-2', $request->billing_address) ?: ($customer->customer_address1 ?? ''),
-                'customer_city' => $request->billing_city ?: ($customer->customer_city ?? ''),
-                'customer_state' => $request->billing_state ?: ($customer->customer_state ?? ''),
+                'customer_city' => $request->billing_city ?: ($customer->customer_city ?? ($request->billing_state ?: 'Tamil Nadu')),
+                'customer_state' => $request->billing_state ?: ($customer->customer_state ?? 'Tamil Nadu'),
                 'customer_pincode' => $request->billing_postcode ?: ($customer->customer_pincode ?? ''),
             ];
 
@@ -3347,8 +3349,8 @@ class FrontendController extends Controller
             $legacyOrder->customer_mobileno = $request->billing_phone ?: ($customer->customer_mobileno ?? '');
             $legacyOrder->customer_address = $request->billing_address ?: ($customer->customer_address ?? '');
             $legacyOrder->customer_address1 = $request->input('street-address-2', $request->billing_address) ?: ($customer->customer_address1 ?? '');
-            $legacyOrder->customer_city = $request->billing_city ?: ($customer->customer_city ?? '');
-            $legacyOrder->customer_state = $request->billing_state ?: ($customer->customer_state ?? '');
+            $legacyOrder->customer_city = $request->billing_city ?: ($customer->customer_city ?? ($request->billing_state ?: 'Tamil Nadu'));
+            $legacyOrder->customer_state = $request->billing_state ?: ($customer->customer_state ?? 'Tamil Nadu');
             $legacyOrder->customer_pincode = $request->billing_postcode ?: ($customer->customer_pincode ?? '');
             $legacyOrder->payment_type = $request->payment_method ?? 'Cash On Delivery';
             $legacyOrder->discount_amount = (float) ($checkoutSummary['discount_total'] ?? 0);
@@ -3831,8 +3833,17 @@ class FrontendController extends Controller
         }
 
         $status = strtolower((string) ($invoice->status ?? 'pending'));
-        if (!in_array($status, ['pending', 'accept', 'accepted'], true)) {
-            return redirect()->back()->with('error', 'This order cannot be cancelled now.');
+        $orderRow = DB::table('ecom_order')
+            ->where('customer_id', $customerId)
+            ->whereRaw("FIND_IN_SET(?, invoice_ids)", [$invoiceId])
+            ->first();
+        $orderStatus = strtolower(trim((string) ($orderRow->status ?? '')));
+        $disallowedStatuses = ['dispatch', 'dispatched', 'shipped', 'shipping', 'ship', 'delivery', 'delivered', 'cancel', 'canceled', 'cancelled', 'return', 'returned', 'closed', 'completed'];
+
+        if (!in_array($status, ['pending', 'accept', 'accepted'], true)
+            || in_array($status, $disallowedStatuses, true)
+            || in_array($orderStatus, $disallowedStatuses, true)) {
+            return redirect()->back()->with('error', 'Dispatched or delivered orders cannot be cancelled.');
         }
 
         DB::table('ecom_invoice')
@@ -4046,6 +4057,7 @@ class FrontendController extends Controller
                     ->select(
                         'pd.id as detail_id',
                         'p.product_name',
+                        'p.product_image as main_product_image',
                         'pd.product_detail_image',
                         'pd.selling_price',
                         'pd.attributevalue1 as product_color',
@@ -4117,6 +4129,10 @@ class FrontendController extends Controller
                                 }
                             }
 
+                            if (empty($productImage) && !empty($detail->main_product_image)) {
+                                $productImage = (string) $detail->main_product_image;
+                            }
+
                             return (object) [
                                 'detail_id' => (int) $detailId,
                                 'product_name' => (string) ($detail->product_name ?? 'Product'),
@@ -4183,7 +4199,11 @@ class FrontendController extends Controller
                         }
                     }
 
-                    $isCancelAllowed = in_array($normalizedStatus, ['pending', 'accept', 'accepted'], true);
+                    $rawOrderStatus = strtolower(trim((string) ($order->status ?? '')));
+                    $disallowedStatuses = ['dispatch', 'dispatched', 'shipped', 'shipping', 'ship', 'delivery', 'delivered', 'cancel', 'canceled', 'cancelled', 'return', 'returned', 'closed', 'completed'];
+                    $isCancelAllowed = in_array($normalizedStatus, ['pending', 'accept', 'accepted'], true)
+                        && !in_array($normalizedStatus, $disallowedStatuses, true)
+                        && !in_array($rawOrderStatus, $disallowedStatuses, true);
                     $isDelivered = in_array($normalizedStatus, ['delivery', 'delivered'], true);
 
                     $maxReturnDays = 0;
@@ -4251,6 +4271,7 @@ class FrontendController extends Controller
                     'order_id' => (string) $order->order_id,
                     'order_date' => $order->created_at,
                     'order_status' => $derivedOrderStatus,
+                    'payment_type' => (string) ($order->payment_type ?? 'Cash On Delivery'),
                     'grand_total' => (float) ($order->total_amount ?? 0),
                     'invoice_details' => collect($invoiceDetails),
                 ];

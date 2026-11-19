@@ -33,62 +33,239 @@
             height: 65px;
             /* margin-top: 12px; */
     }
-    .order-summary-row {
-        cursor: pointer;
+    /* ─── MODERN ORDER CARDS (My Account) ─── */
+    .order-cards-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
     }
-    .order-details-row {
-        display: none;
-        background: #fafafa;
+    .modern-order-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease;
     }
-    .order-details-card {
-        border: 1px solid #e8e8e8;
-        border-radius: 8px;
-        padding: 12px;
-        margin-bottom: 12px;
-        background: #fff;
+    .modern-order-card:hover {
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+        border-color: #cbd5e1;
     }
-    .order-product-item {
+    .order-card-header {
+        background: #f8fafc;
+        border-bottom: 1px solid #f1f5f9;
+        padding: 14px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .order-header-left {
         display: flex;
         align-items: center;
-        gap: 10px;
-        margin-bottom: 10px;
-        padding-bottom: 10px;
-        border-bottom: 1px dashed #ececec;
+        gap: 14px;
+        flex-wrap: wrap;
     }
-    .order-product-item:last-child {
-        margin-bottom: 0;
-        padding-bottom: 0;
-        border-bottom: 0;
-    }
-    .order-product-thumb {
-        width: 58px;
-        height: 58px;
+    .order-id-badge {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #0f172a;
+        background: #e2e8f0;
+        padding: 4px 10px;
         border-radius: 6px;
+        letter-spacing: 0.3px;
+    }
+    .order-date-tag {
+        font-size: 13px;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .order-header-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+    .order-total-tag {
+        font-size: 13.5px;
+        color: #475569;
+    }
+    .order-total-tag strong {
+        font-size: 15.5px;
+        font-weight: 800;
+        color: #0f172a;
+    }
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 9999px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        white-space: nowrap;
+    }
+    .status-badge-pending {
+        background: #fff7ed;
+        color: #c2410c;
+        border: 1px solid #fed7aa;
+    }
+    .status-badge-confirmed {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+    }
+    .status-badge-dispatch {
+        background: #f5f3ff;
+        color: #6d28d9;
+        border: 1px solid #ddd6fe;
+    }
+    .status-badge-delivered {
+        background: #ecfdf5;
+        color: #047857;
+        border: 1px solid #a7f3d0;
+    }
+    .status-badge-cancelled {
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+    }
+    .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+    .order-card-body {
+        padding: 16px 20px;
+    }
+    .order-invoice-block {
+        padding: 4px 0;
+    }
+    .order-item-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 12px 0;
+        border-bottom: 1px dashed #f1f5f9;
+    }
+    .order-item-row:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    .order-item-row:first-child {
+        padding-top: 0;
+    }
+    .order-item-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex: 1;
+    }
+    .order-item-thumb {
+        width: 68px;
+        height: 68px;
+        border-radius: 8px;
         object-fit: cover;
-        background: #f0f0f0;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        flex-shrink: 0;
     }
-    #account-orders .account-orders-table {
-        width: 100%;
-        table-layout: fixed;
+    .order-item-info {
+        flex: 1;
     }
-    #account-orders .account-orders-table thead th,
-    #account-orders .account-orders-table tbody td {
-        text-align: left;
-        vertical-align: middle;
-        padding: 12px 10px;
+    .order-item-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 4px;
+        line-height: 1.3;
     }
-    #account-orders .account-orders-table thead th:last-child,
-    #account-orders .account-orders-table tbody td:last-child {
-        text-align: center;
+    .order-item-meta {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+        font-size: 12px;
+        margin-bottom: 2px;
     }
-    #account-orders .account-orders-table .order-details-row td {
-        text-align: left !important;
+    .meta-chip {
+        background: #f1f5f9;
+        color: #475569;
+        padding: 2px 8px;
+        border-radius: 5px;
+        font-size: 11.5px;
+        font-weight: 500;
     }
-    #account-orders .account-orders-table .order-id { width: 22%; }
-    #account-orders .account-orders-table .order-date { width: 20%; }
-    #account-orders .account-orders-table .order-status { width: 18%; }
-    #account-orders .account-orders-table .order-total { width: 20%; }
-    #account-orders .account-orders-table .order-actions { width: 20%; }
+    .order-item-price {
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f172a;
+        white-space: nowrap;
+    }
+    .order-card-footer {
+        padding: 12px 20px;
+        background: #fafafa;
+        border-top: 1px solid #f1f5f9;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .order-footer-meta {
+        font-size: 12.5px;
+        color: #64748b;
+    }
+    .order-footer-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    .order-footer-actions .btn {
+        font-size: 12px !important;
+        padding: 6px 14px !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-transform: none !important;
+        letter-spacing: 0 !important;
+    }
+    .order-footer-actions .btn-track {
+        background: #ffffff !important;
+        color: #0088dd !important;
+        border: 1px solid #0088dd !important;
+    }
+    .order-footer-actions .btn-track:hover {
+        background: #0088dd !important;
+        color: #ffffff !important;
+    }
+    .order-footer-actions .btn-invoice {
+        background: #1e293b !important;
+        color: #ffffff !important;
+        border: 1px solid #1e293b !important;
+    }
+    .order-footer-actions .btn-invoice:hover {
+        background: #0f172a !important;
+        color: #ffffff !important;
+    }
+    .order-footer-actions .btn-cancel {
+        background: #fff !important;
+        color: #dc2626 !important;
+        border: 1px solid #dc2626 !important;
+    }
+    .order-footer-actions .btn-cancel:hover {
+        background: #dc2626 !important;
+        color: #ffffff !important;
+    }
     .account-dashboard-grid {
         display: flex;
         flex-wrap: wrap;
@@ -136,6 +313,57 @@
     #profile-details-form label.error,
     #profile-details-form .error:not(.error-msg) {
         display: none !important;
+    }
+
+    #addressForm input.error,
+    #addressForm input:invalid,
+    #addressForm .form-control.error,
+    #addressForm .form-control:invalid,
+    #addressForm .form-control.fv-invalid,
+    #addressForm input.fv-invalid,
+    #addressForm textarea.fv-invalid,
+    .shipping-address .form-control.fv-invalid,
+    .shipping-address .form-control:invalid {
+        border-color: #eee !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    #addressForm .form-control:focus {
+        border-color: #336699 !important;
+        box-shadow: none !important;
+    }
+
+    #account-addresses .shipping-address .title {
+        margin-top: 0 !important;
+        margin-bottom: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+    }
+    #account-addresses .shipping-address .d-flex.mb-3 {
+        margin-top: 0 !important;
+        margin-bottom: 0.75rem !important;
+    }
+    #addressForm .form-control {
+        margin-bottom: 0.25rem !important;
+        padding: 0.6rem 0.8rem !important;
+        height: 40px !important;
+        font-size: 13px !important;
+    }
+    #addressForm label {
+        margin-bottom: 4px !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        color: #555 !important;
+    }
+    #addressForm .row > div {
+        margin-bottom: 0.6rem !important;
+    }
+    #addressForm .address-action-wrap {
+        margin-top: 8px !important;
+    }
+    #addressForm #submitBtn,
+    #addressForm #deleteBtn {
+        margin-top: 0 !important;
     }
 
     /* ─── MOBILE WISHLIST CARD LAYOUT (My Account) ─── */
@@ -477,151 +705,210 @@
                        </div>
 
                        <div class="tab-pane mb-4" id="account-orders">
-                           <div class="account-back-wrap mt-5" style="float:right" >
-                               <a  href="#account-dashboard" data-bs-toggle="tab" class="btn btn-outline btn-default btn-sm account-back-btn back-to-dashboard">Back </a>
-                           </div>
-                           <center><h3>Orders</h3></center>
-
-                           <div style="overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%;">
-                                <table class="shop-table account-orders-table mb-6">
-                                    <thead>
-                                        <tr>
-                                            <th class="order-id">Order</th>
-                                            <th class="order-date">Date</th>
-                                            <th class="order-status">Status</th>
-                                            <th class="order-total">Total</th>
-                                            <th class="order-actions">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                         @if($orderdata->count() > 0)
-                                             @foreach($orderdata as $order)
-                                                 <tr class="order-summary-row" onclick="toggleOrderDetails('{{ $order->id }}')">
-                                                     <td class="order-id">#{{ $order->order_id }}</td>
-                                                     <td class="order-date">{{ \Carbon\Carbon::parse($order->order_date)->format('d M Y') }}</td>
-                                                     <td class="order-status">{{ $order->order_status }}</td>
-                                                     <td class="order-total"><span class="order-price"><span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($order->grand_total, 2) }}</span></td>
-                                                     <td class="order-action">
-                                                         <a href="javascript:void(0)" class="btn btn-outline btn-default btn-block btn-sm btn-rounded">
-                                                             View Details
-                                                         </a>
-                                                         <a href="{{ url('invoice-pdf/'.$order->id) }}" class="btn btn-dark btn-block btn-sm btn-rounded mt-1" target="_blank">
-                                                             Download Invoice
-                                                         </a>
-                                                     </td>
-                                                 </tr>
-                                                 <tr id="order-details-{{ $order->id }}" class="order-details-row">
-                                                     <td colspan="5">
-                                                         @foreach($order->invoice_details as $invoice)
-                                                             <div class="order-details-card">
-                                                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                                                     <div>
-                                                                         <b>Invoice:</b> {{ $invoice->invoice_id }}<br>
-                                                                         <b>Status:</b> {{ $invoice->status }}<br>
-                                                                         <b>Qty:</b> {{ $invoice->line_qty ?? 1 }} |
-                                                                         <b>Tax:</b> <span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($invoice->tax_amount ?? 0, 2) }}
-                                                                     </div>
-                                                                     <div class="text-right">
-                                                                         <b>Amount:</b> <span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($invoice->line_amount, 2) }}
-                                                                         <div class="mt-1">
-                                                                             <a href="{{ url('invoice-pdf/'.$order->id) }}" class="btn btn-outline btn-dark btn-sm btn-rounded" target="_blank" style="padding: 2px 10px; font-size: 11px;">
-                                                                                 Download Invoice
-                                                                             </a>
-                                                                         </div>
-                                                                     </div>
-                                                                 </div>
-                                                                 @if(isset($invoice->products) && count($invoice->products) > 0)
-                                                                     @foreach($invoice->products as $product)
-                                                                         @php
-                                                                             $productImage = $product->product_image ?? '';
-                                                                             $productImageUrl = $productImage !== '' ? asset('assets/images/products/detail/' . $productImage) : asset('frontend/images/demos/demo1/products/1-1.jpg');
-                                                                         @endphp
-                                                                         <div class="order-product-item">
-                                                                             <img src="{{ $productImageUrl }}" alt="{{ $product->product_name }}" class="order-product-thumb">
-                                                                             <div>
-                                                                                 <div><b>{{ $product->product_name }}</b></div>
-                                                                                 @if(!empty($product->product_size) || !empty($product->product_color))
-                                                                                     <div>Size: {{ $product->product_size ?: '-' }} | Color: {{ $product->product_color ?: '-' }}</div>
-                                                                                 @endif
-                                                                                 <div>Price: <span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($product->product_price, 2) }}</div>
-                                                                             </div>
-                                                                         </div>
-                                                                     @endforeach
-                                                                 @endif
-                                                                 <div class="d-flex justify-content-end gap-2 mt-2">
-                                                                     @if(!empty($invoice->can_cancel) && strtolower($order->order_status) !== 'delivered')
-                                                                         <form method="POST" action="{{ route('my-account.invoice.cancel', $invoice->invoice_id) }}" onsubmit="return confirm('Cancel this order item?');">
-                                                                             @csrf
-                                                                             <button type="submit" class="btn btn-danger btn-sm btn-rounded" style="background-color: #d22e2e !important; color: #fff !important; border: 1px solid #d22e2e !important;">Cancel</button>
-                                                                         </form>
-                                                                     @endif
-                                                                     @if(!empty($invoice->can_return))
-                                                                         @php
-                                                                             $allowReturn = false;
-                                                                             $allowReplacement = false;
-                                                                             if (isset($invoice->products) && count($invoice->products) > 0) {
-                                                                                 foreach($invoice->products as $p) {
-                                                                                     $rr = (int)($p->return_replace ?? 0);
-                                                                                     if ($rr === 1 || $rr === 2) {
-                                                                                         $allowReturn = true;
-                                                                                     }
-                                                                                     if ($rr === 1 || $rr === 3) {
-                                                                                         $allowReplacement = true;
-                                                                                     }
-                                                                                 }
-                                                                             } else {
-                                                                                 $allowReturn = true;
-                                                                             }
-                                                                         @endphp
-     
-                                                                         @if($allowReturn)
-                                                                         <form id="return-form-{{ $invoice->invoice_id }}" method="POST" action="{{ route('my-account.invoice.return', $invoice->invoice_id) }}">
-                                                                             @csrf
-                                                                             <input type="hidden" name="request_type" value="Return">
-                                                                             <input type="hidden" name="reason" id="return-reason-{{ $invoice->invoice_id }}">
-                                                                             <button type="button" class="btn btn-outline btn-primary btn-sm btn-rounded mr-2" onclick="submitReturnRequest('{{ $invoice->invoice_id }}', 'Return')">Return</button>
-                                                                         </form>
-                                                                         @endif
-     
-                                                                         @if($allowReplacement)
-                                                                         <form id="replace-form-{{ $invoice->invoice_id }}" method="POST" action="{{ route('my-account.invoice.return', $invoice->invoice_id) }}">
-                                                                             @csrf
-                                                                             <input type="hidden" name="request_type" value="Replacement">
-                                                                             <input type="hidden" name="reason" id="replace-reason-{{ $invoice->invoice_id }}">
-                                                                             <button type="button" class="btn btn-outline btn-warning btn-sm btn-rounded" onclick="submitReturnRequest('{{ $invoice->invoice_id }}', 'Replacement')">Replacement</button>
-                                                                         </form>
-                                                                         @endif
-                                                                     @elseif(!empty($invoice->return_deadline))
-                                                                         <small class="text-muted align-self-center">Return till {{ $invoice->return_deadline }}</small>
-                                                                     @endif
-                                                                 </div>
-                                                             </div>
-                                                         @endforeach
-                                                         <div class="d-flex justify-content-end align-items-center gap-2 mt-3 pt-2" style="border-top: 1px dashed #e2e8f0;">
-                                                             <a href="{{ route('order.resend-email', $order->id) }}" class="btn btn-outline btn-default btn-rounded btn-sm mr-2" title="Resend order confirmation email">
-                                                                 <i class="fa fa-envelope mr-1"></i> Resend Email
-                                                             </a>
-                                                             <a href="{{ url('invoice-pdf/'.$order->id) }}" class="btn btn-dark btn-rounded btn-sm" target="_blank">
-                                                                 <i class="fa fa-file-pdf mr-1"></i> Download Invoice
-                                                             </a>
-                                                         </div>
-                                                     </td>
-                                                 </tr>
-                                             @endforeach
-                                         @else
-                                             <tr>
-                                                 <td colspan="5" class="text-center">No orders found</td>
-                                             </tr>
-                                         @endif
-                                     </tbody>
-                                </table>
+                            <div class="mb-4 pb-2" style="border-bottom: 1px solid #e2e8f0;">
+                                <h3 class="mb-0 font-weight-bold" style="font-size: 20px; color: #0f172a; text-transform: none;">My Orders</h3>
+                                <p class="text-muted mb-0" style="font-size: 13px;">View status, track shipments, and download invoices</p>
                             </div>
 
-                           <a href="{{ url('shops') }}" class="btn btn-dark btn-rounded btn-icon-right mt-3">Go
-                               Shop<i class="w-icon-long-arrow-right"></i></a>
-                       </div>
+                            @if($orderdata->count() > 0)
+                                <div class="order-cards-container">
+                                    @foreach($orderdata as $order)
+                                        @php
+                                            $statusText = $order->order_status ?? 'Pending';
+                                            $statusLower = strtolower(trim((string)$statusText));
+                                            
+                                            $badgeClass = 'status-badge-pending';
+                                            $dotColor = '#f97316';
+                                            $displayStatus = 'Pending';
 
-                       <div class="tab-pane" id="account-downloads">
+                                            if (in_array($statusLower, ['pending'], true)) {
+                                                $badgeClass = 'status-badge-pending';
+                                                $dotColor = '#f97316';
+                                                $displayStatus = 'Order Placed';
+                                            } elseif (in_array($statusLower, ['accept', 'accepted', 'confirmed'], true)) {
+                                                $badgeClass = 'status-badge-confirmed';
+                                                $dotColor = '#2563eb';
+                                                $displayStatus = 'Confirmed';
+                                            } elseif (in_array($statusLower, ['dispatch', 'dispatched', 'shipped', 'shipping'], true)) {
+                                                $badgeClass = 'status-badge-dispatch';
+                                                $dotColor = '#7c3aed';
+                                                $displayStatus = 'Dispatched';
+                                            } elseif (in_array($statusLower, ['delivered', 'delivery'], true)) {
+                                                $badgeClass = 'status-badge-delivered';
+                                                $dotColor = '#059669';
+                                                $displayStatus = 'Delivered';
+                                            } elseif (in_array($statusLower, ['cancel', 'cancelled', 'canceled', 'closed'], true)) {
+                                                $badgeClass = 'status-badge-cancelled';
+                                                $dotColor = '#dc2626';
+                                                $displayStatus = 'Cancelled';
+                                            } else {
+                                                $displayStatus = ucfirst($statusText);
+                                            }
+
+                                            $disallowedCancel = [
+                                                'dispatch', 'dispatched', 'shipped', 'shipping', 'ship',
+                                                'delivery', 'delivered',
+                                                'cancel', 'canceled', 'cancelled',
+                                                'return', 'returned', 'refund', 'refunded',
+                                                'closed', 'completed'
+                                            ];
+                                        @endphp
+
+                                        <div class="modern-order-card">
+                                            <!-- Order Header -->
+                                            <div class="order-card-header">
+                                                <div class="order-header-left">
+                                                    <span class="order-id-badge">#{{ $order->order_id }}</span>
+                                                    <span class="order-date-tag">
+                                                        <i class="w-icon-calendar mr-1"></i> {{ \Carbon\Carbon::parse($order->order_date)->format('d M Y') }}
+                                                    </span>
+                                                </div>
+                                                <div class="order-header-right">
+                                                    <span class="order-total-tag">
+                                                        Total: <strong><span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($order->grand_total, 2) }}</strong>
+                                                    </span>
+                                                    <span class="status-badge {{ $badgeClass }}">
+                                                        <span class="status-dot" style="background-color: {{ $dotColor }};"></span>
+                                                        {{ $displayStatus }}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <!-- Order Items -->
+                                            <div class="order-card-body">
+                                                @foreach($order->invoice_details as $invoice)
+                                                    @php
+                                                        $invStatusLower = strtolower(trim((string)($invoice->status ?? '')));
+                                                        $canCancelItem = !empty($invoice->can_cancel)
+                                                            && !in_array($statusLower, $disallowedCancel, true)
+                                                            && !in_array($invStatusLower, $disallowedCancel, true);
+                                                    @endphp
+
+                                                    <div class="order-invoice-block {{ !$loop->last ? 'mb-3 pb-3' : '' }}" style="{{ !$loop->last ? 'border-bottom: 1px dashed #e2e8f0;' : '' }}">
+                                                        @if(isset($invoice->products) && count($invoice->products) > 0)
+                                                            @foreach($invoice->products as $product)
+                                                                @php
+                                                                    $productImage = $product->product_image ?? '';
+                                                                    $productImageUrl = asset('assets/images/products/no-product-found.png');
+                                                                    if (!empty($productImage)) {
+                                                                        if (file_exists(public_path('assets/images/products/' . $productImage))) {
+                                                                            $productImageUrl = asset('assets/images/products/' . $productImage);
+                                                                        } elseif (file_exists(public_path('assets/images/products/detail/' . $productImage))) {
+                                                                            $productImageUrl = asset('assets/images/products/detail/' . $productImage);
+                                                                        } elseif (file_exists(public_path('assets/images/products/popup/' . $productImage))) {
+                                                                            $productImageUrl = asset('assets/images/products/popup/' . $productImage);
+                                                                        } else {
+                                                                            $productImageUrl = asset('assets/images/products/' . $productImage);
+                                                                        }
+                                                                    }
+                                                                @endphp
+                                                                <div class="order-item-row">
+                                                                    <div class="order-item-left">
+                                                                        <img src="{{ $productImageUrl }}" alt="{{ $product->product_name }}" class="order-item-thumb"
+                                                                             onerror="if (this.src.indexOf('/detail/') !== -1) { this.src = '{{ asset('assets/images/products/' . $productImage) }}'; } else { this.src = '{{ asset('assets/images/products/no-product-found.png') }}'; }">
+                                                                        <div class="order-item-info">
+                                                                            <div class="order-item-title">{{ $product->product_name }}</div>
+                                                                            <div class="order-item-meta">
+                                                                                @if(!empty($product->product_size))
+                                                                                    <span class="meta-chip">Size: {{ $product->product_size }}</span>
+                                                                                @endif
+                                                                                @if(!empty($product->product_color))
+                                                                                    <span class="meta-chip">Color: {{ $product->product_color }}</span>
+                                                                                @endif
+                                                                                <span class="meta-chip">Qty: {{ $invoice->line_qty ?? 1 }}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="order-item-right text-right">
+                                                                        <div class="order-item-price"><span style="font-family: Arial, sans-serif;">₹</span> {{ number_format($product->product_price, 2) }}</div>
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
+                                                        @endif
+
+                                                        <!-- Item Level Actions (Cancel / Return / Replace) -->
+                                                        @if($canCancelItem || !empty($invoice->can_return) || !empty($invoice->return_deadline))
+                                                            <div class="d-flex justify-content-end align-items-center gap-2 mt-2 pt-2" style="gap: 8px;">
+                                                                @if($canCancelItem)
+                                                                    <form method="POST" action="{{ route('my-account.invoice.cancel', $invoice->invoice_id) }}" onsubmit="return confirm('Cancel this order item?');" style="margin: 0;">
+                                                                        @csrf
+                                                                        <button type="submit" class="btn order-footer-actions btn-cancel">Cancel Item</button>
+                                                                    </form>
+                                                                @endif
+
+                                                                @if(!empty($invoice->can_return))
+                                                                    @php
+                                                                        $allowReturn = false;
+                                                                        $allowReplacement = false;
+                                                                        if (isset($invoice->products) && count($invoice->products) > 0) {
+                                                                            foreach($invoice->products as $p) {
+                                                                                $rr = (int)($p->return_replace ?? 0);
+                                                                                if ($rr === 1 || $rr === 2) { $allowReturn = true; }
+                                                                                if ($rr === 1 || $rr === 3) { $allowReplacement = true; }
+                                                                            }
+                                                                        } else {
+                                                                            $allowReturn = true;
+                                                                        }
+                                                                    @endphp
+
+                                                                    @if($allowReturn)
+                                                                        <form id="return-form-{{ $invoice->invoice_id }}" method="POST" action="{{ route('my-account.invoice.return', $invoice->invoice_id) }}" style="margin: 0;">
+                                                                            @csrf
+                                                                            <input type="hidden" name="request_type" value="Return">
+                                                                            <input type="hidden" name="reason" id="return-reason-{{ $invoice->invoice_id }}">
+                                                                            <button type="button" class="btn btn-outline btn-primary btn-sm btn-rounded" style="font-size: 12px; padding: 5px 14px;" onclick="submitReturnRequest('{{ $invoice->invoice_id }}', 'Return')">Return</button>
+                                                                        </form>
+                                                                    @endif
+
+                                                                    @if($allowReplacement)
+                                                                        <form id="replace-form-{{ $invoice->invoice_id }}" method="POST" action="{{ route('my-account.invoice.return', $invoice->invoice_id) }}" style="margin: 0;">
+                                                                            @csrf
+                                                                            <input type="hidden" name="request_type" value="Replacement">
+                                                                            <input type="hidden" name="reason" id="replace-reason-{{ $invoice->invoice_id }}">
+                                                                            <button type="button" class="btn btn-outline btn-warning btn-sm btn-rounded" style="font-size: 12px; padding: 5px 14px;" onclick="submitReturnRequest('{{ $invoice->invoice_id }}', 'Replacement')">Replacement</button>
+                                                                        </form>
+                                                                    @endif
+                                                                @elseif(!empty($invoice->return_deadline))
+                                                                    <small class="text-muted align-self-center">Return till {{ $invoice->return_deadline }}</small>
+                                                                @endif
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
+
+                                            <!-- Order Card Footer -->
+                                            <div class="order-card-footer">
+                                                <div class="order-footer-meta">
+                                                    <span>Payment: <strong>{{ $order->payment_type ?? 'Cash On Delivery' }}</strong></span>
+                                                </div>
+                                                <div class="order-footer-actions">
+                                                    <a href="{{ url('order_tracking/'.$order->order_id) }}" class="btn btn-track">
+                                                        <i class="w-icon-map-marker mr-1"></i> Track Order
+                                                    </a>
+                                                    <a href="{{ url('invoice-pdf/'.$order->id) }}" class="btn btn-invoice" target="_blank">
+                                                        <i class="w-icon-download mr-1"></i> Download Invoice
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="text-center py-5 my-4" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 50px 20px;">
+                                    <div class="mb-3" style="font-size: 48px; color: #94a3b8;">
+                                        <i class="w-icon-orders"></i>
+                                    </div>
+                                    <h4 class="font-weight-bold mb-1" style="color: #0f172a; text-transform: none;">No Orders Found</h4>
+                                    <p class="text-muted mb-4" style="font-size: 14px;">You haven't placed any orders yet.</p>
+                                    <a href="{{ url('shops') }}" class="btn btn-dark btn-rounded btn-sm" style="padding: 10px 24px; font-weight: 600; text-transform: none;">
+                                        Start Shopping <i class="w-icon-long-arrow-right ml-1"></i>
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="tab-pane" id="account-downloads">
                             <div class="account-back-wrap" style="float:right" >
                                 <a href="#account-dashboard" data-bs-toggle="tab" class="btn btn-outline btn-default btn-sm account-back-btn back-to-dashboard">Back</a>
                             </div>
@@ -676,8 +963,8 @@
                             </p>
 
                            <div class="row">
-                               <div class="col-sm-6 mb-6">
-                                   <div class="ecommerce-address billing-address pr-lg-8">
+                               <div class="col-md-6 col-12 mb-4">
+                                   <div class="ecommerce-address billing-address pr-lg-4">
 
                                     @forelse($shipping_address as $key => $address)
                                     <div class="card mb-3 address-card "
@@ -713,9 +1000,9 @@
                                     
                                    </div>
                                </div>
-                            <div class="col-sm-6 mb-6">
-                                <div class="ecommerce-address shipping-address pr-lg-8">
-                                   <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="col-md-6 col-12 mb-4">
+                                <div class="ecommerce-address shipping-address pr-lg-4">
+                                   <div class="d-flex justify-content-between align-items-center mb-2 mt-0">
                                         <h4 id="address-title" class="title title-underline ls-25 font-weight-bold mb-0">
                                             Add Shipping Address
                                         </h4>
@@ -729,57 +1016,66 @@
 
                                      
 
-                                    <form method="POST" id="addressForm"     action="{{ route('save-shipping-address') }}">
+                                    <form method="POST" id="addressForm" action="{{ route('save-shipping-address') }}" novalidate data-no-validate>
                                         @csrf
 
                                         <input type="hidden" name="address_id" id="address_id">
 
-                                        <div class="mb-2">
-                                            <label>Name</label>
-                                            <input type="text" name="customer_firstname" id="customer_firstname"
-                                                class="form-control">
+                                        <div class="row">
+                                            <div class="col-md-6 col-12 mb-2">
+                                                <label>Name <span style="color: red !important;">*</span></label>
+                                                <input type="text" name="customer_firstname" id="customer_firstname"
+                                                    class="form-control" data-required="true" data-no-validate>
+                                                <div class="error-msg text-danger mt-1" style="display:none; font-size: 0.85rem; font-weight: 500; color: #dc3545 !important;">Please enter name</div>
+                                            </div>
+
+                                            <div class="col-md-6 col-12 mb-2">
+                                                <label>Mobile <span style="color: red !important;">*</span></label>
+                                                <input type="text" name="customer_mobileno" id="customer_mobileno"
+                                                    class="form-control" maxlength="10" inputmode="numeric"
+                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" data-required="true" data-no-validate>
+                                                <div class="error-msg text-danger mt-1" style="display:none; font-size: 0.85rem; font-weight: 500; color: #dc3545 !important;">Please enter a valid 10-digit mobile number</div>
+                                            </div>
+
+                                            <div class="col-md-6 col-12 mb-2">
+                                                <label>Email <span style="color: red !important;">*</span></label>
+                                                <input type="email" name="customer_email" id="customer_email"
+                                                    class="form-control" data-required="true" data-no-validate>
+                                                <div class="error-msg text-danger mt-1" style="display:none; font-size: 0.85rem; font-weight: 500; color: #dc3545 !important;">Please enter a valid email address</div>
+                                            </div>
+
+                                            <div class="col-md-6 col-12 mb-2">
+                                                <label>Pincode <span style="color: red !important;">*</span></label>
+                                                <input type="text" name="customer_pincode" id="customer_pincode"
+                                                    class="form-control" maxlength="6" inputmode="numeric"
+                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);" data-required="true" data-no-validate>
+                                                <div class="error-msg text-danger mt-1" style="display:none; font-size: 0.85rem; font-weight: 500; color: #dc3545 !important;">Please enter pincode</div>
+                                            </div>
+
+                                            <div class="col-md-6 col-12 mb-2">
+                                                <label>Address <span style="color: red !important;">*</span></label>
+                                                <input type="text" name="customer_address" id="customer_address"
+                                                    class="form-control" placeholder="House number and street name" data-required="true" data-no-validate>
+                                                <div class="error-msg text-danger mt-1" style="display:none; font-size: 0.85rem; font-weight: 500; color: #dc3545 !important;">Please enter address</div>
+                                            </div>
+
+                                            <div class="col-md-6 col-12 mb-2">
+                                                <label>State <span style="color: red !important;">*</span></label>
+                                                <input type="text" name="customer_state" id="customer_state"
+                                                    class="form-control" value="Tamil Nadu" readonly style="background-color: #f8f9fa;">
+                                            </div>
                                         </div>
 
-                                        <div class="mb-2">
-                                            <label>Mobile</label>
-                                            <input type="text" name="customer_mobileno" id="customer_mobileno"
-                                                class="form-control">
+                                        <div class="d-flex justify-content-between align-items-center address-action-wrap mb-2 mt-1">
+                                            <button type="submit" id="submitBtn" class="btn submit-button btn-primary btn-sm">
+                                                Add Address
+                                            </button>
+
+                                            <button type="button" id="deleteBtn"
+                                                style="background-color: rgb(214, 47, 47); color:#fff" class="btn submit-button btn-danger btn-sm d-none">
+                                                Delete Address
+                                            </button>
                                         </div>
-                                           <div class="mb-2">
-                                            <label>Email</label>
-                                            <input type="text" name="customer_email" id="customer_email"
-                                                class="form-control">
-                                        </div>
-
-                                        <div class="mb-2">
-                                            <label>Address</label>
-                                            <textarea name="customer_address" id="customer_address"
-                                                    class="form-control"></textarea>
-                                        </div>
-
-                                        <div class="mb-2">
-                                            <label>State</label>
-                                            <input type="text" name="customer_state" id="customer_state"
-                                                class="form-control">
-                                        </div>
-
-                                        <div class="mb-2">
-                                            <label>Pincode</label>
-                                            <input type="text" name="customer_pincode" id="customer_pincode"
-                                                class="form-control">
-                                        </div>
-
-
-                                         <div class="d-flex justify-content-between align-items-center mb-3">
-                                     <button type="submit"  id="submitBtn"  class="btn submit-button btn-primary btn-sm mt-2">
-                                            Add Address
-                                        </button>
-
-                                       <button type="button" id="deleteBtn"
-                                             style="background-color: rgb(214, 47, 47) ; color:#fff" class="btn submit-button btn-danger btn-sm mt-2 d-none">
-                                            Delete Address
-                                        </button>
-                                    </div>
 
                                     </form>
                                 </div>
@@ -808,8 +1104,8 @@
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label>Phone <span style="color: red !important;">*</span></label>
-                                        <input type="text" class="form-control" name="customer_mobileno" id="order_mobile" data-required="true" onblur="verify_mobile(this.value)" value="{{@$customer->customer_mobileno}}" />
-                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 400; color: #dc3545 !important;">Please enter phone number</div>
+                                        <input type="text" class="form-control" name="customer_mobileno" id="order_mobile" data-required="true" maxlength="10" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" value="{{@$customer->customer_mobileno}}" />
+                                        <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 400; color: #dc3545 !important;">Please enter a valid 10-digit phone number</div>
                                     </div>
                                     
                                     <div class="col-md-4 mb-3">
@@ -835,7 +1131,7 @@
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label>State <span style="color: red !important;">*</span></label>
-                                        <input type="text" class="form-control" id="state" name="customer_state" data-required="true" value="{{@$customer->customer_state}}" />
+                                        <input type="text" class="form-control" id="state" name="customer_state" data-required="true" value="{{@$customer->customer_state ?: 'Tamil Nadu'}}" readonly style="background-color: #f8f9fa;" />
                                         <div class="error-msg text-danger mt-1" style="display:none; font-size: 1.1rem; font-weight: 400; color: #dc3545 !important;">Please enter state</div>
                                     </div>
                                     <div class="col-md-4 mb-3">
@@ -1140,11 +1436,15 @@
         // fill form values
         document.getElementById('address_id').value = card.dataset.id;
         document.getElementById('customer_firstname').value = card.dataset.name;
-        document.getElementById('customer_mobileno').value = card.dataset.mobile;
+        document.getElementById('customer_mobileno').value = (card.dataset.mobile || '').replace(/[^0-9]/g, '').slice(0, 10);
         document.getElementById('customer_email').value = card.dataset.email;
         document.getElementById('customer_address').value = card.dataset.address;
-        document.getElementById('customer_state').value = card.dataset.state;
+        document.getElementById('customer_state').value = card.dataset.state || 'Tamil Nadu';
         document.getElementById('customer_pincode').value = card.dataset.pincode;
+
+        document.querySelectorAll('#addressForm .error-msg').forEach(function(el) {
+            el.style.display = 'none';
+        });
 
         // update button
         const btn = document.getElementById('submitBtn');
@@ -1265,6 +1565,16 @@
                                 errorSpan.style.display = 'block';
                             }
                         }
+                    } else if (input.name === 'customer_mobileno') {
+                        var mobileRegex = /^[0-9]{10}$/;
+                        if (!mobileRegex.test(input.value.trim())) {
+                            isValid = false;
+                            var errorSpan = input.nextElementSibling;
+                            if (errorSpan && errorSpan.classList.contains('error-msg')) {
+                                errorSpan.innerText = 'Please enter a valid 10-digit phone number';
+                                errorSpan.style.display = 'block';
+                            }
+                        }
                     }
                 });
                 
@@ -1307,8 +1617,84 @@
             // reset title
             document.getElementById('address-title').innerText = 'Add Shipping Address';
             document.getElementById('deleteBtn').classList.add('d-none');
+            document.getElementById('customer_state').value = 'Tamil Nadu';
+
+            document.querySelectorAll('#addressForm .error-msg').forEach(function(el) {
+                el.style.display = 'none';
+            });
             
         });
+
+        const addressForm = document.getElementById('addressForm');
+        if (addressForm) {
+            addressForm.addEventListener('submit', function (e) {
+                var form = this;
+                var isValid = true;
+
+                // Hide all error messages first
+                form.querySelectorAll('.error-msg').forEach(function(el) {
+                    el.style.display = 'none';
+                });
+
+                var nameInput = document.getElementById('customer_firstname');
+                if (!nameInput || !nameInput.value.trim()) {
+                    isValid = false;
+                    var err = nameInput.parentElement ? nameInput.parentElement.querySelector('.error-msg') : null;
+                    if (err) err.style.display = 'block';
+                }
+
+                var mobileInput = document.getElementById('customer_mobileno');
+                var mobileVal = mobileInput ? mobileInput.value.trim() : '';
+                if (!/^[0-9]{10}$/.test(mobileVal)) {
+                    isValid = false;
+                    var err = mobileInput.parentElement ? mobileInput.parentElement.querySelector('.error-msg') : null;
+                    if (err) err.style.display = 'block';
+                }
+
+                var emailInput = document.getElementById('customer_email');
+                var emailVal = emailInput ? emailInput.value.trim() : '';
+                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailVal || !emailRegex.test(emailVal)) {
+                    isValid = false;
+                    var err = emailInput.parentElement ? emailInput.parentElement.querySelector('.error-msg') : null;
+                    if (err) err.style.display = 'block';
+                }
+
+                var pincodeInput = document.getElementById('customer_pincode');
+                if (!pincodeInput || !pincodeInput.value.trim()) {
+                    isValid = false;
+                    var err = pincodeInput.parentElement ? pincodeInput.parentElement.querySelector('.error-msg') : null;
+                    if (err) err.style.display = 'block';
+                }
+
+                var addrInput = document.getElementById('customer_address');
+                if (!addrInput || !addrInput.value.trim()) {
+                    isValid = false;
+                    var err = addrInput.parentElement ? addrInput.parentElement.querySelector('.error-msg') : null;
+                    if (err) err.style.display = 'block';
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                    var firstErr = form.querySelector('.error-msg[style*="block"]');
+                    if (firstErr && firstErr.parentElement) {
+                        var inp = firstErr.parentElement.querySelector('input');
+                        if (inp) inp.focus();
+                    }
+                    return false;
+                }
+            });
+
+            // Real-time hide error message on input
+            addressForm.querySelectorAll('input').forEach(function(input) {
+                input.addEventListener('input', function() {
+                    var err = this.parentElement ? this.parentElement.querySelector('.error-msg') : null;
+                    if (err) {
+                        err.style.display = 'none';
+                    }
+                });
+            });
+        }
 
 
         document.getElementById('deleteBtn').addEventListener('click', function () {

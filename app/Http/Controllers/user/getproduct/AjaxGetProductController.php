@@ -239,6 +239,20 @@ class AjaxGetProductController extends Controller
 		// Load order products for each order
 		foreach ($orders as $order) {
 			$order->products = Ecom_Order_product::where('order_id', $order->order_id)->get();
+			foreach ($order->products as $p) {
+				$detail = \Illuminate\Support\Facades\DB::table('products_details')->where('id', $p->product_id)->first();
+				if ($detail) {
+					$p->product_color = $detail->attributevalue1 ?? '';
+					if (empty($p->product_size)) {
+						$p->product_size = $detail->attributevalue2 ?? '';
+					}
+					$mainProduct = \Illuminate\Support\Facades\DB::table('products')->where('id', $detail->products_id)->first();
+					if ($mainProduct) {
+						$p->main_image = $mainProduct->product_image ?? '';
+						$p->slug = $mainProduct->slug ?? $mainProduct->id;
+					}
+				}
+			}
 		}
 
 		return view('website.front-end.track_order_search', compact('orders'));
@@ -300,6 +314,21 @@ class AjaxGetProductController extends Controller
 		}
 
 		$order_products = Ecom_Order_product::where('order_id',$orders_id)->get();
+		foreach ($order_products as $p) {
+			$detail = \Illuminate\Support\Facades\DB::table('products_details')->where('id', $p->product_id)->first();
+			if ($detail) {
+				$p->product_color = $detail->attributevalue1 ?? '';
+				if (empty($p->product_size)) {
+					$p->product_size = $detail->attributevalue2 ?? '';
+				}
+				$mainProduct = \Illuminate\Support\Facades\DB::table('products')->where('id', $detail->products_id)->first();
+				if ($mainProduct) {
+					$p->main_image = $mainProduct->product_image ?? '';
+					$p->slug = $mainProduct->slug ?? $mainProduct->id;
+				}
+			}
+		}
+
 		 return view('website.front-end.order_tracking')->
 		 with([
 			"orders_id"=>$orders_id,

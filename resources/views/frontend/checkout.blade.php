@@ -203,17 +203,48 @@
          .payment-accordion .card {
              border: 1px solid #e2e8f0 !important;
              border-radius: 8px !important;
-             margin-bottom: 12px !important;
+             margin-bottom: 10px !important;
              box-shadow: none !important;
+             background: #f8fafc !important;
+             overflow: hidden !important;
+         }
+         .payment-accordion .card-header {
+             padding: 0 !important;
+             background: transparent !important;
+             border: none !important;
          }
          .payment-accordion .card-header a {
-             padding: 14px 20px;
+             padding: 12px 18px 12px 46px !important;
              font-weight: 600;
+             font-size: 1.5rem !important;
              color: #334155;
-             display: block;
+             display: flex !important;
+             align-items: center !important;
              background: #f8fafc;
              border-radius: 8px;
              text-decoration: none;
+             position: relative;
+             line-height: 1.4;
+         }
+         .payment-accordion .card-header a::before {
+             left: 14px !important;
+             top: 50% !important;
+             transform: translateY(-50%) !important;
+         }
+         .payment-accordion .card-header a::after {
+             left: 19px !important;
+             top: 50% !important;
+             transform: translateY(-50%) !important;
+         }
+         .payment-accordion .card-header a.collapse {
+             color: #0088dd;
+         }
+         .payment-accordion .card-header a.collapse::before {
+             border-color: #0088dd !important;
+         }
+         .payment-accordion .card-header a.collapse::after {
+             background-color: #0088dd !important;
+             opacity: 1 !important;
          }
          .payment-accordion .card-body {
              padding: 16px 20px !important;
@@ -412,15 +443,35 @@
          $initPhone = $defaultSavedAddress->customer_mobileno ?? ($customer->customer_mobileno ?? '');
          $initEmail = $defaultSavedAddress->customer_email ?? ($customer->customer_email ?? '');
          $initAddress = $defaultSavedAddress->customer_address ?? ($customer->customer_address ?? '');
-         $initCity = $defaultSavedAddress->customer_city ?? ($customer->customer_city ?? '');
          $initState = $defaultSavedAddress->customer_state ?? (!empty($customer->customer_state) ? $customer->customer_state : 'Tamil Nadu');
+         $initCity = $defaultSavedAddress->customer_city ?? ($customer->customer_city ?? '');
+         if (empty($initCity)) {
+             $initCity = $initState;
+         }
          $initPincode = $defaultSavedAddress->customer_pincode ?? ($customer->customer_pincode ?? '');
          $initCountry = 'India';
 
          $hasAddress = !empty($initAddress) && !empty($initPhone) && !empty($initPincode);
          $deliveryActionText = $shipping_addresses->count() > 1 ? 'Change' : ($hasAddress ? 'Change' : 'Add');
      @endphp
-     <form class="form checkout-form" action="{{ route('checkout_store') }}" method="post">
+
+     @if (session('error'))
+     <div class="alert alert-danger alert-simple alert-inline mb-4" role="alert" style="font-size: 1.4rem;">
+         <i class="fas fa-exclamation-circle mr-2"></i> {{ session('error') }}
+     </div>
+     @endif
+     @if ($errors->any())
+     <div class="alert alert-danger alert-simple alert-inline mb-4" role="alert" style="font-size: 1.4rem;">
+         <i class="fas fa-exclamation-circle mr-2"></i>
+         <ul class="mb-0 pl-3">
+             @foreach ($errors->all() as $error)
+                 <li>{{ $error }}</li>
+             @endforeach
+         </ul>
+     </div>
+     @endif
+
+     <form class="form checkout-form" action="{{ route('checkout_store') }}" method="post" novalidate data-no-validate>
      @csrf
      <div class="row mb-9">
      <div class="col-lg-8 pr-lg-4 mb-4">
@@ -625,13 +676,13 @@
 
      <div class="payment-methods" id="payment_method">
      <h4 class="title font-weight-bold ls-25 pb-0 mb-1">Payment Methods</h4>
-     <div class="accordion payment-accordion">
+     <div class="accordion payment-accordion radio-type">
    
      <div class="card">
      <div class="card-header">
-     <a href="#payment" class="expand payment-option" data-method="onlinepayment">Online Payments</a>
+     <a href="#payment" class="collapse payment-option" data-method="onlinepayment">Online Payments</a>
      </div>
-     <div id="payment" class="collapsed" style="display: none;">
+     <div id="payment" class="expanded">
      </div>
      </div>
      <div class="card">
@@ -694,8 +745,8 @@
              <span style="font-size: 0.85rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">
                  Saved Addresses ({{ $shipping_addresses->count() }})
              </span>
-             <button type="button" class="btn btn-primary btn-sm font-weight-bold" id="btn-show-add-address" style="border-radius: 6px; padding: 6px 14px; font-size: 0.82rem;">
-                 <i class="fas fa-plus mr-1"></i> Add New Address
+             <button type="button" class="btn btn-primary btn-sm font-weight-bold" id="btn-show-add-address" style="border-radius: 6px; padding: 6px 14px; font-size: 0.82rem; display: inline-flex; align-items: center; gap: 5px;">
+                 <i class="fas fa-plus" style="font-size: 10px !important; margin: 0 !important; line-height: 1 !important;"></i> Add New Address
              </button>
          </div>
 
@@ -811,7 +862,7 @@
          <div class="form-group">
          <label>State *</label>
          <input type="text" class="form-control form-control-md"
-         id="modal_billing_state" value="Tamil Nadu" required>
+         id="modal_billing_state" value="Tamil Nadu" readonly style="background-color: #f8f9fa;" required>
          </div>
          </div>
          <div class="col-md-4">
@@ -828,7 +879,8 @@
          <div class="form-group mb-3">
          <label>Phone *</label>
          <input type="text" class="form-control form-control-md"
-         id="modal_billing_phone" value="" required>
+         id="modal_billing_phone" value="" maxlength="10" inputmode="numeric"
+         oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
          </div>
          </div>
          <div class="col-md-6">
@@ -1056,6 +1108,18 @@
          color: #0f172a;
          border-color: #cbd5e1;
      }
+
+     #deliveryModal #btn-show-add-address {
+         display: inline-flex !important;
+         align-items: center !important;
+         gap: 5px !important;
+     }
+
+     #deliveryModal #btn-show-add-address i {
+         font-size: 10px !important;
+         margin: 0 !important;
+         line-height: 1 !important;
+     }
      </style>
 
      <script>
@@ -1152,11 +1216,11 @@
 
              function applyAddressData(data) {
                  fields.firstName.value = data.name || '';
-                 fields.lastName.value = '';
+                 fields.lastName.value = data.lastName || '';
                  fields.phone.value = data.phone || '';
                  fields.email.value = data.email || '';
                  fields.address.value = data.address || '';
-                 fields.city.value = data.city || '';
+                 fields.city.value = data.city || data.state || 'Tamil Nadu';
                  fields.state.value = data.state || 'Tamil Nadu';
                  fields.postcode.value = data.pincode || '';
                  fields.country.value = data.country || 'India';
@@ -1308,12 +1372,21 @@
 
                      if (invalid) return;
 
+                     var phoneVal = modalFields.phone.value.trim();
+                     if (!/^[0-9]{10}$/.test(phoneVal)) {
+                         modalFields.phone.setCustomValidity('Please enter a valid 10-digit mobile number');
+                         modalFields.phone.reportValidity();
+                         return;
+                     } else {
+                         modalFields.phone.setCustomValidity('');
+                     }
+
                      var newAddressData = {
                          name: modalFields.firstName.value.trim() + (modalFields.lastName.value.trim() ? ' ' + modalFields.lastName.value.trim() : ''),
                          phone: modalFields.phone.value.trim(),
                          email: modalFields.email.value.trim(),
                          address: modalFields.address.value.trim(),
-                         city: modalFields.city.value.trim(),
+                         city: modalFields.city.value.trim() || modalFields.state.value.trim() || 'Tamil Nadu',
                          state: modalFields.state.value.trim() || 'Tamil Nadu',
                          pincode: modalFields.postcode.value.trim(),
                          country: modalFields.country.value || 'India'
@@ -1359,6 +1432,11 @@
                          return;
                      }
                      
+                     var activeOpt = document.querySelector('.payment-option.collapse');
+                     if (activeOpt && activeOpt.getAttribute('data-method')) {
+                         document.getElementById('payment_method_input').value = activeOpt.getAttribute('data-method');
+                     }
+
                      var paymentMethod = document.getElementById('payment_method_input').value;
                      if (paymentMethod === 'onlinepayment' && document.getElementById('razorpay_payment_id').value === '') {
                          e.preventDefault();
@@ -1397,9 +1475,44 @@
 
              document.querySelectorAll('.payment-option').forEach(function(el) {
                  el.addEventListener('click', function(e) {
+                     document.querySelectorAll('.payment-option').forEach(function(opt) {
+                         opt.classList.remove('collapse');
+                         opt.classList.add('expand');
+                     });
+                     this.classList.remove('expand');
+                     this.classList.add('collapse');
                      document.getElementById('payment_method_input').value = this.getAttribute('data-method');
                  });
              });
+
+             document.querySelectorAll('.payment-accordion .card-header').forEach(function(header) {
+                 header.addEventListener('click', function(e) {
+                     var opt = this.querySelector('.payment-option');
+                     if (opt) {
+                         document.querySelectorAll('.payment-option').forEach(function(o) {
+                             o.classList.remove('collapse');
+                             o.classList.add('expand');
+                         });
+                         opt.classList.remove('expand');
+                         opt.classList.add('collapse');
+                         var method = opt.getAttribute('data-method') || 'Cash On Delivery';
+                         document.getElementById('payment_method_input').value = method;
+                     }
+                 });
+             });
+
+             // Ensure Online Payments radio dot is active by default
+             var currentMethod = document.getElementById('payment_method_input').value || 'onlinepayment';
+             var defaultOpt = document.querySelector('.payment-option[data-method="' + currentMethod + '"]') || document.querySelector('.payment-option[data-method="onlinepayment"]');
+             if (defaultOpt) {
+                 document.querySelectorAll('.payment-option').forEach(function(opt) {
+                     opt.classList.remove('collapse');
+                     opt.classList.add('expand');
+                 });
+                 defaultOpt.classList.remove('expand');
+                 defaultOpt.classList.add('collapse');
+                 document.getElementById('payment_method_input').value = defaultOpt.getAttribute('data-method');
+             }
 
 
              // Keep button enabled; block submit only if address missing.

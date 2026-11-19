@@ -79,13 +79,14 @@ class CustomerController extends Controller
     {
 
         $customer_id = Session::get('customer_id');
+        $mobileno = $request->customer_mobileno ? substr(preg_replace('/\D/', '', $request->customer_mobileno), 0, 10) : null;
         // customer shipping address update start
         Ecom_Customer_info::where('customer_id', $customer_id)->update(
             [
                 'customer_firstname' => $request->customer_firstname,
                 'customer_company_name' => $request->customer_company_name,                
                 'customer_lastname' => $request->customer_lastname,
-                'customer_mobileno' => $request->customer_mobileno,
+                'customer_mobileno' => $mobileno,
                 'customer_email' => $request->customer_email,
                 'customer_address' => $request->customer_address,
                 'customer_address1' => $request->customer_address1,
