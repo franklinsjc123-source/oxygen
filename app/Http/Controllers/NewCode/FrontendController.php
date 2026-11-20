@@ -4814,7 +4814,9 @@ class FrontendController extends Controller
             return (in_array($type, ['cashback_credit', 'credit'], true) && in_array($status, ['pending', 'processing'], true)) ? $amount : 0.0;
         });
 
-        return view('frontend.wallet', compact('transactions', 'walletBalance', 'pendingCashback'));
+        $walletTransactions = $transactions;
+
+        return view('frontend.wallet', compact('transactions', 'walletTransactions', 'walletBalance', 'pendingCashback'));
     }
 
     public function myWishlist(Request $request)

@@ -218,11 +218,26 @@
             padding-right: 45px !important;
         }
     }
+
+    .wishlist-page .breadcrumb-nav {
+        margin-bottom: 12px !important;
+        padding: 10px 0 !important;
+    }
+    .wishlist-page .breadcrumb {
+        padding: 5px 0 !important;
+        margin-bottom: 0 !important;
+    }
+    .wishlist-page .page-content {
+        padding-top: 0 !important;
+    }
+    .wishlist-page .shop-table.wishlist-table {
+        margin-top: 0 !important;
+    }
 </style>
 
-    <nav class="breadcrumb-nav mb-10">
+    <nav class="breadcrumb-nav">
         <div class="container">
-            <ul class="breadcrumb">
+            <ul class="breadcrumb bb-no">
                 <li><a href="{{ route('home') }}">Home</a></li>
                 <li>Wishlist</li>
             </ul>
@@ -231,7 +246,6 @@
 
     <div class="page-content">
         <div class="container">
-            <h3 class="wishlist-title">My Wishlist</h3>
             <table class="shop-table wishlist-table">
                 <thead>
                     <tr>
