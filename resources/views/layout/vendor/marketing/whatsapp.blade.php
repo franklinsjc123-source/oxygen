@@ -67,7 +67,7 @@
 							
 							<!-- Canva-Style Poster Studio Modal -->
 							<div class="modal fade" id="posterStudioModal" tabindex="-1" role="dialog" aria-labelledby="posterStudioModalLabel" aria-hidden="true">
-								<div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width: 880px; width: 95%;">
+								<div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width: 980px; width: 95%;">
 									<div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
 										<div class="modal-header text-white py-2 px-3 d-flex justify-content-between align-items-center" style="background-color: #183543 !important;">
 											<div class="d-flex align-items-center gap-2">
@@ -81,8 +81,8 @@
 										</div>
 										<div class="modal-body p-3" style="background-color: #f8fafc; max-height: calc(88vh - 80px); overflow-y: auto;">
 											<div class="row g-3 align-items-stretch">
-												<!-- Left: Live Canvas Preview -->
-												<div class="col-md-6 text-center">
+												<!-- Left: Live Canvas Preview (Decreased width) -->
+												<div class="col-lg-4 col-md-5 text-center">
 													<div class="card shadow-sm border-0 p-3 bg-white h-100 d-flex flex-column" style="border-radius: 12px;">
 														<div class="d-flex justify-content-between align-items-center mb-2 px-1">
 															<span class="studio-label text-muted mb-0"><i class="fa fa-eye me-1 text-primary"></i> LIVE POSTER PREVIEW</span>
@@ -97,8 +97,8 @@
 													</div>
 												</div>
 
-												<!-- Right: Canva Studio Controls -->
-												<div class="col-md-6">
+												<!-- Right: Canva Studio Controls (Increased width) -->
+												<div class="col-lg-8 col-md-7">
 													<div class="card shadow-sm border-0 p-3 bg-white h-100 d-flex flex-column" style="border-radius: 12px;">
 														<div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
 															<h6 class="fw-bold mb-0 text-dark" style="font-size: 13.5px;">
@@ -113,36 +113,161 @@
 																<i class="fa fa-font me-1"></i> 1. Content & Text
 															</button>
 															<button type="button" class="studio-tab-btn" data-target="#tab-design">
-																<i class="fa fa-magic me-1"></i> 2. Badges & Style
+																<i class="fa fa-paint-brush me-1"></i> 2. Theme & Style
 															</button>
 														</div>
 
-														<div class="tab-content flex-grow-1" id="studioTabContent" style="overflow-y: auto; max-height: 300px; padding-right: 4px;">
+														<div class="tab-content flex-grow-1" id="studioTabContent" style="overflow-y: auto; max-height: 350px; padding-right: 4px;">
 															<!-- TAB 1: CONTENT -->
 															<div class="studio-tab-pane" id="tab-content" style="display: block;">
-																<div class="mb-2">
-																	<label class="studio-label">Shop Name / Header :</label>
-																	<input type="text" class="form-control form-control-sm studio-input" id="studio_shop_name" value="{{ $vendorName ?? 'My Shop' }}" placeholder="e.g. Shop001">
-																</div>
-
-																<div class="mb-2">
-																	<label class="studio-label">Campaign Title :</label>
-																	<input type="text" class="form-control form-control-sm studio-input" id="studio_title" placeholder="e.g. MEGA FESTIVAL SALE">
-																</div>
-
-																<div class="mb-2">
-																	<label class="studio-label">Sub Title / Tagline :</label>
-																	<input type="text" class="form-control form-control-sm studio-input" id="studio_subtitle" placeholder="e.g. Flat 30% Off Everything">
+																<div class="row g-2 mb-2">
+																	<div class="col-7">
+																		<label class="studio-label">Shop Name / Header :</label>
+																		<input type="text" class="form-control form-control-sm studio-input" id="studio_shop_name" value="{{ $vendorName ?? 'My Shop' }}" placeholder="e.g. My Shop">
+																	</div>
+																	<div class="col-5">
+																		<label class="studio-label"><i class="fa fa-text-height me-1 text-primary"></i> Shop Size :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_shop_size">
+																			<option value="small">Small (18px)</option>
+																			<option value="medium" selected>Medium (24px)</option>
+																			<option value="large">Large (32px)</option>
+																			<option value="xlarge">Extra Large (42px)</option>
+																			<option value="huge">Huge (54px)</option>
+																			<option value="none">-- Hide Shop Name --</option>
+																		</select>
+																	</div>
 																</div>
 
 																<div class="row g-2 mb-2">
 																	<div class="col-6">
-																		<label class="studio-label">Offer Detail (Line 1) :</label>
-																		<input type="text" class="form-control form-control-sm studio-input" id="studio_line1" placeholder="e.g. Special Offer">
+																		<label class="studio-label"><i class="fa fa-paint-brush me-1 text-primary"></i> Shop Color :</label>
+																		<div class="d-flex align-items-center gap-1">
+																			<select class="form-select form-select-sm studio-input flex-grow-1" id="studio_shop_color_preset">
+																				<option value="#FFD700" selected>Gold / Yellow</option>
+																				<option value="#FFFFFF">White</option>
+																				<option value="#000000">Black</option>
+																				<option value="#EF4444">Crimson Red</option>
+																				<option value="#2563EB">Royal Blue</option>
+																				<option value="#10B981">Green</option>
+																				<option value="#E2E8F0">Soft Silver</option>
+																				<option value="custom">Custom...</option>
+																			</select>
+																			<input type="color" id="studio_shop_color_picker" class="form-control form-control-sm p-0" value="#FFD700" style="width: 34px; height: 31px; border-radius: 6px; cursor: pointer; border: 1px solid #ced4da;" title="Pick Shop Color">
+																		</div>
 																	</div>
 																	<div class="col-6">
-																		<label class="studio-label">Validity (Line 2) :</label>
-																		<input type="text" class="form-control form-control-sm studio-input" id="studio_line2" placeholder="e.g. Valid This Week">
+																		<label class="studio-label"><i class="fa fa-star me-1 text-primary"></i> Shop Style :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_shop_style">
+																			<option value="stars" selected>★ With Stars ★</option>
+																			<option value="clean">Plain Text</option>
+																			<option value="badge">Dark Pill Badge</option>
+																		</select>
+																	</div>
+																</div>
+
+																<div class="row g-2 mb-2">
+																	<div class="col-7">
+																		<label class="studio-label">Campaign Title :</label>
+																		<input type="text" class="form-control form-control-sm studio-input" id="studio_title" placeholder="e.g. MEGA FESTIVAL SALE">
+																	</div>
+																	<div class="col-5">
+																		<label class="studio-label"><i class="fa fa-text-height me-1 text-primary"></i> Title Size :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_title_size">
+																			<option value="small">Small (36px)</option>
+																			<option value="medium" selected>Medium (48px)</option>
+																			<option value="large">Large (64px)</option>
+																			<option value="xlarge">Extra Large (80px)</option>
+																			<option value="huge">Huge (96px)</option>
+																		</select>
+																	</div>
+																</div>
+
+																<div class="row g-2 mb-2">
+																	<div class="col-7">
+																		<label class="studio-label">Sub Title / Tagline :</label>
+																		<input type="text" class="form-control form-control-sm studio-input" id="studio_subtitle" placeholder="e.g. Flat 30% Off Everything">
+																	</div>
+																	<div class="col-5">
+																		<label class="studio-label"><i class="fa fa-text-height me-1 text-primary"></i> Subtitle Size :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_subtitle_size">
+																			<option value="auto" selected>Auto</option>
+																			<option value="small">Small (24px)</option>
+																			<option value="medium">Medium (34px)</option>
+																			<option value="large">Large (48px)</option>
+																			<option value="xlarge">Extra Large (62px)</option>
+																			<option value="huge">Huge (76px)</option>
+																		</select>
+																	</div>
+																</div>
+
+																{{-- Text Position & Color Customization --}}
+																<div class="row g-2 mb-2">
+																	<div class="col-6">
+																		<label class="studio-label"><i class="fa fa-arrows me-1 text-primary"></i> Text Position :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_text_pos">
+																			<option value="top-center" selected>Top Center</option>
+																			<option value="top-left">Top Left</option>
+																			<option value="top-right">Top Right</option>
+																			<option value="middle-center">Center / Middle</option>
+																			<option value="middle-left">Middle Left</option>
+																			<option value="middle-right">Middle Right</option>
+																			<option value="bottom-center">Bottom Center</option>
+																		</select>
+																	</div>
+																	<div class="col-6">
+																		<label class="studio-label"><i class="fa fa-paint-brush me-1 text-primary"></i> Text / Title Color :</label>
+																		<div class="d-flex align-items-center gap-1">
+																			<select class="form-select form-select-sm studio-input flex-grow-1" id="studio_title_color_preset">
+																				<option value="auto" selected>Auto (Theme)</option>
+																				<option value="#FFFFFF">White</option>
+																				<option value="#000000">Black</option>
+																				<option value="#EF4444">Crimson Red</option>
+																				<option value="#FACC15">Gold / Yellow</option>
+																				<option value="#2563EB">Royal Blue</option>
+																				<option value="#10B981">Green</option>
+																				<option value="custom">Custom...</option>
+																			</select>
+																			<input type="color" id="studio_title_color_picker" class="form-control form-control-sm p-0" value="#FFFFFF" style="width: 34px; height: 31px; border-radius: 6px; cursor: pointer; border: 1px solid #ced4da;" title="Pick Color">
+																		</div>
+																	</div>
+																</div>
+
+																<div class="row g-2 mb-2">
+																	<div class="col-6">
+																		<label class="studio-label"><i class="fa fa-tint me-1 text-primary"></i> Subtitle Color :</label>
+																		<div class="d-flex align-items-center gap-1">
+																			<select class="form-select form-select-sm studio-input flex-grow-1" id="studio_subtitle_color_preset">
+																				<option value="auto" selected>Auto (Match Text)</option>
+																				<option value="#FFFFFF">White</option>
+																				<option value="#000000">Black</option>
+																				<option value="#EF4444">Crimson Red</option>
+																				<option value="#FACC15">Gold / Yellow</option>
+																				<option value="#38BDF8">Sky Blue</option>
+																				<option value="#E2E8F0">Soft Silver</option>
+																				<option value="custom">Custom...</option>
+																			</select>
+																			<input type="color" id="studio_subtitle_color_picker" class="form-control form-control-sm p-0" value="#FACC15" style="width: 34px; height: 31px; border-radius: 6px; cursor: pointer; border: 1px solid #ced4da;" title="Pick Subtitle Color">
+																		</div>
+																	</div>
+																	<div class="col-6">
+																		<label class="studio-label"><i class="fa fa-adjust me-1 text-primary"></i> Text Shadow :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_text_shadow">
+																			<option value="auto" selected>Auto (Contrast)</option>
+																			<option value="dark">Dark Shadow</option>
+																			<option value="light">Light Glow</option>
+																			<option value="none">No Shadow</option>
+																		</select>
+																	</div>
+																</div>
+
+																<div class="row g-2 mb-2">
+																	<div class="col-6">
+																		<label class="studio-label">Footer Line 1 :</label>
+																		<input type="text" class="form-control form-control-sm studio-input" id="studio_line1" placeholder="e.g. Special Offer or Store Address">
+																	</div>
+																	<div class="col-6">
+																		<label class="studio-label">Footer Line 2 :</label>
+																		<input type="text" class="form-control form-control-sm studio-input" id="studio_line2" placeholder="e.g. Valid This Week or Website">
 																	</div>
 																</div>
 
@@ -152,60 +277,8 @@
 																</div>
 															</div>
 
-															<!-- TAB 2: BADGES & STYLE -->
+															<!-- TAB 2: STYLE & OPTIONS -->
 															<div class="studio-tab-pane" id="tab-design" style="display: none;">
-																<div class="row g-2 mb-2">
-																	<div class="col-7">
-																		<label class="studio-label">Offer Sticker / Badge :</label>
-																		<select class="form-select form-select-sm studio-input" id="studio_sticker">
-																			<option value="none">-- No Sticker --</option>
-																			<option value="FLAT 50% OFF" selected>⭐ FLAT 50% OFF</option>
-																			<option value="BUY 1 GET 1">🎁 BUY 1 GET 1</option>
-																			<option value="SPECIAL OFFER">🔥 SPECIAL OFFER</option>
-																			<option value="FLAT 20% OFF">🏷️ FLAT 20% OFF</option>
-																			<option value="FLAT 30% OFF">🏷️ FLAT 30% OFF</option>
-																			<option value="FESTIVE SALE">✨ FESTIVE SALE</option>
-																			<option value="MEGA DEAL">💥 MEGA DEAL</option>
-																			<option value="NEW ARRIVAL">🛍️ NEW ARRIVAL</option>
-																			<option value="LIMITED TIME">⏳ LIMITED TIME</option>
-																			<option value="WEEKEND SALE">🎉 WEEKEND SALE</option>
-																			<option value="custom">✏️ Custom Text...</option>
-																		</select>
-																	</div>
-																	<div class="col-5">
-																		<label class="studio-label">Position :</label>
-																		<select class="form-select form-select-sm studio-input" id="studio_sticker_pos">
-																			<option value="right" selected>Top Right</option>
-																			<option value="left">Top Left</option>
-																		</select>
-																	</div>
-																</div>
-
-																<div class="mb-2" id="custom_sticker_wrap" style="display: none;">
-																	<label class="studio-label">Custom Sticker Text :</label>
-																	<input type="text" class="form-control form-control-sm studio-input" id="studio_custom_sticker" placeholder="e.g. SAVE 40%">
-																</div>
-
-																<div class="row g-2 mb-2">
-																	<div class="col-6">
-																		<label class="studio-label">Sticker Color :</label>
-																		<select class="form-select form-select-sm studio-input" id="studio_sticker_color">
-																			<option value="red" selected>Crimson Red</option>
-																			<option value="gold">Gold & Dark</option>
-																			<option value="green">Emerald Green</option>
-																			<option value="blue">Electric Blue</option>
-																			<option value="purple">Royal Violet</option>
-																		</select>
-																	</div>
-																	<div class="col-6">
-																		<label class="studio-label">Sticker Tilt :</label>
-																		<select class="form-select form-select-sm studio-input" id="studio_sticker_tilt">
-																			<option value="tilt" selected>Tilted (-12°)</option>
-																			<option value="straight">Straight (0°)</option>
-																		</select>
-																	</div>
-																</div>
-
 																<div class="mb-2">
 																	<label class="studio-label">Call-To-Action (CTA) Pill :</label>
 																	<select class="form-select form-select-sm studio-input" id="studio_cta">
@@ -594,7 +667,7 @@
             }
         }
         ctx.fillText(line.trim(), x, currentY);
-        return currentY;
+        return currentY + lineHeight;
     }
 
     function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
@@ -614,6 +687,13 @@
         ctx.closePath();
         if (fill) ctx.fill();
         if (stroke) ctx.stroke();
+    }
+
+    function cleanStudioText(str) {
+        if (str === null || str === undefined) return '';
+        const trimmed = String(str).trim();
+        if (trimmed === '-' || trimmed === 'null' || trimmed === 'undefined') return '';
+        return trimmed;
     }
 
     function renderStudioPoster() {
@@ -666,12 +746,12 @@
             ctx.fillRect(0, 0, W, H);
         }
 
-        const shopName = ($('#studio_shop_name').val() || '').trim();
-        const title = ($('#studio_title').val() || '').trim();
-        const subtitle = ($('#studio_subtitle').val() || '').trim();
-        const line1 = ($('#studio_line1').val() || '').trim();
-        const line2 = ($('#studio_line2').val() || '').trim();
-        const phone = ($('#studio_phone').val() || '').trim();
+        const shopName = cleanStudioText($('#studio_shop_name').val());
+        const title = cleanStudioText($('#studio_title').val());
+        const subtitle = cleanStudioText($('#studio_subtitle').val());
+        const line1 = cleanStudioText($('#studio_line1').val());
+        const line2 = cleanStudioText($('#studio_line2').val());
+        const phone = cleanStudioText($('#studio_phone').val());
 
         // Theme configurations
         let titleColor = '#FFFFFF';
@@ -715,168 +795,257 @@
         }
 
         // 2. Shop Name Watermark / Header
-        if (shopName) {
+        const shopSize = $('#studio_shop_size').val() || 'medium';
+        let shopPx = 24;
+        const hasShop = shopName && shopSize !== 'none';
+
+        if (hasShop) {
             ctx.save();
+            if (shopSize === 'small') shopPx = 18;
+            else if (shopSize === 'medium') shopPx = 24;
+            else if (shopSize === 'large') shopPx = 32;
+            else if (shopSize === 'xlarge') shopPx = 42;
+            else if (shopSize === 'huge') shopPx = 54;
+
+            // Shop Color
+            const shopColorPreset = $('#studio_shop_color_preset').val() || '#FFD700';
+            let finalShopColor = shopColorPreset;
+            if (shopColorPreset === 'custom') {
+                finalShopColor = $('#studio_shop_color_picker').val() || '#FFD700';
+            }
+
+            const shopStyle = $('#studio_shop_style').val() || 'stars';
+            let displayText = shopName.toUpperCase();
+            if (shopStyle === 'stars') {
+                displayText = "★  " + displayText + "  ★";
+            }
+
+            const fontStyle = (shopStyle === 'badge') ? 'bold' : '800';
+            ctx.font = `${fontStyle} ${Math.round(shopPx * scale)}px ${baseFont}`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'top';
-            ctx.font = `bold ${Math.round(20 * scale)}px ${baseFont}`;
-            ctx.fillStyle = '#FFD700';
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-            ctx.shadowBlur = 8 * scale;
-            ctx.fillText("★  " + shopName.toUpperCase() + "  ★", W / 2, 18 * scale);
+
+            const shopY = 16 * scale;
+
+            if (shopStyle === 'badge') {
+                const textMetrics = ctx.measureText(displayText);
+                const badgePadX = 18 * scale;
+                const badgePadY = 6 * scale;
+                const badgeW = textMetrics.width + (badgePadX * 2);
+                const badgeH = (shopPx * 1.25 * scale) + (badgePadY * 2);
+                const badgeX = (W - badgeW) / 2;
+                const badgeY = shopY - (2 * scale);
+
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+                roundRect(ctx, badgeX, badgeY, badgeW, badgeH, 12 * scale, true, false);
+                ctx.strokeStyle = finalShopColor;
+                ctx.lineWidth = 1.5 * scale;
+                roundRect(ctx, badgeX, badgeY, badgeW, badgeH, 12 * scale, false, true);
+
+                ctx.fillStyle = finalShopColor;
+                ctx.fillText(displayText, W / 2, shopY + badgePadY);
+            } else {
+                ctx.fillStyle = finalShopColor;
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
+                ctx.shadowBlur = 10 * scale;
+                ctx.fillText(displayText, W / 2, shopY);
+            }
             ctx.restore();
         }
 
-        // 3. Top Header Gradient Scrim & Title / Subtitle
+        // 3. Campaign Title / Subtitle with Custom Position, Alignment & Color
         if (title || subtitle) {
             ctx.save();
-            const headerH = Math.max(260 * scale, (title ? 220 * scale : 120 * scale));
-            const gradTop = ctx.createLinearGradient(0, 0, 0, headerH);
-            gradTop.addColorStop(0, 'rgba(0, 0, 0, 0.82)');
-            gradTop.addColorStop(0.7, 'rgba(0, 0, 0, 0.45)');
-            gradTop.addColorStop(1, 'rgba(0, 0, 0, 0)');
-            ctx.fillStyle = gradTop;
-            ctx.fillRect(0, 0, W, headerH);
 
-            ctx.textAlign = 'center';
+            const textPos = $('#studio_text_pos').val() || 'top-center';
+            const titleColorPreset = $('#studio_title_color_preset').val() || 'auto';
+            let finalTitleColor = titleColor;
+            if (titleColorPreset === 'custom') {
+                finalTitleColor = $('#studio_title_color_picker').val() || '#FFFFFF';
+            } else if (titleColorPreset !== 'auto') {
+                finalTitleColor = titleColorPreset;
+            }
+
+            const subColorPreset = $('#studio_subtitle_color_preset').val() || 'auto';
+            let finalSubColor = subTitleColor;
+            if (subColorPreset === 'custom') {
+                finalSubColor = $('#studio_subtitle_color_picker').val() || '#FACC15';
+            } else if (subColorPreset !== 'auto') {
+                finalSubColor = subColorPreset;
+            } else {
+                // If subColorPreset is 'auto':
+                // If title is empty, or user customized the main text color, match it!
+                if (!title || titleColorPreset !== 'auto') {
+                    finalSubColor = finalTitleColor;
+                } else {
+                    finalSubColor = subTitleColor;
+                }
+            }
+
+            const isDarkColor = function(hex) {
+                if (!hex) return false;
+                const clean = hex.replace('#', '').toLowerCase();
+                if (clean === 'black' || clean === '000000' || clean === '111111') return true;
+                if (clean.length === 6) {
+                    const r = parseInt(clean.substring(0, 2), 16) || 0;
+                    const g = parseInt(clean.substring(2, 4), 16) || 0;
+                    const b = parseInt(clean.substring(4, 6), 16) || 0;
+                    return (r * 0.299 + g * 0.587 + b * 0.114) < 120;
+                }
+                return false;
+            };
+
+            // Notice: Top gradient scrim removed so picking text color NEVER modifies poster background brightness!
+
+            // Determine horizontal alignment and X coordinate
+            let textAlign = 'center';
+            let textX = W / 2;
+            let maxTextW = W - (pad * 2);
+
+            if (textPos.endsWith('-left')) {
+                textAlign = 'left';
+                textX = pad * 1.1;
+                maxTextW = Math.round(W * 0.68);
+            } else if (textPos.endsWith('-right')) {
+                textAlign = 'right';
+                textX = W - (pad * 1.1);
+                maxTextW = Math.round(W * 0.68);
+            } else {
+                textAlign = 'center';
+                textX = W / 2;
+                maxTextW = W - (pad * 2);
+            }
+
+            // Determine vertical start Y coordinate
+            let currentY = 40 * scale;
+            if (textPos.startsWith('top-')) {
+                currentY = hasShop ? (Math.max(54, shopPx + 34) * scale) : (40 * scale);
+            } else if (textPos.startsWith('middle-')) {
+                currentY = Math.round(H * 0.38);
+            } else if (textPos.startsWith('bottom-')) {
+                currentY = H - (phone ? (360 * scale) : (270 * scale));
+            }
+
+            // Shadow / Glow styling
+            const shadowMode = $('#studio_text_shadow').val() || 'auto';
+            let shadowColor = 'rgba(0, 0, 0, 0.95)';
+            let shadowBlur = 18 * scale;
+
+            if (shadowMode === 'none') {
+                shadowColor = 'transparent';
+                shadowBlur = 0;
+            } else if (shadowMode === 'light' || (shadowMode === 'auto' && isDarkColor(finalTitleColor))) {
+                shadowColor = 'rgba(255, 255, 255, 0.88)';
+                shadowBlur = 10 * scale;
+            } else {
+                shadowColor = 'rgba(0, 0, 0, 0.95)';
+                shadowBlur = 18 * scale;
+            }
+
+            ctx.textAlign = textAlign;
             ctx.textBaseline = 'top';
 
-            const titleY = shopName ? (48 * scale) : (35 * scale);
+            // Font size calculations for Title and Subtitle
+            let titlePx = 48;
+            const tSize = $('#studio_title_size').val() || 'medium';
+            if (tSize === 'small') titlePx = 36;
+            else if (tSize === 'medium') titlePx = 48;
+            else if (tSize === 'large') titlePx = 64;
+            else if (tSize === 'xlarge') titlePx = 80;
+            else if (tSize === 'huge') titlePx = 96;
+
+            let subPx = 34;
+            const sSize = $('#studio_subtitle_size').val() || 'auto';
+            if (sSize === 'small') subPx = 24;
+            else if (sSize === 'medium') subPx = 34;
+            else if (sSize === 'large') subPx = 48;
+            else if (sSize === 'xlarge') subPx = 62;
+            else if (sSize === 'huge') subPx = 76;
+            else if (sSize === 'auto') {
+                // If there's no main title, headline prominence (52px)
+                subPx = (!title) ? 52 : 34;
+            }
+
             if (title) {
                 ctx.save();
-                ctx.font = `bold ${Math.round(48 * scale)}px ${baseFont}`;
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
-                ctx.shadowBlur = 18 * scale;
-                ctx.fillStyle = titleColor;
-                wrapText(ctx, title.toUpperCase(), W / 2, titleY, W - (pad * 2), 58 * scale);
+                ctx.font = `bold ${Math.round(titlePx * scale)}px ${baseFont}`;
+                ctx.shadowColor = shadowColor;
+                ctx.shadowBlur = shadowBlur;
+                ctx.fillStyle = finalTitleColor;
+                const lineH = Math.round(titlePx * 1.2 * scale);
+                currentY = wrapText(ctx, title.toUpperCase(), textX, currentY, maxTextW, lineH);
                 ctx.restore();
             }
 
             if (subtitle) {
                 ctx.save();
-                ctx.font = `700 ${Math.round(26 * scale)}px ${baseFont}`;
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
-                ctx.shadowBlur = 12 * scale;
-                ctx.fillStyle = subTitleColor;
-                const subY = title ? (titleY + 70 * scale) : titleY;
-                ctx.fillText(subtitle, W / 2, subY);
+                const fontW = (!title) ? 'bold' : '700';
+                ctx.font = `${fontW} ${Math.round(subPx * scale)}px ${baseFont}`;
+                ctx.shadowColor = shadowColor;
+                ctx.shadowBlur = Math.round(shadowBlur * 0.7);
+                ctx.fillStyle = finalSubColor;
+                const subY = title ? (currentY + (12 * scale)) : currentY;
+                const subLineH = Math.round(subPx * 1.22 * scale);
+                wrapText(ctx, subtitle, textX, subY, maxTextW, subLineH);
                 ctx.restore();
             }
             ctx.restore();
         }
 
-        // 4. Offer Sticker / Ribbon Badge (Canva Sticker)
-        let sticker = $('#studio_sticker').val();
-        if (sticker === 'custom') {
-            sticker = ($('#studio_custom_sticker').val() || '').trim();
-        }
-        const stickerPos = $('#studio_sticker_pos').val() || 'right';
-        const stickerColor = $('#studio_sticker_color').val() || 'red';
-        const stickerTilt = $('#studio_sticker_tilt').val() || 'tilt';
+        // Bottom element vertical coordinate calculation (prevent any overlap)
+        const cta = $('#studio_cta').val();
+        const hasCta = cta && cta !== 'none';
+        const ctaH = 44 * scale;
+        const barH = phone ? (85 * scale) : 0;
+        const barY = H - barH;
 
-        if (sticker && sticker !== 'none') {
-            ctx.save();
-            const sRadius = 66 * scale;
-            const sX = (stickerPos === 'left') ? (sRadius + 32 * scale) : (W - sRadius - 32 * scale);
-            const sY = sRadius + 36 * scale;
+        // Position CTA pill above phone bar with breathing space
+        const ctaY = hasCta ? (barY - ctaH - (14 * scale)) : barY;
 
-            ctx.translate(sX, sY);
-            if (stickerTilt === 'tilt') {
-                ctx.rotate((stickerPos === 'left' ? 12 : -12) * Math.PI / 180);
-            }
-
-            // Drop shadow
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.65)';
-            ctx.shadowBlur = 16 * scale;
-            ctx.shadowOffsetX = 3 * scale;
-            ctx.shadowOffsetY = 6 * scale;
-
-            // Circular sticker gradient
-            const sGrad = ctx.createRadialGradient(0, -10 * scale, 10 * scale, 0, 0, sRadius);
-            let sBorderColor = '#FDE047';
-            if (stickerColor === 'gold') {
-                sGrad.addColorStop(0, '#F59E0B');
-                sGrad.addColorStop(1, '#78350F');
-                sBorderColor = '#FFFFFF';
-            } else if (stickerColor === 'green') {
-                sGrad.addColorStop(0, '#10B981');
-                sGrad.addColorStop(1, '#064E3B');
-                sBorderColor = '#FEF08A';
-            } else if (stickerColor === 'blue') {
-                sGrad.addColorStop(0, '#06B6D4');
-                sGrad.addColorStop(1, '#1E3A8A');
-                sBorderColor = '#E0F2FE';
-            } else if (stickerColor === 'purple') {
-                sGrad.addColorStop(0, '#C084FC');
-                sGrad.addColorStop(1, '#581C87');
-                sBorderColor = '#FDE047';
-            } else {
-                sGrad.addColorStop(0, '#EF4444');
-                sGrad.addColorStop(1, '#991B1B');
-                sBorderColor = '#FDE047';
-            }
-
-            ctx.fillStyle = sGrad;
-            ctx.beginPath();
-            ctx.arc(0, 0, sRadius, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Dashed border ring
-            ctx.strokeStyle = sBorderColor;
-            ctx.lineWidth = 3 * scale;
-            ctx.setLineDash([7 * scale, 4 * scale]);
-            ctx.stroke();
-
-            // Sticker text
-            ctx.setLineDash([]);
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillStyle = '#FFFFFF';
-            ctx.shadowColor = 'rgba(0,0,0,0.85)';
-            ctx.shadowBlur = 4 * scale;
-
-            const parts = sticker.split(' ');
-            if (parts.length >= 2) {
-                ctx.font = `bold ${Math.round(20 * scale)}px ${baseFont}`;
-                ctx.fillText(parts[0], 0, -16 * scale);
-                ctx.font = `900 ${Math.round(26 * scale)}px ${baseFont}`;
-                ctx.fillStyle = '#FEF08A';
-                ctx.fillText(parts.slice(1).join(' '), 0, 16 * scale);
-            } else {
-                ctx.font = `bold ${Math.round(24 * scale)}px ${baseFont}`;
-                ctx.fillText(sticker, 0, 0);
-            }
-            ctx.restore();
-        }
-
-        // 5. Promotional Card (Line 1 & Line 2)
+        // 5. Promotional Card (Line 1 & Line 2) - Positioned cleanly ABOVE the CTA pill
         if (line1 || line2) {
             ctx.save();
             const cardW = W - (pad * 2);
-            const cardH = 135 * scale;
+            const cardH = (line1 && line2) ? (110 * scale) : (75 * scale);
             const cardX = pad;
-            const cardY = H - (phone ? (260 * scale) : (165 * scale));
+            const cardY = (hasCta ? ctaY : barY) - cardH - (14 * scale);
 
             ctx.fillStyle = cardBg;
-            roundRect(ctx, cardX, cardY, cardW, cardH, 20 * scale, true, false);
+            roundRect(ctx, cardX, cardY, cardW, cardH, 16 * scale, true, false);
             ctx.strokeStyle = cardBorder;
             ctx.lineWidth = 2 * scale;
-            roundRect(ctx, cardX, cardY, cardW, cardH, 20 * scale, false, true);
+            roundRect(ctx, cardX, cardY, cardW, cardH, 16 * scale, false, true);
 
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
+            const maxCardTextW = cardW - (32 * scale);
             if (line1 && line2) {
-                ctx.font = `bold ${Math.round(28 * scale)}px ${baseFont}`;
+                let fs1 = 25;
+                ctx.font = `bold ${Math.round(fs1 * scale)}px ${baseFont}`;
+                while (ctx.measureText(line1).width > maxCardTextW && fs1 > 14) {
+                    fs1 -= 1;
+                    ctx.font = `bold ${Math.round(fs1 * scale)}px ${baseFont}`;
+                }
                 ctx.fillStyle = '#FFFFFF';
                 ctx.fillText(line1, W / 2, cardY + (cardH * 0.35));
 
-                ctx.font = `600 ${Math.round(23 * scale)}px ${baseFont}`;
+                let fs2 = 20;
+                ctx.font = `600 ${Math.round(fs2 * scale)}px ${baseFont}`;
+                while (ctx.measureText(line2).width > maxCardTextW && fs2 > 12) {
+                    fs2 -= 1;
+                    ctx.font = `600 ${Math.round(fs2 * scale)}px ${baseFont}`;
+                }
                 ctx.fillStyle = '#E2E8F0';
                 ctx.fillText(line2, W / 2, cardY + (cardH * 0.72));
             } else {
                 const single = line1 || line2;
-                ctx.font = `bold ${Math.round(30 * scale)}px ${baseFont}`;
+                let fsSingle = 26;
+                ctx.font = `bold ${Math.round(fsSingle * scale)}px ${baseFont}`;
+                while (ctx.measureText(single).width > maxCardTextW && fsSingle > 14) {
+                    fsSingle -= 1;
+                    ctx.font = `bold ${Math.round(fsSingle * scale)}px ${baseFont}`;
+                }
                 ctx.fillStyle = '#FFFFFF';
                 ctx.fillText(single, W / 2, cardY + (cardH / 2));
             }
@@ -884,13 +1053,10 @@
         }
 
         // 6. Call To Action (CTA) Pill
-        const cta = $('#studio_cta').val();
-        if (cta && cta !== 'none') {
+        if (hasCta) {
             ctx.save();
             const ctaW = 340 * scale;
-            const ctaH = 44 * scale;
             const ctaX = (W - ctaW) / 2;
-            const ctaY = H - (phone ? (165 * scale) : (80 * scale));
 
             const ctaGrad = ctx.createLinearGradient(ctaX, 0, ctaX + ctaW, 0);
             ctaGrad.addColorStop(0, '#F59E0B');
@@ -915,18 +1081,15 @@
         // 7. Bottom WhatsApp Contact Bar
         if (phone) {
             ctx.save();
-            const barH = 100 * scale;
-            const barY = H - barH;
-
             ctx.fillStyle = barBg;
             ctx.fillRect(0, barY, W, barH);
 
             ctx.fillStyle = barAccent;
-            ctx.fillRect(0, barY, W, 5 * scale);
+            ctx.fillRect(0, barY, W, 4 * scale);
 
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.font = `bold ${Math.round(32 * scale)}px ${baseFont}`;
+            ctx.font = `bold ${Math.round(28 * scale)}px ${baseFont}`;
             ctx.fillStyle = '#FFFFFF';
             ctx.shadowColor = 'rgba(0,0,0,0.5)';
             ctx.shadowBlur = 6 * scale;
@@ -945,7 +1108,7 @@
             lw = lw * ratio;
             lh = lh * ratio;
 
-            const lx = (stickerPos === 'left' && sticker && sticker !== 'none') ? (W - lw - 32 * scale) : (32 * scale);
+            const lx = 32 * scale;
             const ly = 28 * scale;
 
             ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
@@ -984,22 +1147,62 @@
         renderStudioPoster();
     });
 
-    $('#studio_sticker').on('change', function() {
-        if ($(this).val() === 'custom') {
-            $('#custom_sticker_wrap').slideDown(150);
-        } else {
-            $('#custom_sticker_wrap').slideUp(150);
+    $('#studio_shop_color_preset').on('change', function() {
+        const val = $(this).val();
+        if (val !== 'custom') {
+            $('#studio_shop_color_picker').val(val);
         }
+        renderStudioPoster();
+    });
+    $('#studio_shop_color_picker').on('input change', function() {
+        $('#studio_shop_color_preset').val('custom');
+        renderStudioPoster();
+    });
+
+    $('#studio_title_color_preset').on('change', function() {
+        const val = $(this).val();
+        if (val !== 'custom' && val !== 'auto') {
+            $('#studio_title_color_picker').val(val);
+        }
+        renderStudioPoster();
+    });
+    $('#studio_title_color_picker').on('input change', function() {
+        $('#studio_title_color_preset').val('custom');
+        renderStudioPoster();
+    });
+
+    $('#studio_subtitle_color_preset').on('change', function() {
+        const val = $(this).val();
+        if (val !== 'custom' && val !== 'auto') {
+            $('#studio_subtitle_color_picker').val(val);
+        }
+        renderStudioPoster();
+    });
+    $('#studio_subtitle_color_picker').on('input change', function() {
+        $('#studio_subtitle_color_preset').val('custom');
         renderStudioPoster();
     });
 
     function openPosterStudio(id, imageSrc, title, subtitle, line1, line2, phone) {
         $('#studio_item_id').val(id);
-        $('#studio_title').val(title || '');
-        $('#studio_subtitle').val(subtitle || '');
-        $('#studio_line1').val(line1 || '');
-        $('#studio_line2').val(line2 || '');
-        $('#studio_phone').val(phone || '');
+        $('#studio_shop_size').val('medium');
+        $('#studio_shop_color_preset').val('#FFD700');
+        $('#studio_shop_color_picker').val('#FFD700');
+        $('#studio_shop_style').val('stars');
+        $('#studio_title').val(cleanStudioText(title));
+        $('#studio_subtitle').val(cleanStudioText(subtitle));
+        $('#studio_line1').val(cleanStudioText(line1));
+        $('#studio_line2').val(cleanStudioText(line2));
+        $('#studio_phone').val(cleanStudioText(phone));
+
+        $('#studio_text_pos').val('top-center');
+        $('#studio_title_size').val('medium');
+        $('#studio_subtitle_size').val('auto');
+        $('#studio_title_color_preset').val('auto');
+        $('#studio_title_color_picker').val('#FFFFFF');
+        $('#studio_subtitle_color_preset').val('auto');
+        $('#studio_subtitle_color_picker').val('#FACC15');
+        $('#studio_text_shadow').val('auto');
 
         // Reset to Tab 1
         $('.studio-tab-btn').removeClass('active');
