@@ -232,7 +232,24 @@ class FrontendController extends Controller
 
             $orderdata = $this->getCustomerOrderSummaries($customer_id);
 
-            return view('frontend/my_account', compact('customer', 'wishlist', 'wishCount', 'shipping_address', 'orderdata'));
+            $walletTransactions = collect();
+            $walletBalance = 0.0;
+            try {
+                $walletTransactions = DB::table('ecom_customer_wallet_transactions')
+                    ->where('customer_id', $customer_id)
+                    ->orderByDesc('id')
+                    ->get();
+
+                $walletBalance = (float) $walletTransactions->sum(function ($transaction) {
+                    $amount = (float) ($transaction->amount ?? 0);
+                    $type = strtolower((string) ($transaction->type ?? ''));
+                    return in_array($type, ['cashback_credit', 'credit'], true) ? $amount : ($amount * -1);
+                });
+            } catch (\Throwable $e) {
+                \Log::warning('Error loading wallet in myAccount: ' . $e->getMessage());
+            }
+
+            return view('frontend/my_account', compact('customer', 'wishlist', 'wishCount', 'shipping_address', 'orderdata', 'walletBalance', 'walletTransactions'));
         } else {
 
             return redirect('/home');

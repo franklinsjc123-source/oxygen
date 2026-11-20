@@ -915,7 +915,7 @@
                          
                             <center><h3>Wallet</h3></center>
 
-                            <h4 style="font-size: 1.6rem; font-weight: 700; color: #333; margin-bottom: 15px;">Wallet Balance : 200</h4>
+                            <h4 style="font-size: 1.6rem; font-weight: 700; color: #333; margin-bottom: 15px;">Wallet Balance : <span style="font-family: Arial, sans-serif;">₹</span>200</h4>
 
                                <div style="overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%;">
                                    <table class="shop-table account-orders-table mb-6">
@@ -934,7 +934,7 @@
                                                <td class="order-date">August 20, 2021</td>
                                                <td class="order-status">Processing</td>
                                                <td class="order-total">
-                                                   <span class="order-price">$121.00</span> for
+                                                   <span class="order-price"><span style="font-family: Arial, sans-serif;">₹</span>121.00</span> for
                                                    <span class="order-quantity"> 1</span> item
                                                </td>
                                                <td class="order-action">
