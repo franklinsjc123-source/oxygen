@@ -293,34 +293,16 @@
 																<div class="row g-2 mb-2">
 																	<div class="col-6">
 																		<label class="studio-label"><i class="fa fa-paint-brush text-primary"></i> Bar Background Color :</label>
-																		<div class="d-flex align-items-center gap-1">
-																			<select class="form-select form-select-sm studio-input flex-grow-1" id="studio_bar_bg_preset">
-																				<option value="rgba(18, 18, 18, 0.88)" selected>Translucent Black (Default)</option>
-																				<option value="#000000">Solid Pitch Black</option>
-																				<option value="#075E54">WhatsApp Dark Green</option>
-																				<option value="#0F172A">Deep Cyber Navy</option>
-																				<option value="#7F1D1D">Crimson Dark Red</option>
-																				<option value="#4A0404">Royal Burgundy</option>
-																				<option value="#4C1D95">Royal Deep Purple</option>
-																				<option value="rgba(255, 255, 255, 0.92)">Translucent White</option>
-																				<option value="custom">Custom Color...</option>
-																			</select>
-																			<input type="color" class="form-control form-control-color p-0 border studio-input" id="studio_bar_bg_picker" value="#121212" style="width: 32px; height: 34px; min-width: 32px; cursor: pointer;" title="Choose Custom Bar Background Color">
+																		<div class="d-flex align-items-center gap-2">
+																			<input type="color" class="form-control form-control-color p-0 border studio-input" id="studio_bar_bg_picker" value="#121212" style="width: 44px; height: 34px; cursor: pointer;" title="Choose Bar Background Color">
+																			<span class="small text-muted fw-bold" id="studio_bar_bg_hex">#121212</span>
 																		</div>
 																	</div>
 																	<div class="col-6">
 																		<label class="studio-label"><i class="fa fa-font text-info"></i> Bar Text Color :</label>
-																		<div class="d-flex align-items-center gap-1">
-																			<select class="form-select form-select-sm studio-input flex-grow-1" id="studio_bar_text_preset">
-																				<option value="#FFFFFF" selected>Pure White (Default)</option>
-																				<option value="#FBBF24">Classic Gold</option>
-																				<option value="#FDE047">Bright Yellow</option>
-																				<option value="#38BDF8">Sky Neon Blue</option>
-																				<option value="#4ADE80">Mint Green</option>
-																				<option value="#111827">Dark Charcoal / Black</option>
-																				<option value="custom">Custom Color...</option>
-																			</select>
-																			<input type="color" class="form-control form-control-color p-0 border studio-input" id="studio_bar_text_picker" value="#FFFFFF" style="width: 32px; height: 34px; min-width: 32px; cursor: pointer;" title="Choose Custom Bar Text Color">
+																		<div class="d-flex align-items-center gap-2">
+																			<input type="color" class="form-control form-control-color p-0 border studio-input" id="studio_bar_text_picker" value="#ffffff" style="width: 44px; height: 34px; cursor: pointer;" title="Choose Bar Text Color">
+																			<span class="small text-muted fw-bold" id="studio_bar_text_hex">#FFFFFF</span>
 																		</div>
 																	</div>
 																</div>
@@ -339,20 +321,6 @@
 
 															<!-- TAB 2: STYLE & OPTIONS -->
 															<div class="studio-tab-pane" id="tab-design" style="display: none;">
-																<div class="mb-2">
-																	<label class="studio-label"><i class="fa fa-magic text-primary"></i> Offer Pill Quick Presets :</label>
-																	<select class="form-select form-select-sm studio-input" id="studio_cta">
-																		<option value="Free Delivery" selected>✨ Free Delivery</option>
-																		<option value="SPECIAL OFFER">🔥 SPECIAL OFFER</option>
-																		<option value="ORDER NOW">⚡ ORDER NOW</option>
-																		<option value="SHOP NOW">🛍️ SHOP NOW</option>
-																		<option value="LIMITED STOCK">⏳ LIMITED STOCK</option>
-																		<option value="VISIT US TODAY">📍 VISIT US TODAY</option>
-																		<option value="BOOK NOW">📅 BOOK NOW</option>
-																		<option value="none">-- Hide Pill --</option>
-																	</select>
-																</div>
-
 																<div class="mb-2">
 																	<label class="studio-label"><i class="fa fa-paint-brush text-primary"></i> Pill Color Gradient :</label>
 																	<select class="form-select form-select-sm studio-input" id="studio_theme">
@@ -1033,17 +1001,8 @@
         // ----------------------------------------------------
         // 4. DRAW ADDRESS & FIXED DOMAIN BAR (Customizable Background & Text Color)
         // ----------------------------------------------------
-        const barBgPreset = $('#studio_bar_bg_preset').val() || 'rgba(18, 18, 18, 0.88)';
-        let finalBarBg = barBgPreset;
-        if (barBgPreset === 'custom') {
-            finalBarBg = $('#studio_bar_bg_picker').val() || '#121212';
-        }
-
-        const barTextPreset = $('#studio_bar_text_preset').val() || '#FFFFFF';
-        let finalBarTextColor = barTextPreset;
-        if (barTextPreset === 'custom') {
-            finalBarTextColor = $('#studio_bar_text_picker').val() || '#FFFFFF';
-        }
+        const finalBarBg = $('#studio_bar_bg_picker').val() || '#121212';
+        const finalBarTextColor = $('#studio_bar_text_picker').val() || '#FFFFFF';
 
         ctx.save();
         ctx.fillStyle = finalBarBg;
@@ -1191,39 +1150,13 @@
         renderStudioPoster();
     });
 
-    $('#studio_bar_bg_preset').on('change', function() {
-        const val = $(this).val();
-        if (val !== 'custom') {
-            if (val.startsWith('#')) {
-                $('#studio_bar_bg_picker').val(val);
-            }
-        }
-        renderStudioPoster();
-    });
     $('#studio_bar_bg_picker').on('input change', function() {
-        $('#studio_bar_bg_preset').val('custom');
+        $('#studio_bar_bg_hex').text($(this).val().toUpperCase());
         renderStudioPoster();
     });
 
-    $('#studio_bar_text_preset').on('change', function() {
-        const val = $(this).val();
-        if (val !== 'custom') {
-            $('#studio_bar_text_picker').val(val);
-        }
-        renderStudioPoster();
-    });
     $('#studio_bar_text_picker').on('input change', function() {
-        $('#studio_bar_text_preset').val('custom');
-        renderStudioPoster();
-    });
-
-    $('#studio_cta').on('change', function() {
-        const val = $(this).val();
-        if (val === 'none') {
-            $('#studio_line2').val('');
-        } else {
-            $('#studio_line2').val(val);
-        }
+        $('#studio_bar_text_hex').text($(this).val().toUpperCase());
         renderStudioPoster();
     });
 
@@ -1263,10 +1196,10 @@
         $('#studio_line2').val(cleanL2 || 'Free Delivery');
         $('#studio_phone').val(cleanStudioText(phone));
 
-        $('#studio_bar_bg_preset').val('rgba(18, 18, 18, 0.88)');
         $('#studio_bar_bg_picker').val('#121212');
-        $('#studio_bar_text_preset').val('#FFFFFF');
+        $('#studio_bar_bg_hex').text('#121212');
         $('#studio_bar_text_picker').val('#FFFFFF');
+        $('#studio_bar_text_hex').text('#FFFFFF');
 
         $('#studio_text_pos').val('top-right');
         $('#studio_text_color_preset').val('#FFFFFF');
