@@ -117,139 +117,43 @@
 															</button>
 														</div>
 
-														<div class="tab-content flex-grow-1" id="studioTabContent" style="overflow-y: auto; max-height: 350px; padding-right: 4px;">
+														<div class="tab-content flex-grow-1" id="studioTabContent" style="overflow-y: auto; max-height: 400px; padding-right: 4px;">
 															<!-- TAB 1: CONTENT -->
 															<div class="studio-tab-pane" id="tab-content" style="display: block;">
-																<div class="row g-2 mb-2">
-																	<div class="col-7">
-																		<label class="studio-label">Shop Name / Header :</label>
-																		<input type="text" class="form-control form-control-sm studio-input" id="studio_shop_name" value="{{ $vendorName ?? 'My Shop' }}" placeholder="e.g. My Shop">
-																	</div>
-																	<div class="col-5">
-																		<label class="studio-label"><i class="fa fa-text-height me-1 text-primary"></i> Shop Size :</label>
-																		<select class="form-select form-select-sm studio-input" id="studio_shop_size">
-																			<option value="small">Small (18px)</option>
-																			<option value="medium" selected>Medium (24px)</option>
-																			<option value="large">Large (32px)</option>
-																			<option value="xlarge">Extra Large (42px)</option>
-																			<option value="huge">Huge (54px)</option>
-																			<option value="none">-- Hide Shop Name --</option>
-																		</select>
-																	</div>
-																</div>
 
-																<div class="row g-2 mb-2">
-																	<div class="col-6">
-																		<label class="studio-label"><i class="fa fa-paint-brush me-1 text-primary"></i> Shop Color :</label>
-																		<div class="d-flex align-items-center gap-1">
-																			<select class="form-select form-select-sm studio-input flex-grow-1" id="studio_shop_color_preset">
-																				<option value="#FFD700" selected>Gold / Yellow</option>
-																				<option value="#FFFFFF">White</option>
-																				<option value="#000000">Black</option>
-																				<option value="#EF4444">Crimson Red</option>
-																				<option value="#2563EB">Royal Blue</option>
-																				<option value="#10B981">Green</option>
-																				<option value="#E2E8F0">Soft Silver</option>
-																				<option value="custom">Custom...</option>
-																			</select>
-																			<input type="color" id="studio_shop_color_picker" class="form-control form-control-sm p-0" value="#FFD700" style="width: 34px; height: 31px; border-radius: 6px; cursor: pointer; border: 1px solid #ced4da;" title="Pick Shop Color">
-																		</div>
-																	</div>
-																	<div class="col-6">
-																		<label class="studio-label"><i class="fa fa-star me-1 text-primary"></i> Shop Style :</label>
-																		<select class="form-select form-select-sm studio-input" id="studio_shop_style">
-																			<option value="stars" selected>★ With Stars ★</option>
-																			<option value="clean">Plain Text</option>
-																			<option value="badge">Dark Pill Badge</option>
-																		</select>
-																	</div>
-																</div>
-
-																<div class="row g-2 mb-2">
-																	<div class="col-7">
-																		<label class="studio-label">Campaign Title :</label>
-																		<input type="text" class="form-control form-control-sm studio-input" id="studio_title" placeholder="e.g. MEGA FESTIVAL SALE">
-																	</div>
-																	<div class="col-5">
-																		<label class="studio-label"><i class="fa fa-text-height me-1 text-primary"></i> Title Size :</label>
-																		<select class="form-select form-select-sm studio-input" id="studio_title_size">
-																			<option value="small">Small (36px)</option>
-																			<option value="medium" selected>Medium (48px)</option>
-																			<option value="large">Large (64px)</option>
-																			<option value="xlarge">Extra Large (80px)</option>
-																			<option value="huge">Huge (96px)</option>
-																		</select>
-																	</div>
-																</div>
-
-																<div class="row g-2 mb-2">
-																	<div class="col-7">
-																		<label class="studio-label">Sub Title / Tagline :</label>
-																		<input type="text" class="form-control form-control-sm studio-input" id="studio_subtitle" placeholder="e.g. Flat 30% Off Everything">
-																	</div>
-																	<div class="col-5">
-																		<label class="studio-label"><i class="fa fa-text-height me-1 text-primary"></i> Subtitle Size :</label>
-																		<select class="form-select form-select-sm studio-input" id="studio_subtitle_size">
-																			<option value="auto" selected>Auto</option>
-																			<option value="small">Small (24px)</option>
-																			<option value="medium">Medium (34px)</option>
-																			<option value="large">Large (48px)</option>
-																			<option value="xlarge">Extra Large (62px)</option>
-																			<option value="huge">Huge (76px)</option>
-																		</select>
-																	</div>
-																</div>
-
-																{{-- Text Position & Color Customization --}}
-																<div class="row g-2 mb-2">
-																	<div class="col-6">
-																		<label class="studio-label"><i class="fa fa-arrows me-1 text-primary"></i> Text Position :</label>
+																{{-- Common Alignment, Color & Shadow for all 6 Lines --}}
+																<div class="row g-2 mb-2 p-2 rounded border bg-light">
+																	<div class="col-4">
+																		<label class="studio-label"><i class="fa fa-arrows me-1 text-primary"></i> Position & Align :</label>
 																		<select class="form-select form-select-sm studio-input" id="studio_text_pos">
-																			<option value="top-center" selected>Top Center</option>
+																			<option value="top-right" selected>Top Right (Fashion Style)</option>
+																			<option value="top-center">Top Center</option>
 																			<option value="top-left">Top Left</option>
-																			<option value="top-right">Top Right</option>
+																			<option value="middle-right">Middle Right</option>
 																			<option value="middle-center">Center / Middle</option>
 																			<option value="middle-left">Middle Left</option>
-																			<option value="middle-right">Middle Right</option>
+																			<option value="bottom-right">Bottom Right</option>
 																			<option value="bottom-center">Bottom Center</option>
+																			<option value="bottom-left">Bottom Left</option>
 																		</select>
 																	</div>
-																	<div class="col-6">
-																		<label class="studio-label"><i class="fa fa-paint-brush me-1 text-primary"></i> Text / Title Color :</label>
+																	<div class="col-4">
+																		<label class="studio-label"><i class="fa fa-paint-brush me-1 text-primary"></i> Text Color :</label>
 																		<div class="d-flex align-items-center gap-1">
-																			<select class="form-select form-select-sm studio-input flex-grow-1" id="studio_title_color_preset">
-																				<option value="auto" selected>Auto (Theme)</option>
-																				<option value="#FFFFFF">White</option>
+																			<select class="form-select form-select-sm studio-input flex-grow-1" id="studio_text_color_preset">
+																				<option value="#FFFFFF" selected>White</option>
 																				<option value="#000000">Black</option>
+																				<option value="#FFD700">Gold / Yellow</option>
 																				<option value="#EF4444">Crimson Red</option>
-																				<option value="#FACC15">Gold / Yellow</option>
 																				<option value="#2563EB">Royal Blue</option>
 																				<option value="#10B981">Green</option>
-																				<option value="custom">Custom...</option>
-																			</select>
-																			<input type="color" id="studio_title_color_picker" class="form-control form-control-sm p-0" value="#FFFFFF" style="width: 34px; height: 31px; border-radius: 6px; cursor: pointer; border: 1px solid #ced4da;" title="Pick Color">
-																		</div>
-																	</div>
-																</div>
-
-																<div class="row g-2 mb-2">
-																	<div class="col-6">
-																		<label class="studio-label"><i class="fa fa-tint me-1 text-primary"></i> Subtitle Color :</label>
-																		<div class="d-flex align-items-center gap-1">
-																			<select class="form-select form-select-sm studio-input flex-grow-1" id="studio_subtitle_color_preset">
-																				<option value="auto" selected>Auto (Match Text)</option>
-																				<option value="#FFFFFF">White</option>
-																				<option value="#000000">Black</option>
-																				<option value="#EF4444">Crimson Red</option>
-																				<option value="#FACC15">Gold / Yellow</option>
-																				<option value="#38BDF8">Sky Blue</option>
 																				<option value="#E2E8F0">Soft Silver</option>
 																				<option value="custom">Custom...</option>
 																			</select>
-																			<input type="color" id="studio_subtitle_color_picker" class="form-control form-control-sm p-0" value="#FACC15" style="width: 34px; height: 31px; border-radius: 6px; cursor: pointer; border: 1px solid #ced4da;" title="Pick Subtitle Color">
+																			<input type="color" id="studio_text_color_picker" class="form-control form-control-sm p-0" value="#FFFFFF" style="width: 32px; height: 31px; border-radius: 6px; cursor: pointer; border: 1px solid #ced4da;" title="Pick Color">
 																		</div>
 																	</div>
-																	<div class="col-6">
+																	<div class="col-4">
 																		<label class="studio-label"><i class="fa fa-adjust me-1 text-primary"></i> Text Shadow :</label>
 																		<select class="form-select form-select-sm studio-input" id="studio_text_shadow">
 																			<option value="auto" selected>Auto (Contrast)</option>
@@ -260,47 +164,204 @@
 																	</div>
 																</div>
 
-																<div class="row g-2 mb-2">
-																	<div class="col-6">
-																		<label class="studio-label">Footer Line 1 :</label>
-																		<input type="text" class="form-control form-control-sm studio-input" id="studio_line1" placeholder="e.g. Special Offer or Store Address">
+																{{-- 6 Individual Poster Text Lines with Individual Sizes --}}
+																<div class="row g-2 mb-1">
+																	<div class="col-7">
+																		<label class="studio-label py-0 mb-1">Line 1 :</label>
+																		<input type="text" class="form-control form-control-sm studio-input" id="studio_txt_1" placeholder="e.g. SPECIAL OFFER">
 																	</div>
-																	<div class="col-6">
-																		<label class="studio-label">Footer Line 2 :</label>
-																		<input type="text" class="form-control form-control-sm studio-input" id="studio_line2" placeholder="e.g. Valid This Week or Website">
+																	<div class="col-5">
+																		<label class="studio-label py-0 mb-1"><i class="fa fa-text-height me-1 text-primary"></i> Size 1 :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_txt_1_size">
+																			<option value="xs">XS (22px)</option>
+																			<option value="small" selected>Small (28px)</option>
+																			<option value="medium">Medium (38px)</option>
+																			<option value="large">Large (54px)</option>
+																			<option value="xlarge">XL (70px)</option>
+																			<option value="huge">Huge (88px)</option>
+																			<option value="giant">Giant (108px)</option>
+																		</select>
 																	</div>
 																</div>
 
-																<div class="mb-2">
-																	<label class="studio-label">WhatsApp / Contact :</label>
-																	<input type="number" min="0" class="form-control form-control-sm studio-input" id="studio_phone" placeholder="e.g. 9876543210">
+																<div class="row g-2 mb-1">
+																	<div class="col-7">
+																		<label class="studio-label py-0 mb-1">Line 2 :</label>
+																		<input type="text" class="form-control form-control-sm studio-input" id="studio_txt_2" placeholder="e.g. FASHION">
+																	</div>
+																	<div class="col-5">
+																		<label class="studio-label py-0 mb-1"><i class="fa fa-text-height me-1 text-primary"></i> Size 2 :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_txt_2_size">
+																			<option value="xs">XS (22px)</option>
+																			<option value="small">Small (28px)</option>
+																			<option value="medium">Medium (38px)</option>
+																			<option value="large">Large (54px)</option>
+																			<option value="xlarge">XL (70px)</option>
+																			<option value="huge" selected>Huge (88px)</option>
+																			<option value="giant">Giant (108px)</option>
+																		</select>
+																	</div>
+																</div>
+
+																<div class="row g-2 mb-1">
+																	<div class="col-7">
+																		<label class="studio-label py-0 mb-1">Line 3 :</label>
+																		<input type="text" class="form-control form-control-sm studio-input" id="studio_txt_3" placeholder="e.g. SALE">
+																	</div>
+																	<div class="col-5">
+																		<label class="studio-label py-0 mb-1"><i class="fa fa-text-height me-1 text-primary"></i> Size 3 :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_txt_3_size">
+																			<option value="xs">XS (22px)</option>
+																			<option value="small">Small (28px)</option>
+																			<option value="medium">Medium (38px)</option>
+																			<option value="large">Large (54px)</option>
+																			<option value="xlarge">XL (70px)</option>
+																			<option value="huge" selected>Huge (88px)</option>
+																			<option value="giant">Giant (108px)</option>
+																		</select>
+																	</div>
+																</div>
+
+																<div class="row g-2 mb-1">
+																	<div class="col-7">
+																		<label class="studio-label py-0 mb-1">Line 4 :</label>
+																		<input type="text" class="form-control form-control-sm studio-input" id="studio_txt_4" placeholder="e.g. UP TO">
+																	</div>
+																	<div class="col-5">
+																		<label class="studio-label py-0 mb-1"><i class="fa fa-text-height me-1 text-primary"></i> Size 4 :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_txt_4_size">
+																			<option value="xs">XS (22px)</option>
+																			<option value="small">Small (28px)</option>
+																			<option value="medium" selected>Medium (38px)</option>
+																			<option value="large">Large (54px)</option>
+																			<option value="xlarge">XL (70px)</option>
+																			<option value="huge">Huge (88px)</option>
+																			<option value="giant">Giant (108px)</option>
+																		</select>
+																	</div>
+																</div>
+
+																<div class="row g-2 mb-1">
+																	<div class="col-7">
+																		<label class="studio-label py-0 mb-1">Line 5 :</label>
+																		<input type="text" class="form-control form-control-sm studio-input" id="studio_txt_5" placeholder="e.g. 50%">
+																	</div>
+																	<div class="col-5">
+																		<label class="studio-label py-0 mb-1"><i class="fa fa-text-height me-1 text-primary"></i> Size 5 :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_txt_5_size">
+																			<option value="xs">XS (22px)</option>
+																			<option value="small">Small (28px)</option>
+																			<option value="medium">Medium (38px)</option>
+																			<option value="large">Large (54px)</option>
+																			<option value="xlarge">XL (70px)</option>
+																			<option value="huge">Huge (88px)</option>
+																			<option value="giant" selected>Giant (108px)</option>
+																		</select>
+																	</div>
+																</div>
+
+																<div class="row g-2 mb-2">
+																	<div class="col-7">
+																		<label class="studio-label py-0 mb-1">Line 6 :</label>
+																		<input type="text" class="form-control form-control-sm studio-input" id="studio_txt_6" placeholder="e.g. OFF">
+																	</div>
+																	<div class="col-5">
+																		<label class="studio-label py-0 mb-1"><i class="fa fa-text-height me-1 text-primary"></i> Size 6 :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_txt_6_size">
+																			<option value="xs">XS (22px)</option>
+																			<option value="small">Small (28px)</option>
+																			<option value="medium" selected>Medium (38px)</option>
+																			<option value="large">Large (54px)</option>
+																			<option value="xlarge">XL (70px)</option>
+																			<option value="huge">Huge (88px)</option>
+																			<option value="giant">Giant (108px)</option>
+																		</select>
+																	</div>
+																</div>
+
+																<div class="row g-2 mb-2 pt-2 border-top">
+																	<div class="col-7">
+																		<label class="studio-label"><i class="fa fa-map-marker text-danger"></i> Store Address / Location :</label>
+																		<input type="text" class="form-control form-control-sm studio-input" id="studio_line1" placeholder="e.g. FASHION 600, T.NAGAR">
+																	</div>
+																	<div class="col-5">
+																		<label class="studio-label"><i class="fa fa-lock text-muted"></i> Website (Fixed) :</label>
+																		<input type="text" class="form-control form-control-sm text-dark bg-light fw-bold" id="studio_fixed_domain" value="@trymenow.in" readonly style="cursor: not-allowed; background-color: #f1f5f9 !important;">
+																	</div>
+																</div>
+
+																<div class="row g-2 mb-2">
+																	<div class="col-6">
+																		<label class="studio-label"><i class="fa fa-paint-brush text-primary"></i> Bar Background Color :</label>
+																		<div class="d-flex align-items-center gap-1">
+																			<select class="form-select form-select-sm studio-input flex-grow-1" id="studio_bar_bg_preset">
+																				<option value="rgba(18, 18, 18, 0.88)" selected>Translucent Black (Default)</option>
+																				<option value="#000000">Solid Pitch Black</option>
+																				<option value="#075E54">WhatsApp Dark Green</option>
+																				<option value="#0F172A">Deep Cyber Navy</option>
+																				<option value="#7F1D1D">Crimson Dark Red</option>
+																				<option value="#4A0404">Royal Burgundy</option>
+																				<option value="#4C1D95">Royal Deep Purple</option>
+																				<option value="rgba(255, 255, 255, 0.92)">Translucent White</option>
+																				<option value="custom">Custom Color...</option>
+																			</select>
+																			<input type="color" class="form-control form-control-color p-0 border studio-input" id="studio_bar_bg_picker" value="#121212" style="width: 32px; height: 34px; min-width: 32px; cursor: pointer;" title="Choose Custom Bar Background Color">
+																		</div>
+																	</div>
+																	<div class="col-6">
+																		<label class="studio-label"><i class="fa fa-font text-info"></i> Bar Text Color :</label>
+																		<div class="d-flex align-items-center gap-1">
+																			<select class="form-select form-select-sm studio-input flex-grow-1" id="studio_bar_text_preset">
+																				<option value="#FFFFFF" selected>Pure White (Default)</option>
+																				<option value="#FBBF24">Classic Gold</option>
+																				<option value="#FDE047">Bright Yellow</option>
+																				<option value="#38BDF8">Sky Neon Blue</option>
+																				<option value="#4ADE80">Mint Green</option>
+																				<option value="#111827">Dark Charcoal / Black</option>
+																				<option value="custom">Custom Color...</option>
+																			</select>
+																			<input type="color" class="form-control form-control-color p-0 border studio-input" id="studio_bar_text_picker" value="#FFFFFF" style="width: 32px; height: 34px; min-width: 32px; cursor: pointer;" title="Choose Custom Bar Text Color">
+																		</div>
+																	</div>
+																</div>
+
+																<div class="row g-2 mb-2">
+																	<div class="col-7">
+																		<label class="studio-label"><i class="fa fa-tag text-warning"></i> Offer Badge Pill (Bottom) :</label>
+																		<input type="text" class="form-control form-control-sm studio-input" id="studio_line2" placeholder="e.g. Free Delivery">
+																	</div>
+																	<div class="col-5">
+																		<label class="studio-label"><i class="fa fa-phone text-success"></i> WhatsApp / Mobile :</label>
+																		<input type="text" class="form-control form-control-sm studio-input" id="studio_phone" placeholder="e.g. 9876543210">
+																	</div>
 																</div>
 															</div>
 
 															<!-- TAB 2: STYLE & OPTIONS -->
 															<div class="studio-tab-pane" id="tab-design" style="display: none;">
 																<div class="mb-2">
-																	<label class="studio-label">Call-To-Action (CTA) Pill :</label>
+																	<label class="studio-label"><i class="fa fa-magic text-primary"></i> Offer Pill Quick Presets :</label>
 																	<select class="form-select form-select-sm studio-input" id="studio_cta">
-																		<option value="ORDER NOW" selected>⚡ ORDER NOW</option>
+																		<option value="Free Delivery" selected>✨ Free Delivery</option>
+																		<option value="SPECIAL OFFER">🔥 SPECIAL OFFER</option>
+																		<option value="ORDER NOW">⚡ ORDER NOW</option>
 																		<option value="SHOP NOW">🛍️ SHOP NOW</option>
-																		<option value="FREE HOME DELIVERY">🚚 FREE HOME DELIVERY</option>
 																		<option value="LIMITED STOCK">⏳ LIMITED STOCK</option>
 																		<option value="VISIT US TODAY">📍 VISIT US TODAY</option>
 																		<option value="BOOK NOW">📅 BOOK NOW</option>
-																		<option value="none">-- None --</option>
+																		<option value="none">-- Hide Pill --</option>
 																	</select>
 																</div>
 
 																<div class="mb-2">
-																	<label class="studio-label">Color Theme :</label>
+																	<label class="studio-label"><i class="fa fa-paint-brush text-primary"></i> Pill Color Gradient :</label>
 																	<select class="form-select form-select-sm studio-input" id="studio_theme">
-																		<option value="classic" selected>Classic Gold & White (Festive)</option>
-																		<option value="crimson">Ruby Crimson & Gold (Hot Deal)</option>
-																		<option value="vibrant">Emerald Green (WhatsApp Brand)</option>
-																		<option value="modern">Modern Cyber Blue & White</option>
-																		<option value="royal">Royal Purple & Gold</option>
-																		<option value="minimal">Clean Minimal (Pure White Glow)</option>
+																		<option value="fashion_pink_gold" selected>Fashion Sunrise (Rose Pink & Golden Yellow)</option>
+																		<option value="sunset">Sunset Glow (Crimson Red & Warm Orange)</option>
+																		<option value="luxury_gold">Luxury Gold (Amber & Champagne)</option>
+																		<option value="emerald">Emerald WhatsApp (Green Gradient)</option>
+																		<option value="cyber">Cyber Neon (Sky Blue & Royal Purple)</option>
+																		<option value="minimal">Minimal Dark (Charcoal & Slate)</option>
 																	</select>
 																</div>
 
@@ -670,6 +731,27 @@
         return currentY + lineHeight;
     }
 
+    function getWrappedLines(ctx, text, maxWidth) {
+        if (!text) return [];
+        const words = text.split(' ');
+        let line = '';
+        const lines = [];
+        for (let n = 0; n < words.length; n++) {
+            const testLine = line + words[n] + ' ';
+            const metrics = ctx.measureText(testLine);
+            if (metrics.width > maxWidth && n > 0) {
+                lines.push(line.trim());
+                line = words[n] + ' ';
+            } else {
+                line = testLine;
+            }
+        }
+        if (line.trim().length > 0) {
+            lines.push(line.trim());
+        }
+        return lines;
+    }
+
     function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
         if (typeof radius === 'number') {
             radius = {tl: radius, tr: radius, br: radius, bl: radius};
@@ -694,6 +776,17 @@
         const trimmed = String(str).trim();
         if (trimmed === '-' || trimmed === 'null' || trimmed === 'undefined') return '';
         return trimmed;
+    }
+
+    function getStudioLineSizePx(code, defaultPx) {
+        if (code === 'xs') return 22;
+        if (code === 'small') return 28;
+        if (code === 'medium') return 38;
+        if (code === 'large') return 54;
+        if (code === 'xlarge') return 70;
+        if (code === 'huge') return 88;
+        if (code === 'giant') return 108;
+        return defaultPx || 38;
     }
 
     function renderStudioPoster() {
@@ -746,9 +839,6 @@
             ctx.fillRect(0, 0, W, H);
         }
 
-        const shopName = cleanStudioText($('#studio_shop_name').val());
-        const title = cleanStudioText($('#studio_title').val());
-        const subtitle = cleanStudioText($('#studio_subtitle').val());
         const line1 = cleanStudioText($('#studio_line1').val());
         const line2 = cleanStudioText($('#studio_line2').val());
         const phone = cleanStudioText($('#studio_phone').val());
@@ -794,136 +884,114 @@
             barAccent = '#E2E8F0';
         }
 
-        // 2. Shop Name Watermark / Header
-        const shopSize = $('#studio_shop_size').val() || 'medium';
-        let shopPx = 24;
-        const hasShop = shopName && shopSize !== 'none';
-
-        if (hasShop) {
-            ctx.save();
-            if (shopSize === 'small') shopPx = 18;
-            else if (shopSize === 'medium') shopPx = 24;
-            else if (shopSize === 'large') shopPx = 32;
-            else if (shopSize === 'xlarge') shopPx = 42;
-            else if (shopSize === 'huge') shopPx = 54;
-
-            // Shop Color
-            const shopColorPreset = $('#studio_shop_color_preset').val() || '#FFD700';
-            let finalShopColor = shopColorPreset;
-            if (shopColorPreset === 'custom') {
-                finalShopColor = $('#studio_shop_color_picker').val() || '#FFD700';
+        const isDarkColor = function(hex) {
+            if (!hex) return false;
+            const clean = hex.replace('#', '').toLowerCase();
+            if (clean === 'black' || clean === '000000' || clean === '111111') return true;
+            if (clean.length === 6) {
+                const r = parseInt(clean.substring(0, 2), 16) || 0;
+                const g = parseInt(clean.substring(2, 4), 16) || 0;
+                const b = parseInt(clean.substring(4, 6), 16) || 0;
+                return (r * 0.299 + g * 0.587 + b * 0.114) < 120;
             }
+            return false;
+        };
 
-            const shopStyle = $('#studio_shop_style').val() || 'stars';
-            let displayText = shopName.toUpperCase();
-            if (shopStyle === 'stars') {
-                displayText = "★  " + displayText + "  ★";
-            }
+        // ----------------------------------------------------
+        // 2. BOTTOM FASHION BANNER & OFFER PILL (COORDINATE CALCULATION)
+        // ----------------------------------------------------
+        const addressRaw = cleanStudioText($('#studio_line1').val());
+        const phoneRaw = cleanStudioText($('#studio_phone').val());
+        const pillTextRaw = cleanStudioText($('#studio_line2').val());
+        const fixedDomain = '@trymenow.in';
 
-            const fontStyle = (shopStyle === 'badge') ? 'bold' : '800';
-            ctx.font = `${fontStyle} ${Math.round(shopPx * scale)}px ${baseFont}`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'top';
-
-            const shopY = 16 * scale;
-
-            if (shopStyle === 'badge') {
-                const textMetrics = ctx.measureText(displayText);
-                const badgePadX = 18 * scale;
-                const badgePadY = 6 * scale;
-                const badgeW = textMetrics.width + (badgePadX * 2);
-                const badgeH = (shopPx * 1.25 * scale) + (badgePadY * 2);
-                const badgeX = (W - badgeW) / 2;
-                const badgeY = shopY - (2 * scale);
-
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
-                roundRect(ctx, badgeX, badgeY, badgeW, badgeH, 12 * scale, true, false);
-                ctx.strokeStyle = finalShopColor;
-                ctx.lineWidth = 1.5 * scale;
-                roundRect(ctx, badgeX, badgeY, badgeW, badgeH, 12 * scale, false, true);
-
-                ctx.fillStyle = finalShopColor;
-                ctx.fillText(displayText, W / 2, shopY + badgePadY);
+        // Compose top line of address bar
+        let addressLine = addressRaw || 'FASHION 600, T.NAGAR';
+        if (phoneRaw) {
+            if (addressRaw) {
+                addressLine = addressRaw + '  •  ' + phoneRaw;
             } else {
-                ctx.fillStyle = finalShopColor;
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
-                ctx.shadowBlur = 10 * scale;
-                ctx.fillText(displayText, W / 2, shopY);
+                addressLine = phoneRaw;
             }
-            ctx.restore();
         }
 
-        // 3. Campaign Title / Subtitle with Custom Position, Alignment & Color
-        if (title || subtitle) {
+        const pillText = pillTextRaw || 'Free Delivery';
+        const hasPill = pillText && pillText !== 'none' && pillText !== '';
+
+        const pillH = Math.round(44 * scale);
+        const pillBottomMargin = Math.round(20 * scale);
+        const pillY = H - pillH - pillBottomMargin;
+
+        const gapBetweenBarAndPill = Math.round(14 * scale);
+        const barH = Math.round(82 * scale);
+        const barY = hasPill ? (pillY - gapBetweenBarAndPill - barH) : (H - barH - (18 * scale));
+
+        // 3. Main 6 Lines of Poster Text (Custom Sizes, Common Position/Alignment & Unified Color)
+        const posterLines = [
+            { text: cleanStudioText($('#studio_txt_1').val()), size: getStudioLineSizePx($('#studio_txt_1_size').val(), 28) },
+            { text: cleanStudioText($('#studio_txt_2').val()), size: getStudioLineSizePx($('#studio_txt_2_size').val(), 88) },
+            { text: cleanStudioText($('#studio_txt_3').val()), size: getStudioLineSizePx($('#studio_txt_3_size').val(), 88) },
+            { text: cleanStudioText($('#studio_txt_4').val()), size: getStudioLineSizePx($('#studio_txt_4_size').val(), 38) },
+            { text: cleanStudioText($('#studio_txt_5').val()), size: getStudioLineSizePx($('#studio_txt_5_size').val(), 108) },
+            { text: cleanStudioText($('#studio_txt_6').val()), size: getStudioLineSizePx($('#studio_txt_6_size').val(), 38) }
+        ].filter(l => l.text !== '');
+
+        if (posterLines.length > 0) {
             ctx.save();
+            const textPos = $('#studio_text_pos').val() || 'top-right';
 
-            const textPos = $('#studio_text_pos').val() || 'top-center';
-            const titleColorPreset = $('#studio_title_color_preset').val() || 'auto';
-            let finalTitleColor = titleColor;
-            if (titleColorPreset === 'custom') {
-                finalTitleColor = $('#studio_title_color_picker').val() || '#FFFFFF';
-            } else if (titleColorPreset !== 'auto') {
-                finalTitleColor = titleColorPreset;
+            // Common Color for all 6 lines
+            const colorPreset = $('#studio_text_color_preset').val() || '#FFFFFF';
+            let finalTextColor = colorPreset;
+            if (colorPreset === 'custom') {
+                finalTextColor = $('#studio_text_color_picker').val() || '#FFFFFF';
             }
 
-            const subColorPreset = $('#studio_subtitle_color_preset').val() || 'auto';
-            let finalSubColor = subTitleColor;
-            if (subColorPreset === 'custom') {
-                finalSubColor = $('#studio_subtitle_color_picker').val() || '#FACC15';
-            } else if (subColorPreset !== 'auto') {
-                finalSubColor = subColorPreset;
-            } else {
-                // If subColorPreset is 'auto':
-                // If title is empty, or user customized the main text color, match it!
-                if (!title || titleColorPreset !== 'auto') {
-                    finalSubColor = finalTitleColor;
-                } else {
-                    finalSubColor = subTitleColor;
-                }
-            }
-
-            const isDarkColor = function(hex) {
-                if (!hex) return false;
-                const clean = hex.replace('#', '').toLowerCase();
-                if (clean === 'black' || clean === '000000' || clean === '111111') return true;
-                if (clean.length === 6) {
-                    const r = parseInt(clean.substring(0, 2), 16) || 0;
-                    const g = parseInt(clean.substring(2, 4), 16) || 0;
-                    const b = parseInt(clean.substring(4, 6), 16) || 0;
-                    return (r * 0.299 + g * 0.587 + b * 0.114) < 120;
-                }
-                return false;
-            };
-
-            // Notice: Top gradient scrim removed so picking text color NEVER modifies poster background brightness!
-
-            // Determine horizontal alignment and X coordinate
-            let textAlign = 'center';
-            let textX = W / 2;
-            let maxTextW = W - (pad * 2);
+            // Alignment & X coordinate
+            let textAlign = 'right';
+            let textX = W - pad;
+            let maxTextW = Math.round(W * 0.70);
 
             if (textPos.endsWith('-left')) {
                 textAlign = 'left';
-                textX = pad * 1.1;
-                maxTextW = Math.round(W * 0.68);
-            } else if (textPos.endsWith('-right')) {
-                textAlign = 'right';
-                textX = W - (pad * 1.1);
-                maxTextW = Math.round(W * 0.68);
-            } else {
+                textX = pad;
+                maxTextW = Math.round(W * 0.70);
+            } else if (textPos.endsWith('-center')) {
                 textAlign = 'center';
                 textX = W / 2;
                 maxTextW = W - (pad * 2);
+            } else {
+                textAlign = 'right';
+                textX = W - pad;
+                maxTextW = Math.round(W * 0.70);
             }
 
-            // Determine vertical start Y coordinate
-            let currentY = 40 * scale;
+            // Pre-calculate exact wrapped lines and heights for each item
+            const preparedBlocks = [];
+            let totalLinesH = 0;
+
+            posterLines.forEach(l => {
+                ctx.font = `bold ${Math.round(l.size * scale)}px ${baseFont}`;
+                const wrapped = getWrappedLines(ctx, l.text.toUpperCase(), maxTextW);
+                const lineH = Math.round(l.size * 1.15 * scale);
+                const blockH = Math.max(1, wrapped.length) * lineH;
+                totalLinesH += blockH;
+                preparedBlocks.push({
+                    size: l.size,
+                    lineH: lineH,
+                    wrappedLines: wrapped.length > 0 ? wrapped : [l.text.toUpperCase()]
+                });
+            });
+
+            // Start Y coordinate
+            let currentY = 54 * scale;
             if (textPos.startsWith('top-')) {
-                currentY = hasShop ? (Math.max(54, shopPx + 34) * scale) : (40 * scale);
+                currentY = 60 * scale;
             } else if (textPos.startsWith('middle-')) {
-                currentY = Math.round(H * 0.38);
+                currentY = Math.max(60 * scale, Math.round((H * 0.40) - (totalLinesH / 2)));
             } else if (textPos.startsWith('bottom-')) {
-                currentY = H - (phone ? (360 * scale) : (270 * scale));
+                const bottomBoundary = barY - (30 * scale);
+                currentY = Math.max(50 * scale, bottomBoundary - totalLinesH);
             }
 
             // Shadow / Glow styling
@@ -934,7 +1002,7 @@
             if (shadowMode === 'none') {
                 shadowColor = 'transparent';
                 shadowBlur = 0;
-            } else if (shadowMode === 'light' || (shadowMode === 'auto' && isDarkColor(finalTitleColor))) {
+            } else if (shadowMode === 'light' || (shadowMode === 'auto' && isDarkColor(finalTextColor))) {
                 shadowColor = 'rgba(255, 255, 255, 0.88)';
                 shadowBlur = 10 * scale;
             } else {
@@ -944,156 +1012,120 @@
 
             ctx.textAlign = textAlign;
             ctx.textBaseline = 'top';
+            ctx.fillStyle = finalTextColor;
+            ctx.shadowColor = shadowColor;
+            ctx.shadowBlur = shadowBlur;
 
-            // Font size calculations for Title and Subtitle
-            let titlePx = 48;
-            const tSize = $('#studio_title_size').val() || 'medium';
-            if (tSize === 'small') titlePx = 36;
-            else if (tSize === 'medium') titlePx = 48;
-            else if (tSize === 'large') titlePx = 64;
-            else if (tSize === 'xlarge') titlePx = 80;
-            else if (tSize === 'huge') titlePx = 96;
-
-            let subPx = 34;
-            const sSize = $('#studio_subtitle_size').val() || 'auto';
-            if (sSize === 'small') subPx = 24;
-            else if (sSize === 'medium') subPx = 34;
-            else if (sSize === 'large') subPx = 48;
-            else if (sSize === 'xlarge') subPx = 62;
-            else if (sSize === 'huge') subPx = 76;
-            else if (sSize === 'auto') {
-                // If there's no main title, headline prominence (52px)
-                subPx = (!title) ? 52 : 34;
-            }
-
-            if (title) {
+            // Render each wrapped line cleanly without overlapping bottom bar
+            preparedBlocks.forEach(block => {
                 ctx.save();
-                ctx.font = `bold ${Math.round(titlePx * scale)}px ${baseFont}`;
-                ctx.shadowColor = shadowColor;
-                ctx.shadowBlur = shadowBlur;
-                ctx.fillStyle = finalTitleColor;
-                const lineH = Math.round(titlePx * 1.2 * scale);
-                currentY = wrapText(ctx, title.toUpperCase(), textX, currentY, maxTextW, lineH);
+                ctx.font = `bold ${Math.round(block.size * scale)}px ${baseFont}`;
+                block.wrappedLines.forEach(wl => {
+                    ctx.fillText(wl, textX, currentY);
+                    currentY += block.lineH;
+                });
                 ctx.restore();
-            }
+            });
 
-            if (subtitle) {
-                ctx.save();
-                const fontW = (!title) ? 'bold' : '700';
-                ctx.font = `${fontW} ${Math.round(subPx * scale)}px ${baseFont}`;
-                ctx.shadowColor = shadowColor;
-                ctx.shadowBlur = Math.round(shadowBlur * 0.7);
-                ctx.fillStyle = finalSubColor;
-                const subY = title ? (currentY + (12 * scale)) : currentY;
-                const subLineH = Math.round(subPx * 1.22 * scale);
-                wrapText(ctx, subtitle, textX, subY, maxTextW, subLineH);
-                ctx.restore();
-            }
             ctx.restore();
         }
 
-        // Bottom element vertical coordinate calculation (prevent any overlap)
-        const cta = $('#studio_cta').val();
-        const hasCta = cta && cta !== 'none';
-        const ctaH = 44 * scale;
-        const barH = phone ? (85 * scale) : 0;
-        const barY = H - barH;
+        // ----------------------------------------------------
+        // 4. DRAW ADDRESS & FIXED DOMAIN BAR (Customizable Background & Text Color)
+        // ----------------------------------------------------
+        const barBgPreset = $('#studio_bar_bg_preset').val() || 'rgba(18, 18, 18, 0.88)';
+        let finalBarBg = barBgPreset;
+        if (barBgPreset === 'custom') {
+            finalBarBg = $('#studio_bar_bg_picker').val() || '#121212';
+        }
 
-        // Position CTA pill above phone bar with breathing space
-        const ctaY = hasCta ? (barY - ctaH - (14 * scale)) : barY;
+        const barTextPreset = $('#studio_bar_text_preset').val() || '#FFFFFF';
+        let finalBarTextColor = barTextPreset;
+        if (barTextPreset === 'custom') {
+            finalBarTextColor = $('#studio_bar_text_picker').val() || '#FFFFFF';
+        }
 
-        // 5. Promotional Card (Line 1 & Line 2) - Positioned cleanly ABOVE the CTA pill
-        if (line1 || line2) {
+        ctx.save();
+        ctx.fillStyle = finalBarBg;
+        ctx.fillRect(0, barY, W, barH);
+
+        // Top line: Store Address / Location
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = finalBarTextColor;
+        ctx.shadowColor = isDarkColor(finalBarTextColor) ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.6)';
+        ctx.shadowBlur = 4 * scale;
+
+        let addrFs = 24;
+        ctx.font = `700 ${Math.round(addrFs * scale)}px ${baseFont}`;
+        const maxBarTextW = W - (40 * scale);
+        while (ctx.measureText(addressLine).width > maxBarTextW && addrFs > 13) {
+            addrFs -= 1;
+            ctx.font = `700 ${Math.round(addrFs * scale)}px ${baseFont}`;
+        }
+        ctx.fillText(addressLine.toUpperCase(), W / 2, barY + (barH * 0.36));
+
+        // Bottom line: @trymenow.in (FIXED)
+        ctx.fillStyle = finalBarTextColor;
+        ctx.shadowBlur = 0;
+        let domainFs = 19;
+        ctx.font = `500 ${Math.round(domainFs * scale)}px ${baseFont}`;
+        ctx.fillText(fixedDomain, W / 2, barY + (barH * 0.74));
+        ctx.restore();
+
+        // ----------------------------------------------------
+        // 5. DRAW OFFER BADGE PILL (Capsule with Gradient below Address Bar)
+        // ----------------------------------------------------
+        if (hasPill) {
             ctx.save();
-            const cardW = W - (pad * 2);
-            const cardH = (line1 && line2) ? (110 * scale) : (75 * scale);
-            const cardX = pad;
-            const cardY = (hasCta ? ctaY : barY) - cardH - (14 * scale);
+            ctx.font = `700 ${Math.round(21 * scale)}px ${baseFont}`;
+            const textMetrics = ctx.measureText(pillText);
+            const pillW = Math.max(Math.round(240 * scale), Math.round(textMetrics.width + (48 * scale)));
+            const pillX = Math.round((W - pillW) / 2);
 
-            ctx.fillStyle = cardBg;
-            roundRect(ctx, cardX, cardY, cardW, cardH, 16 * scale, true, false);
-            ctx.strokeStyle = cardBorder;
-            ctx.lineWidth = 2 * scale;
-            roundRect(ctx, cardX, cardY, cardW, cardH, 16 * scale, false, true);
+            // Radiant Gradient
+            const pillGrad = ctx.createLinearGradient(pillX, 0, pillX + pillW, 0);
+            const pillTheme = $('#studio_theme').val() || 'fashion_pink_gold';
 
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-
-            const maxCardTextW = cardW - (32 * scale);
-            if (line1 && line2) {
-                let fs1 = 25;
-                ctx.font = `bold ${Math.round(fs1 * scale)}px ${baseFont}`;
-                while (ctx.measureText(line1).width > maxCardTextW && fs1 > 14) {
-                    fs1 -= 1;
-                    ctx.font = `bold ${Math.round(fs1 * scale)}px ${baseFont}`;
-                }
-                ctx.fillStyle = '#FFFFFF';
-                ctx.fillText(line1, W / 2, cardY + (cardH * 0.35));
-
-                let fs2 = 20;
-                ctx.font = `600 ${Math.round(fs2 * scale)}px ${baseFont}`;
-                while (ctx.measureText(line2).width > maxCardTextW && fs2 > 12) {
-                    fs2 -= 1;
-                    ctx.font = `600 ${Math.round(fs2 * scale)}px ${baseFont}`;
-                }
-                ctx.fillStyle = '#E2E8F0';
-                ctx.fillText(line2, W / 2, cardY + (cardH * 0.72));
+            if (pillTheme === 'emerald') {
+                pillGrad.addColorStop(0, '#10B981');
+                pillGrad.addColorStop(1, '#059669');
+            } else if (pillTheme === 'cyber') {
+                pillGrad.addColorStop(0, '#38BDF8');
+                pillGrad.addColorStop(1, '#6366F1');
+            } else if (pillTheme === 'sunset') {
+                pillGrad.addColorStop(0, '#EF4444');
+                pillGrad.addColorStop(1, '#F97316');
+            } else if (pillTheme === 'luxury_gold') {
+                pillGrad.addColorStop(0, '#F59E0B');
+                pillGrad.addColorStop(1, '#FBBF24');
+            } else if (pillTheme === 'minimal') {
+                pillGrad.addColorStop(0, '#334155');
+                pillGrad.addColorStop(1, '#1E293B');
             } else {
-                const single = line1 || line2;
-                let fsSingle = 26;
-                ctx.font = `bold ${Math.round(fsSingle * scale)}px ${baseFont}`;
-                while (ctx.measureText(single).width > maxCardTextW && fsSingle > 14) {
-                    fsSingle -= 1;
-                    ctx.font = `bold ${Math.round(fsSingle * scale)}px ${baseFont}`;
-                }
-                ctx.fillStyle = '#FFFFFF';
-                ctx.fillText(single, W / 2, cardY + (cardH / 2));
+                // Default Reference Style: Fashion Sunrise (Rose Pink to Golden Yellow)
+                pillGrad.addColorStop(0, '#F43F5E');
+                pillGrad.addColorStop(0.5, '#FB7185');
+                pillGrad.addColorStop(1, '#FBBF24');
             }
-            ctx.restore();
-        }
 
-        // 6. Call To Action (CTA) Pill
-        if (hasCta) {
-            ctx.save();
-            const ctaW = 340 * scale;
-            const ctaX = (W - ctaW) / 2;
-
-            const ctaGrad = ctx.createLinearGradient(ctaX, 0, ctaX + ctaW, 0);
-            ctaGrad.addColorStop(0, '#F59E0B');
-            ctaGrad.addColorStop(1, '#EF4444');
-            ctx.fillStyle = ctaGrad;
-            ctx.shadowColor = 'rgba(0,0,0,0.55)';
+            ctx.fillStyle = pillGrad;
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.35)';
             ctx.shadowBlur = 10 * scale;
-            roundRect(ctx, ctaX, ctaY, ctaW, ctaH, 22 * scale, true, false);
+            roundRect(ctx, pillX, pillY, pillW, pillH, pillH / 2, true, false);
 
-            ctx.strokeStyle = '#FFFFFF';
-            ctx.lineWidth = 2 * scale;
-            roundRect(ctx, ctaX, ctaY, ctaW, ctaH, 22 * scale, false, true);
+            // Subtle border highlight
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+            ctx.lineWidth = 1.5 * scale;
+            roundRect(ctx, pillX, pillY, pillW, pillH, pillH / 2, false, true);
 
+            // Pill Text
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.font = `bold ${Math.round(20 * scale)}px ${baseFont}`;
-            ctx.fillStyle = '#FFFFFF';
-            ctx.fillText("⚡ " + cta.toUpperCase(), W / 2, ctaY + (ctaH / 2));
-            ctx.restore();
-        }
-
-        // 7. Bottom WhatsApp Contact Bar
-        if (phone) {
-            ctx.save();
-            ctx.fillStyle = barBg;
-            ctx.fillRect(0, barY, W, barH);
-
-            ctx.fillStyle = barAccent;
-            ctx.fillRect(0, barY, W, 4 * scale);
-
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.font = `bold ${Math.round(28 * scale)}px ${baseFont}`;
-            ctx.fillStyle = '#FFFFFF';
-            ctx.shadowColor = 'rgba(0,0,0,0.5)';
-            ctx.shadowBlur = 6 * scale;
-            ctx.fillText("WhatsApp / Order : " + phone, W / 2, barY + (barH / 2));
+            ctx.fillStyle = pillTheme === 'minimal' ? '#FFFFFF' : '#1E293B';
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.fillText(pillText, W / 2, pillY + (pillH / 2));
             ctx.restore();
         }
 
@@ -1147,62 +1179,100 @@
         renderStudioPoster();
     });
 
-    $('#studio_shop_color_preset').on('change', function() {
+    $('#studio_text_color_preset').on('change', function() {
         const val = $(this).val();
         if (val !== 'custom') {
-            $('#studio_shop_color_picker').val(val);
+            $('#studio_text_color_picker').val(val);
         }
         renderStudioPoster();
     });
-    $('#studio_shop_color_picker').on('input change', function() {
-        $('#studio_shop_color_preset').val('custom');
+    $('#studio_text_color_picker').on('input change', function() {
+        $('#studio_text_color_preset').val('custom');
         renderStudioPoster();
     });
 
-    $('#studio_title_color_preset').on('change', function() {
+    $('#studio_bar_bg_preset').on('change', function() {
         const val = $(this).val();
-        if (val !== 'custom' && val !== 'auto') {
-            $('#studio_title_color_picker').val(val);
+        if (val !== 'custom') {
+            if (val.startsWith('#')) {
+                $('#studio_bar_bg_picker').val(val);
+            }
         }
         renderStudioPoster();
     });
-    $('#studio_title_color_picker').on('input change', function() {
-        $('#studio_title_color_preset').val('custom');
+    $('#studio_bar_bg_picker').on('input change', function() {
+        $('#studio_bar_bg_preset').val('custom');
         renderStudioPoster();
     });
 
-    $('#studio_subtitle_color_preset').on('change', function() {
+    $('#studio_bar_text_preset').on('change', function() {
         const val = $(this).val();
-        if (val !== 'custom' && val !== 'auto') {
-            $('#studio_subtitle_color_picker').val(val);
+        if (val !== 'custom') {
+            $('#studio_bar_text_picker').val(val);
         }
         renderStudioPoster();
     });
-    $('#studio_subtitle_color_picker').on('input change', function() {
-        $('#studio_subtitle_color_preset').val('custom');
+    $('#studio_bar_text_picker').on('input change', function() {
+        $('#studio_bar_text_preset').val('custom');
+        renderStudioPoster();
+    });
+
+    $('#studio_cta').on('change', function() {
+        const val = $(this).val();
+        if (val === 'none') {
+            $('#studio_line2').val('');
+        } else {
+            $('#studio_line2').val(val);
+        }
         renderStudioPoster();
     });
 
     function openPosterStudio(id, imageSrc, title, subtitle, line1, line2, phone) {
         $('#studio_item_id').val(id);
-        $('#studio_shop_size').val('medium');
-        $('#studio_shop_color_preset').val('#FFD700');
-        $('#studio_shop_color_picker').val('#FFD700');
-        $('#studio_shop_style').val('stars');
-        $('#studio_title').val(cleanStudioText(title));
-        $('#studio_subtitle').val(cleanStudioText(subtitle));
-        $('#studio_line1').val(cleanStudioText(line1));
-        $('#studio_line2').val(cleanStudioText(line2));
+
+        const cleanTitle = cleanStudioText(title);
+        const cleanSub = cleanStudioText(subtitle);
+
+        if (cleanTitle || cleanSub) {
+            $('#studio_txt_1').val(cleanTitle || '');
+            $('#studio_txt_2').val(cleanSub || '');
+            $('#studio_txt_3').val('');
+            $('#studio_txt_4').val('');
+            $('#studio_txt_5').val('');
+            $('#studio_txt_6').val('');
+        } else {
+            // Default 6 lines matching fashion sale style
+            $('#studio_txt_1').val('SPECIAL OFFER');
+            $('#studio_txt_2').val('FASHION');
+            $('#studio_txt_3').val('SALE');
+            $('#studio_txt_4').val('UP TO');
+            $('#studio_txt_5').val('50%');
+            $('#studio_txt_6').val('OFF');
+        }
+
+        $('#studio_txt_1_size').val('small');
+        $('#studio_txt_2_size').val('huge');
+        $('#studio_txt_3_size').val('huge');
+        $('#studio_txt_4_size').val('medium');
+        $('#studio_txt_5_size').val('giant');
+        $('#studio_txt_6_size').val('medium');
+
+        const cleanL1 = cleanStudioText(line1);
+        const cleanL2 = cleanStudioText(line2);
+        $('#studio_line1').val(cleanL1 || 'FASHION 600, T.NAGAR');
+        $('#studio_line2').val(cleanL2 || 'Free Delivery');
         $('#studio_phone').val(cleanStudioText(phone));
 
-        $('#studio_text_pos').val('top-center');
-        $('#studio_title_size').val('medium');
-        $('#studio_subtitle_size').val('auto');
-        $('#studio_title_color_preset').val('auto');
-        $('#studio_title_color_picker').val('#FFFFFF');
-        $('#studio_subtitle_color_preset').val('auto');
-        $('#studio_subtitle_color_picker').val('#FACC15');
+        $('#studio_bar_bg_preset').val('rgba(18, 18, 18, 0.88)');
+        $('#studio_bar_bg_picker').val('#121212');
+        $('#studio_bar_text_preset').val('#FFFFFF');
+        $('#studio_bar_text_picker').val('#FFFFFF');
+
+        $('#studio_text_pos').val('top-right');
+        $('#studio_text_color_preset').val('#FFFFFF');
+        $('#studio_text_color_picker').val('#FFFFFF');
         $('#studio_text_shadow').val('auto');
+        $('#studio_theme').val('fashion_pink_gold');
 
         // Reset to Tab 1
         $('.studio-tab-btn').removeClass('active');
@@ -1254,7 +1324,7 @@
         const canvas = document.getElementById('posterCanvas');
         if (!canvas) return;
 
-        const title = ($('#studio_title').val() || '').trim() || 'poster';
+        const title = cleanStudioText($('#studio_txt_1').val()) || cleanStudioText($('#studio_txt_2').val()) || 'poster';
         const cleanFilename = 'whatsapp-poster-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.png';
 
         if (canvas.toBlob) {
@@ -1296,7 +1366,7 @@
         const canvas = document.getElementById('posterCanvas');
         if (!canvas) return;
 
-        const title = ($('#studio_title').val() || '').trim() || 'poster';
+        const title = cleanStudioText($('#studio_txt_1').val()) || cleanStudioText($('#studio_txt_2').val()) || 'poster';
         const cleanFilename = 'whatsapp-poster-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.jpg';
 
         if (canvas.toBlob) {
@@ -1338,8 +1408,16 @@
         const id = $('#studio_item_id').val();
         if (!id) return;
 
-        const title = $('#studio_title').val();
-        const subtitle = $('#studio_subtitle').val();
+        const title = cleanStudioText($('#studio_txt_1').val());
+        const txt2 = cleanStudioText($('#studio_txt_2').val());
+        const otherLines = [
+            cleanStudioText($('#studio_txt_3').val()),
+            cleanStudioText($('#studio_txt_4').val()),
+            cleanStudioText($('#studio_txt_5').val()),
+            cleanStudioText($('#studio_txt_6').val())
+        ].filter(Boolean).join(' ');
+
+        const subtitle = [txt2, otherLines].filter(Boolean).join(' ');
         const line1 = $('#studio_line1').val();
         const line2 = $('#studio_line2').val();
         const phone = $('#studio_phone').val();
@@ -1349,11 +1427,11 @@
         formData.append('_token', token);
         formData.append('_method', 'PUT');
         formData.append('edit_id', id);
-        formData.append('edittitle', title);
-        formData.append('editsub_title', subtitle);
-        formData.append('editline1', line1);
-        formData.append('editline2', line2);
-        formData.append('editph_no', phone);
+        formData.append('edittitle', title || txt2 || '-');
+        formData.append('editsub_title', subtitle || '-');
+        formData.append('editline1', line1 || '-');
+        formData.append('editline2', line2 || '-');
+        formData.append('editph_no', phone || '-');
         formData.append('editstatus', 1);
 
         const updateUrl = "{{ route('vendorwhatsapp.update', 1) }}";
