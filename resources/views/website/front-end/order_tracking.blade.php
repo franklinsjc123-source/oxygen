@@ -676,8 +676,12 @@
 
                         <div class="info-list-row">
                             <span class="info-label">Delivery Charges</span>
-                            <span class="info-value" style="{{ ($order_info->shipping_charge ?? 0) > 0 ? '' : 'color: #16a34a;' }}">
-                                {!! ($order_info->shipping_charge ?? 0) > 0 ? '<span style="font-family: Arial, sans-serif;">₹</span>' . number_format($order_info->shipping_charge, 2) : 'FREE' !!}
+                            <span class="info-value">
+                                @if(($order_info->shipping_charge ?? 0) > 0)
+                                    <span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($order_info->shipping_charge, 2) }}
+                                @else
+                                    <del style="color: #94a3b8; font-weight: 500; margin-right: 6px;"><span style="font-family: Arial, sans-serif;">₹</span>40.00</del><span style="color: #16a34a; font-weight: 700;">FREE</span>
+                                @endif
                             </span>
                         </div>
 
