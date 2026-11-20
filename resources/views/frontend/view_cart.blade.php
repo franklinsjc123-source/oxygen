@@ -114,7 +114,7 @@
         .cart .breadcrumb {
             padding: 5px 0 !important;
             margin-bottom: 0 !important;
-            justify-content: center !important;
+            justify-content: flex-start !important;
         }
 
         .cart .page-content {
@@ -433,9 +433,9 @@
             <!-- Start of Breadcrumb -->
             <nav class="breadcrumb-nav">
                 <div class="container">
-                    <ul class="breadcrumb shop-breadcrumb bb-no">
-                        <li class="active"><a href="#">Shopping Cart</a></li>
-                        <li><a href="{{url('/checkoutPage')}}">Checkout</a></li>
+                    <ul class="breadcrumb bb-no">
+                        <li><a href="{{ url('home') }}">Home</a></li>
+                        <li>Shopping Cart</li>
                     </ul>
                 </div>
             </nav>
