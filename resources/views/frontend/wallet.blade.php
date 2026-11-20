@@ -16,12 +16,21 @@
         <h2 class="title title-center mb-5">My Wallet</h2>
         <div class="row">
             <div class="col-lg-4 mb-4">
-                <div class="card">
+                <div class="card mb-3">
                     <div class="card-body">
                         <div class="text-muted mb-2">Available Balance</div>
                         <h2 class="mb-0"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($walletBalance ?? 0, 2) }}</h2>
                     </div>
                 </div>
+                @if(($pendingCashback ?? 0) > 0)
+                    <div class="card" style="background: #fffbeb; border: 1px solid #fef3c7;">
+                        <div class="card-body">
+                            <div class="text-warning mb-1" style="font-weight: 600;"><i class="fas fa-clock mr-1"></i> Pending Cashback</div>
+                            <h3 class="mb-1" style="color: #b45309;"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($pendingCashback, 2) }}</h3>
+                            <small class="text-muted">Credited after order delivery & return/replace period completes</small>
+                        </div>
+                    </div>
+                @endif
             </div>
             <div class="col-lg-8">
                 <div class="card">

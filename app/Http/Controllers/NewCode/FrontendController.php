@@ -234,7 +234,10 @@ class FrontendController extends Controller
 
             $walletTransactions = collect();
             $walletBalance = 0.0;
+            $pendingCashback = 0.0;
             try {
+                $this->syncCustomerWalletCashbacks($customer_id);
+
                 $walletTransactions = DB::table('ecom_customer_wallet_transactions')
                     ->where('customer_id', $customer_id)
                     ->orderByDesc('id')
@@ -243,16 +246,127 @@ class FrontendController extends Controller
                 $walletBalance = (float) $walletTransactions->sum(function ($transaction) {
                     $amount = (float) ($transaction->amount ?? 0);
                     $type = strtolower((string) ($transaction->type ?? ''));
+                    $status = strtolower((string) ($transaction->status ?? ''));
+                    if (!in_array($status, ['credited', 'completed', 'success'], true)) {
+                        return 0.0;
+                    }
                     return in_array($type, ['cashback_credit', 'credit'], true) ? $amount : ($amount * -1);
+                });
+
+                $pendingCashback = (float) $walletTransactions->sum(function ($transaction) {
+                    $amount = (float) ($transaction->amount ?? 0);
+                    $type = strtolower((string) ($transaction->type ?? ''));
+                    $status = strtolower((string) ($transaction->status ?? ''));
+                    return (in_array($type, ['cashback_credit', 'credit'], true) && in_array($status, ['pending', 'processing'], true)) ? $amount : 0.0;
                 });
             } catch (\Throwable $e) {
                 \Log::warning('Error loading wallet in myAccount: ' . $e->getMessage());
             }
 
-            return view('frontend/my_account', compact('customer', 'wishlist', 'wishCount', 'shipping_address', 'orderdata', 'walletBalance', 'walletTransactions'));
+            return view('frontend/my_account', compact('customer', 'wishlist', 'wishCount', 'shipping_address', 'orderdata', 'walletBalance', 'pendingCashback', 'walletTransactions'));
         } else {
 
             return redirect('/home');
+        }
+    }
+
+    /**
+     * Sync and update cashback transaction statuses based on order delivery & return/replace completion.
+     */
+    public function syncCustomerWalletCashbacks($customerId): void
+    {
+        try {
+            $transactions = DB::table('ecom_customer_wallet_transactions')
+                ->where('customer_id', $customerId)
+                ->where('type', 'cashback_credit')
+                ->get();
+
+            foreach ($transactions as $tx) {
+                if (empty($tx->order_id)) {
+                    continue;
+                }
+
+                $order = DB::table('ecom_order')
+                    ->where('order_id', $tx->order_id)
+                    ->where('customer_id', $customerId)
+                    ->first();
+
+                if (!$order) {
+                    continue;
+                }
+
+                $orderStatus = strtolower(trim((string) ($order->order_status ?? 'pending')));
+
+                // 1. If order was cancelled or returned
+                if (in_array($orderStatus, ['cancel', 'canceled', 'cancelled', 'return', 'returned'], true)) {
+                    if (strtolower((string) $tx->status) !== 'cancelled') {
+                        DB::table('ecom_customer_wallet_transactions')
+                            ->where('id', $tx->id)
+                            ->update([
+                                'status' => 'cancelled',
+                                'remarks' => 'Cashback cancelled due to order cancellation/return',
+                                'updated_at' => now(),
+                            ]);
+                    }
+                    continue;
+                }
+
+                // 2. If order is NOT delivered yet
+                $isDelivered = in_array($orderStatus, ['delivery', 'delivered'], true);
+                if (!$isDelivered) {
+                    if (strtolower((string) $tx->status) !== 'pending') {
+                        DB::table('ecom_customer_wallet_transactions')
+                            ->where('id', $tx->id)
+                            ->update([
+                                'status' => 'pending',
+                                'remarks' => 'Cashback pending until delivery & return/replace period completes',
+                                'updated_at' => now(),
+                            ]);
+                    }
+                    continue;
+                }
+
+                // 3. Order is delivered -> check return window
+                $maxReturnDays = 0;
+                if (!empty($tx->product_detail_id)) {
+                    $detail = DB::table('products_details')->where('id', $tx->product_detail_id)->first();
+                    if ($detail) {
+                        $rr = (int) ($detail->return_replace ?? 0);
+                        if (!in_array($rr, [0, 4], true)) {
+                            $maxReturnDays = (int) ($detail->r_days ?? 0);
+                        }
+                    }
+                }
+
+                $deliveryDate = !empty($order->delivered_at) ? Carbon::parse($order->delivered_at) : Carbon::parse($order->updated_at ?? $order->created_at);
+                $returnDeadline = $deliveryDate->copy()->addDays($maxReturnDays)->endOfDay();
+
+                if (now()->greaterThan($returnDeadline)) {
+                    // Return period completed! Eligible for credit!
+                    if (strtolower((string) $tx->status) !== 'credited') {
+                        DB::table('ecom_customer_wallet_transactions')
+                            ->where('id', $tx->id)
+                            ->update([
+                                'status' => 'credited',
+                                'remarks' => 'Cashback credited (return/replace period completed)',
+                                'updated_at' => now(),
+                            ]);
+                    }
+                } else {
+                    // Still within return window!
+                    if (strtolower((string) $tx->status) !== 'pending') {
+                        DB::table('ecom_customer_wallet_transactions')
+                            ->where('id', $tx->id)
+                            ->update([
+                                'status' => 'pending',
+                                'remarks' => 'Cashback pending until ' . $returnDeadline->format('d M Y') . ' (return/replace period)',
+                                'updated_at' => now(),
+                            ]);
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('Error syncing customer wallet cashbacks: ' . $e->getMessage());
         }
     }
 
@@ -3449,8 +3563,8 @@ class FrontendController extends Controller
                     'offer_title' => $walletCredit['offer_title'],
                     'type' => 'cashback_credit',
                     'amount' => $walletCredit['amount'],
-                    'status' => 'credited',
-                    'remarks' => 'Cashback credited for order ' . $orderId,
+                    'status' => 'pending',
+                    'remarks' => 'Cashback pending (credited after delivery and return/replace period completes)',
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
@@ -4676,6 +4790,8 @@ class FrontendController extends Controller
             return redirect('/home');
         }
 
+        $this->syncCustomerWalletCashbacks($customer_id);
+
         $transactions = DB::table('ecom_customer_wallet_transactions')
             ->where('customer_id', $customer_id)
             ->orderByDesc('id')
@@ -4683,10 +4799,22 @@ class FrontendController extends Controller
 
         $walletBalance = (float) $transactions->sum(function ($transaction) {
             $amount = (float) ($transaction->amount ?? 0);
-            return in_array((string) ($transaction->type ?? ''), ['cashback_credit', 'credit'], true) ? $amount : ($amount * -1);
+            $type = strtolower((string) ($transaction->type ?? ''));
+            $status = strtolower((string) ($transaction->status ?? ''));
+            if (!in_array($status, ['credited', 'completed', 'success'], true)) {
+                return 0.0;
+            }
+            return in_array($type, ['cashback_credit', 'credit'], true) ? $amount : ($amount * -1);
         });
 
-        return view('frontend.wallet', compact('transactions', 'walletBalance'));
+        $pendingCashback = (float) $transactions->sum(function ($transaction) {
+            $amount = (float) ($transaction->amount ?? 0);
+            $type = strtolower((string) ($transaction->type ?? ''));
+            $status = strtolower((string) ($transaction->status ?? ''));
+            return (in_array($type, ['cashback_credit', 'credit'], true) && in_array($status, ['pending', 'processing'], true)) ? $amount : 0.0;
+        });
+
+        return view('frontend.wallet', compact('transactions', 'walletBalance', 'pendingCashback'));
     }
 
     public function myWishlist(Request $request)
