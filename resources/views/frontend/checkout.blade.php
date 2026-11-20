@@ -2,23 +2,18 @@
  @section('title', 'Checkout')
  @section('content')
  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-     <div class="woo-page-header">
-     <div class="">
-     <ul class="breadcrumb">
-     <li class="">
-     <a href="{{ url('shopping-cart') }}">Shopping Cart</a>
-     </li>
-     <li class="current">
-     <i class="delimiter"></i>
-     <a href="{{ url('checkoutPage') }}">Checkout</a>
-     </li>
-
-     </ul>
-     </div>
-     </div>
-
-
-     <main class="main checkout mt-3">
+    <main class="main checkout">
+        <!-- Start of Breadcrumb -->
+        <nav class="breadcrumb-nav">
+            <div class="container">
+                <ul class="breadcrumb bb-no">
+                    <li><a href="{{ url('home') }}">Home</a></li>
+                    <li><a href="{{ url('shopping-cart') }}">Shopping Cart</a></li>
+                    <li>Checkout</li>
+                </ul>
+            </div>
+        </nav>
+        <!-- End of Breadcrumb -->
 
 
      <!-- Start of PageContent -->
