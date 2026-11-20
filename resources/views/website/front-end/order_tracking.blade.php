@@ -3,6 +3,16 @@
 @section('content')
 
 <style>
+    /* Prevent Poppins font swap glitch on Rupee symbol */
+    @font-face {
+        font-family: 'Poppins';
+        src: local('Arial'), local('Segoe UI'), local('Roboto'), local('sans-serif');
+        unicode-range: U+20B9;
+    }
+    .rupee-symbol {
+        font-family: Arial, sans-serif !important;
+    }
+
     .order-detail-page {
         background-color: #f8fafc;
         padding: 30px 0 60px;
@@ -588,9 +598,9 @@
                                         </div>
 
                                         <div class="product-pricing-line">
-                                            <span class="price-highlight">₹ {{ number_format($product->total_price ?? ($product->product_price * ($product->product_quantity ?? 1)), 2) }}</span>
+                                            <span class="price-highlight"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($product->total_price ?? ($product->product_price * ($product->product_quantity ?? 1)), 2) }}</span>
                                             @if(($product->product_quantity ?? 1) > 1)
-                                                <span class="text-muted" style="font-size: 1.25rem;">(₹ {{ number_format($product->product_price, 2) }} each)</span>
+                                                <span class="text-muted" style="font-size: 1.25rem;">(<span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($product->product_price, 2) }} each)</span>
                                             @endif
                                         </div>
                                     </div>
@@ -655,20 +665,20 @@
                     <div class="detail-card-body">
                         <div class="info-list-row">
                             <span class="info-label">Items Total</span>
-                            <span class="info-value">₹ {{ number_format($order_info->total_amount ?? $order_info->grand_total, 2) }}</span>
+                            <span class="info-value"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($order_info->total_amount ?? $order_info->grand_total, 2) }}</span>
                         </div>
 
                         <div class="info-list-row">
                             <span class="info-label">Delivery Charges</span>
                             <span class="info-value" style="{{ ($order_info->shipping_charge ?? 0) > 0 ? '' : 'color: #16a34a;' }}">
-                                {{ ($order_info->shipping_charge ?? 0) > 0 ? '₹ ' . number_format($order_info->shipping_charge, 2) : 'FREE' }}
+                                {!! ($order_info->shipping_charge ?? 0) > 0 ? '<span style="font-family: Arial, sans-serif;">₹</span>' . number_format($order_info->shipping_charge, 2) : 'FREE' !!}
                             </span>
                         </div>
 
                         @if(($order_info->discount_amount ?? 0) > 0)
                             <div class="info-list-row">
                                 <span class="info-label">Discount</span>
-                                <span class="info-value" style="color: #16a34a;">- ₹ {{ number_format($order_info->discount_amount, 2) }}</span>
+                                <span class="info-value" style="color: #16a34a;">- <span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($order_info->discount_amount, 2) }}</span>
                             </div>
                         @endif
 
@@ -679,7 +689,7 @@
 
                         <div class="info-total-row">
                             <span class="info-label">Total Amount</span>
-                            <span class="info-value">₹ {{ number_format($order_info->grand_total, 2) }}</span>
+                            <span class="info-value"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($order_info->grand_total, 2) }}</span>
                         </div>
                     </div>
                 </div>

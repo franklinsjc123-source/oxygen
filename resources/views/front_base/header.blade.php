@@ -77,6 +77,18 @@ if (!session()->has('pincode') && session()->has('customer_id')) {
 
     <script src="<?= asset('frontend') ?>/vendor/jquery/jquery.min.js"></script>
 
+    <!-- Global Rupee Symbol Style to prevent font-swap distortion across pages -->
+    <style>
+        @font-face {
+            font-family: 'Poppins';
+            src: local('Arial'), local('Segoe UI'), local('Roboto'), local('sans-serif');
+            unicode-range: U+20B9;
+        }
+        .rupee, .currency-symbol, .currencySymbol {
+            font-family: Arial, sans-serif !important;
+        }
+    </style>
+
 </head>
 
 <body>

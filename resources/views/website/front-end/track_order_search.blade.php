@@ -3,6 +3,16 @@
 @section('content')
 
 <style>
+    /* Prevent Poppins font swap glitch on Rupee symbol */
+    @font-face {
+        font-family: 'Poppins';
+        src: local('Arial'), local('Segoe UI'), local('Roboto'), local('sans-serif');
+        unicode-range: U+20B9;
+    }
+    .rupee-symbol {
+        font-family: Arial, sans-serif !important;
+    }
+
     /* ===== Page Background & Container ===== */
     .track-page {
         background-color: #f8fafc;
@@ -520,7 +530,7 @@
                             </div>
                             <div class="track-meta-item">
                                 <span class="meta-label">Total Amount</span>
-                                <span class="meta-val">₹ {{ number_format($order->grand_total, 2) }}</span>
+                                <span class="meta-val"><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($order->grand_total, 2) }}</span>
                             </div>
                             <div class="track-meta-item">
                                 <span class="meta-label">Payment</span>
@@ -580,7 +590,7 @@
                                                     </div>
 
                                                     <div class="track-price-line">
-                                                        <strong>₹ {{ number_format($product->total_price ?? ($product->product_price * ($product->product_quantity ?? 1)), 2) }}</strong>
+                                                        <strong><span style="font-family: Arial, sans-serif;">₹</span>{{ number_format($product->total_price ?? ($product->product_price * ($product->product_quantity ?? 1)), 2) }}</strong>
                                                     </div>
                                                 </div>
                                             </div>
