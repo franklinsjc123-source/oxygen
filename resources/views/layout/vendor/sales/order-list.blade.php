@@ -165,7 +165,7 @@
                                                 <a href="{{ route('vendororder.export') }}" class="btn btn-success" style="background-color: #28a745; border-color: #28a745; color: #fff;">Export Excel</a>
                                             </div>
 
-                                            <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-vendor-new" >
+                                            <table class="table fcolor" id="table" data-click-to-select="true" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar-vendor-new" >
                                                 <thead>
                                                     <tr>
                                                         <th><input type="checkbox" id="master"></th>
@@ -182,7 +182,7 @@
                                                 
                                                     @foreach ($ordersproduct as $attribute)
                                                     <tr>
-                                                        <td><input type="checkbox" class="sub_chk" data-id="{{$attribute->id}}"></td>
+                                                        <td><input type="checkbox" class="sub_chk sub_check" data-id="{{$attribute->id}}"></td>
                                                         <td>{{ $attribute->order_id }}</td>
                                                         <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}</td>
                                                         <td>       
@@ -282,10 +282,10 @@
                                     <div class="datatable-dashv1-list custom-datatable-overright" >
 
 
-                                        <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar" >
+                                        <table class="table fcolor" id="table" data-click-to-select="true" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar" >
                                             <thead>
                                                     <tr>
-                                                        <th><input type="checkbox" id="master"></th>
+                                                        <th><input type="checkbox" id="dismaster"></th>
                                                         <th data-field="orderid" data-sortable="true">ORDER ID</th>
                                                         <th data-field="date" data-sortable="true">ORDER DATE</th>
                                                         <th data-field="image" data-sortable="true">IMAGE</th>
@@ -306,7 +306,7 @@
                                                 ?>
                                                 @foreach ($ordersproductaccept as $attribute)
                                                     <tr>
-                                                        <td><input type="checkbox" class="sub_chk" data-id="{{$attribute->id}}"></td>
+                                                        <td><input type="checkbox" class="sub_chk sub_check" data-id="{{$attribute->id}}"></td>
                                                         <td>{{ $attribute->order_id }}</td>
                                                         <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}</td>
                                                         <td>       
@@ -404,10 +404,10 @@
                         <div class="datatable-dashv1-list custom-datatable-overright" >
 
 
-                            <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar" >
+                            <table class="table fcolor" id="table" data-click-to-select="true" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar" >
                                 <thead>
                                                     <tr>
-                                                        <th><input type="checkbox" id="master"></th>
+                                                        <th><input type="checkbox" id="dismaster"></th>
                                                         <th data-field="orderid" data-sortable="true">ORDER ID</th>
                                                         <th data-field="date" data-sortable="true">ORDER DATE</th>
                                                         <th data-field="image" data-sortable="true">IMAGE</th>
@@ -428,7 +428,7 @@
                                     ?>
                                     @foreach ($ordersproductdispatch as $attribute)
                                                     <tr>
-                                                        <td><input type="checkbox" class="sub_chk" data-id="{{$attribute->id}}"></td>
+                                                        <td><input type="checkbox" class="sub_chk sub_check" data-id="{{$attribute->id}}"></td>
                                                         <td>{{ $attribute->order_id }}</td>
                                                         <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}</td>
                                                         <td>       
@@ -530,10 +530,10 @@
                                     <div class="datatable-dashv1-list custom-datatable-overright" >
         
         
-                                        <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar" >
+                                        <table class="table fcolor" id="table" data-click-to-select="true" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar" >
                                             <thead>
                                                     <tr>
-                                                        <th><input type="checkbox" id="master"></th>
+                                                        <th><input type="checkbox" id="delmaster"></th>
                                                         <th data-field="orderid" data-sortable="true">ORDER ID</th>
                                                         <th data-field="date" data-sortable="true">ORDER DATE</th>
                                                         <th data-field="image" data-sortable="true">IMAGE</th>
@@ -554,7 +554,7 @@
                                                 ?>
                                                 @foreach ($ordersproductdelivered as $attribute)
                                                     <tr>
-                                                        <td><input type="checkbox" class="sub_chk" data-id="{{$attribute->id}}"></td>
+                                                        <td><input type="checkbox" class="sub_chk sub_check" data-id="{{$attribute->id}}"></td>
                                                         <td>{{ $attribute->order_id }}</td>
                                                         <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}</td>
                                                         <td>       
@@ -656,10 +656,10 @@
                                     <div class="datatable-dashv1-list custom-datatable-overright" >
         
         
-                                        <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar" >
+                                        <table class="table fcolor" id="table" data-click-to-select="true" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar" >
                                             <thead>
                                                     <tr>
-                                                        <th><input type="checkbox" id="master"></th>
+                                                        <th><input type="checkbox" id="delmaster"></th>
                                                         <th data-field="orderid" data-sortable="true">ORDER ID</th>
                                                         <th data-field="date" data-sortable="true">ORDER DATE</th>
                                                         <th data-field="image" data-sortable="true">IMAGE</th>
@@ -680,7 +680,7 @@
                                                 ?>
                                                 @foreach ($ordersproductreturn as $attribute)
                                                     <tr>
-                                                        <td><input type="checkbox" class="sub_chk" data-id="{{$attribute->id}}"></td>
+                                                        <td><input type="checkbox" class="sub_chk sub_check" data-id="{{$attribute->id}}"></td>
                                                         <td>{{ $attribute->order_id }}</td>
                                                         <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}</td>
                                                         <td>       
@@ -780,10 +780,10 @@
                                 <div class="datatable-dashv1-list custom-datatable-overright" >
     
     
-                                    <table class="table fcolor" id="table" data-click-to-select="true" data-sort-name="id" data-sort-order="asc" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar" >
+                                    <table class="table fcolor" id="table" data-click-to-select="true" data-mobile-responsive="true" data-toggle="table" data-show-columns="true" data-sort="true" data-pagination="true" data-page-size="100" data-search="true" data-show-refresh="false" data-key-events="true" data-resizable="true" data-cookie="true" data-show-export="false" data-click-to-select="true" data-toolbar="#toolbar" >
                                         <thead>
                                                     <tr>
-                                                        <th><input type="checkbox" id="master"></th>
+                                                        <th><input type="checkbox" id="delmaster"></th>
                                                         <th data-field="orderid" data-sortable="true">ORDER ID</th>
                                                         <th data-field="date" data-sortable="true">ORDER DATE</th>
                                                         <th data-field="image" data-sortable="true">IMAGE</th>
@@ -804,7 +804,7 @@
                                             ?>
                                             @foreach ($ordersproductcancel as $attribute)
                                                     <tr>
-                                                        <td><input type="checkbox" class="sub_chk" data-id="{{$attribute->id}}"></td>
+                                                        <td><input type="checkbox" class="sub_chk sub_check" data-id="{{$attribute->id}}"></td>
                                                         <td>{{ $attribute->order_id }}</td>
                                                         <td>{{ Carbon\Carbon::parse($attribute->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d-m-Y h:i A') }}</td>
                                                         <td>       
@@ -1327,67 +1327,69 @@ function checkall(checkbox)
 $(document).ready(function () {
 
     $('#master').on('click', function(e) {
-        if($(this).is(':checked',true))  
-        {
-            $(".sub_chk").prop('checked', true);  
-        } else {  
-            $(".sub_chk").prop('checked',false);  
-        }  
+        $("#new .sub_chk, #new .sub_check, .sub_chk").prop('checked', $(this).is(':checked'));  
     });
 
     $('.accept').on('click', function(e) {
         var allVals = [];  
-        $(".sub_chk:checked").each(function() {  
+        $("#new .sub_chk:checked, #new .sub_check:checked, .sub_chk:checked").each(function() {  
             allVals.push($(this).attr('data-id'));
         });  
-        if(allVals.length <=0)  
+        if(allVals.length <= 0)  
         {  
-            alert("Please select row.");  
+            Swal.fire({
+                icon: 'info',
+                title: 'Notification',
+                text: 'Please select row.'
+            });
+            return;
         }  else {  
-
-            // alert("Accept.");  
             var currentDate = new Date();
             var year = currentDate.getFullYear();
-            var month = currentDate.getMonth() + 1; // Months are zero-based, so we add 1
-            var day = currentDate.getDate();
+            var month = currentDate.getMonth() + 1;
             var day = currentDate.getDate();
             var formattedDate = year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day);
             
-            
-            
-            var check = confirm("Are you sure you want to update this row?");  
-            if(check == true){  
-                var join_selected_values = allVals.join(","); 
-
-
-
-
-
-                $.ajax({
-
-                    url: "{{ url('vendor/orderbulkstatusupdate') }}", 
-                    type: "POST",
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        "ids": join_selected_values,
-                            "sts":"Accept","formattedDate":formattedDate
-
-                    },
-
-                    dataType: "json",
-                    success: function (data) {
-                    // alert(data);
-                        
-                            location.reload();
-                    },
-                    error: function (data) {
-                        console.log('Error:', data);
-                    }
+            Swal.fire({
+                title: 'Confirm Accept',
+                text: 'Are you sure you want to accept the selected order(s)?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Accept'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var join_selected_values = allVals.join(","); 
+                    $.ajax({
+                        url: "{{ url('vendor/orderbulkstatusupdate') }}", 
+                        type: "POST",
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            "ids": join_selected_values,
+                            "sts": "Accept",
+                            "formattedDate": formattedDate
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Updated!',
+                                text: 'Orders accepted successfully.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1000);
+                        },
+                        error: function (data) {
+                            console.log('Error:', data);
+                            Swal.fire('Error', 'Could not update orders.', 'error');
+                        }
                     });
-
-
-                
-            }  
+                }
+            });
         }  
     });
     
@@ -1398,69 +1400,70 @@ $(document).ready(function () {
 
 <script type="text/javascript">
 $(document).ready(function () {
-$('#dismaster').on('click', function(e) {
-// alert('test');
-        if($(this).is(':checked',true))  
-        {
-            $(".sub_check").prop('checked', true);  
-        } else {  
-            $(".sub_check").prop('checked',false);  
-        }  
+    $('#dismaster').on('click', function(e) {
+        $("#general .sub_chk, #general .sub_check").prop('checked', $(this).is(':checked'));  
     });
-
-
 
     $('.dispatch').on('click', function(e) {
         var allVals = [];  
-        $(".sub_check:checked").each(function() {  
+        $("#general .sub_chk:checked, #general .sub_check:checked, .sub_check:checked, .sub_chk:checked").each(function() {  
             allVals.push($(this).attr('data-id'));
         });  
-        if(allVals.length <=0)  
-        {  
-            alert("Please select row.");  
-        }  else {  
-            var currentDate = new Date();
-            var year = currentDate.getFullYear();
-            var month = currentDate.getMonth() + 1; // Months are zero-based, so we add 1
-            var day = currentDate.getDate();
-            var day = currentDate.getDate();
-            var formattedDate = year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day);
-            
-            // alert("Accept.");  
-            var check = confirm("Are you sure you want to update this row?");  
-            if(check == true){  
+        if(allVals.length <= 0) {  
+            Swal.fire({
+                icon: 'info',
+                title: 'Notification',
+                text: 'Please select row.'
+            });
+            return;
+        }
+
+        var currentDate = new Date();
+        var year = currentDate.getFullYear();
+        var month = currentDate.getMonth() + 1;
+        var day = currentDate.getDate();
+        var formattedDate = year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day);
+        
+        Swal.fire({
+            title: 'Confirm Dispatch',
+            text: 'Are you sure you want to dispatch the selected ' + allVals.length + ' order(s)?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Dispatch'
+        }).then((result) => {
+            if (result.isConfirmed) {
                 var join_selected_values = allVals.join(","); 
-
-
-
-
-
                 $.ajax({
-
                     url: "{{ url('vendor/orderbulkstatusupdate') }}", 
                     type: "POST",
                     data: {
                         "_token": "{{ csrf_token() }}",
                         "ids": join_selected_values,
-                            "sts":"Dispatch","formattedDate":formattedDate
-
+                        "sts": "Dispatch",
+                        "formattedDate": formattedDate
                     },
-
                     dataType: "json",
                     success: function (data) {
-                    // alert(data);
-                        
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Updated!',
+                            text: 'Orders status changed to Dispatch.',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        setTimeout(function() {
                             location.reload();
+                        }, 1000);
                     },
                     error: function (data) {
                         console.log('Error:', data);
+                        Swal.fire('Error', 'Could not update orders.', 'error');
                     }
-                    });
-
-
-                
-            }  
-        }  
+                });
+            }
+        });
     });
 });
 </script>
@@ -1469,71 +1472,70 @@ $('#dismaster').on('click', function(e) {
 
 <script type="text/javascript">
 $(document).ready(function () {
-$('#delmaster').on('click', function(e) {
-// alert('test');
-        if($(this).is(':checked',true))  
-        {
-            $(".sub_check").prop('checked', true);  
-        } else {  
-            $(".sub_check").prop('checked',false);  
-        }  
+    $('#delmaster').on('click', function(e) {
+        $("#dispatch .sub_chk, #dispatch .sub_check").prop('checked', $(this).is(':checked'));  
     });
-
-
 
     $('.delivered').on('click', function(e) {
         var allVals = [];  
-        $(".sub_check:checked").each(function() {  
+        $("#dispatch .sub_chk:checked, #dispatch .sub_check:checked").each(function() {  
             allVals.push($(this).attr('data-id'));
         });  
-        if(allVals.length <=0)  
-        {  
-            alert("Please select row.");  
-        }  else {  
-            var currentDate = new Date();
-            var year = currentDate.getFullYear();
-            var month = currentDate.getMonth() + 1; // Months are zero-based, so we add 1
-            var day = currentDate.getDate();
-            var day = currentDate.getDate();
-            var formattedDate = year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day);
-            
-            // alert("Accept.");  
-            var check = confirm("Are you sure you want to update this row?");  
-            if(check == true){  
-                //  alert(allVals);
+        if(allVals.length <= 0) {  
+            Swal.fire({
+                icon: 'info',
+                title: 'Notification',
+                text: 'Please select row.'
+            });
+            return;
+        }
+
+        var currentDate = new Date();
+        var year = currentDate.getFullYear();
+        var month = currentDate.getMonth() + 1;
+        var day = currentDate.getDate();
+        var formattedDate = year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day);
+        
+        Swal.fire({
+            title: 'Confirm Delivery',
+            text: 'Are you sure you want to mark the selected ' + allVals.length + ' order(s) as Delivered?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Delivered'
+        }).then((result) => {
+            if (result.isConfirmed) {
                 var join_selected_values = allVals.join(","); 
-
-                // alert(join_selected_values);
-            
-
-
                 $.ajax({
-
                     url: "{{ url('vendor/orderbulkstatusupdate') }}", 
                     type: "POST",
                     data: {
                         "_token": "{{ csrf_token() }}",
                         "ids": join_selected_values,
-                            "sts":"Delivered","formattedDate":formattedDate
-
+                        "sts": "Delivered",
+                        "formattedDate": formattedDate
                     },
-
                     dataType: "json",
                     success: function (data) {
-                    // alert(data);
-                        
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Updated!',
+                            text: 'Orders marked as Delivered.',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        setTimeout(function() {
                             location.reload();
+                        }, 1000);
                     },
                     error: function (data) {
                         console.log('Error:', data);
+                        Swal.fire('Error', 'Could not update orders.', 'error');
                     }
-                    });
-
-
-                
-            }  
-        }  
-    });
+                });
+            }
+        });
     });
 });
 </script>

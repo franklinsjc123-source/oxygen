@@ -446,9 +446,9 @@
                     <h1>Track Orders</h1>
                     <p>
                         @if(isset($orders) && $orders->count() > 0)
-                            Showing {{ $orders->count() }} active order(s)
+                            Showing {{ $orders->count() }} order(s)
                         @else
-                            No active orders
+                            No orders found
                         @endif
                     </p>
                 </div>
@@ -510,10 +510,12 @@
                         $badgeLabel = ucfirst($rawStatus);
                     }
 
-                    $orderDateFormatted = date('d M Y', strtotime($order->order_date ?? now()));
+                    $orderDateFormatted = !empty($order->order_date)
+                        ? \Carbon\Carbon::parse($order->order_date, 'UTC')->timezone('Asia/Kolkata')->format('d M Y')
+                        : \Carbon\Carbon::parse($order->created_at ?? now(), 'UTC')->timezone('Asia/Kolkata')->format('d M Y');
                     $expectedDate = $order->delivery_date
-                        ? date('D, d M Y', strtotime($order->delivery_date))
-                        : date('D, d M Y', strtotime(($order->order_date ?? now()) . ' +7 days'));
+                        ? \Carbon\Carbon::parse($order->delivery_date, 'UTC')->timezone('Asia/Kolkata')->format('D, d M Y')
+                        : \Carbon\Carbon::parse($order->order_date ?? now(), 'UTC')->timezone('Asia/Kolkata')->addDays(7)->format('D, d M Y');
                 @endphp
 
                 <div class="track-order-card">
@@ -612,7 +614,7 @@
                                                 <i class="fas fa-check"></i>
                                             </div>
                                             <div class="stepper-mini-title">Order Placed</div>
-                                            <div class="stepper-mini-date">{{ date('d M Y, h:i A', strtotime($order->order_date ?? now())) }}</div>
+                                            <div class="stepper-mini-date">{{ \Carbon\Carbon::parse($order->order_date ?? $order->created_at ?? now(), 'UTC')->timezone('Asia/Kolkata')->format('d M Y, h:i A') }}</div>
                                         </div>
 
                                         {{-- Step 2: Confirmed --}}
@@ -621,7 +623,13 @@
                                                 <i class="fas fa-check"></i>
                                             </div>
                                             <div class="stepper-mini-title">Order Confirmed</div>
-                                            <div class="stepper-mini-date">{{ $stepIndex >= 1 ? 'Processing' : 'Pending' }}</div>
+                                            <div class="stepper-mini-date">
+                                                @if($stepIndex >= 1)
+                                                    {{ !empty($order->confirmed_date) ? \Carbon\Carbon::parse($order->confirmed_date, 'UTC')->timezone('Asia/Kolkata')->format('d M Y, h:i A') : 'Confirmed' }}
+                                                @else
+                                                    Pending
+                                                @endif
+                                            </div>
                                         </div>
 
                                         {{-- Step 3: Shipped --}}
@@ -630,7 +638,13 @@
                                                 <i class="fas fa-check"></i>
                                             </div>
                                             <div class="stepper-mini-title">Shipped</div>
-                                            <div class="stepper-mini-date">{{ $stepIndex >= 2 ? 'In Transit' : 'Upcoming' }}</div>
+                                            <div class="stepper-mini-date">
+                                                @if($stepIndex >= 2)
+                                                    {{ !empty($order->shipped_date) ? \Carbon\Carbon::parse($order->shipped_date, 'UTC')->timezone('Asia/Kolkata')->format('d M Y, h:i A') : 'In Transit' }}
+                                                @else
+                                                    Upcoming
+                                                @endif
+                                            </div>
                                         </div>
 
                                         {{-- Step 4: Delivered --}}
@@ -639,7 +653,19 @@
                                                 <i class="fas fa-check"></i>
                                             </div>
                                             <div class="stepper-mini-title">Delivered</div>
-                                            <div class="stepper-mini-date">Expected by {{ $expectedDate }}</div>
+                                            <div class="stepper-mini-date">
+                                                @if($stepIndex >= 3)
+                                                    @php
+                                                        $delVal = $order->delivery_date;
+                                                        if (!empty($delVal) && strlen(trim((string)$delVal)) <= 10) {
+                                                            $delVal = !empty($order->updated_at) ? $order->updated_at : $delVal;
+                                                        }
+                                                    @endphp
+                                                    Delivered on {{ \Carbon\Carbon::parse($delVal ?? $order->updated_at ?? now(), 'UTC')->timezone('Asia/Kolkata')->format('d M Y, h:i A') }}
+                                                @else
+                                                    Expected by {{ $expectedDate }}
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

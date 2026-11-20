@@ -35,6 +35,8 @@ class Ecom_Orders extends Model
         'payment_status',
         'order_date',
         'payment_date',
+        'confirmed_date',
+        'shipped_date',
         'delivery_date',
         'order_notes',
         'remember_token',

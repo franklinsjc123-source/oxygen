@@ -111,21 +111,18 @@
             <td>₹{{ $item['total'] }}</td>
         </tr>
         @endforeach
+        <tr>
+            <td colspan="8" class="right" style="font-weight:bold; padding-right:10px;">Total Tax:</td>
+            <td style="font-weight:bold;">₹{{ $summary['tax'] }}</td>
+        </tr>
+        <tr>
+            <td colspan="8" class="right" style="font-weight:bold; padding-right:10px; background:#f2f2f2;">Grand Total:</td>
+            <td style="font-weight:bold; background:#f2f2f2;">₹{{ $summary['grand'] }}</td>
+        </tr>
     </tbody>
 </table>
 
-<table class="no-border">
-    <tr>
-        <td class="right"><b>Total Tax:</b></td>
-        <td class="right">₹{{ $summary['tax'] }}</td>
-    </tr>
-    <tr>
-        <td class="right"><b>Grand Total:</b></td>
-        <td class="right">₹{{ $summary['grand'] }}</td>
-    </tr>
-</table>
-
-<p><b>Amount in Words:</b> {{ $summary['words'] }}</p>
+<p style="margin-top:15px;"><b>Amount in Words:</b> {{ $summary['words'] }}</p>
 <p>Whether tax is payable under reverse charge - No</p>
 
 <br><br>

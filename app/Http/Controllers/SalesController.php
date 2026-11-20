@@ -14,6 +14,70 @@ use DB;
 
 class SalesController extends Controller
 {
+    private function syncOrderInfoStatus(string $orderId, ?string $fallbackStatus = null): void
+    {
+        $products = DB::table('ecom_order_product')->where('order_id', $orderId)->get();
+        $targetStatus = 'Pending';
+
+        if ($products->isNotEmpty()) {
+            $statuses = $products->pluck('order_status')->map(fn($s) => strtolower(trim((string)$s)))->values();
+
+            if ($statuses->every(fn($s) => in_array($s, ['cancel', 'cancelled', 'return', 'returned'], true))) {
+                $targetStatus = 'Cancel';
+            } elseif ($statuses->every(fn($s) => in_array($s, ['delivered', 'delivery'], true))) {
+                $targetStatus = 'Delivered';
+            } elseif ($statuses->contains(fn($s) => in_array($s, ['dispatch', 'dispatched', 'shipped'], true))) {
+                $targetStatus = 'Dispatch';
+            } elseif ($statuses->contains(fn($s) => in_array($s, ['accept', 'accepted'], true))) {
+                $targetStatus = 'Accept';
+            } else {
+                $targetStatus = 'Pending';
+            }
+        } elseif ($fallbackStatus) {
+            $targetStatus = $fallbackStatus;
+        }
+
+        $existingOrder = DB::table('ecom_order_info')->where('order_id', $orderId)->first();
+        $updateData = ['order_status' => $targetStatus, 'updated_at' => now()];
+
+        $targetLower = strtolower($targetStatus);
+        if (in_array($targetLower, ['accept', 'accepted'], true)) {
+            if (!$existingOrder || empty($existingOrder->confirmed_date)) {
+                $updateData['confirmed_date'] = now();
+            }
+        } elseif (in_array($targetLower, ['dispatch', 'dispatched', 'shipped'], true)) {
+            if (!$existingOrder || empty($existingOrder->confirmed_date)) {
+                $updateData['confirmed_date'] = now();
+            }
+            if (!$existingOrder || empty($existingOrder->shipped_date)) {
+                $updateData['shipped_date'] = now();
+            }
+        } elseif (in_array($targetLower, ['delivered', 'delivery'], true)) {
+            if (!$existingOrder || empty($existingOrder->confirmed_date)) {
+                $updateData['confirmed_date'] = now();
+            }
+            if (!$existingOrder || empty($existingOrder->shipped_date)) {
+                $updateData['shipped_date'] = now();
+            }
+            if (!$existingOrder || empty($existingOrder->delivery_date)) {
+                $updateData['delivery_date'] = now();
+            }
+        }
+
+        DB::table('ecom_order_info')->where('order_id', $orderId)->update($updateData);
+
+        $ecomOrderUpdate = [];
+        if (isset($updateData['confirmed_date'])) {
+            $ecomOrderUpdate['confirmed_date'] = $updateData['confirmed_date'];
+        }
+        if (isset($updateData['shipped_date'])) {
+            $ecomOrderUpdate['shipped_date'] = $updateData['shipped_date'];
+        }
+        if (!empty($ecomOrderUpdate)) {
+            DB::table('ecom_order')->where('order_id', $orderId)->update($ecomOrderUpdate);
+        }
+    }
+
     private function updateNewOrderStatusesByInvoiceIds(array $invoiceIds): void
     {
         $invoiceIds = array_values(array_unique(array_filter($invoiceIds)));
@@ -50,36 +114,30 @@ class SalesController extends Controller
                 continue;
             }
 
+            $targetStatus = null;
             if ($statuses->every(fn($s) => in_array($s, ['cancel', 'return'], true))) {
-                DB::table('ecom_order')->where('id', $order->id)->update(['status' => 'Closed', 'updated_at' => now()]);
-                continue;
+                $targetStatus = 'Closed';
+            } elseif ($statuses->contains('pending')) {
+                $targetStatus = 'Pending';
+            } elseif ($statuses->contains(fn($s) => in_array($s, ['accept', 'accepted'], true))) {
+                $targetStatus = 'Accept';
+            } elseif ($statuses->contains(fn($s) => in_array($s, ['dispatch', 'dispatched'], true))) {
+                $targetStatus = 'Dispatch';
+            } elseif ($statuses->every(fn($s) => in_array($s, ['delivery', 'delivered'], true))) {
+                $targetStatus = 'Delivered';
             }
 
-            if ($statuses->contains('pending')) {
-                DB::table('ecom_order')->where('id', $order->id)->update(['status' => 'Pending', 'updated_at' => now()]);
-                continue;
-            }
-
-            if ($statuses->contains(fn($s) => in_array($s, ['accept', 'accepted'], true))) {
-                DB::table('ecom_order')->where('id', $order->id)->update(['status' => 'Accept', 'updated_at' => now()]);
-                continue;
-            }
-
-            if ($statuses->contains(fn($s) => in_array($s, ['dispatch', 'dispatched'], true))) {
-                DB::table('ecom_order')->where('id', $order->id)->update(['status' => 'Dispatch', 'updated_at' => now()]);
-                continue;
-            }
-
-            if ($statuses->every(fn($s) => in_array($s, ['delivery', 'delivered'], true))) {
-                DB::table('ecom_order')->where('id', $order->id)->update(['status' => 'Delivered', 'updated_at' => now()]);
+            if ($targetStatus) {
+                DB::table('ecom_order')->where('id', $order->id)->update(['status' => $targetStatus, 'updated_at' => now()]);
+                $this->syncOrderInfoStatus($order->order_id, $targetStatus);
             }
         }
     }
 
     public function order()
     {
-        $orders = Ecom_Orders::get();
-        $ordersproduct = Ecom_Order_product::get();
+        $orders = Ecom_Orders::orderBy('id', 'desc')->get();
+        $ordersproduct = Ecom_Order_product::orderBy('id', 'desc')->get();
         
         $new = Ecom_Orders::join('ecom_order_product',"ecom_order_product.order_id","=","ecom_order_info.order_id")
         ->where('ecom_order_product.order_status', '=', 'Pending')->count();

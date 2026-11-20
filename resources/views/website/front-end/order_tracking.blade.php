@@ -440,10 +440,10 @@
 
     $progressPercent = ($stepIndex >= 0) ? min(100, ($stepIndex / 3) * 100) : 0;
 
-    $orderDateFormatted = date('d M Y, h:i A', strtotime($order_info->order_date ?? $order_info->created_at));
+    $orderDateFormatted = \Carbon\Carbon::parse($order_info->order_date ?? $order_info->created_at, 'UTC')->timezone('Asia/Kolkata')->format('d M Y, h:i A');
     $expectedDelivery = $order_info->delivery_date
-        ? date('D, d M Y', strtotime($order_info->delivery_date))
-        : date('D, d M Y', strtotime(($order_info->order_date ?? now()) . ' +7 days'));
+        ? \Carbon\Carbon::parse($order_info->delivery_date, 'UTC')->timezone('Asia/Kolkata')->format('D, d M Y')
+        : \Carbon\Carbon::parse($order_info->order_date ?? now(), 'UTC')->timezone('Asia/Kolkata')->addDays(7)->format('D, d M Y');
 @endphp
 
 <div class="order-detail-page">
@@ -496,7 +496,7 @@
                                     </div>
                                     <div>
                                         <div class="stepper-title">Order Placed</div>
-                                        <div class="stepper-date">{{ date('d M Y', strtotime($order_info->order_date ?? now())) }}</div>
+                                        <div class="stepper-date">{{ \Carbon\Carbon::parse($order_info->order_date ?? $order_info->created_at ?? now(), 'UTC')->timezone('Asia/Kolkata')->format('d M Y, h:i A') }}</div>
                                     </div>
                                 </div>
 
@@ -511,7 +511,7 @@
                                     </div>
                                     <div>
                                         <div class="stepper-title">Order Confirmed</div>
-                                        <div class="stepper-date">{{ $stepIndex >= 1 ? 'Processing' : 'Pending' }}</div>
+                                        <div class="stepper-date">{{ $stepIndex >= 1 ? (!empty($order_info->confirmed_date) ? \Carbon\Carbon::parse($order_info->confirmed_date, 'UTC')->timezone('Asia/Kolkata')->format('d M Y, h:i A') : 'Confirmed') : 'Pending' }}</div>
                                     </div>
                                 </div>
 
@@ -526,7 +526,7 @@
                                     </div>
                                     <div>
                                         <div class="stepper-title">Shipped</div>
-                                        <div class="stepper-date">{{ $stepIndex >= 2 ? 'In Transit' : 'Upcoming' }}</div>
+                                        <div class="stepper-date">{{ $stepIndex >= 2 ? (!empty($order_info->shipped_date) ? \Carbon\Carbon::parse($order_info->shipped_date, 'UTC')->timezone('Asia/Kolkata')->format('d M Y, h:i A') : 'In Transit') : 'Upcoming' }}</div>
                                     </div>
                                 </div>
 
@@ -537,7 +537,13 @@
                                     </div>
                                     <div>
                                         <div class="stepper-title">Delivered</div>
-                                        <div class="stepper-date">{{ $stepIndex >= 3 ? date('d M Y', strtotime($order_info->delivery_date ?? now())) : $expectedDelivery }}</div>
+                                        @php
+                                            $delVal = $order_info->delivery_date;
+                                            if (!empty($delVal) && strlen(trim((string)$delVal)) <= 10) {
+                                                $delVal = !empty($order_info->updated_at) ? $order_info->updated_at : $delVal;
+                                            }
+                                        @endphp
+                                        <div class="stepper-date">{{ $stepIndex >= 3 ? (!empty($delVal) ? ('Delivered on ' . \Carbon\Carbon::parse($delVal, 'UTC')->timezone('Asia/Kolkata')->format('d M Y, h:i A')) : 'Delivered') : ('Expected by ' . $expectedDelivery) }}</div>
                                     </div>
                                 </div>
                             </div>

@@ -230,15 +230,78 @@ class AjaxGetProductController extends Controller
 
 		$customerId = session('customer_id');
 
-		// Get all non-delivered orders for this customer, newest first
+		// Get all orders for this customer, newest first
 		$orders = Ecom_Orders::where('customer_id', $customerId)
-			->whereNotIn('order_status', ['Delivered'])
 			->orderBy('created_at', 'desc')
 			->get();
 
 		// Load order products for each order
 		foreach ($orders as $order) {
 			$order->products = Ecom_Order_product::where('order_id', $order->order_id)->get();
+
+			// Auto-sync status if ecom_order_info is lagging behind products or ecom_order
+			$targetStatus = null;
+			if ($order->products->isNotEmpty()) {
+				$prodStatuses = $order->products->pluck('order_status')->map(fn($s) => strtolower(trim((string)$s)))->values();
+				if ($prodStatuses->every(fn($s) => in_array($s, ['delivered', 'delivery'], true))) {
+					$targetStatus = 'Delivered';
+				} elseif ($prodStatuses->contains(fn($s) => in_array($s, ['dispatch', 'dispatched', 'shipped'], true))) {
+					$targetStatus = 'Dispatch';
+				} elseif ($prodStatuses->contains(fn($s) => in_array($s, ['accept', 'accepted'], true))) {
+					$targetStatus = 'Accept';
+				}
+			}
+
+			$detailOrder = \Illuminate\Support\Facades\DB::table('ecom_order')->where('order_id', $order->order_id)->first();
+			if ($detailOrder && !empty($detailOrder->status)) {
+				$detailSts = trim((string)$detailOrder->status);
+				if (strtolower($detailSts) === 'delivered') {
+					$targetStatus = 'Delivered';
+				} elseif ($targetStatus === null && !empty($detailSts)) {
+					$targetStatus = $detailSts;
+				}
+			}
+
+			if ($targetStatus && strcasecmp((string)$order->order_status, $targetStatus) !== 0) {
+				$order->order_status = $targetStatus;
+				$updateArr = ['order_status' => $targetStatus];
+				if (strtolower($targetStatus) === 'delivered') {
+					$order->delivery_date = $order->delivery_date ?: now();
+					$updateArr['delivery_date'] = $order->delivery_date;
+				}
+				Ecom_Orders::where('order_id', $order->order_id)->update($updateArr);
+			}
+
+			// Ensure dates are populated according to status
+			$targetLower = strtolower((string)$order->order_status);
+			$needsDateSave = false;
+			$dateUpdate = [];
+
+			if (in_array($targetLower, ['accept', 'accepted', 'dispatch', 'dispatched', 'shipped', 'delivered', 'delivery'], true)) {
+				if (empty($order->confirmed_date)) {
+					$order->confirmed_date = $order->order_date ? date('Y-m-d H:i:s', strtotime($order->order_date . ' +2 hours')) : now();
+					$dateUpdate['confirmed_date'] = $order->confirmed_date;
+					$needsDateSave = true;
+				}
+			}
+			if (in_array($targetLower, ['dispatch', 'dispatched', 'shipped', 'delivered', 'delivery'], true)) {
+				if (empty($order->shipped_date)) {
+					$order->shipped_date = $order->order_date ? date('Y-m-d H:i:s', strtotime($order->order_date . ' +18 hours')) : now();
+					$dateUpdate['shipped_date'] = $order->shipped_date;
+					$needsDateSave = true;
+				}
+			}
+			if (in_array($targetLower, ['delivered', 'delivery'], true)) {
+				if (empty($order->delivery_date)) {
+					$order->delivery_date = now();
+					$dateUpdate['delivery_date'] = $order->delivery_date;
+					$needsDateSave = true;
+				}
+			}
+			if ($needsDateSave) {
+				Ecom_Orders::where('order_id', $order->order_id)->update($dateUpdate);
+			}
+
 			foreach ($order->products as $p) {
 				$detail = \Illuminate\Support\Facades\DB::table('products_details')->where('id', $p->product_id)->first();
 				if ($detail) {
@@ -314,6 +377,69 @@ class AjaxGetProductController extends Controller
 		}
 
 		$order_products = Ecom_Order_product::where('order_id',$orders_id)->get();
+
+		// Auto-sync status if ecom_order_info is lagging behind products or ecom_order
+		$targetStatus = null;
+		if ($order_products->isNotEmpty()) {
+			$prodStatuses = $order_products->pluck('order_status')->map(fn($s) => strtolower(trim((string)$s)))->values();
+			if ($prodStatuses->every(fn($s) => in_array($s, ['delivered', 'delivery'], true))) {
+				$targetStatus = 'Delivered';
+			} elseif ($prodStatuses->contains(fn($s) => in_array($s, ['dispatch', 'dispatched', 'shipped'], true))) {
+				$targetStatus = 'Dispatch';
+			} elseif ($prodStatuses->contains(fn($s) => in_array($s, ['accept', 'accepted'], true))) {
+				$targetStatus = 'Accept';
+			}
+		}
+
+		$detailOrder = \Illuminate\Support\Facades\DB::table('ecom_order')->where('order_id', $orders_id)->first();
+		if ($detailOrder && !empty($detailOrder->status)) {
+			$detailSts = trim((string)$detailOrder->status);
+			if (strtolower($detailSts) === 'delivered') {
+				$targetStatus = 'Delivered';
+			} elseif ($targetStatus === null && !empty($detailSts)) {
+				$targetStatus = $detailSts;
+			}
+		}
+
+		if ($targetStatus && strcasecmp((string)$order_info->order_status, $targetStatus) !== 0) {
+			$order_info->order_status = $targetStatus;
+			$updateArr = ['order_status' => $targetStatus];
+			if (strtolower($targetStatus) === 'delivered') {
+				$order_info->delivery_date = $order_info->delivery_date ?: now();
+				$updateArr['delivery_date'] = $order_info->delivery_date;
+			}
+			Ecom_Orders::where('order_id', $order_info->order_id)->update($updateArr);
+		}
+
+		// Ensure dates are populated according to status
+		$targetLower = strtolower((string)$order_info->order_status);
+		$needsDateSave = false;
+		$dateUpdate = [];
+
+		if (in_array($targetLower, ['accept', 'accepted', 'dispatch', 'dispatched', 'shipped', 'delivered', 'delivery'], true)) {
+			if (empty($order_info->confirmed_date)) {
+				$order_info->confirmed_date = $order_info->order_date ? date('Y-m-d H:i:s', strtotime($order_info->order_date . ' +2 hours')) : now();
+				$dateUpdate['confirmed_date'] = $order_info->confirmed_date;
+				$needsDateSave = true;
+			}
+		}
+		if (in_array($targetLower, ['dispatch', 'dispatched', 'shipped', 'delivered', 'delivery'], true)) {
+			if (empty($order_info->shipped_date)) {
+				$order_info->shipped_date = $order_info->order_date ? date('Y-m-d H:i:s', strtotime($order_info->order_date . ' +18 hours')) : now();
+				$dateUpdate['shipped_date'] = $order_info->shipped_date;
+				$needsDateSave = true;
+			}
+		}
+		if (in_array($targetLower, ['delivered', 'delivery'], true)) {
+			if (empty($order_info->delivery_date)) {
+				$order_info->delivery_date = now();
+				$dateUpdate['delivery_date'] = $order_info->delivery_date;
+				$needsDateSave = true;
+			}
+		}
+		if ($needsDateSave) {
+			Ecom_Orders::where('order_id', $order_info->order_id)->update($dateUpdate);
+		}
 		foreach ($order_products as $p) {
 			$detail = \Illuminate\Support\Facades\DB::table('products_details')->where('id', $p->product_id)->first();
 			if ($detail) {
