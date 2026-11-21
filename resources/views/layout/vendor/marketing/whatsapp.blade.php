@@ -546,6 +546,39 @@
 									</div>
 								</div>
 							</div>
+
+							<!-- Mobile / WebView Image Save Modal -->
+							<div class="modal fade" id="posterMobileSaveModal" tabindex="-1" role="dialog" aria-hidden="true" style="z-index: 1070;">
+								<div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 420px; width: 92%; margin: 12px auto;">
+									<div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
+										<div class="modal-header py-2 px-3 text-white d-flex justify-content-between align-items-center" style="background-color: #183543 !important;">
+											<div class="d-flex align-items-center gap-2">
+												<i class="fa fa-check-circle text-success fa-lg"></i>
+												<h6 class="modal-title fw-bold mb-0 text-white" style="font-size: 14px;">Poster Ready</h6>
+											</div>
+											<button type="button" class="btn btn-sm text-white fw-bold px-2 py-0" data-bs-dismiss="modal" data-dismiss="modal" style="background: rgba(255,255,255,0.2); border-radius: 50%;">
+												<i class="fa fa-times"></i>
+											</button>
+										</div>
+										<div class="modal-body p-3 text-center" style="background-color: #f8fafc;">
+											<div class="p-2 bg-white rounded shadow-sm border mb-2 d-inline-block" style="max-width: 100%;">
+												<img id="mobile_preview_poster_img" src="" alt="Custom Poster" class="img-fluid rounded" style="max-height: 48vh; object-fit: contain; display: block; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.12);" />
+											</div>
+											<div class="alert alert-info py-2 px-2 text-start mb-2" style="font-size: 11.5px; border-radius: 8px;">
+												<i class="fa fa-hand-pointer-o text-primary me-1"></i> <strong>Save to Phone:</strong> If automatic download didn't start, <strong>tap & hold (long press)</strong> the image above and tap <strong>"Save Image"</strong> or <strong>"Download Image"</strong>.
+											</div>
+											<div class="d-flex gap-2">
+												<a id="btn_mobile_direct_download" href="#" download="poster.png" class="btn btn-primary btn-sm flex-fill fw-bold py-2" style="background-color: #183543 !important; border-color: #183543 !important;">
+													<i class="fa fa-download me-1"></i> Download File
+												</a>
+												<button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal" data-dismiss="modal">
+													Done
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 							
 <div class="row">
 								<div class="datatable-dashv1-list custom-datatable-overright">                            
@@ -816,6 +849,16 @@
         #posterStudioModal .card {
             padding: 10px !important;
         }
+    }
+
+    #posterMobileSaveModal {
+        z-index: 1070 !important;
+    }
+    #posterMobileSaveModal .modal-dialog {
+        z-index: 1075 !important;
+    }
+    .modal-backdrop.show ~ .modal-backdrop.show {
+        z-index: 1065 !important;
     }
 </style>
 <script>
@@ -1469,142 +1512,47 @@
     function downloadCanvasImage(canvas, filename) {
         if (!canvas) return;
 
-        const $btn = $('#btn_download_poster');
-        const origHtml = $btn.html();
-        $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin me-2"></i> Generating Poster...');
-
-        function restoreBtn() {
-            $btn.prop('disabled', false).html(origHtml);
-        }
-
-        function executeDownload(blob) {
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-            // 1. Mobile Web Share API: Lets user Save to Photos/Gallery or share directly to WhatsApp!
-            if (isMobile && navigator.canShare && typeof File !== 'undefined') {
-                try {
-                    const file = new File([blob], filename, { type: 'image/png' });
-                    if (navigator.canShare({ files: [file] })) {
-                        navigator.share({
-                            files: [file],
-                            title: 'Poster Studio',
-                            text: 'Your customized WhatsApp poster'
-                        }).then(function() {
-                            restoreBtn();
-                        }).catch(function(shareErr) {
-                            // User cancelled share dialog, proceed to standard download
-                            fallbackDirectSave(blob);
-                        });
-                        return;
-                    }
-                } catch (e) {
-                    console.warn('WebShare error:', e);
-                }
-            }
-
-            fallbackDirectSave(blob);
-
-            function fallbackDirectSave(saveBlob) {
-                const blobUrl = URL.createObjectURL(saveBlob);
-
-                if (isIOS) {
-                    // iOS Safari requires DataURL or new window to reliably save/download images
-                    const reader = new FileReader();
-                    reader.onloadend = function() {
-                        const dataUrl = reader.result;
-                        const a = document.createElement('a');
-                        a.download = filename;
-                        a.href = dataUrl;
-                        a.target = '_blank';
-                        document.body.appendChild(a);
-                        a.click();
-                        setTimeout(function() {
-                            document.body.removeChild(a);
-                            URL.revokeObjectURL(blobUrl);
-                            restoreBtn();
-                        }, 15000);
-                    };
-                    reader.readAsDataURL(saveBlob);
-                } else {
-                    // Android & Desktop Chrome / Firefox / Edge
-                    const a = document.createElement('a');
-                    a.download = filename;
-                    a.href = blobUrl;
-                    a.target = '_blank';
-                    document.body.appendChild(a);
-                    a.click();
-                    setTimeout(function() {
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(blobUrl);
-                        restoreBtn();
-                    }, 30000);
-                }
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Poster Downloaded!',
-                    text: 'Your customized poster was saved successfully (PNG).',
-                    timer: 2500,
-                    showConfirmButton: false
-                });
-            }
-        }
-
+        let dataUrl = '';
         try {
-            if (canvas.toBlob) {
-                canvas.toBlob(function(blob) {
-                    if (!blob) {
-                        try {
-                            const dataUrl = canvas.toDataURL('image/png');
-                            const a = document.createElement('a');
-                            a.download = filename;
-                            a.href = dataUrl;
-                            a.target = '_blank';
-                            document.body.appendChild(a);
-                            a.click();
-                            setTimeout(function() {
-                                document.body.removeChild(a);
-                                restoreBtn();
-                            }, 2000);
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Poster Downloaded!',
-                                timer: 2000,
-                                showConfirmButton: false
-                            });
-                        } catch (e2) {
-                            restoreBtn();
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Export Failed',
-                                text: 'Unable to export canvas: ' + e2.message
-                            });
-                        }
-                        return;
-                    }
-                    executeDownload(blob);
-                }, 'image/png');
-            } else {
-                const dataUrl = canvas.toDataURL('image/png');
-                const a = document.createElement('a');
-                a.download = filename;
-                a.href = dataUrl;
-                a.target = '_blank';
-                document.body.appendChild(a);
-                a.click();
-                setTimeout(function() {
-                    document.body.removeChild(a);
-                    restoreBtn();
-                }, 2000);
-            }
-        } catch (err) {
-            restoreBtn();
-            console.error('Canvas export error:', err);
+            dataUrl = canvas.toDataURL('image/png');
+        } catch (e) {
+            console.error('Canvas export error:', e);
             Swal.fire({
                 icon: 'error',
-                title: 'Export Error',
-                text: 'Canvas export error: ' + err.message
+                title: 'Export Failed',
+                text: 'Canvas could not be exported: ' + e.message
+            });
+            return;
+        }
+
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+
+        // 1. Direct standard download link trigger
+        try {
+            const a = document.createElement('a');
+            a.download = filename;
+            a.href = dataUrl;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() {
+                document.body.removeChild(a);
+            }, 1000);
+        } catch (err) {
+            console.warn('Direct download click error:', err);
+        }
+
+        // 2. On Mobile & WebViews: ALWAYS show the dedicated Poster Ready preview modal so user can long-press to save!
+        if (isMobile) {
+            $('#mobile_preview_poster_img').attr('src', dataUrl);
+            $('#btn_mobile_direct_download').attr('href', dataUrl).attr('download', filename);
+            $('#posterMobileSaveModal').modal('show');
+        } else {
+            Swal.fire({
+                icon: 'success',
+                title: 'Poster Downloaded!',
+                text: 'Your customized poster was downloaded successfully (PNG).',
+                timer: 2500,
+                showConfirmButton: false
             });
         }
     }
