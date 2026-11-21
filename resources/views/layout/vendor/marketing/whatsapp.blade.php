@@ -122,8 +122,8 @@
 															<div class="studio-tab-pane" id="tab-content" style="display: block;">
 
 																{{-- Common Alignment, Color & Shadow for all 6 Lines --}}
-																<div class="row g-2 mb-2 p-2 rounded border bg-light">
-																	<div class="col-4">
+																<div class="row g-2 mb-2 p-2 rounded border bg-light align-items-center">
+																	<div class="col-12 col-md-4">
 																		<label class="studio-label"><i class="fa fa-arrows me-1 text-primary"></i> Position & Align :</label>
 																		<select class="form-select form-select-sm studio-input" id="studio_text_pos">
 																			<option value="top-right" selected>Top Right (Fashion Style)</option>
@@ -137,10 +137,10 @@
 																			<option value="bottom-left">Bottom Left</option>
 																		</select>
 																	</div>
-																	<div class="col-4">
+																	<div class="col-6 col-md-4">
 																		<label class="studio-label"><i class="fa fa-paint-brush me-1 text-primary"></i> Text Color :</label>
 																		<div class="d-flex align-items-center gap-1">
-																			<select class="form-select form-select-sm studio-input flex-grow-1" id="studio_text_color_preset">
+																			<select class="form-select form-select-sm studio-input" id="studio_text_color_preset" style="flex: 1 1 auto; width: calc(100% - 42px) !important;">
 																				<option value="#FFFFFF" selected>White</option>
 																				<option value="#000000">Black</option>
 																				<option value="#FFD700">Gold / Yellow</option>
@@ -150,10 +150,10 @@
 																				<option value="#E2E8F0">Soft Silver</option>
 																				<option value="custom">Custom...</option>
 																			</select>
-																			<input type="color" id="studio_text_color_picker" class="form-control form-control-sm p-0" value="#FFFFFF" style="width: 32px; height: 31px; border-radius: 6px; cursor: pointer; border: 1px solid #ced4da;" title="Pick Color">
+																			<input type="color" id="studio_text_color_picker" class="studio-color-picker studio-input" value="#FFFFFF" style="width: 36px !important; min-width: 36px !important; max-width: 36px !important; height: 34px !important; flex: 0 0 36px !important; border-radius: 6px; cursor: pointer; border: 1px solid #cbd5e1; padding: 2px !important;" title="Pick Color">
 																		</div>
 																	</div>
-																	<div class="col-4">
+																	<div class="col-6 col-md-4">
 																		<label class="studio-label"><i class="fa fa-adjust me-1 text-primary"></i> Text Shadow :</label>
 																		<select class="form-select form-select-sm studio-input" id="studio_text_shadow">
 																			<option value="auto" selected>Auto (Contrast)</option>
@@ -166,11 +166,11 @@
 
 																{{-- 6 Individual Poster Text Lines with Individual Sizes --}}
 																<div class="row g-2 mb-1">
-																	<div class="col-7">
+																	<div class="col-12 col-md-6">
 																		<label class="studio-label py-0 mb-1">Line 1 :</label>
 																		<input type="text" class="form-control form-control-sm studio-input" id="studio_txt_1" placeholder="e.g. SPECIAL OFFER">
 																	</div>
-																	<div class="col-5">
+																	<div class="col-6 col-md-3">
 																		<label class="studio-label py-0 mb-1"><i class="fa fa-text-height me-1 text-primary"></i> Size 1 :</label>
 																		<select class="form-select form-select-sm studio-input" id="studio_txt_1_size">
 																			<option value="xs">XS (22px)</option>
@@ -182,14 +182,26 @@
 																			<option value="giant">Giant (108px)</option>
 																		</select>
 																	</div>
+																	<div class="col-6 col-md-3">
+																		<label class="studio-label py-0 mb-1"><i class="fa fa-arrows-v me-1 text-primary"></i> Margin Top :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_txt_1_margin_top">
+																			<option value="0" selected>0px</option>
+																			<option value="6">6px (Slight)</option>
+																			<option value="12">12px</option>
+																			<option value="20">20px</option>
+																			<option value="35">35px</option>
+																			<option value="50">50px</option>
+																			<option value="70">70px</option>
+																		</select>
+																	</div>
 																</div>
 
 																<div class="row g-2 mb-1">
-																	<div class="col-7">
+																	<div class="col-12 col-md-6">
 																		<label class="studio-label py-0 mb-1">Line 2 :</label>
 																		<input type="text" class="form-control form-control-sm studio-input" id="studio_txt_2" placeholder="e.g. FASHION">
 																	</div>
-																	<div class="col-5">
+																	<div class="col-6 col-md-3">
 																		<label class="studio-label py-0 mb-1"><i class="fa fa-text-height me-1 text-primary"></i> Size 2 :</label>
 																		<select class="form-select form-select-sm studio-input" id="studio_txt_2_size">
 																			<option value="xs">XS (22px)</option>
@@ -201,14 +213,26 @@
 																			<option value="giant">Giant (108px)</option>
 																		</select>
 																	</div>
+																	<div class="col-6 col-md-3">
+																		<label class="studio-label py-0 mb-1"><i class="fa fa-arrows-v me-1 text-primary"></i> Margin Top :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_txt_2_margin_top">
+																			<option value="0" selected>0px</option>
+																			<option value="6">6px (Slight)</option>
+																			<option value="12">12px</option>
+																			<option value="18">18px</option>
+																			<option value="26">26px</option>
+																			<option value="36">36px</option>
+																			<option value="50">50px</option>
+																		</select>
+																	</div>
 																</div>
 
 																<div class="row g-2 mb-1">
-																	<div class="col-7">
+																	<div class="col-12 col-md-6">
 																		<label class="studio-label py-0 mb-1">Line 3 :</label>
 																		<input type="text" class="form-control form-control-sm studio-input" id="studio_txt_3" placeholder="e.g. SALE">
 																	</div>
-																	<div class="col-5">
+																	<div class="col-6 col-md-3">
 																		<label class="studio-label py-0 mb-1"><i class="fa fa-text-height me-1 text-primary"></i> Size 3 :</label>
 																		<select class="form-select form-select-sm studio-input" id="studio_txt_3_size">
 																			<option value="xs">XS (22px)</option>
@@ -220,14 +244,26 @@
 																			<option value="giant">Giant (108px)</option>
 																		</select>
 																	</div>
+																	<div class="col-6 col-md-3">
+																		<label class="studio-label py-0 mb-1"><i class="fa fa-arrows-v me-1 text-primary"></i> Margin Top :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_txt_3_margin_top">
+																			<option value="0" selected>0px</option>
+																			<option value="6">6px (Slight)</option>
+																			<option value="12">12px</option>
+																			<option value="18">18px</option>
+																			<option value="26">26px</option>
+																			<option value="36">36px</option>
+																			<option value="50">50px</option>
+																		</select>
+																	</div>
 																</div>
 
 																<div class="row g-2 mb-1">
-																	<div class="col-7">
+																	<div class="col-12 col-md-6">
 																		<label class="studio-label py-0 mb-1">Line 4 :</label>
 																		<input type="text" class="form-control form-control-sm studio-input" id="studio_txt_4" placeholder="e.g. UP TO">
 																	</div>
-																	<div class="col-5">
+																	<div class="col-6 col-md-3">
 																		<label class="studio-label py-0 mb-1"><i class="fa fa-text-height me-1 text-primary"></i> Size 4 :</label>
 																		<select class="form-select form-select-sm studio-input" id="studio_txt_4_size">
 																			<option value="xs">XS (22px)</option>
@@ -239,14 +275,26 @@
 																			<option value="giant">Giant (108px)</option>
 																		</select>
 																	</div>
+																	<div class="col-6 col-md-3">
+																		<label class="studio-label py-0 mb-1"><i class="fa fa-arrows-v me-1 text-primary"></i> Margin Top :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_txt_4_margin_top">
+																			<option value="0">0px</option>
+																			<option value="6">6px (Slight)</option>
+																			<option value="12">12px</option>
+																			<option value="18" selected>18px</option>
+																			<option value="26">26px</option>
+																			<option value="36">36px</option>
+																			<option value="50">50px</option>
+																		</select>
+																	</div>
 																</div>
 
 																<div class="row g-2 mb-1">
-																	<div class="col-7">
+																	<div class="col-12 col-md-6">
 																		<label class="studio-label py-0 mb-1">Line 5 :</label>
 																		<input type="text" class="form-control form-control-sm studio-input" id="studio_txt_5" placeholder="e.g. 50%">
 																	</div>
-																	<div class="col-5">
+																	<div class="col-6 col-md-3">
 																		<label class="studio-label py-0 mb-1"><i class="fa fa-text-height me-1 text-primary"></i> Size 5 :</label>
 																		<select class="form-select form-select-sm studio-input" id="studio_txt_5_size">
 																			<option value="xs">XS (22px)</option>
@@ -258,14 +306,26 @@
 																			<option value="giant" selected>Giant (108px)</option>
 																		</select>
 																	</div>
+																	<div class="col-6 col-md-3">
+																		<label class="studio-label py-0 mb-1"><i class="fa fa-arrows-v me-1 text-primary"></i> Margin Top :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_txt_5_margin_top">
+																			<option value="0" selected>0px</option>
+																			<option value="6">6px (Slight)</option>
+																			<option value="12">12px</option>
+																			<option value="18">18px</option>
+																			<option value="26">26px</option>
+																			<option value="36">36px</option>
+																			<option value="50">50px</option>
+																		</select>
+																	</div>
 																</div>
 
 																<div class="row g-2 mb-2">
-																	<div class="col-7">
+																	<div class="col-12 col-md-6">
 																		<label class="studio-label py-0 mb-1">Line 6 :</label>
 																		<input type="text" class="form-control form-control-sm studio-input" id="studio_txt_6" placeholder="e.g. OFF">
 																	</div>
-																	<div class="col-5">
+																	<div class="col-6 col-md-3">
 																		<label class="studio-label py-0 mb-1"><i class="fa fa-text-height me-1 text-primary"></i> Size 6 :</label>
 																		<select class="form-select form-select-sm studio-input" id="studio_txt_6_size">
 																			<option value="xs">XS (22px)</option>
@@ -277,16 +337,70 @@
 																			<option value="giant">Giant (108px)</option>
 																		</select>
 																	</div>
+																	<div class="col-6 col-md-3">
+																		<label class="studio-label py-0 mb-1"><i class="fa fa-arrows-v me-1 text-primary"></i> Margin Top :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_txt_6_margin_top">
+																			<option value="0" selected>0px</option>
+																			<option value="6">6px (Slight)</option>
+																			<option value="12">12px</option>
+																			<option value="18">18px</option>
+																			<option value="26">26px</option>
+																			<option value="36">36px</option>
+																			<option value="50">50px</option>
+																		</select>
+																	</div>
 																</div>
 
 																<div class="row g-2 mb-2 pt-2 border-top">
-																	<div class="col-7">
+																	<div class="col-12 col-md-6">
 																		<label class="studio-label"><i class="fa fa-map-marker text-danger"></i> Store Address / Location :</label>
 																		<input type="text" class="form-control form-control-sm studio-input" id="studio_line1" placeholder="e.g. FASHION 600, T.NAGAR">
 																	</div>
-																	<div class="col-5">
+																	<div class="col-6 col-md-3">
+																		<label class="studio-label"><i class="fa fa-text-height text-primary"></i> Size :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_addr_size">
+																			<option value="xs">XS (18px)</option>
+																			<option value="small">Small (20px)</option>
+																			<option value="normal" selected>Normal (24px)</option>
+																			<option value="medium">Medium (28px)</option>
+																			<option value="large">Large (32px)</option>
+																			<option value="xlarge">XL (38px)</option>
+																			<option value="huge">Huge (44px)</option>
+																		</select>
+																	</div>
+																	<div class="col-6 col-md-3">
+																		<label class="studio-label"><i class="fa fa-arrows-v text-primary"></i> Margin Top :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_addr_margin_top">
+																			<option value="0">0px</option>
+																			<option value="4" selected>4px (Slight)</option>
+																			<option value="8">8px</option>
+																			<option value="12">12px</option>
+																			<option value="18">18px</option>
+																			<option value="24">24px</option>
+																			<option value="32">32px</option>
+																		</select>
+																	</div>
+																</div>
+
+																<div class="row g-2 mb-2">
+																	<div class="col-12 col-md-6">
 																		<label class="studio-label"><i class="fa fa-lock text-muted"></i> Website (Fixed) :</label>
 																		<input type="text" class="form-control form-control-sm text-dark bg-light fw-bold" id="studio_fixed_domain" value="@trymenow.in" readonly style="cursor: not-allowed; background-color: #f1f5f9 !important;">
+																	</div>
+																	<div class="col-6 col-md-3">
+																		<label class="studio-label"><i class="fa fa-text-height text-primary"></i> Website Size :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_domain_size">
+																			<option value="xs">XS (15px)</option>
+																			<option value="small">Small (17px)</option>
+																			<option value="normal" selected>Normal (19px)</option>
+																			<option value="medium">Medium (22px)</option>
+																			<option value="large">Large (26px)</option>
+																			<option value="xlarge">XL (30px)</option>
+																		</select>
+																	</div>
+																	<div class="col-6 col-md-3">
+																		<label class="studio-label"><i class="fa fa-phone text-success"></i> WhatsApp / Mobile :</label>
+																		<input type="text" class="form-control form-control-sm studio-input" id="studio_phone" placeholder="e.g. 9876543210">
 																	</div>
 																</div>
 
@@ -294,33 +408,67 @@
 																	<div class="col-6">
 																		<label class="studio-label"><i class="fa fa-paint-brush text-primary"></i> Bar Background Color :</label>
 																		<div class="d-flex align-items-center gap-2">
-																			<input type="color" class="form-control form-control-color p-0 border studio-input" id="studio_bar_bg_picker" value="#121212" style="width: 44px; height: 34px; cursor: pointer;" title="Choose Bar Background Color">
+																			<input type="color" class="studio-color-picker studio-input" id="studio_bar_bg_picker" value="#121212" title="Choose Bar Background Color">
 																			<span class="small text-muted fw-bold" id="studio_bar_bg_hex">#121212</span>
 																		</div>
 																	</div>
 																	<div class="col-6">
 																		<label class="studio-label"><i class="fa fa-font text-info"></i> Bar Text Color :</label>
 																		<div class="d-flex align-items-center gap-2">
-																			<input type="color" class="form-control form-control-color p-0 border studio-input" id="studio_bar_text_picker" value="#ffffff" style="width: 44px; height: 34px; cursor: pointer;" title="Choose Bar Text Color">
+																			<input type="color" class="studio-color-picker studio-input" id="studio_bar_text_picker" value="#ffffff" title="Choose Bar Text Color">
 																			<span class="small text-muted fw-bold" id="studio_bar_text_hex">#FFFFFF</span>
 																		</div>
-																	</div>
-																</div>
-
-																<div class="row g-2 mb-2">
-																	<div class="col-7">
-																		<label class="studio-label"><i class="fa fa-tag text-warning"></i> Offer Badge Pill (Bottom) :</label>
-																		<input type="text" class="form-control form-control-sm studio-input" id="studio_line2" placeholder="e.g. Free Delivery">
-																	</div>
-																	<div class="col-5">
-																		<label class="studio-label"><i class="fa fa-phone text-success"></i> WhatsApp / Mobile :</label>
-																		<input type="text" class="form-control form-control-sm studio-input" id="studio_phone" placeholder="e.g. 9876543210">
 																	</div>
 																</div>
 															</div>
 
 															<!-- TAB 2: STYLE & OPTIONS -->
 															<div class="studio-tab-pane" id="tab-design" style="display: none;">
+																<div class="mb-2">
+																	<label class="studio-label"><i class="fa fa-tag text-warning"></i> Offer Badge Pill (Bottom) :</label>
+																	<select class="form-select form-select-sm studio-input" id="studio_cta">
+																		<option value="✨ Free Delivery" selected>✨ Free Delivery</option>
+																		<option value="🔥 SPECIAL OFFER">🔥 SPECIAL OFFER</option>
+																		<option value="⚡ ORDER NOW">⚡ ORDER NOW</option>
+																		<option value="🛍️ SHOP NOW">🛍️ SHOP NOW</option>
+																		<option value="⏳ LIMITED STOCK">⏳ LIMITED STOCK</option>
+																		<option value="📍 VISIT US TODAY">📍 VISIT US TODAY</option>
+																		<option value="📅 BOOK NOW">📅 BOOK NOW</option>
+																		<option value="⭐ BEST SELLER">⭐ BEST SELLER</option>
+																		<option value="🆕 NEW ARRIVAL">🆕 NEW ARRIVAL</option>
+																		<option value="💥 MEGA DISCOUNT">💥 MEGA DISCOUNT</option>
+																		<option value="FLAT 50% OFF">🏷️ FLAT 50% OFF</option>
+																		<option value="BUY 1 GET 1">🎁 BUY 1 GET 1</option>
+																		<option value="🪔 FESTIVE SPECIAL">🪔 FESTIVE SPECIAL</option>
+																		<option value="WEEKEND SALE">🎉 WEEKEND SALE</option>
+																		<option value="EXCLUSIVE">💎 EXCLUSIVE</option>
+																		<option value="none">❌ Hide Pill</option>
+																		<option value="custom">✏️ Custom Text...</option>
+																	</select>
+																	<input type="text" class="form-control form-control-sm studio-input mt-1" id="studio_line2" placeholder="e.g. Free Delivery" value="Free Delivery" style="display: none;">
+																</div>
+
+																<div class="row g-2 mb-2">
+																	<div class="col-6">
+																		<label class="studio-label"><i class="fa fa-align-center text-primary"></i> Pill Alignment :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_pill_align">
+																			<option value="center" selected>Center (Default)</option>
+																			<option value="left">Left</option>
+																			<option value="right">Right</option>
+																		</select>
+																	</div>
+																	<div class="col-6">
+																		<label class="studio-label"><i class="fa fa-text-height text-primary"></i> Pill Font Size :</label>
+																		<select class="form-select form-select-sm studio-input" id="studio_pill_size">
+																			<option value="xs">XS (16px)</option>
+																			<option value="small">Small (18px)</option>
+																			<option value="normal" selected>Normal (21px)</option>
+																			<option value="medium">Medium (25px)</option>
+																			<option value="large">Large (30px)</option>
+																			<option value="xlarge">XL (36px)</option>
+																		</select>
+																	</div>
+																</div>
 																<div class="mb-2">
 																	<label class="studio-label"><i class="fa fa-paint-brush text-primary"></i> Pill Color Gradient :</label>
 																	<select class="form-select form-select-sm studio-input" id="studio_theme">
@@ -450,7 +598,7 @@
 											<div class="d-flex align-items-center gap-1">
 												<button type="button" value="{{$item->id}}" class="edit_facebook btn btn-primary btn-sm" 
 													data-id="{{ $item->id }}"
-													data-image="{{ asset('assets/images/Marketting/Wh_app_template/' . $item->image) }}"
+													data-image="/assets/images/Marketting/Wh_app_template/{{ $item->image }}"
 													data-title="{{ !empty($item->title) && $item->title != '-' ? $item->title : '' }}"
 													data-subtitle="{{ !empty($item->sub_title) && $item->sub_title != '-' ? $item->sub_title : '' }}"
 													data-line1="{{ !empty($item->line1) && $item->line1 != '-' ? $item->line1 : '' }}"
@@ -592,6 +740,20 @@
         background: transparent !important;
         box-shadow: none !important;
     }
+    #posterStudioModal input[type="color"],
+    #posterStudioModal .studio-color-picker {
+        width: 36px !important;
+        min-width: 36px !important;
+        max-width: 36px !important;
+        height: 34px !important;
+        flex: 0 0 36px !important;
+        padding: 2px !important;
+        border-radius: 6px !important;
+        border: 1px solid #cbd5e1 !important;
+        cursor: pointer !important;
+        box-sizing: border-box !important;
+        background-color: #ffffff !important;
+    }
     /* Elegant Subtle Scrollbar */
     #studioTabContent::-webkit-scrollbar {
         width: 4px;
@@ -606,6 +768,54 @@
     }
     #studioTabContent::-webkit-scrollbar-thumb:hover {
         background: #94a3b8;
+    }
+
+    /* Mobile Responsive Optimizations for Poster Studio */
+    @media (max-width: 767.98px) {
+        #posterStudioModal .modal-dialog {
+            width: 98% !important;
+            max-width: 98% !important;
+            margin: 8px auto !important;
+        }
+        #posterStudioModal .modal-content {
+            border-radius: 10px !important;
+        }
+        #posterStudioModal .modal-body {
+            padding: 8px !important;
+            max-height: calc(90vh - 55px) !important;
+        }
+        #posterStudioModal .poster-canvas-wrapper {
+            min-height: 200px !important;
+            max-height: 240px !important;
+            padding: 6px !important;
+        }
+        #posterCanvas {
+            max-height: 225px !important;
+        }
+        #studioTabContent {
+            max-height: 380px !important;
+            padding-right: 2px !important;
+        }
+        #posterStudioModal .studio-label {
+            font-size: 11px !important;
+            margin-bottom: 2px !important;
+        }
+        #posterStudioModal .studio-input,
+        #posterStudioModal input.form-control,
+        #posterStudioModal select.form-select {
+            height: 33px !important;
+            min-height: 33px !important;
+            max-height: 33px !important;
+            font-size: 11.5px !important;
+            padding: 4px 6px !important;
+        }
+        #posterStudioModal .studio-tab-btn {
+            font-size: 11px !important;
+            padding: 5px 6px !important;
+        }
+        #posterStudioModal .card {
+            padding: 10px !important;
+        }
     }
 </style>
 <script>
@@ -641,7 +851,7 @@
              success: function (response) {
                 if(response.status == 200 && response.whapp) {
                     var data = response.whapp;
-                    var img = data.image ? "{{ asset('assets/images/Marketting/Wh_app_template') }}/" + data.image : dataImage;
+                    var img = data.image ? "/assets/images/Marketting/Wh_app_template/" + data.image : getSameOriginImageUrl(dataImage);
                     var title = (data.title && data.title !== '-') ? data.title : '';
                     var subtitle = (data.sub_title && data.sub_title !== '-') ? data.sub_title : '';
                     var line1 = (data.line1 && data.line1 !== '-') ? data.line1 : '';
@@ -757,6 +967,37 @@
         return defaultPx || 38;
     }
 
+    function getStudioPillFontSizePx(code) {
+        if (code === 'xs') return 16;
+        if (code === 'small') return 18;
+        if (code === 'normal') return 21;
+        if (code === 'medium') return 25;
+        if (code === 'large') return 30;
+        if (code === 'xlarge') return 36;
+        return 21;
+    }
+
+    function getStudioAddrFontSizePx(code) {
+        if (code === 'xs') return 18;
+        if (code === 'small') return 20;
+        if (code === 'normal') return 24;
+        if (code === 'medium') return 28;
+        if (code === 'large') return 32;
+        if (code === 'xlarge') return 38;
+        if (code === 'huge') return 44;
+        return 24;
+    }
+
+    function getStudioDomainFontSizePx(code) {
+        if (code === 'xs') return 15;
+        if (code === 'small') return 17;
+        if (code === 'normal') return 19;
+        if (code === 'medium') return 22;
+        if (code === 'large') return 26;
+        if (code === 'xlarge') return 30;
+        return 19;
+    }
+
     function renderStudioPoster() {
         const canvas = document.getElementById('posterCanvas');
         if (!canvas || !studioImage.complete || studioImage.naturalWidth === 0) return;
@@ -792,11 +1033,11 @@
         const pad = 48 * scale;
         const theme = $('#studio_theme').val() || 'classic';
         const fontChoice = $('#studio_font').val() || 'sans';
-        let baseFont = "'Nunito', 'Segoe UI', sans-serif";
+        let baseFont = "'Nunito', 'Segoe UI', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif";
         if (fontChoice === 'impact') {
-            baseFont = "'Impact', 'Arial Black', sans-serif";
+            baseFont = "'Impact', 'Arial Black', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif";
         } else if (fontChoice === 'serif') {
-            baseFont = "'Georgia', 'Playfair Display', serif";
+            baseFont = "'Georgia', 'Playfair Display', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', serif";
         }
 
         // Vignette / Photo Darkening
@@ -873,35 +1114,46 @@
         const pillTextRaw = cleanStudioText($('#studio_line2').val());
         const fixedDomain = '@trymenow.in';
 
-        // Compose top line of address bar
-        let addressLine = addressRaw || 'FASHION 600, T.NAGAR';
-        if (phoneRaw) {
-            if (addressRaw) {
-                addressLine = addressRaw + '  •  ' + phoneRaw;
-            } else {
-                addressLine = phoneRaw;
-            }
+        // Compose top line of address bar with icons
+        let addressLine = '';
+        if (addressRaw && phoneRaw) {
+            addressLine = '📍 ' + addressRaw + '   •   📞 ' + phoneRaw;
+        } else if (addressRaw) {
+            addressLine = '📍 ' + addressRaw;
+        } else if (phoneRaw) {
+            addressLine = '📞 ' + phoneRaw;
+        } else {
+            addressLine = '📍 FASHION 600, T.NAGAR';
         }
 
-        const pillText = pillTextRaw || 'Free Delivery';
+        const pillText = pillTextRaw;
         const hasPill = pillText && pillText !== 'none' && pillText !== '';
 
-        const pillH = Math.round(44 * scale);
+        const pillFs = getStudioPillFontSizePx($('#studio_pill_size').val());
+        const pillH = Math.round((pillFs + 23) * scale);
         const pillBottomMargin = Math.round(20 * scale);
         const pillY = H - pillH - pillBottomMargin;
 
+        const addrFsSetting = getStudioAddrFontSizePx($('#studio_addr_size').val());
+        const domainFsSetting = getStudioDomainFontSizePx($('#studio_domain_size').val());
+        const addrMarginTop = parseInt($('#studio_addr_margin_top').val() || '4', 10);
         const gapBetweenBarAndPill = Math.round(14 * scale);
-        const barH = Math.round(82 * scale);
+
+        // Structured bar padding & height
+        const barPadTop = Math.round((8 + addrMarginTop) * scale);
+        const barLineGap = Math.round(16 * scale);
+        const barPadBottom = Math.round(18 * scale);
+        const barH = Math.round(barPadTop + (addrFsSetting * scale) + barLineGap + (domainFsSetting * scale) + barPadBottom);
         const barY = hasPill ? (pillY - gapBetweenBarAndPill - barH) : (H - barH - (18 * scale));
 
         // 3. Main 6 Lines of Poster Text (Custom Sizes, Common Position/Alignment & Unified Color)
         const posterLines = [
-            { text: cleanStudioText($('#studio_txt_1').val()), size: getStudioLineSizePx($('#studio_txt_1_size').val(), 28) },
-            { text: cleanStudioText($('#studio_txt_2').val()), size: getStudioLineSizePx($('#studio_txt_2_size').val(), 88) },
-            { text: cleanStudioText($('#studio_txt_3').val()), size: getStudioLineSizePx($('#studio_txt_3_size').val(), 88) },
-            { text: cleanStudioText($('#studio_txt_4').val()), size: getStudioLineSizePx($('#studio_txt_4_size').val(), 38) },
-            { text: cleanStudioText($('#studio_txt_5').val()), size: getStudioLineSizePx($('#studio_txt_5_size').val(), 108) },
-            { text: cleanStudioText($('#studio_txt_6').val()), size: getStudioLineSizePx($('#studio_txt_6_size').val(), 38) }
+            { lineNum: 1, text: cleanStudioText($('#studio_txt_1').val()), size: getStudioLineSizePx($('#studio_txt_1_size').val(), 28), mTop: parseInt($('#studio_txt_1_margin_top').val() || '0', 10) },
+            { lineNum: 2, text: cleanStudioText($('#studio_txt_2').val()), size: getStudioLineSizePx($('#studio_txt_2_size').val(), 88), mTop: parseInt($('#studio_txt_2_margin_top').val() || '0', 10) },
+            { lineNum: 3, text: cleanStudioText($('#studio_txt_3').val()), size: getStudioLineSizePx($('#studio_txt_3_size').val(), 88), mTop: parseInt($('#studio_txt_3_margin_top').val() || '0', 10) },
+            { lineNum: 4, text: cleanStudioText($('#studio_txt_4').val()), size: getStudioLineSizePx($('#studio_txt_4_size').val(), 38), mTop: parseInt($('#studio_txt_4_margin_top').val() || '18', 10) },
+            { lineNum: 5, text: cleanStudioText($('#studio_txt_5').val()), size: getStudioLineSizePx($('#studio_txt_5_size').val(), 108), mTop: parseInt($('#studio_txt_5_margin_top').val() || '0', 10) },
+            { lineNum: 6, text: cleanStudioText($('#studio_txt_6').val()), size: getStudioLineSizePx($('#studio_txt_6_size').val(), 38), mTop: parseInt($('#studio_txt_6_margin_top').val() || '0', 10) }
         ].filter(l => l.text !== '');
 
         if (posterLines.length > 0) {
@@ -942,21 +1194,25 @@
                 ctx.font = `bold ${Math.round(l.size * scale)}px ${baseFont}`;
                 const wrapped = getWrappedLines(ctx, l.text.toUpperCase(), maxTextW);
                 const lineH = Math.round(l.size * 1.15 * scale);
-                const blockH = Math.max(1, wrapped.length) * lineH;
+                const extraMarginTop = (l.lineNum === 1) ? 0 : Math.round(l.mTop * scale);
+                const blockH = (Math.max(1, wrapped.length) * lineH) + extraMarginTop;
                 totalLinesH += blockH;
                 preparedBlocks.push({
+                    lineNum: l.lineNum,
                     size: l.size,
                     lineH: lineH,
+                    extraMarginTop: extraMarginTop,
                     wrappedLines: wrapped.length > 0 ? wrapped : [l.text.toUpperCase()]
                 });
             });
 
             // Start Y coordinate
-            let currentY = 54 * scale;
+            const line1MarginTop = Math.round(parseInt($('#studio_txt_1_margin_top').val() || '0', 10) * scale);
+            let currentY = (54 * scale) + line1MarginTop;
             if (textPos.startsWith('top-')) {
-                currentY = 60 * scale;
+                currentY = (60 * scale) + line1MarginTop;
             } else if (textPos.startsWith('middle-')) {
-                currentY = Math.max(60 * scale, Math.round((H * 0.40) - (totalLinesH / 2)));
+                currentY = Math.max(60 * scale, Math.round((H * 0.40) - (totalLinesH / 2))) + line1MarginTop;
             } else if (textPos.startsWith('bottom-')) {
                 const bottomBoundary = barY - (30 * scale);
                 currentY = Math.max(50 * scale, bottomBoundary - totalLinesH);
@@ -986,6 +1242,9 @@
 
             // Render each wrapped line cleanly without overlapping bottom bar
             preparedBlocks.forEach(block => {
+                if (block.extraMarginTop > 0) {
+                    currentY += block.extraMarginTop;
+                }
                 ctx.save();
                 ctx.font = `bold ${Math.round(block.size * scale)}px ${baseFont}`;
                 block.wrappedLines.forEach(wl => {
@@ -1015,21 +1274,28 @@
         ctx.shadowColor = isDarkColor(finalBarTextColor) ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.6)';
         ctx.shadowBlur = 4 * scale;
 
-        let addrFs = 24;
+        let addrFs = addrFsSetting;
         ctx.font = `700 ${Math.round(addrFs * scale)}px ${baseFont}`;
         const maxBarTextW = W - (40 * scale);
-        while (ctx.measureText(addressLine).width > maxBarTextW && addrFs > 13) {
+        while (ctx.measureText(addressLine).width > maxBarTextW && addrFs > 12) {
             addrFs -= 1;
             ctx.font = `700 ${Math.round(addrFs * scale)}px ${baseFont}`;
         }
-        ctx.fillText(addressLine.toUpperCase(), W / 2, barY + (barH * 0.36));
+        const addrY = barY + barPadTop + Math.round((addrFs * 0.5) * scale);
+        ctx.fillText(addressLine, W / 2, addrY);
 
-        // Bottom line: @trymenow.in (FIXED)
+        // Bottom line: 🌐 @trymenow.in (FIXED with configurable font size)
         ctx.fillStyle = finalBarTextColor;
         ctx.shadowBlur = 0;
-        let domainFs = 19;
-        ctx.font = `500 ${Math.round(domainFs * scale)}px ${baseFont}`;
-        ctx.fillText(fixedDomain, W / 2, barY + (barH * 0.74));
+        let domainFs = domainFsSetting;
+        ctx.font = `600 ${Math.round(domainFs * scale)}px ${baseFont}`;
+        const maxDomainW = W - (40 * scale);
+        while (ctx.measureText('🌐 ' + fixedDomain).width > maxDomainW && domainFs > 10) {
+            domainFs -= 1;
+            ctx.font = `600 ${Math.round(domainFs * scale)}px ${baseFont}`;
+        }
+        const domainY = addrY + Math.round((addrFs * 0.5) * scale) + barLineGap + Math.round((domainFs * 0.5) * scale);
+        ctx.fillText('🌐 ' + fixedDomain, W / 2, domainY);
         ctx.restore();
 
         // ----------------------------------------------------
@@ -1037,10 +1303,18 @@
         // ----------------------------------------------------
         if (hasPill) {
             ctx.save();
-            ctx.font = `700 ${Math.round(21 * scale)}px ${baseFont}`;
+            ctx.font = `700 ${Math.round(pillFs * scale)}px ${baseFont}`;
             const textMetrics = ctx.measureText(pillText);
-            const pillW = Math.max(Math.round(240 * scale), Math.round(textMetrics.width + (48 * scale)));
-            const pillX = Math.round((W - pillW) / 2);
+            const pillW = Math.max(Math.round((pillFs * 11) * scale), Math.round(textMetrics.width + (48 * scale)));
+
+            const pillAlign = $('#studio_pill_align').val() || 'center';
+            const pillMargin = Math.round(36 * scale);
+            let pillX = Math.round((W - pillW) / 2);
+            if (pillAlign === 'left') {
+                pillX = pillMargin;
+            } else if (pillAlign === 'right') {
+                pillX = Math.round(W - pillW - pillMargin);
+            }
 
             // Radiant Gradient
             const pillGrad = ctx.createLinearGradient(pillX, 0, pillX + pillW, 0);
@@ -1084,7 +1358,7 @@
             ctx.fillStyle = pillTheme === 'minimal' ? '#FFFFFF' : '#1E293B';
             ctx.shadowColor = 'transparent';
             ctx.shadowBlur = 0;
-            ctx.fillText(pillText, W / 2, pillY + (pillH / 2));
+            ctx.fillText(pillText, pillX + (pillW / 2), pillY + (pillH / 2));
             ctx.restore();
         }
 
@@ -1160,8 +1434,184 @@
         renderStudioPoster();
     });
 
+    // Offer Badge Pill Presets (in Tab 2)
+    $('#studio_cta').on('change', function() {
+        const val = $(this).val();
+        if (val === 'none') {
+            $('#studio_line2').hide().val('');
+        } else if (val === 'custom') {
+            $('#studio_line2').show().focus();
+        } else {
+            $('#studio_line2').hide().val(val);
+        }
+        renderStudioPoster();
+    });
+
+    $('#studio_line2').on('input', function() {
+        renderStudioPoster();
+    });
+
+    function getSameOriginImageUrl(url) {
+        if (!url) return '';
+        if (url.startsWith('data:') || url.startsWith('blob:')) return url;
+        try {
+            const u = new URL(url, window.location.href);
+            const idx = u.pathname.indexOf('/assets/');
+            if (idx !== -1) {
+                return window.location.origin + u.pathname.substring(idx);
+            }
+            return u.pathname;
+        } catch (e) {
+            return url;
+        }
+    }
+
+    function downloadCanvasImage(canvas, filename) {
+        if (!canvas) return;
+
+        const $btn = $('#btn_download_poster');
+        const origHtml = $btn.html();
+        $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin me-2"></i> Generating Poster...');
+
+        function restoreBtn() {
+            $btn.prop('disabled', false).html(origHtml);
+        }
+
+        function executeDownload(blob) {
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+            // 1. Mobile Web Share API: Lets user Save to Photos/Gallery or share directly to WhatsApp!
+            if (isMobile && navigator.canShare && typeof File !== 'undefined') {
+                try {
+                    const file = new File([blob], filename, { type: 'image/png' });
+                    if (navigator.canShare({ files: [file] })) {
+                        navigator.share({
+                            files: [file],
+                            title: 'Poster Studio',
+                            text: 'Your customized WhatsApp poster'
+                        }).then(function() {
+                            restoreBtn();
+                        }).catch(function(shareErr) {
+                            // User cancelled share dialog, proceed to standard download
+                            fallbackDirectSave(blob);
+                        });
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('WebShare error:', e);
+                }
+            }
+
+            fallbackDirectSave(blob);
+
+            function fallbackDirectSave(saveBlob) {
+                const blobUrl = URL.createObjectURL(saveBlob);
+
+                if (isIOS) {
+                    // iOS Safari requires DataURL or new window to reliably save/download images
+                    const reader = new FileReader();
+                    reader.onloadend = function() {
+                        const dataUrl = reader.result;
+                        const a = document.createElement('a');
+                        a.download = filename;
+                        a.href = dataUrl;
+                        a.target = '_blank';
+                        document.body.appendChild(a);
+                        a.click();
+                        setTimeout(function() {
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(blobUrl);
+                            restoreBtn();
+                        }, 15000);
+                    };
+                    reader.readAsDataURL(saveBlob);
+                } else {
+                    // Android & Desktop Chrome / Firefox / Edge
+                    const a = document.createElement('a');
+                    a.download = filename;
+                    a.href = blobUrl;
+                    a.target = '_blank';
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(function() {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(blobUrl);
+                        restoreBtn();
+                    }, 30000);
+                }
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Poster Downloaded!',
+                    text: 'Your customized poster was saved successfully (PNG).',
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+            }
+        }
+
+        try {
+            if (canvas.toBlob) {
+                canvas.toBlob(function(blob) {
+                    if (!blob) {
+                        try {
+                            const dataUrl = canvas.toDataURL('image/png');
+                            const a = document.createElement('a');
+                            a.download = filename;
+                            a.href = dataUrl;
+                            a.target = '_blank';
+                            document.body.appendChild(a);
+                            a.click();
+                            setTimeout(function() {
+                                document.body.removeChild(a);
+                                restoreBtn();
+                            }, 2000);
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Poster Downloaded!',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                        } catch (e2) {
+                            restoreBtn();
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Export Failed',
+                                text: 'Unable to export canvas: ' + e2.message
+                            });
+                        }
+                        return;
+                    }
+                    executeDownload(blob);
+                }, 'image/png');
+            } else {
+                const dataUrl = canvas.toDataURL('image/png');
+                const a = document.createElement('a');
+                a.download = filename;
+                a.href = dataUrl;
+                a.target = '_blank';
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(function() {
+                    document.body.removeChild(a);
+                    restoreBtn();
+                }, 2000);
+            }
+        } catch (err) {
+            restoreBtn();
+            console.error('Canvas export error:', err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Export Error',
+                text: 'Canvas export error: ' + err.message
+            });
+        }
+    }
+
     function openPosterStudio(id, imageSrc, title, subtitle, line1, line2, phone) {
         $('#studio_item_id').val(id);
+        imageSrc = getSameOriginImageUrl(imageSrc);
 
         const cleanTitle = cleanStudioText(title);
         const cleanSub = cleanStudioText(subtitle);
@@ -1193,7 +1643,36 @@
         const cleanL1 = cleanStudioText(line1);
         const cleanL2 = cleanStudioText(line2);
         $('#studio_line1').val(cleanL1 || 'FASHION 600, T.NAGAR');
-        $('#studio_line2').val(cleanL2 || 'Free Delivery');
+        let initialPill = (cleanL2 !== undefined && cleanL2 !== null && cleanL2 !== '') ? cleanL2 : '✨ Free Delivery';
+
+        let foundPreset = false;
+        let matchedVal = '';
+        if (initialPill) {
+            $('#studio_cta option').each(function() {
+                const optVal = $(this).val();
+                if (optVal !== 'custom' && optVal !== 'none') {
+                    const cleanOpt = optVal.replace(/^[^\w\s]+/u, '').trim().toLowerCase();
+                    const cleanInit = initialPill.replace(/^[^\w\s]+/u, '').trim().toLowerCase();
+                    if (optVal.toLowerCase() === initialPill.toLowerCase() || (cleanOpt && cleanOpt === cleanInit)) {
+                        $('#studio_cta').val(optVal);
+                        matchedVal = optVal;
+                        foundPreset = true;
+                        return false;
+                    }
+                }
+            });
+        } else {
+            $('#studio_cta').val('none');
+            foundPreset = true;
+        }
+        if (foundPreset && matchedVal) {
+            $('#studio_line2').val(matchedVal).hide();
+        } else if (!foundPreset) {
+            $('#studio_cta').val('custom');
+            $('#studio_line2').val(initialPill).show();
+        } else {
+            $('#studio_line2').val('').hide();
+        }
         $('#studio_phone').val(cleanStudioText(phone));
 
         $('#studio_bar_bg_picker').val('#121212');
@@ -1201,6 +1680,17 @@
         $('#studio_bar_text_picker').val('#FFFFFF');
         $('#studio_bar_text_hex').text('#FFFFFF');
 
+        $('#studio_addr_size').val('normal');
+        $('#studio_addr_margin_top').val('4');
+        $('#studio_domain_size').val('normal');
+        $('#studio_txt_1_margin_top').val('0');
+        $('#studio_txt_2_margin_top').val('0');
+        $('#studio_txt_3_margin_top').val('0');
+        $('#studio_txt_4_margin_top').val('18');
+        $('#studio_txt_5_margin_top').val('0');
+        $('#studio_txt_6_margin_top').val('0');
+        $('#studio_pill_align').val('center');
+        $('#studio_pill_size').val('normal');
         $('#studio_text_pos').val('top-right');
         $('#studio_text_color_preset').val('#FFFFFF');
         $('#studio_text_color_picker').val('#FFFFFF');
@@ -1252,46 +1742,16 @@
         renderStudioPoster();
     });
 
-    // Instant High-Res PNG Download
-    $('#btn_download_poster').on('click', function() {
+    // Instant High-Res PNG Download (Mobile & Desktop Compatible)
+    $(document).on('click', '#btn_download_poster', function(e) {
+        e.preventDefault();
         const canvas = document.getElementById('posterCanvas');
         if (!canvas) return;
 
         const title = cleanStudioText($('#studio_txt_1').val()) || cleanStudioText($('#studio_txt_2').val()) || 'poster';
         const cleanFilename = 'whatsapp-poster-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.png';
 
-        if (canvas.toBlob) {
-            canvas.toBlob(function(blob) {
-                if (!blob) {
-                    const link = document.createElement('a');
-                    link.download = cleanFilename;
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                    return;
-                }
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.download = cleanFilename;
-                a.href = url;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Poster Downloaded!',
-                    text: 'Your customized poster was downloaded successfully (PNG).',
-                    timer: 2500,
-                    showConfirmButton: false
-                });
-            }, 'image/png');
-        } else {
-            const link = document.createElement('a');
-            link.download = cleanFilename;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        }
+        downloadCanvasImage(canvas, cleanFilename);
     });
 
     // Instant High-Quality JPEG Download
