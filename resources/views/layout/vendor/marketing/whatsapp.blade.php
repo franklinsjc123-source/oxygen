@@ -527,6 +527,7 @@
 															<button type="button" class="btn btn-lg w-100 fw-bold shadow-sm" id="btn_download_poster" style="background-color: #183543 !important; border-color: #183543 !important; color: #ffffff !important; padding: 10px 16px; font-size: 13.5px; border-radius: 8px;">
 																<i class="fa fa-download me-2"></i> DOWNLOAD POSTER (PNG)
 															</button>
+															{{-- Commented out as requested:
 															<div class="d-flex gap-2 mt-2">
 																<button type="button" class="btn btn-outline-danger btn-sm flex-fill fw-bold py-2 shadow-sm" id="btn_download_pdf" style="border-radius: 8px; font-size: 12.5px;">
 																	<i class="fa fa-file-pdf-o me-1"></i> Download as PDF
@@ -535,6 +536,7 @@
 																	<i class="fa fa-file-image-o me-1"></i> Download as JPEG
 																</button>
 															</div>
+															--}}
 														</div>
 													</div>
 												</div>
@@ -564,12 +566,9 @@
 											<div class="alert alert-info py-2 px-2 text-start mb-2" style="font-size: 11.5px; border-radius: 8px;">
 												<i class="fa fa-hand-pointer-o text-primary me-1"></i> <strong>Save to Phone:</strong> If automatic download didn't start, <strong>tap & hold (long press)</strong> the image above and tap <strong>"Save Image"</strong> or <strong>"Download Image"</strong>.
 											</div>
-											<div class="d-flex flex-column flex-sm-row gap-2">
+											<div class="d-flex gap-2">
 												<button type="button" id="btn_modal_download_png" class="btn btn-primary btn-sm flex-fill fw-bold py-2" style="background-color: #183543 !important; border-color: #183543 !important;">
-													<i class="fa fa-download me-1"></i> Save PNG
-												</button>
-												<button type="button" id="btn_modal_download_pdf" class="btn btn-danger btn-sm flex-fill fw-bold py-2">
-													<i class="fa fa-file-pdf-o me-1"></i> Save PDF
+													<i class="fa fa-download me-1"></i> Save Image (PNG)
 												</button>
 												<button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal" data-dismiss="modal">
 													Close
