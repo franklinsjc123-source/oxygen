@@ -1509,12 +1509,20 @@
         }
     }
 
-    function downloadCanvasImage(canvas, filename) {
+    function downloadCanvasImage(canvas, filename, mimeType) {
         if (!canvas) return;
+        mimeType = mimeType || 'image/png';
+        const isJpeg = mimeType === 'image/jpeg' || mimeType === 'image/jpg';
+        const ext = isJpeg ? '.jpg' : '.png';
+
+        // Guarantee filename ends with correct image extension
+        let baseName = (filename || 'poster').replace(/\.[a-zA-Z0-9]+$/, '').replace(/[^a-zA-Z0-9_\-]/g, '-').replace(/-+/g, '-').replace(/^-+|-+$/g, '');
+        if (!baseName) baseName = 'poster';
+        filename = baseName + ext;
 
         let dataUrl = '';
         try {
-            dataUrl = canvas.toDataURL('image/png');
+            dataUrl = canvas.toDataURL(mimeType, isJpeg ? 0.92 : undefined);
         } catch (e) {
             console.error('Canvas export error:', e);
             Swal.fire({
@@ -1535,7 +1543,8 @@
             $btn.prop('disabled', false).html(originalHtml);
         }
 
-        function fallbackDirect(doc, safeFilename) {
+        function fallbackDirect(doc, safeFilename, type) {
+            type = type || mimeType;
             var $form = $('<form></form>').attr({
                 method: 'POST',
                 action: '/export-table-direct',
@@ -1544,7 +1553,7 @@
             $form.append($('<textarea name="content"></textarea>').val(doc));
             $form.append($('<input type="hidden" name="filename">').val(safeFilename));
             $form.append($('<input type="hidden" name="is_base64">').val('1'));
-            $form.append($('<input type="hidden" name="mime_type">').val('image/png'));
+            $form.append($('<input type="hidden" name="mime_type">').val(type));
             var token = $('meta[name="csrf-token"]').attr('content') || '';
             if (token) $form.append($('<input type="hidden" name="_token">').val(token));
             $('body').append($form);
@@ -1570,7 +1579,7 @@
             data: {
                 content: dataUrl,
                 filename: filename,
-                mime_type: 'image/png',
+                mime_type: mimeType,
                 is_base64: 1,
                 _token: csrfToken
             },
@@ -1579,12 +1588,19 @@
             success: function(resp) {
                 if (resp && resp.download_url) {
                     window.location.href = resp.download_url;
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Poster Downloaded!',
+                        text: 'Your customized poster was saved to your Downloads folder (' + (isJpeg ? 'JPG' : 'PNG') + ').',
+                        timer: 2500,
+                        showConfirmButton: false
+                    });
                 } else {
-                    fallbackDirect(dataUrl, filename);
+                    fallbackDirect(dataUrl, filename, mimeType);
                 }
             },
             error: function() {
-                fallbackDirect(dataUrl, filename);
+                fallbackDirect(dataUrl, filename, mimeType);
             },
             complete: function() {
                 setTimeout(function() {
@@ -1734,51 +1750,23 @@
         if (!canvas) return;
 
         const title = cleanStudioText($('#studio_txt_1').val()) || cleanStudioText($('#studio_txt_2').val()) || 'poster';
-        const cleanFilename = 'whatsapp-poster-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.png';
+        const cleanTitle = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'poster';
+        const cleanFilename = 'whatsapp-poster-' + cleanTitle + '.png';
 
-        downloadCanvasImage(canvas, cleanFilename);
+        downloadCanvasImage(canvas, cleanFilename, 'image/png');
     });
 
-    // Instant High-Quality JPEG Download
-    $('#btn_download_jpeg').on('click', function() {
+    // Instant High-Quality JPEG Download (Mobile & Desktop Compatible)
+    $('#btn_download_jpeg').on('click', function(e) {
+        e.preventDefault();
         const canvas = document.getElementById('posterCanvas');
         if (!canvas) return;
 
         const title = cleanStudioText($('#studio_txt_1').val()) || cleanStudioText($('#studio_txt_2').val()) || 'poster';
-        const cleanFilename = 'whatsapp-poster-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.jpg';
+        const cleanTitle = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'poster';
+        const cleanFilename = 'whatsapp-poster-' + cleanTitle + '.jpg';
 
-        if (canvas.toBlob) {
-            canvas.toBlob(function(blob) {
-                if (!blob) {
-                    const link = document.createElement('a');
-                    link.download = cleanFilename;
-                    link.href = canvas.toDataURL('image/jpeg', 0.92);
-                    link.click();
-                    return;
-                }
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.download = cleanFilename;
-                a.href = url;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Poster Downloaded!',
-                    text: 'Your customized poster was saved as JPEG.',
-                    timer: 2500,
-                    showConfirmButton: false
-                });
-            }, 'image/jpeg', 0.92);
-        } else {
-            const link = document.createElement('a');
-            link.download = cleanFilename;
-            link.href = canvas.toDataURL('image/jpeg', 0.92);
-            link.click();
-        }
+        downloadCanvasImage(canvas, cleanFilename, 'image/jpeg');
     });
 
     // Save Studio Customization back to shop database

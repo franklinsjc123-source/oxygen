@@ -256,7 +256,7 @@ Route::get('activity/create', [\App\Http\Controllers\ActivityTrackerController::
 Route::get('activity/list', [\App\Http\Controllers\ActivityTrackerController::class, 'index'])->name('staffactivitylist');
 
 //Master
-Route::redirect('admin/pincode1', url('staff/pincode1'));
+Route::redirect('admin/pincode1', '/staff/pincode1');
 Route::post('pincode1/changestatus', [PinCodeController1::class, 'changestatus'])->name('staffpincode1.changestatus');
 Route::post('pincode1/checkduplicate', [PinCodeController1::class, 'checkduplicate'])->name('staffpincode1.checkduplicate');
 Route::post('importpincode', [PinCodeController1::class, 'importpincode'])->name('staffimportpincode');
@@ -292,7 +292,7 @@ Route::get('pincode', [MasterController::class, 'pincode']);
 Route::post('/savePincodes', [MasterController::class, 'savePincodes'])->name('savePincodes');
 Route::post('/checkPincodenamePost', [MasterController::class, 'checkPincodenamePost'])->name('checkPincodenamePost');
  
-Route::redirect('admin/route', url('staff/route'));
+Route::redirect('admin/route', '/staff/route');
 Route::get('route', [MasterController::class, 'route'])->name('staffroute');
 Route::get('route', [MasterController::class, 'route'])->name('staffaroute');
 Route::get('route_delete/{$id}', [MasterController::class, 'route_delete'])->name('staffroute_delete');
@@ -343,11 +343,11 @@ Route::get('activity_export', [GeneralExportController::class, 'exportActivity']
 Route::get('state_export', [GeneralExportController::class, 'exportState'])->name('staffstate.export');
 Route::get('city_export', [GeneralExportController::class, 'exportCity'])->name('staffcity.export');
 
-Route::redirect('admin/states', url('staff/states'));
+Route::redirect('admin/states', '/staff/states');
 Route::post('states/changestatus', [\App\Http\Controllers\StateController::class, 'changestatus'])->name('staffstates.changestatus');
 Route::resource('states', \App\Http\Controllers\StateController::class, ['names' => 'staffstates']);
 
-Route::redirect('admin/cities', url('staff/cities'));
+Route::redirect('admin/cities', '/staff/cities');
 Route::post('cities/changestatus', [\App\Http\Controllers\CityController::class, 'changestatus'])->name('staffcities.changestatus');
 Route::resource('cities', \App\Http\Controllers\CityController::class, ['names' => 'staffcities']);
 Route::get('attribute_export', [GeneralExportController::class, 'exportAttribute'])->name('staffattribute.export');

@@ -21,8 +21,18 @@ class TableExportController extends Controller
 
         // Sanitize filename
         $filename = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $filename);
-        if (empty($filename) || !str_contains($filename, '.')) {
-            $filename = 'tableExport.xls';
+        if ($mimeType === 'image/png') {
+            if (empty($filename) || !str_ends_with(strtolower($filename), '.png')) {
+                $filename = (empty($filename) ? 'poster' : preg_replace('/\.[a-zA-Z0-9]+$/', '', $filename)) . '.png';
+            }
+        } elseif ($mimeType === 'image/jpeg' || $mimeType === 'image/jpg') {
+            if (empty($filename) || (!str_ends_with(strtolower($filename), '.jpg') && !str_ends_with(strtolower($filename), '.jpeg'))) {
+                $filename = (empty($filename) ? 'poster' : preg_replace('/\.[a-zA-Z0-9]+$/', '', $filename)) . '.jpg';
+            }
+        } else {
+            if (empty($filename) || !str_contains($filename, '.')) {
+                $filename = 'tableExport.xls';
+            }
         }
 
         if (empty($rawContent)) {
@@ -66,8 +76,18 @@ class TableExportController extends Controller
 
         // Sanitize filename
         $filename = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $filename);
-        if (empty($filename) || !str_contains($filename, '.')) {
-            $filename = 'tableExport.xls';
+        if ($mimeType === 'image/png') {
+            if (empty($filename) || !str_ends_with(strtolower($filename), '.png')) {
+                $filename = (empty($filename) ? 'poster' : preg_replace('/\.[a-zA-Z0-9]+$/', '', $filename)) . '.png';
+            }
+        } elseif ($mimeType === 'image/jpeg' || $mimeType === 'image/jpg') {
+            if (empty($filename) || (!str_ends_with(strtolower($filename), '.jpg') && !str_ends_with(strtolower($filename), '.jpeg'))) {
+                $filename = (empty($filename) ? 'poster' : preg_replace('/\.[a-zA-Z0-9]+$/', '', $filename)) . '.jpg';
+            }
+        } else {
+            if (empty($filename) || !str_contains($filename, '.')) {
+                $filename = 'tableExport.xls';
+            }
         }
 
         if ($isBase64) {
@@ -144,6 +164,23 @@ class TableExportController extends Controller
         $meta = json_decode(file_get_contents($metaPath), true);
         $finalFilename = $filename ?: ($meta['filename'] ?? 'tableExport.xls');
         $mimeType = $meta['mime_type'] ?? 'application/vnd.ms-excel';
+
+        // Sanitize final filename
+        $finalFilename = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $finalFilename);
+
+        if ($mimeType === 'image/png') {
+            if (empty($finalFilename) || !str_ends_with(strtolower($finalFilename), '.png')) {
+                $finalFilename = (empty($finalFilename) ? 'poster' : preg_replace('/\.[a-zA-Z0-9]+$/', '', $finalFilename)) . '.png';
+            }
+        } elseif ($mimeType === 'image/jpeg' || $mimeType === 'image/jpg') {
+            if (empty($finalFilename) || (!str_ends_with(strtolower($finalFilename), '.jpg') && !str_ends_with(strtolower($finalFilename), '.jpeg'))) {
+                $finalFilename = (empty($finalFilename) ? 'poster' : preg_replace('/\.[a-zA-Z0-9]+$/', '', $finalFilename)) . '.jpg';
+            }
+        } else {
+            if (empty($finalFilename) || !str_contains($finalFilename, '.')) {
+                $finalFilename = 'tableExport.xls';
+            }
+        }
 
         return response()->download($dataPath, $finalFilename, [
             'Content-Type' => $mimeType,
