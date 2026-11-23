@@ -19,9 +19,16 @@ class TableExportController extends Controller
         $filename = $request->input('filename', 'tableExport.xls');
         $mimeType = $request->input('mime_type', 'application/vnd.ms-excel');
 
+        $asPdf = $request->boolean('as_pdf', false) || $mimeType === 'application/pdf';
+
         // Sanitize filename
         $filename = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $filename);
-        if ($mimeType === 'image/png') {
+        if ($asPdf) {
+            $mimeType = 'application/pdf';
+            if (empty($filename) || !str_ends_with(strtolower($filename), '.pdf')) {
+                $filename = (empty($filename) ? 'poster' : preg_replace('/\.[a-zA-Z0-9]+$/', '', $filename)) . '.pdf';
+            }
+        } elseif ($mimeType === 'image/png') {
             if (empty($filename) || !str_ends_with(strtolower($filename), '.png')) {
                 $filename = (empty($filename) ? 'poster' : preg_replace('/\.[a-zA-Z0-9]+$/', '', $filename)) . '.png';
             }
@@ -39,13 +46,30 @@ class TableExportController extends Controller
             return redirect()->back();
         }
 
+        if ($asPdf) {
+            if ($isBase64 && (str_contains($rawContent, 'data:image/') || str_contains($rawContent, ';base64,'))) {
+                $imgSrc = str_starts_with($rawContent, 'data:') ? $rawContent : ('data:image/png;base64,' . $rawContent);
+                $html = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><style>@page { margin: 0; size: auto; } html, body { margin: 0; padding: 0; background: #000000; text-align: center; } img { width: 100%; height: auto; max-width: 1080px; display: block; margin: 0 auto; }</style></head><body><img src="' . $imgSrc . '" /></body></html>';
+                $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html);
+                $content = $pdf->output();
+            } else {
+                $content = $rawContent;
+            }
+            return response($content)
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+                ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');
+        }
+
         if ($isBase64) {
             if (str_contains($rawContent, ';base64,')) {
                 $rawContent = explode(';base64,', $rawContent)[1];
             }
             $content = base64_decode($rawContent);
             return response($content)
-                ->header('Content-Type', $mimeType)
+                ->header('Content-Type', 'application/octet-stream')
                 ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
                 ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
                 ->header('Pragma', 'no-cache')
@@ -74,9 +98,16 @@ class TableExportController extends Controller
         $filename = $request->input('filename', 'tableExport.xls');
         $mimeType = $request->input('mime_type', 'application/vnd.ms-excel');
 
+        $asPdf = $request->boolean('as_pdf', false) || $mimeType === 'application/pdf';
+
         // Sanitize filename
         $filename = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $filename);
-        if ($mimeType === 'image/png') {
+        if ($asPdf) {
+            $mimeType = 'application/pdf';
+            if (empty($filename) || !str_ends_with(strtolower($filename), '.pdf')) {
+                $filename = (empty($filename) ? 'poster' : preg_replace('/\.[a-zA-Z0-9]+$/', '', $filename)) . '.pdf';
+            }
+        } elseif ($mimeType === 'image/png') {
             if (empty($filename) || !str_ends_with(strtolower($filename), '.png')) {
                 $filename = (empty($filename) ? 'poster' : preg_replace('/\.[a-zA-Z0-9]+$/', '', $filename)) . '.png';
             }
@@ -90,7 +121,16 @@ class TableExportController extends Controller
             }
         }
 
-        if ($isBase64) {
+        if ($asPdf) {
+            if ($isBase64 && (str_contains($rawContent, 'data:image/') || str_contains($rawContent, ';base64,'))) {
+                $imgSrc = str_starts_with($rawContent, 'data:') ? $rawContent : ('data:image/png;base64,' . $rawContent);
+                $html = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><style>@page { margin: 0; size: auto; } html, body { margin: 0; padding: 0; background: #000000; text-align: center; } img { width: 100%; height: auto; max-width: 1080px; display: block; margin: 0 auto; }</style></head><body><img src="' . $imgSrc . '" /></body></html>';
+                $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html);
+                $content = $pdf->output();
+            } else {
+                $content = $rawContent;
+            }
+        } elseif ($isBase64) {
             if (str_contains($rawContent, ';base64,')) {
                 $rawContent = explode(';base64,', $rawContent)[1];
             }
@@ -168,7 +208,11 @@ class TableExportController extends Controller
         // Sanitize final filename
         $finalFilename = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $finalFilename);
 
-        if ($mimeType === 'image/png') {
+        if ($mimeType === 'application/pdf') {
+            if (empty($finalFilename) || !str_ends_with(strtolower($finalFilename), '.pdf')) {
+                $finalFilename = (empty($finalFilename) ? 'poster' : preg_replace('/\.[a-zA-Z0-9]+$/', '', $finalFilename)) . '.pdf';
+            }
+        } elseif ($mimeType === 'image/png') {
             if (empty($finalFilename) || !str_ends_with(strtolower($finalFilename), '.png')) {
                 $finalFilename = (empty($finalFilename) ? 'poster' : preg_replace('/\.[a-zA-Z0-9]+$/', '', $finalFilename)) . '.png';
             }
@@ -182,9 +226,13 @@ class TableExportController extends Controller
             }
         }
 
+        // Send application/octet-stream for image downloads on mobile so browsers trigger actual file download instead of previewing inline
+        $downloadMime = ($mimeType === 'application/pdf') ? 'application/pdf' : 'application/octet-stream';
+
         return response()->download($dataPath, $finalFilename, [
-            'Content-Type' => $mimeType,
+            'Content-Type' => $downloadMime,
             'Content-Disposition' => 'attachment; filename="' . $finalFilename . '"',
+            'Content-Transfer-Encoding' => 'Binary',
             'Cache-Control' => 'no-cache, no-store, must-revalidate',
             'Pragma' => 'no-cache',
             'Expires' => '0',

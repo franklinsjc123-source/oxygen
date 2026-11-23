@@ -527,17 +527,14 @@
 															<button type="button" class="btn btn-lg w-100 fw-bold shadow-sm" id="btn_download_poster" style="background-color: #183543 !important; border-color: #183543 !important; color: #ffffff !important; padding: 10px 16px; font-size: 13.5px; border-radius: 8px;">
 																<i class="fa fa-download me-2"></i> DOWNLOAD POSTER (PNG)
 															</button>
-
-															{{-- Commented out as requested:
 															<div class="d-flex gap-2 mt-2">
-																<button type="button" class="btn btn-outline-secondary btn-sm flex-fill" id="btn_download_jpeg">
-																	<i class="fa fa-file-image-o me-1"></i> Save as JPEG
+																<button type="button" class="btn btn-outline-danger btn-sm flex-fill fw-bold py-2 shadow-sm" id="btn_download_pdf" style="border-radius: 8px; font-size: 12.5px;">
+																	<i class="fa fa-file-pdf-o me-1"></i> Download as PDF
 																</button>
-																<button type="button" class="btn btn-outline-primary btn-sm flex-fill" id="btn_save_studio_data">
-																	<i class="fa fa-save me-1"></i> Save to Shop
+																<button type="button" class="btn btn-outline-secondary btn-sm flex-fill fw-bold py-2 shadow-sm" id="btn_download_jpeg" style="border-radius: 8px; font-size: 12.5px;">
+																	<i class="fa fa-file-image-o me-1"></i> Download as JPEG
 																</button>
 															</div>
-															--}}
 														</div>
 													</div>
 												</div>
@@ -567,12 +564,15 @@
 											<div class="alert alert-info py-2 px-2 text-start mb-2" style="font-size: 11.5px; border-radius: 8px;">
 												<i class="fa fa-hand-pointer-o text-primary me-1"></i> <strong>Save to Phone:</strong> If automatic download didn't start, <strong>tap & hold (long press)</strong> the image above and tap <strong>"Save Image"</strong> or <strong>"Download Image"</strong>.
 											</div>
-											<div class="d-flex gap-2">
-												<a id="btn_mobile_direct_download" href="#" download="poster.png" class="btn btn-primary btn-sm flex-fill fw-bold py-2" style="background-color: #183543 !important; border-color: #183543 !important;">
-													<i class="fa fa-download me-1"></i> Download File
-												</a>
+											<div class="d-flex flex-column flex-sm-row gap-2">
+												<button type="button" id="btn_modal_download_png" class="btn btn-primary btn-sm flex-fill fw-bold py-2" style="background-color: #183543 !important; border-color: #183543 !important;">
+													<i class="fa fa-download me-1"></i> Save PNG
+												</button>
+												<button type="button" id="btn_modal_download_pdf" class="btn btn-danger btn-sm flex-fill fw-bold py-2">
+													<i class="fa fa-file-pdf-o me-1"></i> Save PDF
+												</button>
 												<button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal" data-dismiss="modal">
-													Done
+													Close
 												</button>
 											</div>
 										</div>
@@ -1509,20 +1509,21 @@
         }
     }
 
-    function downloadCanvasImage(canvas, filename, mimeType) {
+    function downloadCanvasImage(canvas, filename, mimeType, asPdf) {
         if (!canvas) return;
         mimeType = mimeType || 'image/png';
+        asPdf = !!asPdf || mimeType === 'application/pdf';
         const isJpeg = mimeType === 'image/jpeg' || mimeType === 'image/jpg';
-        const ext = isJpeg ? '.jpg' : '.png';
+        const ext = asPdf ? '.pdf' : (isJpeg ? '.jpg' : '.png');
 
-        // Guarantee filename ends with correct image extension
+        // Guarantee filename ends with correct image/pdf extension
         let baseName = (filename || 'poster').replace(/\.[a-zA-Z0-9]+$/, '').replace(/[^a-zA-Z0-9_\-]/g, '-').replace(/-+/g, '-').replace(/^-+|-+$/g, '');
         if (!baseName) baseName = 'poster';
         filename = baseName + ext;
 
         let dataUrl = '';
         try {
-            dataUrl = canvas.toDataURL(mimeType, isJpeg ? 0.92 : undefined);
+            dataUrl = canvas.toDataURL(isJpeg ? 'image/jpeg' : 'image/png', isJpeg ? 0.92 : undefined);
         } catch (e) {
             console.error('Canvas export error:', e);
             Swal.fire({
@@ -1537,14 +1538,27 @@
 
         const $btn = $('#btn_download_poster');
         const originalHtml = $btn.html();
-        $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin me-2"></i> Downloading Poster...');
+        $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin me-2"></i> Generating ' + (asPdf ? 'PDF...' : 'Download...'));
 
         function restoreBtn() {
             $btn.prop('disabled', false).html(originalHtml);
         }
 
-        function fallbackDirect(doc, safeFilename, type) {
-            type = type || mimeType;
+        function triggerDownload(url, dlFilename) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = dlFilename;
+            a.target = '_blank';
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() {
+                if (a.parentNode) a.parentNode.removeChild(a);
+            }, 3000);
+        }
+
+        function fallbackDirect(doc, safeFilename, type, isPdfMode) {
+            type = type || (isPdfMode ? 'application/pdf' : mimeType);
             var $form = $('<form></form>').attr({
                 method: 'POST',
                 action: '/export-table-direct',
@@ -1554,6 +1568,9 @@
             $form.append($('<input type="hidden" name="filename">').val(safeFilename));
             $form.append($('<input type="hidden" name="is_base64">').val('1'));
             $form.append($('<input type="hidden" name="mime_type">').val(type));
+            if (isPdfMode) {
+                $form.append($('<input type="hidden" name="as_pdf">').val('1'));
+            }
             var token = $('meta[name="csrf-token"]').attr('content') || '';
             if (token) $form.append($('<input type="hidden" name="_token">').val(token));
             $('body').append($form);
@@ -1567,7 +1584,6 @@
         // On mobile / webview: also prepare preview modal as long-press fallback
         if (isMobile) {
             $('#mobile_preview_poster_img').attr('src', dataUrl);
-            $('#btn_mobile_direct_download').attr('href', dataUrl).attr('download', filename);
         }
 
         var csrfToken = $('meta[name="csrf-token"]').attr('content') || '';
@@ -1579,28 +1595,29 @@
             data: {
                 content: dataUrl,
                 filename: filename,
-                mime_type: mimeType,
+                mime_type: asPdf ? 'application/pdf' : mimeType,
+                as_pdf: asPdf ? 1 : 0,
                 is_base64: 1,
                 _token: csrfToken
             },
             dataType: 'json',
-            timeout: 10000,
+            timeout: 15000,
             success: function(resp) {
                 if (resp && resp.download_url) {
-                    window.location.href = resp.download_url;
+                    triggerDownload(resp.download_url, filename);
                     Swal.fire({
                         icon: 'success',
-                        title: 'Poster Downloaded!',
-                        text: 'Your customized poster was saved to your Downloads folder (' + (isJpeg ? 'JPG' : 'PNG') + ').',
-                        timer: 2500,
+                        title: (asPdf ? 'PDF' : 'Poster') + ' Ready!',
+                        text: 'File ' + filename + ' is downloading to your Downloads folder.',
+                        timer: 3000,
                         showConfirmButton: false
                     });
                 } else {
-                    fallbackDirect(dataUrl, filename, mimeType);
+                    fallbackDirect(dataUrl, filename, mimeType, asPdf);
                 }
             },
             error: function() {
-                fallbackDirect(dataUrl, filename, mimeType);
+                fallbackDirect(dataUrl, filename, mimeType, asPdf);
             },
             complete: function() {
                 setTimeout(function() {
@@ -1744,7 +1761,7 @@
     });
 
     // Instant High-Res PNG Download (Mobile & Desktop Compatible)
-    $(document).on('click', '#btn_download_poster, #btn_mobile_direct_download', function(e) {
+    $(document).on('click', '#btn_download_poster, #btn_mobile_direct_download, #btn_modal_download_png', function(e) {
         e.preventDefault();
         const canvas = document.getElementById('posterCanvas');
         if (!canvas) return;
@@ -1753,7 +1770,20 @@
         const cleanTitle = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'poster';
         const cleanFilename = 'whatsapp-poster-' + cleanTitle + '.png';
 
-        downloadCanvasImage(canvas, cleanFilename, 'image/png');
+        downloadCanvasImage(canvas, cleanFilename, 'image/png', false);
+    });
+
+    // Instant High-Quality PDF Download (Mobile & Desktop Compatible)
+    $(document).on('click', '#btn_download_pdf, #btn_modal_download_pdf', function(e) {
+        e.preventDefault();
+        const canvas = document.getElementById('posterCanvas');
+        if (!canvas) return;
+
+        const title = cleanStudioText($('#studio_txt_1').val()) || cleanStudioText($('#studio_txt_2').val()) || 'poster';
+        const cleanTitle = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'poster';
+        const cleanFilename = 'whatsapp-poster-' + cleanTitle + '.pdf';
+
+        downloadCanvasImage(canvas, cleanFilename, 'application/pdf', true);
     });
 
     // Instant High-Quality JPEG Download (Mobile & Desktop Compatible)
@@ -1766,7 +1796,7 @@
         const cleanTitle = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'poster';
         const cleanFilename = 'whatsapp-poster-' + cleanTitle + '.jpg';
 
-        downloadCanvasImage(canvas, cleanFilename, 'image/jpeg');
+        downloadCanvasImage(canvas, cleanFilename, 'image/jpeg', false);
     });
 
     // Save Studio Customization back to shop database
