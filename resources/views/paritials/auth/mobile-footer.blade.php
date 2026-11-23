@@ -136,25 +136,26 @@
             left: 0 !important;
             right: 0 !important;
             width: 100% !important;
-            min-height: 58px !important;
-            height: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
+            height: 56px !important;
+            min-height: 56px !important;
+            max-height: 56px !important;
             background: #ffffff !important;
             border-top: 1px solid #e2e8f0 !important;
             box-shadow: 0 -4px 18px rgba(15, 23, 42, 0.08) !important;
             z-index: 1040 !important;
-            padding: 5px 6px max(5px, env(safe-area-inset-bottom, 0px)) 6px !important;
+            padding: 4px 6px !important;
             justify-content: space-around !important;
-            align-items: flex-start !important;
+            align-items: center !important;
             box-sizing: border-box !important;
             margin: 0 !important;
-            overflow: visible !important;
+            overflow: hidden !important;
         }
 
         /* Prevent bottom content overlap */
         .page-body,
         .page-body-wrapper,
         .dashboard-container {
-            padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px)) !important;
+            padding-bottom: 70px !important;
         }
 
         .admin-mobile-footer .admin-footer-item {
@@ -162,12 +163,12 @@
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
-            justify-content: flex-start !important;
+            justify-content: center !important;
             text-decoration: none !important;
             color: #64748b !important;
             padding: 2px !important;
             margin: 0 !important;
-            height: 46px !important;
+            height: 48px !important;
             position: relative !important;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
             border-radius: 8px !important;
@@ -180,9 +181,9 @@
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            width: 32px !important;
-            height: 26px !important;
-            border-radius: 13px !important;
+            width: 28px !important;
+            height: 24px !important;
+            border-radius: 12px !important;
             transition: all 0.25s ease !important;
             margin-bottom: 2px !important;
         }
