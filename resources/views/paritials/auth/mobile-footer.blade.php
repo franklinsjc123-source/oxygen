@@ -136,24 +136,25 @@
             left: 0 !important;
             right: 0 !important;
             width: 100% !important;
-            height: 60px !important;
+            min-height: 58px !important;
+            height: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
             background: #ffffff !important;
             border-top: 1px solid #e2e8f0 !important;
             box-shadow: 0 -4px 18px rgba(15, 23, 42, 0.08) !important;
             z-index: 1040 !important;
-            padding: 4px 6px !important;
-            padding-bottom: max(4px, env(safe-area-inset-bottom)) !important;
+            padding: 5px 6px max(5px, env(safe-area-inset-bottom, 0px)) 6px !important;
             justify-content: space-around !important;
-            align-items: center !important;
+            align-items: flex-start !important;
             box-sizing: border-box !important;
             margin: 0 !important;
+            overflow: visible !important;
         }
 
         /* Prevent bottom content overlap */
         .page-body,
         .page-body-wrapper,
         .dashboard-container {
-            padding-bottom: 75px !important;
+            padding-bottom: calc(75px + env(safe-area-inset-bottom, 0px)) !important;
         }
 
         .admin-mobile-footer .admin-footer-item {
@@ -161,10 +162,12 @@
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
-            justify-content: center !important;
+            justify-content: flex-start !important;
             text-decoration: none !important;
             color: #64748b !important;
-            padding: 4px 2px !important;
+            padding: 2px !important;
+            margin: 0 !important;
+            height: 46px !important;
             position: relative !important;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
             border-radius: 8px !important;
@@ -178,14 +181,14 @@
             align-items: center !important;
             justify-content: center !important;
             width: 32px !important;
-            height: 28px !important;
-            border-radius: 14px !important;
+            height: 26px !important;
+            border-radius: 13px !important;
             transition: all 0.25s ease !important;
             margin-bottom: 2px !important;
         }
 
         .admin-mobile-footer .admin-footer-icon {
-            font-size: 19px !important;
+            font-size: 18px !important;
             line-height: 1 !important;
             color: #64748b !important;
             transition: all 0.25s ease !important;
@@ -224,7 +227,7 @@
 
         .admin-mobile-footer .admin-footer-item.active .admin-footer-icon-wrap {
             background: rgba(24, 53, 67, 0.12) !important;
-            transform: translateY(-2px) !important;
+            transform: translateY(-1px) !important;
         }
 
         .admin-mobile-footer .admin-footer-item.active .admin-footer-icon {
