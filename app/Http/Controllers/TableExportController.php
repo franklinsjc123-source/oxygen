@@ -14,8 +14,10 @@ class TableExportController extends Controller
      */
     public function directDownload(Request $request)
     {
-        $content = $request->input('content', '');
+        $rawContent = $request->input('content', '');
+        $isBase64 = $request->boolean('is_base64', false);
         $filename = $request->input('filename', 'tableExport.xls');
+        $mimeType = $request->input('mime_type', 'application/vnd.ms-excel');
 
         // Sanitize filename
         $filename = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $filename);
@@ -23,15 +25,28 @@ class TableExportController extends Controller
             $filename = 'tableExport.xls';
         }
 
-        if (empty($content)) {
+        if (empty($rawContent)) {
             return redirect()->back();
+        }
+
+        if ($isBase64) {
+            if (str_contains($rawContent, ';base64,')) {
+                $rawContent = explode(';base64,', $rawContent)[1];
+            }
+            $content = base64_decode($rawContent);
+            return response($content)
+                ->header('Content-Type', $mimeType)
+                ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+                ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');
         }
 
         // Add BOM for Excel UTF-8 compatibility
         $bom = "\xEF\xBB\xBF";
 
-        return response($bom . $content)
-            ->header('Content-Type', 'application/vnd.ms-excel')
+        return response($bom . $rawContent)
+            ->header('Content-Type', $mimeType)
             ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
             ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
             ->header('Pragma', 'no-cache')
@@ -56,6 +71,9 @@ class TableExportController extends Controller
         }
 
         if ($isBase64) {
+            if (str_contains($rawContent, ';base64,')) {
+                $rawContent = explode(';base64,', $rawContent)[1];
+            }
             $content = base64_decode($rawContent);
         } else {
             $content = $rawContent;

@@ -1527,34 +1527,71 @@
 
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
 
-        // 1. Direct standard download link trigger
-        try {
-            const a = document.createElement('a');
-            a.download = filename;
-            a.href = dataUrl;
-            document.body.appendChild(a);
-            a.click();
-            setTimeout(function() {
-                document.body.removeChild(a);
-            }, 1000);
-        } catch (err) {
-            console.warn('Direct download click error:', err);
+        const $btn = $('#btn_download_poster');
+        const originalHtml = $btn.html();
+        $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin me-2"></i> Downloading Poster...');
+
+        function restoreBtn() {
+            $btn.prop('disabled', false).html(originalHtml);
         }
 
-        // 2. On Mobile & WebViews: ALWAYS show the dedicated Poster Ready preview modal so user can long-press to save!
+        function fallbackDirect(doc, safeFilename) {
+            var $form = $('<form></form>').attr({
+                method: 'POST',
+                action: '/export-table-direct',
+                style: 'display:none;'
+            });
+            $form.append($('<textarea name="content"></textarea>').val(doc));
+            $form.append($('<input type="hidden" name="filename">').val(safeFilename));
+            $form.append($('<input type="hidden" name="is_base64">').val('1'));
+            $form.append($('<input type="hidden" name="mime_type">').val('image/png'));
+            var token = $('meta[name="csrf-token"]').attr('content') || '';
+            if (token) $form.append($('<input type="hidden" name="_token">').val(token));
+            $('body').append($form);
+            $form.submit();
+            setTimeout(function() {
+                $form.remove();
+                restoreBtn();
+            }, 3000);
+        }
+
+        // On mobile / webview: also prepare preview modal as long-press fallback
         if (isMobile) {
             $('#mobile_preview_poster_img').attr('src', dataUrl);
             $('#btn_mobile_direct_download').attr('href', dataUrl).attr('download', filename);
-            $('#posterMobileSaveModal').modal('show');
-        } else {
-            Swal.fire({
-                icon: 'success',
-                title: 'Poster Downloaded!',
-                text: 'Your customized poster was downloaded successfully (PNG).',
-                timer: 2500,
-                showConfirmButton: false
-            });
         }
+
+        var csrfToken = $('meta[name="csrf-token"]').attr('content') || '';
+
+        // Use the exact same server-assisted download method as Export Excel (100% WebView / Mobile compatible)
+        $.ajax({
+            url: '/export-table-data',
+            type: 'POST',
+            data: {
+                content: dataUrl,
+                filename: filename,
+                mime_type: 'image/png',
+                is_base64: 1,
+                _token: csrfToken
+            },
+            dataType: 'json',
+            timeout: 10000,
+            success: function(resp) {
+                if (resp && resp.download_url) {
+                    window.location.href = resp.download_url;
+                } else {
+                    fallbackDirect(dataUrl, filename);
+                }
+            },
+            error: function() {
+                fallbackDirect(dataUrl, filename);
+            },
+            complete: function() {
+                setTimeout(function() {
+                    restoreBtn();
+                }, 2000);
+            }
+        });
     }
 
     function openPosterStudio(id, imageSrc, title, subtitle, line1, line2, phone) {
@@ -1691,7 +1728,7 @@
     });
 
     // Instant High-Res PNG Download (Mobile & Desktop Compatible)
-    $(document).on('click', '#btn_download_poster', function(e) {
+    $(document).on('click', '#btn_download_poster, #btn_mobile_direct_download', function(e) {
         e.preventDefault();
         const canvas = document.getElementById('posterCanvas');
         if (!canvas) return;
