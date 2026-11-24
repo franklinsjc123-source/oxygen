@@ -65,35 +65,35 @@
                                                         @csrf
                                                         <div class="form">
                                                             <div class="form-group">
-                                                                <label for="validationCustom01" class="mb-1">Category
+                                                                <label for="add_main_category_name" class="mb-1">Category
                                                                     :</label>
                                                                 <input class="form-control" name="main_category_name"
-                                                                    id="" type="text" required="true">
+                                                                    id="add_main_category_name" type="text" required="true">
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="validationCustom02" class="mb-1">Category
+                                                                <label for="add_main_category_image" class="mb-1">Category
                                                                     Image :</label>
 
                                                                 <input class="form-control" name="main_category_image"
-                                                                    type="file" accept="image/*">
+                                                                    id="add_main_category_image" type="file" accept="image/*">
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="validationCustom01" class="mb-1">Sort Order
+                                                                <label for="add_main_category_sortorder" class="mb-1">Sort Order
                                                                     :</label>
                                                                 <input class="form-control" name="main_category_sortorder"
-                                                                    id="" type="number" required="true">
+                                                                    id="add_main_category_sortorder" type="number" required="true">
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="validationCustom01" class="mb-1">Meta Keyword / Tags
+                                                                <label for="add_main_category_keywords" class="mb-1">Meta Keyword / Tags
                                                                     :</label>
                                                                 <textarea class="form-control" name="main_category_keywords"
-                                                                    id="" type="text" required="true"></textarea>
+                                                                    id="add_main_category_keywords" type="text" required="true"></textarea>
                                                             </div>
                                                             <div class="form-group">
-                                                                <label for="validationCustom01"
+                                                                <label for="add_catstatus"
                                                                     class="mb-1">Status</label>
                                                                 <select class="custom-select w-100 form-control"
-                                                                    required="" name="catstatus">
+                                                                    required="" id="add_catstatus" name="catstatus">
                                                                     <option value="1">Active</option>
                                                                     <option value="0">Inactive</option>
                                                                 </select>
@@ -123,14 +123,14 @@
                                         data-toolbar="#toolbar">
                                         <thead>
                                             <tr>
-                                                <th data-field="image" data-sortable="true">Image</th>
+                                                <th data-field="image" data-sortable="true" data-searchable="false">Image</th>
                                                 <th data-field="category" data-sortable="true">Category</th>
                                                 
                                                 <th data-field="Keywords" data-sortable="true">Meta Keywords</th>
                                                 
                                                 <th data-field="Order" data-sortable="true">Sort Order</th>
-                                                <th data-field="status" data-sortable="true">Status</th>
-                                                <th>Action</th>
+                                                <th data-field="status" data-sortable="true" data-searchable="false">Status</th>
+                                                <th data-field="action" data-searchable="false">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -223,37 +223,37 @@
                                     @csrf
                                     
                                     <div class="form">
-                                        <input type="hidden" id = cate_id name = cate_id value ="">
+                                        <input type="hidden" id="cate_id" name="cate_id" value="">
                                         <div class="form-group">
-                                            <label for="validationCustom01" class="mb-1">Category
+                                            <label for="editmain_category_name" class="mb-1">Category
                                                 :</label>
                                             <input class="form-control" name="editmain_category_name"
-                                                id="editmain_category_name"  type="text" required="true">
+                                                id="editmain_category_name" type="text" required="true">
                                         </div>
                                         <div class="form-group">
-                                            <label for="validationCustom02" class="mb-1">Category
+                                            <label for="editmain_category_image" class="mb-1">Category
                                                 Image :</label>
 
                                             <input class="form-control" name="editmain_category_image" id="editmain_category_image"
-                                                type="file"  accept="image/*">
+                                                type="file" accept="image/*">
 
                                                 <input class="form-control" name="oldeditmain_category_image" id="oldeditmain_category_image"
-                                                type="hidden" value=""  accept="image/*"> 
+                                                type="hidden" value="" accept="image/*"> 
                                         </div>
                                         <div class="form-group">
-                                                                <label for="validationCustom01" class="mb-1">Sort Order
-                                                                    :</label>
-                                                                <input class="form-control" id="editmain_category_sortorder" name="editmain_category_sortorder"
-                                                                    id="" type="number" required="true">
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label for="validationCustom01" class="mb-1">Meta Keyword / Tags
-                                                                    :</label>
-                                                                <textarea class="form-control" name="editmain_category_keywords" id="editmain_category_keywords"
-                                                                    id="" type="text" required="true"></textarea>
-                                                            </div>
+                                            <label for="editmain_category_sortorder" class="mb-1">Sort Order
+                                                :</label>
+                                            <input class="form-control" id="editmain_category_sortorder" name="editmain_category_sortorder"
+                                                type="number" required="true">
+                                        </div>
                                         <div class="form-group">
-                                            <label for="validationCustom01"
+                                            <label for="editmain_category_keywords" class="mb-1">Meta Keyword / Tags
+                                                :</label>
+                                            <textarea class="form-control" name="editmain_category_keywords" id="editmain_category_keywords"
+                                                required="true"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="editstatus"
                                                 class="mb-1">Status</label>
                                             <select class="custom-select w-100 form-control"
                                                 required="" id="editstatus" name="editstatus">
@@ -277,71 +277,44 @@
                 </div>
             {{-- edit model end --}}
         </div>
+    </div>
+@endsection
 
-        <script>
-
+@push('scripts')
+<script>
 $(document).on('click','.edit_category_main', function(e){
       
     e.preventDefault();
     var cate_id = $(this).val();
-  //  alert(cate_id);
-    //    console.log(pin_id);
     $('#exampleeditModal').modal('show');
     var url ="{{route('category.main.edit', ":cate_id")}}";
         url = url.replace(":cate_id", cate_id);
     $.ajax({
-     
           url:url,       
           type: "get",
           dataType: 'json',
           success: function (response) {
-              // console.log(response);
-             //alert(response);
                 if(response.status == 404)
                 {
-                //  alert('test');
-                $('successmessage').html('');
-                $('successmessage').addClass('alert alert-danger');
-                $('successmessage').text(response.message);
+                    $('.successmessage').html('').addClass('alert alert-danger').text(response.message);
                 }
                 else{
                     $('#editmain_category_name').val(response.category_main.category_main_name);
                     $('#editmain_category_sortorder').val(response.category_main.category_main_sortorder);
                     $('#editmain_category_keywords').val(response.category_main.category_main_keywords);
-                  //alert(response.category_main.category_main_name);
-                  $('#cate_id').val(cate_id);
-					// var sts = response.category_main.status;
-					//  //alert(sts);
-					// if(sts == 49)
-					// {
-					// 	$('#editstatus').val(1);
-
-					// }
-					// else{
-					// 	$('#editstatus').val(0);
-					// }
+                    $('#cate_id').val(cate_id);
                     $('#editstatus').val(response.category_main.status);
-                    $('#editmain_category_image').val();		
-					 $('#oldeditmain_category_image').val(response.category_main.category_main_image);
-                   
-                  
-                    // alert(response.category_main.category_main_image);
+                    $('#editmain_category_image').val('');		
+                    $('#oldeditmain_category_image').val(response.category_main.category_main_image);
                 }
-     
-                
-         
             }
-        
       });
-
-    });
-
+});
 
     /*update category*/
     $(document).on('submit','#updatecate', function(e){
         e.preventDefault();
-         var updatecate_id = $('#cate_id').val();
-        // alert(cate_id);
+        var updatecate_id = $('#cate_id').val();
         let editformDate = new FormData($('#updatecate')[0]);
         var url ="{{route('category_main_update', ":updatecate_id")}}";
 
@@ -349,20 +322,14 @@ $(document).on('click','.edit_category_main', function(e){
         $.ajax({
             url:url,       
             type:"POST",
-             data: editformDate,
-          //  dataType: 'json',
+            data: editformDate,
             contentType:false,
             processData:false,
             success: function (response) {
-            //    alert(response);
-            window.location.reload();
+                window.location.reload();
             }
-
-     });
-        
+        });
     });
-
-
 
     $(document).ready(function() {
     $(".modal").on("hidden.bs.modal", function() {
@@ -388,8 +355,6 @@ $(document).on('click','.edit_category_main', function(e){
             },
             error: function(xhr, status, error) {
                 console.log(error);
-                // Optionally revert the switch if the request fails
-                // $(this).prop('checked', !status);
             }
         });
     });
@@ -414,15 +379,14 @@ $(document).on('click','.edit_category_main', function(e){
     });
 
     });
-
-        </script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <style>
-            .swal2-popup {
-                font-size: 1.6rem !important;
-                width: 500px !important;
-                max-width: 90% !important;
-            }
-        </style>
-    @endsection
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    .swal2-popup {
+        font-size: 1.6rem !important;
+        width: 500px !important;
+        max-width: 90% !important;
+    }
+</style>
+@endpush
 

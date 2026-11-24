@@ -1184,12 +1184,12 @@
 
             this.$toolbar.append(html.join(''));
             $search = this.$toolbar.find('.search input');
-            $search.off('keyup drop blur').on('keyup drop blur', function (event) {
+            $search.off('keyup drop blur input paste change search').on('keyup drop blur input paste change search', function (event) {
                 if (that.options.searchOnEnterKey && event.keyCode !== 13) {
                     return;
                 }
 
-                if ($.inArray(event.keyCode, [37, 38, 39, 40]) > -1) {
+                if (event.type === 'keyup' && $.inArray(event.keyCode, [37, 38, 39, 40]) > -1) {
                     return;
                 }
 

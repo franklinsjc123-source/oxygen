@@ -125,6 +125,27 @@
     <script src="{{asset('assets/js/data-table/bootstrap-table-resizable.js')}}"></script>
     <script src="{{asset('assets/js/data-table/colResizable-1.5.source.js')}}"></script>
     <script src="{{asset('assets/js/data-table/bootstrap-table-export.js')}}"></script>
+    <script>
+        // Global instant search listener for all bootstrap tables
+        $(document).on('input paste change search', '.fixed-table-toolbar .search input', function() {
+            var $inp = $(this);
+            var val = $inp.val();
+            var $tbl = $inp.closest('.bootstrap-table').find('> .fixed-table-container > .fixed-table-body > table');
+            if (!$tbl.length) {
+                $tbl = $('#table');
+            }
+            if ($tbl.length && typeof $tbl.bootstrapTable === 'function') {
+                clearTimeout($inp.data('search-delay-timer'));
+                var timer = setTimeout(function() {
+                    var opts = $tbl.bootstrapTable('getOptions');
+                    if (opts && opts.searchText !== val) {
+                        $tbl.bootstrapTable('resetSearch', val);
+                    }
+                }, 200);
+                $inp.data('search-delay-timer', timer);
+            }
+        });
+    </script>
     <!--  editable JS
 		============================================ -->
 
