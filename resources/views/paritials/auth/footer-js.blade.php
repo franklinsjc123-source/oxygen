@@ -273,18 +273,27 @@
                 });
 
                 function toggleClear() {
-                    $clearBtn.toggle(($input.val() || '').length > 0);
+                    $clearBtn.toggle(($input.val() || '').trim().length > 0);
                 }
 
-                $input.on('input keyup change', toggleClear);
-                $clearBtn.on('click', function() {
+                $input.on('input keyup change search update-clear', toggleClear);
+                $clearBtn.on('click', function(e) {
+                    e.preventDefault();
                     $input.val('');
-                    $input.trigger('input').trigger('keyup').trigger('change').focus();
+                    $input.trigger('input').trigger('keyup').trigger('change').trigger('search').focus();
                     toggleClear();
+                    var $tbl = $input.closest('.bootstrap-table').find('> .fixed-table-container > .fixed-table-body > table');
+                    if (!$tbl.length) $tbl = $('#table');
+                    if ($tbl.length && typeof $tbl.bootstrapTable === 'function') {
+                        $tbl.bootstrapTable('resetSearch', '');
+                    }
                 });
 
                 $parent.append($clearBtn);
                 toggleClear();
+
+                // Keep clear button visibility in sync even when value is updated programmatically
+                setInterval(toggleClear, 400);
             }
 
             function attachClearButtons(scope) {

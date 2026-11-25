@@ -241,10 +241,30 @@
 
 @stack('scripts')
 
-<!-- Global Bootstrap Table State Persistence -->
+<!-- Global Bootstrap Table State Persistence (Same menu only) -->
 <script>
-    // Save table state before leaving the page or reloading
+    var isNavigatingAway = false;
+
+    // Detect when user clicks ANY navigation link leading to a DIFFERENT menu/page
+    $(document).on('click', 'a[href]', function() {
+        var href = this.getAttribute('href');
+        if (href && href !== '#' && !href.startsWith('javascript:')) {
+            try {
+                var targetPath = this.pathname || new URL(this.href, window.location.origin).pathname;
+                if (targetPath && targetPath !== window.location.pathname) {
+                    isNavigatingAway = true;
+                    sessionStorage.removeItem('globalTableSearch_' + window.location.pathname);
+                    sessionStorage.removeItem('globalTablePage_' + window.location.pathname);
+                }
+            } catch (e) {}
+        }
+    });
+
+    // Save table state on reload / form submit / update / delete within the SAME page
     window.addEventListener('beforeunload', function() {
+        if (isNavigatingAway) {
+            return; // Do not save state when moving to another menu
+        }
         var $table = $('#table');
         if ($table.length && typeof $table.bootstrapTable === 'function') {
             try {
@@ -254,28 +274,42 @@
                     var currentPage = options.pageNumber || 1;
                     var path = window.location.pathname;
                     
-                    sessionStorage.setItem('globalTableSearch_' + path, searchText);
+                    if (searchText) {
+                        sessionStorage.setItem('globalTableSearch_' + path, searchText);
+                    } else {
+                        sessionStorage.removeItem('globalTableSearch_' + path);
+                    }
                     sessionStorage.setItem('globalTablePage_' + path, currentPage);
                 }
-            } catch (e) {
-                // Ignore if table isn't fully initialized
-            }
+            } catch (e) {}
         }
     });
 
-    // Restore table state on page load
+    // Restore table state on page load ONLY IF reloaded on the same page
     $(document).ready(function() {
-        var path = window.location.pathname;
-        var savedSearch = sessionStorage.getItem('globalTableSearch_' + path);
-        var savedPage = sessionStorage.getItem('globalTablePage_' + path);
+        var currentPath = window.location.pathname;
+        var lastPath = sessionStorage.getItem('globalTableLastPath');
+
+        // If arriving from a different menu/page, clear saved search so it starts clean
+        if (lastPath && lastPath !== currentPath) {
+            sessionStorage.removeItem('globalTableSearch_' + currentPath);
+            sessionStorage.removeItem('globalTablePage_' + currentPath);
+        }
+        sessionStorage.setItem('globalTableLastPath', currentPath);
+
+        var savedSearch = sessionStorage.getItem('globalTableSearch_' + currentPath);
+        var savedPage = sessionStorage.getItem('globalTablePage_' + currentPath);
         
         if (savedSearch || savedPage) {
             setTimeout(function() {
                 var $table = $('#table');
                 if ($table.length && typeof $table.bootstrapTable === 'function') {
                     if (savedSearch) {
-                        $('.fixed-table-toolbar .search input').val(savedSearch);
+                        var $searchInp = $('.fixed-table-toolbar .search input');
+                        $searchInp.val(savedSearch);
                         $table.bootstrapTable('resetSearch', savedSearch);
+                        $searchInp.trigger('input').trigger('change').trigger('update-clear');
+                        $searchInp.parent().find('.table-search-clear-btn').show();
                     }
                     if (savedPage) {
                         var pageNum = parseInt(savedPage, 10);
@@ -284,10 +318,10 @@
                         }
                     }
                 }
-                // Clear so it doesn't artificially persist longer than one navigation/reload
-                sessionStorage.removeItem('globalTableSearch_' + path);
-                sessionStorage.removeItem('globalTablePage_' + path);
-            }, 500);
+                // Clear after restoration so it only survives one reload/edit
+                sessionStorage.removeItem('globalTableSearch_' + currentPath);
+                sessionStorage.removeItem('globalTablePage_' + currentPath);
+            }, 400);
         }
     });
     
