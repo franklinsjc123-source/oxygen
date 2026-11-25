@@ -12,8 +12,6 @@
         <!-- Page Sidebar Start-->
         @include('paritials.auth.sidemenu');
         <!-- Page Sidebar Ends-->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-                                <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
         <style>
             #exampleModal1 .select2-container--default .select2-selection--multiple {
                 min-height: 42px;
@@ -89,7 +87,7 @@
                                                         @csrf
                                                         <div class="form row">
                                                             <div class="form-group col-6">
-                                                                <label for="validationCustom01" class="mb-1">Select Main
+                                                                <label for="main_category" class="mb-1">Select Main
                                                                     Category :</label>
                                                                 <select class="custom-select w-100 form-control"
                                                                     name="main_category_id" required id="main_category">
@@ -104,7 +102,7 @@
                                                             </div>
 
                                                             <div class="form-group col-6">
-                                                                <label for="validationCustom01" class="mb-1">Select
+                                                                <label for="category_id" class="mb-1">Select
                                                                     Category :</label>
                                                                 <select class="custom-select w-100 form-control"
                                                                     name="category_id" id="category_id">
@@ -114,34 +112,34 @@
                                                             </div>
 
                                                             <div class="form-group  col-12">
-                                                                <label for="validationCustom01" class="mb-1">Sub Category
+                                                                <label for="add_sub_category_name" class="mb-1">Sub Category
                                                                     :</label>
                                                                 <input class="form-control" name="sub_category_name"
-                                                                    id="" required type="text">
+                                                                    id="add_sub_category_name" required type="text">
                                                             </div>
 
                                                             <div class="form-group  col-6">
-                                                                <label for="validationCustom02" class="mb-1">Sub Category
+                                                                <label for="add_sub_category_iamge" class="mb-1">Sub Category
                                                                     Image :</label>
                                                                 <input class="form-control" name="sub_category_iamge"
-                                                                    type="file" accept="image/*" required>
+                                                                    id="add_sub_category_iamge" type="file" accept="image/*" required>
                                                             </div>
                                                             <div class="form-group  col-6">
-                                                                <label for="validationCustom01" class="mb-1">Sort Order
+                                                                <label for="add_sub_category_sortorder" class="mb-1">Sort Order
                                                                     :</label>
                                                                 <input class="form-control" name="sub_category_sortorder"
-                                                                    id="" type="number" required="true">
+                                                                    id="add_sub_category_sortorder" type="number" required="true">
                                                             </div>
                                                             <div class="form-group  col-12">
-                                                                <label for="validationCustom01" class="mb-1">Meta Keyword / Tags
+                                                                <label for="add_sub_category_keywords" class="mb-1">Meta Keyword / Tags
                                                                     :</label>
                                                                 <textarea class="form-control" name="sub_category_keywords"
-                                                                    id="" type="text" required="true"></textarea>
+                                                                    id="add_sub_category_keywords" type="text" required="true"></textarea>
                                                             </div>
                                                             <div class="form-group  col-12">
-                                                                <label for="validationCustom01" class="mb-1">Attributes
+                                                                <label for="add_category_sub_attributes" class="mb-1">Attributes
                                                                     :</label>
-                                                                    <select class="form-control select2"  name="category_sub_attributes[]" multiple style="width:100%;">
+                                                                    <select class="form-control select2" id="add_category_sub_attributes" name="category_sub_attributes[]" multiple style="width:100%;">
                                                                     @foreach ($attributegroup as $group)
                                                                         <option value="{{ $group->id }}">
                                                                             {{ $group->attribute_group_name }} ( {{ $group->attribute_group_refname }})
@@ -150,9 +148,9 @@
                                                                     </select>
                                                             </div>
                                                             <div class="form-group  col-12">
-                                                                <label for="validationCustom01" class="mb-1">Specifications
+                                                                <label for="add_category_sub_specifications" class="mb-1">Specifications
                                                                     :</label>
-                                                                    <select class="form-control select2"  name="category_sub_specifications[]" multiple style="width:100%;">
+                                                                    <select class="form-control select2" id="add_category_sub_specifications" name="category_sub_specifications[]" multiple style="width:100%;">
                                                                     @foreach ($specificationgroup as $group)
                                                                         <option value="{{ $group->id }}">
                                                                             {{ $group->specification_group_name }} ( {{ $group->specification_group_refname }})
@@ -161,10 +159,10 @@
                                                                     </select>
                                                             </div>
                                                             <div class="form-group  col-6">
-                                                                <label for="validationCustom01"
+                                                                <label for="add_status"
                                                                     class="mb-1">Status</label>
                                                                 <select class="custom-select w-100 form-control"
-                                                                    name="status" required>
+                                                                    id="add_status" name="status" required>
                                                                     <option value="1">Active</option>
                                                                     <option value="0">Inactive</option>
                                                                 </select>
@@ -202,7 +200,7 @@
                                                         @csrf
                                                         <div class="form row">
                                                             <div class="form-group col-6">
-                                                                <label for="validationCustom01" class="mb-1">Select Main
+                                                                <label for="editmain_category_id" class="mb-1">Select Main
                                                                     Category :</label>
                                                                 <select class="custom-select w-100 form-control"
                                                                     name="editmain_category_id" required id="editmain_category_id">
@@ -217,9 +215,9 @@
                                                             </div>
 
                                                             <div class="form-group  col-6">
-                                                                <label for="validationCustom01" class="mb-1">Select
+                                                                <label for="editcategory_id" class="mb-1">Select
                                                                     Category :</label>
-                                                                     {{-- <input type="hidden" id="editcategory_id" name="editcategory_id">  --}}
+                                                                      {{-- <input type="hidden" id="editcategory_id" name="editcategory_id">  --}}
                                                                 {{-- <select  class="custom-select w-100 form-control"
                                                                     name="editcategory_id" id="editcategory_id">
                                                                     <option value="" selected hidden>Select
@@ -238,14 +236,14 @@
                                                             </div>
 
                                                             <div class="form-group col-12">
-                                                                <label for="validationCustom01" class="mb-1">Sub Category
+                                                                <label for="editsub_category_name" class="mb-1">Sub Category
                                                                     :</label>
                                                                 <input class="form-control" name="editsub_category_name"
                                                                     id="editsub_category_name" required type="text">
                                                             </div>
 
                                                             <div class="form-group  col-6">
-                                                                <label for="validationCustom02" class="mb-1">Sub Category
+                                                                <label for="editsub_category_iamge" class="mb-1">Sub Category
                                                                     Image :</label>
                                                                 <input class="form-control" name="editsub_category_iamge"
                                                                 id="editsub_category_iamge" type="file" accept="image/*" >
@@ -253,19 +251,19 @@
                                                                 id="oldeditsub_category_iamge" type="hidden" accept="image/*" >
                                                             </div>
                                                             <div class="form-group  col-6">
-                                                                <label for="validationCustom01" class="mb-1">Sort Order
+                                                                <label for="editsub_category_sortorder" class="mb-1">Sort Order
                                                                     :</label>
                                                                 <input class="form-control" id="editsub_category_sortorder" name="editsub_category_sortorder"
-                                                                    id="" type="number" required="true">
+                                                                    type="number" required="true">
                                                             </div>
                                                             <div class="form-group col-12">
-                                                                <label for="validationCustom01" class="mb-1">Meta Keyword / Tags
+                                                                <label for="editsub_category_keywords" class="mb-1">Meta Keyword / Tags
                                                                     :</label>
                                                                 <textarea class="form-control" id="editsub_category_keywords" name="editsub_category_keywords"
-                                                                    id="" type="text" required="true"></textarea>
+                                                                    type="text" required="true"></textarea>
                                                             </div>
                                                             <div class="form-group  col-12">
-                                                                <label for="validationCustom01" class="mb-1">Attributes
+                                                                <label for="edit_attributes" class="mb-1">Attributes
                                                                     :</label>
                                                                     <select class="form-control select2" id="edit_attributes" name="category_sub_attributes[]" multiple style="width:100%;">
                                                                     @foreach ($attributegroup as $group)
@@ -276,7 +274,7 @@
                                                                     </select>
                                                             </div>
                                                             <div class="form-group col-12">
-                                                                <label for="validationCustom01" class="mb-1">Specifications
+                                                                <label for="edit_specifications" class="mb-1">Specifications
                                                                     :</label>
                                                                     <select class="form-control select2" id="edit_specifications" name="category_sub_specifications[]" multiple style="width:100%;">
                                                                     @foreach ($specificationgroup as $group)
@@ -289,7 +287,7 @@
                                 
                             
                                                             <div class="form-group  col-6">
-                                                                <label for="validationCustom01"
+                                                                <label for="editstatus"
                                                                     class="mb-1">Status</label>
                                                                 <select class="custom-select w-100 form-control"
                                                                     name="editstatus"  id="editstatus" required>
@@ -328,13 +326,13 @@
 
                                         <thead>
                                             <tr>
-                                                <th data-field="image" data-sortable="true">Image</th>
+                                                <th data-field="image" data-searchable="false" data-sortable="true">Image</th>
                                                 <th data-field="maincategory" data-sortable="true">Main Category</th>
                                                 <th data-field="category" data-sortable="true">Category</th>
                                                 <th data-field="subcategory" data-sortable="true">Sub Category</th>
                                                 <th data-field="sort" data-sortable="true">Sort Order</th>
-                                                <th data-field="status" data-sortable="true">Status</th>
-                                                <th>Action</th>
+                                                <th data-field="status" data-searchable="false" data-sortable="true">Status</th>
+                                                <th data-searchable="false">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -402,6 +400,9 @@
             </div>
             <!-- Container-fluid Ends-->
         </div>
+    @endsection
+
+    @push('scripts')
         <script>
             function ensureEditSelect2Rendered() {
                 var $modal = $('#exampleModal1');
@@ -681,5 +682,5 @@
                 max-width: 90% !important;
             }
         </style>
-    @endsection
+    @endpush
 
