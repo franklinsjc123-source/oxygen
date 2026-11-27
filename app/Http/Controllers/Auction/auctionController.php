@@ -234,12 +234,15 @@ class auctionController extends Controller
     {
         try {
             $auction = auction::find($id);
+            if (!$auction) {
+                $flasher->addWarning('Auction record was not found or has already been deleted.');
+                return redirect()->route('auction/list');
+            }
             $auction->delete();
-            $flasher->addSuccess('auction Information has been removed successfully!');
+            $flasher->addSuccess('Auction information has been removed successfully!');
             return redirect()->route('auction/list');
         } catch (\Throwable $th) {
-            //$flasher->addError('Something Error!!');
-            $flasher->addError('Something Error!! =>' . $th);
+            $flasher->addError('Something Error!! => ' . $th->getMessage());
             return redirect()->route('auction/list');
         }
     }

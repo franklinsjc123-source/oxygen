@@ -1253,14 +1253,12 @@
             btn.innerHTML = originalHtml;
             alert('Error sending email. Please try again.');
         });
-    } 10);
-        }
     }
 
     // ===================== COUNTDOWN TIMER =====================
     var auctionHasNotStarted = {{ $hasNotStarted ? 'true' : 'false' }};
-    var auctionEndDate = new Date("{{ $endDate->format('Y-m-d\TH:i:s') }}").getTime();
-    var auctionStartDate = new Date("{{ $startDate->format('Y-m-d\TH:i:s') }}").getTime();
+    var auctionEndDate = new Date("{{ $endDate->format('c') }}").getTime();
+    var auctionStartDate = new Date("{{ $startDate->format('c') }}").getTime();
     var auctionExpired = {{ $isExpired ? 'true' : 'false' }};
 
     function updateCountdown() {
