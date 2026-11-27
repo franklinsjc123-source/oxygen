@@ -442,7 +442,7 @@
                             <li><a href="{{ url('home') }}">Home</a></li>
                             <li><a href="{{ url('shops') }}">Shops</a></li>
                             <li><a href="{{ url('offers') }}">Offer Products</a></li>
-                             <li><a href="{{ url('auction') }}">Bid & Win</a></li>
+                             <li><a href="{{ url('auction') }}">B&W Deals</a></li>
                             @if(session('customer_id'))
                                 <li><a href="{{ url('track-order') }}">Track Order</a></li>
                             @else

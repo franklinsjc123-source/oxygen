@@ -1,5 +1,5 @@
 @extends('app_template')
-@section('title', $product->product_name . ' - Auction')
+@section('title', $product->product_name . ' - B&W Deals')
 @section('content')
 
 <main class="main mb-10 pb-1" style="background-color: #f8fafc;  padding-bottom: 60px;">
@@ -323,7 +323,7 @@
             <div class="container">
                 <ul class="breadcrumb bb-no">
                     <li><a href="{{ url('home') }}">Home</a></li>
-                    <li><a href="{{ url('auction') }}">Auction</a></li>
+                    <li><a href="{{ url('auction') }}">B&W Deals</a></li>
                     <li>{{ $product->product_name }}</li>
                 </ul>
             </div>
@@ -356,7 +356,7 @@
                                     </div>
                                     <div>
                                         <h4 style="margin: 0; font-size: 18px; font-weight: 800; color: #0f172a; letter-spacing: -0.4px;">How to Get Product After Winning</h4>
-                                        <span style="font-size: 13px; color: #64748b; font-weight: 500;">Instructions for auction winners</span>
+                                        <span style="font-size: 13px; color: #64748b; font-weight: 500;">Instructions for B&W Deals winners</span>
                                     </div>
                                 </div>
                                 <span style="background: #eff6ff; color: #2563eb; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px; border: 1px solid #bfdbfe; display: inline-flex; align-items: center; gap: 6px;">
@@ -446,7 +446,7 @@
                         @else
                             <div class="tm-timer-blocks">
                                 <div class="timer-block" style="background: #dc2626;">
-                                    <span style="font-size: 16px; margin-bottom: 4px;">Auction Closed</span>
+                                    <span style="font-size: 16px; margin-bottom: 4px;">B&W Deal Closed</span>
                                     <small>Ended on {{ $endDate->format('D, j M, g:ia') }}</small>
                                 </div>
                             </div>
@@ -522,7 +522,7 @@
                                 @if(!$isExpired && !$auction->is_settled)
                                     @if($hasNotStarted)
                                         <div style="margin-bottom: 20px; padding: 20px; border: 2px dashed #fca5a5; border-radius: 16px; background: #fef2f2; color: #991b1b; font-weight: 600; text-align: center;">
-                                            <i class="fas fa-exclamation-circle" style="margin-right: 6px;"></i> This auction has not started yet.
+                                            <i class="fas fa-exclamation-circle" style="margin-right: 6px;"></i> This B&W Deal has not started yet.
                                         </div>
                                     @elseif($isLoggedIn)
                                         <div class="tm-bid-input-group">
@@ -589,7 +589,7 @@
                         @if($winnerInfo)
                             <div class="tm-seller-box" style="margin-top: 20px; border-color: #fcd34d; background: #fffbeb; box-shadow: 0 4px 20px rgba(245,158,11,0.1);">
                                 <div class="tm-seller-info" style="width: 100%; text-align: center;">
-                                    <h4 style="color: #d97706; font-size: 20px; margin-bottom: 10px;">🏆 Auction Winner</h4>
+                                    <h4 style="color: #d97706; font-size: 20px; margin-bottom: 10px;">🏆 B&W Deals Winner</h4>
                                     <div style="font-size: 18px; margin-top: 5px; color: #1e293b;"><strong>{{ $winnerInfo['name'] }}</strong> won with <span style="color: #2563eb; font-weight: 800;">₹{{ number_format($winnerInfo['amount'], 2) }}</span></div>
                                     @if($winnerInfo['is_current_user'] && $winnerInfo['coupon_code'])
                                         <div style="margin-top: 15px; font-family: monospace; font-size: 22px; font-weight: bold; padding: 12px; background: #fff; border: 2px dashed #fcd34d; border-radius: 12px; color: #d97706;">{{ $winnerInfo['coupon_code'] }}</div>
@@ -1279,7 +1279,7 @@
             if (diff <= 0) {
                 var displayEl = document.getElementById('countdown-display');
                 if (displayEl) {
-                    displayEl.innerHTML = '<div class="timer-block" style="background: #dc2626;"><span style="font-size: 16px; margin-bottom: 0;">Auction Closed</span></div>';
+                    displayEl.innerHTML = '<div class="timer-block" style="background: #dc2626;"><span style="font-size: 16px; margin-bottom: 0;">B&W Deal Closed</span></div>';
                 }
                 auctionExpired = true;
                 

@@ -1,5 +1,5 @@
 @extends('app_template')
-@section('title',' Auction Products')
+@section('title',' B&W Deals')
 @section('content')
 
 <main class="main">
@@ -8,7 +8,7 @@
         <div class="container">
             <ul class="breadcrumb bb-no">
                 <li><a href="{{ url('home')}}">Home</a></li>
-                <li><a href="{{ url('auction') }}"> Auction </a> </li>
+                <li><a href="{{ url('auction') }}"> B&W Deals </a> </li>
             </ul>
         </div>
     </nav>

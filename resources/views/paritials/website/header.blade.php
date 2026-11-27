@@ -125,7 +125,7 @@
                                        @endforeach
 
                                        
-                                            <li><a href="{{ route('auction') }}">Auction</a></li> 
+                                            <li><a href="{{ route('auction') }}">B&W Deals</a></li> 
                                     </ul>
                                 </nav>
                             </div> </div>

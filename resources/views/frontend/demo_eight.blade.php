@@ -413,7 +413,7 @@
       @if(isset($auctionProducts) && count($auctionProducts) > 0)
       <div class="container mt-4 mb-4 auction-container">
          <div class="title-link-wrapper mb-3">
-             <h2 class="title mb-0 pt-2 pb-2">BID & WIN</h2>
+             <h2 class="title mb-0 pt-2 pb-2">B&amp;W DEALS</h2>
              <a href="{{ url('auction') }}" class="mb-0">More Products<i
                      class="w-icon-long-arrow-right"></i></a>
          </div>
